@@ -72,6 +72,12 @@ in `TESTRUN.md`), one line each:
   reviewer's words and Claude's recommendation. **A fault August has already
   ruled on** (`modelling/taste.md`) is not his call again: it is confirmed.
 
-A finding the reviewer was "unsure" of is still triaged. **August sees the
+A finding the reviewer was "unsure" of is still triaged.
+
+**Readings that came back false** (the lobby rework, 2026-10-19), so prove
+them by geometry before acting: a bed seen head-on through a doorway reads as
+steps; Workbench's hard window shadows on a floor read as mismatched slabs;
+fixing one finding can reopen its opposite (a key rack raised clear of the
+clerk's head came back "too high to reach"), which makes it his call. **August sees the
 work only after the triage**: what he is shown has had its obvious faults
 fixed or put to him.

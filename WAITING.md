@@ -21,12 +21,15 @@ Connect: knappen under fliken Plugins i Studio. -->
 3. ~~**Starta om `rojo serve` en gång till**~~ (gjort 2026-10-19: alla 69
    modeller har kommit fram och stämmer del för del med importen; noterat i
    setens `README.md`).
-4. **Importera nio modeller** (2026-10-19): välj alla filer i mappen
+4. **Importera elva modeller** (2026-10-19): välj alla filer i mappen
    `blender/_import/` i importdialogen (Studio, importera till **Workspace**)
-   och säg *importerat*. Det är båda hotellens rättade **HotelSign**
-   (Frostfangs heter `FrostfangLodge_HotelSign`) och de sju kosmetikorna
+   och säg *importerat*. Det är båda hotellens nya **Lobby** (Frostfangs heter
+   `FrostfangLodge_Lobby`, layout A som du valde), båda hotellens rättade
+   **HotelSign** (`FrostfangLodge_HotelSign`) och de sju kosmetikorna
    (Pumpkin sign, Icicle sign, Lantern sign, de två familjevapnen, Bat bunting,
-   Fairy lights). Resten gör Claude.
+   Fairy lights). Resten gör Claude, och efter importen går Claude igenom
+   lobbyn i spelet: strålar genom varje dörr, en gångare till disken, en ny
+   blind granskning.
 
 ## §1 Att titta på eller spela
 
@@ -60,6 +63,10 @@ Med Claudes skärmdump där det finns en. -->
    (Night Bus med gäster). Allt är byggt av de importerade modellerna nu;
    strukturen är kontrollerad (trappor gångna, golv och dörrar med strålar).
    Hur det ser ut är ditt.
+
+7. ~~**Den nya lobbyn**~~ (besvarat 2026-10-19: du godkände utseendet, layout A
+   i båda hotellen och skylten i förgårdens hörn; noterat i setens `README.md`.
+   Claude ser den i spelet efter importen, §0 punkt 4.)
 
 ## §2 Beslut
 
@@ -140,6 +147,25 @@ Med Claudes skärmdump där det finns en. -->
    i `.claude/skills/modelling/taste.md`. Lobbyn och skylten görs om; Claude
    visar grå silhuetter först. Ett nytt steg, skill `blind-review`, låter en
    annan modell utan sammanhang granska bilderna innan du ser dem.)
+
+11. **Lobbyns utseende: det granskarna såg som är ditt** (2026-10-19,
+   blind granskning i tre rundor, setens `README.md`). Fyra saker, med Claudes
+   rekommendation:
+   - "Lobbyn är en korridor och disken syns inte från dörren." Det följer av
+     två rader och layout A. Claude lade en matta från dörren till disken.
+     **Rekommendation:** behåll; prova i spelet. En tredje rad kan komma senare.
+   - "Fasaden är en platt låda", för Frostfang "blå utanpå, timmer inuti".
+     Framväggen kan inte ha relief utåt (inget får stå utanför tomten).
+     **Rekommendation:** vänta till fasadbitarna (`Facade_Wall`) görs, så att
+     front och sidor blir ett. För Frostfang kan framväggen få timmer utanpå
+     redan nu om du vill.
+   - "Skylten är en reklamtavla" (16 × 6 studs, Frostfangs gavel smalare än
+     tavlan, istappar i huvudhöjd). Skylten är oförändrad, bara flyttad.
+     **Rekommendation:** behåll storleken, den ska läsas på en telefon från
+     gatan.
+   - "Nyckeltavlan hänger för högt" (runda 3), medan runda 1 sa att
+     receptionistens huvud skymde den. Nycklarna hänger nu 5–7,3 studs upp.
+     **Rekommendation:** behåll; titta i spelet.
 
 ## §3 Creator Hub och publicering
 

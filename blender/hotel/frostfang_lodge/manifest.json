@@ -591,39 +591,165 @@
       6.0
      ],
      "size": [
-      71.0,
+      72.0,
       0.16,
-      11.0
+      12.0
      ],
-     "triangles": 1116,
+     "triangles": 600,
      "collide": false
+    },
+    "Wall_FrontLeft": {
+     "centre": [
+      -20.75,
+      5.5,
+      0.4
+     ],
+     "size": [
+      30.5,
+      11.0,
+      0.8
+     ],
+     "triangles": 276,
+     "collide": true
+    },
+    "Dressing": {
+     "centre": [
+      0.0,
+      5.95,
+      1.0855
+     ],
+     "size": [
+      72.0,
+      10.7,
+      2.171
+     ],
+     "triangles": 1056,
+     "collide": false
+    },
+    "Wall_FrontRight": {
+     "centre": [
+      20.75,
+      5.5,
+      0.4
+     ],
+     "size": [
+      30.5,
+      11.0,
+      0.8
+     ],
+     "triangles": 216,
+     "collide": true
     },
     "Desk": {
      "centre": [
-      -12.0,
-      2.125,
-      9.0
+      -26.02,
+      2.12,
+      3.8
      ],
      "size": [
-      10.4,
-      4.25,
-      2.4
+      2.36,
+      4.24,
+      6.2
      ],
-     "triangles": 614,
+     "triangles": 738,
      "collide": true
     },
     "Till": {
      "centre": [
-      12.0,
-      2.35,
-      8.98
+      -25.975,
+      4.66,
+      6.1133
      ],
      "size": [
-      3.0,
-      4.7,
-      2.04
+      1.25,
+      1.72,
+      1.6266
      ],
-     "triangles": 180,
+     "triangles": 192,
+     "collide": true
+    },
+    "Glow_Warm_2": {
+     "centre": [
+      -26.3,
+      5.05,
+      1.35
+     ],
+     "size": [
+      0.4435,
+      0.48,
+      0.4435
+     ],
+     "triangles": 48,
+     "collide": false
+    },
+    "KeyRack": {
+     "centre": [
+      -35.575,
+      4.75,
+      3.8
+     ],
+     "size": [
+      0.85,
+      9.5,
+      5.2
+     ],
+     "triangles": 1132,
+     "collide": true
+    },
+    "Bench_1": {
+     "centre": [
+      14.75,
+      2.0,
+      1.95
+     ],
+     "size": [
+      7.4,
+      4.0,
+      2.0
+     ],
+     "triangles": 616,
+     "collide": true
+    },
+    "Bench_2": {
+     "centre": [
+      30.0,
+      2.0,
+      1.95
+     ],
+     "size": [
+      5.9,
+      4.0,
+      2.0
+     ],
+     "triangles": 616,
+     "collide": true
+    },
+    "Planter_1": {
+     "centre": [
+      20.75,
+      2.91,
+      2.0
+     ],
+     "size": [
+      2.0325,
+      5.82,
+      2.0325
+     ],
+     "triangles": 150,
+     "collide": true
+    },
+    "Planter_2": {
+     "centre": [
+      34.6,
+      2.91,
+      2.0
+     ],
+     "size": [
+      2.0325,
+      5.82,
+      2.0325
+     ],
+     "triangles": 150,
      "collide": true
     },
     "ArchLeft": {
@@ -668,20 +794,6 @@
      "triangles": 152,
      "collide": true
     },
-    "Dressing": {
-     "centre": [
-      -4.2979,
-      7.25,
-      5.5394
-     ],
-     "size": [
-      16.79,
-      6.9,
-      10.307
-     ],
-     "triangles": 208,
-     "collide": false
-    },
     "Glow_Warm_1": {
      "centre": [
       0.0,
@@ -696,60 +808,60 @@
      "triangles": 64,
      "collide": false
     },
-    "Glow_Warm_2": {
+    "Glow_Warm_3": {
      "centre": [
-      -12.0,
-      6.0,
-      10.0
+      -15.5,
+      7.03,
+      1.32
      ],
      "size": [
-      0.4065,
-      0.44,
-      0.4065
+      0.1386,
+      0.34,
+      0.16
      ],
-     "triangles": 48,
+     "triangles": 36,
      "collide": false
     },
-    "Planter_1": {
+    "Glow_Warm_4": {
      "centre": [
-      -33.5,
-      2.91,
-      9.5
+      17.0,
+      7.03,
+      1.32
      ],
      "size": [
-      2.0325,
-      5.82,
-      2.0325
+      0.1386,
+      0.34,
+      0.16
      ],
-     "triangles": 150,
-     "collide": true
+     "triangles": 36,
+     "collide": false
     },
-    "Planter_2": {
+    "Glow_Warm_5": {
      "centre": [
-      33.5,
-      2.91,
-      9.5
+      30.0,
+      7.03,
+      1.32
      ],
      "size": [
-      2.0325,
-      5.82,
-      2.0325
+      0.1386,
+      0.34,
+      0.16
      ],
-     "triangles": 150,
-     "collide": true
+     "triangles": 36,
+     "collide": false
     },
     "LOD_Proxy": {
      "centre": [
       0.0,
       5.875,
-      5.2581
+      3.4633
      ],
      "size": [
-      69.0325,
+      72.0,
       11.75,
-      10.5163
+      6.9266
      ],
-     "triangles": 84,
+     "triangles": 144,
      "collide": false
     }
    },
@@ -768,26 +880,38 @@
     },
     "Desk": {
      "pos": [
-      -12.0,
+      -24.8,
       3.8,
-      7.8
+      2.9
      ],
      "look": [
+      1.0,
       0.0,
+      0.0
+     ]
+    },
+    "Clerk": {
+     "pos": [
+      -30.0,
       0.0,
-      -1.0
+      3.8
+     ],
+     "look": [
+      1.0,
+      0.0,
+      0.0
      ]
     },
     "Till": {
      "pos": [
-      12.0,
+      -24.8,
       3.8,
-      7.8
+      5.9
      ],
      "look": [
+      1.0,
       0.0,
-      0.0,
-      -1.0
+      0.0
      ]
     },
     "Spawn": {
@@ -804,9 +928,9 @@
     },
     "SignBoard": {
      "pos": [
+      24.0,
       0.0,
-      0.0,
-      -7.0
+      -5.0
      ],
      "look": [
       0.0,
@@ -816,50 +940,50 @@
     },
     "Queue_1": {
      "pos": [
-      -12.0,
+      -22.0,
       0.0,
-      5.5
+      2.9
      ],
      "look": [
+      -1.0,
       0.0,
-      0.0,
-      1.0
+      0.0
      ]
     },
     "Queue_2": {
      "pos": [
-      -16.0,
+      -18.5,
       0.0,
-      5.5
+      2.9
      ],
      "look": [
+      -1.0,
       0.0,
-      0.0,
-      1.0
+      0.0
      ]
     },
     "Queue_3": {
      "pos": [
-      -20.0,
+      -15.0,
       0.0,
-      5.5
+      2.9
      ],
      "look": [
+      -1.0,
       0.0,
-      0.0,
-      1.0
+      0.0
      ]
     },
     "Queue_4": {
      "pos": [
-      -24.0,
+      -11.5,
       0.0,
-      5.5
+      2.9
      ],
      "look": [
+      -1.0,
       0.0,
-      0.0,
-      1.0
+      0.0
      ]
     },
     "Trap_1": {
@@ -899,11 +1023,11 @@
      ]
     }
    },
-   "triangles": 2926,
+   "triangles": 6358,
    "budget": 8000,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "a plank floor with a red runner, a log desk with snowflakes, a snowy timber gable over the entrance"
+   "note": "an indoor reception: the front wall, logs inside, round the snowy gable; the log desk across the end with its key rack and clock, log benches and pines, the back row clear for the floor-1 doors"
   },
   "StairCore": {
    "name": "StairCore",

@@ -46,7 +46,7 @@ keeps the rest of the manifest). About 40 s, headless, Workbench only.
 | `AuroraDome` | Room 3x3 | 4,926 / 6,000 | 108 | walls, Floor, Dressing, Glow_Warm_1, Glow_Magic_1..3, Bed, Furniture |
 | `CocoaLounge` | Amenity 2x2 | 5,312 / 6,000 | 96 | walls, Floor, Dressing, Glow_Warm_1, Centrepiece |
 | `AuroraDeck` | Amenity 2x2 | 3,894 / 6,000 | 96 | walls, Floor, Dressing, Glow_Warm_1, Glow_Magic_1..2, Centrepiece |
-| `Lobby` | Lobby 72x12 | 2,926 / 8,000 | 84 | Rug, Desk, Till, ArchLeft, ArchRight, ArchTop, Dressing, Glow_Warm_1..2, Planter_1, Planter_2 |
+| `Lobby` | Lobby 72x12 | 6,358 / 8,000 | 144 | Rug, Wall_FrontLeft, Dressing, Wall_FrontRight, Desk, Till, KeyRack, Bench_1, Bench_2, Planter_1, Planter_2, ArchLeft, ArchRight, ArchTop, Glow_Warm_1..5 |
 | `StairCore` | Stairs | 2,678 / 8,000 | 180 | Step_Up_1..5, Landing, Step_Down_1..5, Wall_Left, Wall_Right, Wall_Back, Divider, Dressing, Glow_Warm_1 |
 | `StairCoreTop` | Stairs | 3,542 / 8,000 | 192 | as StairCore, plus Rail_Top; walls 15.5 tall |
 | `HotelSign` | Sign | 516 / 3,000 (draft ceiling) | none | PostLeft, PostRight, Board, Crest, Glow_Cold_1 |
@@ -130,7 +130,7 @@ after them wrote a byte-identical `manifest.json`, `validation.json` and
   A `Glass` part name would let the code make it see-through.
 - **Ice is opaque** everywhere (the ice block, crystals, ice furniture): the
   fix-up sets only glows, nothing translucent.
-- The lobby keeps the blockout's open plan (no walls, no fireplace: one at
+- (Superseded 2026-10-19 evening by the lobby rework below.) The lobby kept the blockout's open plan (no walls, no fireplace: one at
   the back could block the walk to the stair core), with a plank floor, a red
   runner, a log desk with snowflakes, a snowy timber gable over the entrance
   with a lantern, and snowy pines in the far corners.
@@ -152,3 +152,29 @@ restart (2026-10-19, 15:30): all 69 synced copies match the Workspace imports
 part for part (628 parts: mesh ids, sizes, textures, collision, LOD_Proxy
 hidden, no empty MeshPart), and the Workspace copies are deleted. **Studio
 runtime is not tested yet**: not seen in the game, not walked.
+
+## 2026-10-19 evening: the lobby rework (layout A) and the sign's place
+
+**He approved the look, 2026-10-19** (the renders after three blind reviews,
+`archive/screens/2026-10-19_lobby_rework.jpg`).
+
+The same layout as Haunted Manor's, from the kit's shared lobby shapes (see
+that set's README, "the lobby rework", for the layout, the checks and the
+first rounds' triage). The lodge's own: the front wall's inside in log
+stripes as its rooms (`lobby_front_wall(paper=('log', 'log_dark'))`), snow
+along the wall's top, a plank floor (the 6-stud checker read as vinyl), a log
+desk with snowflakes, log benches, pines in tubs, an iron lamp and sconces. 6,358
+triangles, 21 parts, validated by re-import. **Not run in Studio.**
+
+The reviewers' lodge-only findings:
+
+| Round, # | The finding | Triage |
+|---|---|---|
+| 1.2, 2.1 | Inside the front wall is flat khaki, the rooms are logs; outside is a flat blue slab | Inside: **confirmed**, now logs. Outside: **his call** (WAITING §2), blue as the code's facade |
+| 1.1, 2.2, 2.6 | The sign is a billboard; its crest is narrower than its board; icicles at head height under it | **His call** (the sign model is unchanged; it stands off the walk at the forecourt corner). WAITING §2 |
+| 1.5 | The key board reads as a second sign (gable and snowflake) | **Confirmed**: a cornice and a clock instead, as Haunted Manor's |
+| 1.6 | The floor checker reads as vinyl | **Confirmed**: planks |
+| 1.9 | The front wall has no snow cap; a slit beside the porch posts | **Confirmed**: snow along its top; the slit between each pillar and the wall filled (both kits) |
+| 2.3 | The till faces the guest | **False** by design: the owner collects at the till from the served side, where its prompt is |
+| 2.7 | Room arches are tall and narrow | **False** for this work: the rooms are unchanged (4 wide, the contract) |
+| 2.8 | The rooms are bare | **False**: the players place the decor |

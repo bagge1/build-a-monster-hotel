@@ -238,7 +238,10 @@ function HotelKit.decor(id: string, location: number): Model
 end
 
 --[[ The lobby (MODELS.md, "Lobby"): the front two rows of floor 1, origin at
-	the middle of its front edge, the street toward −Z. ]]
+	the middle of its front edge, the street toward −Z. An indoor reception (his
+	pick, 2026-10-19): a front wall round the entrance arch, the desk across the
+	−X end served toward +X, the back row (z 7–12) clear for the floor-1 doors,
+	benches in the front row on the stair side. ]]
 function HotelKit.lobby(location: number): Model
 	local found = template(location, "Lobby")
 	if found then
@@ -250,53 +253,77 @@ function HotelKit.lobby(location: number): Model
 	part(
 		model,
 		"Rug",
-		Vector3.new(L - 1, 0.1, Dp - 1),
+		Vector3.new(L, 0.1, Dp),
 		Vector3.new(0, 0.05, Dp / 2),
 		{ Color = darker(loc.facade, 0.8), CanCollide = false }
 	)
+	-- The front wall, two pieces apart round the arch (each exactly the kit's box).
+	local wallColour = darker(loc.facade, 0.85)
+	local half, arch, top, t = L / 2, 5.5, 11, 0.8
+	for _, side in { -1, 1 } do
+		part(
+			model,
+			if side < 0 then "Wall_FrontLeft" else "Wall_FrontRight",
+			Vector3.new(half - arch, top, t),
+			Vector3.new(side * (half + arch) / 2, top / 2, t / 2),
+			{ Color = wallColour }
+		)
+	end
+	part(model, "ArchLeft", Vector3.new(1, 9, 1), Vector3.new(-5, 4.5, 0.5), { Color = loc.trim })
+	part(model, "ArchRight", Vector3.new(1, 9, 1), Vector3.new(5, 4.5, 0.5), { Color = loc.trim })
+	part(model, "ArchTop", Vector3.new(11, 1, 1), Vector3.new(0, 9.5, 0.5), { Color = loc.trim })
+	-- The desk: the counter x −27..−25.2, z 0.9..6.7, its top 3.8; the till on its far end.
 	part(
 		model,
 		"Desk",
-		Vector3.new(10, 3.5, 2),
-		Vector3.new(-12, 1.75, 9),
+		Vector3.new(1.8, 3.5, 5.8),
+		Vector3.new(-26.1, 1.75, 3.8),
 		{ Color = Color3.fromRGB(110, 70, 50) }
 	)
 	part(
 		model,
 		"DeskTop",
-		Vector3.new(10.4, 0.3, 2.4),
-		Vector3.new(-12, 3.65, 9),
+		Vector3.new(2.3, 0.3, 6.2),
+		Vector3.new(-26.05, 3.65, 3.8),
 		{ Color = loc.trim }
 	)
 	part(
 		model,
 		"Till",
-		Vector3.new(3, 3.5, 2),
-		Vector3.new(12, 1.75, 9),
-		{ Color = Color3.fromRGB(70, 60, 50) }
-	)
-	part(
-		model,
-		"TillTop",
-		Vector3.new(2, 1.2, 1.4),
-		Vector3.new(12, 4.1, 9),
+		Vector3.new(1.2, 1.1, 1.2),
+		Vector3.new(-26, 4.35, 5.9),
 		{ Color = Color3.fromRGB(230, 200, 90) }
 	)
-	-- The front arch.
-	part(model, "ArchLeft", Vector3.new(1, 9, 1), Vector3.new(-5, 4.5, 0.5), { Color = loc.trim })
-	part(model, "ArchRight", Vector3.new(1, 9, 1), Vector3.new(5, 4.5, 0.5), { Color = loc.trim })
-	part(model, "ArchTop", Vector3.new(11, 1, 1), Vector3.new(0, 9.5, 0.5), { Color = loc.trim })
+	-- The key rack against the −X end, behind the clerk.
+	part(
+		model,
+		"KeyRack",
+		Vector3.new(0.8, 9.6, 5.2),
+		Vector3.new(-35.6, 4.8, 3.8),
+		{ Color = Color3.fromRGB(80, 55, 40) }
+	)
+	-- Benches in the front row on the stair side, their backs to the wall.
+	for i, span in { { 11, 18.5 }, { 27, 33 } } do
+		part(
+			model,
+			`Bench_{i}`,
+			Vector3.new(span[2] - span[1], 1.8, 1.9),
+			Vector3.new((span[1] + span[2]) / 2, 0.9, 1.95),
+			{ Color = Color3.fromRGB(90, 60, 45) }
+		)
+	end
 	lamp(model, 1, Vector3.new(0, 8.5, 1.5), Color3.fromRGB(255, 190, 120))
-	lamp(model, 2, Vector3.new(-12, 6, 10), Color3.fromRGB(255, 190, 120))
+	lamp(model, 2, Vector3.new(-26.4, 6, 1.4), Color3.fromRGB(255, 190, 120))
 
 	attach(root, "Entrance", Vector3.new(0, 0, 0), Vector3.new(0, 0, -1))
-	attach(root, "Desk", Vector3.new(-12, 3.8, 7.8), Vector3.new(0, 0, -1))
-	for i = 1, 4 do
-		attach(root, `Queue_{i}`, Vector3.new(-12 - 4 * (i - 1), 0, 5.5), Vector3.new(0, 0, 1))
+	attach(root, "Desk", Vector3.new(-24.8, 3.8, 2.9), Vector3.new(1, 0, 0))
+	attach(root, "Clerk", Vector3.new(-30, 0, 3.8), Vector3.new(1, 0, 0))
+	for i, x in { -22, -18.5, -15, -11.5 } do
+		attach(root, `Queue_{i}`, Vector3.new(x, 0, 2.9), Vector3.new(-1, 0, 0))
 	end
-	attach(root, "Till", Vector3.new(12, 3.8, 7.8), Vector3.new(0, 0, -1))
+	attach(root, "Till", Vector3.new(-24.8, 3.8, 5.9), Vector3.new(1, 0, 0))
 	attach(root, "Spawn", Vector3.new(4, 0, 8), Vector3.new(0, 0, -1))
-	attach(root, "SignBoard", Vector3.new(0, 0, -7), Vector3.new(0, 0, -1))
+	attach(root, "SignBoard", Vector3.new(24, 0, -5), Vector3.new(0, 0, -1))
 	for i = 1, 3 do
 		attach(root, `Trap_{i}`, Vector3.new(-24 + 16 * i, 0, 3), Vector3.new(0, 0, -1))
 	end
@@ -489,8 +516,8 @@ end
 --[[ The facade (MODELS.md, "Facade and sign"; GDD §5.1): walls on the left,
 	right and back edges of every floor, just outside the grid so they never
 	take a cell or block a door, with window openings, and on floor 1 a
-	doorway at the back to the Resident Wing. The street side stays open: it is
-	the lobby's entrance. Plot-local, as a Folder (a blockout until the kit has
+	doorway at the back to the Resident Wing, and solid along the lobby. The
+	street side is the lobby's own front wall on floor 1 and stays open above. Plot-local, as a Folder (a blockout until the kit has
 	`Facade_Wall` pieces). A facade cosmetic (MODELS.md, "Cosmetics") gives
 	its own colours as `scheme`. ]]
 function HotelKit.facade(
@@ -551,11 +578,16 @@ function HotelKit.facade(
 		end
 		band(`{name}_Low`, 0, 3, wall)
 		piece(`{name}_High`, 0, P, 8, top, wall)
+		-- Floor 1's sides are solid along the lobby: its end walls, the key rack's back.
+		local solid = if axis == "Z" and floor == 1 then G.LobbyRows * CELL else 0
+		if solid > 0 then
+			piece(`{name}_Lobby`, 0, solid, 3, 8, wall)
+		end
 		-- Posts between window openings, one per cell, 2 wide.
 		for c = 0, G.Cells do
 			local x = c * CELL
-			local a0, a1 = math.max(0, x - 1), math.min(P, x + 1)
-			if not (gapFrom and gapTo and a1 > gapFrom and a0 < gapTo) then
+			local a0, a1 = math.max(solid, x - 1), math.min(P, x + 1)
+			if a1 > a0 and not (gapFrom and gapTo and a1 > gapFrom and a0 < gapTo) then
 				piece(`{name}_Post`, a0, a1, 3, 8, wall)
 			end
 		end

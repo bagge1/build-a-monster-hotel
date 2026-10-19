@@ -27,15 +27,16 @@
    "ok": true,
    "faults": [],
    "checks": [
-    "13 part names round-trip",
+    "21 part names round-trip",
     "every box within 0.02 stud and every triangle count as built (orientation and scale)",
     "the atlas travels embedded in the FBX",
     "the contract re-checked on the re-imported boxes (Root, footprint, kind rules, budgets)"
    ],
-   "triangles": 2926,
+   "triangles": 6358,
    "budget": 8000,
    "collision_precise": [],
    "attachments": [
+    "Clerk",
     "Desk",
     "Entrance",
     "Queue_1",

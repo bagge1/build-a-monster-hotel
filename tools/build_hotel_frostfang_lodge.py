@@ -510,33 +510,46 @@ def aurora_deck():
 def lobby():
     begin('Lobby', 'Lobby', (72, 0.2, 12), root_centre=(0, 0.1, 6))
     declare('Rug', False)       # the blockout's Rug does not collide either
-    nx, nz = 12, 2
-    tw, td = 71.0 / nx, 11.0 / nz
-    for i in range(nx):
-        for j in range(nz):
-            x0, z0 = -35.5 + i * tw, 0.5 + j * td
-            span('Rug', (x0, 0, z0), (x0 + tw, 0.1, z0 + td), 'wood' if (i + j) % 2 else 'wood_light', bevel=0.02)
-    span('Rug', (-2.2, 0.1, 0.5), (2.2, 0.13, 6.0), 'cream')
-    span('Rug', (-1.9, 0.13, 0.5), (1.9, 0.15, 6.0), 'red')
-    for z in (1.5, 3.2, 4.9):
+    # The floor: long planks to the lobby's edges, in three woods.
+    woods = ('wood', 'wood_light', 'log')
+    for k in range(12):
+        span('Rug', (-36, 0, k), (36, 0.1, k + 1), woods[k % 3], bevel=0.02)
+    # A carpet from the door into the lobby, and on along the queue to the desk.
+    span('Rug', (-2.2, 0.1, 0.8), (2.2, 0.13, 6.0), 'cream')
+    span('Rug', (-1.9, 0.13, 0.8), (1.9, 0.15, 6.0), 'red')
+    for z in (1.5, 4.9):
         span('Rug', (-1.9, 0.15, z - 0.12), (1.9, 0.16, z + 0.12), 'cream')
-    # The front desk: the blockout's box (x -17..-7, z 8..10, top at 3.8), a log front.
-    span('Desk', (-17, 0, 8), (-7, 3.5, 10), 'log_dark', bevel=0.1)
+    span('Rug', (-24.6, 0.1, 1.4), (-2.2, 0.13, 4.4), 'cream')
+    span('Rug', (-24.3, 0.13, 1.7), (-1.9, 0.15, 4.1), 'red')
+    # The front wall round the arch (MODELS.md, "Lobby"): the lodge's facade blue to the street,
+    # logs inside as in its rooms, snow along its top.
+    K.lobby_front_wall(outside='facade', paper=('log', 'log_dark'), wainscot='wood_dark', crown='snow',
+                       plinth='stone_dark', frame='log_dark', sill='snow')
+    for x0, x1 in ((-36, -K.LOBBY_ARCH_X), (K.LOBBY_ARCH_X, 36)):
+        span('Dressing', (x0, K.LOBBY_WALL_TOP, 0.0), (x1, K.LOBBY_WALL_TOP + 0.3, K.LOBBY_WALL_T + 0.1), 'snow', bevel=0.1)
+    # The front desk across the -X end, served toward +X (the entrance): logs laid along it.
+    (lo, hi), (tlo, thi) = K.LOBBY_COUNTER, K.LOBBY_COUNTER_TOP
+    span('Desk', lo, hi, 'log_dark', bevel=0.1)
     for y in (0.55, 1.45, 2.35):
-        cyl('Desk', (0, 0, 0), 0.42, 9.8, 'log', n=8, m=at((-16.9, y, 8.35), rz=-90))
-    for x in (-15.2, -12, -8.8):
-        flake('Desk', (x, 1.75, 7.9), 0.45, 'white')
-    span('Desk', (-17.2, 3.5, 7.8), (-6.8, 3.8, 10.2), 'wood_light', bevel=0.05)
-    span('Desk', (-17.2, 3.75, 9.6), (-6.8, 3.82, 10.2), 'snow')
-    lathe('Desk', [(0.3, 3.8), (0.3, 3.85), (0.22, 4.0), (0.05, 4.2), (0, 4.25)], 'gold', n=8, base=(-14.5, 0, 8.6))
-    span('Desk', (-10.4, 3.8, 8.3), (-9.0, 3.95, 9.3), 'red', bevel=0.03)
-    # The till: the blockout's boxes (x 10.5..13.5, z 8..10, up to 4.7).
-    span('Till', (10.5, 0, 8), (13.5, 3.5, 10), 'log_dark', bevel=0.1)
-    span('Till', (11, 3.5, 8.3), (13, 4.1, 9.7), 'red', bevel=0.08)
-    prism('Till', [(8.3, 4.1), (9.7, 4.1), (9.7, 4.7), (8.9, 4.7)], 11.1, 12.9, 'red', plane='zy')
-    for k in range(3):
-        box('Till', (11.5 + k * 0.5, 4.15, 8.45), (0.3, 0.12, 0.3), 'gold')
-    span('Till', (11.2, 1.8, 7.96), (12.8, 2.8, 8.1), 'gold', bevel=0.04)
+        cyl('Desk', (0, 0, 0), 0.42, hi[2] - lo[2] - 0.2, 'log', n=8, m=K.at((hi[0] - 0.12, y, lo[2] + 0.1), rx=90))
+    zc = (lo[2] + hi[2]) / 2
+    for z in (zc - 1.9, zc, zc + 1.9):
+        flake('Desk', (hi[0] + 0.33, 2.4, z), 0.45, 'white', wall='side')
+    span('Desk', tlo, thi, 'wood_light', bevel=0.05)
+    span('Desk', (tlo[0], 3.75, tlo[2]), (tlo[0] + 0.6, 3.82, thi[2]), 'snow')
+    K.lobby_bell('Desk', -25.6, thi[1], 2.9, 'gold')   # at the check-in prompt
+    span('Desk', (-26.5, 3.8, 3.7), (-25.6, 3.95, 4.7), 'red', bevel=0.03)
+    K.lobby_till(body='red_dark', keys='cream', drawer='gold', screen='cream')
+    # The desk lamp on the counter's near end.
+    K.lobby_lamp('iron', 'red')
+    # The key rack against the end, behind the clerk.
+    K.lobby_keyrack(cabinet='log_dark', drawer='wood_light', knob='iron', board='wood',
+                    tags=('gold', 'gold', 'red'), cornice='snow', face='cream', hands='black')
+    # The waiting area: log benches with their backs to the front wall, pines in tubs.
+    for k, (x0, x1) in enumerate(K.LOBBY_BENCHES):
+        K.lobby_bench(f'Bench_{k + 1}', x0, x1, frame='log_dark', cushion='red', back='log')
+    for k, (x, z) in enumerate(K.LOBBY_PLANTERS):
+        pine_tree(f'Planter_{k + 1}', (x, 0, z), h=5.0, r=1.1)
     # The front arch: log pillars and a snowy timber gable (opening 9 wide, 9 tall at its sides).
     for name, x in (('ArchLeft', -5), ('ArchRight', 5)):
         span(name, (x - 0.5, 0, 0), (x + 0.5, 0.6, 1), 'stone_dark', bevel=0.08)
@@ -549,7 +562,7 @@ def lobby():
     flake('ArchTop', (0, 10.1, 0.03), 0.5, 'trim')
     for x in (-4.2, -2.6, 2.4, 4.0):
         icicle('Dressing', x, 9.0, 0.5, 0.5 + 0.2 * (abs(x) % 2), r=0.12)
-    # The lantern hanging under the arch, and the desk lamp.
+    # The lantern hanging inside the arch.
     cyl('Dressing', (0, 9.2, 1.5), 0.05, 1.5, 'iron', n=4)
     box('Dressing', (0, 9.2, 1.5), (0.8, 0.12, 0.8), 'iron')
     box('Dressing', (0, 7.8, 1.5), (0.8, 0.12, 0.8), 'iron')
@@ -557,16 +570,12 @@ def lobby():
         for dz in (-0.36, 0.36):
             box('Dressing', (dx, 8.5, 1.5 + dz), (0.08, 1.3, 0.08), 'iron')
     sphere('Glow_Warm_1', (0, 8.5, 1.5), (0.3, 0.45, 0.3), 'lamp', n=8, rings=5)
-    cyl('Dressing', (-12, 3.8, 10.0), 0.3, 0.1, 'iron', n=8)
-    cyl('Dressing', (-12, 3.9, 10.0), 0.06, 1.75, 'iron', n=6)
-    lathe('Dressing', [(0.75, 5.75), (0.35, 6.55), (0.3, 6.6)], 'red', n=8, base=(-12, 0, 10.0))
-    sphere('Glow_Warm_2', (-12, 6.0, 10.0), (0.22, 0.22, 0.22), 'lamp', n=8, rings=4)
-    # Snowy pine trees in tubs in the far corners.
-    for k, x in enumerate((-33.5, 33.5)):
-        pine_tree(f'Planter_{k + 1}', (x, 0, 9.5), h=5.0, r=1.1)
+    for n, x in enumerate(K.LOBBY_SCONCES):
+        K.lobby_sconce(x, 7.2, n + 3, 'iron', candle='cream')
     for aname, (pos, look) in K.blockout_attachments('Lobby').items():
         attach(aname, pos, look)
-    finish(note='a plank floor with a red runner, a log desk with snowflakes, a snowy timber gable over the entrance')
+    finish(note='an indoor reception: the front wall, logs inside, round the snowy gable; the log desk across '
+                'the end with its key rack and clock, log benches and pines, the back row clear for the floor-1 doors')
 
 
 def stairs(top):

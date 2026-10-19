@@ -47,7 +47,7 @@ keeps the rest of the manifest). About 30 s, headless, Workbench only.
 | `GraveyardGarden` | Amenity 2x2 | 2,372 / 6,000 | 96 | walls, Floor, Dressing, Glow_Warm_1..2, Centrepiece |
 | `QuietLibrary` | Amenity 2x2 | 3,820 / 6,000 | 96 | walls, Floor, Dressing, Glow_Warm_1..2, Centrepiece |
 | `OrganHall` | Amenity 2x2 | 2,266 / 6,000 | 96 | walls, Floor, Dressing, Glow_Warm_1..3, Centrepiece |
-| `Lobby` | Lobby 72x12 | 2,934 / 8,000 | 84 | Rug, Desk, Till, ArchLeft, ArchRight, ArchTop, Dressing, Glow_Warm_1..2, Planter_1, Planter_2 |
+| `Lobby` | Lobby 72x12 | 6,818 / 8,000 | 144 | Rug, Wall_FrontLeft, Dressing, Wall_FrontRight, Desk, Till, KeyRack, Bench_1, Bench_2, Planter_1, Planter_2, ArchLeft, ArchRight, ArchTop, Glow_Warm_1..5 |
 | `StairCore` | Stairs | 1,276 / 8,000 | 180 | Step_Up_1..5, Landing, Step_Down_1..5, Wall_Left, Wall_Right, Wall_Back, Divider, Dressing, Glow_Warm_1 |
 | `StairCoreTop` | Stairs | 1,612 / 8,000 | 192 | as StairCore, plus Rail_Top; walls 15.5 tall |
 | `HotelSign` | Sign | 400 / 3,000 (draft ceiling) | none | PostLeft, PostRight, Board, Crest, Glow_Cold_1 |
@@ -146,7 +146,7 @@ re-imported FBX, for:
 - Each room's theme object and its furniture; each amenity's centrepiece;
   each decor piece's shape (the Chandelier stands on a floor post, since decor
   stands in floor slots at most 7 tall).
-- The lobby keeps the blockout's open plan (no walls), with a checkerboard
+- (Superseded 2026-10-19 evening by the lobby rework below.) The lobby kept the blockout's open plan (no walls), with a checkerboard
   floor, a crimson runner, the arch with a jack-o'-lantern and two pumpkin
   planters in the far corners.
 
@@ -191,3 +191,60 @@ the same pictures; the reviewer was not told them.
 
 Not found by the reviewer, found by August: that the lobby as a whole reads as
 an outdoor patio (the reviewer called it a "colonnade" without objecting).
+
+## 2026-10-19 evening: the lobby rework (layout A) and the sign's place
+
+**He approved the look, 2026-10-19** (the renders after three blind reviews,
+`archive/screens/2026-10-19_lobby_rework.jpg`).
+
+His rulings (`modelling/taste.md`, "A hotel works as a hotel") and his pick of
+three grey drafts: **A**, the desk across the end away from the stairs, and
+the sign on its posts at the stair-side corner of the forecourt. The contract
+is `MODELS.md`, "Lobby"; the shapes every kit shares are in `tools/hotel_kit.py`
+(`LOBBY_*`, `lobby_front_wall`, `lobby_bench`, `lobby_bell`, `lobby_till`,
+`lobby_keyrack`, `lobby_lamp`, `lobby_sconce`). The `HotelSign` model is unchanged:
+only `SignBoard` moved, from (0, 0, −7) to (24, 0, −5).
+
+- The front wall (`Wall_FrontLeft`, `Wall_FrontRight`, exactly the blockout's
+  boxes) round the arch, windows at x −20, −11, 11 (none behind the desk's end
+  or the sign), candle sconces, a rail at the wainscot.
+- The desk x −27 to −25.2, served toward +X, with a bell at the check-in
+  prompt, a ledger, the till (an antique register) and a lamp; the `KeyRack`
+  with a clock behind the clerk; a carpet from the door along the queue.
+- Two benches and two pumpkin planters in the front row on the stair side.
+- `finish()` now refuses a lobby whose back row (z 7 to 12) holds anything that
+  collides, whose walls are not the blockout's boxes, or where a 5-stud person
+  cannot walk from the entrance to each queue spot, trap, the spawn and,
+  through the back row, the `Clerk`. All of these pass: 6,818 triangles, 21
+  parts, validated by re-import.
+- **Not run in Studio.** Waiting for the import (WAITING §0.4); then rays
+  through every doorway, a walker to the desk, and a blind review in the game.
+
+### Blind reviews of the renders (2026-10-19, Fable, three rounds)
+
+The pictures were the lobby assembled with the sign, floor-1 rooms and the
+stair core, from the street, raised, behind a guest at the desk, from behind
+the desk, and close up at the desk. Each round had a new reviewer and new pictures.
+
+| Round, # | The finding | Triage |
+|---|---|---|
+| 1.1 | Bare window holes in the end walls behind the key rack | **Confirmed**: the code's facade had windows there. Fixed: floor 1's sides are solid along the lobby (`HotelKit.facade`) |
+| 1.2 | The sign hides a window | **Confirmed**: no window behind the sign now |
+| 1.2b | The sign's feet sit below the facade's base | **False**: both at y 0 |
+| 1.3, 2.1, 3.8 | Steps or a block in the room doorways | **False**, proven: the rooms' `Floor` is 0.25 tall, level with the lobby; nothing that collides stands in any doorway (kit door check, TESTRUN phase 9 rays). What shows is the bed's foot, 6 studs in, seen head-on |
+| 1.4, 2.2 | The lobby is a corridor; the desk is out of sight from the door | **His call**, already made (layout A, 2 rows). Added a carpet from the door to the desk. WAITING §2 |
+| 1.5 | No recognisable waiting area | **Confirmed**: new benches (legs, cushion, rails, arms) |
+| 1.6, 2.5 | The arch's pale columns; the facade is a flat slab | **His call** (a look): WAITING §2 |
+| 1.7, 2.7 | The bell read as a cone; the thin lamp pole fused with a sconce | **Confirmed**: a domed bell at the prompt, a squat lamp with a wide shade, no sconce over it |
+| 1.9, 2.6, 3.5 | Floor patches with hard edges | Ground showing at the threshold and the ends: **confirmed**, the floor now reaches the edges. The light patches are the render's window shadows on the checker floor: **false** |
+| 1.10 | The window sill juts over the desk's end | **Confirmed**: no window behind the desk |
+| 1.10b | The clock face is blank | **Confirmed**: a clock with hands |
+| 2.3 | The far end has no wall of its own | **False**: the code's side wall, as at the desk end; facade pieces are `Facade_Wall`'s, later |
+| 2.4 | The sign is a billboard (board 16 × 6) | **His call** (its size is the contract's Board): WAITING §2 |
+| 2.8 | The desk is crowded at one end | Bell moved to the check-in prompt |
+| 2.9 | Doorway edges show the room's inner colour | **False** for this work: the rooms are unchanged |
+| 3.1 | The key rack hangs above head height | **His call**: round 1 found the clerk's head hiding it; the tags now run from 5 to 7.3 studs. WAITING §2 |
+| 3.2, 3.6, 3.9 | A detached sill; flakes off line; the guest off centre | **False**: perspective (the sill is in the opening, the flakes at one height, the guest stands at the prompt) |
+| 3.3 | The till reads as a modern terminal | **Confirmed**: an antique register with a marquee plate and a crank. Not yet seen by a reviewer: the in-game review covers it |
+| 3.4 | The counter items sit at the back edge | **False**: the bell is 0.7 studs from the guest's edge |
+| 3.7 | The keys do not read at game distance | Kept: larger tags would clutter. Look at it in the game |

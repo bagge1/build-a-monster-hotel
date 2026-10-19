@@ -615,6 +615,7 @@ After the soft launch we apply for Kids/Select eligibility:
 | 2026-10-19 | Standard ~5-stud avatar, 6-stud grid cells | His ruling on the scale of a person (CLAUDE.md) |
 | 2026-10-19 | GitHub repo `build-a-monster-hotel`, private; folder renamed to match | His ruling |
 | 2026-10-19 | Night sessions may commit, push and run DataStore-writing playtests | His go (the game is not live) |
+| 2026-10-19 | The lobby is an indoor reception: a front wall with the entrance arch and windows; the desk across the end away from the stairs, served toward the entrance, a key rack behind the clerk; the back row clear for the floor-1 doors; the hotel sign on its posts at the stair-side corner of the forecourt, off the entrance (layout A and the corner sign of three grey drafts; `MODELS.md`, "Lobby") | His rulings: nothing in front of an entrance, a counter a person can stand at, a lobby that reads as a reception and not a patio (`modelling/taste.md`) |
 | 2026-10-19 | *Night draft:* remote layer is a thin typed wrapper over RemoteEvents (`src/shared/Net.luau`), not Blink/Zap (§13.6) | Reversible: every remote is declared in one file, so swapping the transport touches one module |
 | 2026-10-19 | *Night draft:* guest paths are a grid graph over free cells (§13.6) | Cheaper and deterministic, as the section leaned; Appendix A.1 |
 
@@ -644,7 +645,9 @@ Every number below is a **placeholder** (tagged `PLACEHOLDER` in
   residents wander.
 - **The facade:** walls with window openings along the left, right and back
   edges of every floor, just outside the grid (never on a cell); floor 1's
-  back wall has an 8-stud doorway to the Wing. The street side stays open.
+  back wall has an 8-stud doorway to the Wing, and its sides are solid along
+  the lobby. The street side is the lobby's front wall on floor 1 (his ruling,
+  2026-10-19, below) and stays open above it.
 - **Hallways are the free cells.** A room's door opens onto the cell in front
   of its front edge. A placement is refused if its door cell is not free and
   connected to the floor's way in (the lobby on floor 1, the stair core above),

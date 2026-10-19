@@ -19,12 +19,18 @@ as a patio. His rules are in `modelling/taste.md`; a **blind review** by a
 context-free model now comes before he sees any picture (skill `blind-review`;
 its first run and triage are in the Haunted Manor README).
 
-**Next, in order:** (1) Rework both kits' lobby and the sign's place by his rules:
-grey silhouettes for him first, then a blind review, then the import; verify
-the review's open findings 2, 4, 7, 8, 10 on the way. (2) The next import is
-staged (WAITING §0.4): both kits' fixed `HotelSign` and the seven cosmetics in
-`blender/_import/`; on *importerat*, skill `import` with each set's
-`import_fixup.luau`. (3) Open TESTRUN
+**Next, in order:** (1) The lobby rework is built, not imported: his pick
+2026-10-19 is layout A (desk across the end away from the stairs, front wall,
+back row clear) and the sign on its posts at the forecourt's stair-side corner
+(`MODELS.md` "Lobby", GDD §18). Both kits' `Lobby` passed three blind reviews
+(triage in the sets' READMEs); the code's blockout, `Clerk` and the facade's
+solid lobby ends are in `src/`. He approved the look 2026-10-19; his calls
+from the reviews wait in WAITING §2.11. (2) The import is staged (WAITING §0.4): both
+`Lobby`, both `HotelSign`, seven cosmetics in `blender/_import/`; on
+*importerat*, skill `import` with each set's `import_fixup.luau`, then rays
+through every floor-1 doorway, a walker to the desk and the `Clerk`, a blind
+review of in-game pictures, and the first review's open findings 2, 4, 7, 8,
+10 (Haunted Manor README). (3) Open TESTRUN
 items: piece menu by clicks, rebirth by the panel's button, a two-player gift,
 pictures of the cosmetics after their import. Frostfang's rooms and amenities
 are rayed clean beside the street, not yet built in a plot (a rebirth).

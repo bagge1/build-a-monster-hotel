@@ -52,11 +52,8 @@ local function post(plot: Model, role: string, n: number): Vector3?
 	end
 	local spread = (n - 1) * 3
 	if role == "FrontDesk" then
-		local cf = lobbyPoint(plot, "Desk")
-		return if cf
-			then Vector3.new(cf.Position.X + spread, cf.Position.Y - 3.8, cf.Position.Z)
-				+ cf.LookVector * -2.5
-			else nil
+		-- Behind the counter, side by side along it (MODELS.md, "Lobby": `Clerk`).
+		return near("Clerk", Vector3.new(spread, 0, 0))
 	elseif role == "Bellhop" then
 		return near("Entrance", Vector3.new(4 + spread, 0, -1.5))
 	elseif role == "Security" then

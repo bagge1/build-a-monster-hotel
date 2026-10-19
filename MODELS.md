@@ -145,7 +145,7 @@ delivered model needs no runtime set-up.
 
 **Part names a set may use** besides those below: `Floor`, `Bed` (the bed
 part), `Centrepiece`, `Furniture`, `Dressing`, `Rug`, `ArchLeft`,
-`ArchRight`, `ArchTop`, `Planter_<n>`, `Crest`, `Step_Up_<n>`,
+`ArchRight`, `ArchTop`, `Planter_<n>`, `Bench_<n>`, `KeyRack`, `Crest`, `Step_Up_<n>`,
 `Step_Down_<n>`, `Landing`, `Divider`, `Rail_Top`; a decor piece's mesh is
 `Body`. Room walls are named as the blockout names them: `Wall_Back`,
 `Wall_Left`, `Wall_Right`, `Wall_FrontLeft`, `Wall_FrontRight`, `Wall_Lintel`.
@@ -173,16 +173,39 @@ The front two rows of floor 1 (12 × 2 cells: 72 × 12 studs), authored with its
 origin at the **middle of its front edge** on the walking surface; the street
 is toward −Z.
 
+**An indoor reception** (his ruling and pick, 2026-10-19, layout A of the grey
+silhouettes; `modelling/taste.md`, "A hotel works as a hotel"):
+
+- **A front wall** on the street edge (z 0–0.8, 11 tall, the facade's height),
+  with the entrance arch in the middle (opening 9 wide, 9 tall) and windows.
+  Two pieces apart round the arch, `Wall_FrontLeft` (x −36 to −5.5) and
+  `Wall_FrontRight` (x 5.5 to 36), each exactly the blockout's box.
+- **The desk across the end away from the stair core** (−X; on the right as
+  seen from the street): the counter x −27 to −25, z 0.9 to 6.7, its served
+  side toward +X (the entrance). Behind it the clerk's space, x −35.4 to −27,
+  with the `KeyRack` against the end. The `Till` stands on the counter.
+- **The back row is clear**: nothing that collides stands in z 7 to 12 (y 0.3
+  to 7), the whole length. Every floor-1 room door opens onto it, and so does
+  the stair core. The clerk reaches the desk through it.
+- **The waiting area** (`Bench_<n>`, `Planter_<n>`) is in the front row on the
+  stair side, clear of the entrance and of the trap squares (3 × 3 round each
+  `Trap_n`).
+
+`finish()` refuses a lobby that breaks these: the walls' boxes, the back row,
+the entrance (4 × 7), and a 5-stud person's walk from the entrance to every
+queue spot, trap, the spawn and, through the back row, the clerk.
+
 | Name | What | The code |
 |---|---|---|
 | `Root` | 72 × 0.2 × 12 | Placement |
-| `Entrance` (attachment) | The front door's threshold, LookVector toward the street | Where guests walk in |
-| `Desk` (attachment) | The front desk's counter, LookVector toward the guests | Check-in prompt |
-| `Queue_1`–`Queue_4` (attachments) | Where waiting guests stand, 1 nearest the desk | The desk queue |
-| `Till` (attachment) | The till | Collect prompt |
-| `Spawn` (attachment) | Where the owner appears | The plot's spawn |
-| `SignBoard` (attachment) | Out front, the sign's face, LookVector toward the street | The hotel sign (§3) |
-| `Trap_1`–`Trap_3` (attachments) | Trap slots for Hunter Night (§8.1) | Not used yet |
+| `Entrance` (attachment) | (0, 0, 0): the front door's threshold, LookVector toward the street | Where guests walk in |
+| `Desk` (attachment) | (−24.8, 3.8, 2.9): the counter's served edge, LookVector +X, toward the guests | Check-in prompt |
+| `Clerk` (attachment) | (−30, 0, 3.8): where the front-desk resident stands, behind the counter, LookVector +X | The Front Desk staff's post |
+| `Queue_1`–`Queue_4` (attachments) | x −22, −18.5, −15, −11.5 at z 2.9, LookVector −X (at the desk); 1 nearest the desk | The desk queue |
+| `Till` (attachment) | (−24.8, 3.8, 5.9): the till on the counter, LookVector +X | Collect prompt |
+| `Spawn` (attachment) | (4, 0, 8) | The plot's spawn |
+| `SignBoard` (attachment) | (24, 0, −5): out front at the stair-side corner of the forecourt, 24 studs off the entrance, the sign's base, LookVector toward the street | The hotel sign (§3) |
+| `Trap_1`–`Trap_3` (attachments) | x −8, 8, 24 at z 3 | Hunter Night's traps (§8.1) |
 
 ### Stair core (`StairCore`)
 

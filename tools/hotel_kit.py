@@ -371,11 +371,13 @@ def blockout_attachments(kind, w=None, d=None):
         out['Bed'] = ((0, 0, D / 2 - 7), (0, 0, -1)) if kind == 'Room' else ((0, 0, -D / 6), (0, 0, 1))
         return out
     if kind == 'Lobby':
-        out = {'Entrance': ((0, 0, 0), (0, 0, -1)), 'Desk': ((-12, 3.8, 7.8), (0, 0, -1)),
-               'Till': ((12, 3.8, 7.8), (0, 0, -1)), 'Spawn': ((4, 0, 8), (0, 0, -1)),
-               'SignBoard': ((0, 0, -7), (0, 0, -1))}
-        for i in range(1, 5):
-            out[f'Queue_{i}'] = ((-12 - 4 * (i - 1), 0, 5.5), (0, 0, 1))
+        # Layout A, his pick 2026-10-19 (MODELS.md, "Lobby"): the desk across the -X end, served toward +X.
+        out = {'Entrance': ((0, 0, 0), (0, 0, -1)), 'Desk': ((-24.8, 3.8, 2.9), (1, 0, 0)),
+               'Clerk': ((-30, 0, 3.8), (1, 0, 0)),
+               'Till': ((-24.8, 3.8, 5.9), (1, 0, 0)), 'Spawn': ((4, 0, 8), (0, 0, -1)),
+               'SignBoard': ((24, 0, -5), (0, 0, -1))}
+        for i, x in enumerate((-22, -18.5, -15, -11.5)):
+            out[f'Queue_{i + 1}'] = ((x, 0, 2.9), (-1, 0, 0))
         for i in range(1, 4):
             out[f'Trap_{i}'] = ((-24 + 16 * i, 0, 3), (0, 0, -1))
         return out
@@ -383,6 +385,166 @@ def blockout_attachments(kind, w=None, d=None):
         return {'Bottom': ((-3, 0, -5.75), None), 'Path_1': ((-3, 6, 4), None),
                 'Path_2': ((3, 6, 4), None), 'Top': ((3, FLOOR, -5.75), None)}
     return {}
+
+
+# The lobby's front wall (MODELS.md, "Lobby"): two pieces apart round the entrance arch, each
+# exactly this box (centre, size), as src/server/HotelKit.luau builds them.
+LOBBY_WALL_TOP, LOBBY_WALL_T, LOBBY_ARCH_X = 11.0, 0.8, 5.5
+LOBBY_BACK_ROW = ((-36.0, 0.3, 7.0), (36.0, 7.0, 12.0))   # floor-1 doors open onto it: nothing collides here
+LOBBY_TRAP_HALF = 1.5                                       # the 3 x 3 square a trap is drawn on
+
+
+def blockout_lobby_walls():
+    h, t, a = LOBBY_WALL_TOP, LOBBY_WALL_T, LOBBY_ARCH_X
+    half = LOBBY_W / 2
+    return {'Wall_FrontLeft': ((-(half + a) / 2, h / 2, t / 2), (half - a, h, t)),
+            'Wall_FrontRight': (((half + a) / 2, h / 2, t / 2), (half - a, h, t))}
+
+
+# Layout A's furniture spots, shared by every kit's lobby (MODELS.md, "Lobby"); the contract
+# itself is in check_piece. The counter (lo, hi), its top's overhang, the key rack's zone against
+# the -X end, the benches' x spans and the planters' centres in the front row on the stair side.
+LOBBY_COUNTER = ((-27.0, 0.0, 0.9), (-25.2, 3.5, 6.7))
+LOBBY_COUNTER_TOP = ((-27.2, 3.5, 0.7), (-24.9, 3.8, 6.9))
+LOBBY_KEYRACK = ((-36.0, 0.0, 1.2), (-35.15, 9.5, 6.4))
+LOBBY_BENCHES = ((11.0, 18.5), (27.0, 33.0))       # each z 0.9..2.9, its back to the front wall
+LOBBY_PLANTERS = ((20.75, 2.0), (34.6, 2.0))
+LOBBY_WINDOWS = (-20.0, -11.0, 11.0)                 # centres; 6 wide, y 3..8. None behind the desk's
+                                                     # end (its sill clipped the counter) nor behind the sign
+LOBBY_SCONCES = (-15.5, 17.0, 30.0)                  # on the piers, inside; none over the desk lamp
+LOBBY_ARCH_SHAFT = 5.42                              # both kits' arch pillars' shaft, outer x
+
+
+def lobby_front_wall(outside, paper, wainscot, crown, plinth, frame, sill):
+    """The lobby's front wall: Wall_FrontLeft and Wall_FrontRight, each exactly the blockout's
+    box (blockout_lobby_walls), in colour bands (outside toward the street, paper and wainscot
+    inside), with window openings 6 x 5 framed in Dressing. `paper` is a colour, or a tuple laid
+    in horizontal stripes (logs) as room_shell's. The arch between them is the set's."""
+    t, top = LOBBY_WALL_T, LOBBY_WALL_TOP
+    papers = paper if isinstance(paper, (tuple, list)) else (paper,)
+    # The paper's stripes: two below the windows, five across them, three above.
+    rows = []
+    for y0, y1, n in ((1.2, 3.0, 2), (3.0, 8.0, 5), (8.0, 10.6, 3)):
+        rows += [(y0 + (y1 - y0) * k / n, y0 + (y1 - y0) * (k + 1) / n) for k in range(n)]
+    for name, (c, size) in blockout_lobby_walls().items():
+        x0, x1 = c[0] - size[0] / 2, c[0] + size[0] / 2
+        wins = sorted((w - 3, w + 3) for w in LOBBY_WINDOWS if x0 < w < x1)
+        span(name, (x0, 0, 0), (x1, 0.6, t), {'front': plinth, 'back': wainscot, 'rest': plinth})
+        span(name, (x0, 0.6, 0), (x1, 1.2, t), {'front': outside, 'back': wainscot, 'rest': wainscot})
+        xs = [x0] + [v for w in wins for v in w] + [x1]
+        for k, (y0, y1) in enumerate(rows):
+            col = {'front': outside, 'back': papers[k % len(papers)], 'rest': papers[k % len(papers)]}
+            if 3.0 <= y0 and y1 <= 8.0:
+                for a, b in zip(xs[::2], xs[1::2]):
+                    span(name, (a, y0, 0), (b, y1, t), col)
+            else:
+                span(name, (x0, y0, 0), (x1, y1, t), col)
+        span(name, (x0, 10.6, 0), (x1, top, t), {'front': outside, 'back': crown, 'top': crown, 'rest': crown})
+        for a, b in wins:
+            for xa, xb in ((a, a + 0.25), (b - 0.25, b)):
+                span('Dressing', (xa, 3.0, 0.02), (xb, 8.0, t + 0.05), frame)
+            span('Dressing', (a, 7.75, 0.02), (b, 8.0, t + 0.05), frame)
+            # The sill sits inside: nothing may stand outside the footprint (z < 0, the forecourt).
+            span('Dressing', (a - 0.3, 2.8, 0.02), (b + 0.3, 3.15, t + 0.3), sill, bevel=0.05)
+            span('Dressing', ((a + b) / 2 - 0.08, 3.15, 0.3), ((a + b) / 2 + 0.08, 7.75, 0.5), frame)
+            span('Dressing', (a + 0.25, 5.42, 0.3), (b - 0.25, 5.58, 0.5), frame)
+        # A rail along the inside at the wainscot's top.
+        span('Dressing', (x0, 1.12, t), (x1, 1.3, t + 0.06), crown)
+    # The slit between each arch pillar's round shaft and the wall's end, filled.
+    for s in (-1, 1):
+        lo, hi = sorted((s * (LOBBY_ARCH_SHAFT - 0.04), s * LOBBY_ARCH_X))
+        span('Dressing', (lo, 0.6, 0.05), (hi, 8.4, t - 0.05), {'front': outside, 'back': papers[0], 'rest': outside})
+
+
+def lobby_sconce(x, y, n, metal, candle='cream'):
+    """A candle sconce on the lobby front wall's inner face (it faces +Z): plate, arm and drip
+    tray in Dressing, a candle, and its flame as Glow_Warm_<n>."""
+    z0 = LOBBY_WALL_T
+    box('Dressing', (x, y - 0.4, z0 + 0.05), (0.5, 1.4, 0.1), metal, 0.03)
+    box('Dressing', (x, y - 0.9, z0 + 0.3), (0.12, 0.12, 0.45), metal)
+    cyl('Dressing', (x, y - 0.95, z0 + 0.52), 0.28, 0.08, metal, n=8)
+    cyl('Dressing', (x, y - 0.87, z0 + 0.52), 0.11, 0.55, candle, n=8)
+    sphere(f'Glow_Warm_{n}', (x, y - 0.17, z0 + 0.52), (0.08, 0.17, 0.08), 'flame', n=6, rings=4)
+
+
+def lobby_lamp(metal, shade):
+    """The desk lamp on the counter's near end: a squat stem and a wide shade (a thin pole read as
+    a microphone stand), its bulb Glow_Warm_2."""
+    x, z, y = -26.3, 1.35, LOBBY_COUNTER_TOP[1][1]
+    cyl('Dressing', (x, y, z), 0.38, 0.12, metal, n=10)
+    cyl('Dressing', (x, y + 0.12, z), 0.11, 1.0, metal, n=8)
+    lathe('Dressing', [(0.85, y + 1.05), (0.75, y + 1.15), (0.45, y + 1.75), (0.4, y + 1.8)], shade, n=12, base=(x, 0, z))
+    sphere('Glow_Warm_2', (x, y + 1.25, z), (0.24, 0.24, 0.24), 'lamp', n=8, rings=4)
+
+
+def lobby_bench(name, x0, x1, frame, cushion, back):
+    """A bench in the lobby's front row, its back to the front wall: legs, a seat with a cushion,
+    a back of two rails between posts, arms."""
+    for xa in (x0 + 0.2, x1 - 0.55):
+        for za in (1.1, 2.45):
+            span(name, (xa, 0, za), (xa + 0.35, 1.2, za + 0.35), frame, bevel=0.04)
+    span(name, (x0 + 0.1, 1.2, 1.0), (x1 - 0.1, 1.55, 2.9), frame, bevel=0.06)
+    span(name, (x0 + 0.45, 1.55, 1.4), (x1 - 0.45, 1.85, 2.8), cushion, bevel=0.12)
+    for xa in (x0 + 0.1, x1 - 0.45):
+        span(name, (xa, 1.55, 0.95), (xa + 0.35, 4.0, 1.35), frame, bevel=0.05)
+        span(name, (xa, 1.55, 2.45), (xa + 0.35, 2.35, 2.8), frame, bevel=0.04)
+        span(name, (xa - 0.05, 2.35, 1.3), (xa + 0.4, 2.6, 2.95), frame, bevel=0.05)
+    for y0 in (2.2, 3.2):
+        span(name, (x0 + 0.45, y0, 1.0), (x1 - 0.45, y0 + 0.6, 1.3), back, bevel=0.06)
+
+
+def lobby_bell(part, x, y, z, metal):
+    """A call bell on the counter: a base disc, a dome, a knob."""
+    cyl(part, (x, y, z), 0.3, 0.06, 'black' if 'black' in COLOUR else metal, n=12)
+    lathe(part, [(0.27, y + 0.06), (0.26, y + 0.12), (0.22, y + 0.21), (0.15, y + 0.28), (0.07, y + 0.32),
+                 (0, y + 0.33)], metal, n=12, base=(x, 0, z))
+    sphere(part, (x, y + 0.38, z), (0.06, 0.06, 0.06), metal, n=6, rings=3)
+
+
+def lobby_till(body, keys, drawer, screen):
+    """The till on the counter's far end (the Till part): a register whose top slopes up toward the
+    clerk, keys on the slope, a drawer toward the guests, a small display on a post."""
+    (lo, hi), top = LOBBY_COUNTER, LOBBY_COUNTER_TOP[1][1]
+    xa, xb, za, zb = -26.6, -25.4, 5.3, 6.5
+    prism('Till', [(xa, top), (xb, top), (xb, top + 0.5), (xa, top + 1.1)], za, zb, body, plane='xy')
+    slope = math.degrees(math.atan2(0.6, xb - xa))
+    for i, x in enumerate((-25.7, -26.0, -26.3)):
+        y = top + 0.5 + (xb - x) * 0.6 / (xb - xa)
+        for z in (5.6, 5.9, 6.2):
+            box('Till', (0, 0, 0), (0.22, 0.1, 0.22), keys, m=at((x, y + 0.03, z), rz=-slope))
+    span('Till', (xb - 0.02, top + 0.08, za + 0.12), (xb + 0.05, top + 0.42, zb - 0.12), drawer)
+    # An antique register's marquee plate on the top's high edge (a screen on a stalk read as a
+    # modern terminal), and a crank on its side.
+    plate = [(5.45, top + 1.08), (6.35, top + 1.08), (6.35, top + 1.45), (5.9, top + 1.72), (5.45, top + 1.45)]
+    prism('Till', plate, xa, xa + 0.16, {'right': screen, 'left': screen, 'rest': drawer}, plane='zy')
+    cyl('Till', (0, 0, 0), 0.07, 0.3, drawer, n=6, m=at((xa + 0.6, top + 0.55, zb), rx=90))
+    sphere('Till', (xa + 0.6, top + 0.55, zb + 0.34), (0.1, 0.1, 0.1), drawer, n=6, rings=3)
+
+
+def lobby_keyrack(cabinet, drawer, knob, board, tags, cornice, face, hands):
+    """The key rack against the lobby's -X end, behind the clerk (KeyRack): a cabinet of drawers,
+    a board of key tags hung above a person's head (the clerk stands in front of it), a cornice
+    and a round clock over it."""
+    span('KeyRack', (-36, 0, 1.3), (-35.3, 3.2, 6.3), cabinet, bevel=0.08)
+    for k in range(3):
+        for y0 in (0.4, 1.8):
+            z0 = 1.55 + k * 1.6
+            span('KeyRack', (-35.4, y0, z0), (-35.24, y0 + 1.1, z0 + 1.4), drawer, bevel=0.04)
+            sphere('KeyRack', (-35.22, y0 + 0.55, z0 + 0.7), (0.05, 0.12, 0.12), knob, n=6, rings=3)
+    span('KeyRack', (-36, 3.2, 1.2), (-35.15, 3.4, 6.4), cornice, bevel=0.04)
+    span('KeyRack', (-36, 3.4, 1.5), (-35.6, 7.6, 6.1), {'right': board, 'rest': cabinet}, bevel=0.06)
+    # The tags from just above the clerk's head (seen past it from the desk) to within a reach.
+    for r in range(3):
+        for c in range(5):
+            y, z = 5.0 + r * 0.9, 1.95 + c * 0.95
+            box('KeyRack', (-35.55, y + 0.28, z), (0.12, 0.1, 0.1), knob)
+            box('KeyRack', (-35.55, y, z), (0.12, 0.5, 0.3), tags[(r + c) % len(tags)])
+    span('KeyRack', (-36, 7.6, 1.2), (-35.3, 7.9, 6.4), cornice, bevel=0.05)
+    span('KeyRack', (-36, 7.9, 3.05), (-35.6, 9.5, 4.55), cabinet, bevel=0.06)
+    cyl('KeyRack', (0, 0, 0), 0.62, 0.12, cornice, n=16, m=at((-35.6, 8.7, 3.8), rz=-90))
+    cyl('KeyRack', (0, 0, 0), 0.52, 0.16, face, n=16, m=at((-35.6, 8.7, 3.8), rz=-90))
+    box('KeyRack', (-35.42, 8.9, 3.8), (0.05, 0.42, 0.07), hands)
+    box('KeyRack', (-35.42, 8.7, 3.94), (0.05, 0.07, 0.3), hands)
 
 
 def blockout_room_walls(w, d):
@@ -585,7 +747,8 @@ def check_piece(piece, boxes, tris, faults):
     if kind == 'Decor':
         fault(piece.size.x <= 4.0 + 1e-6 and piece.size.z <= 4.0 + 1e-6, f'decor footprint {v3(piece.size)} > 4 x 4')
     # Required parts per kind
-    required = {'Room': ['Floor', 'Bed'], 'Amenity': ['Floor', 'Centrepiece'], 'Lobby': ['Desk', 'Till'],
+    required = {'Room': ['Floor', 'Bed'], 'Amenity': ['Floor', 'Centrepiece'], 'Lobby': ['Desk', 'Till', 'KeyRack', 'ArchLeft', 'ArchRight', 'ArchTop',
+                                                                       'Wall_FrontLeft', 'Wall_FrontRight'],
                 'Stairs': [], 'Sign': ['Board', 'PostLeft', 'PostRight'], 'Decor': [], 'Cosmetic': []}[kind]
     if kind == 'Cosmetic':      # MODELS.md, "Cosmetics": visual only, nothing collides
         hits = [p for p, (lo, hi, col) in boxes.items() if col]
@@ -643,20 +806,53 @@ def check_piece(piece, boxes, tris, faults):
                     if col and not p.startswith('Wall_') and p != 'Floor' and _overlap(lo, hi, slo, shi, 0.06)]
             fault(not hits, f'Decor_{k} slot (4 x 4) taken by {hits}')
     if kind == 'Lobby':
+        for wname, (c, s) in blockout_lobby_walls().items():
+            if wname in boxes:
+                lo, hi, col = boxes[wname]
+                fault(((lo + hi) / 2 - Vector(c)).length < 0.02 and (hi - lo - Vector(s)).length < 0.02,
+                      f'{wname}: box {v3(hi - lo)} at {v3((lo + hi) / 2)}, the blockout has {v3(s)} at {v3(c)}')
+                fault(col, f'{wname} does not collide')
         gate = (Vector((-PERSON_R * 2.5, 0.3, -1)), Vector((PERSON_R * 2.5, 7.0, 3)))
         hits = [p for p, (lo, hi, col) in boxes.items() if col and _overlap(lo, hi, *gate)]
         fault(not hits, f'the entrance (4 x 7) is blocked by {hits}')
+        # The back row: every floor-1 room door and the stair core open onto it (TESTRUN phase 9).
+        brlo, brhi = (Vector(v) for v in LOBBY_BACK_ROW)
+        hits = [p for p, (lo, hi, col) in boxes.items() if col and _overlap(lo, hi, brlo, brhi)]
+        fault(not hits, f'the back row (z 7..12, where floor-1 doors open) is blocked by {hits}')
         targets = blockout_attachments('Lobby')
-        a = Vector((0, 0, 3))
-        for tname in ['Queue_1', 'Queue_2', 'Queue_3', 'Queue_4', 'Spawn', 'Trap_1', 'Trap_2', 'Trap_3']:
-            b = Vector(targets[tname][0])
-            steps = max(2, int((b - a).length / 0.25))
+        # Nothing stands on a trap's square, colliding or not (the trap is drawn there).
+        for k in (1, 2, 3):
+            c = Vector(targets[f'Trap_{k}'][0])
+            tlo, thi = c + Vector((-LOBBY_TRAP_HALF, 0.3, -LOBBY_TRAP_HALF)), c + Vector((LOBBY_TRAP_HALF, 7, LOBBY_TRAP_HALF))
+            # Dressing and glows are wall-mounted and spread over the room: their one box says nothing.
+            hits = [p for p, (lo, hi, col) in boxes.items() if p not in ('Root', 'LOD_Proxy', 'Rug')
+                    and not p.startswith(('Dressing', 'Glow_')) and _overlap(lo, hi, tlo, thi)]
+            fault(not hits, f'Trap_{k} square (3 x 3) taken by {hits}')
+        # A 5-stud person walks from inside the entrance to each spot; the clerk through the back row.
+        start, back = Vector((0, 0, 3)), Vector((-30, 0, 9.5))
+        walks = {t: [start, Vector(targets[t][0])] for t in ['Queue_1', 'Queue_2', 'Queue_3', 'Queue_4', 'Spawn']}
+        for t in ('Trap_1', 'Trap_2', 'Trap_3'):      # through the open middle, past the benches
+            p = Vector(targets[t][0])
+            walks[t] = [start, Vector((0, 0, 5.5)), Vector((p.x, 0, 5.5)), p]
+        walks['Clerk'] = [start, Vector((0, 0, 9.5)), back, Vector(targets['Clerk'][0])]
+        for tname, pts in walks.items():
             blocked = set()
-            for i in range(steps + 1):
-                p = a.lerp(b, i / steps)
-                plo, phi = p + Vector((-PERSON_R, 0.3, -PERSON_R)), p + Vector((PERSON_R, PERSON, PERSON_R))
-                blocked |= {q for q, (lo, hi, col) in boxes.items() if col and _overlap(lo, hi, plo, phi)}
+            for a, b in zip(pts, pts[1:]):
+                a, b = a.copy(), b.copy()
+                a.y = b.y = 0
+                steps = max(2, int((b - a).length / 0.25))
+                for i in range(steps + 1):
+                    p = a.lerp(b, i / steps)
+                    plo, phi = p + Vector((-PERSON_R, 0.3, -PERSON_R)), p + Vector((PERSON_R, PERSON, PERSON_R))
+                    blocked |= {q for q, (lo, hi, col) in boxes.items() if col and _overlap(lo, hi, plo, phi)}
             fault(not blocked, f'the walk entrance -> {tname} is blocked by {sorted(blocked)}')
+        # The desk prompt and the till sit on the counter's served edge: within 0.5 of the Desk part.
+        if 'Desk' in boxes:
+            lo, hi, col = boxes['Desk']
+            for an in ('Desk', 'Till'):
+                p = Vector(targets[an][0])
+                fault(lo.z - 0.01 <= p.z <= hi.z + 0.01 and 0 <= p.x - hi.x <= 0.5,
+                      f'{an} attachment {v3(p)} is not at the served edge of the counter ({v3(lo)}..{v3(hi)})')
     # Glow colours stay in glow parts (rule 1), checked in finish() where face colours are known.
     total = sum(t for p, t in tris.items() if p != 'LOD_Proxy')
     fault(total <= BUDGET[kind], f'{total} triangles > the {kind} budget {BUDGET[kind]}')
