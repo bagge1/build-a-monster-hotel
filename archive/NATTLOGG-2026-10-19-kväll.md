@@ -168,3 +168,21 @@ Obevakad session (`/loop`, självstyrd) medan August är borta (från ca 20:00 i
   och diskpunkt följde med. Ljus på rutnätet ($40), vägrat i dörröppningen.
   Golv lagda på rum, lobby, korridor. Inga fel i konsolen. Öppet: menyns
   klick, våning 3, allt som kräver importen.
+- **20:43** Kvot: 5 timmar 49 %, veckan 27 %. Nya sessioner för GDD-luckorna
+  vägrades av appen (en väckning får inte starta sessioner). **Antagande:**
+  samma uppdrag som bakgrundsagenter i egna worktrees, som jag granskar och
+  slår ihop själv: (1) tutorialens Commons på första bussen (§11) och en
+  ping som nämner rummet (§7), (2) Service/Cleanliness av personaltäckning
+  (§5.3), (3) gamepad-navigering (§11), (4) mätningen med
+  `tools/balance_model.py` (d), läsande, rapport till
+  `archive/BALANCE-2026-10-19-evening.md`.
+- **20:45** f: prestanda (testprofil `Test_Perf1019`, `fill StandardRoom`,
+  49 bitar på 3 våningar med dekor): tomten **1 642 delar** (1 356
+  meshdelar), budget ~3 000 per hotell (§13.4). **110 punktljus** utan
+  skuggor: 51 rumslampor (räckvidd 18), 49 Candles i dekoren (12), 8 i
+  lobbyn, 1 i skylten; tomma tomter 10 delar, gatan 132 delar och 36 ljus.
+  Skogens blockout-träd på klienten: **3 385 delar** (677 träd × 5), mer än
+  ett fullt hotell; mäts igen när trädmodellerna är importerade. Inget
+  rättat: ljusen i dekoren är ett utseende, och bildtiden avgörs på en
+  riktig telefon (WAITING §1).
+

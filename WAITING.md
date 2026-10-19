@@ -127,6 +127,13 @@ Med Claudes skärmdump där det finns en. -->
    varje entré, och skogen runt gatan. Claude spelar igenom det först
    (`TESTRUN.md` fas 12); utseendet och känslan är dina.
 
+9. **Ett fullt hotell och skogen på en riktig telefon** (2026-10-19 kväll,
+   efter importen i §0.8–0.9). Mätt i Studio: ett fullt hotell är 1 642
+   delar (budgeten ~3 000) och 110 punktljus (51 rumslampor, 49 ljus i
+   dekoren); skogen är 677 träd. Studio kan inte visa hur en telefon klarar
+   det. Spela en stund på din telefon med ett fullt hotell och säg om det
+   hackar; då mäter Claude vad som drar mest.
+
 ## §2 Beslut
 
 <!-- En fråga i taget, med alternativen och Claudes rekommendation. -->

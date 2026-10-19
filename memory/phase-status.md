@@ -29,25 +29,27 @@ Night Bus (two stops, browsing guests, no walk-ins, every 3 min, 40 %), a
 forecourt, a forest the bus drives out of, and free building (areas, placed
 stairs, a movable desk, rugs and decor, floors, tiers from furnishing, staff
 seen working). **Customizing is the game's most important thing** (his words).
-Open questions in WAITING §2.16 and §2.19. **Next: three sessions**: (A) the
-street: **built on branch `claude/street-bus-forest-253849`** (the forecourt,
-the Night Bus's two stops and browsing, no walk-ins, the forest; five trees
-staged for import, WAITING §0 punkt 8; his calls §2.20–2.21), specs pass
-under Lune, **not run in Studio** (TESTRUN phase 12, after the merge and a
-Rojo restart); (B) free building; (C) staff walking
-to their work.
+Open questions in WAITING §2.16 and §2.19.
 
-**(B) Free building is built on branch `claude/free-building-4b66e3`**
-(2026-10-19, not merged, **not run in Studio**): areas, placed stairs, the
-`FrontDesk` piece (its points mirrored onto the lobby), decor on 3-stud
-squares (`Grid`, `Furnish`, `Layout`), floor finishes, tiers T1–T3 from decor
-points; PlayerData schema 2 rebuilds every hotel from the start area. The
-lobby shell, desks, rugs and refitted decor are staged for import; the new
-Haunted Manor decor is grey silhouettes for his pick (WAITING §2.24). Pure
-specs now also run outside Studio: `lune run tools/run_specs.luau .` (Lune
-and luau-lsp installed globally by rokit). After the merge: TESTRUN phase 12.
-`tools/balance_model.py` stops on the changed tier formula until it models
-furnishing.
+**The three branches are merged into main and played in Studio
+(2026-10-19 evening loop, `archive/NATTLOGG-2026-10-19-kväll.md`):** staff
+seen working (TESTRUN "Staff at work"; floor 3 not yet), the street (phase
+12: specs, forecourt rays and a walker, the bus's drive, browsing, stops,
+a trap; played before his Rojo restart, so `Scenery` is still missing) and
+free building (phase 13, played by remotes before the import: refusals,
+areas, a placed stair walked, the desk moved, decor, finishes). **Waits on
+him:** WAITING §0.8–0.9, a Rojo restart and one import of all 57 files in
+`blender/_import/` (five trees, 52 free-building pieces: the lobby shell,
+`FrontDesk`, decor). Until then the old lobby with its desk stands beside the
+new `FrontDesk` piece. After the import: phase 13's model items, the new
+player's run (tutorial, bus, desk) and the in-game blind review. Also built
+that evening: CI lint (§13.1), VIP Lobby's gold name tag (§10.2, WAITING
+§2.22), Bellhop shortens check-in (§4.6, A.5 PLACEHOLDER, WAITING §2.23), the
+phone's Residents row and Ping menu. A full hotel measured 1,642 parts and
+110 point lights (budget ~3,000 parts); the forest's blockouts are 3,385
+parts until the tree models arrive. PlayerData schema 2 rebuilds every hotel
+from the start area. Pure specs run outside Studio: `lune run
+tools/run_specs.luau .`.
 
 **Earlier next steps:** (1) **The doubled scale** (his ruling 2026-10-19
 evening, `CLAUDE.md` "The scale of a person": double only what makes the
