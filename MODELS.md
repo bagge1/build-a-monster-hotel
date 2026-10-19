@@ -220,7 +220,7 @@ queue spot, trap, the spawn and, through the back row, the clerk.
 | `Desk` (attachment) | (−60.8, 3.8, 5): the counter's served edge, LookVector +X, toward the guests | Check-in prompt |
 | `Clerk` (attachment) | (−66, 0, 6): where the front-desk resident stands, behind the counter, LookVector +X | The Front Desk staff's post |
 | `Queue_1`–`Queue_4` (attachments) | x −58, −54.5, −51, −47.5 at z 5, LookVector −X (at the desk); 1 nearest the desk | The desk queue |
-| `Till` (attachment) | (−60.8, 3.8, 8.5): the till on the counter, LookVector +X | Collect prompt |
+| `Till` (attachment) | (−60.8, 3.8, 9.4): the till on the counter, LookVector +X | Collect prompt |
 | `Spawn` (attachment) | (8, 0, 18), in the back row | The plot's spawn |
 | `SignBoard` (attachment) | (48, 0, −5): out front at the stair-side corner of the forecourt, 48 studs off the entrance, the sign's base, LookVector toward the street | The hotel sign (§3) |
 | `Trap_1`–`Trap_3` (attachments) | x −16, 16, 48 at z 6 | Hunter Night's traps (§8.1) |
@@ -280,6 +280,20 @@ in (its lowest part at least 8 studs above the threshold).
 The set's build script checks both kits' `HotelSign` and `Lobby` on every
 build (`tools/build_cosmetics_hotel.py`): a kit change to the sign or the arch
 means rebuilding this set.
+
+### Room plaque (`RoomPlaque`, one per hotel kit)
+
+The wooden plaque over every room's and amenity's door (his ask, 2026-10-19:
+a plaque instead of floating text). Origin at the room's `Sign` attachment
+(0.3 in front of the wall's outer face), front toward −Z; its back lies on
+the wall. About 4 × 1.3 studs, visual only (the code anchors it and turns
+collision and rays off).
+
+| Name | What | The code |
+|---|---|---|
+| `Root` | Invisible, inside the board | `PivotTo` onto `Sign` |
+| `Board` | The board, its rim and its screws | — |
+| `Face` | The flat panel in front, its front (−Z) face clear | A `SurfaceGui` on its Front: the room's name and tier, and its state on a second line |
 
 ### Decor (`Decor_<DecorId>`, e.g. `Decor_Candles`)
 

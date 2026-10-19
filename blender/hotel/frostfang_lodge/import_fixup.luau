@@ -52,7 +52,7 @@ local SET = {
 			Dressing = { c = Vector3.new(0, 8.8, 1.4205), s = Vector3.new(144, 16.4, 2.801), collide = false },
 			Wall_FrontRight = { c = Vector3.new(38.75, 8.5, 0.4), s = Vector3.new(66.5, 17, 0.8), collide = true },
 			Desk = { c = Vector3.new(-62.02, 2.12, 6), s = Vector3.new(2.36, 4.24, 9.4), collide = true },
-			Till = { c = Vector3.new(-61.975, 4.66, 8.7133), s = Vector3.new(1.25, 1.72, 1.6266), collide = true },
+			Till = { c = Vector3.new(-62.025, 4.66, 9.6133), s = Vector3.new(1.25, 1.72, 1.6266), collide = true },
 			Glow_Warm_2 = { c = Vector3.new(-62.3, 5.05, 2), s = Vector3.new(0.4435, 0.48, 0.4435), collide = false },
 			KeyRack = { c = Vector3.new(-71.575, 4.75, 6), s = Vector3.new(0.85, 9.5, 5.2), collide = true },
 			Bench_1 = { c = Vector3.new(29, 2, 1.95), s = Vector3.new(6.7, 4, 2), collide = true },
@@ -77,7 +77,7 @@ local SET = {
 			{ "Entrance", Vector3.new(0, 0, 0), Vector3.new(0, 0, -1) },
 			{ "Desk", Vector3.new(-60.8, 3.8, 5), Vector3.new(1, 0, 0) },
 			{ "Clerk", Vector3.new(-66, 0, 6), Vector3.new(1, 0, 0) },
-			{ "Till", Vector3.new(-60.8, 3.8, 8.5), Vector3.new(1, 0, 0) },
+			{ "Till", Vector3.new(-60.8, 3.8, 9.4), Vector3.new(1, 0, 0) },
 			{ "Spawn", Vector3.new(8, 0, 18), Vector3.new(0, 0, -1) },
 			{ "SignBoard", Vector3.new(48, 0, -5), Vector3.new(0, 0, -1) },
 			{ "Queue_1", Vector3.new(-58, 0, 5), Vector3.new(-1, 0, 0) },
@@ -461,6 +461,19 @@ local SET = {
 			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(2.4, 0.2, 2.4), collide = false },
 			Body = { c = Vector3.new(0, 2.795, 0), s = Vector3.new(1.9782, 5.59, 2.08), collide = false },
 			Glow_Magic_1 = { c = Vector3.new(0, 4.525, 0), s = Vector3.new(1.9021, 1.65, 2), collide = false },
+		},
+		att = {
+		},
+		precise = {  },
+		light = 12,
+		lightAll = false,
+	},
+	RoomPlaque = {
+		root = Vector3.new(0, 0, 0.15),
+		parts = {
+			Root = { c = Vector3.new(0, 0, 0.15), s = Vector3.new(1, 0.2, 0.2), collide = false },
+			Board = { c = Vector3.new(0, 0, 0.127), s = Vector3.new(4, 1.3, 0.346), collide = false },
+			Face = { c = Vector3.new(0, 0, -0.045), s = Vector3.new(3.5, 0.84, 0.03), collide = false },
 		},
 		att = {
 		},

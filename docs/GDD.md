@@ -75,7 +75,7 @@ All numbers in this doc are **starting values for tuning**, not final balance. F
 - **Server:** 6 players, 6 plots on one street ("Creepy Lane"). Friends can join friends; private servers are cheap (§10.3).
 - **Plot claim:** on joining, the player gets the nearest free plot automatically. Their saved hotel is rebuilt there (the layout is saved relative to the plot, so any plot works).
 - **Plot size:** a 12 × 12 cell grid (1 cell = 12 studs, so a 2×2 room is 24 × 24 studs; a floor is 18 studs tall, walls up to the slab above; players are the standard ~5-stud avatar, and furniture, doors and steps are sized for them, not scaled with the grid) per floor. Floors 1–3 at start; more through progression (and a capacity pass).
-- **The bus stop** is at one end of the street. Monsters walk down the pavement and "browse" each hotel. Each hotel sign shows its **star rating, its featured room types and its like count**.
+- **Two bus stops** (his ruling, 2026-10-19): the Night Bus stops twice on the lane, midway between the first two plots and midway between the last two (x = ±90). Monsters walk the pavement and "browse" each hotel (§4.3). Each hotel sign shows its **star rating, its featured room types and its like count**.
 - **Mixed locations on one street:** each plot renders its owner's current location (Haunted Manor, Frostfang Lodge…) as a themed facade and ground tile. The bus carries families for every location present on the server. Players who have rebirthed have neighbours who can see what's coming, which builds aspiration.
 
 ---
@@ -112,12 +112,13 @@ Base pay at Location 1 is **$1/s for a Common**. Each later location multiplies 
 
 ### 4.3 The Night Bus (shared arrivals)
 
-- **Every 4 minutes** (tune 3–5) a bus arrives with 6–10 guests, scaled by player count.
+- **Every 3 minutes** a bus arrives (his ruling, 2026-10-19; it was 4). **How many ride it scales with the players on the server and the rooms vacant on the street, and one bus never fills every room** (his ruling): **40 % of the street's vacant rooms, rounded up** (his), at least 2 and at most 4 per player on the server (PLACEHOLDER bounds, Claude's). It stops at both stops (§3) and lets half its guests off at each.
 - **Scheduled rare arrivals** make appointments players can plan around:
   - Epic guaranteed every 3rd bus (~12 min).
   - **Legendary on the :00 and :30 buses** (server clock).
   - **Mythic on the "Midnight Bus"** every 2 hours.
 - **One bus ahead, the rare guest is announced** to the whole server: *"A Legendary Vampire Count is on the next bus! Wants: Coffin Suite · darkness · organ music."* Players then rush to build or free up the right room.
+- **Browsing** (his ruling, 2026-10-19): the guests do not walk straight off the end of the street. They walk round the lane past the hotels, look at them, and go to one by what they prefer (the score below); players can Pitch them the whole time they are browsing. From its stop a guest walks the lane past the hotels, pausing a couple of seconds at each entrance, and after about a minute goes to the hotel that scored highest (his yes to Claude's proposal, 2026-10-19). A guest no hotel can take walks back to a stop and leaves on the next bus, never off the map's edge.
 - **How a guest picks a hotel:**
 
   ```
@@ -132,7 +133,7 @@ Base pay at Location 1 is **$1/s for a Common**. Each later location multiplies 
   ```
 
 - **Pitching (active play):** when a guest is on the street, a player can run up and **Pitch** it (press E, tap, or a gamepad button): +15% score toward their hotel. One pitch per player per guest. This is the "conveyor sniping" excitement of Steal a Brainrot without anyone losing anything.
-- **Never starved:** each hotel also gets private **walk-in guests** (Common/Uncommon only) at a rate set by its room count and rating. Solo players, empty servers and new players always have guests.
+- ~~**Never starved:** each hotel also gets private walk-in guests~~ **No walk-ins** (his ruling, 2026-10-19: "monsters spawning at random and walking into the hotel take the point out of the bus"). Every guest comes on the Night Bus. **The only exception is the tutorial's first guest** (his ruling, 2026-10-19: "the tutorial can be the only time a monster spawns from nowhere"), who walks in before the first bus so Gloom can teach check-in.
 
 ### 4.4 Stays
 
@@ -195,7 +196,7 @@ Mutations are **material, colour and size variants**: cheap content that doesn't
 | **Lobby** | Ground floor: front desk, till, waiting area, sign | Check-in, rating display |
 | **Amenities** | Any floor | Boost needs on that floor (buffet, spa, game room, graveyard garden, organ hall…) |
 | **Decor** | Free placement inside rooms and the lobby | Style score, preferences (candles add "darkness", etc.) |
-| **Floors** | Vertical expansion; stairs and elevator placed automatically | Capacity |
+| **Floors** | Vertical expansion; ~~stairs and elevator placed automatically~~ the player buys and places the stairs (§5.4) | Capacity |
 | **Facade and sign** | Exterior | Cosmetic; facade styles are a monetization item |
 
 ### 5.2 Room types (Location 1)
@@ -227,6 +228,43 @@ The rating is 1–5 stars in half steps. It's computed from five categories, eac
 
 - The rating is a rolling average over the **last 30 reviews** plus the live category scores, so it reacts to play within a session.
 - A higher rating brings more and rarer guests through bus scoring and walk-in rate. It also unlocks room types.
+
+### 5.4 Building freely (his rulings, 2026-10-19)
+
+From his first long playtest: a hotel that starts as the whole empty plot
+"looks very empty", and a fixed stair core and a fixed reception leave
+nothing to arrange. **Customizing the hotel is the most important thing in
+the game** (his words, 2026-10-19: "det ska vara mycket customizable, detta
+är det viktigaste i spelet"). What he ruled:
+
+- **The plot is bought in areas**, not given whole. One starts as the
+  hotel's; the rest are bought, and rooms are built on what is owned. **A new
+  hotel starts with only a reception and room for about 2–4 Standard Rooms**
+  (his words, 2026-10-19).
+- **Stairs are a piece the player buys and places**, one or several, instead
+  of a stair core fixed on every floor.
+- **Everything can be rebuilt as often as the player likes**, the reception
+  too: the front desk is moved like any piece, and so is the lobby's carpet
+  (redone, removed or moved with the desk: rugs are pieces, not part of the
+  lobby model).
+- **Staff are seen working:** a resident on Room Service does not just stand
+  by the desk (his report, twice, 2026-10-19).
+- **Decorating:** the floor can be changed, and rugs and decorations placed:
+  clocks, flowers, plants, furniture, a piano and so on.
+- **A room's tier comes from furnishing it:** furniture, rugs and decor in a
+  room add up to points that take it to T2 and at last T3, each tier raising
+  what the room is worth (replacing tiers T1–T5 bought with cash, §5.2).
+- **A forecourt in front of every hotel:** a wider space between the lane and
+  the facade, with a pavement the guests walk on and a path from it to the
+  entrance; the traps are placed there.
+- **A forest round the street**, so the plot is not a bare lawn, and the
+  Night Bus drives in round a bend out of the forest instead of appearing.
+
+Open (WAITING §2), with Claude's proposal: an area's size (4 × 5 cells
+behind the lobby, six to a floor, so two 2×2 rooms either side of a
+hallway fit one), whether an area is bought for every floor at once, how a
+stair joins two floors, where the desk may stand, and how freely decor is
+placed. Until he answers, §5.1, Appendix A.1 and A.2 describe what is built.
 
 ---
 
@@ -618,6 +656,11 @@ After the soft launch we apply for Kids/Select eligibility:
 | 2026-10-19 | GitHub repo `build-a-monster-hotel`, private; folder renamed to match | His ruling |
 | 2026-10-19 | Night sessions may commit, push and run DataStore-writing playtests | His go (the game is not live) |
 | 2026-10-19 | The lobby is an indoor reception: a front wall with the entrance arch and windows; the desk across the end away from the stairs, served toward the entrance, a key rack behind the clerk; the back row clear for the floor-1 doors; the hotel sign on its posts at the stair-side corner of the forecourt, off the entrance (layout A and the corner sign of three grey drafts; `MODELS.md`, "Lobby") | His rulings: nothing in front of an entrance, a counter a person can stand at, a lobby that reads as a reception and not a patio (`modelling/taste.md`) |
+| 2026-10-19 | A forecourt in front of each hotel: a pavement the guests walk on, a path to the entrance, the traps placed there (§5.4) | His ask from playing |
+| 2026-10-19 | A room's tier (up to T3) comes from the furniture, rugs and decor in it, not cash; a forest round the street, the Night Bus driving in out of it; room names on a wooden plaque over the door (§5.4, `MODELS.md`) | His asks from playing |
+| 2026-10-19 | The plot is bought in areas; stairs are bought and placed (one or several), not a fixed core; everything can be rebuilt, the reception too; the floor can be changed and rugs and decorations (clocks, flowers, plants, furniture, a piano) placed (§5.4) | His rulings from playing: the whole empty plot at the start looks empty, and a fixed stair and desk leave nothing to arrange |
+| 2026-10-19 | The bus every 3 minutes, 40 % of the street's vacant rooms per bus, guests browse past the entrances for about a minute, and the tutorial's first guest is the only walk-in (§4.3) | His answers to WAITING §2.14 |
+| 2026-10-19 | The Night Bus stops twice (between the first two plots and between the last two); its guests browse round the lane and pick a hotel by preference, Pitchable the whole time, instead of walking off the end; no walk-ins; the bus's size scales with the players and the street's vacant rooms and never fills every room with one bus (§3, §4.3, A.3) | His rulings from playing: guests vanishing at the map's edge, and walk-ins that make the bus pointless |
 | 2026-10-19 | *Night draft:* remote layer is a thin typed wrapper over RemoteEvents (`src/shared/Net.luau`), not Blink/Zap (§13.6) | Reversible: every remote is declared in one file, so swapping the transport touches one module |
 | 2026-10-19 | *Night draft:* guest paths are a grid graph over free cells (§13.6) | Cheaper and deterministic, as the section leaned; Appendix A.1 |
 
@@ -641,7 +684,7 @@ Every number below is a **placeholder** (tagged `PLACEHOLDER` in
   of the lane ("browsing"), then turn to the hotel they picked.
 - **The plot frame:** cell (x, z), x 0–11 along the street, z 0–11 away from it;
   floor 1 at ground level, each floor 18 studs above the last (his ruling, 2026-10-19 evening).
-- **Reserved cells:** the **Lobby** is the front two rows of floor 1 (z 0–1):
+- **Reserved cells** (to be replaced by §5.4: areas, placed stairs, a movable desk): the **Lobby** is the front two rows of floor 1 (z 0–1):
   entrance in the middle, front desk, till, waiting spots. The **stair core** is
   cells x 10–11, z 2–3 on every floor (stairs for players; guests glide up it).
 - **The Resident Wing** is a garden behind the hotel (48 studs deep), where
@@ -721,15 +764,17 @@ Every number below is a **placeholder** (tagged `PLACEHOLDER` in
   30 s. Fulfilled at the room's door.
 - **Cleaning:** a hold of 2 s at the room's door; Housekeeping staff clean a
   room after 20 s.
-- **Walk-ins:** each hotel gets one every 30 s ÷ (1 + 0.15 × rooms) × (3 ÷
-  rating), clamped to 8–60 s, Common or Uncommon only, of a species the hotel
-  has a vacant room for. Shown walking in from the street.
-- **Browsing** lasts as long as the walk down the lane (~40 s). Each guest
-  decides at the east end; one with no eligible hotel leaves the street. A
+- ~~**Walk-ins:** each hotel gets one every 30 s ÷ (1 + 0.15 × rooms) × (3 ÷
+  rating), clamped to 8–60 s.~~ Struck by his ruling, 2026-10-19 (§4.3: no
+  walk-ins).
+- ~~**Browsing** lasts as long as the walk down the lane (~40 s). Each guest
+  decides at the east end.~~ Replaced by his ruling, 2026-10-19 (§4.3: two
+  stops, guests browse round the lane for about a minute). A
   guest waits at most 60 s at the desk, then leaves unhappy (a 1★ review).
 - **Newcomer boost** (§4.3): +1.0 score for hotels rated 2★ or less, Common and
   Uncommon guests only.
-- **Bus size:** 6 guests for one player, +1 per extra player, at most 10.
+- ~~**Bus size:** 6 guests for one player, +1 per extra player, at most 10.~~
+  Replaced by his ruling, 2026-10-19 (§4.3: by players and vacant rooms).
 
 ### A.4 Rating (§5.3)
 

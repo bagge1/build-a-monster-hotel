@@ -183,9 +183,37 @@ local function buildPiece(plot: Plot, id: string, rec: PlayerData.PieceRecord): 
 			d.Parent = model
 		end
 	end
-	-- Its name over the door.
+	-- Its name over the door: on the kit's wooden plaque (his ask,
+	-- 2026-10-19), else as floating text until the plaque is imported.
 	local sign = root and root:FindFirstChild("Sign")
-	if sign then
+	local plaque = sign and sign:IsA("Attachment") and HotelKit.plaque(plot.location)
+	local face = plaque and plaque:FindFirstChild("Face", true)
+	if plaque and face and face:IsA("BasePart") and sign and sign:IsA("Attachment") then
+		plaque:PivotTo(sign.WorldCFrame)
+		plaque.Parent = model
+		local gui = Instance.new("SurfaceGui")
+		gui.Name = "Label"
+		gui.Face = Enum.NormalId.Front
+		gui.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
+		gui.PixelsPerStud = 60
+		gui.LightInfluence = 0.6
+		gui.MaxDistance = 80
+		local function line(name: string, y: number, h: number, colour: Color3, text: string)
+			local l = Instance.new("TextLabel")
+			l.Name = name
+			l.BackgroundTransparency = 1
+			l.Position = UDim2.fromScale(0.05, y)
+			l.Size = UDim2.fromScale(0.9, h)
+			l.Font = Enum.Font.FredokaOne
+			l.TextScaled = true
+			l.TextColor3 = colour
+			l.Text = text
+			l.Parent = gui
+		end
+		line("Text", 0.06, 0.56, Color3.fromRGB(255, 232, 180), `{piece.name} · T{rec.tier}`)
+		line("Status", 0.62, 0.32, Color3.fromRGB(255, 190, 120), "")
+		gui.Parent = face
+	elseif sign then
 		local gui = Instance.new("BillboardGui")
 		gui.Name = "Label"
 		gui.Size = UDim2.fromOffset(160, 40)

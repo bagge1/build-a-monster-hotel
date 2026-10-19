@@ -217,12 +217,20 @@ function HotelService.refreshPrompts(player: Player, only: string?)
 				local label = model:FindFirstChild("Label", true)
 				local text = label and label:FindFirstChild("Text")
 				if text and text:IsA("TextLabel") and piece and rec then
-					local suffix = if room.state == "Dirty"
-						then " · needs cleaning"
-						elseif room.request then " · !"
-						elseif room.state == "Vacant" then " · vacant"
+					local state = if room.state == "Dirty"
+						then "needs cleaning"
+						elseif room.request then "!"
+						elseif room.state == "Vacant" then "vacant"
 						else ""
-					text.Text = `{piece.name} T{rec.tier}{suffix}`
+					-- The plaque has a line of its own for the state.
+					local status = label and label:FindFirstChild("Status")
+					if status and status:IsA("TextLabel") then
+						text.Text = `{piece.name} · T{rec.tier}`
+						status.Text = state
+					else
+						text.Text =
+							`{piece.name} T{rec.tier}{if state ~= "" then " · " .. state else ""}`
+					end
 				end
 			end
 		end

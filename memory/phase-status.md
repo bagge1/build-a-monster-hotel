@@ -19,7 +19,21 @@ as a patio. His rules are in `modelling/taste.md`; a **blind review** by a
 context-free model now comes before he sees any picture (skill `blind-review`;
 its first run and triage are in the Haunted Manor README).
 
-**Next, in order:** (1) **The doubled scale** (his ruling 2026-10-19
+**His first long playtest (2026-10-19 evening)** gave twelve fixes, done and
+seen in a playtest (HUD row in the top bar, build camera zoom/turn, B and R
+keys, grouped build tools, a chosen card put down by a second tap, a hover
+outline and the piece menu reachable, the Book roomier, the facade sill and
+slab rails no longer flicker, the till turned and moved, the room plaque
+`RoomPlaque` over every door) and **new design** in GDD §4.3 and §5.4: the
+Night Bus (two stops, browsing guests, no walk-ins, every 3 min, 40 %), a
+forecourt, a forest the bus drives out of, and free building (areas, placed
+stairs, a movable desk, rugs and decor, floors, tiers from furnishing, staff
+seen working). **Customizing is the game's most important thing** (his words).
+Open questions in WAITING §2.16 and §2.19. **Next: three sessions**: (A) the
+street: forecourt, Night Bus, forest; (B) free building; (C) staff walking
+to their work.
+
+**Earlier next steps:** (1) **The doubled scale** (his ruling 2026-10-19
 evening, `CLAUDE.md` "The scale of a person": double only what makes the
 hotel less cramped). Built, imported and played (`TESTRUN.md` phase 11):
 walls meet the slab, three floors walked, a guest up the stairs, the build

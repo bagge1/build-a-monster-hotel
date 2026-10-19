@@ -661,9 +661,9 @@
     },
     "Till": {
      "centre": [
-      -61.975,
+      -62.025,
       4.66,
-      8.7133
+      9.6133
      ],
      "size": [
       1.25,
@@ -981,7 +981,7 @@
      "pos": [
       -60.8,
       3.8,
-      8.5
+      9.4
      ],
      "look": [
       1.0,
@@ -6401,6 +6401,73 @@
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
    "note": "a standing iron chandelier: a gold ring of five candles and crystal drops"
+  },
+  "RoomPlaque": {
+   "name": "RoomPlaque",
+   "kind": "Cosmetic",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.0,
+     0.15
+    ],
+    "size": [
+     1.0,
+     0.2,
+     0.2
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.0,
+      0.15
+     ],
+     "size": [
+      1.0,
+      0.2,
+      0.2
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Board": {
+     "centre": [
+      0.0,
+      0.0,
+      0.127
+     ],
+     "size": [
+      4.0,
+      1.3,
+      0.346
+     ],
+     "triangles": 136,
+     "collide": false
+    },
+    "Face": {
+     "centre": [
+      0.0,
+      0.0,
+      -0.045
+     ],
+     "size": [
+      3.5,
+      0.84,
+      0.03
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 160,
+   "budget": 2000,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a dark wooden plaque with a gold rim; the code writes on its Face"
   }
  }
 }

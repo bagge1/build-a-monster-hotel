@@ -53,6 +53,18 @@ function Ui.screen(name: string, order: number?): ScreenGui
 	return gui
 end
 
+-- Whether the HUD's top row sits up in the Roblox top bar (Hud decides and
+-- sets it on its ScreenGui); calls `fn` now and whenever the row moves, so
+-- what hangs under the row (the bus countdown, Gloom's bubble) can follow.
+function Ui.onTopRow(fn: (up: boolean) -> ())
+	local hud = Ui.screen("Hud", 1)
+	local function call()
+		fn(hud:GetAttribute("TopRowUp") == true)
+	end
+	hud:GetAttributeChangedSignal("TopRowUp"):Connect(call)
+	call()
+end
+
 local function corner(parent: Instance, radius: number?)
 	local c = Instance.new("UICorner")
 	c.CornerRadius = UDim.new(0, radius or 12)

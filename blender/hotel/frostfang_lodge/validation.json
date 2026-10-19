@@ -333,6 +333,20 @@
    "budget": 1500,
    "collision_precise": [],
    "attachments": []
+  },
+  "RoomPlaque": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "3 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the contract re-checked on the re-imported boxes (Root, footprint, kind rules, budgets)"
+   ],
+   "triangles": 160,
+   "budget": 2000,
+   "collision_precise": [],
+   "attachments": []
   }
  },
  "collision_precise": {
@@ -353,7 +367,8 @@
   "Decor_PrankBox": [],
   "Decor_RockPile": [],
   "Decor_SnowGlobe": [],
-  "Decor_AuroraLamp": []
+  "Decor_AuroraLamp": [],
+  "RoomPlaque": []
  },
  "not_validated": [
   "anything in Studio: the import, the axis conversion on Roblox's side (import_fixup.luau checks it first), the atlas upload, how it looks lit",

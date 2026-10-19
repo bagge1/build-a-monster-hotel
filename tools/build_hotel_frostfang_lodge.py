@@ -521,7 +521,9 @@ def lobby():
     qz = K.blockout_attachments('Lobby')['Desk'][0][2]
     dx = K.LOBBY_COUNTER_TOP[1][0] + 0.3
     span('Rug', (-2.2, 0.1, 0.8), (2.2, 0.13, qz + 1.5), 'cream')
-    span('Rug', (-1.9, 0.13, 0.8), (1.9, 0.15, qz + 1.5), 'red')
+    # The far end stops 0.3 short, so its border runs on round the turn toward the desk
+    # (the end was bare red past the turn's edge: his report, 2026-10-19).
+    span('Rug', (-1.9, 0.13, 0.8), (1.9, 0.15, qz + 1.2), 'red')
     for z in (1.5, qz - 1.8):
         span('Rug', (-1.9, 0.15, z - 0.12), (1.9, 0.16, z + 0.12), 'cream')
     span('Rug', (dx, 0.1, qz - 1.5), (-2.2, 0.13, qz + 1.5), 'cream')
@@ -754,6 +756,21 @@ def d_aurora_lamp():
     finish(note='a standing lamp whose rounded shade glows aurora green, banded violet')
 
 
+def room_plaque():
+    """The wooden plaque over a room's door (MODELS.md, "Room plaque"): the room's name and tier
+    on its Face, written by the code, instead of floating text (his ask, 2026-10-19). Origin at the
+    room's Sign attachment, 0.3 in front of the wall; the back lies on the wall, front toward -Z."""
+    p = begin('RoomPlaque', 'Cosmetic', (1, 0.2, 0.2), root_centre=(0, 0, 0.15))
+    p.allowed = ((-2.1, -0.8, -0.1), (2.1, 0.8, 0.31))
+    span('Board', (-2.0, -0.65, 0.0), (2.0, 0.65, 0.3), 'log_dark', bevel=0.06)
+    span('Board', (-1.85, -0.5, -0.03), (1.85, 0.5, 0.0), 'snow', bevel=0.02)
+    span('Face', (-1.75, -0.42, -0.06), (1.75, 0.42, -0.03), 'log')
+    for x in (-1.92, 1.92):
+        sphere('Board', (x, 0, -0.02), (0.05, 0.05, 0.03), 'gold', n=6, rings=3)
+    for part in list(K.P.parts):
+        declare(part, False)
+    finish(proxy=False, note='a log plaque with a snow-white rim; the code writes on its Face')
+
 DECOR_BUILD = {'IceBlock': d_ice_block, 'CocoaMug': d_cocoa_mug, 'PrankBox': d_prank_box,
                'RockPile': d_rock_pile, 'SnowGlobe': d_snow_globe, 'AuroraLamp': d_aurora_lamp}
 ROOM_BUILD = {'IglooRoom': igloo_room, 'IceCave': ice_cave, 'YetiDen': yeti_den, 'FrostLoft': frost_loft,
@@ -765,7 +782,7 @@ def main():
     K.use_palette(PALETTE)
     K.start_set(SET)
     order = ([('IglooRoom', igloo_room), ('Lobby', lobby), ('StairCore', lambda: stairs(False)),
-              ('StairCoreTop', lambda: stairs(True)), ('HotelSign', hotel_sign)]
+              ('StairCoreTop', lambda: stairs(True)), ('HotelSign', hotel_sign), ('RoomPlaque', room_plaque)]
              + [(n, f) for n, f in ROOM_BUILD.items() if n != 'IglooRoom']
              + list(AMENITY_BUILD.items())
              + [(f'Decor_{n}', f) for n, f in DECOR_BUILD.items()])
@@ -781,7 +798,7 @@ def main():
     rows = [(['Lobby', 'HotelSign'], 8, 1.0),
             ([n for n, _, _ in ROOMS], 5, 1.0),
             (list(AMENITY_BUILD) + ['StairCore', 'StairCoreTop'], 5, 1.0),
-            ([f'Decor_{n}' for n in DECOR], 2.5, 2.0)]
+            ([f'Decor_{n}' for n in DECOR] + ['RoomPlaque'], 2.5, 2.0)]
     K.end_set('Frostfang Lodge hotel kit (Location 2), first draft', rows)
     if refused:
         raise SystemExit(f'REFUSED: {refused}')

@@ -231,6 +231,25 @@ function HotelKit.piece(id: string, location: number): Model
 	return template(location, id) or blockoutPiece(id)
 end
 
+--[[ The wooden plaque over a room's door (MODELS.md, "Room plaque"), or nil
+	until the kit's is imported (the room then keeps floating text). Visual
+	only: nothing collides or is hit by a ray. ]]
+function HotelKit.plaque(location: number): Model?
+	local m = template(location, "RoomPlaque")
+	if not m then
+		return nil
+	end
+	for _, p in m:GetDescendants() do
+		if p:IsA("BasePart") then
+			p.Anchored = true
+			p.CanCollide = false
+			p.CanQuery = false
+			p.CanTouch = false
+		end
+	end
+	return m
+end
+
 -- A decor piece (MODELS.md, "Decor"): origin at the centre of its base.
 function HotelKit.decor(id: string, location: number): Model
 	local found = template(location, `Decor_{id}`)
@@ -342,7 +361,7 @@ function HotelKit.lobby(location: number): Model
 	for i, x in { -58, -54.5, -51, -47.5 } do
 		attach(root, `Queue_{i}`, Vector3.new(x, 0, 5), Vector3.new(-1, 0, 0))
 	end
-	attach(root, "Till", Vector3.new(-60.8, 3.8, 8.5), Vector3.new(1, 0, 0))
+	attach(root, "Till", Vector3.new(-60.8, 3.8, 9.4), Vector3.new(1, 0, 0))
 	attach(root, "Spawn", Vector3.new(8, 0, 18), Vector3.new(0, 0, -1))
 	attach(root, "SignBoard", Vector3.new(48, 0, -5), Vector3.new(0, 0, -1))
 	for i = 1, 3 do
@@ -487,34 +506,33 @@ function HotelKit.slab(location: number, floor: number): Folder
 	-- Railings round the edge, 3.5 studs (against the 5-stud person).
 	local rh, rt = 3.5, 0.4
 	local top = y + th
-	part(
-		folder,
-		"Rail_Front",
-		Vector3.new(P, rh, rt),
-		Vector3.new(P / 2, top + rh / 2, rt / 2),
-		{ Color = loc.trim }
-	)
-	part(
-		folder,
-		"Rail_Back",
-		Vector3.new(P, rh, rt),
-		Vector3.new(P / 2, top + rh / 2, P - rt / 2),
-		{ Color = loc.trim }
-	)
-	part(
-		folder,
-		"Rail_Left",
-		Vector3.new(rt, rh, P),
-		Vector3.new(rt / 2, top + rh / 2, P / 2),
-		{ Color = loc.trim }
-	)
-	part(
-		folder,
-		"Rail_Right",
-		Vector3.new(rt, rh, P),
-		Vector3.new(P - rt / 2, top + rh / 2, P / 2),
-		{ Color = loc.trim }
-	)
+	-- Along an edge the stair core touches, the rail stops at the core: its
+	-- own walls rise to the same height there, and a rail in the same plane
+	-- flickered against them (his report, 2026-10-19).
+	local function rail(name: string, alongX: boolean, fixed: number, gap: { number }?)
+		local runs = if gap then { { 0, gap[1] }, { gap[2], P } } else { { 0, P } }
+		for _, r in runs do
+			local a0, a1 = r[1], r[2]
+			if a1 - a0 > 0.05 then
+				local mid = (a0 + a1) / 2
+				part(
+					folder,
+					name,
+					if alongX then Vector3.new(a1 - a0, rh, rt) else Vector3.new(rt, rh, a1 - a0),
+					if alongX
+						then Vector3.new(mid, top + rh / 2, fixed)
+						else Vector3.new(fixed, top + rh / 2, mid),
+					{ Color = loc.trim }
+				)
+			end
+		end
+	end
+	local coreX = { sc.x * CELL, (sc.x + sc.w) * CELL }
+	local coreZ = { sc.z * CELL, (sc.z + sc.d) * CELL }
+	rail("Rail_Front", true, rt / 2, if sc.z == 0 then coreX else nil)
+	rail("Rail_Back", true, P - rt / 2, if sc.z + sc.d == G.Cells then coreX else nil)
+	rail("Rail_Left", false, rt / 2, if sc.x == 0 then coreZ else nil)
+	rail("Rail_Right", false, P - rt / 2, if sc.x + sc.w == G.Cells then coreZ else nil)
 	for _, c in
 		{
 			Vector2.new(0.5, 0.5),
@@ -567,12 +585,13 @@ function HotelKit.facade(
 			along: number,
 			height: number,
 			centreY: number,
-			length: number
+			length: number,
+			thick: number
 		): (Vector3, Vector3)
 			if axis == "X" then
-				return Vector3.new(length, height, t), Vector3.new(along, centreY, fixed)
+				return Vector3.new(length, height, thick), Vector3.new(along, centreY, fixed)
 			end
-			return Vector3.new(t, height, length), Vector3.new(fixed, centreY, along)
+			return Vector3.new(thick, height, length), Vector3.new(fixed, centreY, along)
 		end
 		local function piece(
 			partName: string,
@@ -580,21 +599,28 @@ function HotelKit.facade(
 			a1: number,
 			h0: number,
 			h1: number,
-			colour: Color3
+			colour: Color3,
+			thick: number?
 		)
 			if a1 - a0 < 0.05 then
 				return
 			end
-			local size, centre = at((a0 + a1) / 2, h1 - h0, y0 + (h0 + h1) / 2, a1 - a0)
+			local size, centre = at((a0 + a1) / 2, h1 - h0, y0 + (h0 + h1) / 2, a1 - a0, thick or t)
 			part(folder, partName, size, centre, { Color = colour })
 		end
 		local top = FLOOR - G.SlabThickness
-		local function band(partName: string, h0: number, h1: number, colour: Color3)
+		local function band(
+			partName: string,
+			h0: number,
+			h1: number,
+			colour: Color3,
+			thick: number?
+		)
 			if gapFrom and gapTo then
-				piece(partName, 0, gapFrom, h0, h1, colour)
-				piece(partName, gapTo, P, h0, h1, colour)
+				piece(partName, 0, gapFrom, h0, h1, colour, thick)
+				piece(partName, gapTo, P, h0, h1, colour, thick)
 			else
-				piece(partName, 0, P, h0, h1, colour)
+				piece(partName, 0, P, h0, h1, colour, thick)
 			end
 		end
 		-- Windows 4 wide and 9 tall (y 3..12) over a person's sill, two to a cell.
@@ -618,7 +644,10 @@ function HotelKit.facade(
 		if gapFrom and gapTo then
 			piece(`{name}_Lintel`, gapFrom, gapTo, 9, winHigh, wall)
 		end
-		piece(`{name}_Sill`, 0, P, winLow - 0.2, winLow + 0.2, trim)
+		-- The sill stands 0.06 proud of both faces: flush with the wall it
+		-- flickered against it (his report, 2026-10-19, the lobby's end wall),
+		-- and it stops at a doorway instead of barring it.
+		band(`{name}_Sill`, winLow - 0.2, winLow + 0.2, trim, t + 0.12)
 	end
 	for floor = 1, floors do
 		side(`Left_{floor}`, floor, "Z", -t / 2)

@@ -159,7 +159,10 @@ function BusRenderer.Init()
 	local gui = Ui.screen("Hud", 1)
 	countdown = Ui.label(gui, "BusCountdown", "", UDim2.fromOffset(260, 26), 18, Ui.Colour.Moon)
 	countdown.AnchorPoint = Vector2.new(0.5, 0)
-	countdown.Position = UDim2.new(0.5, 0, 0, 52)
+	-- Right under the HUD's top row, wherever that sits.
+	Ui.onTopRow(function(up: boolean)
+		countdown.Position = UDim2.new(0.5, 0, 0, if up then 4 else 52)
+	end)
 	countdown.TextXAlignment = Enum.TextXAlignment.Center
 	countdown.TextStrokeTransparency = 0.4
 end

@@ -43,7 +43,8 @@ local rotation = 0
 local selected: string? = nil -- a piece id to place
 local moving: number? = nil -- a built piece being moved
 local cell: Grid.Cell? = nil
-local view = 0 -- which side the camera looks from, 0..3
+local yaw = 0 -- which way round the camera looks, radians (0: from the street)
+local zoom = 1 -- the camera's distance, 1 = the whole plot in view
 
 local gui: ScreenGui
 local strip: Frame
@@ -55,6 +56,13 @@ local placeButton: TextButton
 local menu: Frame
 local menuBody: Frame
 local tab = "Room"
+-- What the strip says while nothing is being placed: that a placed piece is
+-- tapped to change it (his report, 2026-10-19: no way to remove or replace a room).
+local HINT = "Choose a piece to build, or tap a room to upgrade, move or sell it"
+local hover: Highlight? = nil
+local stopPlacing: () -> ()
+local rightDownAt: Vector2? = nil
+local redrawCards: () -> ()
 local ghost: Model? = nil
 local hidden: { [BasePart]: boolean } = {}
 
@@ -117,12 +125,14 @@ local function updateCamera()
 	end
 	local size = G.Cells * G.CellSize
 	local centre = frame:PointToWorldSpace(Vector3.new(size / 2, Grid.floorY(floor), size / 2))
-	local angle = view * math.pi / 2
-	local back = frame:VectorToWorldSpace(Vector3.new(math.sin(angle), 0, -math.cos(angle)))
+	local back = frame:VectorToWorldSpace(Vector3.new(math.sin(yaw), 0, -math.cos(yaw)))
 	camera.CameraType = Enum.CameraType.Scriptable
-	-- The whole plot in view: the distance grows with the plot (50 back, 62 up for 72 studs).
-	camera.CFrame =
-		CFrame.lookAt(centre + back * (size * 0.7) + Vector3.new(0, size * 0.86, 0), centre)
+	-- At zoom 1 the whole plot is in view: the distance grows with the plot
+	-- (50 back, 62 up for 72 studs). Zooming keeps the same downward angle.
+	camera.CFrame = CFrame.lookAt(
+		centre + back * (size * 0.7 * zoom) + Vector3.new(0, size * 0.86 * zoom, 0),
+		centre
+	)
 end
 
 local function setHidden()
@@ -223,7 +233,11 @@ local function drawGhost()
 	box.CanCollide = false
 	box.CanQuery = false
 	box.CanTouch = false
-	box.Material = Enum.Material.ForceField
+	-- Plain and see-through: ForceField drew in stripes from above and as a
+	-- bare outline from the side (his report, 2026-10-19).
+	box.Material = Enum.Material.SmoothPlastic
+	box.Transparency = 0.55
+	box.CastShadow = false
 	box.Color = if ok then Ui.Colour.Good else Ui.Colour.Bad
 	box.Size = Vector3.new(ex * G.CellSize - 0.4, 6, ez * G.CellSize - 0.4)
 	box.CFrame = frame * CFrame.new(Grid.pieceCentre(candidate) + Vector3.new(0, 3, 0))
@@ -294,7 +308,7 @@ local function place()
 		Net.send("Move", moving, floor, cell.x, cell.z, rotation)
 		moving = nil
 		clearGhost()
-		info.Text = "Moved."
+		info.Text = HINT
 	else
 		Net.send("Place", piece.id, floor, cell.x, cell.z, rotation)
 	end
@@ -325,6 +339,50 @@ local function pieceUnderPointer(x: number, y: number): number?
 		inst = inst.Parent
 	end
 	return nil
+end
+
+-- Whether the pointer is over the build mode's own buttons and strip: a
+-- tap there is for them, never for the grid under them (a tap on a card
+-- placed a room under it, 2026-10-19).
+local function overUi(x: number, y: number): boolean
+	for _, g in me.PlayerGui:GetGuiObjectsAtPosition(x, y) do
+		if g.Visible and g:IsDescendantOf(gui) and (g:IsA("GuiButton") or g.Name == "Strip") then
+			return true
+		end
+	end
+	return false
+end
+
+-- Lights the piece `id` (nil: none) with an outline.
+local function showHover(id: number?)
+	local target: Instance? = nil
+	local m = plotModel()
+	local pieces = m and m:FindFirstChild("Pieces")
+	if id and pieces then
+		for _, c in pieces:GetChildren() do
+			if c:GetAttribute("PieceId") == id then
+				target = c
+				break
+			end
+		end
+	end
+	if not target then
+		if hover then
+			hover.Adornee = nil
+		end
+		return
+	end
+	if not hover then
+		local h = Instance.new("Highlight")
+		h.Name = "BuildHover"
+		h.FillColor = Ui.Colour.Gold
+		h.FillTransparency = 0.85
+		h.OutlineColor = Ui.Colour.Gold
+		h.DepthMode = Enum.HighlightDepthMode.Occluded
+		h.Parent = workspace
+		hover = h
+	end
+	(hover :: Highlight).Adornee = target
 end
 
 local function openMenu(id: number)
@@ -363,7 +421,7 @@ local function openMenu(id: number)
 		floorLabel.Text = `Floor {floor}`
 		setHidden()
 		updateCamera()
-		info.Text = "Tap where it should go"
+		info.Text = "Tap where it should go · right-click to stop"
 	end)
 	local owned = 0
 	for _, other in build().layout do
@@ -539,7 +597,16 @@ end
 
 -- ===== The strip of piece cards =====
 
-local function redrawCards()
+-- Stops placing or moving: the ghost goes, and a tap opens a piece's menu again.
+function stopPlacing()
+	selected, moving = nil, nil
+	clearGhost()
+	placeButton.Visible = false
+	info.Text = HINT
+	redrawCards()
+end
+
+function redrawCards()
 	for _, c in cards:GetChildren() do
 		if c:IsA("GuiButton") then
 			c:Destroy()
@@ -564,9 +631,16 @@ local function redrawCards()
 						Hud.toast(`{p.name}: {b.buildable[p.id]}`, Ui.Colour.Bad)
 						return
 					end
+					-- Tapping the chosen card again puts it down.
+					if selected == p.id then
+						stopPlacing()
+						return
+					end
 					selected = p.id
 					moving = nil
-					info.Text = `{p.name}: tap the grid`
+					showHover(nil)
+					info.Text = `{p.name}: tap the grid · tap the card again to stop`
+					redrawCards()
 					drawGhost()
 				end,
 				if selected == p.id
@@ -579,7 +653,7 @@ local function redrawCards()
 		end
 	end
 	floorLabel.Text = `Floor {floor}/{b.floors}`
-	local buy = tools:FindFirstChild("BuyFloor") :: TextButton?
+	local buy = tools:FindFirstChild("BuyFloor", true) :: TextButton?
 	if buy then
 		buy.Visible = b.floors < b.maxFloors
 		buy.Text = if b.floorCost then `+ Floor {Format.cash(b.floorCost)}` else "+ Floor"
@@ -603,6 +677,7 @@ local function setActive(on: boolean)
 	menu.Visible = false
 	selected, moving, cell = nil, nil, nil
 	clearGhost()
+	showHover(nil)
 	if on then
 		floor = 1
 		updateCamera()
@@ -640,76 +715,114 @@ function BuildController.Init()
 	stripCap.MinSize = Vector2.new(380, 0)
 	stripCap.Parent = strip
 	strip.Visible = false
-	info = Ui.label(strip, "Info", "Choose a piece", UDim2.new(1, -24, 0, 26), 18, Ui.Colour.Gold)
+	info = Ui.label(strip, "Info", HINT, UDim2.new(1, -24, 0, 26), 18, Ui.Colour.Gold)
 	info.Position = UDim2.fromOffset(12, 4)
 	cards = Ui.scroll(strip, "Cards", UDim2.new(1, -24, 0, 86), UDim2.fromOffset(12, 36), true)
 	Ui.list(cards, Enum.FillDirection.Horizontal, 8)
 
-	-- The tools: three columns top-left, where the HUD's menu column is while
-	-- not building (hidden meanwhile), so eleven tools fit a phone's height above
-	-- its thumbstick (§11).
-	tools = Ui.frame(gui, "Tools", UDim2.fromOffset(360, 210), UDim2.fromOffset(10, 56))
+	-- The tools, top-left where the HUD's menu column is while not building
+	-- (hidden meanwhile), above a phone's thumbstick (§11). One row per group,
+	-- each group its own colour (his report, 2026-10-19: "the same colour on
+	-- nearly all, group them better"): what to build, which floor, the camera
+	-- and placing, the extras and leaving.
+	tools = Ui.frame(gui, "Tools", UDim2.fromOffset(380, 206), UDim2.fromOffset(10, 56))
 	tools.BackgroundTransparency = 1
 	tools.Visible = false
-	local grid = Instance.new("UIGridLayout")
-	grid.CellSize = UDim2.fromOffset(114, 44)
-	grid.CellPadding = UDim2.fromOffset(6, 6)
-	grid.SortOrder = Enum.SortOrder.LayoutOrder
-	grid.Parent = tools
+	Ui.list(tools, Enum.FillDirection.Vertical, 10)
+	local FLOOR_BLUE = Color3.fromRGB(58, 78, 150)
+	local EXTRA_VIOLET = Color3.fromRGB(110, 62, 150)
+	local rows = 0
+	local function row(): Frame
+		rows += 1
+		local r = Ui.frame(tools, `Row_{rows}`, UDim2.new(1, 0, 0, 44))
+		r.BackgroundTransparency = 1
+		r.LayoutOrder = rows
+		Ui.list(r, Enum.FillDirection.Horizontal, 6)
+		return r
+	end
 	local function tool(
+		parent: Frame,
 		name: string,
 		text: string,
-		order: number,
+		width: number,
 		fn: () -> (),
 		colour: Color3?
 	): TextButton
-		local b = Ui.button(tools, name, text, UDim2.fromOffset(114, 44), fn, colour)
-		b.LayoutOrder = order
+		local b = Ui.button(parent, name, text, UDim2.fromOffset(width, 44), fn, colour)
+		b.LayoutOrder = #parent:GetChildren()
 		return b
 	end
-	tool("Rooms", "Rooms", 1, function()
+
+	-- What to build: the open tab lit, as the cards are.
+	local what = row()
+	local roomsTab, amenitiesTab
+	local function paintTabs()
+		roomsTab.BackgroundColor3 = if tab == "Room" then Ui.Colour.Pumpkin else Ui.Colour.Panel
+		amenitiesTab.BackgroundColor3 = if tab == "Amenity"
+			then Ui.Colour.Pumpkin
+			else Ui.Colour.Panel
+	end
+	roomsTab = tool(what, "Rooms", "Rooms", 114, function()
 		tab = "Room"
+		paintTabs()
 		redrawCards()
 	end)
-	tool("Amenities", "Amenities", 2, function()
+	amenitiesTab = tool(what, "Amenities", "Amenities", 114, function()
 		tab = "Amenity"
+		paintTabs()
 		redrawCards()
 	end)
-	tool("Up", "▲ Floor", 3, function()
-		floor = math.min(build().floors, floor + 1)
-		redrawCards()
-		setHidden()
-		updateCamera()
-		drawGhost()
-	end)
-	floorLabel = Ui.label(tools, "FloorLabel", "Floor 1", UDim2.fromOffset(114, 44), 18)
-	floorLabel.LayoutOrder = 4
-	floorLabel.TextXAlignment = Enum.TextXAlignment.Center
-	tool("Down", "▼ Floor", 5, function()
+	paintTabs()
+
+	-- Which floor: down, the floor, up, and buying the next.
+	local floors = row()
+	tool(floors, "Down", "▼", 50, function()
 		floor = math.max(1, floor - 1)
 		redrawCards()
 		setHidden()
 		updateCamera()
 		drawGhost()
-	end)
-	tool("BuyFloor", "+ Floor", 6, function()
+	end, FLOOR_BLUE)
+	floorLabel = Ui.label(floors, "FloorLabel", "Floor 1", UDim2.fromOffset(90, 44), 18)
+	floorLabel.LayoutOrder = 2
+	floorLabel.TextXAlignment = Enum.TextXAlignment.Center
+	tool(floors, "Up", "▲", 50, function()
+		floor = math.min(build().floors, floor + 1)
+		redrawCards()
+		setHidden()
+		updateCamera()
+		drawGhost()
+	end, FLOOR_BLUE)
+	tool(floors, "BuyFloor", "+ Floor", 150, function()
 		Net.send("BuyFloor")
 	end, Ui.Colour.Teal)
-	tool("Rotate", "⟳ Rotate", 7, function()
+
+	-- The camera and placing.
+	local placing = row()
+	tool(placing, "Rotate", "⟳ Rotate", 114, function()
 		rotation = (rotation + 1) % 4
 		drawGhost()
 	end)
-	tool("Turn", "↻ View", 8, function()
-		view = (view + 1) % 4
+	tool(placing, "Turn", "↻ View", 114, function()
+		-- A quarter turn, to the next side square on.
+		yaw = (math.floor(yaw / (math.pi / 2) + 0.5) + 1) * math.pi / 2
 		updateCamera()
 	end)
-	placeButton = tool("Place", "✔ Place", 9, place, Ui.Colour.Good)
+	placeButton = tool(placing, "Place", "✔ Place", 114, place, Ui.Colour.Good)
 	placeButton.Visible = false
-	tool("Traps", "Traps", 9.5, openTraps)
-	tool("Style", "🎨 Style", 9.7, openStyle)
-	tool("Done", "Done", 10, function()
+
+	-- The extras, and leaving.
+	local extras = row()
+	tool(extras, "Traps", "Traps", 114, openTraps, EXTRA_VIOLET)
+	tool(extras, "Style", "🎨 Style", 114, openStyle, EXTRA_VIOLET)
+	tool(extras, "Done", "Done", 114, function()
 		setActive(false)
 	end, Ui.Colour.Bad)
+
+	-- Where the HUD's menu column starts (Hud's `placeTop`).
+	Ui.onTopRow(function(up: boolean)
+		tools.Position = UDim2.fromOffset(10, if up then 6 else 56)
+	end)
 
 	menu, menuBody = Ui.window(gui, "PieceMenu", "Piece", UDim2.fromScale(0.5, 0.6))
 	Ui.list(menuBody, Enum.FillDirection.Vertical, 8)
@@ -726,9 +839,72 @@ function BuildController.Start()
 			scheduleHide()
 		end
 	end)
+	-- Looking round the plot (his ask, 2026-10-19): the mouse wheel or a pinch
+	-- zooms; the right mouse button dragged, a two-finger twist, or the , and .
+	-- keys turn the camera (E is the prompts' key); ↻ View still turns a quarter.
+	local function zoomBy(factor: number)
+		zoom = math.clamp(zoom * factor, 0.35, 1.4)
+		updateCamera()
+	end
+	local function turnBy(radians: number)
+		yaw += radians
+		updateCamera()
+	end
+	local pinchStart = 1
+	UserInputService.TouchPinch:Connect(function(_, scale, _, state, processed)
+		if not active or processed then
+			return
+		end
+		if state == Enum.UserInputState.Begin then
+			pinchStart = zoom
+		end
+		zoom = math.clamp(pinchStart / math.max(scale, 0.05), 0.35, 1.4)
+		updateCamera()
+	end)
+	local twistLast = 0
+	UserInputService.TouchRotate:Connect(function(_, twist, _, state, processed)
+		if not active or processed then
+			return
+		end
+		if state == Enum.UserInputState.Begin then
+			twistLast = 0
+		end
+		turnBy(math.rad(twist - twistLast))
+		twistLast = twist
+	end)
+	RunService.RenderStepped:Connect(function(dt)
+		if not active or UserInputService:GetFocusedTextBox() then
+			return
+		end
+		local turn = (if UserInputService:IsKeyDown(Enum.KeyCode.Period) then 1 else 0)
+			- (if UserInputService:IsKeyDown(Enum.KeyCode.Comma) then 1 else 0)
+		if turn ~= 0 then
+			turnBy(turn * dt * 1.5)
+		end
+	end)
 	UserInputService.InputChanged:Connect(function(input, processed)
 		if not active or processed then
 			return
+		end
+		if
+			input.UserInputType == Enum.UserInputType.MouseMovement
+			and overUi(input.Position.X, input.Position.Y)
+		then
+			return
+		end
+		if input.UserInputType == Enum.UserInputType.MouseWheel then
+			zoomBy(1 - 0.12 * input.Position.Z)
+			return
+		end
+		if
+			input.UserInputType == Enum.UserInputType.MouseMovement
+			and UserInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton2)
+		then
+			turnBy(-input.Delta.X * 0.008)
+		end
+		-- With nothing being placed, the piece under the mouse lights up: it can be tapped.
+		if input.UserInputType == Enum.UserInputType.MouseMovement and not pieceBeingPlaced() then
+			showHover(pieceUnderPointer(input.Position.X, input.Position.Y))
 		end
 		if input.UserInputType == Enum.UserInputType.MouseMovement and pieceBeingPlaced() then
 			local c = screenToCell(input.Position.X, input.Position.Y)
@@ -742,7 +918,11 @@ function BuildController.Start()
 		if not active or processed then
 			return
 		end
-		if input.KeyCode == Enum.KeyCode.R then
+		if input.UserInputType == Enum.UserInputType.MouseButton2 then
+			rightDownAt = Vector2.new(input.Position.X, input.Position.Y)
+		elseif input.KeyCode == Enum.KeyCode.B then
+			setActive(false) -- B opens build mode from the HUD (Hud's KEYS) and closes it here
+		elseif input.KeyCode == Enum.KeyCode.R then
 			rotation = (rotation + 1) % 4
 			drawGhost()
 		elseif
@@ -750,6 +930,9 @@ function BuildController.Start()
 			or input.UserInputType == Enum.UserInputType.Touch
 		then
 			local pos = input.Position
+			if overUi(pos.X, pos.Y) then
+				return
+			end
 			if pieceBeingPlaced() then
 				local c = screenToCell(pos.X, pos.Y)
 				if c then
@@ -768,6 +951,18 @@ function BuildController.Start()
 					openMenu(id)
 				end
 			end
+		end
+	end)
+	-- A right-click that did not drag the camera round stops placing.
+	UserInputService.InputEnded:Connect(function(input)
+		if not active or input.UserInputType ~= Enum.UserInputType.MouseButton2 then
+			return
+		end
+		local down = rightDownAt
+		rightDownAt = nil
+		local at = Vector2.new(input.Position.X, input.Position.Y)
+		if down and (at - down).Magnitude < 6 and (selected or moving) then
+			stopPlacing()
 		end
 	end)
 	RunService.RenderStepped:Connect(function()

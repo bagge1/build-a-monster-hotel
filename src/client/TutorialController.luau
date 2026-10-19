@@ -147,6 +147,12 @@ function TutorialController.Init()
 		UDim2.new(0.5, 0, 0, 80),
 		Vector2.new(0.5, 0)
 	)
+	-- Clear of the countdown and of the arrow pointing at it (26 px of
+	-- countdown, the arrow 12 px past it, then 14 px of air), wherever the
+	-- HUD's top row sits.
+	Ui.onTopRow(function(up: boolean)
+		bubble.Position = UDim2.new(0.5, 0, 0, if up then 56 else 104)
+	end)
 	local cap = Instance.new("UISizeConstraint")
 	cap.MaxSize = Vector2.new(460, 104)
 	cap.MinSize = Vector2.new(270, 0)
@@ -204,8 +210,13 @@ function TutorialController.Start()
 		if target and shown(target) then
 			local p = target.AbsolutePosition
 			local size = target.AbsoluteSize
+			-- A centred label points at its text, not its (wider) box.
+			local rightEdge = p.X + size.X
+			if target:IsA("TextLabel") and target.TextXAlignment == Enum.TextXAlignment.Center then
+				rightEdge = p.X + size.X / 2 + target.TextBounds.X / 2
+			end
 			local bob = math.sin(os.clock() * 6) * 6
-			arrow.Position = UDim2.fromOffset(p.X + size.X + 8 + bob, p.Y + size.Y / 2 - 25)
+			arrow.Position = UDim2.fromOffset(rightEdge + 8 + bob, p.Y + size.Y / 2 - 25)
 			arrow.Visible = true
 		else
 			arrow.Visible = false

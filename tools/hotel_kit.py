@@ -376,7 +376,7 @@ def blockout_attachments(kind, w=None, d=None):
         # Layout A, his pick 2026-10-19 (MODELS.md, "Lobby"): the desk across the -X end, served toward +X.
         out = {'Entrance': ((0, 0, 0), (0, 0, -1)), 'Desk': ((-60.8, 3.8, 5), (1, 0, 0)),
                'Clerk': ((-66, 0, 6), (1, 0, 0)),
-               'Till': ((-60.8, 3.8, 8.5), (1, 0, 0)), 'Spawn': ((8, 0, 18), (0, 0, -1)),
+               'Till': ((-60.8, 3.8, 9.4), (1, 0, 0)), 'Spawn': ((8, 0, 18), (0, 0, -1)),
                'SignBoard': ((48, 0, -5), (0, 0, -1))}
         for i, x in enumerate((-58, -54.5, -51, -47.5)):
             out[f'Queue_{i + 1}'] = ((x, 0, 5), (-1, 0, 0))
@@ -519,24 +519,26 @@ def lobby_bell(part, x, y, z, metal):
 
 def lobby_till(body, keys, drawer, screen):
     """The till on the counter's far end (the Till part): a register whose top slopes up toward the
-    clerk, keys on the slope, a drawer toward the guests, a small display on a post."""
+    guests, so its keys face the clerk, a drawer toward the clerk, the marquee plate on the high edge.
+    (It was built facing the guests: his report, 2026-10-19.) Its Collect prompt sits 4.4 studs from
+    the bell's Check in, so the two stop taking each other's place."""
     (lo, hi), top = LOBBY_COUNTER, LOBBY_COUNTER_TOP[1][1]
     tz = blockout_attachments('Lobby')['Till'][0][2]      # the till stands where the Collect prompt is
     xa, xb, za, zb = lo[0] + 0.4, hi[0] - 0.2, tz - 0.6, tz + 0.6
-    prism('Till', [(xa, top), (xb, top), (xb, top + 0.5), (xa, top + 1.1)], za, zb, body, plane='xy')
+    prism('Till', [(xa, top), (xb, top), (xb, top + 1.1), (xa, top + 0.5)], za, zb, body, plane='xy')
     slope = math.degrees(math.atan2(0.6, xb - xa))
-    for i, x in enumerate((xb - 0.3, xb - 0.6, xb - 0.9)):
-        y = top + 0.5 + (xb - x) * 0.6 / (xb - xa)
+    for i, x in enumerate((xa + 0.3, xa + 0.6, xa + 0.9)):
+        y = top + 0.5 + (x - xa) * 0.6 / (xb - xa)
         for z in (tz - 0.3, tz, tz + 0.3):
-            box('Till', (0, 0, 0), (0.22, 0.1, 0.22), keys, m=at((x, y + 0.03, z), rz=-slope))
-    span('Till', (xb - 0.02, top + 0.08, za + 0.12), (xb + 0.05, top + 0.42, zb - 0.12), drawer)
+            box('Till', (0, 0, 0), (0.22, 0.1, 0.22), keys, m=at((x, y + 0.03, z), rz=slope))
+    span('Till', (xa - 0.05, top + 0.08, za + 0.12), (xa + 0.02, top + 0.42, zb - 0.12), drawer)
     # An antique register's marquee plate on the top's high edge (a screen on a stalk read as a
     # modern terminal), and a crank on its side.
     plate = [(tz - 0.45, top + 1.08), (tz + 0.45, top + 1.08), (tz + 0.45, top + 1.45), (tz, top + 1.72),
              (tz - 0.45, top + 1.45)]
-    prism('Till', plate, xa, xa + 0.16, {'right': screen, 'left': screen, 'rest': drawer}, plane='zy')
-    cyl('Till', (0, 0, 0), 0.07, 0.3, drawer, n=6, m=at((xa + 0.6, top + 0.55, zb), rx=90))
-    sphere('Till', (xa + 0.6, top + 0.55, zb + 0.34), (0.1, 0.1, 0.1), drawer, n=6, rings=3)
+    prism('Till', plate, xb - 0.16, xb, {'right': screen, 'left': screen, 'rest': drawer}, plane='zy')
+    cyl('Till', (0, 0, 0), 0.07, 0.3, drawer, n=6, m=at((xb - 0.6, top + 0.55, zb), rx=90))
+    sphere('Till', (xb - 0.6, top + 0.55, zb + 0.34), (0.1, 0.1, 0.1), drawer, n=6, rings=3)
 
 
 def lobby_keyrack(cabinet, drawer, knob, board, tags, cornice, face, hands):

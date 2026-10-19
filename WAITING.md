@@ -44,6 +44,17 @@ Connect: knappen under fliken Plugins i Studio. -->
    *importerat*. Gatlyktorna står nu parvis vid varje entré (koden, ingen
    import).
 
+7. ~~**Importera fyra modeller**~~ (gjort 2026-10-19: alla fyra inställda, sparade och synkade; tavlorna sitter över dörrarna i spelet) (2026-10-19, dina rapporter från spelet): båda
+   lobbyerna och den nya trätavlan över rumsdörrarna (`RoomPlaque`, en per
+   hotell: mörkt trä med guldkant i Haunted Manor, timmer med vit kant i
+   Frostfang; namnet och tier skrivs på den, tillståndet på en andra rad). I
+   lobbyerna: mattans
+   slut efter svängen mot disken var rött utan guldkant, och kassan var vänd
+   mot gästerna och stod för nära klockan (nu 4,4 studs isär, tangenterna
+   mot den som står bakom disken). Alla fyra ligger i `blender/_import/`. Importera **alla
+   filerna** till **Workspace** i en dialog och skriv *importerat* (inte mitt
+   i en playtest).
+
 ## §1 Att titta på eller spela
 
 <!-- Det bara en människa kan bedöma: hur det känns, hur det ser ut.
@@ -217,7 +228,72 @@ Med Claudes skärmdump där det finns en. -->
      studs, från Studios mall); spelet använder den inte, spelarna börjar vid
      lobbyns `Spawn`. **Rekommendation:** ta bort den. Claude kan ta bort den
      i Studio; den är borta för gott när du sparar och publicerar (File →
-     Publish to Roblox).
+     Publish to Roblox). **Claude har tagit bort den i Studio (2026-10-19, du
+   rapporterade den som en glitch); publicera (File → Publish to Roblox) så
+   är den borta för gott.**
+
+14. ~~**Night Bus: det som är öppet**~~ (besvarat 2026-10-19: 40 % av
+   gatans lediga rum per buss, en buss var 3:e minut, gästerna strövar förbi
+   entréerna i ungefär en minut, och tutorialens första gäst är den enda som
+   dyker upp från ingenstans; GDD §4.3 och §18. Gränserna minst 2 och högst 4
+   per spelare är Claudes platshållare tills du säger annat.)
+15. ~~**"Keep the stairs clear" där det inte finns någon trappa**~~ och
+   ~~**köpa tomter**~~ (besvarat 2026-10-19: tomten köps i områden, trappor
+   köps och placeras, allt går att bygga om, även receptionen, och man kan
+   byta golv och ställa ut mattor och dekor; GDD §5.4 och §18). Det som är
+   öppet står i punkt 16.
+16. **Att bygga fritt: det som är öppet** (2026-10-19, GDD §5.4). Fem frågor,
+   med Claudes rekommendation:
+   - **Områdena:** 4 × 5 celler (48 × 60 studs) bakom lobbyn, tre i bredd och
+     två på djupet, sex per våning. Två 2×2-rum på var sida om en korridor
+     ryms i ett, alltså fyra Standard Rooms, som du ville att man börjar med
+     (en reception och plats för 2–4 Standard Rooms). Man börjar med det
+     mittersta främre. **Rekommendation:** ett
+     köpt område gäller alla våningar; priserna är platshållare tills du
+     sätter dem.
+   - **Trapporna:** en trappa är 2×2 och går från sin våning till våningen
+     ovanför, på samma celler. Varje våning måste nås av minst en trappa,
+     och den sista trappan till en våning med rum kan inte tas bort.
+     **Rekommendation:** när man köper en våning får man den första trappan
+     till den gratis att placera.
+   - **Receptionen:** disken med kassan och nyckeltavlan blir en bit som man
+     flyttar. **Rekommendation:** var som helst på våning 1 där gästerna når
+     den från entrén, och bara en. Lobbyn blir då ett skal (golv, framvägg,
+     valv), och bänkar och krukor blir dekor.
+   - **Dekor:** **Rekommendation:** placeras fritt på ett rutnät av 3 studs
+     (en kvarts cell), vrids i 90°, i rum, lobby och korridorer. Ett rums
+     önskemål (taggar) kommer från dekoren innanför dess väggar, i stället för
+     de tre platserna per rum. Golv väljs per rum, per lobby och för
+     korridorerna, från en uppsättning per hotell.
+   - **Vilka dekorationer?** Du nämnde klockor, blommor, växter, möbler och
+     ett piano. **Att bestämma:** listan för Haunted Manor och vad var och en
+     ger (taggar, Style). Claude modellerar dem och visar grå silhuetter
+     först.
+   - **Tier genom inredning** (din idé, 2026-10-19): möbler, mattor och annan
+     dekor i ett rum samlar poäng, och rummet når T2 och till sist T3, och
+     varje tier höjer rummets värde (i dag köps T1–T5 för pengar, ×4 per
+     tier). **Att bestämma:** poäng per sak och gränserna för T2 och T3.
+     **Rekommendation:** varje dekor ger Style-poäng efter sitt pris; T2 vid
+     100 och T3 vid 300 för ett 2×2-rum, mer för större rum; varje tier +50 %
+     betalning som i dag.
+17. ~~**Room Service syns inte**~~ (besvarat 2026-10-19: du vill se personalen
+   arbeta, inte stå vid disken; GDD §5.4). Byggs i en egen session: Room
+   Service går till rummet och tillbaka, Housekeeping till rummet som ska
+   städas, och en "✓" vid dörren när det är klart.
+
+18. **En skog runt gatan** (din idé, 2026-10-19: "så det inte ser ut som en
+   stor gräsplätt"), och **Night Bus svänger in ur skogen** i stället för att
+   dyka upp. Nya modeller (träd: kala, krokiga, några granar för Frostfang) som
+   Claude modellerar och visar som grå silhuetter först, och en väg som går
+   in i skogen i båda ändar. Görs i en egen session; utseendet är ditt.
+
+19. **En förgård framför hotellet** (din idé, 2026-10-19): en trottoar som
+   gästerna går på, en gång fram till entrén, och fällorna placeras där (i
+   dag sitter de på tre platser i lobbyn). **Att bestämma:** hur djup.
+   **Rekommendation:** 24 studs (två celler) mellan trottoaren och fasaden,
+   trottoaren 8 studs bred längs gatan, gången 6 studs bred fram till valvet;
+   skylten står kvar i förgårdens hörn. Tomterna flyttas då 24 studs bort från
+   gatan. Hör ihop med Night Bus (gästerna strövar på trottoaren) och skogen.
 
 ## §3 Creator Hub och publicering
 

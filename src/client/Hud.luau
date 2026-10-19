@@ -10,7 +10,9 @@
 	a copy for drawing.
 ]]
 
+local GuiService = game:GetService("GuiService")
 local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
 
@@ -27,6 +29,7 @@ local left: Frame
 local right: Frame
 local toasts: Frame
 local banner: TextLabel
+local columnTop = 56 -- where the menu columns start (placeTop)
 
 local REFUSALS: { [string]: string } = {
 	Cash = "Not enough cash",
@@ -141,6 +144,27 @@ local ICONS: { [string]: { string | Color3 } } = {
 	DailyButton = { "Icon_Daily", Color3.fromRGB(255, 130, 160) },
 }
 
+-- A key for a menu button (his ask, 2026-10-19). It works only while its
+-- button is shown, so build mode, which hides the column, keeps R for
+-- rotating a piece (BuildController closes itself on B).
+local KEYS: { [string]: Enum.KeyCode } = {
+	BuildButton = Enum.KeyCode.B,
+	ResidentsButton = Enum.KeyCode.R,
+}
+local keyed: { [Enum.KeyCode]: { button: TextButton, onClick: () -> () } } = {}
+
+-- Whether a GUI object and every one of its ancestors is shown.
+local function shown(g: GuiObject): boolean
+	local node: Instance? = g
+	while node and node:IsA("GuiObject") do
+		if not node.Visible then
+			return false
+		end
+		node = node.Parent
+	end
+	return true
+end
+
 -- A menu button on the left or right edge, in `order`.
 function Hud.button(
 	name: string,
@@ -157,6 +181,10 @@ function Hud.button(
 	end
 	local b = Ui.button(parent, name, text, UDim2.fromOffset(110, 44), onClick)
 	b.LayoutOrder = order or 0
+	local key = KEYS[name]
+	if key then
+		keyed[key] = { button = b, onClick = onClick }
+	end
 	if id and id ~= "" then
 		local img = Instance.new("ImageLabel")
 		img.Name = "Icon"
@@ -209,6 +237,8 @@ function Hud.Init()
 
 	-- The menu columns start under the top bar and stop well above the bottom
 	-- corners, where Roblox puts the thumbstick and jump on a phone (§11).
+	-- They start under the top row, or at the top when the row is up in the
+	-- Roblox bar (`placeTop` below), and end 94 px above the bottom either way.
 	left = Ui.frame(gui, "Left", UDim2.new(0, 110, 1, -150), UDim2.fromOffset(10, 56))
 	left.BackgroundTransparency = 1
 	Ui.list(left, Enum.FillDirection.Vertical, 6)
@@ -231,17 +261,44 @@ function Hud.Init()
 			g.SortOrder = Enum.SortOrder.LayoutOrder
 			g.HorizontalAlignment = Enum.HorizontalAlignment.Right
 			g.Parent = right
-			right.Size = UDim2.new(0, 226, 1, -150)
+			right.Size = UDim2.new(0, 226, 1, -94 - columnTop)
 		elseif not short and grid then
 			grid:Destroy()
 			Ui.list(right, Enum.FillDirection.Vertical, 6, Enum.HorizontalAlignment.Right)
-			right.Size = UDim2.new(0, 110, 1, -150)
+			right.Size = UDim2.new(0, 110, 1, -94 - columnTop)
 		end
 	end
 	fit()
 	if workspace.CurrentCamera then
 		workspace.CurrentCamera:GetPropertyChangedSignal("ViewportSize"):Connect(fit)
 	end
+
+	-- The top row sits in the middle of the Roblox top bar, between its
+	-- buttons, whenever it fits there (his ask, 2026-10-19: no empty band
+	-- above it); on a screen too narrow for that it drops under the bar.
+	local row = top:FindFirstChildOfClass("UIListLayout") :: UIListLayout
+	local function placeTop()
+		local bar = GuiService.TopbarInset
+		local inset = GuiService:GetGuiInset().Y
+		local width = row.AbsoluteContentSize.X
+		local mid = gui.AbsoluteSize.X / 2
+		local up = bar.Height > 0
+			and mid - width / 2 >= bar.Min.X + 8
+			and mid + width / 2 <= bar.Max.X - 8
+		top.Position = if up
+			then UDim2.fromOffset(0, -inset + math.floor((bar.Height - 40) / 2))
+			else UDim2.fromOffset(0, 6)
+		columnTop = if up then 6 else 56
+		left.Position = UDim2.fromOffset(10, columnTop)
+		left.Size = UDim2.new(0, 110, 1, -94 - columnTop)
+		right.Position = UDim2.new(1, -10, 0, columnTop)
+		right.Size = UDim2.new(0, right.Size.X.Offset, 1, -94 - columnTop)
+		gui:SetAttribute("TopRowUp", up)
+	end
+	placeTop()
+	GuiService:GetPropertyChangedSignal("TopbarInset"):Connect(placeTop)
+	row:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(placeTop)
+	gui:GetPropertyChangedSignal("AbsoluteSize"):Connect(placeTop)
 
 	toasts = Ui.frame(gui, "Toasts", UDim2.fromOffset(420, 200), UDim2.new(0.5, 0, 0, 110))
 	toasts.AnchorPoint = Vector2.new(0.5, 0)
@@ -257,6 +314,15 @@ function Hud.Init()
 end
 
 function Hud.Start()
+	UserInputService.InputBegan:Connect(function(input, processed)
+		if processed or UserInputService:GetFocusedTextBox() then
+			return
+		end
+		local k = keyed[input.KeyCode]
+		if k and shown(k.button) then
+			k.onClick()
+		end
+	end)
 	Net.listen("Toast", function(text: string, kind: string?)
 		Hud.toast(
 			text,

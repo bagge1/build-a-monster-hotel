@@ -193,11 +193,25 @@ local function drawBook()
 	titles.LayoutOrder = 1
 	local grid = Ui.scroll(bookBody, "Pages", UDim2.new(1, 0, 1, -84))
 	grid.LayoutOrder = 2
+	-- Room round the pages (his report, 2026-10-19: "cramped"): the grid is
+	-- inset so the pages' outlines are not cut off at its edges, and the
+	-- pages share the width, 4 across where there is room, 2 on a phone.
+	local inset = Instance.new("UIPadding")
+	inset.PaddingTop = UDim.new(0, 4)
+	inset.PaddingBottom = UDim.new(0, 4)
+	inset.PaddingLeft = UDim.new(0, 4)
+	inset.PaddingRight = UDim.new(0, 14) -- the scroll bar's lane
+	inset.Parent = grid
 	local layout = Instance.new("UIGridLayout")
-	layout.CellSize = UDim2.fromOffset(200, 118)
-	layout.CellPadding = UDim2.fromOffset(8, 8)
+	layout.CellPadding = UDim2.fromOffset(12, 12)
 	layout.SortOrder = Enum.SortOrder.LayoutOrder
 	layout.Parent = grid
+	local function columns()
+		local n = math.clamp(math.floor((grid.AbsoluteSize.X - 18) / 200), 2, 4)
+		layout.CellSize = UDim2.new(1 / n, -12 * (n - 1) / n, 0, 142)
+	end
+	columns()
+	grid:GetPropertyChangedSignal("AbsoluteSize"):Connect(columns)
 	for i, sp in Species.ofLocation(bookLocation) do
 		local found = book.pages[sp.id] or {}
 		local page = Ui.frame(
@@ -214,21 +228,23 @@ local function drawBook()
 			page,
 			"Name",
 			if #found > 0 then sp.name else "???",
-			UDim2.new(1, -12, 0, 22),
-			18,
+			UDim2.new(1, -20, 0, 22),
+			20,
 			rarityColour(sp.rarity)
 		)
-		title.Position = UDim2.fromOffset(6, 4)
+		title.Position = UDim2.fromOffset(10, 8)
 		local room = Pieces.get(sp.room)
 		local info = Ui.label(
 			page,
 			"Info",
 			`{sp.rarity} · {room and room.name or ""}\nlikes {table.concat(sp.prefs, ", ")}`,
-			UDim2.new(1, -12, 0, 36),
-			13,
+			UDim2.new(1, -20, 0, 40),
+			14,
 			Ui.Colour.Muted
 		)
-		info.Position = UDim2.fromOffset(6, 26)
+		info.Position = UDim2.fromOffset(10, 34)
+		info.TextWrapped = true
+		info.TextYAlignment = Enum.TextYAlignment.Top
 		local muts = {}
 		for _, m in Mutations.Rollable do
 			table.insert(muts, if table.find(found, m.id) then m.name else "·")
@@ -237,17 +253,17 @@ local function drawBook()
 			page,
 			"Mutations",
 			table.concat(muts, " "),
-			UDim2.new(1, -12, 0, 18),
-			12,
+			UDim2.new(1, -20, 0, 18),
+			14,
 			Ui.Colour.Gold
 		)
-		mutLine.Position = UDim2.fromOffset(6, 64)
+		mutLine.Position = UDim2.fromOffset(10, 80)
 		local f = c.friendship[sp.id] or { have = 0, need = 1 }
 		local bar = Ui.frame(
 			page,
 			"Friendship",
-			UDim2.new(1, -12, 0, 12),
-			UDim2.fromOffset(6, 92),
+			UDim2.new(1, -20, 0, 10),
+			UDim2.fromOffset(10, 122),
 			Ui.Colour.Ink
 		)
 		Ui.corner(bar, 6)
@@ -260,8 +276,8 @@ local function drawBook()
 		)
 		Ui.corner(fill, 6)
 		local fl =
-			Ui.label(page, "FriendshipText", `♥ {f.have}/{f.need}`, UDim2.new(1, -12, 0, 14), 12)
-		fl.Position = UDim2.fromOffset(6, 76)
+			Ui.label(page, "FriendshipText", `♥ {f.have}/{f.need}`, UDim2.new(1, -20, 0, 16), 14)
+		fl.Position = UDim2.fromOffset(10, 102)
 		fl.TextXAlignment = Enum.TextXAlignment.Right
 	end
 end
