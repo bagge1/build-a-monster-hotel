@@ -17,5 +17,6 @@ for folder, path in MAP.items():
     for f in sorted((ROOT / folder).glob("*.luau")):
         name = f.name.split(".")[0]
         inst = path if name == "init" else f"{path}.{name}"
-        rows.append(f'["{inst}"]={len(f.read_bytes())}')
+        size = len(f.read_bytes().replace(b"\r\n", b"\n"))  # Studio keeps LF
+        rows.append(f'["{inst}"]={size}')
 print("{" + ",".join(rows) + "}")

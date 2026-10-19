@@ -8,8 +8,9 @@ Start at the first unmarked item. Marks: `[x]` pass, `[!]` failed and fixed
 
 - [x] A synthetic key, a click and a walk are seen to act in the game.
 - [x] The sync landed: every script's size in Studio matches git (`tools/sync_sizes.py`).
-- [A] `PlayerData` reports DataStore `Access`, not a mock. **It reports `NoAccess`**:
-  Studio API access is off (WAITING.md §3.1).
+- [x] `PlayerData` reports DataStore `Access`, not a mock (2026-10-19 14:29, after
+  August turned Studio API access on). Persistence tests use a Studio test
+  profile (`ServerStorage.StudioProfile = "Test_..."`), never his own save.
 
 ## Phase 1 (M1, greybox core)
 
