@@ -7,8 +7,9 @@ metadata:
 
 **State (2026-10-19, first night sprint):** M0–M6 built in code and played in
 Studio, plus §7 social and §8.2 events. The game still draws Luau blockouts:
-the Haunted Manor monsters and hotel kit are built in Blender and staged, not
-yet imported (WAITING §0). Save and load are NOT proven:
+both locations' monsters, the Hunter, the Night Bus and both hotel kits are
+built in Blender and staged, not yet imported (WAITING §0). Economy pacing is
+measured by `tools/balance_model.py` (archive/BALANCE-2026-10-19.md). Save and load are NOT proven:
 DataStore access is off (WAITING §3.1), so every playtest ran on a mock profile.
 
 | Phase | Built | Run in Studio | Next |

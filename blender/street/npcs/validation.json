@@ -1,0 +1,60 @@
+{
+  "set": "street/npcs",
+  "models": {
+    "Hunter": {
+      "checks": [
+        "part names round-trip (9 parts)",
+        "MODELS.md names present: Body, Glow_Warm_1, LOD_Proxy, Nameplate, Root",
+        "every other part an allowed name (Skin/Trim/Dark/Light/Wheel_n/Glow_<Colour>_n)",
+        "triangle counts as built",
+        "one material and one UV layer per part",
+        "closed geometry (all but the proxy)",
+        "3612 triangles within 4000",
+        "LOD_Proxy 251 within 300",
+        "height 5.23 studs against 5.0 (+/- 10 %)",
+        "nothing under the floor",
+        "Root [2, 5.0, 2] (Roblox x, y, z), bottom at 0, centred on the origin",
+        "Nameplate markers where the manifest says",
+        "Glow_Warm_1 ahead of the Body: faces Roblox [-0.0, 0.0, -1.0]"
+      ],
+      "triangles": 3612,
+      "triangles_proxy": 251,
+      "height": 5.233,
+      "height_target": 5.0
+    },
+    "NightBus": {
+      "checks": [
+        "part names round-trip (16 parts)",
+        "MODELS.md names present: Body, Door, Glow_Warm_1, LOD_Proxy, Root",
+        "every other part an allowed name (Skin/Trim/Dark/Light/Wheel_n/Glow_<Colour>_n)",
+        "triangle counts as built",
+        "one material and one UV layer per part",
+        "closed geometry (all but the proxy)",
+        "6540 triangles within 8000",
+        "LOD_Proxy 478 within 500",
+        "height 8.96 studs against 9.0 (+/- 10 %)",
+        "nothing under the floor",
+        "Root [24, 9, 8] (Roblox x, y, z), bottom at 0, centred on the origin",
+        "the whole bus inside its Root",
+        "Door markers where the manifest says",
+        "Glow_Warm_2 ahead of the Body: faces Roblox [1.0, 0.0, 0.0]"
+      ],
+      "triangles": 6540,
+      "triangles_proxy": 478,
+      "height": 8.96,
+      "height_target": 9.0
+    }
+  },
+  "collision_precise": {
+    "Hunter": [],
+    "NightBus": []
+  },
+  "collision_note": "Street models collide with nothing (HunterRenderer and BusRenderer draw them CanCollide/CanQuery/CanTouch off): Box on every mesh, PreciseConvexDecomposition on none.",
+  "not_validated": [
+    "nothing in Studio: the import, the axis conversion, the marker positions there, the colours arriving",
+    "whether the importer carries a material's plain colour to MeshPart.Color (manifest has every colour)",
+    "the look at the game's camera, on the street at night",
+    "animations: none exist (no rig)",
+    "the Door attachment's orientation after import (set from the manifest by import_settings.luau; read it back in Studio)"
+  ]
+}

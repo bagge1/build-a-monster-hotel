@@ -255,6 +255,16 @@ authored facing +X (the way it drives in, from the west), its `Root` the size
 of the bus, with `Door` (attachment) where guests step out, and
 `Glow_Warm_<n>` for its windows and lamps.
 
+**Hunter** (the first set, 2026-10-19): Root 2 × 5 × 2; `Nameplate`; no `Hand`
+and no eyes; budget a monster's (4,000 + 300); colour parts as a monster's.
+
+**NightBus**: Root 24 × 9 × 8, no `Nameplate`. `Door` (a marker with its
+facing) on the floor 0.6 studs outside the right side (+Z, the stop's side),
+looking +Z. `Wheel_1`–`Wheel_4` (front-left, front-right, rear-left,
+rear-right) are their own parts. `Glow_Warm_1` all the glass, `Glow_Warm_2`
+and `Glow_Warm_3` the left and right headlamps (the code hangs its headlight
+on `_2`), `Glow_Warm_4` the roof lantern, `Glow_Warm_5` the tail lamps.
+
 ---
 
 ## Checklist before handing a set over

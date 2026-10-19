@@ -36,6 +36,12 @@ Connect: knappen under fliken Plugins i Studio. -->
    **Workspace** och skriv *importerat*. Bilden:
    `blender/hotel/frostfang_lodge/review/contact_sheet.png`. Sex rum, två
    Amenities, lobbyn, trappan, skylten och sex dekorsaker; allt nattens utkast.
+5. **Importera Frostfang-monstren, Hunter och Night Bus (nio stycken).** I Studio:
+   **File → Import 3D**, öppna mappen
+   `D:\Roblox\build-a-monster-hotel\blender\_import\frostfang_and_street_2026-10-19\`,
+   markera alla nio filerna (håll Ctrl och tryck A), importera till **Workspace**
+   och skriv *importerat*. Bilderna: `blender/monsters/frostfang_lodge/review/sheet.png`
+   och `blender/street/npcs/review/sheet.png`. Allt nattens utkast.
 
 ## §1 Att titta på eller spela
 

@@ -1,0 +1,421 @@
+{
+  "set": "street/npcs",
+  "frame": "Blender +Z up; the Hunter faces Blender -Y (Roblox -Z), the NightBus Blender -X (Roblox +X); Roblox (x, y, z) = Blender (-x, z, y)",
+  "models": [
+    {
+      "species": "Hunter",
+      "shape": "Biped",
+      "fbx": "fbx/Hunter.fbx",
+      "height_target": 5.0,
+      "height": 5.233,
+      "bounds_blender": [
+        [
+          -1.523,
+          -1.518,
+          0.0
+        ],
+        [
+          1.07,
+          1.05,
+          5.233
+        ]
+      ],
+      "triangles": 3612,
+      "triangles_proxy": 251,
+      "budget": {
+        "model": 4000,
+        "proxy": 300,
+        "mesh_cap": 20000
+      },
+      "parts": [
+        {
+          "part": "Dark",
+          "triangles": 924,
+          "colour": [
+            85,
+            58,
+            42
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Trim",
+          "triangles": 560,
+          "colour": [
+            240,
+            190,
+            60
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Skin",
+          "triangles": 784,
+          "colour": [
+            245,
+            205,
+            170
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Body",
+          "triangles": 464,
+          "colour": [
+            105,
+            135,
+            75
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Light",
+          "triangles": 760,
+          "colour": [
+            250,
+            245,
+            225
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Glow_Warm_1",
+          "triangles": 96,
+          "colour": [
+            255,
+            240,
+            170
+          ],
+          "material": "Neon"
+        },
+        {
+          "part": "Nameplate",
+          "triangles": 12,
+          "colour": [
+            255,
+            0,
+            255
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Root",
+          "triangles": 12,
+          "colour": [
+            128,
+            128,
+            128
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "LOD_Proxy",
+          "triangles": 251,
+          "colour": [
+            105,
+            135,
+            75
+          ],
+          "material": "SmoothPlastic"
+        }
+      ],
+      "markers_blender": {
+        "Nameplate": [
+          0.0,
+          0.0,
+          6.0
+        ]
+      },
+      "markers_roblox": {
+        "Nameplate": [
+          -0.0,
+          6.0,
+          0.0
+        ]
+      },
+      "markers_roblox_from_root": {
+        "Nameplate": [
+          -0.0,
+          3.5,
+          0.0
+        ]
+      },
+      "coplanar_overlaps": "none",
+      "rig": "none: static meshes, no bones, no Animations folder (the client moves it whole)",
+      "note": "A goofy monster hunter (GDD 8.1): pith helmet too big, worried brows, goggly cross-eyes, bushy moustache, shorts and mustard knee socks, a garlic necklace, a butterfly net and an oversized flashlight (its lens Glow_Warm_1, the part that proves he faces Roblox -Z).",
+      "kind": "npc",
+      "root_size_blender": [
+        2,
+        2,
+        5.0
+      ],
+      "root_size_roblox": [
+        2,
+        5.0,
+        2
+      ],
+      "front": "Glow_Warm_1",
+      "facing_blender": [
+        0,
+        -1,
+        0
+      ],
+      "facing_roblox": [
+        -0.0,
+        0.0,
+        -1.0
+      ],
+      "need": [
+        "Body",
+        "Nameplate",
+        "Glow_Warm_1"
+      ]
+    },
+    {
+      "species": "NightBus",
+      "shape": "Vehicle",
+      "fbx": "fbx/NightBus.fbx",
+      "height_target": 9.0,
+      "height": 8.96,
+      "bounds_blender": [
+        [
+          -11.95,
+          -3.96,
+          0.0
+        ],
+        [
+          11.95,
+          3.99,
+          8.96
+        ]
+      ],
+      "triangles": 6540,
+      "triangles_proxy": 478,
+      "budget": {
+        "model": 8000,
+        "proxy": 500,
+        "mesh_cap": 20000
+      },
+      "parts": [
+        {
+          "part": "Body",
+          "triangles": 108,
+          "colour": [
+            105,
+            70,
+            155
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Trim",
+          "triangles": 432,
+          "colour": [
+            240,
+            145,
+            45
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Glow_Warm_4",
+          "triangles": 108,
+          "colour": [
+            255,
+            190,
+            90
+          ],
+          "material": "Neon"
+        },
+        {
+          "part": "Glow_Warm_1",
+          "triangles": 1836,
+          "colour": [
+            255,
+            205,
+            120
+          ],
+          "material": "Neon"
+        },
+        {
+          "part": "Dark",
+          "triangles": 1632,
+          "colour": [
+            45,
+            32,
+            60
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Glow_Warm_2",
+          "triangles": 224,
+          "colour": [
+            255,
+            240,
+            180
+          ],
+          "material": "Neon"
+        },
+        {
+          "part": "Glow_Warm_3",
+          "triangles": 224,
+          "colour": [
+            255,
+            240,
+            180
+          ],
+          "material": "Neon"
+        },
+        {
+          "part": "Light",
+          "triangles": 960,
+          "colour": [
+            245,
+            240,
+            230
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Glow_Warm_5",
+          "triangles": 240,
+          "colour": [
+            255,
+            120,
+            70
+          ],
+          "material": "Neon"
+        },
+        {
+          "part": "Wheel_1",
+          "triangles": 188,
+          "colour": [
+            50,
+            42,
+            62
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Wheel_2",
+          "triangles": 188,
+          "colour": [
+            50,
+            42,
+            62
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Wheel_3",
+          "triangles": 188,
+          "colour": [
+            50,
+            42,
+            62
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Wheel_4",
+          "triangles": 188,
+          "colour": [
+            50,
+            42,
+            62
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Door",
+          "triangles": 12,
+          "colour": [
+            255,
+            0,
+            255
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Root",
+          "triangles": 12,
+          "colour": [
+            128,
+            128,
+            128
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "LOD_Proxy",
+          "triangles": 478,
+          "colour": [
+            105,
+            70,
+            155
+          ],
+          "material": "SmoothPlastic"
+        }
+      ],
+      "markers_blender": {
+        "Door": [
+          -5.0,
+          4.6,
+          0.0
+        ]
+      },
+      "markers_roblox": {
+        "Door": [
+          5.0,
+          0.0,
+          4.6
+        ]
+      },
+      "markers_roblox_from_root": {
+        "Door": [
+          5.0,
+          -4.5,
+          4.6
+        ]
+      },
+      "coplanar_overlaps": "none",
+      "rig": "none: static meshes, no bones, no Animations folder (the client moves it whole)",
+      "note": "A cute purple night bus with an orange roof and a lit lantern on top, warm-lit windows (Glow_Warm_1: windows, windscreen, door panes), headlamp eyes Glow_Warm_2 (its left) and Glow_Warm_3 (its right), a grille smile, tail lamps Glow_Warm_5. Faces Roblox +X. Door: on the floor 0.6 outside the right side (Roblox +Z), looking out. Wheel_1..4: front-left, front-right, rear-left, rear-right; nothing turns them yet.",
+      "kind": "vehicle",
+      "root_size_blender": [
+        24,
+        8,
+        9
+      ],
+      "root_size_roblox": [
+        24,
+        9,
+        8
+      ],
+      "front": "Glow_Warm_2",
+      "facing_blender": [
+        -1,
+        0,
+        0
+      ],
+      "facing_roblox": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "need": [
+        "Body",
+        "Door",
+        "Glow_Warm_1"
+      ],
+      "markers_look_roblox": {
+        "Door": [
+          -0.0,
+          0.0,
+          1.0
+        ]
+      }
+    }
+  ]
+}

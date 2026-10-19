@@ -510,7 +510,7 @@ local function buildStreet()
 	local stop = block(
 		"BusStop",
 		Vector3.new(8, 0.4, 6),
-		StreetLayout.BusStop + Vector3.new(0, 0.2, -10),
+		StreetLayout.BusStop + Vector3.new(0, 0.2, -6), -- between the guests' line and the bus
 		Color3.fromRGB(240, 150, 60),
 		Enum.Material.SmoothPlastic
 	)
@@ -518,7 +518,7 @@ local function buildStreet()
 	block(
 		"BusStopSign",
 		Vector3.new(0.6, 8, 0.6),
-		StreetLayout.BusStop + Vector3.new(3, 4, -12),
+		StreetLayout.BusStop + Vector3.new(3, 4, -8.5), -- clear of the bus (z −19..−11)
 		Color3.fromRGB(60, 50, 70),
 		Enum.Material.Metal
 	)

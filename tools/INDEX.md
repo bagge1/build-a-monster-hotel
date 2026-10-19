@@ -7,48 +7,64 @@ another's.
 
 ## monster_kit.py
 
-The shared kit for every monster (MODELS.md, "Monsters and street NPCs"). A
-build script is, per species, its shapes and a call to `finish()`, then
-`finish_set()` and `validate()` once for the set (`build_monsters_l1.py` is
-the pattern). Frame: Blender -Y is the front, +Z up, +X the monster's left,
-1 unit = 1 stud; Roblox (x, y, z) = Blender (-x, z, y). Headless only; the
-one preview is a Workbench sheet (`-- norender` skips it).
+The shared kit for every monster (MODELS.md, "Monsters and street NPCs") and
+the street NPCs (`Hunter`, `NightBus`, "Hunters and the bus"). A build script
+is, per model, its shapes and a call to `finish()`, then `finish_set()` and
+`validate()` once for the set (`build_monsters_l1.py` is the pattern). Frame:
+Blender -Y is the front, +Z up, +X the monster's left, 1 unit = 1 stud;
+Roblox (x, y, z) = Blender (-x, z, y). The bus alone faces Blender -X (Roblox
++X). Headless only; the one preview is a Workbench sheet (`-- norender` skips
+it).
 
 ### Constants
 
 - `MONSTER_BUDGET` :50 (4,000), `PROXY_BUDGET` :51 (300), `MESH_TRIANGLE_CAP` :52
 - `HEIGHT_TOL` :53, 10 % of Species.luau's `look.height`
 - `GLOW_WORDS` :56, `EXTRA_PARTS` :59 (`Skin`, `Trim`, `Dark`, `Light`), `MARKERS` :60, `PART_RE` :61, every part name a monster may have
-- `SPECIES` :84, Species.luau's height, colour, eyes and shape per id, read from the source
+- `BUS_BUDGET`, `BUS_PROXY_BUDGET` :71 (8,000 + 500), `VEHICLE_MARKERS` :72 (`Door`), `ALL_MARKERS` :73, `STREET_PART_RE` :74 (adds `Door`, `Wheel_<n>`)
+- `NPCS` :76, the street targets (kind `npc` / `vehicle`, height, Root size, the names they need, the `front` part and `facing`, budgets), from the client blockouts
+- `SPECIES` :107, Species.luau's height, colour, eyes and shape per id, read from the source
 
 ### Functions
 
-- `start_set(set_dir)` :119 an empty scene writing to `blender/<set_dir>/`
-- `begin(sid, set_dir, colours=None)` :132 start a species; `colours` for the extra parts and glows (sRGB)
-- `rings(part, spec, n, wave, matrix, name, radial)` :179 a closed solid through horizontal rings (the base of every shape)
-- `lathe(part, profile, at, n, sy, wave, rot)` :220 revolve [(z, r)]
-- `ball(part, at, r, n=12, k=6, rot, name, radial)` :226 an ellipsoid
-- `on_ball(at, r, x, z, out)` :235 a point on an ellipsoid's front
-- `limb(part, p0, p1, r0, r1, n=10)` :244 a tapered capsule
-- `box(part, at, size, bevel, rot)` :256
-- `prism(part, outline, y_front, depth, rot, pivot)` :268 a flat-fronted convex solid (carved eyes, a tiara)
-- `arc_shell(part, profile, t0, t1, thick, at, n, sy)` :287 a closed shell over an arc (a cape, a collar)
-- `pair(fn, *args, mirror=[...], **kw)` :315 a call and its mirror across x
-- `front_y(profile, z, x, at, sy, out)` :334 a point on a lathe's front
-- `eyes(at, r, pupil, shine, rr)` :346 `Glow_Eyes_1/2` with a Dark pupil and a Light glint
-- `marker(name, at)` :362 `Nameplate` / `Hand` as a 0.2 marker part
-- `coplanar_overlaps(objs)` :385 lifted from ship_kit; faces of two pieces in one plane, overlapping
-- `finish(note='')` :569 the contract checks, Root, LOD_Proxy, budgets, FBX, the model's record; refuses a bad model
-- `finish_set(set_dir, offsets=4.2, sheet=True)` :680 manifest.json, import_settings.luau, the .blend, the sheet
-- `import_luau(records)` :721 the import step's Luau (PrimaryPart, pivot, markers to attachments, colours, collision, proxy hidden)
-- `validate(set_dir, species)` :819 re-import each FBX and check it; writes validation.json
+- `start_set(set_dir)` :148 an empty scene writing to `blender/<set_dir>/`
+- `begin(sid, set_dir, colours=None)` :161 start a species or a street NPC (`NPCS`); `colours` for the extra parts and glows (sRGB), and the NPC's `Body`
+- `rings(part, spec, n, wave, matrix, name, radial)` :209 a closed solid through horizontal rings (the base of every shape)
+- `lathe(part, profile, at, n, sy, wave, rot)` :250 revolve [(z, r)]
+- `ball(part, at, r, n=12, k=6, rot, name, radial)` :256 an ellipsoid
+- `on_ball(at, r, x, z, out)` :265 a point on an ellipsoid's front
+- `limb(part, p0, p1, r0, r1, n=10)` :274 a tapered capsule
+- `box(part, at, size, bevel, rot)` :286 (a bevel at most half the thinnest side)
+- `prism(part, outline, y_front, depth, rot, pivot)` :298 a flat-fronted convex solid (carved eyes, a tiara)
+- `arc_shell(part, profile, t0, t1, thick, at, n, sy)` :317 a closed shell over an arc (a cape, a collar)
+- `pair(fn, *args, mirror=[...], **kw)` :345 a call and its mirror across x
+- `front_y(profile, z, x, at, sy, out)` :364 a point on a lathe's front
+- `eyes(at, r, pupil, shine, rr)` :376 `Glow_Eyes_1/2` with a Dark pupil and a Light glint
+- `marker(name, at, look=None)` :392 `Nameplate` / `Hand` / `Door` as a 0.2 marker part; `look` the attachment's facing (manifest `markers_look_roblox`)
+- `tube(part, pts, r, n=10, closed, up, name)` :407 a swept tube through a polyline (a serpent's coil, a string, a hoop); `closed` + `up` for a flat ring
+- `coplanar_overlaps(objs)` :480 lifted from ship_kit; faces of two pieces in one plane, overlapping
+- `finish(note='')` :665 the contract checks (per kind: a monster's eyes, Nameplate, Hand; an NPC's `need` names and `front` along `facing`; a vehicle inside and filling its Root, its Door beside the right side), Root, LOD_Proxy, budgets, FBX, the record; refuses a bad model
+- `finish_set(set_dir, offsets=4.2, sheet=True, cols=5, place=None, frame=None)` :817 manifest.json, import_settings.luau, the .blend, the sheet; `place` lays out (and repeats) models by hand
+- `import_luau(records)` :887 the import step's Luau (PrimaryPart, pivot, markers to attachments with their facing, colours, collision, proxy hidden)
+- `validate(set_dir, species)` :1000 re-import each FBX and check it, per kind; writes validation.json
 
-Internal: `_material` :142, `_object` :154, `_matrix` :170, `_tris` :374, `_closed` :447, `_bounds` :457, `_join` :464, `_uv` :487, `_proxy` :500, `_sheet` :786.
+Internal: `_material` :172, `_object` :184, `_matrix` :200, `_tris` :469, `_closed` :542, `_bounds` :552, `_join` :559, `_uv` :582, `_proxy` :595, `_sheet` :967.
 
 ## build_monsters_l1.py
 
 Location 1's ten monsters (Haunted Manor), one function per species; output
 `blender/monsters/haunted_manor/`. `-- only Slime,Ghost` builds a subset.
+
+## build_monsters_l2.py
+
+Location 2's seven monsters (Frostfang Lodge), one function per species;
+output `blender/monsters/frostfang_lodge/`. `-- only Yeti,IceImp` builds a
+subset (it rewrites the set's manifest with only those).
+
+## build_street_npcs.py
+
+`Hunter` and `NightBus` on monster_kit's `NPCS` targets; output
+`blender/street/npcs/`. The sheet shows the bus twice (door side, face).
 
 ## hotel_kit.py
 

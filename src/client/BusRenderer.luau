@@ -50,7 +50,18 @@ local function build(): Model
 	local folder = ReplicatedStorage:FindFirstChild("Monsters")
 	local template = folder and folder:FindFirstChild("NightBus")
 	if template and template:IsA("Model") then
-		return template:Clone()
+		local bus = template:Clone()
+		-- A delivered bus brings no lights (MODELS.md: lights are the code's):
+		-- its headlamp (`Glow_Warm_2`) gets the blockout's.
+		local lamp = bus:FindFirstChild("Glow_Warm_2", true)
+		if lamp and lamp:IsA("BasePart") and not lamp:FindFirstChildOfClass("SpotLight") then
+			local light = Instance.new("SpotLight")
+			light.Range = 40
+			light.Brightness = 3
+			light.Face = Enum.NormalId.Right
+			light.Parent = lamp
+		end
+		return bus
 	end
 	local m = Instance.new("Model")
 	m.Name = "NightBus"

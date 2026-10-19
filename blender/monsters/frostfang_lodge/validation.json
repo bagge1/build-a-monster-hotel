@@ -1,0 +1,168 @@
+{
+  "set": "monsters/frostfang_lodge",
+  "models": {
+    "SnowballSprite": {
+      "checks": [
+        "part names round-trip (11 parts)",
+        "MODELS.md names present: Root, Body, Glow_Eyes_1/2, Nameplate, Hand, LOD_Proxy",
+        "every other part an allowed name (Skin/Trim/Dark/Light/Glow_<Colour>_n)",
+        "triangle counts as built",
+        "one material and one UV layer per part",
+        "closed geometry (all but the proxy)",
+        "2198 triangles within 4000",
+        "LOD_Proxy 278 within 300",
+        "height 3.06 studs against 3.0 (+/- 10 %)",
+        "nothing under the floor",
+        "Root 2 x 3.0 x 2, bottom at 0, centred on the origin",
+        "Nameplate and Hand markers where the manifest says",
+        "eyes on the front (-Y, Roblox -Z), Glow_Eyes_1 on the left"
+      ],
+      "triangles": 2198,
+      "triangles_proxy": 278,
+      "height": 3.06,
+      "height_target": 3.0
+    },
+    "IceImp": {
+      "checks": [
+        "part names round-trip (11 parts)",
+        "MODELS.md names present: Root, Body, Glow_Eyes_1/2, Nameplate, Hand, LOD_Proxy",
+        "every other part an allowed name (Skin/Trim/Dark/Light/Glow_<Colour>_n)",
+        "triangle counts as built",
+        "one material and one UV layer per part",
+        "closed geometry (all but the proxy)",
+        "2842 triangles within 4000",
+        "LOD_Proxy 273 within 300",
+        "height 3.56 studs against 3.5 (+/- 10 %)",
+        "nothing under the floor",
+        "Root 2 x 3.5 x 2, bottom at 0, centred on the origin",
+        "Nameplate and Hand markers where the manifest says",
+        "eyes on the front (-Y, Roblox -Z), Glow_Eyes_1 on the left"
+      ],
+      "triangles": 2842,
+      "triangles_proxy": 273,
+      "height": 3.564,
+      "height_target": 3.5
+    },
+    "FrostTroll": {
+      "checks": [
+        "part names round-trip (11 parts)",
+        "MODELS.md names present: Root, Body, Glow_Eyes_1/2, Nameplate, Hand, LOD_Proxy",
+        "every other part an allowed name (Skin/Trim/Dark/Light/Glow_<Colour>_n)",
+        "triangle counts as built",
+        "one material and one UV layer per part",
+        "closed geometry (all but the proxy)",
+        "3404 triangles within 4000",
+        "LOD_Proxy 273 within 300",
+        "height 6.83 studs against 7.0 (+/- 10 %)",
+        "nothing under the floor",
+        "Root 2 x 7.0 x 2, bottom at 0, centred on the origin",
+        "Nameplate and Hand markers where the manifest says",
+        "eyes on the front (-Y, Roblox -Z), Glow_Eyes_1 on the left"
+      ],
+      "triangles": 3404,
+      "triangles_proxy": 273,
+      "height": 6.83,
+      "height_target": 7.0
+    },
+    "Yeti": {
+      "checks": [
+        "part names round-trip (11 parts)",
+        "MODELS.md names present: Root, Body, Glow_Eyes_1/2, Nameplate, Hand, LOD_Proxy",
+        "every other part an allowed name (Skin/Trim/Dark/Light/Glow_<Colour>_n)",
+        "triangle counts as built",
+        "one material and one UV layer per part",
+        "closed geometry (all but the proxy)",
+        "3630 triangles within 4000",
+        "LOD_Proxy 264 within 300",
+        "height 7.47 studs against 7.5 (+/- 10 %)",
+        "nothing under the floor",
+        "Root 2 x 7.5 x 2, bottom at 0, centred on the origin",
+        "Nameplate and Hand markers where the manifest says",
+        "eyes on the front (-Y, Roblox -Z), Glow_Eyes_1 on the left"
+      ],
+      "triangles": 3630,
+      "triangles_proxy": 264,
+      "height": 7.473,
+      "height_target": 7.5
+    },
+    "SnowWitch": {
+      "checks": [
+        "part names round-trip (12 parts)",
+        "MODELS.md names present: Root, Body, Glow_Eyes_1/2, Nameplate, Hand, LOD_Proxy",
+        "every other part an allowed name (Skin/Trim/Dark/Light/Glow_<Colour>_n)",
+        "triangle counts as built",
+        "one material and one UV layer per part",
+        "closed geometry (all but the proxy)",
+        "3312 triangles within 4000",
+        "LOD_Proxy 272 within 300",
+        "height 5.45 studs against 5.5 (+/- 10 %)",
+        "nothing under the floor",
+        "Root 2 x 5.5 x 2, bottom at 0, centred on the origin",
+        "Nameplate and Hand markers where the manifest says",
+        "eyes on the front (-Y, Roblox -Z), Glow_Eyes_1 on the left"
+      ],
+      "triangles": 3312,
+      "triangles_proxy": 272,
+      "height": 5.45,
+      "height_target": 5.5
+    },
+    "IceWyrm": {
+      "checks": [
+        "part names round-trip (11 parts)",
+        "MODELS.md names present: Root, Body, Glow_Eyes_1/2, Nameplate, Hand, LOD_Proxy",
+        "every other part an allowed name (Skin/Trim/Dark/Light/Glow_<Colour>_n)",
+        "triangle counts as built",
+        "one material and one UV layer per part",
+        "closed geometry (all but the proxy)",
+        "3692 triangles within 4000",
+        "LOD_Proxy 266 within 300",
+        "height 5.92 studs against 6.0 (+/- 10 %)",
+        "nothing under the floor",
+        "Root 2 x 6.0 x 2, bottom at 0, centred on the origin",
+        "Nameplate and Hand markers where the manifest says",
+        "eyes on the front (-Y, Roblox -Z), Glow_Eyes_1 on the left"
+      ],
+      "triangles": 3692,
+      "triangles_proxy": 266,
+      "height": 5.918,
+      "height_target": 6.0
+    },
+    "AuroraSpirit": {
+      "checks": [
+        "part names round-trip (15 parts)",
+        "MODELS.md names present: Root, Body, Glow_Eyes_1/2, Nameplate, Hand, LOD_Proxy",
+        "every other part an allowed name (Skin/Trim/Dark/Light/Glow_<Colour>_n)",
+        "triangle counts as built",
+        "one material and one UV layer per part",
+        "closed geometry (all but the proxy)",
+        "3520 triangles within 4000",
+        "LOD_Proxy 273 within 300",
+        "height 6.88 studs against 7.0 (+/- 10 %)",
+        "nothing under the floor",
+        "Root 2 x 7.0 x 2, bottom at 0, centred on the origin",
+        "Nameplate and Hand markers where the manifest says",
+        "eyes on the front (-Y, Roblox -Z), Glow_Eyes_1 on the left"
+      ],
+      "triangles": 3520,
+      "triangles_proxy": 273,
+      "height": 6.875,
+      "height_target": 7.0
+    }
+  },
+  "collision_precise": {
+    "SnowballSprite": [],
+    "IceImp": [],
+    "FrostTroll": [],
+    "Yeti": [],
+    "SnowWitch": [],
+    "IceWyrm": [],
+    "AuroraSpirit": []
+  },
+  "collision_note": "Monsters collide with nothing (MonsterKit: CanCollide/CanQuery/CanTouch off): Box on every mesh, PreciseConvexDecomposition on none.",
+  "not_validated": [
+    "nothing in Studio: the import, the axis conversion, the marker positions there, the colours arriving",
+    "whether the importer carries a material's plain colour to MeshPart.Color (manifest has every colour)",
+    "the look at the game's camera and at Tiny 0.5 / Giant 1.5 scale",
+    "animations: none exist (no rig)"
+  ]
+}

@@ -61,6 +61,29 @@ MARKERS = ('Nameplate', 'Hand')
 PART_RE = re.compile(r'^(Root|Body|LOD_Proxy|Nameplate|Hand|Skin|Trim|Dark|Light|Glow_(%s)_\d+)$'
                      % '|'.join(GLOW_WORDS))
 
+# --- Street NPCs (MODELS.md, "Hunters (`Hunter`) and the bus (`NightBus`)") -------------
+# The same frame and Root rule as a monster, their own contract. A street model is
+# begun like a species (begin('Hunter', ...)) and finished by the same finish();
+# its target comes from here instead of Species.luau, from the client blockouts it
+# replaces (HunterRenderer.luau: Root 2 x 5 x 2; BusRenderer.luau: Root 24 x 9 x 8).
+# `root` is the Root's size in Blender (x, y, z); `front` is the part that must be
+# ahead of the Body along `facing` (Blender), so a model cannot face the wrong way.
+BUS_BUDGET, BUS_PROXY_BUDGET = 8000, 500     # MODELS.md, "What a model costs to draw": the bus
+VEHICLE_MARKERS = ('Door',)
+ALL_MARKERS = MARKERS + VEHICLE_MARKERS
+STREET_PART_RE = re.compile(r'^(Root|Body|LOD_Proxy|Nameplate|Hand|Door|Skin|Trim|Dark|Light|Wheel_\d+|Glow_(%s)_\d+)$'
+                            % '|'.join(GLOW_WORDS))
+NPCS = {
+    # A hunter is a person: budgeted like a monster (MODELS.md names no hunter budget).
+    'Hunter': {'kind': 'npc', 'height': PERSON, 'colour': None, 'eyes': None, 'shape': 'Biped', 'location': 0,
+               'need': ('Body', 'Nameplate', 'Glow_Warm_1'), 'front': 'Glow_Warm_1', 'facing': (0, -1, 0),
+               'root': (2, 2, PERSON), 'budget': MONSTER_BUDGET, 'proxy': PROXY_BUDGET},
+    # The bus faces +X in Roblox, which is Blender -X; its Root is the bus's size.
+    'NightBus': {'kind': 'vehicle', 'height': 9.0, 'colour': None, 'eyes': None, 'shape': 'Vehicle', 'location': 0,
+                 'need': ('Body', 'Door', 'Glow_Warm_1'), 'front': 'Glow_Warm_2', 'facing': (-1, 0, 0),
+                 'root': (24, 8, 9), 'budget': BUS_BUDGET, 'proxy': BUS_PROXY_BUDGET},
+}
+
 
 # --- Species.luau: the targets the code draws today ---------------------------------
 def species_table():
@@ -98,17 +121,23 @@ def roblox(v):
 class _Model:
     def __init__(self, sid, set_dir, colours):
         self.id, self.set_dir = sid, set_dir
-        self.target = SPECIES[sid]
+        self.target = SPECIES[sid] if sid in SPECIES else NPCS[sid]
+        self.kind = self.target.get('kind', 'monster')
+        self.part_re = PART_RE if self.kind == 'monster' else STREET_PART_RE
+        self.marker_names = MARKERS if self.kind == 'monster' else ALL_MARKERS
+        self.budget = self.target.get('budget', MONSTER_BUDGET)
+        self.proxy_budget = self.target.get('proxy', PROXY_BUDGET)
         self.out = ROOT / 'blender' / set_dir
         self.coll = bpy.data.collections.new(sid)
         bpy.context.scene.collection.children.link(self.coll)
         self.pieces = {}          # part -> [objects]
         self.colours = {'Body': self.target['colour'], 'Root': (128, 128, 128),
-                        'Nameplate': (255, 0, 255), 'Hand': (255, 0, 255),
+                        'Nameplate': (255, 0, 255), 'Hand': (255, 0, 255), 'Door': (255, 0, 255),
                         'Dark': (45, 32, 60), 'Light': (255, 255, 255)}   # eyes()' pupils and glints
         self.colours['Glow_Eyes_1'] = self.colours['Glow_Eyes_2'] = self.target['eyes'] or (255, 255, 255)
         self.colours.update(colours or {})
         self.markers = {}
+        self.looks = {}           # marker -> the way its attachment faces (Blender), street models
         self.count = 0
 
 
@@ -134,8 +163,9 @@ def begin(sid, set_dir, colours=None):
     and glows' colours, sRGB 0-255, e.g. {'Dark': (40, 30, 50)}; Body and the eyes
     default to Species.luau's look."""
     global m
-    assert sid in SPECIES, f'{sid} is not a species id in Species.luau'
+    assert sid in SPECIES or sid in NPCS, f'{sid} is not a species id in Species.luau nor a street NPC'
     m = _Model(sid, set_dir, colours)
+    assert m.colours['Body'] is not None, f'{sid}: a street NPC\'s Body colour is given to begin()'
     return m.target['height']
 
 
@@ -152,7 +182,7 @@ def _material(part):
 
 
 def _object(part, bm, name=None):
-    assert PART_RE.match(part), f'{part}: not a name the contract allows ({PART_RE.pattern})'
+    assert m.part_re.match(part), f'{part}: not a name the contract allows ({m.part_re.pattern})'
     assert part in m.colours, f'{part}: no colour given to begin()'
     bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
     m.count += 1
@@ -359,15 +389,80 @@ def eyes(at, r, pupil=0.55, shine=True, rr=None):
                      rx * 0.17, n=8, k=4)
 
 
-def marker(name, at):
-    """A contract place (MODELS.md: `Nameplate`, `Hand`) as a 0.2 marker part
-    centred on it; the import step makes it an Attachment under Root."""
-    assert name in MARKERS, name
+def marker(name, at, look=None):
+    """A contract place (MODELS.md: `Nameplate`, `Hand`; a street model's `Door`)
+    as a 0.2 marker part centred on it; the import step makes it an Attachment
+    under Root. `look` (Blender) is the way the attachment faces, written to the
+    manifest and set by the import step (a marker part's rotation is lost)."""
+    assert name in m.marker_names, name
     bm = bmesh.new()
     bmesh.ops.create_cube(bm, size=MARKER)
     bm.transform(Matrix.Translation(at))
     m.markers[name] = Vector(at)
+    if look is not None:
+        m.looks[name] = Vector(look).normalized()
     return _object(name, bm, name=f'{m.id}.{name}')
+
+
+def tube(part, pts, r, n=10, closed=False, up=None, name=None):
+    """A tube through the polyline `pts`, radius `r` (a number, or one per point):
+    a serpent's coil, a string, a hoop. Open ends are rounded shut; `closed`
+    joins the last ring to the first (a ring). Ring frames follow the path
+    (parallel transport, the first ring's vertex 0 pointing down, so a tube
+    lying on the floor touches it); `up` (the plane's normal of a flat loop)
+    fixes them instead, which a closed loop needs so it does not twist."""
+    P = [Vector(p) for p in pts]
+    N = len(P)
+    R = list(r) if isinstance(r, (list, tuple)) else [r] * N
+    assert len(R) == N and N >= 2
+    T = []
+    for i in range(N):
+        d = (P[(i + 1) % N] - P[i - 1]) if closed else (P[min(i + 1, N - 1)] - P[max(i - 1, 0)])
+        T.append(d.normalized())
+    frames = []
+    if up is not None:
+        U = Vector(up)
+        for t in T:
+            nrm = U - U.dot(t) * t
+            assert nrm.length > 1e-6, 'tube: the path runs along `up`'
+            nrm.normalize()
+            frames.append((nrm, t.cross(nrm)))
+    else:
+        U = Vector((0, 0, -1))
+        nrm = U - U.dot(T[0]) * T[0]
+        if nrm.length < 1e-6:
+            nrm = Vector((1, 0, 0)) - T[0].x * T[0]
+        nrm.normalize()
+        for i, t in enumerate(T):
+            if i:
+                nrm = nrm - nrm.dot(t) * t
+                nrm.normalize()
+            frames.append((nrm, t.cross(nrm)))
+    bm = bmesh.new()
+
+    def ring(c, rad, f):
+        a, b = f
+        return [bm.verts.new(c + rad * (math.cos(2 * math.pi * j / n) * a + math.sin(2 * math.pi * j / n) * b))
+                for j in range(n)]
+
+    loops = [ring(P[i], R[i], frames[i]) for i in range(N)]
+    if not closed:
+        loops = ([[bm.verts.new(P[0] - T[0] * R[0])], ring(P[0] - T[0] * R[0] * 0.6, R[0] * 0.8, frames[0])]
+                 + loops + [ring(P[-1] + T[-1] * R[-1] * 0.6, R[-1] * 0.8, frames[-1]),
+                            [bm.verts.new(P[-1] + T[-1] * R[-1])]])
+    seq = list(zip(loops, loops[1:]))
+    if closed:
+        seq.append((loops[-1], loops[0]))
+    for A, B in seq:
+        for j in range(n):
+            k_ = (j + 1) % n
+            if len(A) == 1:
+                bm.faces.new((A[0], B[k_], B[j]))
+            elif len(B) == 1:
+                bm.faces.new((A[j], A[k_], B[0]))
+            else:
+                bm.faces.new((A[j], A[k_], B[k_], B[j]))
+    return _object(part, bm, name)
 
 
 # --- Checks -------------------------------------------------------------------------
@@ -479,7 +574,7 @@ def _join(part, objs):
     bm.free()
     _closed(ob, f'{m.id}/{part}')
     for poly in ob.data.polygons:
-        poly.use_smooth = part not in MARKERS and part != 'Root'
+        poly.use_smooth = part not in ALL_MARKERS and part != 'Root'
     ob.data.set_sharp_from_angle(angle=math.radians(50))
     return ob
 
@@ -516,7 +611,8 @@ def _proxy(parts, lo, hi):
     px.name = px.data.name = f'{m.id}_LOD_Proxy'
     px['part'] = 'LOD_Proxy'
     start = len(px.data.polygons)
-    ratio = (PROXY_BUDGET - 20) / start
+    budget = m.proxy_budget
+    ratio = (budget - 20) / start
     for _ in range(8):
         me = px.data.copy()
         mod = px.modifiers.new('Decimate', 'DECIMATE')
@@ -545,7 +641,7 @@ def _proxy(parts, lo, hi):
             bmesh.ops.delete(bm, geom=bad, context='FACES')
         bm.to_mesh(new)
         bm.free()
-        if len(new.polygons) <= PROXY_BUDGET:
+        if len(new.polygons) <= budget:
             old = px.data
             px.data = new
             bpy.data.meshes.remove(old)
@@ -555,7 +651,7 @@ def _proxy(parts, lo, hi):
         bpy.data.meshes.remove(me)
         ratio *= 0.85
     else:
-        raise AssertionError(f'{m.id}: LOD_Proxy did not decimate under {PROXY_BUDGET}')
+        raise AssertionError(f'{m.id}: LOD_Proxy did not decimate under {budget}')
     px.data.materials.clear()
     m.colours['LOD_Proxy'] = m.colours['Body']
     px.data.materials.append(_material('LOD_Proxy'))
@@ -580,27 +676,41 @@ def finish(note=''):
     t = m.target
     h = t['height']
     tag = m.id
+    monster = m.kind == 'monster'
     # Names.
-    for need in ('Body', 'Glow_Eyes_1', 'Glow_Eyes_2', 'Nameplate', 'Hand'):
-        assert need in m.pieces, f'{tag}: no {need} (MODELS.md, Monsters)'
+    need_parts = ('Body', 'Glow_Eyes_1', 'Glow_Eyes_2', 'Nameplate', 'Hand') if monster else t['need']
+    for need in need_parts:
+        assert need in m.pieces, f'{tag}: no {need} (MODELS.md, {"Monsters" if monster else "Hunters and the bus"})'
     eye_parts = sorted(p for p in m.pieces if p.startswith('Glow_Eyes_'))
-    assert eye_parts == ['Glow_Eyes_1', 'Glow_Eyes_2'], f'{tag}: eye parts {eye_parts}'
+    if monster or eye_parts:
+        assert eye_parts == ['Glow_Eyes_1', 'Glow_Eyes_2'], f'{tag}: eye parts {eye_parts}'
     assert 'Root' not in m.pieces and 'LOD_Proxy' not in m.pieces, f'{tag}: Root and LOD_Proxy are finish()\'s'
     # Coplanar faces between any two pieces, before they merge (markers left out).
-    pieces = [o for p, objs in m.pieces.items() if p not in MARKERS for o in objs]
+    pieces = [o for p, objs in m.pieces.items() if p not in ALL_MARKERS for o in objs]
     for o in pieces:
         _closed(o, o.name)
     cop = coplanar_overlaps(pieces)
     assert not cop, f'{tag}: coplanar faces, will z-fight: {cop}'
     # Join every part.
     parts = {p: _join(p, objs) for p, objs in m.pieces.items()}
-    visible = [ob for p, ob in parts.items() if p not in MARKERS]
+    visible = [ob for p, ob in parts.items() if p not in ALL_MARKERS]
     lo, hi = _bounds(visible)
     top = hi.z
     assert abs(top - h) <= HEIGHT_TOL * h, f'{tag}: {top:.2f} studs tall, target {h} +/- {HEIGHT_TOL:.0%}'
     assert lo.z >= -0.005, f'{tag}: {lo.z:.3f} under the floor'
     floats = t['shape'] == 'Float'
-    if floats:
+    root_size = t.get('root', (2, 2, h))
+    if m.kind == 'vehicle':
+        # Its Root is its size: everything inside it, and the bus filling it, wheels on the floor.
+        half = Vector((root_size[0] / 2, root_size[1] / 2, 0))
+        assert lo.z <= 0.02, f'{tag}: the wheels float {lo.z:.3f} over the floor'
+        assert all(lo[i] >= -half[i] - 0.01 and hi[i] <= half[i] + 0.01 for i in range(2)) \
+            and hi.z <= root_size[2] + 0.01, f'{tag}: outside its Root {root_size}: {tuple(lo)} {tuple(hi)}'
+        assert all(hi[i] - lo[i] >= 0.9 * root_size[i] for i in range(3)), \
+            f'{tag}: does not fill its Root {root_size} (bounds {tuple(hi - lo)})'
+        c = (lo + hi) / 2
+        assert abs(c.x) < 0.1 and abs(c.y) < 0.1, f'{tag}: origin not under the middle ({c.x:.2f}, {c.y:.2f})'
+    elif floats:
         blo, bhi = _bounds([parts['Body']])
         c = (blo + bhi) / 2
         assert abs(c.x) < 0.1 and abs(c.y) < 0.3, f'{tag}: origin not under the body ({c.x:.2f}, {c.y:.2f})'
@@ -612,19 +722,34 @@ def finish(note=''):
         assert abs(fx) < 0.05 and abs(fy) < 0.3, f'{tag}: origin not between the feet ({fx:.2f}, {fy:.2f})'
     blo, bhi = _bounds([parts['Body']])
     body_c = (blo + bhi) / 2
-    e1, e2 = (_bounds([parts[e]]) for e in ('Glow_Eyes_1', 'Glow_Eyes_2'))
-    ec1, ec2 = (e1[0] + e1[1]) / 2, (e2[0] + e2[1]) / 2
-    assert ec1.x > 0 > ec2.x, f'{tag}: Glow_Eyes_1 must be the monster\'s left (+X in Blender)'
-    assert max(ec1.y, ec2.y) < body_c.y - 0.1, f'{tag}: the eyes are not on the front (-Y): it does not face -Z'
-    assert abs(ec1.x + ec2.x) < 0.02 and abs(ec1.z - ec2.z) < 0.02, f'{tag}: the eyes are not a mirrored pair'
-    nps = m.markers['Nameplate']
-    assert nps.z >= top + 0.4 and math.hypot(nps.x, nps.y) < 0.6, f'{tag}: Nameplate not above the head'
-    hd = m.markers['Hand']
-    assert all(lo[i] - 0.3 <= hd[i] <= hi[i] + 0.3 for i in range(3)), f'{tag}: Hand off the model'
+    if eye_parts:
+        e1, e2 = (_bounds([parts[e]]) for e in ('Glow_Eyes_1', 'Glow_Eyes_2'))
+        ec1, ec2 = (e1[0] + e1[1]) / 2, (e2[0] + e2[1]) / 2
+        assert ec1.x > 0 > ec2.x, f'{tag}: Glow_Eyes_1 must be the monster\'s left (+X in Blender)'
+        assert max(ec1.y, ec2.y) < body_c.y - 0.1, f'{tag}: the eyes are not on the front (-Y): it does not face -Z'
+        assert abs(ec1.x + ec2.x) < 0.02 and abs(ec1.z - ec2.z) < 0.02, f'{tag}: the eyes are not a mirrored pair'
+    if not monster:
+        # The facing: the `front` part ahead of the Body along `facing`.
+        f = Vector(t['facing'])
+        flo, fhi = _bounds([parts[t['front']]])
+        assert ((flo + fhi) / 2).dot(f) > body_c.dot(f) + 0.1, \
+            f'{tag}: {t["front"]} is not ahead of the Body along {t["facing"]} (Blender): it faces the wrong way'
+    if 'Nameplate' in m.markers or monster:
+        nps = m.markers['Nameplate']
+        assert nps.z >= top + 0.4 and math.hypot(nps.x, nps.y) < 0.6, f'{tag}: Nameplate not above the head'
+    if 'Hand' in m.markers or monster:
+        hd = m.markers['Hand']
+        assert all(lo[i] - 0.3 <= hd[i] <= hi[i] + 0.3 for i in range(3)), f'{tag}: Hand off the model'
+    if 'Door' in m.markers:
+        # Where guests step out: on the floor just outside the bus's right (Roblox +Z, Blender +Y) side.
+        d = m.markers['Door']
+        assert hi.y - 0.05 <= d.y <= hi.y + 1.5 and abs(d.z) <= 0.3 and lo.x <= d.x <= hi.x, \
+            f'{tag}: Door not on the floor beside the right (+Y) side: {tuple(d)}'
+        assert 'Door' in m.looks and m.looks['Door'].y > 0.9, f'{tag}: Door must look out of the side (+Y)'
     # Root, exactly the contract's.
     bm = bmesh.new()
     bmesh.ops.create_cube(bm, size=1.0)
-    bm.transform(Matrix.Translation((0, 0, h / 2)) @ Matrix.Diagonal((2, 2, h, 1)))
+    bm.transform(Matrix.Translation((0, 0, root_size[2] / 2)) @ Matrix.Diagonal((*root_size, 1)))
     root = _object('Root', bm, name=f'{tag}.Root')
     parts['Root'] = _join('Root', m.pieces['Root'])
     proxy = _proxy(visible, lo, hi)
@@ -639,8 +764,8 @@ def finish(note=''):
                         'material': 'Neon' if p.startswith('Glow_') else 'SmoothPlastic'})
     tris = sum(r['triangles'] for r in records if r['part'] != 'LOD_Proxy')
     ptris = next(r['triangles'] for r in records if r['part'] == 'LOD_Proxy')
-    assert tris <= MONSTER_BUDGET, f'{tag}: {tris} triangles > {MONSTER_BUDGET}'
-    assert ptris <= PROXY_BUDGET, f'{tag}: LOD_Proxy {ptris} > {PROXY_BUDGET}'
+    assert tris <= m.budget, f'{tag}: {tris} triangles > {m.budget}'
+    assert ptris <= m.proxy_budget, f'{tag}: LOD_Proxy {ptris} > {m.proxy_budget}'
     assert max(r['triangles'] for r in records) <= MESH_TRIANGLE_CAP
     # Names in the FBX are the part names: Blender keeps one object per name, so
     # each model's parts are renamed to the bare names only while it exports.
@@ -663,36 +788,71 @@ def finish(note=''):
         'height_target': h, 'height': round(top, 3),
         'bounds_blender': [[round(c, 3) for c in lo], [round(c, 3) for c in hi]],
         'triangles': tris, 'triangles_proxy': ptris,
-        'budget': {'model': MONSTER_BUDGET, 'proxy': PROXY_BUDGET, 'mesh_cap': MESH_TRIANGLE_CAP},
+        'budget': {'model': m.budget, 'proxy': m.proxy_budget, 'mesh_cap': MESH_TRIANGLE_CAP},
         'parts': records,
         'markers_blender': {k: [round(c, 4) for c in v] for k, v in m.markers.items()},
         'markers_roblox': {k: roblox(v) for k, v in m.markers.items()},
-        'markers_roblox_from_root': {k: roblox(v - Vector((0, 0, h / 2))) for k, v in m.markers.items()},
+        'markers_roblox_from_root': {k: roblox(v - Vector((0, 0, root_size[2] / 2))) for k, v in m.markers.items()},
         'coplanar_overlaps': 'none',
         'rig': 'none: static meshes, no bones, no Animations folder (the client bobs them)',
         'note': note,
     }
+    if not monster:
+        # Street models only, so a monster's record stays as it was.
+        rec['kind'] = m.kind
+        rec['root_size_blender'] = list(root_size)
+        rec['root_size_roblox'] = [root_size[0], root_size[2], root_size[1]]
+        rec['front'] = t['front']
+        rec['facing_blender'] = list(t['facing'])
+        rec['facing_roblox'] = roblox(Vector(t['facing']))
+        rec['need'] = list(t['need'])
+        rec['rig'] = rec['rig'].replace('the client bobs them', 'the client moves it whole')
+    if m.looks:
+        rec['markers_look_roblox'] = {k_: roblox(v) for k_, v in m.looks.items()}
     _done.append(rec)
     print(f'{tag}: {tris} triangles + proxy {ptris}, {top:.2f} of {h} studs, parts {sorted(parts)}', flush=True)
     return rec
 
 
-def finish_set(set_dir, offsets=4.2, sheet=True):
+def finish_set(set_dir, offsets=4.2, sheet=True, cols=5, place=None, frame=None):
     """Write manifest.json, spread the models along X for the review (each model's
-    own frame is its FBX), save the .blend and render the one Workbench sheet."""
+    own frame is its FBX), save the .blend and render the one Workbench sheet.
+    `cols` models per row, `offsets` apart. `place` {id: (x, turn_degrees[, z])}
+    sets the layout by hand instead (the street set: a bus beside a person,
+    turned so its door side faces the camera); a list of such views shows a
+    model more than once (the bus's door side and its face, a row below). Only
+    the review scene is moved, turned or copied: the FBX is already written.
+    `frame` overrides the manifest's frame note."""
     out = ROOT / 'blender' / set_dir
-    manifest = {'set': set_dir, 'frame': 'Blender -Y front, +Z up, +X the monster\'s left; '
-                'Roblox (x, y, z) = Blender (-x, z, y)', 'models': _done}
+    manifest = {'set': set_dir, 'frame': frame or ('Blender -Y front, +Z up, +X the monster\'s left; '
+                'Roblox (x, y, z) = Blender (-x, z, y)'), 'models': _done}
     (out / 'manifest.json').write_text(json.dumps(manifest, indent=2))
     (out / 'import_settings.luau').write_text(import_luau(_done), encoding='utf-8')
-    cols, row_h = 5, 9.0
+    row_h = 9.0
+    if place:
+        cols = len(_done)
+    view = lambda v: Matrix.Translation((v[0], 0, v[2] if len(v) > 2 else 0)) @ Matrix.Rotation(math.radians(v[1]), 4, 'Z')
+    row_z = {0.0}
     for i, rec in enumerate(_done):
         coll = bpy.data.collections[rec['species']]
-        for ob in coll.objects:
-            ob.location.x += (i % cols) * offsets
-            ob.location.z -= (i // cols) * row_h
-            if ob.get('part') in ('Root', 'LOD_Proxy', 'Nameplate', 'Hand'):
+        views = place[rec['species']] if place else None
+        views = [views] if views and not isinstance(views, list) else views
+        for ob in list(coll.objects):
+            if ob.get('part') in ('Root', 'LOD_Proxy') + ALL_MARKERS:
                 ob.hide_render = True
+            if place:
+                base = ob.matrix_world.copy()
+                ob.matrix_world = view(views[0]) @ base
+                for v in views[1:]:
+                    if not ob.hide_render:
+                        c = ob.copy()
+                        c.name = f'{ob.name}.review'
+                        coll.objects.link(c)
+                        c.matrix_world = view(v) @ base
+                row_z |= {float(v[2]) if len(v) > 2 else 0.0 for v in views}
+            else:
+                ob.location.x += (i % cols) * offsets
+                ob.location.z -= (i // cols) * row_h
     rows = (len(_done) + cols - 1) // cols
     # A grey 5-stud person at the start of each row, for scale (not exported).
     person = bpy.data.collections.new('Person_5_studs')
@@ -700,8 +860,11 @@ def finish_set(set_dir, offsets=4.2, sheet=True):
     pm = bpy.data.materials.new('Person')
     pm.diffuse_color = (0.35, 0.35, 0.35, 1)
     px = -offsets
-    for r in range(rows):
-        z0 = -r * row_h
+    if place:
+        shown = [o for c in _done for o in bpy.data.collections[c['species']].objects if not o.hide_render]
+        slo, shi = _bounds(shown)
+        px = slo.x - 2.0
+    for z0 in (sorted(row_z, reverse=True) if place else [-r * row_h for r in range(rows)]):
         for loc, size in (((px, 0, 0.0), (0.9, 0.5, 2.0)), ((px, 0, 2.0), (2.0, 1.0, 2.0)), ((px, 0, 4.0), (1.0, 1.0, 1.0))):
             bm = bmesh.new()
             bmesh.ops.create_cube(bm, size=1.0)
@@ -714,8 +877,11 @@ def finish_set(set_dir, offsets=4.2, sheet=True):
             person.objects.link(ob)
     bpy.ops.wm.save_as_mainfile(filepath=str(out / f'{out.name}.blend'))
     if sheet and not NORENDER:
-        _sheet(out / 'review' / 'sheet.png', px - 1.5, (min(cols, len(_done)) - 1) * offsets + 1.8,
-               -(rows - 1) * row_h - 0.6, 7.6)
+        if place:
+            _sheet(out / 'review' / 'sheet.png', px - 1.5, shi.x + 1.0, slo.z - 0.6, shi.z + 0.8)
+        else:
+            _sheet(out / 'review' / 'sheet.png', px - 1.5, (min(cols, len(_done)) - 1) * offsets + 1.8,
+                   -(rows - 1) * row_h - 0.6, max(7.6, max(r['height'] for r in _done) + 0.5))
 
 
 def import_luau(records):
@@ -731,15 +897,30 @@ def import_luau(records):
     rows = []
     for r in records:
         cols = ', '.join(f'{p["part"]} = {{{", ".join(str(c) for c in p["colour"])}}}'
-                         for p in r['parts'] if p['part'] not in MARKERS + ('Root',))
+                         for p in r['parts'] if p['part'] not in ALL_MARKERS + ('Root',))
         rows.append(f'\t{r["species"]} = {{ {cols} }},')
     body = '\n'.join(rows)
+    # The marker names these records carry (a monster set: Nameplate and Hand, as before),
+    # and, for a street set, the way an attachment faces (the bus's Door looks out of its side).
+    present = {k_ for r in records for k_ in r['markers_blender']}
+    names = ', '.join(f'"{n}"' for n in ALL_MARKERS if n in present or n in MARKERS)
+    looks = {r['species']: r['markers_look_roblox'] for r in records if r.get('markers_look_roblox')}
+    looks_decl, looks_set = '', ''
+    if looks:
+        lrows = '\n'.join(f'\t{sid} = {{ ' + ', '.join(f'{n} = {{{", ".join(str(c) for c in v)}}}' for n, v in lk.items())
+                          + ' },' for sid, lk in looks.items())
+        looks_decl = f'local looks = {{\n{lrows}\n}}\n'
+        looks_set = ('\t\t\tlocal look = looks[id] and looks[id][name]\n'
+                     '\t\t\tif look then\n'
+                     '\t\t\t\tlocal dir = root.CFrame:VectorToWorldSpace(Vector3.new(look[1], look[2], look[3]))\n'
+                     '\t\t\t\ta.WorldCFrame = CFrame.lookAt(p.Position, p.Position + dir)\n'
+                     '\t\t\tend\n')
     return f'''-- Generated by tools/monster_kit.py (import_luau); do not edit by hand.
 -- Edit datamodel, after the FBXs are in Workspace. Then read back in a SEPARATE call.
 local colours = {{
 {body}
 }}
-local out = {{}}
+{looks_decl}local out = {{}}
 for id, parts in colours do
 	local m = workspace:FindFirstChild(id)
 	if not m then
@@ -750,14 +931,14 @@ for id, parts in colours do
 	m.PrimaryPart = root
 	root.PivotOffset = CFrame.new(0, -root.Size.Y / 2, 0)
 	root.Transparency = 1
-	for _, name in {{ "Nameplate", "Hand" }} do
+	for _, name in {{ {names} }} do
 		local p = m:FindFirstChild(name)
 		if p and p:IsA("BasePart") then
 			local a = Instance.new("Attachment")
 			a.Name = name
 			a.Parent = root
 			a.WorldPosition = p.Position
-			p:Destroy()
+{looks_set}			p:Destroy()
 		end
 	end
 	for _, p in m:GetDescendants() do
@@ -842,11 +1023,18 @@ def validate(set_dir, species):
             assert ok, f'{sid}: {what}'
             checks.append(what)
 
+        kind = rec.get('kind', 'monster')
         expected = {p['part'] for p in rec['parts']}
         check(set(meshes) == expected, f'part names round-trip ({len(expected)} parts)')
-        need = {'Root', 'Body', 'Glow_Eyes_1', 'Glow_Eyes_2', 'Nameplate', 'Hand', 'LOD_Proxy'}
-        check(need <= set(meshes), 'MODELS.md names present: Root, Body, Glow_Eyes_1/2, Nameplate, Hand, LOD_Proxy')
-        check(all(PART_RE.match(n) for n in meshes), 'every other part an allowed name (Skin/Trim/Dark/Light/Glow_<Colour>_n)')
+        if kind == 'monster':
+            need = {'Root', 'Body', 'Glow_Eyes_1', 'Glow_Eyes_2', 'Nameplate', 'Hand', 'LOD_Proxy'}
+            check(need <= set(meshes), 'MODELS.md names present: Root, Body, Glow_Eyes_1/2, Nameplate, Hand, LOD_Proxy')
+            check(all(PART_RE.match(n) for n in meshes), 'every other part an allowed name (Skin/Trim/Dark/Light/Glow_<Colour>_n)')
+        else:
+            need = {'Root', 'LOD_Proxy', *rec['need']}
+            check(need <= set(meshes), 'MODELS.md names present: ' + ', '.join(sorted(need)))
+            check(all(STREET_PART_RE.match(n) for n in meshes),
+                  'every other part an allowed name (Skin/Trim/Dark/Light/Wheel_n/Glow_<Colour>_n)')
         total = 0
         for p in rec['parts']:
             ob = meshes[p['part']]
@@ -867,7 +1055,7 @@ def validate(set_dir, species):
         check(rec['triangles_proxy'] <= rec['budget']['proxy'],
               f'LOD_Proxy {rec["triangles_proxy"]} within {rec["budget"]["proxy"]}')
         world = lambda o: [o.matrix_world @ v.co for v in o.data.vertices]
-        vis = [p for n_, o in meshes.items() if n_ not in ('Root', 'LOD_Proxy', 'Nameplate', 'Hand') for p in world(o)]
+        vis = [p for n_, o in meshes.items() if n_ not in ('Root', 'LOD_Proxy') + ALL_MARKERS for p in world(o)]
         top = max(p.z for p in vis)
         h = rec['height_target']
         check(abs(top - h) <= HEIGHT_TOL * h, f'height {top:.2f} studs against {h} (+/- 10 %)')
@@ -875,17 +1063,36 @@ def validate(set_dir, species):
         rp = world(meshes['Root'])
         rlo = Vector([min(p[i] for p in rp) for i in range(3)])
         rhi = Vector([max(p[i] for p in rp) for i in range(3)])
-        check((rhi - rlo - Vector((2, 2, h))).length < 1e-3 and abs(rlo.z) < 1e-3
-              and abs(rlo.x + 1) < 1e-3 and abs(rlo.y + 1) < 1e-3, f'Root 2 x {h} x 2, bottom at 0, centred on the origin')
-        for mk in ('Nameplate', 'Hand'):
+        if kind == 'monster':
+            check((rhi - rlo - Vector((2, 2, h))).length < 1e-3 and abs(rlo.z) < 1e-3
+                  and abs(rlo.x + 1) < 1e-3 and abs(rlo.y + 1) < 1e-3, f'Root 2 x {h} x 2, bottom at 0, centred on the origin')
+        else:
+            rs = Vector(rec['root_size_blender'])
+            check((rhi - rlo - rs).length < 1e-3 and abs(rlo.z) < 1e-3 and abs(rlo.x + rs.x / 2) < 1e-3
+                  and abs(rlo.y + rs.y / 2) < 1e-3,
+                  f'Root {rec["root_size_roblox"]} (Roblox x, y, z), bottom at 0, centred on the origin')
+            if kind == 'vehicle':
+                vlo = Vector([min(p[i] for p in vis) for i in range(3)])
+                vhi = Vector([max(p[i] for p in vis) for i in range(3)])
+                check(all(vlo[i] >= rlo[i] - 0.01 and vhi[i] <= rhi[i] + 0.01 for i in range(3)),
+                      'the whole bus inside its Root')
+        mks = list(rec['markers_blender'])
+        for mk in mks:
             pts = world(meshes[mk])
             c = sum(pts, Vector()) / len(pts)
             assert (c - Vector(rec['markers_blender'][mk])).length < 1e-3, (sid, mk, tuple(c))
-        check(True, 'Nameplate and Hand markers where the manifest says')
-        ey = [sum(world(meshes[e]), Vector()) / len(meshes[e].data.vertices) for e in ('Glow_Eyes_1', 'Glow_Eyes_2')]
+        check(True, ('Nameplate and Hand' if kind == 'monster' else ' and '.join(mks)) + ' markers where the manifest says')
         bp = world(meshes['Body'])
-        by = (min(p.y for p in bp) + max(p.y for p in bp)) / 2
-        check(max(e.y for e in ey) < by and ey[0].x > 0 > ey[1].x, 'eyes on the front (-Y, Roblox -Z), Glow_Eyes_1 on the left')
+        if kind == 'monster':
+            ey = [sum(world(meshes[e]), Vector()) / len(meshes[e].data.vertices) for e in ('Glow_Eyes_1', 'Glow_Eyes_2')]
+            by = (min(p.y for p in bp) + max(p.y for p in bp)) / 2
+            check(max(e.y for e in ey) < by and ey[0].x > 0 > ey[1].x, 'eyes on the front (-Y, Roblox -Z), Glow_Eyes_1 on the left')
+        else:
+            f = Vector(rec['facing_blender'])
+            fp = world(meshes[rec['front']])
+            fc = sum(fp, Vector()) / len(fp)
+            bc = (Vector([min(p[i] for p in bp) for i in range(3)]) + Vector([max(p[i] for p in bp) for i in range(3)])) / 2
+            check(fc.dot(f) > bc.dot(f), f'{rec["front"]} ahead of the Body: faces Roblox {rec["facing_roblox"]}')
         report['models'][sid] = {'checks': checks, 'triangles': total, 'triangles_proxy': rec['triangles_proxy'],
                                  'height': round(top, 3), 'height_target': h}
         report['collision_precise'][sid] = []
@@ -894,6 +1101,13 @@ def validate(set_dir, species):
         'whether the importer carries a material\'s plain colour to MeshPart.Color (manifest has every colour)',
         'the look at the game\'s camera and at Tiny 0.5 / Giant 1.5 scale',
         'animations: none exist (no rig)']
+    if any(recs[s].get('kind', 'monster') != 'monster' for s in species):
+        report['collision_note'] = ('Street models collide with nothing (HunterRenderer and BusRenderer draw them '
+                                    'CanCollide/CanQuery/CanTouch off): Box on every mesh, '
+                                    'PreciseConvexDecomposition on none.')
+        report['not_validated'][2] = 'the look at the game\'s camera, on the street at night'
+        report['not_validated'].append('the Door attachment\'s orientation after import (set from the manifest by '
+                                       'import_settings.luau; read it back in Studio)')
     (root / 'validation.json').write_text(json.dumps(report, indent=2))
     print(f'validation.json: {len(report["models"])} models passed', flush=True)
     return report
