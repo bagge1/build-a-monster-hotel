@@ -18,6 +18,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
 
 local Constants = require(ReplicatedStorage.Shared.Constants)
+local Cosmetics = require(ReplicatedStorage.Shared.Cosmetics)
 local Economy = require(ReplicatedStorage.Shared.Economy)
 local Format = require(ReplicatedStorage.Shared.Format)
 local Locations = require(ReplicatedStorage.Shared.Locations)
@@ -102,7 +103,7 @@ function BookService.find(player: Player, speciesId: string, mutation: string?):
 	local loc = sp.location
 	if not data.families[tostring(loc)] and familyDone(data, loc) then
 		data.families[tostring(loc)] = true
-		data.cosmetics[`Family_{loc}`] = true
+		data.cosmetics[Cosmetics.family(loc)] = true
 		Net.fire(
 			player,
 			"Announce",

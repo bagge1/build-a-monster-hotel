@@ -33,7 +33,7 @@ local REQUESTS_PER_DAY = 3 -- §8.2
 local BASE_REROLLS = 1 -- PLACEHOLDER
 local REWARD_MINUTES = 8 -- PLACEHOLDER: each request pays 8 minutes of income
 local LOGIN_MINUTES = { 3, 4, 5, 6, 8, 10, 15 } -- PLACEHOLDER: days 1–7
-local LOGIN_COSMETIC = "LoginCalendar_Lantern" -- day 7's cosmetic (§8.2), PLACEHOLDER name
+local LOGIN_COSMETIC = "Cosmetic_LanternSign" -- day 7's cosmetic (§8.2; Cosmetics.luau)
 
 -- The kinds of daily request (§8.2: "Serve 5 Ghosts", "Reach 3★").
 type Kind = { id: string, text: string, stat: string?, target: (number) -> number }

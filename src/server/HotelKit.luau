@@ -23,6 +23,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Constants = require(ReplicatedStorage.Shared.Constants)
 local Pieces = require(ReplicatedStorage.Shared.Pieces)
 local Locations = require(ReplicatedStorage.Shared.Locations)
+local Cosmetics = require(ReplicatedStorage.Shared.Cosmetics)
 
 local G = Constants.Grid
 local CELL = G.CellSize
@@ -490,15 +491,20 @@ end
 	take a cell or block a door, with window openings, and on floor 1 a
 	doorway at the back to the Resident Wing. The street side stays open: it is
 	the lobby's entrance. Plot-local, as a Folder (a blockout until the kit has
-	`Facade_Wall` pieces). ]]
-function HotelKit.facade(location: number, floors: number): Folder
+	`Facade_Wall` pieces). A facade cosmetic (MODELS.md, "Cosmetics") gives
+	its own colours as `scheme`. ]]
+function HotelKit.facade(
+	location: number,
+	floors: number,
+	scheme: { facade: Color3, trim: Color3 }?
+): Folder
 	local loc = Locations.get(location)
 	local folder = Instance.new("Folder")
 	folder.Name = "Facade"
 	local P = G.Cells * CELL
 	local t = 0.6
-	local wall = darker(loc.facade, 0.85)
-	local trim = loc.trim
+	local wall = darker(if scheme then scheme.facade else loc.facade, 0.85)
+	local trim = if scheme then scheme.trim else loc.trim
 	-- One side: a run of `length` studs along `axis`, outside the grid at `offset`.
 	local function side(
 		name: string,
@@ -616,6 +622,51 @@ function HotelKit.base(location: number): Folder
 		{ Color = loc.trim }
 	)
 	return folder
+end
+
+--[[ A sign or lobby cosmetic (MODELS.md, "Cosmetics"): its template, or a
+	blockout. Origin per slot: a sign's at the Board's front-face centre, a
+	lobby's at the Entrance threshold, front toward −Z. ]]
+function HotelKit.cosmetic(c: Cosmetics.Cosmetic): Model
+	local kit = ServerStorage:FindFirstChild("Cosmetics")
+	local found = kit and kit:FindFirstChild(c.id)
+	if found and found:IsA("Model") then
+		local m = found:Clone()
+		for _, p in m:GetDescendants() do
+			if p:IsA("BasePart") then
+				p.Anchored = true
+				p.CanCollide, p.CanQuery, p.CanTouch = false, false, false
+			end
+		end
+		return m
+	end
+	local props = { Color = c.colour, CanCollide = false, CanQuery = false, CanTouch = false }
+	if c.slot == "Sign" then
+		-- A frame round the board's top and sides, standing proud of its face.
+		local model, _ = shell(c.id, Vector3.new(1, 0.2, 1), Vector3.new(0, 0, -0.3))
+		part(model, "Top", Vector3.new(17, 1.2, 0.6), Vector3.new(0, 3.4, -0.3), props)
+		part(model, "Left", Vector3.new(1, 6, 0.6), Vector3.new(-8.3, 0, -0.3), props)
+		part(model, "Right", Vector3.new(1, 6, 0.6), Vector3.new(8.3, 0, -0.3), props)
+		part(model, "Crest", Vector3.new(2.4, 2.4, 0.6), Vector3.new(0, 5, -0.3), props)
+		return model
+	end
+	-- A lobby cosmetic: a garland across the entrance, its lowest part 9 studs up.
+	local model, _ = shell(c.id, Vector3.new(1, 0.2, 1), Vector3.new(0, 0.1, 0))
+	local glow = c.id == "Cosmetic_FairyLights"
+	for i = -5, 5 do
+		local sag = (25 - i * i) * 0.06
+		local p = part(
+			model,
+			`Bit_{i + 6}`,
+			Vector3.new(0.8, 0.8, 0.2),
+			Vector3.new(i * 1.1, 10.5 - sag, -0.6),
+			props
+		)
+		if glow then
+			p.Material = Enum.Material.Neon
+		end
+	end
+	return model
 end
 
 --[[ The hotel sign (MODELS.md, "Facade and sign"): posts and a `Board`

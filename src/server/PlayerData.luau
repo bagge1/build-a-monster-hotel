@@ -97,6 +97,7 @@ export type Data = {
 	likesGiven: { day: number, plots: { [string]: boolean } },
 	funnel: { [string]: boolean },
 	cosmetics: { [string]: boolean },
+	equipped: { [string]: string }, -- slot -> the cosmetic worn there ("" for none; Cosmetics.luau)
 	traps: { string }, -- the lobby's trap slots (§8.1), "" when empty
 }
 
@@ -139,6 +140,7 @@ local TEMPLATE: Data = {
 	likesGiven = { day = 0, plots = {} },
 	funnel = {},
 	cosmetics = {},
+	equipped = { Sign = "", Lobby = "", Facade = "" },
 	traps = { "", "", "" },
 }
 

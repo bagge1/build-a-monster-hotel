@@ -480,6 +480,59 @@ local function openTraps()
 	menu.Visible = true
 end
 
+-- ===== Style: the hotel's cosmetics, one per slot (Cosmetics.luau) =====
+
+local function openStyle()
+	for _, c in menuBody:GetChildren() do
+		if not c:IsA("UIListLayout") then
+			c:Destroy()
+		end
+	end
+	(menu:FindFirstChild("Title") :: TextLabel).Text = "Hotel style"
+	local b = build()
+	local equipped = b.equipped or {}
+	local order = 0
+	for _, slot in { "Sign", "Lobby", "Facade" } do
+		order += 1
+		local row = Ui.frame(menuBody, `Slot_{slot}`, UDim2.new(1, 0, 0, 50))
+		row.BackgroundTransparency = 1
+		row.LayoutOrder = order
+		Ui.list(row, Enum.FillDirection.Horizontal, 6)
+		local label = Ui.label(row, "Label", slot, UDim2.fromOffset(70, 46), 18)
+		label.LayoutOrder = 0
+		local none = Ui.button(row, "None", "None", UDim2.fromOffset(90, 46), function()
+			Net.send("Equip", slot, "")
+			menu.Visible = false
+		end, if (equipped[slot] or "") == "" then Ui.Colour.Pumpkin else Ui.Colour.PanelLight)
+		none.LayoutOrder = 1
+		for i, c in b.cosmetics or {} do
+			if c.slot == slot then
+				local btn = Ui.button(
+					row,
+					c.id,
+					if c.owned then c.name else `🔒 {c.name}`,
+					UDim2.fromOffset(150, 46),
+					function()
+						if not c.owned then
+							Hud.toast(`{c.name}: from {c.from}`, Ui.Colour.Bad)
+							return
+						end
+						Net.send("Equip", slot, c.id)
+						menu.Visible = false
+					end,
+					if equipped[slot] == c.id
+						then Ui.Colour.Pumpkin
+						elseif c.owned then Ui.Colour.PanelLight
+						else Ui.Colour.Panel
+				)
+				btn.LayoutOrder = 1 + i
+				btn.TextSize = 14
+			end
+		end
+	end
+	menu.Visible = true
+end
+
 -- ===== The strip of piece cards =====
 
 local function redrawCards()
@@ -589,7 +642,7 @@ function BuildController.Init()
 	Ui.list(cards, Enum.FillDirection.Horizontal, 8)
 
 	-- The tools: three columns top-left, where the HUD's menu column is while
-	-- not building (hidden meanwhile), so ten tools fit a phone's height above
+	-- not building (hidden meanwhile), so eleven tools fit a phone's height above
 	-- its thumbstick (§11).
 	tools = Ui.frame(gui, "Tools", UDim2.fromOffset(360, 210), UDim2.fromOffset(10, 56))
 	tools.BackgroundTransparency = 1
@@ -649,6 +702,7 @@ function BuildController.Init()
 	placeButton = tool("Place", "✔ Place", 9, place, Ui.Colour.Good)
 	placeButton.Visible = false
 	tool("Traps", "Traps", 9.5, openTraps)
+	tool("Style", "🎨 Style", 9.7, openStyle)
 	tool("Done", "Done", 10, function()
 		setActive(false)
 	end, Ui.Colour.Bad)

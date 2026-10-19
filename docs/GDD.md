@@ -861,4 +861,13 @@ All by the UTC clock, the same on every server:
   costs as the Candy shop. Each season has its own shop (`Events.Shops`).
   Not built: Frostfang guests on the Haunted Manor bus during Winter (a
   bigger crossover; WAITING §2).
+- **Wearing cosmetics** (built 2026-10-19, night draft): a hotel wears one
+  cosmetic per slot, **Sign**, **Lobby** and **Facade**, picked with the
+  build mode's **🎨 Style** tool (`src/shared/Cosmetics.luau`). Sign: Pumpkin
+  sign, Icicle sign, the Lantern sign (login day 7), a crest per completed
+  family. Lobby: Bat bunting, Fairy lights. Facade: the Slime facade (Starter
+  Pack), a colour scheme until the kit has facade styles. The §10.2 facade
+  packs (Gothic, Neon, Candy, Pirate) will be Facade-slot cosmetics sold as
+  passes. Every one is drawn as a Luau blockout until its model exists
+  (MODELS.md, "Cosmetics").
 

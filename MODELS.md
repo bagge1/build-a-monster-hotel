@@ -204,6 +204,24 @@ pieces per floor: `Facade_Wall` (one cell wide, one floor high) and
 `HotelSign` carries `Board`, a part whose front face (−Z) takes the sign's
 SurfaceGui (a Decal or SurfaceGui on a part's `Front` face is the plain case).
 
+### Cosmetics (`Cosmetic_<Id>`, e.g. `Cosmetic_PumpkinSign`)
+
+What a player wears on their hotel (GDD §8.2 event shops, §10.2 facade packs,
+the login calendar's day 7, a family's completion; `src/shared/Cosmetics.luau`
+lists them). Templates in `ServerStorage.Cosmetics` (`assets/Cosmetics/`),
+named the cosmetic's id. Visual only; the code anchors them and turns
+collision off. Each slot has its own origin:
+
+| Slot | Origin | Front |
+|---|---|---|
+| `Sign` | The centre of the hotel sign's `Board` front face | −Z, toward the street |
+| `Lobby` | The lobby's `Entrance` attachment (the threshold, on the floor) | −Z, toward the street |
+| `Facade` | None: a facade cosmetic is a colour scheme (`facade`, `trim`) applied to the facade until the kit has `Facade_Wall` styles | — |
+
+A sign cosmetic dresses the sign (it never covers the Board's text); a lobby
+cosmetic hangs above the entrance and stays clear of a 5-stud person walking
+in (its lowest part at least 8 studs above the threshold).
+
 ### Decor (`Decor_<DecorId>`, e.g. `Decor_Candles`)
 
 Origin at the **centre of its base**, front toward −Z. At most 4 × 4 studs of

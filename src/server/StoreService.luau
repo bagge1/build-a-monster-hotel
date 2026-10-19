@@ -90,7 +90,7 @@ local function grantFor(player: Player, key: string): ((PlayerData.Data) -> bool
 			math.max(s.minCash, math.floor(StoreService.incomeRate(player) * s.cashMinutes * 60))
 		return function(data)
 			data.cash += amount
-			data.cosmetics.Facade_Slime = true
+			data.cosmetics.Cosmetic_SlimeFacade = true
 			data.cosmetics.StarterPack = true
 			addBoost(data, s.boost, s.seconds)
 			player:SetAttribute("Cash", data.cash)

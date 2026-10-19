@@ -14,6 +14,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
 
 local Constants = require(ReplicatedStorage.Shared.Constants)
+local Cosmetics = require(ReplicatedStorage.Shared.Cosmetics)
 local Economy = require(ReplicatedStorage.Shared.Economy)
 local Grid = require(ReplicatedStorage.Shared.Grid)
 local Net = require(ReplicatedStorage.Shared.Net)
@@ -288,7 +289,26 @@ local function buyFloor(player: Player)
 	changed(player, "Floor")
 end
 
+-- Wears an owned cosmetic in its slot, or takes the slot's off ("") (Cosmetics.luau).
+local function equip(player: Player, slot: string, id: string)
+	local data = PlayerData.get(player)
+	if not data or not table.find(Cosmetics.Slots, slot :: any) then
+		return
+	end
+	if id ~= "" then
+		local c = Cosmetics.get(id)
+		if not c or c.slot ~= slot or not data.cosmetics[id] then
+			Net.fire(player, "Refused", "Equip", "You don't have that yet")
+			return
+		end
+	end
+	data.equipped[slot] = id
+	PlotService.refreshCosmetics(player)
+	StateService.mark(player)
+end
+
 function BuildService.Init()
+	Net.on("Equip", equip)
 	Net.on("Place", place)
 	Net.on("Move", move)
 	Net.on("Sell", sell)
@@ -313,6 +333,20 @@ function BuildService.Start()
 	end)
 	PlayerData.onLoaded(function(player)
 		BuildService.refreshUnlocks(player)
+	end)
+	DevGrant.register("cosmetic", function(player, args)
+		-- Owns a cosmetic (`args[1]`, or every one), to see it worn without earning it.
+		local data = PlayerData.get(player)
+		if not data then
+			return "no data"
+		end
+		for _, c in Cosmetics.List do
+			if args[1] == nil or args[1] == c.id then
+				data.cosmetics[c.id] = true
+			end
+		end
+		StateService.mark(player)
+		return "ok"
 	end)
 	DevGrant.register("unlock", function(player, args)
 		local data = PlayerData.get(player)
@@ -404,7 +438,19 @@ function BuildService.Start()
 				unlockedDecor[d.id] = true
 			end
 		end
+		local cosmetics = {}
+		for _, c in Cosmetics.List do
+			table.insert(cosmetics, {
+				id = c.id,
+				name = c.name,
+				slot = c.slot,
+				from = c.from,
+				owned = data.cosmetics[c.id] == true,
+			})
+		end
 		return {
+			cosmetics = cosmetics,
+			equipped = data.equipped,
 			traps = data.traps,
 			unlockedDecor = unlockedDecor,
 			layout = layout,

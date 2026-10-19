@@ -26,6 +26,7 @@ local Constants = require(ReplicatedStorage.Shared.Constants)
 local Grid = require(ReplicatedStorage.Shared.Grid)
 local Pieces = require(ReplicatedStorage.Shared.Pieces)
 local Locations = require(ReplicatedStorage.Shared.Locations)
+local Cosmetics = require(ReplicatedStorage.Shared.Cosmetics)
 local StreetLayout = require(ReplicatedStorage.Shared.StreetLayout)
 local HotelKit = require(ServerScriptService.Server.HotelKit)
 local PlayerData = require(ServerScriptService.Server.PlayerData)
@@ -211,6 +212,8 @@ local function buildPiece(plot: Plot, id: string, rec: PlayerData.PieceRecord): 
 end
 
 -- Builds everything of a plot from its owner's data, from scratch.
+local drawCosmetics: (Plot, PlayerData.Data) -> ()
+
 local function buildHotel(plot: Plot, data: PlayerData.Data?)
 	for _, child in plot.model:GetChildren() do
 		child:Destroy()
@@ -257,9 +260,7 @@ local function buildHotel(plot: Plot, data: PlayerData.Data?)
 	sign.Parent = plot.model
 	plot.sign = sign
 
-	local facade = HotelKit.facade(plot.location, data.floors)
-	placeLocal(facade, plot.frame)
-	facade.Parent = plot.model
+	drawCosmetics(plot, data)
 
 	for floor = 2, data.floors do
 		local slab = HotelKit.slab(plot.location, floor)
@@ -285,6 +286,60 @@ local function buildHotel(plot: Plot, data: PlayerData.Data?)
 	end
 	for _, handler in builtHandlers do
 		task.spawn(handler, plot)
+	end
+end
+
+-- The cosmetic its owner wears in `slot`, if they own it (MODELS.md, "Cosmetics").
+local function worn(data: PlayerData.Data, slot: string): Cosmetics.Cosmetic?
+	local id = data.equipped[slot]
+	local c = id and Cosmetics.get(id)
+	return if c and c.slot == slot and data.cosmetics[id] then c else nil
+end
+
+--[[ The facade, in its cosmetic's colours, and the sign and lobby cosmetics at
+	their origins (MODELS.md, "Cosmetics"): the sign's Board front face and the
+	lobby's Entrance. Drawn again whole on every change. ]]
+function drawCosmetics(plot: Plot, data: PlayerData.Data)
+	for _, name in { "Facade", "Cosmetics" } do
+		local old = plot.model:FindFirstChild(name)
+		if old then
+			old:Destroy()
+		end
+	end
+	local f = worn(data, "Facade")
+	local facade = HotelKit.facade(
+		plot.location,
+		data.floors,
+		if f then { facade = f.colour, trim = f.trim or f.colour } else nil
+	)
+	placeLocal(facade, plot.frame)
+	facade.Parent = plot.model
+
+	local folder = Instance.new("Folder")
+	folder.Name = "Cosmetics"
+	local sign = worn(data, "Sign")
+	local board = plot.sign and plot.sign:FindFirstChild("Board", true) :: BasePart?
+	if sign and board then
+		local m = HotelKit.cosmetic(sign)
+		m:PivotTo(board.CFrame * CFrame.new(0, 0, -board.Size.Z / 2))
+		m.Parent = folder
+	end
+	local lobby = worn(data, "Lobby")
+	local root = plot.lobby and plot.lobby.PrimaryPart
+	local entrance = root and root:FindFirstChild("Entrance") :: Attachment?
+	if lobby and entrance then
+		local m = HotelKit.cosmetic(lobby)
+		m:PivotTo(entrance.WorldCFrame)
+		m.Parent = folder
+	end
+	folder.Parent = plot.model
+end
+
+function PlotService.refreshCosmetics(player: Player)
+	local plot = byPlayer[player]
+	local data = PlayerData.get(player)
+	if plot and data and plot.lobby then
+		drawCosmetics(plot, data)
 	end
 end
 
