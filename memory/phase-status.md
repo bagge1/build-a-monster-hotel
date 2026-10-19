@@ -6,7 +6,9 @@ metadata:
 ---
 
 **State (2026-10-19, first night sprint):** M0–M6 built in code and played in
-Studio; every model is still a Luau blockout. Save and load are NOT proven:
+Studio, plus §7 social and §8.2 events. The game still draws Luau blockouts:
+the Haunted Manor monsters and hotel kit are built in Blender and staged, not
+yet imported (WAITING §0). Save and load are NOT proven:
 DataStore access is off (WAITING §3.1), so every playtest ran on a mock profile.
 
 | Phase | Built | Run in Studio | Next |
@@ -17,7 +19,9 @@ DataStore access is off (WAITING §3.1), so every playtest ran on a mock profile
 | M3 collection | Friendship, move-ins, residents, staff, offline income, Book | Yes (phase 3) | Offline earnings need DataStore |
 | M4 progression | Rebirth, Moon Tree, Frostfang, Gloom tutorial, analytics, phone layout | Yes (phase 4) | Phone layout seen again after the last fix |
 | M5 live | Store (placeholder ids), boosts, ads, dailies, login, codes | Yes (phase 5) | Real ids from Creator Hub (WAITING §3.2) |
-| M6 polish | Hunter Night, sound, settings, low graphics; art by background agents | Partly (phase 6) | Import the models; upload UI images |
+| M6 polish | Hunter Night, traps, sound, settings, low graphics, LOD, facade, rare check-in moment; 15 UI images uploaded and used | Yes (phase 6) | Import the staged models (WAITING §0) |
+| §7 social | Likes, Street Favourite, friend bonus, pings, street + global leaderboards | Partly (two-player parts are his) | Co-managers (WAITING §2.5) |
+| §8.2 events | Full Moon weekend, Full Moon Hunt, Monster Parade, Halloween, Candy shop | Yes (specs, a purchase) | Winter content |
 
 **Dev tools (Studio only, remove before release):** `workspace.DevCommand`
 (DevGrant: cash, walkin, checkin, finish, request, bus, decide, resident,

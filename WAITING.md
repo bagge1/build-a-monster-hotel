@@ -76,6 +76,12 @@ Med Claudes skärmdump där det finns en. -->
    (bygga? sälja? flytta?) och om det ska kräva vänskap på Roblox.
    **Rekommendation:** bygga och placera, aldrig sälja; bara Roblox-vänner.
 
+6. **Presentversioner av passen** (GDD §10.1 punkt 4: "Gift versions of every
+   pass") är inte byggda. Det behöver: en produkt per pass i Creator Hub
+   ("Gift: Night Manager" osv.) och ett beslut om mottagaren måste vara på
+   samma server. **Rekommendation:** bara spelare på samma gata till att börja
+   med (enkelt och säkert); presenten sparas hos mottagaren som om passet var köpt.
+
 ## §3 Creator Hub och publicering
 
 1. **Slå på Studio Access to API Services** (2026-10-19). Playtesten visar
