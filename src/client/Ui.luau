@@ -201,7 +201,7 @@ function Ui.window(
 	local w = Ui.panel(gui, name, size, UDim2.fromScale(0.5, 0.5), Vector2.new(0.5, 0.5))
 	local t = Ui.label(w, "Title", title, UDim2.new(1, -70, 0, 40), 26, Ui.Colour.Gold)
 	t.Position = UDim2.fromOffset(16, 8)
-	local close = Ui.button(w, "Close", "✕", UDim2.fromOffset(44, 44), function()
+	local close = Ui.button(w, "Close", "X", UDim2.fromOffset(44, 44), function()
 		w.Visible = false
 		if onClose then
 			onClose()

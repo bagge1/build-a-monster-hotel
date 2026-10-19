@@ -14,6 +14,8 @@ local systems: { { Init: () -> (), Start: () -> () } } = {
 	require(Client.BuildController) :: any,
 	require(Client.BusRenderer) :: any,
 	require(Client.RatingPanel) :: any,
+	require(Client.ResidentRenderer) :: any,
+	require(Client.CollectionPanels) :: any,
 }
 
 local function run(phase: string)

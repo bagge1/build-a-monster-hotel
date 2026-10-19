@@ -48,6 +48,22 @@ multiply a capture's x and y by viewport width / 1920 (3434 / 1920 on his screen
   and tips (dev `request` opens one now).
 - [ ] The rating panel (★ Rating) shows the five bars.
 
+## Phase 3 (M3, the collection)
+
+- [x] A Standard Room with Puddle Rug and Snack Basket (both of the Slime's
+  preferences) gives a happy stay: friendship +1, the Slime's Book page found.
+- [x] A second happy stay at the threshold (2 for a Common) moves the Slime in;
+  friendship starts again at 0.
+- [x] A Housekeeping resident cleans a dirty room by itself; a Front Desk
+  resident checks a waiting guest in after 6 s.
+- [x] **Residents** lists each resident with its Wing pay, the six roles (its
+  best one marked) and a holiday button; **Book** shows found pages, mutations
+  and friendship meters.
+- [!] Two drawings of one resident at its post: a republished Wing replaced
+  its folder and the client kept the old one. Fixed (ResidentRenderer).
+- [!] The windows' close cross drew as an empty box (Fredoka One has no ✕): now "X".
+- [ ] Holiday gives Moon Shards; offline earnings on rejoin (needs DataStore access).
+
 ## August keeps
 
 - How the street, the lobby and the rooms look (every look is a night draft).
@@ -56,5 +72,6 @@ multiply a capture's x and y by viewport width / 1920 (3434 / 1920 on his screen
 ## Log
 
 - 2026-10-19 03:20 T0 and Phase 1 items 1–8 pass (the night's playtest), commit `daf7ffa`.
-- 2026-10-19 03:36 Phase 2 items 1–3 pass.
+- 2026-10-19 03:27 Phase 2 items 1–3 pass.
+- 2026-10-19 03:40 Phase 3 items 1–4 pass; two client bugs fixed.
 - 2026-10-19 03:24 Stairs: the first landing (2 studs) jammed a walker; widened to 4, both storeys walked up and down.

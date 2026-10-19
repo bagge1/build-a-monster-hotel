@@ -701,7 +701,7 @@ Every number below is a **placeholder** (tagged `PLACEHOLDER` in
 
 ### A.3 Guests (§4.3, §4.4)
 
-- **Satisfaction** (0–100) = 40 + 15 per preference matched + 5 per tier above
+- **Satisfaction** (0–100) = 50 + 15 per preference matched + 5 per tier above
   T1 + 5 per amenity on the floor (at most 15) + 10 per request fulfilled by the
   player (5 by staff) − 10 per request that ran out − 1 per 5 s waited at the
   desk past 10 s (at most −20). **Matching both preferences makes a T1 stay
