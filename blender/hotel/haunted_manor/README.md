@@ -347,4 +347,6 @@ room's door, the stairs):
 | 11 | The steps are too tall | **False**: 1.2 rise, 1.5 tread (the contract), walked |
 
 The handrail and the jambs are rebuilt and re-staged with every room and
-both stair cores (WAITING §0.6). **Studio**: the new ones not yet imported.
+both stair cores, imported, saved and synced the same night (25/25); the
+stair cores' dressing tops out at 17.85, under the upper floor. The jambs and
+the lamps are not yet seen in a playtest.

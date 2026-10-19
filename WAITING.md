@@ -35,7 +35,8 @@ Connect: knappen under fliken Plugins i Studio. -->
    `archive/screens/2026-10-19_doubled_scale.jpg` (övre raden Haunted Manor,
    nedre Frostfang: gatan, lobbyn mot disken, ett rum, trappan).
 
-6. **Importera 25 modeller igen** (2026-10-19, granskningen i spelet):
+6. ~~**Importera 25 modeller igen**~~ (gjort 2026-10-19: alla 25 inställda,
+   sparade och synkade, `TESTRUN.md` fas 11) (2026-10-19, granskningen i spelet):
    trappans ledstång stack upp genom våningen ovanför, och dörrkarmarna gick
    högre än bågen. Alla rum och bekvämligheter och båda hotellens
    `StairCore` och `StairCoreTop`. Importera **alla filer i

@@ -258,8 +258,13 @@ the slab (`CLAUDE.md`, "The scale of a person"; `MODELS.md`, "Hotel kit").
   7 the "red slivers": the down flight's handrail standing up through the
   floor above, fixed; 8 the pale rectangle is the place's own
   `SpawnLocation` in the middle of the street (WAITING §2.13); 10 not seen.
-- [ ] The 25 re-staged models (rooms' jambs, the stairs' handrail) imported
-  and checked; the street lamps flanking each entrance seen (WAITING §0.6).
+- [x] The 25 re-staged models (rooms' jambs, the stairs' handrail) imported,
+  set, read back, saved and synced (25/25 meshes, sizes, collision and
+  textures match; six synced copies without `PrimaryPart`, which `HotelKit`
+  sets itself). Every stair core's dressing now tops out at 17.85, under the
+  upper floor (18): the handrail no longer stands through it.
+- [ ] The jambs and the street lamps (a pair flanking each entrance) seen in a
+  playtest: not run, another session was testing the grid in Studio.
 
 ## August keeps
 
