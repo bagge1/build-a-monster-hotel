@@ -20,8 +20,7 @@ describe("Economy", function()
 		for _, p in Pieces.List do
 			for t = 1, Constants.Economy.MaxTier - 2 do
 				expect.truthy(
-					(Economy.tierCost(p.id, t + 1) :: number)
-						> Economy.tierCost(p.id, t) :: number,
+					(Economy.tierCost(p.id, t + 1) :: number) > Economy.tierCost(p.id, t) :: number,
 					p.id
 				)
 			end

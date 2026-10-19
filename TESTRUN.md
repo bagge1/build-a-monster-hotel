@@ -6,18 +6,41 @@ Start at the first unmarked item. Marks: `[x]` pass, `[!]` failed and fixed
 
 ## T0 Proof
 
-- [ ] A synthetic key, a click and a walk are seen to act in the game.
-- [ ] The sync landed: every script's size in Studio matches git.
-- [ ] `PlayerData` reports DataStore `Access`, not a mock.
+- [x] A synthetic key, a click and a walk are seen to act in the game.
+- [x] The sync landed: every script's size in Studio matches git (`tools/sync_sizes.py`).
+- [A] `PlayerData` reports DataStore `Access`, not a mock. **It reports `NoAccess`**:
+  Studio API access is off (WAITING.md §3.1).
 
-## Phase 1
+## Phase 1 (M1, greybox core)
 
-<!-- One line per item: what is done, and what is seen that proves it. -->
+Run with Studio in front (a background Studio stops `RenderStepped` and prompts).
+Mouse coordinates are viewport pixels: a capture is scaled to 1920 wide, so
+multiply a capture's x and y by viewport width / 1920 (3434 / 1920 on his screen).
+
+- [x] Joining claims the nearest free plot (plot 2 first) and spawns the player at the lobby's `Spawn`.
+- [x] An empty hotel rates 1★ and shows $100 (§6.3).
+- [x] **Build** opens build mode: the overview camera, the piece strip with prices
+  and lock reasons, the tools down the right edge.
+- [x] A real click on the grid places a Standard Room ($50, then $57: ×1.15); the
+  ghost turns red over a taken cell with the reason.
+- [x] A walk-in arrives from the lane, walks to the desk queue; the desk prompt
+  checks it in; it walks the grid to its bed.
+- [x] An occupied room pays $1/s for a Slime into the till.
+- [x] Check-out leaves a tip and a review, the room Dirty with **Clean** on.
+- [x] Holding **Clean** 2 s at the door makes it Vacant; the till prompt moves
+  the till to the wallet.
+- [x] Floors 2 and 3 bought: slabs, railings, stairs. A walker climbs both
+  storeys and comes back down (after the landing was widened to 4 studs).
+- [x] A guest to a floor 2 room walks the stairs' own turns and the floor's hallway.
+- [ ] Upgrade, decorate, move and sell from the piece menu, by clicks.
+- [A] Save and load by rejoining: blocked on WAITING.md §3.1 (no DataStore access).
 
 ## August keeps
 
-<!-- Only what a person must judge: how it feels, how it looks. -->
+- How the street, the lobby and the rooms look (every look is a night draft).
+- Whether the build camera and the piece strip feel right with a mouse and a thumb.
 
 ## Log
 
-<!-- One line per item run: date, item, result, commit. -->
+- 2026-10-19 03:20 T0 and Phase 1 items 1–8 pass (the night's playtest), commit `daf7ffa`.
+- 2026-10-19 03:24 Stairs: the first landing (2 studs) jammed a walker; widened to 4, both storeys walked up and down.

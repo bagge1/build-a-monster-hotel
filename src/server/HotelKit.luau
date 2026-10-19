@@ -97,8 +97,8 @@ local function lamp(model: Model, n: number, at: Vector3, colour: Color3)
 		CastShadow = false,
 	})
 	local light = Instance.new("PointLight")
-	light.Range = 14
-	light.Brightness = 1.2
+	light.Range = 12
+	light.Brightness = 0.6
 	light.Color = colour
 	light.Shadows = false
 	light.Parent = g
@@ -302,10 +302,12 @@ function HotelKit.lobby(location: number): Model
 	return model
 end
 
---[[ One flight of the stair core (MODELS.md, "Stair core"), from a floor to
-	the next: a switchback of two flights of six 1-stud steps, 1.5 deep, 6 wide.
-	Origin at the core's footprint centre on the lower floor. `top` adds the
-	railings the topmost floor needs round the open stairwell. ]]
+--[[ One storey of the stair core (MODELS.md, "Stair core"), from a floor to
+	the next: a switchback of two flights of five 1.2-stud steps, 1.5 deep and
+	6 wide, with a landing 4 deep between them (the first draft's 2-stud
+	landing jammed a walker against the divider, 2026-10-19). Origin at the
+	core's footprint centre on the lower floor. `top` adds the railings the
+	topmost floor needs round the open stairwell. ]]
 function HotelKit.stairs(location: number, top: boolean): Model
 	local found = template(location, if top then "StairCoreTop" else "StairCore")
 	if found then
@@ -316,9 +318,13 @@ function HotelKit.stairs(location: number, top: boolean): Model
 	local model, root = shell("StairCore", Vector3.new(S, 0.2, S), Vector3.new(0, 0.1, 0))
 	local stepColour = darker(loc.facade, 1.1)
 	local wallColour = darker(loc.facade, 0.7)
-	local rise, tread, steps = 1, 1.5, FLOOR / 2
-	-- In the core's frame: x −6..6, z −6..6; the flight up starts at z −5 on the left half (x < 0).
-	local z0 = -S / 2 + 1
+	local steps, tread = 5, 1.5
+	local rise = FLOOR / 2 / steps
+	-- In the core's frame: x −6..6, z −6..6. The flight up climbs +Z on the left half (x < 0)
+	-- from z0, the flight down comes back −Z on the right half.
+	local z0 = -S / 2 + 0.5
+	local landingStart = z0 + tread * steps
+	local landingDepth = S / 2 - landingStart
 	for i = 1, steps do
 		local zc = z0 + tread * (i - 0.5)
 		part(
@@ -330,24 +336,24 @@ function HotelKit.stairs(location: number, top: boolean): Model
 		)
 	end
 	local landingY = rise * steps
-	local landingDepth = S - 1 - tread * steps -- what is left at the back
 	part(
 		model,
 		"Landing",
 		Vector3.new(S, 1, landingDepth),
-		Vector3.new(0, landingY - 0.5, S / 2 - landingDepth / 2),
+		Vector3.new(0, landingY - 0.5, landingStart + landingDepth / 2),
 		{ Color = stepColour }
 	)
 	for i = 1, steps do
-		local zc = S / 2 - landingDepth - tread * (i - 0.5)
+		local zc = landingStart - tread * (i - 0.5)
 		local h = landingY + rise * i
-		local depth = if i == steps then tread + 1 else tread -- the last step reaches the upper slab
-		local zcFixed = if i == steps then zc - 0.5 else zc
+		-- The last step reaches back to the core's edge, under the upper slab's lip.
+		local front = if i == steps then -S / 2 else zc - tread / 2
+		local back = zc + tread / 2
 		part(
 			model,
 			`Step_Down_{i}`,
-			Vector3.new(S / 2, 1, depth),
-			Vector3.new(S / 4, h - 0.5, zcFixed),
+			Vector3.new(S / 2, 1, back - front),
+			Vector3.new(S / 4, h - 0.5, (front + back) / 2),
 			{ Color = stepColour }
 		)
 	end
@@ -378,8 +384,8 @@ function HotelKit.stairs(location: number, top: boolean): Model
 	part(
 		model,
 		"Divider",
-		Vector3.new(t, h, S - 1 - landingDepth),
-		Vector3.new(0, h / 2, -S / 2 + 1 + (S - 1 - landingDepth) / 2),
+		Vector3.new(t, h, landingStart - z0),
+		Vector3.new(0, h / 2, (z0 + landingStart) / 2),
 		{ Color = wallColour }
 	)
 	if top then
@@ -388,15 +394,16 @@ function HotelKit.stairs(location: number, top: boolean): Model
 			model,
 			"Rail_Top",
 			Vector3.new(S / 2, 3.5, t),
-			Vector3.new(-S / 4, FLOOR + 1.75, z0),
+			Vector3.new(-S / 4, FLOOR + 1.75, -S / 2 + 1),
 			{ Color = wallColour }
 		)
 	end
 	-- The guests' glide: bottom, the turn at the landing, the top.
-	attach(root, "Bottom", Vector3.new(-S / 4, 0, -S / 2 + 0.5))
-	attach(root, "Path_1", Vector3.new(-S / 4, landingY, S / 2 - landingDepth / 2))
-	attach(root, "Path_2", Vector3.new(S / 4, landingY, S / 2 - landingDepth / 2))
-	attach(root, "Top", Vector3.new(S / 4, FLOOR, -S / 2 + 0.5))
+	local mid = landingStart + landingDepth / 2
+	attach(root, "Bottom", Vector3.new(-S / 4, 0, z0 - 0.25))
+	attach(root, "Path_1", Vector3.new(-S / 4, landingY, mid))
+	attach(root, "Path_2", Vector3.new(S / 4, landingY, mid))
+	attach(root, "Top", Vector3.new(S / 4, FLOOR, z0 - 0.25))
 	return model
 end
 

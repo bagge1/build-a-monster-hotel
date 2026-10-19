@@ -170,12 +170,14 @@ is toward −Z.
 
 Cells x 10–11, z 2–3 of every floor: 12 × 12 studs, one floor high (12 studs),
 origin at its footprint's centre on the lower floor's walking surface. Steps at
-most **1 stud** rise and at least **1.5 studs** tread; at least 4 studs wide;
-a railing on every open side.
+most **1.2 studs** rise and at least **1.5 studs** tread; flights at least 4
+studs wide; **the landing at least 4 studs deep** (a 2-stud landing jammed a
+walker against the divider, 2026-10-19); a railing on every open side.
 
 | Name | What | The code |
 |---|---|---|
-| `Bottom`, `Top` (attachments) | The foot and head of the flight, on the walking surface | Guests glide between them |
+| `Bottom`, `Top` (attachments) | The foot and head of the storey's stairs, on the walking surface | Where a guest's walk up starts and ends |
+| `Path_1`, `Path_2`… (attachments) | The turns between, in order (the landing's two ends) | A guest walks Bottom → Path_n → Top |
 
 ### Facade (`Facade`) and sign (`HotelSign`)
 

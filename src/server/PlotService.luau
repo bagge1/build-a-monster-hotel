@@ -497,8 +497,8 @@ local function buildStreet()
 			bulb.Shape = Enum.PartType.Ball
 			bulb.CanCollide = false
 			local light = Instance.new("PointLight")
-			light.Range = 26
-			light.Brightness = 1.4
+			light.Range = 24
+			light.Brightness = 0.9
 			light.Color = Color3.fromRGB(255, 190, 120)
 			light.Parent = bulb
 			post.CanCollide = true
