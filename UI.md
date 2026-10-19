@@ -57,3 +57,20 @@ type. -->
 
 <!-- One section per panel: what it does, the names it carries, in a table
 of Name | What | The code. -->
+
+### Build mode (`Build`, `src/client/BuildController.luau`)
+
+Built in code; free building (GDD §5.4, 2026-10-19). A designed one carries
+these names.
+
+| Name | What | The code |
+|---|---|---|
+| `Strip` | The bottom strip: `Info` (what to do, or why the ghost is red) over `Cards` (a horizontal list of cards) | Fills the cards for the open tab |
+| `Tools` | Top-left, in rows: the tabs `Rooms`, `Amenity`, `Stairs` (shows "n free" when a new floor's stair is owed), `Decor`, `Floor`; `Down`, `FloorLabel`, `Up`, `BuyFloor`; `Rotate`, `Turn`, `Place`; `Traps`, `Style`, `Done` | Each button's action |
+| `PieceMenu` | A window: a room's tier, its decor points and what the next tier needs, Move, Sell, and its floor finish; a stair's or the desk's Move (the desk is never sold); a piece of decor's Move and Sell; a closed area's Buy | Opened by a tap on what it is for |
+| `AreaLabel` | A billboard over each closed area of the floor in view: its price, or "buy one next to it" | Drawn on the plot's `Areas` plates |
+
+Cards per tab: a piece's name, size and price ("free" for an owed stair);
+decor's name, size in squares and price; a floor finish's name and "Its own
+floor". With the Floors tab a chosen finish is laid by tapping a room, the
+lobby or a hallway.

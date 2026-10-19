@@ -192,10 +192,11 @@ Mutations are **material, colour and size variants**: cheap content that doesn't
 
 | Piece | Placement | Purpose |
 |---|---|---|
-| **Rooms** | 2×2 to 3×3 cells on a floor | Required room types for species; tiers T1–T5 |
-| **Lobby** | Ground floor: front desk, till, waiting area, sign | Check-in, rating display |
+| **Rooms** | 2×2 to 3×3 cells on a floor, in an owned area (§5.4) | Required room types for species; ~~tiers T1–T5~~ tiers T1–T3 from the decor inside (§5.4) |
+| **Lobby** | Ground floor: a shell (floor, front wall, arch); the front desk with its till is a piece placed on floor 1 (§5.4) | Check-in, rating display |
 | **Amenities** | Any floor | Boost needs on that floor (buffet, spa, game room, graveyard garden, organ hall…) |
-| **Decor** | Free placement inside rooms and the lobby | Style score, preferences (candles add "darkness", etc.) |
+| **Decor** | Free placement on a 3-stud grid inside rooms, the lobby and the hallways (§5.4) | Style score, preferences (candles add "darkness", etc.), a room's tier |
+| **Stairs** | A 2×2 piece joining a floor to the one above (§5.4) | Reaching the floors |
 | **Floors** | Vertical expansion; ~~stairs and elevator placed automatically~~ the player buys and places the stairs (§5.4) | Capacity |
 | **Facade and sign** | Exterior | Cosmetic; facade styles are a monetization item |
 
@@ -212,7 +213,8 @@ Mutations are **material, colour and size variants**: cheap content that doesn't
 | Coffin Suite | 3×3 | Rating 3.5★ | Vampire Count |
 | Opera Suite | 3×3 | Rating 4★ + 1 Legendary resident | Grand Banshee |
 
-Each room tier (T1→T5) costs about ×4 the previous tier and adds +50% pay and +10 comfort.
+~~Each room tier (T1→T5) costs about ×4 the previous tier and adds +50% pay and +10 comfort.~~
+A room's tier (T1→T3) comes from the decor inside it and adds +50% pay (§5.4).
 
 ### 5.3 Hotel rating
 
@@ -277,7 +279,8 @@ his yes: an area's size (4 × 5 cells
 behind the lobby, six to a floor, so two 2×2 rooms either side of a
 hallway fit one), whether an area is bought for every floor at once, how a
 stair joins two floors, where the desk may stand, and how freely decor is
-placed. Until he answers, §5.1, Appendix A.1 and A.2 describe what is built.
+placed. **Built (2026-10-19, branch `claude/free-building-4b66e3`)** as
+Appendix A.1 and A.2 now describe; every number there a PLACEHOLDER.
 
 ---
 
@@ -697,9 +700,27 @@ Every number below is a **placeholder** (tagged `PLACEHOLDER` in
   of the lane ("browsing"), then turn to the hotel they picked.
 - **The plot frame:** cell (x, z), x 0–11 along the street, z 0–11 away from it;
   floor 1 at ground level, each floor 18 studs above the last (his ruling, 2026-10-19 evening).
-- **Reserved cells** (to be replaced by §5.4: areas, placed stairs, a movable desk): the **Lobby** is the front two rows of floor 1 (z 0–1):
-  entrance in the middle, front desk, till, waiting spots. The **stair core** is
-  cells x 10–11, z 2–3 on every floor (stairs for players; guests glide up it).
+- **The lobby** is the front two rows of floor 1 (z 0–1), a shell with the
+  entrance in the middle; above floor 1 the same rows are a gallery. The two
+  front-row cells either side of the entrance (x 5–6, z 0) are never built on.
+- **Areas** (§5.4, his yes 2026-10-19): behind the lobby the plot is cut into
+  six areas of 4 × 5 cells, three across (x 0–3, 4–7, 8–11) and two deep
+  (z 2–6, 7–11), numbered 1–6 from the front left. An area is bought for
+  every floor at once, next to the lobby or to an owned one; the front middle
+  one (area 2) is owned at the start. Rooms and amenities stand only in owned
+  areas; stairs and the desk may stand in the lobby rows too. Areas not owned
+  are not walked on and carry a dark plate. Prices: the n-th area owned costs
+  $0, $1,000, $3,000, $8,000, $20,000, $50,000 (PLACEHOLDER).
+- **Stairs** (§5.4): a 2 × 2 piece on floor f joining it to f + 1 on the same
+  cells (its well on f + 1). Its foot (the cell before the flight up,
+  front-left) and its head (front-right, on f + 1) stay walkable. A stair on
+  the same cells and turn above another continues it. $250 × 1.15^n
+  (PLACEHOLDER); a new floor's first stair is free. A stair whose going would
+  cut a door off (the last to a floor with rooms) cannot be sold.
+- **The front desk** (§5.4): a 2 × 1 piece with its till and key rack,
+  exactly one, on floor 1, its two front cells (where the queue stands)
+  reached from the entrance. A new hotel's stands at the lobby's −X end,
+  served toward +X. Never bought or sold, only moved.
 - **The Resident Wing** is a garden behind the hotel (48 studs deep), where
   residents wander.
 - **The facade:** walls with window openings along the left, right and back
@@ -707,11 +728,20 @@ Every number below is a **placeholder** (tagged `PLACEHOLDER` in
   back wall has an 8-stud doorway to the Wing, and its sides are solid along
   the lobby. The street side is the lobby's front wall on floor 1 (his ruling,
   2026-10-19, below) and stays open above it.
-- **Hallways are the free cells.** A room's door opens onto the cell in front
-  of its front edge. A placement is refused if its door cell is not free and
-  connected to the floor's way in (the lobby on floor 1, the stair core above),
-  or if it would cut off another room's door. That connectivity graph is also
-  the guests' path graph (§13.6, "a graph").
+- **Hallways are the free cells** of the lobby, the gallery and the owned
+  areas: not under a piece, not a stairwell, not furnished down the middle.
+  A room's door opens onto the cell in front of its front edge. A placement
+  is refused if any piece's doors (a room's door cell, the desk's queue
+  cells, a stair's foot and head) would not be free and reached from the
+  entrance, over every floor and stair, or if it would cut off a door that
+  was reached before. That graph is also the guests' path graph (§13.6,
+  "a graph"; `Grid.route`).
+- **Decor squares** (§5.4): decor stands on a grid of 3 studs (four squares to
+  a cell), in 90° turns. In a room: inside its walls, never in the 6 × 6
+  inside the door, never on the room's own bed or furniture. On hallway
+  floor: a piece in a cell's corner leaves the cell walkable; one reaching
+  into its middle takes the cell, and is refused if it would cut a door off;
+  nothing but a rug in the entrance's mouth.
 
 ### A.2 Pieces and prices (§5, §6.2)
 
@@ -728,8 +758,13 @@ Every number below is a **placeholder** (tagged `PLACEHOLDER` in
 
 - **Floors:** floor 1 is free; floor 2 $500, floor 3 $5,000 (PLACEHOLDER). Cap
   3, +1 with the Extra Floor pass.
-- **Decor** sits in a room's decor slots (three per room, attachments
-  `Decor_1`–`Decor_3`) and gives that room preference tags:
+- **Decor** ~~sits in a room's decor slots (three per room, attachments
+  `Decor_1`–`Decor_3`)~~ stands on the 3-stud grid in rooms, the lobby and the
+  hallways (§5.4, A.1); the decor inside a room gives it its preference tags
+  and its decor points (1 a $, PLACEHOLDER), which take a 2×2 room to T2 at
+  100 and T3 at 300, a larger room in proportion to its cells (2×3: 150 and
+  450; 3×3: 225 and 675; PLACEHOLDER). Each has a footprint in squares and a
+  layer (`Floor`, `Rug` under the rest, `Wall` against a room's wall):
 
   | Decor | Tags | Cost (PLACEHOLDER) |
   |---|---|---|
@@ -749,6 +784,20 @@ Every number below is a **placeholder** (tagged `PLACEHOLDER` in
   | Chandelier | chandelier | $60,000 |
   | Soundproof Walls | silence, quiet | $50,000 |
 
+  The lobby's old furnishings and the rugs, in every kit (§5.4): Bench (3×1
+  squares, $50), Urn Planter (garden, $50), Rug Runner (4×2, $40), Rug Corner
+  (2×2, $20), Square Rug (4×4, $60). What he named for Haunted Manor (grey
+  silhouettes for his pick; tags and prices PLACEHOLDER): Grandfather Clock
+  (antique furniture, $400), Wall Clock (antique furniture, $150), Black Roses
+  (garden, darkness, $120), Carnivorous Plant (garden, $90), Ghost Fern
+  (garden, damp, $70), Armchair (antique furniture, $200), Velvet Sofa (quiet,
+  $350), Bookshelf (quiet, antique furniture, $500), Side Table (candles, $60),
+  Grand Piano (music, slow music, $2,500).
+- **Floor finishes** (§5.4): a material and a colour, chosen per room, for
+  the lobby and for the hallways, from the kit's set (Haunted Manor: Oak
+  Boards, Dark Boards, Flagstones, Plum Carpet, Black Marble, Cobbles;
+  Frostfang: Pine Boards, Ice, Snow Carpet, Granite). Free (PLACEHOLDER).
+
 - **Amenities** are 2×2 pieces on a floor: they add their tags to every room on
   that floor and score **Fun**.
 
@@ -760,9 +809,11 @@ Every number below is a **placeholder** (tagged `PLACEHOLDER` in
   | Quiet Library | quiet, antique furniture | $6,000 |
   | Organ Hall | organ music, music | $30,000 |
 
-- **Upgrading a room tier** costs base × 4^tier (T1→T2 is 4× the base).
-- **Selling** a room refunds half of what it cost (PLACEHOLDER); an occupied or
-  reserved room cannot be sold.
+- ~~**Upgrading a room tier** costs base × 4^tier (T1→T2 is 4× the base).~~
+  A room's tier is its decor's (above, §5.4).
+- **Selling** a piece or decor refunds half of what was paid for it
+  (PLACEHOLDER), a room's decor with it; an occupied or reserved room cannot
+  be sold, nor the desk.
 
 ### A.3 Guests (§4.3, §4.4)
 
@@ -791,8 +842,9 @@ Every number below is a **placeholder** (tagged `PLACEHOLDER` in
 
 ### A.4 Rating (§5.3)
 
-Each category 0–100: **Comfort** from room tiers and the share of preferences
-matched in recent stays; **Service** from desk waits and requests fulfilled;
+Each category 0–100: **Comfort** from room tiers (the mean tier over the top
+tier: T3 of T3 is full marks since tiers come from furnishing, §5.4, as T5 of
+T5 was) and the share of preferences matched in recent stays; **Service** from desk waits and requests fulfilled;
 **Cleanliness** from the share of rooms clean now; **Fun** 15 per amenity and
 20 per Entertainment staff; **Style** 4 per decor piece and 10 per distinct room
 type. A hotel nobody has stayed in has no Service, and one with no rooms no
