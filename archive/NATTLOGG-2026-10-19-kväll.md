@@ -294,7 +294,7 @@ Obevakad session (`/loop`, självstyrd) medan August är borta (från ca 20:00 i
   är modellerna, 2 279 meshdelar (blockouts var 3 385 delar), 692 ritade
   varav 646 som proxy; en gångare in i en kal trädstam höll 2,41 studs från
   dess mitt och gled runt. WAITING §0.8 struken. §0 är tom.
-- **22:47** August, med en bild från spelet: "the forest should stretch out
+- **22:42** August, med en bild från spelet: "the forest should stretch out
   much longer, and be thicker near the actual playarea". Skrivet i GDD §5.4
   (A, skogen) och beslutsloggen. Byggt (PLACEHOLDER): en täthet 60 studs
   djup längs gatans röjning (14-stud-rutor, 95 %), sedan skogen ut till 600
