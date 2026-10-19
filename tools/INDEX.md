@@ -137,6 +137,16 @@ five the old lobby's: Bench, UrnPlanter, RugRunner, RugCorner, RugSquare),
 one function each; output `blender/hotel/haunted_manor/`. `-- only
 Lobby,StandardRoom` builds a subset, `-- nopreview` skips the sheet.
 
+## build_decor_silhouettes_haunted_manor.py
+
+Haunted Manor's first free-building decor as grey silhouettes for August's
+pick (not for import): GrandfatherClock A/B, WallClock, BlackRoses,
+CarnivorousPlant, GhostFern, Armchair, VelvetSofa, Bookshelf, SideTable,
+GrandPiano A/B, each `K.decor()` to its footprint and layer; output
+`blender/hotel/haunted_manor/silhouettes/`. `sheet()` renders
+`review/silhouettes.png`: each on its 3-stud squares beside the 5-stud
+person, labelled. `-- nopreview` skips the sheet.
+
 ## build_hotel_frostfang_lodge.py
 
 Location 2's hotel kit (Frostfang Lodge): 6 rooms, 2 amenities, the Lobby
