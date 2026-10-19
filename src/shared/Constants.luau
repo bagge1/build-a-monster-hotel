@@ -201,6 +201,8 @@ Constants.Staff = {
 	RoomServiceDelay = 12,
 	BellhopSpeedBonus = 0.25,
 	SecurityInterval = 8,
+	WalkSpeed = 10, -- studs/s on an errand: a guest's pace (§4.6 "Staff are seen working")
+	AtDoor = 2, -- seconds at the door at least before the job is done
 }
 
 Constants.Book = {

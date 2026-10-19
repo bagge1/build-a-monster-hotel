@@ -39,3 +39,4 @@ tests from `Shared`.
 | `rating` | Stars 1–5 in half steps; categories 0–100; better inputs never lower the stars; only the last reviews are kept |
 | `bus` | One Legendary per half hour, one Mythic per two hours, an Epic every third bus; size grows with players within bounds; the guarantees are aboard |
 | `data` | Every species' room exists in its location; every preference can be met; every room serves somebody; every playable location has a rebirth resident; event mutations are never rolled; the remote layer drops malformed messages |
+| `staff` | An errand starts at the post and ends at the door; a walker is as far along as it has walked; the way back ends at the post; a path survives its encoding; a job is never done before its delay nor before the resident has stood at the door; better staff are never slower |

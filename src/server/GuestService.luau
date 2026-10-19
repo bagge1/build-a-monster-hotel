@@ -17,7 +17,7 @@
 	guest's wish list), `Request`, `Happy`.
 
 	What other systems hook: `onCheckout(player, guest, satisfaction)` for
-	friendship (§4.6); `checkIn`, `clean`, `fulfil` for staff; `spawnWalkIn`
+	friendship (§4.6); `checkIn`, `clean`, `fulfil` and `pathToDoor` for staff; `spawnWalkIn`
 	for the tutorial; `spawnBrowsing` and `assign` for the bus.
 ]]
 
@@ -208,12 +208,14 @@ local function cellOf(plot: PlotService.Plot, world: Vector3): Grid.Cell
 	}
 end
 
--- The walk from the desk queue to a room's bed: through the lobby, up the stairs, to the door.
+-- The walk from the desk queue to a room's bed: through the lobby, up the stairs, to the door
+-- (and only to the door with `toDoor`: staff on an errand, §4.6).
 local function roomPath(
 	plot: PlotService.Plot,
 	data: PlayerData.Data,
 	from: Vector3,
-	pieceId: string
+	pieceId: string,
+	toDoor: boolean?
 ): { Vector3 }?
 	local rec = data.layout[pieceId]
 	local piece = rec and Pieces.get(rec.item)
@@ -261,10 +263,19 @@ local function roomPath(
 	if door then
 		table.insert(out, door.Position)
 	end
-	if bed then
+	if bed and not toDoor then
 		table.insert(out, bed.Position)
 	end
 	return out
+end
+
+--[[ The walk from `from` (on floor 1) to a room's door by the guests' own
+	hallways and stairs, or nil if there is none: staff on an errand
+	(ResidentService, §4.6 "Staff are seen working"). ]]
+function GuestService.pathToDoor(player: Player, from: Vector3, pieceId: string): { Vector3 }?
+	local plot = PlotService.of(player)
+	local data = PlayerData.get(player)
+	return if plot and data then roomPath(plot, data, from, pieceId, true) else nil
 end
 
 local function reversed(path: { Vector3 }): { Vector3 }

@@ -2,21 +2,32 @@
 --[[
 	Every hotel's residents, as every client sees them (GDD §4.6, §7 "Visit
 	and like: see its residents"): the Wing's residents wander its garden;
-	staff stand at their posts, found by the lobby's attachments (MODELS.md,
-	"Lobby"). The server publishes them in `ReplicatedStorage.Residents`;
-	this draws and moves them locally. Read by nothing.
+	staff stand at their posts (`Staff.post`, found by the lobby's
+	attachments, MODELS.md "Lobby"), in the order the server's `Slot` gives.
+
+	STAFF ARE SEEN WORKING (§4.6, §5.4, Appendix A.5): a resident on an
+	errand carries `Path`, `T0` and `Speed`, and this walks it along them by
+	the same arithmetic the server times it with; at the door (`Phase`
+	"Work") it faces in and knocks, and when the job is done (`Phase` turns
+	"Done") a "✓" rises at the `Door`. The server publishes them in
+	`ReplicatedStorage.Residents`; this draws and moves them locally. Read by
+	nothing.
 ]]
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 
 local Constants = require(ReplicatedStorage.Shared.Constants)
+local Staff = require(ReplicatedStorage.Shared.Staff)
 local MonsterKit = require(script.Parent.MonsterKit)
+local Hud = require(script.Parent.Hud)
+local Ui = require(script.Parent.Ui)
 
 local ResidentRenderer = {}
 
 local G = Constants.Grid
 local P = G.Cells * G.CellSize
+local POP_RADIUS = 150 -- a "✓" further from the camera than this is not drawn
 
 type Drawn = {
 	config: Configuration,
@@ -26,6 +37,9 @@ type Drawn = {
 	target: Vector3,
 	waitUntil: number,
 	key: string,
+	errand: { Vector3 }, -- the leg being walked, decoded from `Path`
+	errandCode: string?,
+	connections: { RBXScriptConnection },
 }
 
 local drawn: { [Configuration]: Drawn } = {}
@@ -44,30 +58,6 @@ local function lobbyPoint(plot: Model, name: string): CFrame?
 	return if a and a:IsA("Attachment") then a.WorldCFrame else nil
 end
 
--- Where a resident in `role` belongs, or nil for the Wing (it wanders).
-local function post(plot: Model, role: string, n: number): Vector3?
-	local function near(name: string, offset: Vector3): Vector3?
-		local cf = lobbyPoint(plot, name)
-		return if cf then (cf * CFrame.new(offset)).Position else nil
-	end
-	local spread = (n - 1) * 3
-	if role == "FrontDesk" then
-		-- Behind the counter, side by side along it (MODELS.md, "Lobby": `Clerk`).
-		return near("Clerk", Vector3.new(spread, 0, 0))
-	elseif role == "Bellhop" then
-		return near("Entrance", Vector3.new(4 + spread, 0, -1.5))
-	elseif role == "Security" then
-		return near("SignBoard", Vector3.new(6 + spread, 0, -2))
-	elseif role == "Entertainment" then
-		return near("Spawn", Vector3.new(-4 - spread, 0, -1))
-	elseif role == "RoomService" then
-		return near("Till", Vector3.new(4 + spread, -3.8, 2))
-	elseif role == "Housekeeping" then
-		return near("Queue_4", Vector3.new(-4 - spread, 0, 0))
-	end
-	return nil
-end
-
 local function wingPoint(plot: Model): Vector3?
 	local origin = plot:GetAttribute("Origin")
 	if typeof(origin) ~= "CFrame" then
@@ -81,11 +71,25 @@ local function wingPoint(plot: Model): Vector3?
 	return origin:PointToWorldSpace(l)
 end
 
+-- The "✓" at the door when a job is done (Appendix A.5).
+local function popDone(c: Configuration)
+	local door = c:GetAttribute("Door")
+	local text = Staff.DoneText[c:GetAttribute("Role") :: string? or ""]
+	local camera = workspace.CurrentCamera
+	if typeof(door) ~= "Vector3" or not text then
+		return
+	end
+	if camera and (camera.CFrame.Position - door).Magnitude > POP_RADIUS then
+		return
+	end
+	Hud.float(text, door + Vector3.new(0, 3, 0), Ui.Colour.Good)
+end
+
 local function add(c: Instance, plotIndex: number)
 	if not c:IsA("Configuration") or drawn[c] then
 		return
 	end
-	drawn[c] = {
+	local d: Drawn = {
 		config = c,
 		plot = plotIndex,
 		model = nil,
@@ -93,7 +97,19 @@ local function add(c: Instance, plotIndex: number)
 		target = Vector3.zero,
 		waitUntil = 0,
 		key = "",
+		errand = {},
+		errandCode = nil,
+		connections = {},
 	}
+	drawn[c] = d
+	table.insert(
+		d.connections,
+		c:GetAttributeChangedSignal("Phase"):Connect(function()
+			if c:GetAttribute("Phase") == "Done" then
+				popDone(c)
+			end
+		end)
+	)
 end
 
 local function remove(c: Instance)
@@ -101,6 +117,9 @@ local function remove(c: Instance)
 	if d then
 		if d.model then
 			d.model:Destroy()
+		end
+		for _, conn in d.connections do
+			conn:Disconnect()
 		end
 		drawn[c :: Configuration] = nil
 	end
@@ -117,8 +136,37 @@ local function watchPlot(f: Instance)
 	f.ChildRemoved:Connect(remove)
 end
 
+-- Where a resident on an errand is now, the way it faces, and whether it is still walking.
+local function onErrand(d: Drawn, serverNow: number): (Vector3?, Vector3, boolean)
+	local c = d.config
+	local code = c:GetAttribute("Path") :: string?
+	if code ~= d.errandCode then
+		d.errandCode = code
+		d.errand = Staff.decode(code)
+	end
+	if not code or #d.errand == 0 then
+		return nil, Vector3.new(0, 0, -1), false
+	end
+	local speed = c:GetAttribute("Speed") :: number? or Constants.Staff.WalkSpeed
+	local travelled = (serverNow - (c:GetAttribute("T0") :: number? or serverNow)) * speed
+	local pos, dir = Staff.along(d.errand, travelled)
+	local walking = travelled < Staff.length(d.errand)
+	if not walking and c:GetAttribute("Phase") == "Work" then
+		-- At the door: face it.
+		local door = c:GetAttribute("Door")
+		if typeof(door) == "Vector3" then
+			local toward = Vector3.new(door.X - pos.X, 0, door.Z - pos.Z)
+			if toward.Magnitude > 0.1 then
+				dir = toward.Unit
+			end
+		end
+	end
+	return pos, dir, walking
+end
+
 local function frame(dt: number)
 	local now = os.clock()
+	local serverNow = workspace:GetServerTimeNow()
 	local counts: { [string]: number } = {}
 	for c, d in drawn do
 		-- A republished Wing replaces its folder whole: drop what it took with it.
@@ -150,25 +198,44 @@ local function frame(dt: number)
 			local role = c:GetAttribute("Role") :: string? or ""
 			local ck = `{d.plot}|{role}`
 			counts[ck] = (counts[ck] or 0) + 1
-			local goal = if role ~= "" then post(plot, role, counts[ck]) else nil
-			if goal then
-				d.target = goal
-			elseif (d.pos - d.target).Magnitude < 0.5 and now >= d.waitUntil then
-				d.target = wingPoint(plot) or d.pos
-				d.waitUntil = now + rng:NextNumber(2, 6)
-			end
-			local delta = d.target - d.pos
-			local step = math.min(delta.Magnitude, (if role ~= "" then 12 else 3) * dt)
-			local dir = if delta.Magnitude > 0.01 then delta.Unit else Vector3.new(0, 0, -1)
-			if delta.Magnitude > 20 then
-				d.pos = d.target -- a new post far away: appear there
+			local slot = c:GetAttribute("Slot") :: number? or counts[ck]
+			local errandPos, errandDir, walking = onErrand(d, serverNow)
+			local dir: Vector3
+			if errandPos then
+				d.pos = errandPos
+				d.target = errandPos
+				dir = errandDir
 			else
-				d.pos += dir * step
+				local goal = if role ~= ""
+					then Staff.post(role, slot, function(name)
+						return lobbyPoint(plot, name)
+					end)
+					else nil
+				if goal then
+					d.target = goal
+				elseif (d.pos - d.target).Magnitude < 0.5 and now >= d.waitUntil then
+					d.target = wingPoint(plot) or d.pos
+					d.waitUntil = now + rng:NextNumber(2, 6)
+				end
+				local delta = d.target - d.pos
+				local step = math.min(delta.Magnitude, (if role ~= "" then 12 else 3) * dt)
+				dir = if delta.Magnitude > 0.01 then delta.Unit else Vector3.new(0, 0, -1)
+				walking = delta.Magnitude > 0.05
+				if delta.Magnitude > 20 then
+					d.pos = d.target -- a new post far away: appear there
+				else
+					d.pos += dir * step
+				end
 			end
 			if d.model then
 				local flat = Vector3.new(dir.X, 0, dir.Z)
 				local look = if flat.Magnitude > 0.01 then flat.Unit else Vector3.new(0, 0, -1)
-				local bob = if role == "Entertainment" then math.abs(math.sin(now * 6)) * 0.6 else 0
+				local phase = c:GetAttribute("Phase")
+				local bob = if walking and errandPos
+					then math.abs(math.sin(now * 8)) * 0.25 -- a guest's stride (GuestRenderer)
+					elseif phase == "Work" then math.abs(math.sin(now * 5)) * 0.4 -- knocking
+					elseif role == "Entertainment" then math.abs(math.sin(now * 6)) * 0.6
+					else 0
 				d.model:PivotTo(
 					CFrame.lookAt(
 						d.pos + Vector3.new(0, bob, 0),

@@ -3,7 +3,7 @@
 	The HUD (UI.md, "Hud"): the wallet, the till, the rating and Moon Shards
 	along the top; the menu buttons down the left and right edges (never the
 	bottom corners, GDD §11); toasts, the street's announcements, and the
-	floating "+$" over a tip or a collected till.
+	floating "+$" over a tip or a collected till (and staff's "✓" at a door).
 
 	Panels add their own button with `Hud.button(name, text, side, onClick)`.
 	Every number is read from the player's attributes (`PlayerData.publish`),
@@ -87,11 +87,9 @@ function Hud.announce(text: string, kind: string?)
 	end)
 end
 
--- Floating "+$" over a world position (a BillboardGui, so it stays put in the world).
-function Hud.pop(amount: number, at: Vector3?, kind: string?)
-	if amount <= 0 then
-		return
-	end
+-- Floating text that rises and fades over a world position (or over the player): a tip's
+-- "+$", staff's "✓" (a BillboardGui, so it stays put in the world).
+function Hud.float(text: string, at: Vector3?, colour: Color3)
 	local anchor = Instance.new("Part")
 	anchor.Anchored = true
 	anchor.CanCollide = false
@@ -107,18 +105,11 @@ function Hud.pop(amount: number, at: Vector3?, kind: string?)
 	anchor.CFrame = CFrame.new(pos + Vector3.new(0, 2, 0))
 	anchor.Parent = workspace
 	local bb = Instance.new("BillboardGui")
-	bb.Size = UDim2.fromOffset(160, 50)
+	bb.Size = UDim2.fromOffset(240, 50) -- wide enough for "✓ Room Service"
 	bb.AlwaysOnTop = true
 	bb.LightInfluence = 0
 	bb.Adornee = anchor
-	local l = Ui.label(
-		bb,
-		"Amount",
-		"+" .. Format.cash(amount),
-		UDim2.fromScale(1, 1),
-		28,
-		if kind == "Collect" then Ui.Colour.Gold else Ui.Colour.Good
-	)
+	local l = Ui.label(bb, "Amount", text, UDim2.fromScale(1, 1), 28, colour)
 	l.TextXAlignment = Enum.TextXAlignment.Center
 	l.TextStrokeTransparency = 0.3
 	bb.Parent = anchor
@@ -130,6 +121,17 @@ function Hud.pop(amount: number, at: Vector3?, kind: string?)
 	task.delay(1.5, function()
 		anchor:Destroy()
 	end)
+end
+
+function Hud.pop(amount: number, at: Vector3?, kind: string?)
+	if amount <= 0 then
+		return
+	end
+	Hud.float(
+		"+" .. Format.cash(amount),
+		at,
+		if kind == "Collect" then Ui.Colour.Gold else Ui.Colour.Good
+	)
 end
 
 -- The drawn icon (UiImages) and its tint for each menu button; a button
