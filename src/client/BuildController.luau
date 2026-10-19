@@ -494,10 +494,12 @@ local function openStyle()
 	local order = 0
 	for _, slot in { "Sign", "Lobby", "Facade" } do
 		order += 1
+		-- A slot's cosmetics wrap onto more lines: six or more do not fit one (a phone fits three).
 		local row = Ui.frame(menuBody, `Slot_{slot}`, UDim2.new(1, 0, 0, 50))
 		row.BackgroundTransparency = 1
 		row.LayoutOrder = order
-		Ui.list(row, Enum.FillDirection.Horizontal, 6)
+		row.AutomaticSize = Enum.AutomaticSize.Y
+		Ui.list(row, Enum.FillDirection.Horizontal, 6).Wraps = true
 		local label = Ui.label(row, "Label", slot, UDim2.fromOffset(70, 46), 18)
 		label.LayoutOrder = 0
 		local none = Ui.button(row, "None", "None", UDim2.fromOffset(90, 46), function()

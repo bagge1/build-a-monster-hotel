@@ -290,6 +290,16 @@ function DailyService.Init()
 end
 
 function DailyService.Start()
+	-- A request's progress is a stat: the panel is sent again when one behind an open request moves.
+	PlayerData.onStat(function(player, name)
+		local data = PlayerData.get(player)
+		for _, r in if data then data.daily.list else {} do
+			if r.stat == name and not r.claimed then
+				StateService.mark(player)
+				return
+			end
+		end
+	end)
 	-- Double friendship for the day's featured species (§8.2).
 	ResidentService.addFriendship(function(player, speciesId)
 		local data = PlayerData.get(player)

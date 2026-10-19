@@ -151,6 +151,7 @@ local loadedCallbacks: { (Player, Data) -> () } = {}
 local releaseCallbacks: { (Player, Data) -> () } = {}
 local departedCallbacks: { (Player) -> () } = {}
 local messageCallbacks: { (Player, Data, any) -> boolean } = {}
+local statCallbacks: { (Player, string) -> () } = {}
 local keys: { [Player]: string } = {}
 local settled: { [Player]: boolean } = {}
 
@@ -421,7 +422,15 @@ function PlayerData.stat(player: Player, name: string, delta: number?)
 	local d = PlayerData.get(player)
 	if d then
 		d.stats[name] = (d.stats[name] or 0) + (delta or 1)
+		for _, callback in statCallbacks do
+			task.spawn(callback, player, name)
+		end
 	end
+end
+
+-- Called after a profile stat changes (`PlayerData.stat`), with its name.
+function PlayerData.onStat(callback: (Player, string) -> ())
+	table.insert(statCallbacks, callback)
 end
 
 -- Saves now, in the background (ProfileStore's own merging is enough at this size).

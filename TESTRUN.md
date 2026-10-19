@@ -48,7 +48,7 @@ multiply a capture's x and y by viewport width / 1920 (3434 / 1920 on his screen
 - [x] A rare guest on the next bus is announced to the street a bus ahead (a Midnight Bus's Mythic Grand Banshee, a Legendary Vampire Count).
 - [x] A request appears over an occupied room; **Help** at the door (within
   10 studs) fulfils it and tips 10 s of pay; an unanswered one closes after 30 s.
-- [ ] The rating panel (★ Rating) shows the five bars.
+- [x] The rating panel (★ Rating), opened by a click, shows the five bars (15:18).
 
 ## Phase 3 (M3, the collection)
 
@@ -104,7 +104,11 @@ multiply a capture's x and y by viewport width / 1920 (3434 / 1920 on his screen
   profile's "Start" over the tutorial's "Build". Fixed (the profile stores "Build").
 - [A] A real purchase and a real rewarded ad: the ids are August's to create
   (WAITING §3), and Roblox's purchase prompt is CoreGui (his click).
-- [ ] The Daily panel by clicks: claim a finished request, reroll one.
+- [x] The Daily panel by clicks (15:21): a reroll replaced a request and used the
+  day's one; six collects, then **Claim** → Done ✔ and the reward paid.
+- [!] The Daily panel did not move while open: progress is a stat, and a stat
+  change sent no state. Fixed (`PlayerData.onStat`; DailyService marks the
+  player when an open request's stat moves): 5/6 → 6/6 live.
 
 ## Phase 6 (M6, polish)
 
@@ -139,8 +143,12 @@ multiply a capture's x and y by viewport width / 1920 (3434 / 1920 on his screen
 - [x] Cosmetics by the `Equip` remote: Pumpkin sign at the Board's front face,
   Fairy lights at the Entrance, the Gothic facade's colours (45 walls, 3 trims);
   an unknown id refused.
-- [ ] The Style tool by clicks, and pictures of the cosmetics: after the
-  imported models leave Workspace (WAITING §0.3).
+- [x] The Style tool by clicks (15:18): the menu's three slots; Icicle sign
+  equipped and drawn round the board, the text clear; worn cosmetics came back
+  from the save.
+- [!] Style's Sign and Facade rows ran past the panel's edge (six cosmetics in a
+  row). Fixed: rows wrap (two lines, rightmost button 790 of 876 px).
+- [ ] Pictures of the cosmetics with their models: after the next import.
 
 ## Phase 7 (social, GDD §7)
 
