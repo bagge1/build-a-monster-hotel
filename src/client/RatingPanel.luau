@@ -79,8 +79,9 @@ local function redraw()
 end
 
 function RatingPanel.Init()
-	local gui = Ui.screen("Panels", 4)
-	window, body = Ui.window(gui, "RatingPanel", "Hotel rating", UDim2.fromScale(0.45, 0.6))
+	local gui = Ui.screen("Panels", 6)
+	window, body =
+		Ui.window(gui, "RatingPanel", "Hotel rating", UDim2.fromScale(0.45, 0.6), nil, true)
 	Ui.list(body, Enum.FillDirection.Vertical, 8)
 end
 

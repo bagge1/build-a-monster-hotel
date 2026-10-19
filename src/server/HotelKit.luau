@@ -75,7 +75,7 @@ end
 
 local function template(location: number, name: string): Model?
 	local kit = ServerStorage:FindFirstChild("HotelKit")
-	local folder = kit and kit:FindFirstChild(Locations.get(location).name:gsub(" ", ""))
+	local folder = kit and kit:FindFirstChild((string.gsub(Locations.get(location).name, " ", "")))
 	local found = folder and folder:FindFirstChild(name)
 	if found and found:IsA("Model") then
 		return found:Clone()

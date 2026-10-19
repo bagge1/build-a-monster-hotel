@@ -143,13 +143,13 @@ function TutorialController.Init()
 	bubble = Ui.panel(
 		gui,
 		"Gloom",
-		UDim2.new(0.5, 0, 0, 104),
+		UDim2.new(0.36, 0, 0, 104),
 		UDim2.new(0.5, 0, 0, 80),
 		Vector2.new(0.5, 0)
 	)
 	local cap = Instance.new("UISizeConstraint")
 	cap.MaxSize = Vector2.new(460, 104)
-	cap.MinSize = Vector2.new(300, 0)
+	cap.MinSize = Vector2.new(270, 0)
 	cap.Parent = bubble
 	bubble.Visible = false
 	-- Gloom's portrait (ui/Gloom.png, UiImages); the bat emoji if it is not uploaded.
@@ -173,6 +173,11 @@ function TutorialController.Init()
 	text = Ui.label(bubble, "Text", "", UDim2.new(1, -70, 1, -54), 16)
 	text.Position = UDim2.fromOffset(62, 6)
 	text.TextYAlignment = Enum.TextYAlignment.Top
+	-- Shrinks to fit a narrow (phone) bubble, never above its normal size.
+	text.TextScaled = true
+	local maxSize = Instance.new("UITextSizeConstraint")
+	maxSize.MaxTextSize = 16
+	maxSize.Parent = text
 	local skip = Ui.button(bubble, "Skip", "Skip tutorial", UDim2.fromOffset(110, 44), function()
 		Net.send("Tutorial", "Skip")
 	end, Ui.Colour.Panel)

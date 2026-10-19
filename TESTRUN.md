@@ -80,7 +80,9 @@ multiply a capture's x and y by viewport width / 1920 (3434 / 1920 on his screen
   top bar, Gloom covered the screen, build tools overflowed the height. Fixed:
   columns under the top bar, Gloom narrower at top centre and hidden while
   building, tools in three columns top-left.
-- [ ] The phone layout seen again after the fix.
+- [x] The phone layout seen again (04:07): the left column, the right menu in
+  two columns above the jump button, Gloom's text fitting, a window over Gloom
+  that fills the screen and scrolls.
 - [ ] Rebirth through the panel's button when every requirement is met.
 
 ## Phase 5 (M5, live systems)

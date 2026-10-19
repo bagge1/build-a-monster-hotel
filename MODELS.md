@@ -98,6 +98,7 @@ allow.
   | Lobby, stairs | 8,000 each |
   | A facade | 10,000 |
   | A decor piece | 1,500 |
+  | The hotel sign | 3,000 (draft) |
   | A monster | 4,000, plus `LOD_Proxy` 300 |
   | The bus | 8,000, plus `LOD_Proxy` 500 |
 
@@ -133,6 +134,22 @@ stop at 10 (`Constants.Grid.WallHeight`), so the slab above has room.
 `CanQuery` off, the footprint's size × 0.2 tall, centred on the origin. It
 carries every attachment below. The code places a piece with `PivotTo` on the
 model's pivot (= `Root`), never by a part's `CFrame` (`DEVNOTES.md`).
+
+**How attachments travel** (the first set, 2026-10-19). FBX carries no
+attachments: they live in the set's `manifest.json`, and the set's generated
+`import_fixup.luau` creates them after import, sets `Root` as the invisible
+`PrimaryPart` with the pivot on the origin, sets `Box` collision, and lights
+the glows (Neon, the palette colour, one light on each `_1` glow), so a
+delivered model needs no runtime set-up.
+
+**Part names a set may use** besides those below: `Floor`, `Bed` (the bed
+part), `Centrepiece`, `Furniture`, `Dressing`, `Rug`, `ArchLeft`,
+`ArchRight`, `ArchTop`, `Planter_<n>`, `Crest`, `Step_Up_<n>`,
+`Step_Down_<n>`, `Landing`, `Divider`, `Rail_Top`; a decor piece's mesh is
+`Body`. Room walls are named as the blockout names them: `Wall_Back`,
+`Wall_Left`, `Wall_Right`, `Wall_FrontLeft`, `Wall_FrontRight`, `Wall_Lintel`.
+**Doorways are open arches**: no code opens a `DoorLeaf` yet, and a closed
+leaf would block every guest.
 
 ### Rooms and amenities (`<PieceId>`, e.g. `StandardRoom`, `SnackBar`)
 

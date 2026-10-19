@@ -399,6 +399,14 @@ How to drive a playtest with it (keys, clicks, walking, captures) is skill
   becomes `Â§`, silently in two of three cases. Use the Edit tool for anything
   with a non-ASCII character; check bulk edits with `grep -rl 'Â§\|â€' src/`.
 - Windows PowerShell 5.1 has no `&&`/`||`; PowerShell 7 does.
+- **Claude's shell eats one level of backslashes in a heredoc** (2026-10-19):
+  a doubled backslash written into a `python - <<'PY'` script reached Python as
+  a single one, so a Luau `
+` in a replacement became a real line break (an
+  unclosed string) and a Windows path's `` became a backspace character in
+  WAITING.md. → Edit Luau strings and Windows paths with the Edit tool, or
+  build them in Python from `chr(92)`; check a file with a control-character
+  scan after any scripted edit of a path.
 
 ---
 

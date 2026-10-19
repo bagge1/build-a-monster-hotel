@@ -222,10 +222,11 @@ local function offerNotifications()
 end
 
 function LivePanels.Init()
-	local gui = Ui.screen("Panels", 4)
+	local gui = Ui.screen("Panels", 6)
 	storeWindow, storeBody = Ui.window(gui, "StorePanel", "Store", UDim2.fromScale(0.6, 0.78))
 	Ui.list(storeBody, Enum.FillDirection.Vertical, 6)
-	dailyWindow, dailyBody = Ui.window(gui, "DailyPanel", "Daily", UDim2.fromScale(0.6, 0.7))
+	dailyWindow, dailyBody =
+		Ui.window(gui, "DailyPanel", "Daily", UDim2.fromScale(0.6, 0.7), nil, true)
 	Ui.list(dailyBody, Enum.FillDirection.Vertical, 6)
 end
 

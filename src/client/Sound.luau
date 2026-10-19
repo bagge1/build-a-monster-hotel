@@ -117,8 +117,9 @@ function Sound.Init()
 	music.Looped = true
 	music.Volume = 0.25
 	music.Parent = folder
-	local gui = Ui.screen("Panels", 4)
-	window, body = Ui.window(gui, "SettingsPanel", "Settings", UDim2.fromScale(0.35, 0.45))
+	local gui = Ui.screen("Panels", 6)
+	window, body =
+		Ui.window(gui, "SettingsPanel", "Settings", UDim2.fromScale(0.35, 0.45), nil, true)
 	Ui.list(body, Enum.FillDirection.Vertical, 8)
 end
 

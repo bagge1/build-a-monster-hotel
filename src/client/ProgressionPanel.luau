@@ -118,9 +118,15 @@ local function draw()
 end
 
 function ProgressionPanel.Init()
-	local gui = Ui.screen("Panels", 4)
-	window, body =
-		Ui.window(gui, "ProgressionPanel", "Move & Moon Tree", UDim2.fromScale(0.6, 0.78))
+	local gui = Ui.screen("Panels", 6)
+	window, body = Ui.window(
+		gui,
+		"ProgressionPanel",
+		"Move & Moon Tree",
+		UDim2.fromScale(0.6, 0.78),
+		nil,
+		true
+	)
 	Ui.list(body, Enum.FillDirection.Vertical, 6)
 end
 

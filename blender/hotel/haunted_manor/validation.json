@@ -1,0 +1,607 @@
+{
+ "set": "hotel/haunted_manor",
+ "checked": "each fbx/<Name>.fbx re-imported into Blender; nothing here ran in Studio",
+ "pieces": {
+  "StandardRoom": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "14 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the contract re-checked on the re-imported boxes: Root, footprint, wall boxes = blockout, door opening 4 x 7, Door -> Bed walk for a 5-stud person, decor slots, budgets"
+   ],
+   "triangles": 2480,
+   "budget": 6000,
+   "collision_precise": [],
+   "attachments": [
+    "Bed",
+    "Decor_1",
+    "Decor_2",
+    "Decor_3",
+    "Door",
+    "Sign"
+   ]
+  },
+  "Lobby": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "13 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the contract re-checked on the re-imported boxes (Root, footprint, kind rules, budgets)"
+   ],
+   "triangles": 2934,
+   "budget": 8000,
+   "collision_precise": [],
+   "attachments": [
+    "Desk",
+    "Entrance",
+    "Queue_1",
+    "Queue_2",
+    "Queue_3",
+    "Queue_4",
+    "SignBoard",
+    "Spawn",
+    "Till",
+    "Trap_1",
+    "Trap_2",
+    "Trap_3"
+   ]
+  },
+  "StairCore": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "19 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the contract re-checked on the re-imported boxes (Root, footprint, kind rules, budgets)"
+   ],
+   "triangles": 1276,
+   "budget": 8000,
+   "collision_precise": [],
+   "attachments": [
+    "Bottom",
+    "Path_1",
+    "Path_2",
+    "Top"
+   ]
+  },
+  "StairCoreTop": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "20 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the contract re-checked on the re-imported boxes (Root, footprint, kind rules, budgets)"
+   ],
+   "triangles": 1612,
+   "budget": 8000,
+   "collision_precise": [],
+   "attachments": [
+    "Bottom",
+    "Path_1",
+    "Path_2",
+    "Top"
+   ]
+  },
+  "HotelSign": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "6 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the contract re-checked on the re-imported boxes (Root, footprint, kind rules, budgets)"
+   ],
+   "triangles": 400,
+   "budget": 3000,
+   "collision_precise": [],
+   "attachments": []
+  },
+  "GardenRoom": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "13 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the contract re-checked on the re-imported boxes: Root, footprint, wall boxes = blockout, door opening 4 x 7, Door -> Bed walk for a 5-stud person, decor slots, budgets"
+   ],
+   "triangles": 2848,
+   "budget": 6000,
+   "collision_precise": [],
+   "attachments": [
+    "Bed",
+    "Decor_1",
+    "Decor_2",
+    "Decor_3",
+    "Door",
+    "Sign"
+   ]
+  },
+  "AtticRoom": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "13 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the contract re-checked on the re-imported boxes: Root, footprint, wall boxes = blockout, door opening 4 x 7, Door -> Bed walk for a 5-stud person, decor slots, budgets"
+   ],
+   "triangles": 2420,
+   "budget": 6000,
+   "collision_precise": [],
+   "attachments": [
+    "Bed",
+    "Decor_1",
+    "Decor_2",
+    "Decor_3",
+    "Door",
+    "Sign"
+   ]
+  },
+  "SarcophagusSuite": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "14 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the contract re-checked on the re-imported boxes: Root, footprint, wall boxes = blockout, door opening 4 x 7, Door -> Bed walk for a 5-stud person, decor slots, budgets"
+   ],
+   "triangles": 2320,
+   "budget": 6000,
+   "collision_precise": [],
+   "attachments": [
+    "Bed",
+    "Decor_1",
+    "Decor_2",
+    "Decor_3",
+    "Door",
+    "Sign"
+   ]
+  },
+  "PotionLoft": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "14 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the contract re-checked on the re-imported boxes: Root, footprint, wall boxes = blockout, door opening 4 x 7, Door -> Bed walk for a 5-stud person, decor slots, budgets"
+   ],
+   "triangles": 3080,
+   "budget": 6000,
+   "collision_precise": [],
+   "attachments": [
+    "Bed",
+    "Decor_1",
+    "Decor_2",
+    "Decor_3",
+    "Door",
+    "Sign"
+   ]
+  },
+  "DenRoom": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "13 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the contract re-checked on the re-imported boxes: Root, footprint, wall boxes = blockout, door opening 4 x 7, Door -> Bed walk for a 5-stud person, decor slots, budgets"
+   ],
+   "triangles": 2276,
+   "budget": 6000,
+   "collision_precise": [],
+   "attachments": [
+    "Bed",
+    "Decor_1",
+    "Decor_2",
+    "Decor_3",
+    "Door",
+    "Sign"
+   ]
+  },
+  "CoffinSuite": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "16 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the contract re-checked on the re-imported boxes: Root, footprint, wall boxes = blockout, door opening 4 x 7, Door -> Bed walk for a 5-stud person, decor slots, budgets"
+   ],
+   "triangles": 2232,
+   "budget": 6000,
+   "collision_precise": [],
+   "attachments": [
+    "Bed",
+    "Decor_1",
+    "Decor_2",
+    "Decor_3",
+    "Door",
+    "Sign"
+   ]
+  },
+  "OperaSuite": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "13 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the contract re-checked on the re-imported boxes: Root, footprint, wall boxes = blockout, door opening 4 x 7, Door -> Bed walk for a 5-stud person, decor slots, budgets"
+   ],
+   "triangles": 2900,
+   "budget": 6000,
+   "collision_precise": [],
+   "attachments": [
+    "Bed",
+    "Decor_1",
+    "Decor_2",
+    "Decor_3",
+    "Door",
+    "Sign"
+   ]
+  },
+  "SnackBar": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "12 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the contract re-checked on the re-imported boxes: Root, footprint, wall boxes = blockout, door opening 4 x 7, Door -> Bed walk for a 5-stud person, decor slots, budgets"
+   ],
+   "triangles": 2434,
+   "budget": 6000,
+   "collision_precise": [],
+   "attachments": [
+    "Bed",
+    "Decor_1",
+    "Decor_2",
+    "Decor_3",
+    "Door",
+    "Sign"
+   ]
+  },
+  "MusicRoom": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "12 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the contract re-checked on the re-imported boxes: Root, footprint, wall boxes = blockout, door opening 4 x 7, Door -> Bed walk for a 5-stud person, decor slots, budgets"
+   ],
+   "triangles": 2032,
+   "budget": 6000,
+   "collision_precise": [],
+   "attachments": [
+    "Bed",
+    "Decor_1",
+    "Decor_2",
+    "Decor_3",
+    "Door",
+    "Sign"
+   ]
+  },
+  "GraveyardGarden": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "13 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the contract re-checked on the re-imported boxes: Root, footprint, wall boxes = blockout, door opening 4 x 7, Door -> Bed walk for a 5-stud person, decor slots, budgets"
+   ],
+   "triangles": 2372,
+   "budget": 6000,
+   "collision_precise": [],
+   "attachments": [
+    "Bed",
+    "Decor_1",
+    "Decor_2",
+    "Decor_3",
+    "Door",
+    "Sign"
+   ]
+  },
+  "QuietLibrary": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "13 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the contract re-checked on the re-imported boxes: Root, footprint, wall boxes = blockout, door opening 4 x 7, Door -> Bed walk for a 5-stud person, decor slots, budgets"
+   ],
+   "triangles": 3820,
+   "budget": 6000,
+   "collision_precise": [],
+   "attachments": [
+    "Bed",
+    "Decor_1",
+    "Decor_2",
+    "Decor_3",
+    "Door",
+    "Sign"
+   ]
+  },
+  "OrganHall": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "14 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the contract re-checked on the re-imported boxes: Root, footprint, wall boxes = blockout, door opening 4 x 7, Door -> Bed walk for a 5-stud person, decor slots, budgets"
+   ],
+   "triangles": 2266,
+   "budget": 6000,
+   "collision_precise": [],
+   "attachments": [
+    "Bed",
+    "Decor_1",
+    "Decor_2",
+    "Decor_3",
+    "Door",
+    "Sign"
+   ]
+  },
+  "Decor_PuddleRug": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "2 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the contract re-checked on the re-imported boxes (Root, footprint, kind rules, budgets)"
+   ],
+   "triangles": 228,
+   "budget": 1500,
+   "collision_precise": [],
+   "attachments": []
+  },
+  "Decor_SnackBasket": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "2 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the contract re-checked on the re-imported boxes (Root, footprint, kind rules, budgets)"
+   ],
+   "triangles": 384,
+   "budget": 1500,
+   "collision_precise": [],
+   "attachments": []
+  },
+  "Decor_RecordPlayer": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "2 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the contract re-checked on the re-imported boxes (Root, footprint, kind rules, budgets)"
+   ],
+   "triangles": 336,
+   "budget": 1500,
+   "collision_precise": [],
+   "attachments": []
+  },
+  "Decor_Candles": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "5 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the contract re-checked on the re-imported boxes (Root, footprint, kind rules, budgets)"
+   ],
+   "triangles": 312,
+   "budget": 1500,
+   "collision_precise": [],
+   "attachments": []
+  },
+  "Decor_Planter": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "2 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the contract re-checked on the re-imported boxes (Root, footprint, kind rules, budgets)"
+   ],
+   "triangles": 456,
+   "budget": 1500,
+   "collision_precise": [],
+   "attachments": []
+  },
+  "Decor_AntiqueWardrobe": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "2 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the contract re-checked on the re-imported boxes (Root, footprint, kind rules, budgets)"
+   ],
+   "triangles": 544,
+   "budget": 1500,
+   "collision_precise": [],
+   "attachments": []
+  },
+  "Decor_BlackoutCurtains": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "2 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the contract re-checked on the re-imported boxes (Root, footprint, kind rules, budgets)"
+   ],
+   "triangles": 304,
+   "budget": 1500,
+   "collision_precise": [],
+   "attachments": []
+  },
+  "Decor_SandTray": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "2 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the contract re-checked on the re-imported boxes (Root, footprint, kind rules, budgets)"
+   ],
+   "triangles": 354,
+   "budget": 1500,
+   "collision_precise": [],
+   "attachments": []
+  },
+  "Decor_CatBasket": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "2 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the contract re-checked on the re-imported boxes (Root, footprint, kind rules, budgets)"
+   ],
+   "triangles": 440,
+   "budget": 1500,
+   "collision_precise": [],
+   "attachments": []
+  },
+  "Decor_Cauldron": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "3 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the contract re-checked on the re-imported boxes (Root, footprint, kind rules, budgets)"
+   ],
+   "triangles": 478,
+   "budget": 1500,
+   "collision_precise": [],
+   "attachments": []
+  },
+  "Decor_SteakPlatter": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "2 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the contract re-checked on the re-imported boxes (Root, footprint, kind rules, budgets)"
+   ],
+   "triangles": 282,
+   "budget": 1500,
+   "collision_precise": [],
+   "attachments": []
+  },
+  "Decor_MoonWindow": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "3 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the contract re-checked on the re-imported boxes (Root, footprint, kind rules, budgets)"
+   ],
+   "triangles": 432,
+   "budget": 1500,
+   "collision_precise": [],
+   "attachments": []
+  },
+  "Decor_PipeOrgan": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "2 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the contract re-checked on the re-imported boxes (Root, footprint, kind rules, budgets)"
+   ],
+   "triangles": 566,
+   "budget": 1500,
+   "collision_precise": [],
+   "attachments": []
+  },
+  "Decor_SoundproofWalls": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "2 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the contract re-checked on the re-imported boxes (Root, footprint, kind rules, budgets)"
+   ],
+   "triangles": 972,
+   "budget": 1500,
+   "collision_precise": [],
+   "attachments": []
+  },
+  "Decor_Chandelier": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "7 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the contract re-checked on the re-imported boxes (Root, footprint, kind rules, budgets)"
+   ],
+   "triangles": 784,
+   "budget": 1500,
+   "collision_precise": [],
+   "attachments": []
+  }
+ },
+ "collision_precise": {
+  "StandardRoom": [],
+  "Lobby": [],
+  "StairCore": [],
+  "StairCoreTop": [],
+  "HotelSign": [],
+  "GardenRoom": [],
+  "AtticRoom": [],
+  "SarcophagusSuite": [],
+  "PotionLoft": [],
+  "DenRoom": [],
+  "CoffinSuite": [],
+  "OperaSuite": [],
+  "SnackBar": [],
+  "MusicRoom": [],
+  "GraveyardGarden": [],
+  "QuietLibrary": [],
+  "OrganHall": [],
+  "Decor_PuddleRug": [],
+  "Decor_SnackBasket": [],
+  "Decor_RecordPlayer": [],
+  "Decor_Candles": [],
+  "Decor_Planter": [],
+  "Decor_AntiqueWardrobe": [],
+  "Decor_BlackoutCurtains": [],
+  "Decor_SandTray": [],
+  "Decor_CatBasket": [],
+  "Decor_Cauldron": [],
+  "Decor_SteakPlatter": [],
+  "Decor_MoonWindow": [],
+  "Decor_PipeOrgan": [],
+  "Decor_SoundproofWalls": [],
+  "Decor_Chandelier": []
+ },
+ "not_validated": [
+  "anything in Studio: the import, the axis conversion on Roblox's side (import_fixup.luau checks it first), the atlas upload, how it looks lit",
+  "walking: the stair walked boxes are identical to the walker-proven blockout's, but no walker has run on the imported meshes",
+  "the attachments exist only in manifest.json until import_fixup.luau makes them"
+ ]
+}

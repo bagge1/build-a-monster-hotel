@@ -25,7 +25,7 @@ local ORDER = {
 local menu: Frame
 
 function Pings.Init()
-	local gui = Ui.screen("Panels", 4)
+	local gui = Ui.screen("Panels", 6)
 	menu = Ui.panel(
 		gui,
 		"PingMenu",

@@ -89,8 +89,8 @@ local function refreshButton()
 end
 
 function EventPanel.Init()
-	local gui = Ui.screen("Panels", 4)
-	window, body = Ui.window(gui, "EventPanel", "Events", UDim2.fromScale(0.55, 0.6))
+	local gui = Ui.screen("Panels", 6)
+	window, body = Ui.window(gui, "EventPanel", "Events", UDim2.fromScale(0.55, 0.6), nil, true)
 	Ui.list(body, Enum.FillDirection.Vertical, 6)
 end
 

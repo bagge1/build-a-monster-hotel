@@ -264,7 +264,7 @@ local function drawBook()
 end
 
 function CollectionPanels.Init()
-	local gui = Ui.screen("Panels", 4)
+	local gui = Ui.screen("Panels", 6)
 	residentsWindow, residentsBody =
 		Ui.window(gui, "ResidentsPanel", "Residents", UDim2.fromScale(0.7, 0.7))
 	Ui.list(residentsBody, Enum.FillDirection.Vertical, 6)

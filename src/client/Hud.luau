@@ -216,6 +216,32 @@ function Hud.Init()
 	right.AnchorPoint = Vector2.new(1, 0)
 	right.BackgroundTransparency = 1
 	Ui.list(right, Enum.FillDirection.Vertical, 6, Enum.HorizontalAlignment.Right)
+	-- A short screen (a phone in landscape) takes the right column in two
+	-- columns, so it stops above the jump button (§11).
+	local function fit()
+		local camera = workspace.CurrentCamera
+		local short = camera ~= nil and camera.ViewportSize.Y < 500
+		local list = right:FindFirstChildOfClass("UIListLayout")
+		local grid = right:FindFirstChildOfClass("UIGridLayout")
+		if short and list then
+			list:Destroy()
+			local g = Instance.new("UIGridLayout")
+			g.CellSize = UDim2.fromOffset(110, 44)
+			g.CellPadding = UDim2.fromOffset(6, 6)
+			g.SortOrder = Enum.SortOrder.LayoutOrder
+			g.HorizontalAlignment = Enum.HorizontalAlignment.Right
+			g.Parent = right
+			right.Size = UDim2.new(0, 226, 1, -150)
+		elseif not short and grid then
+			grid:Destroy()
+			Ui.list(right, Enum.FillDirection.Vertical, 6, Enum.HorizontalAlignment.Right)
+			right.Size = UDim2.new(0, 110, 1, -150)
+		end
+	end
+	fit()
+	if workspace.CurrentCamera then
+		workspace.CurrentCamera:GetPropertyChangedSignal("ViewportSize"):Connect(fit)
+	end
 
 	toasts = Ui.frame(gui, "Toasts", UDim2.fromOffset(420, 200), UDim2.new(0.5, 0, 0, 110))
 	toasts.AnchorPoint = Vector2.new(0.5, 0)

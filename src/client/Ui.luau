@@ -196,8 +196,14 @@ function Ui.window(
 	name: string,
 	title: string,
 	size: UDim2,
-	onClose: (() -> ())?
+	onClose: (() -> ())?,
+	scroll: boolean?
 ): (Frame, Frame)
+	-- A short screen (a phone in landscape) gets nearly the whole screen.
+	local camera = workspace.CurrentCamera
+	if camera and camera.ViewportSize.Y < 500 then
+		size = UDim2.fromScale(0.94, 0.9)
+	end
 	local w = Ui.panel(gui, name, size, UDim2.fromScale(0.5, 0.5), Vector2.new(0.5, 0.5))
 	local t = Ui.label(w, "Title", title, UDim2.new(1, -70, 0, 40), 26, Ui.Colour.Gold)
 	t.Position = UDim2.fromOffset(16, 8)
@@ -208,7 +214,11 @@ function Ui.window(
 		end
 	end, Ui.Colour.Bad)
 	close.Position = UDim2.new(1, -52, 0, 8)
-	local body = Ui.frame(w, "Body", UDim2.new(1, -24, 1, -64), UDim2.fromOffset(12, 56))
+	-- `scroll`: the body scrolls when its rows outgrow it (a list of fixed-height
+	-- rows; a body whose children are sized by scale keeps a plain frame).
+	local body: Frame = if scroll
+		then Ui.scroll(w, "Body", UDim2.new(1, -24, 1, -64), UDim2.fromOffset(12, 56)) :: any
+		else Ui.frame(w, "Body", UDim2.new(1, -24, 1, -64), UDim2.fromOffset(12, 56))
 	body.BackgroundTransparency = 1
 	local sizeConstraint = Instance.new("UISizeConstraint")
 	sizeConstraint.MaxSize = Vector2.new(900, 640)

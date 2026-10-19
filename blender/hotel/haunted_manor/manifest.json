@@ -1,0 +1,6072 @@
+{
+ "set": "hotel/haunted_manor",
+ "title": "Haunted Manor hotel kit (Location 1), first draft",
+ "frame": "Roblox studs, piece frame: X right, Y up, door/front toward -Z, origin per MODELS.md; Blender holds them as (-x, z, y)",
+ "atlas": "textures/HotelAtlas.png (embedded in every FBX)",
+ "palette": {
+  "plum": [
+   90,
+   70,
+   110
+  ],
+  "plum_dark": [
+   60,
+   45,
+   78
+  ],
+  "plum_deep": [
+   40,
+   30,
+   55
+  ],
+  "violet": [
+   130,
+   90,
+   180
+  ],
+  "lilac": [
+   170,
+   135,
+   210
+  ],
+  "lavender": [
+   210,
+   190,
+   235
+  ],
+  "teal": [
+   40,
+   150,
+   150
+  ],
+  "teal_dark": [
+   25,
+   95,
+   105
+  ],
+  "teal_light": [
+   110,
+   205,
+   190
+  ],
+  "pumpkin": [
+   240,
+   130,
+   40
+  ],
+  "pumpkin_dark": [
+   185,
+   85,
+   30
+  ],
+  "amber": [
+   240,
+   175,
+   70
+  ],
+  "gold": [
+   220,
+   180,
+   90
+  ],
+  "moon": [
+   175,
+   200,
+   240
+  ],
+  "moon_dark": [
+   90,
+   115,
+   170
+  ],
+  "night": [
+   35,
+   40,
+   70
+  ],
+  "bone": [
+   235,
+   225,
+   200
+  ],
+  "cream": [
+   245,
+   238,
+   250
+  ],
+  "wood": [
+   125,
+   82,
+   55
+  ],
+  "wood_dark": [
+   80,
+   52,
+   38
+  ],
+  "wood_light": [
+   170,
+   120,
+   80
+  ],
+  "stone": [
+   130,
+   125,
+   140
+  ],
+  "stone_dark": [
+   85,
+   82,
+   95
+  ],
+  "moss": [
+   85,
+   120,
+   70
+  ],
+  "grass": [
+   90,
+   150,
+   80
+  ],
+  "leaf": [
+   125,
+   185,
+   90
+  ],
+  "crimson": [
+   140,
+   30,
+   55
+  ],
+  "crimson_dark": [
+   90,
+   20,
+   40
+  ],
+  "rose": [
+   200,
+   90,
+   120
+  ],
+  "black": [
+   30,
+   28,
+   36
+  ],
+  "iron": [
+   60,
+   62,
+   70
+  ],
+  "sand": [
+   220,
+   200,
+   140
+  ],
+  "meat": [
+   170,
+   60,
+   50
+  ],
+  "straw": [
+   205,
+   170,
+   90
+  ],
+  "white": [
+   240,
+   240,
+   245
+  ],
+  "slime": [
+   140,
+   210,
+   90
+  ],
+  "sky": [
+   90,
+   140,
+   220
+  ],
+  "dusty": [
+   150,
+   130,
+   110
+  ],
+  "jade": [
+   120,
+   200,
+   170
+  ],
+  "honey": [
+   240,
+   190,
+   80
+  ],
+  "brown": [
+   140,
+   100,
+   70
+  ],
+  "wine": [
+   120,
+   30,
+   50
+  ],
+  "ink": [
+   50,
+   45,
+   70
+  ],
+  "book_a": [
+   150,
+   60,
+   70
+  ],
+  "book_b": [
+   60,
+   110,
+   130
+  ],
+  "book_c": [
+   190,
+   150,
+   70
+  ],
+  "grey": [
+   110,
+   110,
+   120
+  ],
+  "flame": [
+   255,
+   205,
+   120
+  ],
+  "lamp": [
+   255,
+   185,
+   110
+  ],
+  "moonglow": [
+   205,
+   225,
+   255
+  ],
+  "brew": [
+   120,
+   255,
+   160
+  ]
+ },
+ "pieces": {
+  "StandardRoom": {
+   "name": "StandardRoom",
+   "kind": "Room",
+   "footprint_cells": [
+    2,
+    2
+   ],
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     12.0,
+     0.2,
+     12.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      12.0,
+      0.2,
+      12.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Floor": {
+     "centre": [
+      0.0,
+      0.125,
+      0.0
+     ],
+     "size": [
+      11.8,
+      0.25,
+      11.8
+     ],
+     "triangles": 440,
+     "collide": true
+    },
+    "Wall_Back": {
+     "centre": [
+      0.0,
+      5.0,
+      5.8
+     ],
+     "size": [
+      12.0,
+      10.0,
+      0.4
+     ],
+     "triangles": 132,
+     "collide": true
+    },
+    "Wall_Left": {
+     "centre": [
+      -5.8,
+      5.0,
+      0.0
+     ],
+     "size": [
+      0.4,
+      10.0,
+      11.2
+     ],
+     "triangles": 132,
+     "collide": true
+    },
+    "Wall_Right": {
+     "centre": [
+      5.8,
+      5.0,
+      0.0
+     ],
+     "size": [
+      0.4,
+      10.0,
+      11.2
+     ],
+     "triangles": 132,
+     "collide": true
+    },
+    "Wall_Lintel": {
+     "centre": [
+      -3.0,
+      8.5,
+      -5.8
+     ],
+     "size": [
+      4.0,
+      3.0,
+      0.4
+     ],
+     "triangles": 40,
+     "collide": true
+    },
+    "Wall_FrontLeft": {
+     "centre": [
+      -5.5,
+      5.0,
+      -5.8
+     ],
+     "size": [
+      1.0,
+      10.0,
+      0.4
+     ],
+     "triangles": 176,
+     "collide": true
+    },
+    "Wall_FrontRight": {
+     "centre": [
+      2.5,
+      5.0,
+      -5.8
+     ],
+     "size": [
+      7.0,
+      10.0,
+      0.4
+     ],
+     "triangles": 176,
+     "collide": true
+    },
+    "Dressing": {
+     "centre": [
+      0.91,
+      7.2,
+      1.26
+     ],
+     "size": [
+      9.42,
+      4.2,
+      8.72
+     ],
+     "triangles": 312,
+     "collide": false
+    },
+    "Glow_Warm_1": {
+     "centre": [
+      0.0,
+      9.0,
+      5.0
+     ],
+     "size": [
+      0.4218,
+      0.84,
+      0.4218
+     ],
+     "triangles": 64,
+     "collide": false
+    },
+    "Bed": {
+     "centre": [
+      0.0,
+      2.5,
+      2.7609
+     ],
+     "size": [
+      4.0435,
+      5.0,
+      5.7217
+     ],
+     "triangles": 568,
+     "collide": true
+    },
+    "Furniture": {
+     "centre": [
+      4.85,
+      2.01,
+      -1.6
+     ],
+     "size": [
+      1.46,
+      4.02,
+      3.6
+     ],
+     "triangles": 260,
+     "collide": true
+    },
+    "Glow_Warm_2": {
+     "centre": [
+      5.0,
+      4.25,
+      -0.6
+     ],
+     "size": [
+      0.2252,
+      0.48,
+      0.26
+     ],
+     "triangles": 36,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      5.0,
+      0.0
+     ],
+     "size": [
+      12.0,
+      10.0,
+      12.0
+     ],
+     "triangles": 108,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Door": {
+     "pos": [
+      -3.0,
+      0.0,
+      -6.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    "Sign": {
+     "pos": [
+      -3.0,
+      8.2,
+      -6.3
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    "Decor_1": {
+     "pos": [
+      -4.0,
+      0.0,
+      4.0
+     ],
+     "look": [
+      0.7071,
+      0.0,
+      -0.7071
+     ]
+    },
+    "Decor_2": {
+     "pos": [
+      4.0,
+      0.0,
+      4.0
+     ],
+     "look": [
+      -0.7071,
+      0.0,
+      -0.7071
+     ]
+    },
+    "Decor_3": {
+     "pos": [
+      -4.0,
+      0.0,
+      0.0
+     ],
+     "look": [
+      1.0,
+      0.0,
+      0.0
+     ]
+    },
+    "Bed": {
+     "pos": [
+      0.0,
+      0.0,
+      -1.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    }
+   },
+   "triangles": 2480,
+   "budget": 6000,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "the starter room: a gothic bed, a dresser with a candle, a moon painting"
+  },
+  "Lobby": {
+   "name": "Lobby",
+   "kind": "Lobby",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     6.0
+    ],
+    "size": [
+     72.0,
+     0.2,
+     12.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      6.0
+     ],
+     "size": [
+      72.0,
+      0.2,
+      12.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Rug": {
+     "centre": [
+      0.0,
+      0.075,
+      6.0
+     ],
+     "size": [
+      71.0,
+      0.15,
+      11.0
+     ],
+     "triangles": 1080,
+     "collide": false
+    },
+    "Desk": {
+     "centre": [
+      -12.0,
+      2.125,
+      9.0
+     ],
+     "size": [
+      10.4,
+      4.25,
+      2.4
+     ],
+     "triangles": 470,
+     "collide": true
+    },
+    "Till": {
+     "centre": [
+      12.0,
+      2.35,
+      8.98
+     ],
+     "size": [
+      3.0,
+      4.7,
+      2.04
+     ],
+     "triangles": 180,
+     "collide": true
+    },
+    "ArchLeft": {
+     "centre": [
+      -5.0,
+      4.5,
+      0.5
+     ],
+     "size": [
+      1.0,
+      9.0,
+      1.0
+     ],
+     "triangles": 132,
+     "collide": true
+    },
+    "ArchRight": {
+     "centre": [
+      5.0,
+      4.5,
+      0.5
+     ],
+     "size": [
+      1.0,
+      9.0,
+      1.0
+     ],
+     "triangles": 132,
+     "collide": true
+    },
+    "ArchTop": {
+     "centre": [
+      0.0,
+      10.4,
+      0.5
+     ],
+     "size": [
+      11.0,
+      2.8,
+      0.9
+     ],
+     "triangles": 128,
+     "collide": true
+    },
+    "Dressing": {
+     "centre": [
+      -6.1465,
+      7.25,
+      5.8965
+     ],
+     "size": [
+      13.0929,
+      6.9,
+      9.5929
+     ],
+     "triangles": 176,
+     "collide": false
+    },
+    "Glow_Warm_1": {
+     "centre": [
+      0.0,
+      8.5,
+      1.5
+     ],
+     "size": [
+      0.5272,
+      0.9,
+      0.5272
+     ],
+     "triangles": 64,
+     "collide": false
+    },
+    "Glow_Warm_2": {
+     "centre": [
+      -12.0,
+      6.0,
+      10.0
+     ],
+     "size": [
+      0.4065,
+      0.44,
+      0.4065
+     ],
+     "triangles": 48,
+     "collide": false
+    },
+    "Planter_1": {
+     "centre": [
+      -33.5,
+      1.44,
+      9.5
+     ],
+     "size": [
+      2.0325,
+      2.88,
+      2.0325
+     ],
+     "triangles": 256,
+     "collide": true
+    },
+    "Planter_2": {
+     "centre": [
+      33.5,
+      1.44,
+      9.5
+     ],
+     "size": [
+      2.0325,
+      2.88,
+      2.0325
+     ],
+     "triangles": 256,
+     "collide": true
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      5.9,
+      5.2581
+     ],
+     "size": [
+      69.0325,
+      11.8,
+      10.5163
+     ],
+     "triangles": 84,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Entrance": {
+     "pos": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    "Desk": {
+     "pos": [
+      -12.0,
+      3.8,
+      7.8
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    "Till": {
+     "pos": [
+      12.0,
+      3.8,
+      7.8
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    "Spawn": {
+     "pos": [
+      4.0,
+      0.0,
+      8.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    "SignBoard": {
+     "pos": [
+      0.0,
+      0.0,
+      -7.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    "Queue_1": {
+     "pos": [
+      -12.0,
+      0.0,
+      5.5
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    },
+    "Queue_2": {
+     "pos": [
+      -16.0,
+      0.0,
+      5.5
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    },
+    "Queue_3": {
+     "pos": [
+      -20.0,
+      0.0,
+      5.5
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    },
+    "Queue_4": {
+     "pos": [
+      -24.0,
+      0.0,
+      5.5
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    },
+    "Trap_1": {
+     "pos": [
+      -8.0,
+      0.0,
+      3.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    "Trap_2": {
+     "pos": [
+      8.0,
+      0.0,
+      3.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    "Trap_3": {
+     "pos": [
+      24.0,
+      0.0,
+      3.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    }
+   },
+   "triangles": 2934,
+   "budget": 8000,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a plum checkerboard floor and a crimson runner, the arch with a jack-o'-lantern, the desk, the till"
+  },
+  "StairCore": {
+   "name": "StairCore",
+   "kind": "Stairs",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     12.0,
+     0.2,
+     12.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      12.0,
+      0.2,
+      12.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Step_Up_1": {
+     "centre": [
+      -3.0,
+      0.7,
+      -4.75
+     ],
+     "size": [
+      6.0,
+      1.0,
+      1.5
+     ],
+     "triangles": 44,
+     "collide": true
+    },
+    "Step_Up_2": {
+     "centre": [
+      -3.0,
+      1.9,
+      -3.25
+     ],
+     "size": [
+      6.0,
+      1.0,
+      1.5
+     ],
+     "triangles": 44,
+     "collide": true
+    },
+    "Step_Up_3": {
+     "centre": [
+      -3.0,
+      3.1,
+      -1.75
+     ],
+     "size": [
+      6.0,
+      1.0,
+      1.5
+     ],
+     "triangles": 44,
+     "collide": true
+    },
+    "Step_Up_4": {
+     "centre": [
+      -3.0,
+      4.3,
+      -0.25
+     ],
+     "size": [
+      6.0,
+      1.0,
+      1.5
+     ],
+     "triangles": 44,
+     "collide": true
+    },
+    "Step_Up_5": {
+     "centre": [
+      -3.0,
+      5.5,
+      1.25
+     ],
+     "size": [
+      6.0,
+      1.0,
+      1.5
+     ],
+     "triangles": 44,
+     "collide": true
+    },
+    "Landing": {
+     "centre": [
+      0.0,
+      5.5,
+      4.0
+     ],
+     "size": [
+      12.0,
+      1.0,
+      4.0
+     ],
+     "triangles": 44,
+     "collide": true
+    },
+    "Step_Down_1": {
+     "centre": [
+      3.0,
+      6.7,
+      1.25
+     ],
+     "size": [
+      6.0,
+      1.0,
+      1.5
+     ],
+     "triangles": 44,
+     "collide": true
+    },
+    "Step_Down_2": {
+     "centre": [
+      3.0,
+      7.9,
+      -0.25
+     ],
+     "size": [
+      6.0,
+      1.0,
+      1.5
+     ],
+     "triangles": 44,
+     "collide": true
+    },
+    "Step_Down_3": {
+     "centre": [
+      3.0,
+      9.1,
+      -1.75
+     ],
+     "size": [
+      6.0,
+      1.0,
+      1.5
+     ],
+     "triangles": 44,
+     "collide": true
+    },
+    "Step_Down_4": {
+     "centre": [
+      3.0,
+      10.3,
+      -3.25
+     ],
+     "size": [
+      6.0,
+      1.0,
+      1.5
+     ],
+     "triangles": 44,
+     "collide": true
+    },
+    "Step_Down_5": {
+     "centre": [
+      3.0,
+      11.5,
+      -5.0
+     ],
+     "size": [
+      6.0,
+      1.0,
+      2.0
+     ],
+     "triangles": 44,
+     "collide": true
+    },
+    "Wall_Left": {
+     "centre": [
+      -5.8,
+      6.0,
+      0.0
+     ],
+     "size": [
+      0.4,
+      12.0,
+      12.0
+     ],
+     "triangles": 132,
+     "collide": true
+    },
+    "Wall_Right": {
+     "centre": [
+      5.8,
+      6.0,
+      0.0
+     ],
+     "size": [
+      0.4,
+      12.0,
+      12.0
+     ],
+     "triangles": 132,
+     "collide": true
+    },
+    "Wall_Back": {
+     "centre": [
+      0.0,
+      6.0,
+      5.8
+     ],
+     "size": [
+      12.0,
+      12.0,
+      0.4
+     ],
+     "triangles": 132,
+     "collide": true
+    },
+    "Divider": {
+     "centre": [
+      0.0,
+      6.0,
+      -1.75
+     ],
+     "size": [
+      0.4,
+      12.0,
+      7.5
+     ],
+     "triangles": 132,
+     "collide": true
+    },
+    "Dressing": {
+     "centre": [
+      -2.235,
+      10.0,
+      2.16
+     ],
+     "size": [
+      6.87,
+      3.4,
+      6.92
+     ],
+     "triangles": 188,
+     "collide": false
+    },
+    "Glow_Warm_1": {
+     "centre": [
+      -5.15,
+      11.3,
+      -1.0
+     ],
+     "size": [
+      0.3515,
+      0.68,
+      0.3515
+     ],
+     "triangles": 64,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      6.0,
+      0.0
+     ],
+     "size": [
+      12.0,
+      12.0,
+      12.0
+     ],
+     "triangles": 180,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Bottom": {
+     "pos": [
+      -3.0,
+      0.0,
+      -5.75
+     ],
+     "look": null
+    },
+    "Path_1": {
+     "pos": [
+      -3.0,
+      6.0,
+      4.0
+     ],
+     "look": null
+    },
+    "Path_2": {
+     "pos": [
+      3.0,
+      6.0,
+      4.0
+     ],
+     "look": null
+    },
+    "Top": {
+     "pos": [
+      3.0,
+      12.0,
+      -5.75
+     ],
+     "look": null
+    }
+   },
+   "triangles": 1276,
+   "budget": 8000,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "the walker-proven switchback, crimson-carpeted"
+  },
+  "StairCoreTop": {
+   "name": "StairCoreTop",
+   "kind": "Stairs",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     12.0,
+     0.2,
+     12.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      12.0,
+      0.2,
+      12.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Step_Up_1": {
+     "centre": [
+      -3.0,
+      0.7,
+      -4.75
+     ],
+     "size": [
+      6.0,
+      1.0,
+      1.5
+     ],
+     "triangles": 44,
+     "collide": true
+    },
+    "Step_Up_2": {
+     "centre": [
+      -3.0,
+      1.9,
+      -3.25
+     ],
+     "size": [
+      6.0,
+      1.0,
+      1.5
+     ],
+     "triangles": 44,
+     "collide": true
+    },
+    "Step_Up_3": {
+     "centre": [
+      -3.0,
+      3.1,
+      -1.75
+     ],
+     "size": [
+      6.0,
+      1.0,
+      1.5
+     ],
+     "triangles": 44,
+     "collide": true
+    },
+    "Step_Up_4": {
+     "centre": [
+      -3.0,
+      4.3,
+      -0.25
+     ],
+     "size": [
+      6.0,
+      1.0,
+      1.5
+     ],
+     "triangles": 44,
+     "collide": true
+    },
+    "Step_Up_5": {
+     "centre": [
+      -3.0,
+      5.5,
+      1.25
+     ],
+     "size": [
+      6.0,
+      1.0,
+      1.5
+     ],
+     "triangles": 44,
+     "collide": true
+    },
+    "Landing": {
+     "centre": [
+      0.0,
+      5.5,
+      4.0
+     ],
+     "size": [
+      12.0,
+      1.0,
+      4.0
+     ],
+     "triangles": 44,
+     "collide": true
+    },
+    "Step_Down_1": {
+     "centre": [
+      3.0,
+      6.7,
+      1.25
+     ],
+     "size": [
+      6.0,
+      1.0,
+      1.5
+     ],
+     "triangles": 44,
+     "collide": true
+    },
+    "Step_Down_2": {
+     "centre": [
+      3.0,
+      7.9,
+      -0.25
+     ],
+     "size": [
+      6.0,
+      1.0,
+      1.5
+     ],
+     "triangles": 44,
+     "collide": true
+    },
+    "Step_Down_3": {
+     "centre": [
+      3.0,
+      9.1,
+      -1.75
+     ],
+     "size": [
+      6.0,
+      1.0,
+      1.5
+     ],
+     "triangles": 44,
+     "collide": true
+    },
+    "Step_Down_4": {
+     "centre": [
+      3.0,
+      10.3,
+      -3.25
+     ],
+     "size": [
+      6.0,
+      1.0,
+      1.5
+     ],
+     "triangles": 44,
+     "collide": true
+    },
+    "Step_Down_5": {
+     "centre": [
+      3.0,
+      11.5,
+      -5.0
+     ],
+     "size": [
+      6.0,
+      1.0,
+      2.0
+     ],
+     "triangles": 44,
+     "collide": true
+    },
+    "Wall_Left": {
+     "centre": [
+      -5.8,
+      7.75,
+      0.0
+     ],
+     "size": [
+      0.4,
+      15.5,
+      12.0
+     ],
+     "triangles": 132,
+     "collide": true
+    },
+    "Wall_Right": {
+     "centre": [
+      5.8,
+      7.75,
+      0.0
+     ],
+     "size": [
+      0.4,
+      15.5,
+      12.0
+     ],
+     "triangles": 132,
+     "collide": true
+    },
+    "Wall_Back": {
+     "centre": [
+      0.0,
+      7.75,
+      5.8
+     ],
+     "size": [
+      12.0,
+      15.5,
+      0.4
+     ],
+     "triangles": 132,
+     "collide": true
+    },
+    "Divider": {
+     "centre": [
+      0.0,
+      7.75,
+      -1.75
+     ],
+     "size": [
+      0.4,
+      15.5,
+      7.5
+     ],
+     "triangles": 132,
+     "collide": true
+    },
+    "Rail_Top": {
+     "centre": [
+      -3.0,
+      13.75,
+      -5.0
+     ],
+     "size": [
+      6.0,
+      3.5,
+      0.4
+     ],
+     "triangles": 336,
+     "collide": true
+    },
+    "Dressing": {
+     "centre": [
+      -2.235,
+      10.6,
+      2.16
+     ],
+     "size": [
+      6.87,
+      2.6,
+      6.92
+     ],
+     "triangles": 188,
+     "collide": false
+    },
+    "Glow_Warm_1": {
+     "centre": [
+      -5.15,
+      11.3,
+      -1.0
+     ],
+     "size": [
+      0.3515,
+      0.68,
+      0.3515
+     ],
+     "triangles": 64,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      7.75,
+      0.0
+     ],
+     "size": [
+      12.0,
+      15.5,
+      12.0
+     ],
+     "triangles": 192,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Bottom": {
+     "pos": [
+      -3.0,
+      0.0,
+      -5.75
+     ],
+     "look": null
+    },
+    "Path_1": {
+     "pos": [
+      -3.0,
+      6.0,
+      4.0
+     ],
+     "look": null
+    },
+    "Path_2": {
+     "pos": [
+      3.0,
+      6.0,
+      4.0
+     ],
+     "look": null
+    },
+    "Top": {
+     "pos": [
+      3.0,
+      12.0,
+      -5.75
+     ],
+     "look": null
+    }
+   },
+   "triangles": 1612,
+   "budget": 8000,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "the walker-proven switchback, crimson-carpeted, railed round the stairwell"
+  },
+  "HotelSign": {
+   "name": "HotelSign",
+   "kind": "Sign",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     16.0,
+     0.2,
+     1.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      16.0,
+      0.2,
+      1.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "PostLeft": {
+     "centre": [
+      -7.0,
+      3.0,
+      0.0
+     ],
+     "size": [
+      0.8,
+      6.0,
+      0.8
+     ],
+     "triangles": 104,
+     "collide": true
+    },
+    "PostRight": {
+     "centre": [
+      7.0,
+      3.0,
+      0.0
+     ],
+     "size": [
+      0.8,
+      6.0,
+      0.8
+     ],
+     "triangles": 104,
+     "collide": true
+    },
+    "Board": {
+     "centre": [
+      0.0,
+      8.0,
+      0.0
+     ],
+     "size": [
+      16.0,
+      6.0,
+      0.6
+     ],
+     "triangles": 44,
+     "collide": true
+    },
+    "Crest": {
+     "centre": [
+      0.0,
+      12.3,
+      -0.025
+     ],
+     "size": [
+      12.0,
+      2.6,
+      0.55
+     ],
+     "triangles": 80,
+     "collide": false
+    },
+    "Glow_Cold_1": {
+     "centre": [
+      -0.1599,
+      12.2,
+      -0.28
+     ],
+     "size": [
+      1.4802,
+      1.8,
+      0.08
+     ],
+     "triangles": 56,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 400,
+   "budget": 3000,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "posts and a 16 x 6 board for the SurfaceGui, a gable crest with a lit crescent moon and bats"
+  },
+  "GardenRoom": {
+   "name": "GardenRoom",
+   "kind": "Room",
+   "footprint_cells": [
+    2,
+    2
+   ],
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     12.0,
+     0.2,
+     12.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      12.0,
+      0.2,
+      12.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Floor": {
+     "centre": [
+      0.0,
+      0.125,
+      0.0
+     ],
+     "size": [
+      11.8,
+      0.25,
+      11.8
+     ],
+     "triangles": 440,
+     "collide": true
+    },
+    "Wall_Back": {
+     "centre": [
+      0.0,
+      5.0,
+      5.8
+     ],
+     "size": [
+      12.0,
+      10.0,
+      0.4
+     ],
+     "triangles": 132,
+     "collide": true
+    },
+    "Wall_Left": {
+     "centre": [
+      -5.8,
+      5.0,
+      0.0
+     ],
+     "size": [
+      0.4,
+      10.0,
+      11.2
+     ],
+     "triangles": 132,
+     "collide": true
+    },
+    "Wall_Right": {
+     "centre": [
+      5.8,
+      5.0,
+      0.0
+     ],
+     "size": [
+      0.4,
+      10.0,
+      11.2
+     ],
+     "triangles": 132,
+     "collide": true
+    },
+    "Wall_Lintel": {
+     "centre": [
+      -3.0,
+      8.5,
+      -5.8
+     ],
+     "size": [
+      4.0,
+      3.0,
+      0.4
+     ],
+     "triangles": 40,
+     "collide": true
+    },
+    "Wall_FrontLeft": {
+     "centre": [
+      -5.5,
+      5.0,
+      -5.8
+     ],
+     "size": [
+      1.0,
+      10.0,
+      0.4
+     ],
+     "triangles": 176,
+     "collide": true
+    },
+    "Wall_FrontRight": {
+     "centre": [
+      2.5,
+      5.0,
+      -5.8
+     ],
+     "size": [
+      7.0,
+      10.0,
+      0.4
+     ],
+     "triangles": 176,
+     "collide": true
+    },
+    "Dressing": {
+     "centre": [
+      0.0,
+      7.15,
+      0.9415
+     ],
+     "size": [
+      11.24,
+      4.3,
+      9.3755
+     ],
+     "triangles": 620,
+     "collide": false
+    },
+    "Glow_Warm_1": {
+     "centre": [
+      0.0,
+      9.0,
+      5.0
+     ],
+     "size": [
+      0.4218,
+      0.84,
+      0.4218
+     ],
+     "triangles": 64,
+     "collide": false
+    },
+    "Bed": {
+     "centre": [
+      0.0,
+      2.5,
+      2.7609
+     ],
+     "size": [
+      4.0435,
+      5.0,
+      5.7217
+     ],
+     "triangles": 664,
+     "collide": true
+    },
+    "Furniture": {
+     "centre": [
+      4.89,
+      1.2525,
+      -2.0
+     ],
+     "size": [
+      1.38,
+      2.505,
+      4.8
+     ],
+     "triangles": 260,
+     "collide": true
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      5.0,
+      0.0
+     ],
+     "size": [
+      12.0,
+      10.0,
+      12.0
+     ],
+     "triangles": 108,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Door": {
+     "pos": [
+      -3.0,
+      0.0,
+      -6.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    "Sign": {
+     "pos": [
+      -3.0,
+      8.2,
+      -6.3
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    "Decor_1": {
+     "pos": [
+      -4.0,
+      0.0,
+      4.0
+     ],
+     "look": [
+      0.7071,
+      0.0,
+      -0.7071
+     ]
+    },
+    "Decor_2": {
+     "pos": [
+      4.0,
+      0.0,
+      4.0
+     ],
+     "look": [
+      -0.7071,
+      0.0,
+      -0.7071
+     ]
+    },
+    "Decor_3": {
+     "pos": [
+      -4.0,
+      0.0,
+      0.0
+     ],
+     "look": [
+      1.0,
+      0.0,
+      0.0
+     ]
+    },
+    "Bed": {
+     "pos": [
+      0.0,
+      0.0,
+      -1.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    }
+   },
+   "triangles": 2848,
+   "budget": 6000,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a bed under ivy, a planter of pumpkins"
+  },
+  "AtticRoom": {
+   "name": "AtticRoom",
+   "kind": "Room",
+   "footprint_cells": [
+    2,
+    2
+   ],
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     12.0,
+     0.2,
+     12.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      12.0,
+      0.2,
+      12.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Floor": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      11.8,
+      0.2,
+      11.8
+     ],
+     "triangles": 352,
+     "collide": true
+    },
+    "Wall_Back": {
+     "centre": [
+      0.0,
+      5.0,
+      5.8
+     ],
+     "size": [
+      12.0,
+      10.0,
+      0.4
+     ],
+     "triangles": 132,
+     "collide": true
+    },
+    "Wall_Left": {
+     "centre": [
+      -5.8,
+      5.0,
+      0.0
+     ],
+     "size": [
+      0.4,
+      10.0,
+      11.2
+     ],
+     "triangles": 132,
+     "collide": true
+    },
+    "Wall_Right": {
+     "centre": [
+      5.8,
+      5.0,
+      0.0
+     ],
+     "size": [
+      0.4,
+      10.0,
+      11.2
+     ],
+     "triangles": 132,
+     "collide": true
+    },
+    "Wall_Lintel": {
+     "centre": [
+      -3.0,
+      8.5,
+      -5.8
+     ],
+     "size": [
+      4.0,
+      3.0,
+      0.4
+     ],
+     "triangles": 40,
+     "collide": true
+    },
+    "Wall_FrontLeft": {
+     "centre": [
+      -5.5,
+      5.0,
+      -5.8
+     ],
+     "size": [
+      1.0,
+      10.0,
+      0.4
+     ],
+     "triangles": 176,
+     "collide": true
+    },
+    "Wall_FrontRight": {
+     "centre": [
+      2.5,
+      5.0,
+      -5.8
+     ],
+     "size": [
+      7.0,
+      10.0,
+      0.4
+     ],
+     "triangles": 176,
+     "collide": true
+    },
+    "Dressing": {
+     "centre": [
+      0.0,
+      7.55,
+      0.0
+     ],
+     "size": [
+      11.3691,
+      4.9,
+      11.24
+     ],
+     "triangles": 644,
+     "collide": false
+    },
+    "Glow_Warm_1": {
+     "centre": [
+      0.0,
+      9.0,
+      5.0
+     ],
+     "size": [
+      0.4218,
+      0.84,
+      0.4218
+     ],
+     "triangles": 64,
+     "collide": false
+    },
+    "Bed": {
+     "centre": [
+      0.0,
+      1.0,
+      2.725
+     ],
+     "size": [
+      3.96,
+      2.0,
+      5.65
+     ],
+     "triangles": 376,
+     "collide": true
+    },
+    "Furniture": {
+     "centre": [
+      4.815,
+      1.05,
+      -1.9
+     ],
+     "size": [
+      1.53,
+      2.1,
+      4.6
+     ],
+     "triangles": 184,
+     "collide": true
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      5.0,
+      0.0
+     ],
+     "size": [
+      12.0,
+      10.0,
+      12.0
+     ],
+     "triangles": 108,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Door": {
+     "pos": [
+      -3.0,
+      0.0,
+      -6.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    "Sign": {
+     "pos": [
+      -3.0,
+      8.2,
+      -6.3
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    "Decor_1": {
+     "pos": [
+      -4.0,
+      0.0,
+      4.0
+     ],
+     "look": [
+      0.7071,
+      0.0,
+      -0.7071
+     ]
+    },
+    "Decor_2": {
+     "pos": [
+      4.0,
+      0.0,
+      4.0
+     ],
+     "look": [
+      -0.7071,
+      0.0,
+      -0.7071
+     ]
+    },
+    "Decor_3": {
+     "pos": [
+      -4.0,
+      0.0,
+      0.0
+     ],
+     "look": [
+      1.0,
+      0.0,
+      0.0
+     ]
+    },
+    "Bed": {
+     "pos": [
+      0.0,
+      0.0,
+      -1.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    }
+   },
+   "triangles": 2420,
+   "budget": 6000,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a mattress on crates under the rafters, a round moon window, a trunk"
+  },
+  "SarcophagusSuite": {
+   "name": "SarcophagusSuite",
+   "kind": "Room",
+   "footprint_cells": [
+    2,
+    3
+   ],
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     12.0,
+     0.2,
+     18.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      12.0,
+      0.2,
+      18.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Floor": {
+     "centre": [
+      0.0,
+      0.125,
+      0.0
+     ],
+     "size": [
+      11.8,
+      0.25,
+      17.8
+     ],
+     "triangles": 440,
+     "collide": true
+    },
+    "Wall_Back": {
+     "centre": [
+      0.0,
+      5.0,
+      8.8
+     ],
+     "size": [
+      12.0,
+      10.0,
+      0.4
+     ],
+     "triangles": 132,
+     "collide": true
+    },
+    "Wall_Left": {
+     "centre": [
+      -5.8,
+      5.0,
+      0.0
+     ],
+     "size": [
+      0.4,
+      10.0,
+      17.2
+     ],
+     "triangles": 132,
+     "collide": true
+    },
+    "Wall_Right": {
+     "centre": [
+      5.8,
+      5.0,
+      0.0
+     ],
+     "size": [
+      0.4,
+      10.0,
+      17.2
+     ],
+     "triangles": 132,
+     "collide": true
+    },
+    "Wall_Lintel": {
+     "centre": [
+      -3.0,
+      8.5,
+      -8.8
+     ],
+     "size": [
+      4.0,
+      3.0,
+      0.4
+     ],
+     "triangles": 40,
+     "collide": true
+    },
+    "Wall_FrontLeft": {
+     "centre": [
+      -5.5,
+      5.0,
+      -8.8
+     ],
+     "size": [
+      1.0,
+      10.0,
+      0.4
+     ],
+     "triangles": 176,
+     "collide": true
+    },
+    "Wall_FrontRight": {
+     "centre": [
+      2.5,
+      5.0,
+      -8.8
+     ],
+     "size": [
+      7.0,
+      10.0,
+      0.4
+     ],
+     "triangles": 176,
+     "collide": true
+    },
+    "Dressing": {
+     "centre": [
+      0.025,
+      7.35,
+      1.26
+     ],
+     "size": [
+      11.29,
+      3.9,
+      14.72
+     ],
+     "triangles": 272,
+     "collide": false
+    },
+    "Glow_Warm_1": {
+     "centre": [
+      0.0,
+      9.0,
+      8.0
+     ],
+     "size": [
+      0.4218,
+      0.84,
+      0.4218
+     ],
+     "triangles": 64,
+     "collide": false
+    },
+    "Bed": {
+     "centre": [
+      0.0,
+      1.425,
+      5.725
+     ],
+     "size": [
+      3.9,
+      2.85,
+      5.65
+     ],
+     "triangles": 312,
+     "collide": true
+    },
+    "Furniture": {
+     "centre": [
+      4.94,
+      1.325,
+      -4.0
+     ],
+     "size": [
+      1.28,
+      2.65,
+      4.8
+     ],
+     "triangles": 368,
+     "collide": true
+    },
+    "Glow_Warm_2": {
+     "centre": [
+      5.15,
+      7.7,
+      2.5
+     ],
+     "size": [
+      0.3515,
+      0.68,
+      0.3515
+     ],
+     "triangles": 64,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      5.0,
+      0.0
+     ],
+     "size": [
+      12.0,
+      10.0,
+      18.0
+     ],
+     "triangles": 108,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Door": {
+     "pos": [
+      -3.0,
+      0.0,
+      -9.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    "Sign": {
+     "pos": [
+      -3.0,
+      8.2,
+      -9.3
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    "Decor_1": {
+     "pos": [
+      -4.0,
+      0.0,
+      7.0
+     ],
+     "look": [
+      0.7071,
+      0.0,
+      -0.7071
+     ]
+    },
+    "Decor_2": {
+     "pos": [
+      4.0,
+      0.0,
+      7.0
+     ],
+     "look": [
+      -0.7071,
+      0.0,
+      -0.7071
+     ]
+    },
+    "Decor_3": {
+     "pos": [
+      -4.0,
+      0.0,
+      0.0
+     ],
+     "look": [
+      1.0,
+      0.0,
+      0.0
+     ]
+    },
+    "Bed": {
+     "pos": [
+      0.0,
+      0.0,
+      2.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    }
+   },
+   "triangles": 2320,
+   "budget": 6000,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a gold sarcophagus with a teal-striped headdress, canopic jars, a torch"
+  },
+  "PotionLoft": {
+   "name": "PotionLoft",
+   "kind": "Room",
+   "footprint_cells": [
+    2,
+    3
+   ],
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     12.0,
+     0.2,
+     18.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      12.0,
+      0.2,
+      18.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Floor": {
+     "centre": [
+      0.0,
+      0.125,
+      0.0
+     ],
+     "size": [
+      11.8,
+      0.25,
+      17.8
+     ],
+     "triangles": 440,
+     "collide": true
+    },
+    "Wall_Back": {
+     "centre": [
+      0.0,
+      5.0,
+      8.8
+     ],
+     "size": [
+      12.0,
+      10.0,
+      0.4
+     ],
+     "triangles": 132,
+     "collide": true
+    },
+    "Wall_Left": {
+     "centre": [
+      -5.8,
+      5.0,
+      0.0
+     ],
+     "size": [
+      0.4,
+      10.0,
+      17.2
+     ],
+     "triangles": 132,
+     "collide": true
+    },
+    "Wall_Right": {
+     "centre": [
+      5.8,
+      5.0,
+      0.0
+     ],
+     "size": [
+      0.4,
+      10.0,
+      17.2
+     ],
+     "triangles": 132,
+     "collide": true
+    },
+    "Wall_Lintel": {
+     "centre": [
+      -3.0,
+      8.5,
+      -8.8
+     ],
+     "size": [
+      4.0,
+      3.0,
+      0.4
+     ],
+     "triangles": 40,
+     "collide": true
+    },
+    "Wall_FrontLeft": {
+     "centre": [
+      -5.5,
+      5.0,
+      -8.8
+     ],
+     "size": [
+      1.0,
+      10.0,
+      0.4
+     ],
+     "triangles": 176,
+     "collide": true
+    },
+    "Wall_FrontRight": {
+     "centre": [
+      2.5,
+      5.0,
+      -8.8
+     ],
+     "size": [
+      7.0,
+      10.0,
+      0.4
+     ],
+     "triangles": 176,
+     "collide": true
+    },
+    "Dressing": {
+     "centre": [
+      -0.4084,
+      7.45,
+      1.41
+     ],
+     "size": [
+      10.4231,
+      4.3,
+      14.42
+     ],
+     "triangles": 336,
+     "collide": false
+    },
+    "Glow_Warm_1": {
+     "centre": [
+      0.0,
+      9.0,
+      8.0
+     ],
+     "size": [
+      0.4218,
+      0.84,
+      0.4218
+     ],
+     "triangles": 64,
+     "collide": false
+    },
+    "Bed": {
+     "centre": [
+      0.0,
+      2.5,
+      5.7609
+     ],
+     "size": [
+      4.0435,
+      5.0,
+      5.7217
+     ],
+     "triangles": 568,
+     "collide": true
+    },
+    "Furniture": {
+     "centre": [
+      4.99,
+      2.7,
+      -4.4
+     ],
+     "size": [
+      1.18,
+      5.4,
+      4.4
+     ],
+     "triangles": 808,
+     "collide": true
+    },
+    "Glow_Magic_1": {
+     "centre": [
+      5.0,
+      2.52,
+      -3.9
+     ],
+     "size": [
+      0.6326,
+      0.72,
+      0.6326
+     ],
+     "triangles": 64,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      5.0,
+      0.0
+     ],
+     "size": [
+      12.0,
+      10.0,
+      18.0
+     ],
+     "triangles": 108,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Door": {
+     "pos": [
+      -3.0,
+      0.0,
+      -9.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    "Sign": {
+     "pos": [
+      -3.0,
+      8.2,
+      -9.3
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    "Decor_1": {
+     "pos": [
+      -4.0,
+      0.0,
+      7.0
+     ],
+     "look": [
+      0.7071,
+      0.0,
+      -0.7071
+     ]
+    },
+    "Decor_2": {
+     "pos": [
+      4.0,
+      0.0,
+      7.0
+     ],
+     "look": [
+      -0.7071,
+      0.0,
+      -0.7071
+     ]
+    },
+    "Decor_3": {
+     "pos": [
+      -4.0,
+      0.0,
+      0.0
+     ],
+     "look": [
+      1.0,
+      0.0,
+      0.0
+     ]
+    },
+    "Bed": {
+     "pos": [
+      0.0,
+      0.0,
+      2.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    }
+   },
+   "triangles": 3080,
+   "budget": 6000,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a witch's bed, a potion shelf with one glowing flask, herbs hanging"
+  },
+  "DenRoom": {
+   "name": "DenRoom",
+   "kind": "Room",
+   "footprint_cells": [
+    3,
+    3
+   ],
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     18.0,
+     0.2,
+     18.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      18.0,
+      0.2,
+      18.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Floor": {
+     "centre": [
+      0.0,
+      0.125,
+      0.0
+     ],
+     "size": [
+      17.8,
+      0.25,
+      17.8
+     ],
+     "triangles": 616,
+     "collide": true
+    },
+    "Wall_Back": {
+     "centre": [
+      0.0,
+      5.0,
+      8.8
+     ],
+     "size": [
+      18.0,
+      10.0,
+      0.4
+     ],
+     "triangles": 132,
+     "collide": true
+    },
+    "Wall_Left": {
+     "centre": [
+      -8.8,
+      5.0,
+      0.0
+     ],
+     "size": [
+      0.4,
+      10.0,
+      17.2
+     ],
+     "triangles": 132,
+     "collide": true
+    },
+    "Wall_Right": {
+     "centre": [
+      8.8,
+      5.0,
+      0.0
+     ],
+     "size": [
+      0.4,
+      10.0,
+      17.2
+     ],
+     "triangles": 132,
+     "collide": true
+    },
+    "Wall_Lintel": {
+     "centre": [
+      0.0,
+      8.5,
+      -8.8
+     ],
+     "size": [
+      4.0,
+      3.0,
+      0.4
+     ],
+     "triangles": 40,
+     "collide": true
+    },
+    "Wall_FrontLeft": {
+     "centre": [
+      -5.5,
+      5.0,
+      -8.8
+     ],
+     "size": [
+      7.0,
+      10.0,
+      0.4
+     ],
+     "triangles": 176,
+     "collide": true
+    },
+    "Wall_FrontRight": {
+     "centre": [
+      5.5,
+      5.0,
+      -8.8
+     ],
+     "size": [
+      7.0,
+      10.0,
+      0.4
+     ],
+     "triangles": 176,
+     "collide": true
+    },
+    "Dressing": {
+     "centre": [
+      3.41,
+      7.05,
+      3.26
+     ],
+     "size": [
+      10.42,
+      4.5,
+      10.72
+     ],
+     "triangles": 256,
+     "collide": false
+    },
+    "Glow_Warm_1": {
+     "centre": [
+      0.0,
+      9.0,
+      8.0
+     ],
+     "size": [
+      0.4218,
+      0.84,
+      0.4218
+     ],
+     "triangles": 64,
+     "collide": false
+    },
+    "Bed": {
+     "centre": [
+      0.0,
+      0.675,
+      5.725
+     ],
+     "size": [
+      3.7671,
+      1.35,
+      5.3493
+     ],
+     "triangles": 372,
+     "collide": true
+    },
+    "Furniture": {
+     "centre": [
+      7.7,
+      1.45,
+      -4.9
+     ],
+     "size": [
+      1.6,
+      2.8239,
+      3.1239
+     ],
+     "triangles": 168,
+     "collide": true
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      5.0,
+      0.0
+     ],
+     "size": [
+      18.0,
+      10.0,
+      18.0
+     ],
+     "triangles": 108,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Door": {
+     "pos": [
+      0.0,
+      0.0,
+      -9.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    "Sign": {
+     "pos": [
+      0.0,
+      8.2,
+      -9.3
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    "Decor_1": {
+     "pos": [
+      -7.0,
+      0.0,
+      7.0
+     ],
+     "look": [
+      0.7071,
+      0.0,
+      -0.7071
+     ]
+    },
+    "Decor_2": {
+     "pos": [
+      7.0,
+      0.0,
+      7.0
+     ],
+     "look": [
+      -0.7071,
+      0.0,
+      -0.7071
+     ]
+    },
+    "Decor_3": {
+     "pos": [
+      -7.0,
+      0.0,
+      0.0
+     ],
+     "look": [
+      1.0,
+      0.0,
+      0.0
+     ]
+    },
+    "Bed": {
+     "pos": [
+      0.0,
+      0.0,
+      2.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    }
+   },
+   "triangles": 2276,
+   "budget": 6000,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a round straw nest with a bone, a log pile, a full moon over it"
+  },
+  "CoffinSuite": {
+   "name": "CoffinSuite",
+   "kind": "Room",
+   "footprint_cells": [
+    3,
+    3
+   ],
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     18.0,
+     0.2,
+     18.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      18.0,
+      0.2,
+      18.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Floor": {
+     "centre": [
+      0.0,
+      0.125,
+      0.0
+     ],
+     "size": [
+      17.8,
+      0.25,
+      17.8
+     ],
+     "triangles": 616,
+     "collide": true
+    },
+    "Wall_Back": {
+     "centre": [
+      0.0,
+      5.0,
+      8.8
+     ],
+     "size": [
+      18.0,
+      10.0,
+      0.4
+     ],
+     "triangles": 132,
+     "collide": true
+    },
+    "Wall_Left": {
+     "centre": [
+      -8.8,
+      5.0,
+      0.0
+     ],
+     "size": [
+      0.4,
+      10.0,
+      17.2
+     ],
+     "triangles": 132,
+     "collide": true
+    },
+    "Wall_Right": {
+     "centre": [
+      8.8,
+      5.0,
+      0.0
+     ],
+     "size": [
+      0.4,
+      10.0,
+      17.2
+     ],
+     "triangles": 132,
+     "collide": true
+    },
+    "Wall_Lintel": {
+     "centre": [
+      0.0,
+      8.5,
+      -8.8
+     ],
+     "size": [
+      4.0,
+      3.0,
+      0.4
+     ],
+     "triangles": 40,
+     "collide": true
+    },
+    "Wall_FrontLeft": {
+     "centre": [
+      -5.5,
+      5.0,
+      -8.8
+     ],
+     "size": [
+      7.0,
+      10.0,
+      0.4
+     ],
+     "triangles": 176,
+     "collide": true
+    },
+    "Wall_FrontRight": {
+     "centre": [
+      5.5,
+      5.0,
+      -8.8
+     ],
+     "size": [
+      7.0,
+      10.0,
+      0.4
+     ],
+     "triangles": 176,
+     "collide": true
+    },
+    "Dressing": {
+     "centre": [
+      4.1345,
+      6.45,
+      3.66
+     ],
+     "size": [
+      8.9711,
+      5.7,
+      9.92
+     ],
+     "triangles": 264,
+     "collide": false
+    },
+    "Glow_Warm_1": {
+     "centre": [
+      0.0,
+      9.0,
+      8.0
+     ],
+     "size": [
+      0.4218,
+      0.84,
+      0.4218
+     ],
+     "triangles": 64,
+     "collide": false
+    },
+    "Bed": {
+     "centre": [
+      0.0,
+      3.2,
+      5.715
+     ],
+     "size": [
+      3.8,
+      6.4,
+      5.67
+     ],
+     "triangles": 148,
+     "collide": true
+    },
+    "Furniture": {
+     "centre": [
+      7.4,
+      2.725,
+      -3.0
+     ],
+     "size": [
+      1.2934,
+      5.45,
+      2.3696
+     ],
+     "triangles": 232,
+     "collide": true
+    },
+    "Glow_Warm_2": {
+     "centre": [
+      7.4,
+      5.38,
+      -4.0
+     ],
+     "size": [
+      0.2078,
+      0.44,
+      0.24
+     ],
+     "triangles": 36,
+     "collide": false
+    },
+    "Glow_Warm_3": {
+     "centre": [
+      7.4,
+      5.63,
+      -3.0
+     ],
+     "size": [
+      0.2078,
+      0.44,
+      0.24
+     ],
+     "triangles": 36,
+     "collide": false
+    },
+    "Glow_Warm_4": {
+     "centre": [
+      7.4,
+      5.38,
+      -2.0
+     ],
+     "size": [
+      0.2078,
+      0.44,
+      0.24
+     ],
+     "triangles": 36,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      5.0,
+      0.0
+     ],
+     "size": [
+      18.0,
+      10.0,
+      18.0
+     ],
+     "triangles": 108,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Door": {
+     "pos": [
+      0.0,
+      0.0,
+      -9.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    "Sign": {
+     "pos": [
+      0.0,
+      8.2,
+      -9.3
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    "Decor_1": {
+     "pos": [
+      -7.0,
+      0.0,
+      7.0
+     ],
+     "look": [
+      0.7071,
+      0.0,
+      -0.7071
+     ]
+    },
+    "Decor_2": {
+     "pos": [
+      7.0,
+      0.0,
+      7.0
+     ],
+     "look": [
+      -0.7071,
+      0.0,
+      -0.7071
+     ]
+    },
+    "Decor_3": {
+     "pos": [
+      -7.0,
+      0.0,
+      0.0
+     ],
+     "look": [
+      1.0,
+      0.0,
+      0.0
+     ]
+    },
+    "Bed": {
+     "pos": [
+      0.0,
+      0.0,
+      2.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    }
+   },
+   "triangles": 2232,
+   "budget": 6000,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a coffin with red velvet, its lid against the wall with a gold bat, a candelabra"
+  },
+  "OperaSuite": {
+   "name": "OperaSuite",
+   "kind": "Room",
+   "footprint_cells": [
+    3,
+    3
+   ],
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     18.0,
+     0.2,
+     18.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      18.0,
+      0.2,
+      18.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Floor": {
+     "centre": [
+      0.0,
+      0.125,
+      0.0
+     ],
+     "size": [
+      17.8,
+      0.25,
+      17.8
+     ],
+     "triangles": 616,
+     "collide": true
+    },
+    "Wall_Back": {
+     "centre": [
+      0.0,
+      5.0,
+      8.8
+     ],
+     "size": [
+      18.0,
+      10.0,
+      0.4
+     ],
+     "triangles": 132,
+     "collide": true
+    },
+    "Wall_Left": {
+     "centre": [
+      -8.8,
+      5.0,
+      0.0
+     ],
+     "size": [
+      0.4,
+      10.0,
+      17.2
+     ],
+     "triangles": 132,
+     "collide": true
+    },
+    "Wall_Right": {
+     "centre": [
+      8.8,
+      5.0,
+      0.0
+     ],
+     "size": [
+      0.4,
+      10.0,
+      17.2
+     ],
+     "triangles": 132,
+     "collide": true
+    },
+    "Wall_Lintel": {
+     "centre": [
+      0.0,
+      8.5,
+      -8.8
+     ],
+     "size": [
+      4.0,
+      3.0,
+      0.4
+     ],
+     "triangles": 40,
+     "collide": true
+    },
+    "Wall_FrontLeft": {
+     "centre": [
+      -5.5,
+      5.0,
+      -8.8
+     ],
+     "size": [
+      7.0,
+      10.0,
+      0.4
+     ],
+     "triangles": 176,
+     "collide": true
+    },
+    "Wall_FrontRight": {
+     "centre": [
+      5.5,
+      5.0,
+      -8.8
+     ],
+     "size": [
+      7.0,
+      10.0,
+      0.4
+     ],
+     "triangles": 176,
+     "collide": true
+    },
+    "Dressing": {
+     "centre": [
+      -4.1345,
+      8.0,
+      1.31
+     ],
+     "size": [
+      8.9711,
+      2.6,
+      14.62
+     ],
+     "triangles": 236,
+     "collide": false
+    },
+    "Glow_Warm_1": {
+     "centre": [
+      0.0,
+      9.0,
+      8.0
+     ],
+     "size": [
+      0.4218,
+      0.84,
+      0.4218
+     ],
+     "triangles": 64,
+     "collide": false
+    },
+    "Bed": {
+     "centre": [
+      0.0,
+      4.055,
+      5.7408
+     ],
+     "size": [
+      4.0435,
+      8.11,
+      5.7619
+     ],
+     "triangles": 936,
+     "collide": true
+    },
+    "Furniture": {
+     "centre": [
+      7.5598,
+      2.9559,
+      -3.3674
+     ],
+     "size": [
+      1.9825,
+      5.9119,
+      2.3978
+     ],
+     "triangles": 248,
+     "collide": true
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      5.0,
+      0.0
+     ],
+     "size": [
+      18.0,
+      10.0,
+      18.0
+     ],
+     "triangles": 108,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Door": {
+     "pos": [
+      0.0,
+      0.0,
+      -9.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    "Sign": {
+     "pos": [
+      0.0,
+      8.2,
+      -9.3
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    "Decor_1": {
+     "pos": [
+      -7.0,
+      0.0,
+      7.0
+     ],
+     "look": [
+      0.7071,
+      0.0,
+      -0.7071
+     ]
+    },
+    "Decor_2": {
+     "pos": [
+      7.0,
+      0.0,
+      7.0
+     ],
+     "look": [
+      -0.7071,
+      0.0,
+      -0.7071
+     ]
+    },
+    "Decor_3": {
+     "pos": [
+      -7.0,
+      0.0,
+      0.0
+     ],
+     "look": [
+      1.0,
+      0.0,
+      0.0
+     ]
+    },
+    "Bed": {
+     "pos": [
+      0.0,
+      0.0,
+      2.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    }
+   },
+   "triangles": 2900,
+   "budget": 6000,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a canopy bed in crimson and gold, a gramophone, theatre masks"
+  },
+  "SnackBar": {
+   "name": "SnackBar",
+   "kind": "Amenity",
+   "footprint_cells": [
+    2,
+    2
+   ],
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     12.0,
+     0.2,
+     12.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      12.0,
+      0.2,
+      12.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Floor": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      11.8,
+      0.2,
+      11.8
+     ],
+     "triangles": 352,
+     "collide": true
+    },
+    "Wall_Back": {
+     "centre": [
+      0.0,
+      5.0,
+      5.8
+     ],
+     "size": [
+      12.0,
+      10.0,
+      0.4
+     ],
+     "triangles": 132,
+     "collide": true
+    },
+    "Wall_Left": {
+     "centre": [
+      -5.8,
+      5.0,
+      0.0
+     ],
+     "size": [
+      0.4,
+      10.0,
+      11.2
+     ],
+     "triangles": 132,
+     "collide": true
+    },
+    "Wall_Right": {
+     "centre": [
+      5.8,
+      5.0,
+      0.0
+     ],
+     "size": [
+      0.4,
+      10.0,
+      11.2
+     ],
+     "triangles": 132,
+     "collide": true
+    },
+    "Wall_Lintel": {
+     "centre": [
+      -3.0,
+      8.5,
+      -5.8
+     ],
+     "size": [
+      4.0,
+      3.0,
+      0.4
+     ],
+     "triangles": 40,
+     "collide": true
+    },
+    "Wall_FrontLeft": {
+     "centre": [
+      -5.5,
+      5.0,
+      -5.8
+     ],
+     "size": [
+      1.0,
+      10.0,
+      0.4
+     ],
+     "triangles": 176,
+     "collide": true
+    },
+    "Wall_FrontRight": {
+     "centre": [
+      2.5,
+      5.0,
+      -5.8
+     ],
+     "size": [
+      7.0,
+      10.0,
+      0.4
+     ],
+     "triangles": 176,
+     "collide": true
+    },
+    "Dressing": {
+     "centre": [
+      0.0,
+      8.15,
+      4.86
+     ],
+     "size": [
+      4.8,
+      2.3,
+      1.52
+     ],
+     "triangles": 436,
+     "collide": false
+    },
+    "Glow_Warm_1": {
+     "centre": [
+      0.0,
+      9.0,
+      5.0
+     ],
+     "size": [
+      0.4218,
+      0.84,
+      0.4218
+     ],
+     "triangles": 64,
+     "collide": false
+    },
+    "Centrepiece": {
+     "centre": [
+      0.0,
+      2.6,
+      2.675
+     ],
+     "size": [
+      3.9,
+      5.2,
+      5.85
+     ],
+     "triangles": 782,
+     "collide": true
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      5.0,
+      0.0
+     ],
+     "size": [
+      12.0,
+      10.0,
+      12.0
+     ],
+     "triangles": 96,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Door": {
+     "pos": [
+      -3.0,
+      0.0,
+      -6.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    "Sign": {
+     "pos": [
+      -3.0,
+      8.2,
+      -6.3
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    "Decor_1": {
+     "pos": [
+      -4.0,
+      0.0,
+      4.0
+     ],
+     "look": [
+      0.7071,
+      0.0,
+      -0.7071
+     ]
+    },
+    "Decor_2": {
+     "pos": [
+      4.0,
+      0.0,
+      4.0
+     ],
+     "look": [
+      -0.7071,
+      0.0,
+      -0.7071
+     ]
+    },
+    "Decor_3": {
+     "pos": [
+      -4.0,
+      0.0,
+      0.0
+     ],
+     "look": [
+      1.0,
+      0.0,
+      0.0
+     ]
+    },
+    "Bed": {
+     "pos": [
+      0.0,
+      0.0,
+      -2.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 2434,
+   "budget": 6000,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a candy-striped counter with jars and a pie, a striped awning"
+  },
+  "MusicRoom": {
+   "name": "MusicRoom",
+   "kind": "Amenity",
+   "footprint_cells": [
+    2,
+    2
+   ],
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     12.0,
+     0.2,
+     12.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      12.0,
+      0.2,
+      12.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Floor": {
+     "centre": [
+      0.0,
+      0.125,
+      0.0
+     ],
+     "size": [
+      11.8,
+      0.25,
+      11.8
+     ],
+     "triangles": 440,
+     "collide": true
+    },
+    "Wall_Back": {
+     "centre": [
+      0.0,
+      5.0,
+      5.8
+     ],
+     "size": [
+      12.0,
+      10.0,
+      0.4
+     ],
+     "triangles": 132,
+     "collide": true
+    },
+    "Wall_Left": {
+     "centre": [
+      -5.8,
+      5.0,
+      0.0
+     ],
+     "size": [
+      0.4,
+      10.0,
+      11.2
+     ],
+     "triangles": 132,
+     "collide": true
+    },
+    "Wall_Right": {
+     "centre": [
+      5.8,
+      5.0,
+      0.0
+     ],
+     "size": [
+      0.4,
+      10.0,
+      11.2
+     ],
+     "triangles": 132,
+     "collide": true
+    },
+    "Wall_Lintel": {
+     "centre": [
+      -3.0,
+      8.5,
+      -5.8
+     ],
+     "size": [
+      4.0,
+      3.0,
+      0.4
+     ],
+     "triangles": 40,
+     "collide": true
+    },
+    "Wall_FrontLeft": {
+     "centre": [
+      -5.5,
+      5.0,
+      -5.8
+     ],
+     "size": [
+      1.0,
+      10.0,
+      0.4
+     ],
+     "triangles": 176,
+     "collide": true
+    },
+    "Wall_FrontRight": {
+     "centre": [
+      2.5,
+      5.0,
+      -5.8
+     ],
+     "size": [
+      7.0,
+      10.0,
+      0.4
+     ],
+     "triangles": 176,
+     "collide": true
+    },
+    "Dressing": {
+     "centre": [
+      0.0,
+      7.8,
+      1.3845
+     ],
+     "size": [
+      11.2093,
+      3.0,
+      8.4711
+     ],
+     "triangles": 324,
+     "collide": false
+    },
+    "Glow_Warm_1": {
+     "centre": [
+      0.0,
+      9.0,
+      5.0
+     ],
+     "size": [
+      0.4218,
+      0.84,
+      0.4218
+     ],
+     "triangles": 64,
+     "collide": false
+    },
+    "Centrepiece": {
+     "centre": [
+      0.0,
+      2.3,
+      3.6359
+     ],
+     "size": [
+      3.9,
+      4.6,
+      3.8881
+     ],
+     "triangles": 404,
+     "collide": true
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      5.0,
+      0.0
+     ],
+     "size": [
+      12.0,
+      10.0,
+      12.0
+     ],
+     "triangles": 96,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Door": {
+     "pos": [
+      -3.0,
+      0.0,
+      -6.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    "Sign": {
+     "pos": [
+      -3.0,
+      8.2,
+      -6.3
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    "Decor_1": {
+     "pos": [
+      -4.0,
+      0.0,
+      4.0
+     ],
+     "look": [
+      0.7071,
+      0.0,
+      -0.7071
+     ]
+    },
+    "Decor_2": {
+     "pos": [
+      4.0,
+      0.0,
+      4.0
+     ],
+     "look": [
+      -0.7071,
+      0.0,
+      -0.7071
+     ]
+    },
+    "Decor_3": {
+     "pos": [
+      -4.0,
+      0.0,
+      0.0
+     ],
+     "look": [
+      1.0,
+      0.0,
+      0.0
+     ]
+    },
+    "Bed": {
+     "pos": [
+      0.0,
+      0.0,
+      -2.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 2032,
+   "budget": 6000,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a midnight-blue upright piano and its stool, gold notes on the walls"
+  },
+  "GraveyardGarden": {
+   "name": "GraveyardGarden",
+   "kind": "Amenity",
+   "footprint_cells": [
+    2,
+    2
+   ],
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     12.0,
+     0.2,
+     12.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      12.0,
+      0.2,
+      12.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Floor": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      11.8,
+      0.2,
+      11.8
+     ],
+     "triangles": 352,
+     "collide": true
+    },
+    "Wall_Back": {
+     "centre": [
+      0.0,
+      5.0,
+      5.8
+     ],
+     "size": [
+      12.0,
+      10.0,
+      0.4
+     ],
+     "triangles": 132,
+     "collide": true
+    },
+    "Wall_Left": {
+     "centre": [
+      -5.8,
+      5.0,
+      0.0
+     ],
+     "size": [
+      0.4,
+      10.0,
+      11.2
+     ],
+     "triangles": 132,
+     "collide": true
+    },
+    "Wall_Right": {
+     "centre": [
+      5.8,
+      5.0,
+      0.0
+     ],
+     "size": [
+      0.4,
+      10.0,
+      11.2
+     ],
+     "triangles": 132,
+     "collide": true
+    },
+    "Wall_Lintel": {
+     "centre": [
+      -3.0,
+      8.5,
+      -5.8
+     ],
+     "size": [
+      4.0,
+      3.0,
+      0.4
+     ],
+     "triangles": 40,
+     "collide": true
+    },
+    "Wall_FrontLeft": {
+     "centre": [
+      -5.5,
+      5.0,
+      -5.8
+     ],
+     "size": [
+      1.0,
+      10.0,
+      0.4
+     ],
+     "triangles": 176,
+     "collide": true
+    },
+    "Wall_FrontRight": {
+     "centre": [
+      2.5,
+      5.0,
+      -5.8
+     ],
+     "size": [
+      7.0,
+      10.0,
+      0.4
+     ],
+     "triangles": 176,
+     "collide": true
+    },
+    "Dressing": {
+     "centre": [
+      0.0,
+      7.9349,
+      1.1169
+     ],
+     "size": [
+      11.24,
+      2.7301,
+      9.0247
+     ],
+     "triangles": 564,
+     "collide": false
+    },
+    "Glow_Warm_1": {
+     "centre": [
+      0.0,
+      9.0,
+      5.0
+     ],
+     "size": [
+      0.4218,
+      0.84,
+      0.4218
+     ],
+     "triangles": 64,
+     "collide": false
+    },
+    "Centrepiece": {
+     "centre": [
+      -0.0102,
+      2.4625,
+      3.385
+     ],
+     "size": [
+      3.7296,
+      4.925,
+      4.32
+     ],
+     "triangles": 544,
+     "collide": true
+    },
+    "Glow_Warm_2": {
+     "centre": [
+      -1.5,
+      4.4,
+      1.6
+     ],
+     "size": [
+      0.4804,
+      0.68,
+      0.4804
+     ],
+     "triangles": 48,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      5.0,
+      0.0
+     ],
+     "size": [
+      12.0,
+      10.0,
+      12.0
+     ],
+     "triangles": 96,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Door": {
+     "pos": [
+      -3.0,
+      0.0,
+      -6.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    "Sign": {
+     "pos": [
+      -3.0,
+      8.2,
+      -6.3
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    "Decor_1": {
+     "pos": [
+      -4.0,
+      0.0,
+      4.0
+     ],
+     "look": [
+      0.7071,
+      0.0,
+      -0.7071
+     ]
+    },
+    "Decor_2": {
+     "pos": [
+      4.0,
+      0.0,
+      4.0
+     ],
+     "look": [
+      -0.7071,
+      0.0,
+      -0.7071
+     ]
+    },
+    "Decor_3": {
+     "pos": [
+      -4.0,
+      0.0,
+      0.0
+     ],
+     "look": [
+      1.0,
+      0.0,
+      0.0
+     ]
+    },
+    "Bed": {
+     "pos": [
+      0.0,
+      0.0,
+      -2.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 2372,
+   "budget": 6000,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a mossy mound of three friendly tombstones, a lantern, a pumpkin; grass underfoot"
+  },
+  "QuietLibrary": {
+   "name": "QuietLibrary",
+   "kind": "Amenity",
+   "footprint_cells": [
+    2,
+    2
+   ],
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     12.0,
+     0.2,
+     12.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      12.0,
+      0.2,
+      12.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Floor": {
+     "centre": [
+      0.0,
+      0.125,
+      0.0
+     ],
+     "size": [
+      11.8,
+      0.25,
+      11.8
+     ],
+     "triangles": 440,
+     "collide": true
+    },
+    "Wall_Back": {
+     "centre": [
+      0.0,
+      5.0,
+      5.8
+     ],
+     "size": [
+      12.0,
+      10.0,
+      0.4
+     ],
+     "triangles": 132,
+     "collide": true
+    },
+    "Wall_Left": {
+     "centre": [
+      -5.8,
+      5.0,
+      0.0
+     ],
+     "size": [
+      0.4,
+      10.0,
+      11.2
+     ],
+     "triangles": 132,
+     "collide": true
+    },
+    "Wall_Right": {
+     "centre": [
+      5.8,
+      5.0,
+      0.0
+     ],
+     "size": [
+      0.4,
+      10.0,
+      11.2
+     ],
+     "triangles": 132,
+     "collide": true
+    },
+    "Wall_Lintel": {
+     "centre": [
+      -3.0,
+      8.5,
+      -5.8
+     ],
+     "size": [
+      4.0,
+      3.0,
+      0.4
+     ],
+     "triangles": 40,
+     "collide": true
+    },
+    "Wall_FrontLeft": {
+     "centre": [
+      -5.5,
+      5.0,
+      -5.8
+     ],
+     "size": [
+      1.0,
+      10.0,
+      0.4
+     ],
+     "triangles": 176,
+     "collide": true
+    },
+    "Wall_FrontRight": {
+     "centre": [
+      2.5,
+      5.0,
+      -5.8
+     ],
+     "size": [
+      7.0,
+      10.0,
+      0.4
+     ],
+     "triangles": 176,
+     "collide": true
+    },
+    "Dressing": {
+     "centre": [
+      0.0,
+      8.3,
+      0.56
+     ],
+     "size": [
+      11.24,
+      2.0,
+      10.12
+     ],
+     "triangles": 580,
+     "collide": false
+    },
+    "Glow_Warm_1": {
+     "centre": [
+      0.0,
+      9.0,
+      5.0
+     ],
+     "size": [
+      0.4218,
+      0.84,
+      0.4218
+     ],
+     "triangles": 64,
+     "collide": false
+    },
+    "Centrepiece": {
+     "centre": [
+      0.0,
+      3.85,
+      3.09
+     ],
+     "size": [
+      3.9,
+      7.7,
+      4.98
+     ],
+     "triangles": 1900,
+     "collide": true
+    },
+    "Glow_Warm_2": {
+     "centre": [
+      1.3,
+      7.95,
+      5.0
+     ],
+     "size": [
+      0.2078,
+      0.44,
+      0.24
+     ],
+     "triangles": 36,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      5.0,
+      0.0
+     ],
+     "size": [
+      12.0,
+      10.0,
+      12.0
+     ],
+     "triangles": 96,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Door": {
+     "pos": [
+      -3.0,
+      0.0,
+      -6.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    "Sign": {
+     "pos": [
+      -3.0,
+      8.2,
+      -6.3
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    "Decor_1": {
+     "pos": [
+      -4.0,
+      0.0,
+      4.0
+     ],
+     "look": [
+      0.7071,
+      0.0,
+      -0.7071
+     ]
+    },
+    "Decor_2": {
+     "pos": [
+      4.0,
+      0.0,
+      4.0
+     ],
+     "look": [
+      -0.7071,
+      0.0,
+      -0.7071
+     ]
+    },
+    "Decor_3": {
+     "pos": [
+      -4.0,
+      0.0,
+      0.0
+     ],
+     "look": [
+      1.0,
+      0.0,
+      0.0
+     ]
+    },
+    "Bed": {
+     "pos": [
+      0.0,
+      0.0,
+      -2.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 3820,
+   "budget": 6000,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a tall bookcase, a crimson reading chair, a candle, shelves high on the walls"
+  },
+  "OrganHall": {
+   "name": "OrganHall",
+   "kind": "Amenity",
+   "footprint_cells": [
+    2,
+    2
+   ],
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     12.0,
+     0.2,
+     12.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      12.0,
+      0.2,
+      12.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Floor": {
+     "centre": [
+      0.0,
+      0.125,
+      0.0
+     ],
+     "size": [
+      11.8,
+      0.25,
+      11.8
+     ],
+     "triangles": 440,
+     "collide": true
+    },
+    "Wall_Back": {
+     "centre": [
+      0.0,
+      5.0,
+      5.8
+     ],
+     "size": [
+      12.0,
+      10.0,
+      0.4
+     ],
+     "triangles": 132,
+     "collide": true
+    },
+    "Wall_Left": {
+     "centre": [
+      -5.8,
+      5.0,
+      0.0
+     ],
+     "size": [
+      0.4,
+      10.0,
+      11.2
+     ],
+     "triangles": 132,
+     "collide": true
+    },
+    "Wall_Right": {
+     "centre": [
+      5.8,
+      5.0,
+      0.0
+     ],
+     "size": [
+      0.4,
+      10.0,
+      11.2
+     ],
+     "triangles": 132,
+     "collide": true
+    },
+    "Wall_Lintel": {
+     "centre": [
+      -3.0,
+      8.5,
+      -5.8
+     ],
+     "size": [
+      4.0,
+      3.0,
+      0.4
+     ],
+     "triangles": 40,
+     "collide": true
+    },
+    "Wall_FrontLeft": {
+     "centre": [
+      -5.5,
+      5.0,
+      -5.8
+     ],
+     "size": [
+      1.0,
+      10.0,
+      0.4
+     ],
+     "triangles": 176,
+     "collide": true
+    },
+    "Wall_FrontRight": {
+     "centre": [
+      2.5,
+      5.0,
+      -5.8
+     ],
+     "size": [
+      7.0,
+      10.0,
+      0.4
+     ],
+     "triangles": 176,
+     "collide": true
+    },
+    "Dressing": {
+     "centre": [
+      0.0,
+      7.5,
+      1.31
+     ],
+     "size": [
+      11.24,
+      3.6,
+      8.62
+     ],
+     "triangles": 196,
+     "collide": false
+    },
+    "Glow_Warm_1": {
+     "centre": [
+      0.0,
+      9.0,
+      5.0
+     ],
+     "size": [
+      0.4218,
+      0.84,
+      0.4218
+     ],
+     "triangles": 64,
+     "collide": false
+    },
+    "Centrepiece": {
+     "centre": [
+      0.0,
+      3.975,
+      2.9155
+     ],
+     "size": [
+      3.9,
+      7.95,
+      4.631
+     ],
+     "triangles": 694,
+     "collide": true
+    },
+    "Glow_Warm_2": {
+     "centre": [
+      -1.6,
+      5.32,
+      2.6
+     ],
+     "size": [
+      0.2078,
+      0.44,
+      0.24
+     ],
+     "triangles": 36,
+     "collide": false
+    },
+    "Glow_Warm_3": {
+     "centre": [
+      1.6,
+      5.32,
+      2.6
+     ],
+     "size": [
+      0.2078,
+      0.44,
+      0.24
+     ],
+     "triangles": 36,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      5.0,
+      0.0
+     ],
+     "size": [
+      12.0,
+      10.0,
+      12.0
+     ],
+     "triangles": 96,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Door": {
+     "pos": [
+      -3.0,
+      0.0,
+      -6.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    "Sign": {
+     "pos": [
+      -3.0,
+      8.2,
+      -6.3
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    "Decor_1": {
+     "pos": [
+      -4.0,
+      0.0,
+      4.0
+     ],
+     "look": [
+      0.7071,
+      0.0,
+      -0.7071
+     ]
+    },
+    "Decor_2": {
+     "pos": [
+      4.0,
+      0.0,
+      4.0
+     ],
+     "look": [
+      -0.7071,
+      0.0,
+      -0.7071
+     ]
+    },
+    "Decor_3": {
+     "pos": [
+      -4.0,
+      0.0,
+      0.0
+     ],
+     "look": [
+      1.0,
+      0.0,
+      0.0
+     ]
+    },
+    "Bed": {
+     "pos": [
+      0.0,
+      0.0,
+      -2.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 2266,
+   "budget": 6000,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a pipe organ in gold pipes and dark wood, its bench, two candles"
+  },
+  "Decor_PuddleRug": {
+   "name": "Decor_PuddleRug",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.6,
+     0.2,
+     3.6
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.6,
+      0.2,
+      3.6
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.1623,
+      0.455,
+      0.0713
+     ],
+     "size": [
+      3.0753,
+      0.91,
+      3.186
+     ],
+     "triangles": 216,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 228,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a puddle-blue rug with ripples and a rubber duck"
+  },
+  "Decor_SnackBasket": {
+   "name": "Decor_SnackBasket",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     2.2,
+     0.2,
+     2.2
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      2.2,
+      0.2,
+      2.2
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      0.955,
+      0.0
+     ],
+     "size": [
+      2.02,
+      1.91,
+      2.1
+     ],
+     "triangles": 372,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 384,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a wicker basket of candies and a cookie"
+  },
+  "Decor_RecordPlayer": {
+   "name": "Decor_RecordPlayer",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     2.4,
+     0.2,
+     2.4
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      2.4,
+      0.2,
+      2.4
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0768,
+      2.0919,
+      -0.1614
+     ],
+     "size": [
+      2.0535,
+      4.1838,
+      2.0227
+     ],
+     "triangles": 324,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 336,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a wooden cabinet gramophone with a gold flower horn"
+  },
+  "Decor_Candles": {
+   "name": "Decor_Candles",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     2.0,
+     0.2,
+     2.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      2.0,
+      0.2,
+      2.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      0.775,
+      0.0
+     ],
+     "size": [
+      1.7119,
+      1.55,
+      1.8
+     ],
+     "triangles": 192,
+     "collide": false
+    },
+    "Glow_Warm_1": {
+     "centre": [
+      -0.35,
+      1.77,
+      0.2
+     ],
+     "size": [
+      0.1905,
+      0.4,
+      0.22
+     ],
+     "triangles": 36,
+     "collide": false
+    },
+    "Glow_Warm_2": {
+     "centre": [
+      0.35,
+      1.37,
+      0.25
+     ],
+     "size": [
+      0.1905,
+      0.4,
+      0.22
+     ],
+     "triangles": 36,
+     "collide": false
+    },
+    "Glow_Warm_3": {
+     "centre": [
+      0.0,
+      1.07,
+      -0.4
+     ],
+     "size": [
+      0.1905,
+      0.4,
+      0.22
+     ],
+     "triangles": 36,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 312,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "three cream candles on a gold dish, each flame its own glow"
+  },
+  "Decor_Planter": {
+   "name": "Decor_Planter",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     2.4,
+     0.2,
+     2.4
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      2.4,
+      0.2,
+      2.4
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      1.985,
+      0.0
+     ],
+     "size": [
+      1.9972,
+      3.97,
+      2.1
+     ],
+     "triangles": 444,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 456,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a stone pot with a teal band and a violet-budded spooky plant"
+  },
+  "Decor_AntiqueWardrobe": {
+   "name": "Decor_AntiqueWardrobe",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.4,
+     0.2,
+     2.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.4,
+      0.2,
+      2.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      3.45,
+      -0.0433
+     ],
+     "size": [
+      3.4,
+      6.9,
+      1.8866
+     ],
+     "triangles": 532,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 544,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a tall carved wardrobe with a crown top and gold knobs"
+  },
+  "Decor_BlackoutCurtains": {
+   "name": "Decor_BlackoutCurtains",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     4.0,
+     0.2,
+     1.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      4.0,
+      0.2,
+      1.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      3.325,
+      0.0
+     ],
+     "size": [
+      3.94,
+      6.65,
+      0.9
+     ],
+     "triangles": 292,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 304,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "heavy plum curtains on an iron rod, closed, a gold tie across each"
+  },
+  "Decor_SandTray": {
+   "name": "Decor_SandTray",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.0,
+     0.2,
+     2.4
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.0,
+      0.2,
+      2.4
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      0.725,
+      0.0
+     ],
+     "size": [
+      2.9,
+      1.45,
+      2.2
+     ],
+     "triangles": 342,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 354,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a wooden tray of raked sand with a little pyramid"
+  },
+  "Decor_CatBasket": {
+   "name": "Decor_CatBasket",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     2.6,
+     0.2,
+     2.6
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      2.6,
+      0.2,
+      2.6
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      0.7,
+      0.0
+     ],
+     "size": [
+      2.4148,
+      1.4,
+      2.4148
+     ],
+     "triangles": 428,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 440,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a woven basket, a pink cushion and a sleeping black cat"
+  },
+  "Decor_Cauldron": {
+   "name": "Decor_Cauldron",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     2.6,
+     0.2,
+     2.6
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      2.6,
+      0.2,
+      2.6
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      1.05,
+      0.0
+     ],
+     "size": [
+      2.2216,
+      2.1,
+      2.2216
+     ],
+     "triangles": 310,
+     "collide": false
+    },
+    "Glow_Magic_1": {
+     "centre": [
+      0.0,
+      2.064,
+      0.0
+     ],
+     "size": [
+      1.6614,
+      0.448,
+      1.6614
+     ],
+     "triangles": 156,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 478,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "an iron cauldron on three legs over logs, a glowing green brew with bubbles"
+  },
+  "Decor_SteakPlatter": {
+   "name": "Decor_SteakPlatter",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     2.6,
+     0.2,
+     2.6
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      2.6,
+      0.2,
+      2.6
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0181,
+      1.565,
+      0.0
+     ],
+     "size": [
+      2.3188,
+      3.13,
+      2.4
+     ],
+     "triangles": 270,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 282,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a steak with its bone on a white platter, on a pedestal table"
+  },
+  "Decor_MoonWindow": {
+   "name": "Decor_MoonWindow",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.4,
+     0.2,
+     1.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.4,
+      0.2,
+      1.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      3.3,
+      0.0
+     ],
+     "size": [
+      3.2,
+      6.6,
+      0.9
+     ],
+     "triangles": 376,
+     "collide": false
+    },
+    "Glow_Cold_1": {
+     "centre": [
+      0.25,
+      4.3,
+      -0.075
+     ],
+     "size": [
+      1.7,
+      1.7,
+      0.05
+     ],
+     "triangles": 44,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 432,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a freestanding gothic window, a full moon glowing in the night pane"
+  },
+  "Decor_PipeOrgan": {
+   "name": "Decor_PipeOrgan",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.8,
+     0.2,
+     3.4
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.8,
+      0.2,
+      3.4
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      3.45,
+      -0.1734
+     ],
+     "size": [
+      3.6,
+      6.9,
+      2.8533
+     ],
+     "triangles": 554,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 566,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a small pipe organ: seven gold pipes over a dark console and its bench"
+  },
+  "Decor_SoundproofWalls": {
+   "name": "Decor_SoundproofWalls",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     4.0,
+     0.2,
+     1.6
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      4.0,
+      0.2,
+      1.6
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      3.1,
+      -0.0218
+     ],
+     "size": [
+      3.8661,
+      6.2,
+      0.7187
+     ],
+     "triangles": 960,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 972,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a three-panel folding screen of quilted violet pads"
+  },
+  "Decor_Chandelier": {
+   "name": "Decor_Chandelier",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0436,
+      3.185,
+      0.0
+     ],
+     "size": [
+      2.5072,
+      6.37,
+      2.5274
+     ],
+     "triangles": 652,
+     "collide": false
+    },
+    "Glow_Warm_1": {
+     "centre": [
+      1.15,
+      6.55,
+      0.0
+     ],
+     "size": [
+      0.135,
+      0.32,
+      0.1559
+     ],
+     "triangles": 24,
+     "collide": false
+    },
+    "Glow_Warm_2": {
+     "centre": [
+      0.3554,
+      6.55,
+      1.0937
+     ],
+     "size": [
+      0.135,
+      0.32,
+      0.1559
+     ],
+     "triangles": 24,
+     "collide": false
+    },
+    "Glow_Warm_3": {
+     "centre": [
+      -0.9304,
+      6.55,
+      0.676
+     ],
+     "size": [
+      0.135,
+      0.32,
+      0.1559
+     ],
+     "triangles": 24,
+     "collide": false
+    },
+    "Glow_Warm_4": {
+     "centre": [
+      -0.9304,
+      6.55,
+      -0.676
+     ],
+     "size": [
+      0.135,
+      0.32,
+      0.1559
+     ],
+     "triangles": 24,
+     "collide": false
+    },
+    "Glow_Warm_5": {
+     "centre": [
+      0.3554,
+      6.55,
+      -1.0937
+     ],
+     "size": [
+      0.135,
+      0.32,
+      0.1559
+     ],
+     "triangles": 24,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 784,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a standing iron chandelier: a gold ring of five candles and crystal drops"
+  }
+ }
+}

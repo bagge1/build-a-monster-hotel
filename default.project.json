@@ -24,7 +24,15 @@
 			}
 		},
 		"ServerStorage": {
-			"$className": "ServerStorage"
+			"$className": "ServerStorage",
+			"HotelKit": {
+				"$className": "Folder",
+				"HauntedManor": {
+					"$path": {
+						"optional": "assets/HotelKit/HauntedManor"
+					}
+				}
+			}
 		},
 		"ReplicatedStorage": {
 			"$className": "ReplicatedStorage",
