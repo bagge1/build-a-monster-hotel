@@ -11,10 +11,13 @@
 
 	Mobile rules (§11): nothing in the bottom corners (Roblox's thumbstick and
 	jump live there), tap targets at least 44 px, everything reachable by
-	gamepad (`Selectable` on every button).
+	gamepad (`Selectable` on every button; every window is a `Controls.panel`:
+	selected when it opens, closed by ButtonB, UI.md "Gamepad").
 ]]
 
 local Players = game:GetService("Players")
+
+local Controls = require(script.Parent.Controls)
 
 local Ui = {}
 
@@ -219,13 +222,16 @@ function Ui.window(
 	local w = Ui.panel(gui, name, size, UDim2.fromScale(0.5, 0.5), Vector2.new(0.5, 0.5))
 	local t = Ui.label(w, "Title", title, UDim2.new(1, -70, 0, 40), 26, Ui.Colour.Gold)
 	t.Position = UDim2.fromOffset(16, 8)
-	local close = Ui.button(w, "Close", "X", UDim2.fromOffset(44, 44), function()
+	local function shut()
 		w.Visible = false
 		if onClose then
 			onClose()
 		end
-	end, Ui.Colour.Bad)
+	end
+	local close = Ui.button(w, "Close", "X", UDim2.fromOffset(44, 44), shut, Ui.Colour.Bad)
 	close.Position = UDim2.new(1, -52, 0, 8)
+	-- The gamepad (§11): its first button selected when it opens, ButtonB does what the cross does.
+	Controls.panel(w, shut, close)
 	-- `scroll`: the body scrolls when its rows outgrow it (a list of fixed-height
 	-- rows; a body whose children are sized by scale keeps a plain frame).
 	local body: Frame = if scroll
