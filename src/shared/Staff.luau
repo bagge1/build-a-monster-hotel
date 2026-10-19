@@ -40,7 +40,8 @@ function Staff.post(role: string, slot: number, point: (name: string) -> CFrame?
 	elseif role == "Bellhop" then
 		return near("Entrance", Vector3.new(4 + spread, 0, -1.5))
 	elseif role == "Security" then
-		return near("SignBoard", Vector3.new(6 + spread, 0, -2))
+		-- Inside the entrance, across from the Bellhop (the sign left the lobby for the forecourt).
+		return near("Entrance", Vector3.new(-4 - spread, 0, -1.5))
 	elseif role == "Entertainment" then
 		return near("Spawn", Vector3.new(-4 - spread, 0, -1))
 	elseif role == "RoomService" then

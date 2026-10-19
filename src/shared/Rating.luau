@@ -43,7 +43,9 @@ function Rating.categories(i: Inputs): Categories
 		tierMean += t
 	end
 	tierMean = if #i.roomTiers > 0 then tierMean / #i.roomTiers else 0
-	local comfort = math.min(100, tierMean * R.ComfortPerTier) * 0.6 + 40 * i.prefsShare
+	-- The top tier is full marks (T1 of T5 was 20 before tiers came from furnishing, §5.4).
+	local comfort = math.min(100, tierMean / Constants.Economy.MaxTier * 100) * 0.6
+		+ 40 * i.prefsShare
 	-- A hotel nobody has stayed in has earned no Service and no Cleanliness yet.
 	local service = if i.checkIns > 0
 		then math.clamp(100 - i.meanWait * R.ServiceWaitPerPoint, 0, 100) * 0.6 + 40 * i.requestShare

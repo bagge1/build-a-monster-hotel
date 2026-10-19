@@ -1,8 +1,9 @@
 """Haunted Manor (Location 1): the hotel kit's first set, a draft for August's review.
 
-The 8 rooms and 5 amenities of GDD §5.2 and Pieces.luau, the Lobby, the stair
-core (StairCore, and StairCoreTop with its rail), the HotelSign and the 15
-Location 1 decor pieces, each authored on tools/hotel_kit.py in the frames
+The 8 rooms and 5 amenities of GDD §5.2 and Pieces.luau, the Lobby (a shell),
+the FrontDesk, the stair core (StairCore, and StairCoreTop with its rail), the
+HotelSign, the RoomPlaque and the 20 Location 1 decor pieces (the last five
+the old lobby's bench, planter and carpet), each authored on tools/hotel_kit.py in the frames
 and with the attachments of the Luau blockout (src/server/HotelKit.luau), so
 a delivered model replaces geometry and nothing else (CLAUDE.md).
 
@@ -30,7 +31,8 @@ ROOMS = [  # id, w, d (Pieces.luau)
 AMENITIES = ['SnackBar', 'MusicRoom', 'GraveyardGarden', 'QuietLibrary', 'OrganHall']
 DECOR = ['PuddleRug', 'SnackBasket', 'RecordPlayer', 'Candles', 'Planter', 'AntiqueWardrobe',
          'BlackoutCurtains', 'SandTray', 'CatBasket', 'Cauldron', 'SteakPlatter', 'MoonWindow',
-         'PipeOrgan', 'SoundproofWalls', 'Chandelier']
+         'PipeOrgan', 'SoundproofWalls', 'Chandelier',
+         'Bench', 'UrnPlanter', 'RugRunner', 'RugCorner', 'RugSquare']   # the last five: the old lobby's
 
 
 # --- Shared furniture ------------------------------------------------------------------------
@@ -504,53 +506,21 @@ def organ_hall():
 # --- Lobby, stairs, sign -------------------------------------------------------------------------
 
 def lobby():
-    import math
+    """The shell (MODELS.md, "Lobby", his ruling 2026-10-19, GDD 5.4): the front wall round the arch, its
+    lantern and sconces, and the tiled Floor; the desk, the benches, the planters and the carpet are
+    pieces the player places now (FrontDesk, Decor_Bench, Decor_UrnPlanter, the rugs)."""
     begin('Lobby', 'Lobby', (LOBBY_W, 0.2, LOBBY_D), root_centre=(0, 0.1, LOBBY_D / 2))
-    declare('Rug', False)       # the blockout's Rug does not collide either
+    declare('Floor', False)     # as the blockout's: people walk on the plot's slab under it
     # The floor: the whole lobby to its edges (the plot's ground showed at the threshold and the ends),
     # in 6-stud tiles (a cell's 12 read as patchy light, not a checkerboard: blind review 2026-10-19).
     tile = CELL / 2
     for i in range(int(LOBBY_W // tile)):
         for j in range(int(LOBBY_D // tile)):
             x0, z0 = -LOBBY_W / 2 + i * tile, j * tile
-            span('Rug', (x0, 0, z0), (x0 + tile, 0.1, z0 + tile), 'plum' if (i + j) % 2 else 'plum_dark')
-    # A carpet from the door into the lobby, and on along the queue to the desk.
-    qz = K.blockout_attachments('Lobby')['Desk'][0][2]
-    dx = K.LOBBY_COUNTER_TOP[1][0] + 0.3
-    span('Rug', (-2.2, 0.1, 0.8), (2.2, 0.13, qz + 1.5), 'gold')
-    # The far end stops 0.3 short, so its border runs on round the turn toward the desk
-    # (the end was bare red past the turn's edge: his report, 2026-10-19).
-    span('Rug', (-1.9, 0.13, 0.8), (1.9, 0.15, qz + 1.2), 'crimson')
-    span('Rug', (dx, 0.1, qz - 1.5), (-2.2, 0.13, qz + 1.5), 'gold')
-    span('Rug', (dx + 0.3, 0.13, qz - 1.2), (-1.9, 0.15, qz + 1.2), 'crimson')
+            span('Floor', (x0, 0, z0), (x0 + tile, K.LOBBY_FLOOR_TOP, z0 + tile), 'plum' if (i + j) % 2 else 'plum_dark')
     # The front wall round the arch (MODELS.md, "Lobby"), the hotel's outside colour to the street.
     K.lobby_front_wall(outside='plum', paper='lilac', wainscot='plum_dark', crown='gold',
                        plinth='stone_dark', frame='wood_dark', sill='gold')
-    # The front desk across the -X end, served toward +X (the entrance).
-    (lo, hi), (tlo, thi) = K.LOBBY_COUNTER, K.LOBBY_COUNTER_TOP
-    span('Desk', lo, hi, 'wood_dark', bevel=0.1)
-    zc = (lo[2] + hi[2]) / 2
-    for z in (zc - 3.6, zc - 1.8, zc, zc + 1.8, zc + 3.6):
-        span('Desk', (hi[0] - 0.1, 0.5, z - 0.75), (hi[0] + 0.13, 3.0, z + 0.75), 'violet', bevel=0.06)
-        sphere('Desk', (hi[0] + 0.14, 1.75, z), (0.06, 0.35, 0.35), 'gold', n=8, rings=4)
-    span('Desk', tlo, thi, 'gold', bevel=0.05)
-    K.lobby_bell('Desk', hi[0] - 0.4, thi[1], qz, 'gold')   # at the check-in prompt
-    span('Desk', (hi[0] - 1.3, 3.8, qz + 0.8), (hi[0] - 0.4, 3.95, qz + 1.8), 'crimson', bevel=0.03)
-    K.lobby_till(body='wood_dark', keys='pumpkin', drawer='gold', screen='bone')
-    # The desk lamp on the counter's near end.
-    K.lobby_lamp('gold', 'teal')
-    # The key rack against the end, behind the clerk.
-    K.lobby_keyrack(cabinet='wood_dark', drawer='wood', knob='gold', board='plum_dark',
-                    tags=('gold', 'gold', 'pumpkin'), cornice='gold', face='bone', hands='black')
-    # The waiting area: benches with their backs to the front wall, pumpkin planters.
-    for k, (x0, x1) in enumerate(K.LOBBY_BENCHES):
-        K.lobby_bench(f'Bench_{k + 1}', x0, x1, frame='wood_dark', cushion='crimson', back='violet')
-    for k, (x, z) in enumerate(K.LOBBY_PLANTERS):
-        name = f'Planter_{k + 1}'
-        lathe(name, [(0.7, 0), (0.9, 0.2), (1.0, 1.4), (1.1, 1.6), (1.1, 1.8), (0.9, 1.8)], 'stone', n=8, base=(x, 0, z))
-        pumpkin(name, (x - 0.2, 2.25, z - 0.1), 0.6)
-        for a in range(4):
-            sphere(name, (x + 0.6 * math.cos(a * 1.6), 2.0, z + 0.6 * math.sin(a * 1.6)), (0.4, 0.15, 0.3), 'leaf', n=6, rings=3)
     # The front arch: pillars and a pointed top (opening 9 wide, 9 tall at its sides).
     for name, x in (('ArchLeft', -5), ('ArchRight', 5)):
         span(name, (x - 0.5, 0, 0), (x + 0.5, 0.6, 1), 'stone_dark', bevel=0.08)
@@ -576,11 +546,34 @@ def lobby():
             box('Dressing', (dx, 10.0, 1.5 + dz), (0.08, 1.3, 0.08), 'iron')
     sphere('Glow_Warm_1', (0, 10.0, 1.5), (0.3, 0.45, 0.3), 'lamp', n=8, rings=5)
     for n, x in enumerate(K.LOBBY_SCONCES):
-        K.lobby_sconce(x, 7.2, n + 3, 'gold', candle='bone')
+        K.lobby_sconce(x, 7.2, n + 2, 'gold', candle='bone')
     for aname, (pos, look) in K.blockout_attachments('Lobby').items():
         attach(aname, pos, look)
-    finish(note='an indoor reception: the front wall with windows round the arch, the desk across the end '
-                'with its key rack and clock, benches and pumpkin planters, the back row clear for the floor-1 doors')
+    finish(note='the lobby shell: the front wall with windows round the pointed arch, its lantern and sconces, '
+                'the plum tiled floor; everything else is placed by the player')
+
+
+def front_desk():
+    """The reception desk as a piece (MODELS.md, "Front desk"): the old lobby desk re-laid, served
+    toward -Z: the counter with violet panels and a gold top, the bell at the check-in prompt, the
+    ledger, the till on its +X end, the lamp on its -X end, the key rack and clock behind the clerk."""
+    begin('FrontDesk', 'Desk', (K.DESK_W, 0.2, K.DESK_D))
+    (lo, hi), (tlo, thi) = K.DESK_COUNTER, K.DESK_TOP
+    span('Counter', lo, hi, 'wood_dark', bevel=0.1)
+    for x in (-3.6, -1.8, 0.0, 1.8, 3.6):
+        span('Counter', (x - 0.75, 0.5, lo[2] - 0.13), (x + 0.75, 3.0, lo[2] + 0.1), 'violet', bevel=0.06)
+        sphere('Counter', (x, 1.75, lo[2] - 0.14), (0.35, 0.35, 0.06), 'gold', n=8, rings=4)
+    span('Counter', tlo, thi, 'gold', bevel=0.05)
+    K.desk_bell('Dressing', 0.0, thi[1], lo[2] + 0.4, 'gold')          # at the check-in prompt
+    span('Dressing', (0.8, thi[1], lo[2] + 0.4), (1.8, thi[1] + 0.15, lo[2] + 1.3), 'crimson', bevel=0.03)
+    K.desk_till(body='wood_dark', keys='pumpkin', drawer='gold', screen='bone')
+    K.desk_lamp('gold', 'teal')
+    K.desk_keyrack(cabinet='wood_dark', drawer='wood', knob='gold', board='plum_dark',
+                   tags=('gold', 'gold', 'pumpkin'), cornice='gold', face='bone', hands='black')
+    for aname, (pos, look) in K.blockout_attachments('Desk').items():
+        attach(aname, pos, look)
+    finish(note='the old lobby desk as a 2 x 1 piece: a dark counter with violet panels and a gold top, a bell, '
+                'a ledger, an antique till, a teal-shaded lamp, the key rack and clock behind the clerk')
 
 
 def stairs(top):
@@ -647,16 +640,50 @@ def hotel_sign():
     finish(note='posts and a 16 x 6 board for the SurfaceGui, a gable crest with a lit crescent moon and bats')
 
 
-# --- Decor (origin at the base centre, front -Z, at most 4 x 4 x 7) -------------------------------
+# --- Decor (MODELS.md, "Decor": origin at the base centre, front -Z, fw x fd squares of 3 studs) ----
+# The pieces built before the 3-stud grid are refitted (K.refit_decor: scaled down at most 0.4, shifted,
+# a Wall piece's back onto the wall), with no other change of look.
 
-def decor(id_, fw, fd):
-    begin(f'Decor_{id_}', 'Decor', (fw, 0.2, fd))
-    declare('Body', False)          # the blockout's Body does not collide
+decor = K.decor
+
+
+def d_bench():
+    decor('Bench', 3, 1, 'Floor')
+    K.decor_bench(7.0, frame='wood_dark', cushion='crimson', back='violet')
+    finish(note='the old lobby bench: dark wood, a crimson cushion, violet back rails, arms')
+
+
+def d_urn_planter():
+    import math
+    decor('UrnPlanter', 1, 1, 'Floor')
+    lathe('Body', [(0.7, 0), (0.9, 0.2), (1.0, 1.4), (1.1, 1.6), (1.1, 1.8), (0.9, 1.8)], 'stone', n=8)
+    pumpkin('Body', (-0.2, 2.25, -0.1), 0.6)
+    for a in range(4):
+        sphere('Body', (0.6 * math.cos(a * 1.6), 2.0, 0.6 * math.sin(a * 1.6)), (0.4, 0.15, 0.3), 'leaf', n=6, rings=3)
+    finish(note='the old lobby planter: a stone urn with a pumpkin among leaves')
+
+
+def d_rug_runner():
+    decor('RugRunner', 4, 2, 'Rug')
+    K.rug('runner', border='gold', field='crimson', pin='gold', motif='gold', motif_inner='crimson_dark')
+    finish(note='the old gold-and-crimson carpet as a 12 x 6 runner: gold borders on its long sides, its ends open')
+
+
+def d_rug_corner():
+    decor('RugCorner', 2, 2, 'Rug')
+    K.rug('corner', border='gold', field='crimson', pin='gold', motif='gold', motif_inner='crimson_dark')
+    finish(note='the runner\'s corner: bordered on +X and +Z, joining a runner from -X and one toward -Z')
+
+
+def d_rug_square():
+    decor('RugSquare', 4, 4, 'Rug')
+    K.rug('square', border='gold', field='crimson', pin='gold', motif='gold', motif_inner='crimson_dark')
+    finish(note='a 12 x 12 gold-bordered crimson rug with a medallion')
 
 
 def d_puddle_rug():
     import math
-    decor('PuddleRug', 3.6, 3.6)
+    decor('PuddleRug', 2, 2, 'Floor')
     rr = (1.7, 1.45, 1.75, 1.5, 1.65, 1.35, 1.7, 1.55, 1.6, 1.4)
     pts = [(rr[k] * math.cos(k * math.tau / 10), rr[k] * math.sin(k * math.tau / 10)) for k in range(10)]
     prism('Body', pts, 0, 0.06, 'sky', plane='xz')
@@ -665,11 +692,12 @@ def d_puddle_rug():
     sphere('Body', (-0.7, 0.35, 0.5), (0.3, 0.25, 0.35), 'amber', n=8, rings=4)
     sphere('Body', (-0.7, 0.72, 0.3), 0.19, 'amber', n=8, rings=4)
     box('Body', (-0.7, 0.68, 0.08), (0.14, 0.06, 0.16), 'pumpkin')
+    K.refit_decor()
     finish(note='a puddle-blue rug with ripples and a rubber duck')
 
 
 def d_snack_basket():
-    decor('SnackBasket', 2.2, 2.2)
+    decor('SnackBasket', 1, 1, 'Floor')
     lathe('Body', [(0.75, 0), (1.0, 0.8), (1.05, 0.9), (0.9, 0.9), (0.68, 0.15)], 'straw', n=10, closed=True)
     lathe('Body', [(0, 0.1), (0.75, 0.1), (0.85, 0.7), (0, 0.7)], 'wood_light', n=10)
     for k in range(5):
@@ -679,11 +707,12 @@ def d_snack_basket():
     for x, z, colr in ((-0.4, -0.2, 'pumpkin'), (0.35, 0.25, 'rose'), (0.1, -0.45, 'slime'), (-0.2, 0.45, 'amber')):
         sphere('Body', (x, 0.85, z), 0.26, colr, n=6, rings=4)
     cyl('Body', (0.45, 0.75, -0.35), 0.3, 0.12, 'honey', n=8)
+    K.refit_decor()
     finish(note='a wicker basket of candies and a cookie')
 
 
 def d_record_player():
-    decor('RecordPlayer', 2.4, 2.4)
+    decor('RecordPlayer', 1, 1, 'Floor')
     span('Body', (-0.9, 0, -0.8), (0.9, 2.0, 0.8), 'wood', bevel=0.1)
     span('Body', (-0.75, 0.25, -0.84), (0.75, 1.75, -0.78), 'wood_dark', bevel=0.04)
     box('Body', (0, 1.0, -0.86), (0.4, 0.1, 0.06), 'gold')
@@ -693,22 +722,24 @@ def d_record_player():
     box('Body', (0.6, 2.3, 0.0), (0.08, 0.08, 0.8), 'gold')
     lathe('Body', [(0.1, 0), (0.12, 0.5), (0.3, 1.2), (0.85, 1.75), (0.95, 1.8)], 'gold', n=10,
           m=K.Matrix.Translation((0.2, 2.15, 0.55)) @ K.Matrix.Rotation(K.math.radians(-30), 4, 'X'))
+    K.refit_decor()
     finish(note='a wooden cabinet gramophone with a gold flower horn')
 
 
 def d_candles():
-    decor('Candles', 2.0, 2.0)
+    decor('Candles', 1, 1, 'Floor')
     cyl('Body', (0, 0, 0), 0.9, 0.15, 'gold', n=10)
     for k, (x, z, h) in enumerate(((-0.35, 0.2, 1.4), (0.35, 0.25, 1.0), (0.0, -0.4, 0.7))):
         cyl('Body', (x, 0.15, z), 0.2, h, 'cream', n=8)
         sphere('Body', (x + 0.15, 0.15 + h - 0.15, z - 0.12), (0.06, 0.14, 0.06), 'cream', n=6, rings=3)
         sphere(f'Glow_Warm_{k + 1}', (x, 0.15 + h + 0.22, z), (0.11, 0.2, 0.11), 'flame', n=6, rings=4)
+    K.refit_decor()
     finish(note='three cream candles on a gold dish, each flame its own glow')
 
 
 def d_planter():
     import math
-    decor('Planter', 2.4, 2.4)
+    decor('Planter', 1, 1, 'Floor')
     lathe('Body', [(0.6, 0), (0.8, 0.15), (0.95, 1.2), (1.05, 1.3), (1.05, 1.5), (0.85, 1.5)], 'stone', n=10)
     lathe('Body', [(0, 1.3), (0.88, 1.3), (0.88, 1.4), (0, 1.4)], 'wood_dark', n=10)
     lathe('Body', [(0.96, 0.6), (0.99, 0.6), (0.99, 0.85), (0.96, 0.85)], 'teal', n=10)
@@ -720,11 +751,12 @@ def d_planter():
                m=None)
     sphere('Body', (0, 3.35, 0), (0.38, 0.45, 0.38), 'violet', n=8, rings=4)
     sphere('Body', (0, 3.85, 0), (0.12, 0.12, 0.12), 'lilac', n=6, rings=3)
+    K.refit_decor()
     finish(note='a stone pot with a teal band and a violet-budded spooky plant')
 
 
 def d_antique_wardrobe():
-    decor('AntiqueWardrobe', 3.4, 2.0)
+    decor('AntiqueWardrobe', 2, 1, 'Floor')
     for x in (-1.45, 1.45):
         for z in (-0.65, 0.65):
             lathe('Body', [(0.15, 0), (0.22, 0.2), (0.18, 0.4)], 'wood_dark', n=6, base=(x, 0, z))
@@ -738,12 +770,13 @@ def d_antique_wardrobe():
     prism('Body', [(-1.7, 5.9), (1.7, 5.9), (1.7, 6.1), (0.6, 6.45), (0, 6.6), (-0.6, 6.45), (-1.7, 6.1)], -0.9, 0.9,
           'wood_dark', plane='xy')
     sphere('Body', (0, 6.75, -0.4), 0.15, 'gold', n=6, rings=3)
+    K.refit_decor()
     finish(note='a tall carved wardrobe with a crown top and gold knobs')
 
 
 def d_blackout_curtains():
     import math
-    decor('BlackoutCurtains', 4.0, 1.0)
+    decor('BlackoutCurtains', 2, 1, 'Wall')
     for x in (-1.85, 1.85):
         span('Body', (x - 0.12, 0, -0.45), (x + 0.12, 0.12, 0.45), 'iron')
         cyl('Body', (x, 0.12, 0), 0.07, 6.3, 'iron', n=6)
@@ -757,11 +790,12 @@ def d_blackout_curtains():
         pts += [(x, 0.22) for x, _ in reversed(pts)]
         prism('Body', pts if sx > 0 else list(reversed(pts)), 0.25, 6.25, 'plum_deep', plane='xz')
         span('Body', (min(0, sx * 1.75), 3.1, -0.28), (max(0, sx * 1.75), 3.3, -0.14), 'gold')
+    K.refit_decor()
     finish(note='heavy plum curtains on an iron rod, closed, a gold tie across each')
 
 
 def d_sand_tray():
-    decor('SandTray', 3.0, 2.4)
+    decor('SandTray', 2, 1, 'Floor')
     for x in (-1.3, 1.3):
         for z in (-0.95, 0.95):
             cyl('Body', (x, 0, z), 0.12, 0.6, 'wood_dark', n=6)
@@ -772,12 +806,13 @@ def d_sand_tray():
     lathe('Body', [(0.45, 0.95), (0.0, 1.45)], 'honey', n=4, base=(0.5, 0, 0.2), phase=0.785)
     box('Body', (-0.6, 1.0, -0.2), (0.08, 0.06, 1.0), 'wood_dark')
     box('Body', (-0.6, 1.0, -0.72), (0.5, 0.06, 0.08), 'wood_dark')
+    K.refit_decor()
     finish(note='a wooden tray of raked sand with a little pyramid')
 
 
 def d_cat_basket():
     import math
-    decor('CatBasket', 2.6, 2.6)
+    decor('CatBasket', 1, 1, 'Floor')
     lathe('Body', [(0.95, 0), (1.25, 0.05), (1.25, 0.7), (1.1, 0.8), (1.0, 0.25)], 'pumpkin_dark', n=12, closed=True)
     lathe('Body', [(0, 0.05), (1.0, 0.05), (1.0, 0.45), (0, 0.5)], 'rose', n=12)
     sphere('Body', (0.1, 0.8, 0.15), (0.65, 0.38, 0.5), 'black', n=8, rings=5)
@@ -788,12 +823,13 @@ def d_cat_basket():
     for k in range(4):
         a = -0.6 + k * 0.6
         sphere('Body', (0.4 + 0.55 * math.cos(a), 0.62, -0.25 + 0.55 * math.sin(a)), 0.12, 'black', n=6, rings=3)
+    K.refit_decor()
     finish(note='a woven basket, a pink cushion and a sleeping black cat')
 
 
 def d_cauldron():
     import math
-    decor('Cauldron', 2.6, 2.6)
+    decor('Cauldron', 1, 1, 'Floor')
     for k in range(3):
         a = k * math.tau / 3 + 0.5
         cyl('Body', (0.85 * math.cos(a), 0, 0.85 * math.sin(a)), 0.13, 0.7, 'iron', n=6, r_top=0.16)
@@ -807,12 +843,13 @@ def d_cauldron():
     lathe('Glow_Magic_1', [(0, 1.84), (0.86, 1.84), (0.86, 1.92), (0, 1.96)], 'brew', n=12)
     for x, z, r in ((0.3, 0.2, 0.18), (-0.35, -0.1, 0.13), (0.0, -0.4, 0.1)):
         sphere('Glow_Magic_1', (x, 2.0 + r * 0.6, z), r, 'brew', n=6, rings=4)
+    K.refit_decor()
     finish(note='an iron cauldron on three legs over logs, a glowing green brew with bubbles')
 
 
 def d_steak_platter():
     import math
-    decor('SteakPlatter', 2.6, 2.6)
+    decor('SteakPlatter', 1, 1, 'Floor')
     lathe('Body', [(1.0, 0), (1.0, 0.15), (0.3, 0.3), (0.22, 2.2), (1.2, 2.35), (1.2, 2.5), (0, 2.5)], 'wood_dark', n=10)
     lathe('Body', [(0, 2.5), (0.95, 2.5), (1.0, 2.62), (0, 2.58)], 'white', n=12, scale=(1, 0.8))
     pts = [(0.7 * math.cos(a) * (1 + 0.12 * math.sin(3 * a)), 0.5 * math.sin(a)) for a in [k * math.tau / 10 for k in range(10)]]
@@ -820,11 +857,12 @@ def d_steak_platter():
     cyl('Body', (0, 0, 0), 0.08, 0.9, 'bone', n=6, m=K.Matrix.Translation((0.2, 2.85, -0.2)) @ K.Matrix.Rotation(K.math.radians(-80), 4, 'Z'))
     sphere('Body', (1.08, 3.0, -0.2), 0.13, 'bone', n=6, rings=3)
     sphere('Body', (-0.5, 2.9, 0.35), (0.22, 0.06, 0.12), 'leaf', n=6, rings=3)
+    K.refit_decor()
     finish(note='a steak with its bone on a white platter, on a pedestal table')
 
 
 def d_moon_window():
-    decor('MoonWindow', 3.4, 1.0)
+    decor('MoonWindow', 2, 1, 'Wall')
     for x in (-1.3, 1.3):
         span('Body', (x - 0.3, 0, -0.45), (x + 0.3, 0.2, 0.45), 'wood_dark', bevel=0.04)
     span('Body', (-1.6, 0.2, -0.25), (1.6, 0.6, 0.25), 'wood_dark', bevel=0.05)
@@ -839,11 +877,12 @@ def d_moon_window():
     prism('Glow_Cold_1', moon, -0.1, -0.05, 'moonglow', plane='xy')
     span('Body', (-0.06, 0.6, -0.14), (0.06, 6.0, 0.06), 'wood_dark')
     span('Body', (-1.2, 3.0, -0.14), (1.2, 3.12, 0.06), 'wood_dark')
+    K.refit_decor()
     finish(note='a freestanding gothic window, a full moon glowing in the night pane')
 
 
 def d_pipe_organ():
-    decor('PipeOrgan', 3.8, 3.4)
+    decor('PipeOrgan', 2, 2, 'Wall')
     span('Body', (-1.8, 0, -0.6), (1.8, 2.6, 0.6), 'wood_dark', bevel=0.1)
     span('Body', (-1.6, 2.2, -0.75), (1.6, 2.45, -0.15), 'white', bevel=0.03)
     span('Body', (-1.8, 2.6, -0.2), (1.8, 3.4, 0.6), 'wood_dark', bevel=0.08)
@@ -853,12 +892,13 @@ def d_pipe_organ():
         lathe('Body', [(0.22, h), (0, h + 0.3)], 'gold', n=8, base=(x, 0, 1.05))
         box('Body', (x, 3.9, 0.82), (0.2, 0.3, 0.04), 'black')
     span('Body', (-1.2, 0, -1.6), (1.2, 1.3, -1.0), 'wood', bevel=0.06)
+    K.refit_decor()
     finish(note='a small pipe organ: seven gold pipes over a dark console and its bench')
 
 
 def d_soundproof_walls():
     import math
-    decor('SoundproofWalls', 4.0, 1.6)
+    decor('SoundproofWalls', 2, 1, 'Wall')
     for k, (x, ang) in enumerate(((-1.3, 20), (0, -20), (1.3, 20))):
         m = K.Matrix.Translation((x, 0, 0)) @ K.Matrix.Rotation(K.math.radians(ang), 4, 'Y')
         box('Body', (0, 3.2, 0), (1.3, 6.0, 0.25), 'plum_dark', bevel=0.06, m=m)
@@ -866,12 +906,13 @@ def d_soundproof_walls():
         for i in range(2):
             for j in range(3):
                 box('Body', (-0.3 + i * 0.6, 1.4 + j * 1.8, -0.16), (0.52, 1.7, 0.12), 'violet', bevel=0.05, m=m)
+    K.refit_decor()
     finish(note='a three-panel folding screen of quilted violet pads')
 
 
 def d_chandelier():
     import math
-    decor('Chandelier', 3.0, 3.0)
+    decor('Chandelier', 1, 1, 'Floor')
     for k in range(3):
         a = k * math.tau / 3
         box('Body', (0, 0, 0), (1.2, 0.2, 0.2), 'iron',
@@ -890,6 +931,7 @@ def d_chandelier():
         a = k * math.tau / 5
         box('Body', (0.57 * math.cos(a), 5.69, 0.57 * math.sin(a)), (0.1, 0.06, 0.1), 'gold')
     sphere('Body', (0, 6.0, 0), (0.2, 0.25, 0.2), 'gold', n=6, rings=4)
+    K.refit_decor()
     finish(note='a standing iron chandelier: a gold ring of five candles and crystal drops')
 
 
@@ -913,7 +955,8 @@ DECOR_BUILD = {
     'Planter': d_planter, 'AntiqueWardrobe': d_antique_wardrobe, 'BlackoutCurtains': d_blackout_curtains,
     'SandTray': d_sand_tray, 'CatBasket': d_cat_basket, 'Cauldron': d_cauldron, 'SteakPlatter': d_steak_platter,
     'MoonWindow': d_moon_window, 'PipeOrgan': d_pipe_organ, 'SoundproofWalls': d_soundproof_walls,
-    'Chandelier': d_chandelier,
+    'Chandelier': d_chandelier, 'Bench': d_bench, 'UrnPlanter': d_urn_planter, 'RugRunner': d_rug_runner,
+    'RugCorner': d_rug_corner, 'RugSquare': d_rug_square,
 }
 ROOM_BUILD = {'StandardRoom': standard_room, 'GardenRoom': garden_room, 'AtticRoom': attic_room,
               'SarcophagusSuite': sarcophagus_suite, 'PotionLoft': potion_loft, 'DenRoom': den_room,
@@ -924,7 +967,8 @@ AMENITY_BUILD = {'SnackBar': snack_bar, 'MusicRoom': music_room, 'GraveyardGarde
 
 def main():
     K.start_set(SET)
-    order = ([('StandardRoom', standard_room), ('Lobby', lobby), ('StairCore', lambda: stairs(False)),
+    order = ([('StandardRoom', standard_room), ('Lobby', lobby), ('FrontDesk', front_desk),
+              ('StairCore', lambda: stairs(False)),
               ('StairCoreTop', lambda: stairs(True)), ('HotelSign', hotel_sign), ('RoomPlaque', room_plaque)]
              + [(n, f) for n, f in ROOM_BUILD.items() if n != 'StandardRoom']
              + list(AMENITY_BUILD.items())
@@ -938,7 +982,7 @@ def main():
         except K.Refused as e:
             print(str(e), flush=True)
             refused.append(name)
-    rows = [(['Lobby', 'HotelSign'], 8, 1.0),
+    rows = [(['Lobby', 'FrontDesk', 'HotelSign'], 8, 1.0),
             ([n for n, _, _ in ROOMS], 5, 1.0),
             (list(AMENITY_BUILD) + ['StairCore', 'StairCoreTop'], 5, 1.0),
             ([f'Decor_{n}' for n in DECOR] + ['RoomPlaque'], 2.5, 2.0)]

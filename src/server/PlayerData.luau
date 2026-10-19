@@ -8,7 +8,8 @@
 	(`lm-loleris/profilestore`, the author's own package, `wally.toml`).
 
 	WHAT IT HOLDS (§13.3): currencies; the layout (piece ids, plot-relative
-	cells, rotations, tiers, decor); residents (species, mutation, role);
+	cells, rotations, what each cost, floor finishes), the decor on its
+	squares, the areas owned; residents (species, mutation, role);
 	friendship; the Monster Book; the Moon Tree; reviews; the tutorial; daily
 	and login state; codes; passes; boosts; settings; and the processed
 	PurchaseIds, so a receipt is never granted twice.
@@ -46,7 +47,7 @@ local PlayerData = {}
 --[[ Bump only when the shape changes in a way old data cannot satisfy, and add
 	the step to `migrate` in the same commit. The game is not live (CLAUDE.md),
 	so until it is, a shape change may simply start everyone over. ]]
-local SCHEMA_VERSION = 1
+local SCHEMA_VERSION = 2
 
 export type PieceRecord = {
 	item: string,
@@ -54,8 +55,18 @@ export type PieceRecord = {
 	x: number,
 	z: number,
 	r: number,
-	tier: number,
-	decor: { string },
+	paid: number, -- what it cost, for the refund
+	finish: string?, -- a room's floor finish (Pieces.Finishes), "" or nil for the model's own
+}
+-- Decor (§5.4): squares of 3 studs on the plot, and the room it stands in ("" on hallway floor).
+export type DecorRecord = {
+	item: string,
+	floor: number,
+	x: number,
+	z: number,
+	r: number,
+	room: string,
+	paid: number,
 }
 export type ResidentRecord = { species: string, mutation: string, role: string, campUntil: number }
 export type Data = {
@@ -72,7 +83,11 @@ export type Data = {
 	moonTree: { [string]: number },
 	floors: number,
 	layout: { [string]: PieceRecord },
-	nextId: number,
+	decor: { [string]: DecorRecord },
+	areas: { [string]: boolean }, -- owned areas of the plot, by index (§5.4)
+	finishes: { [string]: string }, -- "Lobby", "Hallway" -> a finish id ("" the model's own)
+	freeStairs: number, -- stairs owed for floors bought (§5.4: a new floor's first stair is free)
+	nextId: number, -- pieces and decor share it
 	unlocked: { [string]: boolean }, -- room types unlocked, kept through rebirth (§6.4)
 	residents: { [string]: ResidentRecord },
 	nextResident: number,
@@ -115,6 +130,10 @@ local TEMPLATE: Data = {
 	moonTree = {},
 	floors = 1,
 	layout = {},
+	decor = {},
+	areas = { [tostring(Constants.Grid.StartArea)] = true },
+	finishes = { Lobby = "", Hallway = "" },
+	freeStairs = 0,
 	nextId = 1,
 	unlocked = {},
 	residents = {},
@@ -155,10 +174,45 @@ local statCallbacks: { (Player, string) -> () } = {}
 local keys: { [Player]: string } = {}
 local settled: { [Player]: boolean } = {}
 
+-- Exactly one front desk (§5.4): a hotel without one gets it at the lobby's end.
+local function ensureDesk(data: Data)
+	local hasDesk = false
+	for _, rec in data.layout do
+		if rec.item == "FrontDesk" then
+			hasDesk = true
+		end
+	end
+	if not hasDesk then
+		local at = Constants.Grid.DeskStart
+		data.layout[tostring(data.nextId)] =
+			{ item = "FrontDesk", floor = 1, x = at.x, z = at.z, r = at.r, paid = 0 }
+		data.nextId += 1
+	end
+end
+
+--[[ A new hotel (§5.4): the start area, one floor, the desk at the lobby's
+	end and nothing else. A rebirth (§6.4) and the free-building schema step
+	start from here. ]]
+function PlayerData.resetHotel(data: Data)
+	data.layout = {}
+	data.decor = {}
+	data.areas = { [tostring(Constants.Grid.StartArea)] = true }
+	data.finishes = { Lobby = "", Hallway = "" }
+	data.floors = 1
+	data.freeStairs = 0
+	ensureDesk(data)
+end
+
 local function migrate(data: Data)
 	if typeof(data.version) ~= "number" then
 		data.version = SCHEMA_VERSION
 	end
+	if data.version < 2 then
+		-- Free building (§5.4): the hotel is built again from the start area;
+		-- the rest of the save stays. The game is not live (CLAUDE.md).
+		PlayerData.resetHotel(data)
+	end
+	ensureDesk(data)
 	data.version = SCHEMA_VERSION
 end
 

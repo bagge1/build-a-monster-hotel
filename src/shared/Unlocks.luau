@@ -30,7 +30,7 @@ function Unlocks.met(id: string, c: Context): (boolean, string?)
 	if not piece then
 		return false, "Unknown"
 	end
-	if piece.location ~= c.location then
+	if piece.location ~= 0 and piece.location ~= c.location then
 		return false, "Location"
 	end
 	local u = piece.unlock

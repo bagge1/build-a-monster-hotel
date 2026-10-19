@@ -122,6 +122,7 @@ end
 	pieces apart round the door; the door opening 4 wide and 7 tall. ]]
 local function blockoutPiece(id: string): Model
 	local piece = assert(Pieces.get(id), id)
+	assert(piece.kind == "Room" or piece.kind == "Amenity", `{id} has no room blockout`)
 	local W, D = piece.w * CELL, piece.d * CELL
 	local model, root = shell(id, Vector3.new(W, 0.2, D), Vector3.new(0, 0.1, 0))
 	local colour = piece.colour
@@ -221,15 +222,63 @@ local function blockoutPiece(id: string): Model
 
 	attach(root, "Door", Vector3.new(doorX, 0, -D / 2), Vector3.new(0, 0, -1))
 	attach(root, "Sign", Vector3.new(doorX, doorH + 1.2, -D / 2 - 0.3), Vector3.new(0, 0, -1))
-	attach(root, "Decor_1", Vector3.new(-W / 2 + 2, 0, D / 2 - 2), Vector3.new(1, 0, -1))
-	attach(root, "Decor_2", Vector3.new(W / 2 - 2, 0, D / 2 - 2), Vector3.new(-1, 0, -1))
-	attach(root, "Decor_3", Vector3.new(-W / 2 + 2, 0, 0), Vector3.new(1, 0, 0))
 	lamp(model, 1, Vector3.new(0, WALL - 1, D / 2 - 1), Color3.fromRGB(255, 200, 140))
 	return model
 end
 
+--[[ The front desk (MODELS.md, "Front desk"): 24 × 12, served toward −Z, the
+	counter's top at 3.8, the clerk behind it, the key rack at the back. ]]
+local function blockoutDesk(location: number): Model
+	local loc = Locations.get(location)
+	local model, root = shell("FrontDesk", Vector3.new(24, 0.2, 12), Vector3.new(0, 0.1, 0))
+	part(
+		model,
+		"Counter",
+		Vector3.new(9, 3.5, 1.8),
+		Vector3.new(0, 1.75, -3.1),
+		{ Color = Color3.fromRGB(110, 70, 50) }
+	)
+	part(
+		model,
+		"Counter",
+		Vector3.new(9.4, 0.3, 2.3),
+		Vector3.new(0, 3.65, -3.05),
+		{ Color = loc.trim }
+	)
+	part(
+		model,
+		"Till",
+		Vector3.new(1.2, 1.1, 1.2),
+		Vector3.new(3.4, 4.35, -3.1),
+		{ Color = Color3.fromRGB(230, 200, 90) }
+	)
+	part(
+		model,
+		"KeyRack",
+		Vector3.new(5.2, 9.5, 0.85),
+		Vector3.new(0, 4.75, 5.575),
+		{ Color = Color3.fromRGB(80, 55, 40) }
+	)
+	lamp(model, 1, Vector3.new(-3.8, 4.6, -3.1), Color3.fromRGB(255, 190, 120))
+	attach(root, "Desk", Vector3.new(0, 3.8, -4.2), Vector3.new(0, 0, -1))
+	attach(root, "Till", Vector3.new(3.4, 3.8, -4.2), Vector3.new(0, 0, -1))
+	attach(root, "Clerk", Vector3.new(0, 0, 1.5), Vector3.new(0, 0, -1))
+	for i = 1, 4 do
+		attach(root, `Queue_{i}`, Vector3.new(0, 0, -5 - 3 * i), Vector3.new(0, 0, 1))
+	end
+	return model
+end
+
+-- A piece of the layout (Pieces): a room, an amenity or the front desk. Stairs are `HotelKit.stairs`.
 function HotelKit.piece(id: string, location: number): Model
-	return template(location, id) or blockoutPiece(id)
+	local found = template(location, id)
+	if found then
+		return found
+	end
+	if id == "FrontDesk" then
+		return blockoutDesk(location)
+	end
+	return blockoutPiece(id)
 end
 
 --[[ The wooden plaque over a room's door (MODELS.md, "Room plaque"), or nil
@@ -251,31 +300,47 @@ function HotelKit.plaque(location: number): Model?
 	return m
 end
 
--- A decor piece (MODELS.md, "Decor"): origin at the centre of its base.
+--[[ A decor piece (MODELS.md, "Decor"): origin at the centre of its
+	footprint's base, front toward −Z; the blockout fills the footprint less
+	the 0.4 inset, a rug to its edges and flat, a wall piece against the back. ]]
 function HotelKit.decor(id: string, location: number): Model
 	local found = template(location, `Decor_{id}`)
 	if found then
 		return found
 	end
 	local d = assert(Pieces.decor(id), id)
-	local model, _ = shell(`Decor_{id}`, Vector3.new(2.5, 0.2, 2.5), Vector3.new(0, 0.1, 0))
-	part(
-		model,
-		"Body",
-		Vector3.new(2.5, 2.5, 2.5),
-		Vector3.new(0, 1.25, 0),
-		{ Color = d.colour, CanCollide = false }
-	)
+	local S = CELL / G.Squares
+	local W, D = d.w * S, d.d * S
+	local model, _ = shell(`Decor_{id}`, Vector3.new(W, 0.2, D), Vector3.new(0, 0.1, 0))
+	local props = { Color = d.colour, CanCollide = false }
+	if d.layer == "Rug" then
+		part(model, "Body", Vector3.new(W, 0.1, D), Vector3.new(0, 0.05, 0), props)
+	elseif d.layer == "Wall" then
+		local depth = math.min(0.8, D - 0.8)
+		part(
+			model,
+			"Body",
+			Vector3.new(W - 0.8, d.height, depth),
+			Vector3.new(0, d.height / 2, D / 2 - 0.4 - depth / 2),
+			props
+		)
+	else
+		part(
+			model,
+			"Body",
+			Vector3.new(W - 0.8, d.height, D - 0.8),
+			Vector3.new(0, d.height / 2, 0),
+			props
+		)
+	end
 	return model
 end
 
---[[ The lobby (MODELS.md, "Lobby"): the front two rows of floor 1, 144 × 24
-	studs, origin at the middle of its front edge, the street toward −Z. An
-	indoor reception (his pick, 2026-10-19, at the doubled scale of the same
-	evening): a front wall up to the slab round the entrance arch, the desk
-	across the −X end served toward +X, the back row (z 12–24) clear for the
-	floor-1 doors, benches in the front row on the stair side. The arch, the
-	counter and the benches are a person's size, not the grid's. ]]
+--[[ The lobby (MODELS.md, "Lobby: the shell"): the front two rows of floor
+	1, 144 × 24 studs, origin at the middle of its front edge, the street
+	toward −Z. A shell (his ruling, 2026-10-19, GDD §5.4): its floor, the
+	front wall up to the slab round the entrance arch, and lamps. The desk,
+	the benches, the planters and the carpet are pieces the player places. ]]
 function HotelKit.lobby(location: number): Model
 	local found = template(location, "Lobby")
 	if found then
@@ -286,10 +351,10 @@ function HotelKit.lobby(location: number): Model
 	local model, root = shell("Lobby", Vector3.new(L, 0.2, Dp), Vector3.new(0, 0.1, Dp / 2))
 	part(
 		model,
-		"Rug",
-		Vector3.new(L, 0.1, Dp),
-		Vector3.new(0, 0.05, Dp / 2),
-		{ Color = darker(loc.facade, 0.8), CanCollide = false }
+		"Floor",
+		Vector3.new(L, 0.1, Dp - 0.8),
+		Vector3.new(0, 0, (Dp + 0.8) / 2),
+		{ Color = darker(loc.facade, 0.8) }
 	)
 	-- The front wall up to the slab, two pieces apart round the arch (each exactly the kit's box).
 	local wallColour = darker(loc.facade, 0.85)
@@ -313,58 +378,28 @@ function HotelKit.lobby(location: number): Model
 		Vector3.new(0, (9 + top) / 2, 0.5),
 		{ Color = loc.trim }
 	)
-	-- The desk: the counter x −63..−61.2, z 1.5..10.5, its top 3.8; the till on its far end.
-	part(
-		model,
-		"Desk",
-		Vector3.new(1.8, 3.5, 9),
-		Vector3.new(-62.1, 1.75, 6),
-		{ Color = Color3.fromRGB(110, 70, 50) }
-	)
-	part(
-		model,
-		"DeskTop",
-		Vector3.new(2.3, 0.3, 9.4),
-		Vector3.new(-62.05, 3.65, 6),
-		{ Color = loc.trim }
-	)
-	part(
-		model,
-		"Till",
-		Vector3.new(1.2, 1.1, 1.2),
-		Vector3.new(-62, 4.35, 8.5),
-		{ Color = Color3.fromRGB(230, 200, 90) }
-	)
-	-- The key rack against the −X end, behind the clerk.
-	part(
-		model,
-		"KeyRack",
-		Vector3.new(0.8, 9.6, 5.2),
-		Vector3.new(-71.6, 4.8, 6),
-		{ Color = Color3.fromRGB(80, 55, 40) }
-	)
-	-- Benches in the front row on the stair side, their backs to the wall.
-	for i, span in { { 25.6, 32.4 }, { 40, 47 }, { 50, 57 } } do
-		part(
-			model,
-			`Bench_{i}`,
-			Vector3.new(span[2] - span[1], 1.8, 1.9),
-			Vector3.new((span[1] + span[2]) / 2, 0.9, 1.95),
-			{ Color = Color3.fromRGB(90, 60, 45) }
-		)
-	end
 	lamp(model, 1, Vector3.new(0, 8.5, 1.5), Color3.fromRGB(255, 190, 120))
-	lamp(model, 2, Vector3.new(-62.3, 6, 2.3), Color3.fromRGB(255, 190, 120))
-
 	attach(root, "Entrance", Vector3.new(0, 0, 0), Vector3.new(0, 0, -1))
-	attach(root, "Desk", Vector3.new(-60.8, 3.8, 5), Vector3.new(1, 0, 0))
-	attach(root, "Clerk", Vector3.new(-66, 0, 6), Vector3.new(1, 0, 0))
-	for i, x in { -58, -54.5, -51, -47.5 } do
-		attach(root, `Queue_{i}`, Vector3.new(x, 0, 5), Vector3.new(-1, 0, 0))
-	end
-	attach(root, "Till", Vector3.new(-60.8, 3.8, 9.4), Vector3.new(1, 0, 0))
 	attach(root, "Spawn", Vector3.new(8, 0, 18), Vector3.new(0, 0, -1))
 	return model
+end
+
+--[[ A plate over an area of the plot not yet bought (§5.4), w × d studs,
+	its top a hair over the floor: the hotel's but closed. Centred at its
+	origin. ]]
+function HotelKit.areaPlate(location: number, w: number, d: number): Part
+	local loc = Locations.get(location)
+	local p = Instance.new("Part")
+	p.Name = "AreaPlate"
+	p.Anchored = true
+	p.CanCollide = false
+	p.CanQuery = false
+	p.CanTouch = false
+	p.CastShadow = false
+	p.Size = Vector3.new(w - 0.4, 0.1, d - 0.4)
+	p.Material = Enum.Material.Fabric
+	p.Color = darker(loc.facade, 0.35)
+	return p
 end
 
 --[[ One storey of the stair core (MODELS.md, "Stair core"), from a floor to
@@ -379,7 +414,7 @@ function HotelKit.stairs(location: number, top: boolean): Model
 		return found
 	end
 	local loc = Locations.get(location)
-	local S = G.StairCore.w * CELL -- 24
+	local S = 2 * CELL -- 24: a 2 × 2 piece (Pieces "Stairs")
 	local model, root = shell("StairCore", Vector3.new(S, 0.2, S), Vector3.new(0, 0.1, 0))
 	local stepColour = darker(loc.facade, 1.1)
 	local wallColour = darker(loc.facade, 0.7)
@@ -472,42 +507,90 @@ function HotelKit.stairs(location: number, top: boolean): Model
 	return model
 end
 
---[[ A floor above the first: a slab over the whole grid but the stairwell,
-	railings round its edge, and corner posts. Plot-local, as a Folder. ]]
-function HotelKit.slab(location: number, floor: number): Folder
+export type Hole = { x0: number, z0: number, x1: number, z1: number }
+
+--[[ A floor above the first: a slab over the whole grid but its stairwells
+	(`holes`, plot-local studs: each stair's footprint less the 1-stud lip at
+	its front, MODELS.md "Stairs"), railings round its edge, and corner posts.
+	Plot-local, as a Folder. ]]
+function HotelKit.slab(location: number, floor: number, holes: { Hole }): Folder
 	local loc = Locations.get(location)
 	local folder = Instance.new("Folder")
 	folder.Name = `Slab_{floor}`
 	local P = G.Cells * CELL
 	local y = (floor - 1) * FLOOR
 	local th = G.SlabThickness
-	local sc = G.StairCore
-	local hx0, hx1 = sc.x * CELL, (sc.x + sc.w) * CELL
-	local hz0, hz1 = sc.z * CELL + 1, (sc.z + sc.d) * CELL
 	local colour = darker(loc.facade, 0.9)
-	local function slabPart(name: string, x0: number, x1: number, z0: number, z1: number)
-		if x1 > x0 and z1 > z0 then
-			part(
-				folder,
-				name,
-				Vector3.new(x1 - x0, th, z1 - z0),
-				Vector3.new((x0 + x1) / 2, y + th / 2, (z0 + z1) / 2),
-				{ Color = colour }
-			)
+	-- The slab as strips: cut the plot at every hole's edges and lay each row's runs.
+	local xs, zs = { 0, P }, { 0, P }
+	for _, h in holes do
+		table.insert(xs, h.x0)
+		table.insert(xs, h.x1)
+		table.insert(zs, h.z0)
+		table.insert(zs, h.z1)
+	end
+	table.sort(xs)
+	table.sort(zs)
+	local function inHole(x: number, z: number): boolean
+		for _, h in holes do
+			if x > h.x0 and x < h.x1 and z > h.z0 and z < h.z1 then
+				return true
+			end
+		end
+		return false
+	end
+	for j = 1, #zs - 1 do
+		local z0, z1 = zs[j], zs[j + 1]
+		if z1 - z0 > 0.01 then
+			local runStart: number? = nil
+			for i = 1, #xs - 1 do
+				local x0, x1 = xs[i], xs[i + 1]
+				if x1 - x0 > 0.01 then
+					local solid = not inHole((x0 + x1) / 2, (z0 + z1) / 2)
+					if solid and runStart == nil then
+						runStart = x0
+					elseif not solid and runStart ~= nil then
+						local a = runStart :: number
+						part(
+							folder,
+							"Slab",
+							Vector3.new(x0 - a, th, z1 - z0),
+							Vector3.new((a + x0) / 2, y + th / 2, (z0 + z1) / 2),
+							{ Color = colour }
+						)
+						runStart = nil
+					end
+				end
+			end
+			if runStart ~= nil then
+				local a = runStart :: number
+				part(
+					folder,
+					"Slab",
+					Vector3.new(P - a, th, z1 - z0),
+					Vector3.new((a + P) / 2, y + th / 2, (z0 + z1) / 2),
+					{ Color = colour }
+				)
+			end
 		end
 	end
-	slabPart("Slab_A", 0, hx0, 0, P)
-	slabPart("Slab_B", hx0, hx1, 0, hz0)
-	slabPart("Slab_C", hx0, hx1, hz1, P)
-	slabPart("Slab_D", hx1, P, 0, P)
-	-- Railings round the edge, 3.5 studs (against the 5-stud person).
+	-- Railings round the edge, 3.5 studs (against the 5-stud person). Where a
+	-- stairwell meets the edge the rail stops: the stair's own walls rise
+	-- there, and a rail in the same plane flickered against them (his report,
+	-- 2026-10-19).
 	local rh, rt = 3.5, 0.4
 	local top = y + th
-	-- Along an edge the stair core touches, the rail stops at the core: its
-	-- own walls rise to the same height there, and a rail in the same plane
-	-- flickered against them (his report, 2026-10-19).
-	local function rail(name: string, alongX: boolean, fixed: number, gap: { number }?)
-		local runs = if gap then { { 0, gap[1] }, { gap[2], P } } else { { 0, P } }
+	local function rail(name: string, alongX: boolean, fixed: number, gaps: { { number } })
+		table.sort(gaps, function(a, b)
+			return a[1] < b[1]
+		end)
+		local at = 0
+		local runs = {}
+		for _, g in gaps do
+			table.insert(runs, { at, g[1] })
+			at = math.max(at, g[2])
+		end
+		table.insert(runs, { at, P })
 		for _, r in runs do
 			local a0, a1 = r[1], r[2]
 			if a1 - a0 > 0.05 then
@@ -524,12 +607,28 @@ function HotelKit.slab(location: number, floor: number): Folder
 			end
 		end
 	end
-	local coreX = { sc.x * CELL, (sc.x + sc.w) * CELL }
-	local coreZ = { sc.z * CELL, (sc.z + sc.d) * CELL }
-	rail("Rail_Front", true, rt / 2, if sc.z == 0 then coreX else nil)
-	rail("Rail_Back", true, P - rt / 2, if sc.z + sc.d == G.Cells then coreX else nil)
-	rail("Rail_Left", false, rt / 2, if sc.x == 0 then coreZ else nil)
-	rail("Rail_Right", false, P - rt / 2, if sc.x + sc.w == G.Cells then coreZ else nil)
+	local front, back, left, right = {}, {}, {}, {}
+	for _, h in holes do
+		-- A hole's full cells (its lip included) decide whether it meets an edge.
+		local cx0, cz0 = math.floor(h.x0 / CELL) * CELL, math.floor(h.z0 / CELL) * CELL
+		local cx1, cz1 = math.ceil(h.x1 / CELL) * CELL, math.ceil(h.z1 / CELL) * CELL
+		if cz0 <= 0 then
+			table.insert(front, { cx0, cx1 })
+		end
+		if cz1 >= P then
+			table.insert(back, { cx0, cx1 })
+		end
+		if cx0 <= 0 then
+			table.insert(left, { cz0, cz1 })
+		end
+		if cx1 >= P then
+			table.insert(right, { cz0, cz1 })
+		end
+	end
+	rail("Rail_Front", true, rt / 2, front)
+	rail("Rail_Back", true, P - rt / 2, back)
+	rail("Rail_Left", false, rt / 2, left)
+	rail("Rail_Right", false, P - rt / 2, right)
 	for _, c in
 		{
 			Vector2.new(0.5, 0.5),

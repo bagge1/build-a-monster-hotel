@@ -35,17 +35,38 @@ local REFUSALS: { [string]: string } = {
 	Cash = "Not enough cash",
 	OutOfBounds = "That doesn't fit on the plot",
 	Overlap = "Something is already there",
-	Reserved = "Keep the lobby and stairs clear",
 	DoorBlocked = "The door would open into a wall",
 	DoorUnreachable = "Guests couldn't reach that door",
-	CutsOff = "That would block another room's door",
+	CutsOff = "That would cut a door off from the entrance",
 	NoFloor = "Build that floor first",
 	Busy = "A guest is using that room",
 	MaxTier = "Already the top tier",
 	FloorCap = "No more floors for now",
+	-- Free building (§5.4)
+	Area = "Buy this area of the plot first",
+	Lobby = "Rooms go behind the lobby",
+	Entrance = "Keep the entrance clear",
+	Decor = "Move the decor out of the way first",
+	NoFloorAbove = "A stair needs a floor above it",
+	DeskFloor = "The desk stays on floor 1",
+	OneDesk = "The hotel has one desk: move it instead",
+	Wall = "That hangs on a room's wall",
+	Outside = "That doesn't fit in the room",
+	Across = "Decor can't stand across a wall",
+	Doorway = "Keep the doorway clear",
+	Furniture = "The room's own furniture is there",
+	NoWall = "Put its back against a wall",
+	Owned = "You own that area already",
+	NotNext = "Buy an area next to yours first",
+	Unknown = "That isn't there",
 	Location = "Not at this location",
 	Locked = "Not unlocked yet",
 }
+
+-- A refusal's words (the server's `Refused` reasons, and the build mode's ghost).
+function Hud.refusal(reason: string): string
+	return REFUSALS[reason] or reason
+end
 
 function Hud.toast(text: string, colour: Color3?)
 	if not toasts then

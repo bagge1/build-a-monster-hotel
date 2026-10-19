@@ -17,7 +17,8 @@ local SET = {
 		root = Vector3.new(0, 0.1, 0),
 		parts = {
 			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(24, 0.2, 24), collide = false },
-			Floor = { c = Vector3.new(0, 0.125, 0), s = Vector3.new(23.8, 0.25, 23.8), collide = true },
+			Floor = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(23.8, 0.2, 23.8), collide = true },
+			Rug = { c = Vector3.new(0, 0.225, 3.6), s = Vector3.new(5, 0.05, 3.6), collide = false },
 			Wall_Back = { c = Vector3.new(0, 8.5, 11.8), s = Vector3.new(24, 17, 0.4), collide = true },
 			Wall_Left = { c = Vector3.new(-11.8, 8.5, 0), s = Vector3.new(0.4, 17, 23.2), collide = true },
 			Wall_Right = { c = Vector3.new(11.8, 8.5, 0), s = Vector3.new(0.4, 17, 23.2), collide = true },
@@ -34,9 +35,6 @@ local SET = {
 		att = {
 			{ "Door", Vector3.new(-6, 0, -12), Vector3.new(0, 0, -1) },
 			{ "Sign", Vector3.new(-6, 8.2, -12.3), Vector3.new(0, 0, -1) },
-			{ "Decor_1", Vector3.new(-10, 0, 10), Vector3.new(0.7071, 0, -0.7071) },
-			{ "Decor_2", Vector3.new(10, 0, 10), Vector3.new(-0.7071, 0, -0.7071) },
-			{ "Decor_3", Vector3.new(-10, 0, 0), Vector3.new(1, 0, 0) },
 			{ "Bed", Vector3.new(0, 0, 5), Vector3.new(0, 0, -1) },
 		},
 		precise = {  },
@@ -47,43 +45,26 @@ local SET = {
 		root = Vector3.new(0, 0.1, 12),
 		parts = {
 			Root = { c = Vector3.new(0, 0.1, 12), s = Vector3.new(144, 0.2, 24), collide = false },
-			Rug = { c = Vector3.new(0, 0.075, 12), s = Vector3.new(144, 0.15, 24), collide = false },
+			Floor = { c = Vector3.new(0, 0.05, 12), s = Vector3.new(144, 0.1, 24), collide = false },
 			Wall_FrontLeft = { c = Vector3.new(-38.75, 8.5, 0.4), s = Vector3.new(66.5, 17, 0.8), collide = true },
-			Dressing = { c = Vector3.new(0, 8.8, 1.4205), s = Vector3.new(144, 16.4, 2.801), collide = false },
+			Dressing = { c = Vector3.new(0, 8.8, 0.96), s = Vector3.new(144, 16.4, 1.88), collide = false },
 			Wall_FrontRight = { c = Vector3.new(38.75, 8.5, 0.4), s = Vector3.new(66.5, 17, 0.8), collide = true },
-			Desk = { c = Vector3.new(-62.05, 2.12, 6), s = Vector3.new(2.3, 4.24, 9.4), collide = true },
-			Till = { c = Vector3.new(-62.025, 4.66, 9.6133), s = Vector3.new(1.25, 1.72, 1.6266), collide = true },
-			Glow_Warm_2 = { c = Vector3.new(-62.3, 5.05, 2), s = Vector3.new(0.4435, 0.48, 0.4435), collide = false },
-			KeyRack = { c = Vector3.new(-71.575, 4.75, 6), s = Vector3.new(0.85, 9.5, 5.2), collide = true },
-			Bench_1 = { c = Vector3.new(29, 2, 1.95), s = Vector3.new(6.7, 4, 2), collide = true },
-			Bench_2 = { c = Vector3.new(43.5, 2, 1.95), s = Vector3.new(6.9, 4, 2), collide = true },
-			Bench_3 = { c = Vector3.new(53.5, 2, 1.95), s = Vector3.new(6.9, 4, 2), collide = true },
-			Planter_1 = { c = Vector3.new(36, 1.44, 2), s = Vector3.new(2.0325, 2.88, 2.0325), collide = true },
-			Planter_2 = { c = Vector3.new(48.5, 1.44, 2), s = Vector3.new(2.0325, 2.88, 2.0325), collide = true },
-			Planter_3 = { c = Vector3.new(70.6, 1.44, 2), s = Vector3.new(2.0325, 2.88, 2.0325), collide = true },
 			ArchLeft = { c = Vector3.new(-5, 4.5, 0.5), s = Vector3.new(1, 9, 1), collide = true },
 			ArchRight = { c = Vector3.new(5, 4.5, 0.5), s = Vector3.new(1, 9, 1), collide = true },
 			ArchTop = { c = Vector3.new(0, 13, 0.475), s = Vector3.new(11, 8, 0.95), collide = true },
 			Glow_Warm_1 = { c = Vector3.new(0, 10, 1.5), s = Vector3.new(0.5272, 0.9, 0.5272), collide = false },
-			Glow_Warm_3 = { c = Vector3.new(-43, 7.03, 1.32), s = Vector3.new(0.1386, 0.34, 0.16), collide = false },
-			Glow_Warm_4 = { c = Vector3.new(-29, 7.03, 1.32), s = Vector3.new(0.1386, 0.34, 0.16), collide = false },
-			Glow_Warm_5 = { c = Vector3.new(-14, 7.03, 1.32), s = Vector3.new(0.1386, 0.34, 0.16), collide = false },
-			Glow_Warm_6 = { c = Vector3.new(14, 7.03, 1.32), s = Vector3.new(0.1386, 0.34, 0.16), collide = false },
-			Glow_Warm_7 = { c = Vector3.new(29, 7.03, 1.32), s = Vector3.new(0.1386, 0.34, 0.16), collide = false },
-			Glow_Warm_8 = { c = Vector3.new(52.5, 7.03, 1.32), s = Vector3.new(0.1386, 0.34, 0.16), collide = false },
-			LOD_Proxy = { c = Vector3.new(0, 8.5, 5.35), s = Vector3.new(144, 17, 10.7), collide = false },
+			Glow_Warm_2 = { c = Vector3.new(-43, 7.03, 1.32), s = Vector3.new(0.1386, 0.34, 0.16), collide = false },
+			Glow_Warm_3 = { c = Vector3.new(-29, 7.03, 1.32), s = Vector3.new(0.1386, 0.34, 0.16), collide = false },
+			Glow_Warm_4 = { c = Vector3.new(-14, 7.03, 1.32), s = Vector3.new(0.1386, 0.34, 0.16), collide = false },
+			Glow_Warm_5 = { c = Vector3.new(14, 7.03, 1.32), s = Vector3.new(0.1386, 0.34, 0.16), collide = false },
+			Glow_Warm_6 = { c = Vector3.new(29, 7.03, 1.32), s = Vector3.new(0.1386, 0.34, 0.16), collide = false },
+			Glow_Warm_7 = { c = Vector3.new(52.5, 7.03, 1.32), s = Vector3.new(0.1386, 0.34, 0.16), collide = false },
+			LOD_Proxy = { c = Vector3.new(0, 8.5, 0.5), s = Vector3.new(144, 17, 1), collide = false },
 		},
 		att = {
 			{ "Entrance", Vector3.new(0, 0, 0), Vector3.new(0, 0, -1) },
-			{ "Desk", Vector3.new(-60.8, 3.8, 5), Vector3.new(1, 0, 0) },
-			{ "Clerk", Vector3.new(-66, 0, 6), Vector3.new(1, 0, 0) },
-			{ "Till", Vector3.new(-60.8, 3.8, 9.4), Vector3.new(1, 0, 0) },
 			{ "Spawn", Vector3.new(8, 0, 18), Vector3.new(0, 0, -1) },
 			{ "SignBoard", Vector3.new(48, 0, -5), Vector3.new(0, 0, -1) },
-			{ "Queue_1", Vector3.new(-58, 0, 5), Vector3.new(-1, 0, 0) },
-			{ "Queue_2", Vector3.new(-54.5, 0, 5), Vector3.new(-1, 0, 0) },
-			{ "Queue_3", Vector3.new(-51, 0, 5), Vector3.new(-1, 0, 0) },
-			{ "Queue_4", Vector3.new(-47.5, 0, 5), Vector3.new(-1, 0, 0) },
 			{ "Trap_1", Vector3.new(-16, 0, 6), Vector3.new(0, 0, -1) },
 			{ "Trap_2", Vector3.new(16, 0, 6), Vector3.new(0, 0, -1) },
 			{ "Trap_3", Vector3.new(48, 0, 6), Vector3.new(0, 0, -1) },
@@ -91,6 +72,30 @@ local SET = {
 		precise = {  },
 		light = 28,
 		lightAll = true,
+	},
+	FrontDesk = {
+		root = Vector3.new(0, 0.1, 0),
+		parts = {
+			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(24, 0.2, 12), collide = false },
+			Counter = { c = Vector3.new(0, 1.9, -3.05), s = Vector3.new(9.4, 3.8, 2.3), collide = true },
+			Dressing = { c = Vector3.new(-1.3855, 4.7, -2.9844), s = Vector3.new(6.371, 1.8, 1.8108), collide = false },
+			Till = { c = Vector3.new(3.6075, 4.66, -3.175), s = Vector3.new(1.615, 1.72, 1.25), collide = true },
+			Glow_Warm_1 = { c = Vector3.new(-3.75, 5.05, -2.9), s = Vector3.new(0.4435, 0.48, 0.4435), collide = false },
+			KeyRack = { c = Vector3.new(0, 4.75, 5.575), s = Vector3.new(5.2, 9.5, 0.85), collide = true },
+			LOD_Proxy = { c = Vector3.new(0, 4.75, 0.9), s = Vector3.new(9.4, 9.5, 10.2), collide = false },
+		},
+		att = {
+			{ "Desk", Vector3.new(0, 3.8, -4.2), Vector3.new(0, 0, -1) },
+			{ "Till", Vector3.new(3.4, 3.8, -4.2), Vector3.new(0, 0, -1) },
+			{ "Clerk", Vector3.new(0, 0, 1.5), Vector3.new(0, 0, -1) },
+			{ "Queue_1", Vector3.new(0, 0, -8), Vector3.new(0, 0, 1) },
+			{ "Queue_2", Vector3.new(0, 0, -11), Vector3.new(0, 0, 1) },
+			{ "Queue_3", Vector3.new(0, 0, -14), Vector3.new(0, 0, 1) },
+			{ "Queue_4", Vector3.new(0, 0, -17), Vector3.new(0, 0, 1) },
+		},
+		precise = {  },
+		light = 18,
+		lightAll = false,
 	},
 	StairCore = {
 		root = Vector3.new(0, 0.1, 0),
@@ -185,11 +190,25 @@ local SET = {
 		light = 12,
 		lightAll = false,
 	},
+	RoomPlaque = {
+		root = Vector3.new(0, 0, 0.15),
+		parts = {
+			Root = { c = Vector3.new(0, 0, 0.15), s = Vector3.new(1, 0.2, 0.2), collide = false },
+			Board = { c = Vector3.new(0, 0, 0.127), s = Vector3.new(4, 1.3, 0.346), collide = false },
+			Face = { c = Vector3.new(0, 0, -0.045), s = Vector3.new(3.5, 0.84, 0.03), collide = false },
+		},
+		att = {
+		},
+		precise = {  },
+		light = 12,
+		lightAll = false,
+	},
 	GardenRoom = {
 		root = Vector3.new(0, 0.1, 0),
 		parts = {
 			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(24, 0.2, 24), collide = false },
-			Floor = { c = Vector3.new(0, 0.125, 0), s = Vector3.new(23.8, 0.25, 23.8), collide = true },
+			Floor = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(23.8, 0.2, 23.8), collide = true },
+			Rug = { c = Vector3.new(0, 0.225, 3.6), s = Vector3.new(4.6, 0.05, 3.4), collide = false },
 			Wall_Back = { c = Vector3.new(0, 8.5, 11.8), s = Vector3.new(24, 17, 0.4), collide = true },
 			Wall_Left = { c = Vector3.new(-11.8, 8.5, 0), s = Vector3.new(0.4, 17, 23.2), collide = true },
 			Wall_Right = { c = Vector3.new(11.8, 8.5, 0), s = Vector3.new(0.4, 17, 23.2), collide = true },
@@ -205,9 +224,6 @@ local SET = {
 		att = {
 			{ "Door", Vector3.new(-6, 0, -12), Vector3.new(0, 0, -1) },
 			{ "Sign", Vector3.new(-6, 8.2, -12.3), Vector3.new(0, 0, -1) },
-			{ "Decor_1", Vector3.new(-10, 0, 10), Vector3.new(0.7071, 0, -0.7071) },
-			{ "Decor_2", Vector3.new(10, 0, 10), Vector3.new(-0.7071, 0, -0.7071) },
-			{ "Decor_3", Vector3.new(-10, 0, 0), Vector3.new(1, 0, 0) },
 			{ "Bed", Vector3.new(0, 0, 5), Vector3.new(0, 0, -1) },
 		},
 		precise = {  },
@@ -234,9 +250,6 @@ local SET = {
 		att = {
 			{ "Door", Vector3.new(-6, 0, -12), Vector3.new(0, 0, -1) },
 			{ "Sign", Vector3.new(-6, 8.2, -12.3), Vector3.new(0, 0, -1) },
-			{ "Decor_1", Vector3.new(-10, 0, 10), Vector3.new(0.7071, 0, -0.7071) },
-			{ "Decor_2", Vector3.new(10, 0, 10), Vector3.new(-0.7071, 0, -0.7071) },
-			{ "Decor_3", Vector3.new(-10, 0, 0), Vector3.new(1, 0, 0) },
 			{ "Bed", Vector3.new(0, 0, 5), Vector3.new(0, 0, -1) },
 		},
 		precise = {  },
@@ -247,7 +260,8 @@ local SET = {
 		root = Vector3.new(0, 0.1, 0),
 		parts = {
 			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(24, 0.2, 36), collide = false },
-			Floor = { c = Vector3.new(0, 0.125, 0), s = Vector3.new(23.8, 0.25, 35.8), collide = true },
+			Floor = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(23.8, 0.2, 35.8), collide = true },
+			Rug = { c = Vector3.new(0, 0.225, 6), s = Vector3.new(4.8, 0.05, 4), collide = false },
 			Wall_Back = { c = Vector3.new(0, 8.5, 17.8), s = Vector3.new(24, 17, 0.4), collide = true },
 			Wall_Left = { c = Vector3.new(-11.8, 8.5, 0), s = Vector3.new(0.4, 17, 35.2), collide = true },
 			Wall_Right = { c = Vector3.new(11.8, 8.5, 0), s = Vector3.new(0.4, 17, 35.2), collide = true },
@@ -264,9 +278,6 @@ local SET = {
 		att = {
 			{ "Door", Vector3.new(-6, 0, -18), Vector3.new(0, 0, -1) },
 			{ "Sign", Vector3.new(-6, 8.2, -18.3), Vector3.new(0, 0, -1) },
-			{ "Decor_1", Vector3.new(-10, 0, 16), Vector3.new(0.7071, 0, -0.7071) },
-			{ "Decor_2", Vector3.new(10, 0, 16), Vector3.new(-0.7071, 0, -0.7071) },
-			{ "Decor_3", Vector3.new(-10, 0, 0), Vector3.new(1, 0, 0) },
 			{ "Bed", Vector3.new(0, 0, 11), Vector3.new(0, 0, -1) },
 		},
 		precise = {  },
@@ -277,7 +288,8 @@ local SET = {
 		root = Vector3.new(0, 0.1, 0),
 		parts = {
 			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(24, 0.2, 36), collide = false },
-			Floor = { c = Vector3.new(0, 0.125, 0), s = Vector3.new(23.8, 0.25, 35.8), collide = true },
+			Floor = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(23.8, 0.2, 35.8), collide = true },
+			Rug = { c = Vector3.new(0, 0.225, 6), s = Vector3.new(4.4, 0.05, 4.4), collide = false },
 			Wall_Back = { c = Vector3.new(0, 8.5, 17.8), s = Vector3.new(24, 17, 0.4), collide = true },
 			Wall_Left = { c = Vector3.new(-11.8, 8.5, 0), s = Vector3.new(0.4, 17, 35.2), collide = true },
 			Wall_Right = { c = Vector3.new(11.8, 8.5, 0), s = Vector3.new(0.4, 17, 35.2), collide = true },
@@ -294,9 +306,6 @@ local SET = {
 		att = {
 			{ "Door", Vector3.new(-6, 0, -18), Vector3.new(0, 0, -1) },
 			{ "Sign", Vector3.new(-6, 8.2, -18.3), Vector3.new(0, 0, -1) },
-			{ "Decor_1", Vector3.new(-10, 0, 16), Vector3.new(0.7071, 0, -0.7071) },
-			{ "Decor_2", Vector3.new(10, 0, 16), Vector3.new(-0.7071, 0, -0.7071) },
-			{ "Decor_3", Vector3.new(-10, 0, 0), Vector3.new(1, 0, 0) },
 			{ "Bed", Vector3.new(0, 0, 11), Vector3.new(0, 0, -1) },
 		},
 		precise = {  },
@@ -307,7 +316,8 @@ local SET = {
 		root = Vector3.new(0, 0.1, 0),
 		parts = {
 			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(36, 0.2, 36), collide = false },
-			Floor = { c = Vector3.new(0, 0.125, 0), s = Vector3.new(35.8, 0.25, 35.8), collide = true },
+			Floor = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(35.8, 0.2, 35.8), collide = true },
+			Rug = { c = Vector3.new(0, 0.225, 5.5), s = Vector3.new(6, 0.05, 5), collide = false },
 			Wall_Back = { c = Vector3.new(0, 8.5, 17.8), s = Vector3.new(36, 17, 0.4), collide = true },
 			Wall_Left = { c = Vector3.new(-17.8, 8.5, 0), s = Vector3.new(0.4, 17, 35.2), collide = true },
 			Wall_Right = { c = Vector3.new(17.8, 8.5, 0), s = Vector3.new(0.4, 17, 35.2), collide = true },
@@ -323,9 +333,6 @@ local SET = {
 		att = {
 			{ "Door", Vector3.new(0, 0, -18), Vector3.new(0, 0, -1) },
 			{ "Sign", Vector3.new(0, 8.2, -18.3), Vector3.new(0, 0, -1) },
-			{ "Decor_1", Vector3.new(-16, 0, 16), Vector3.new(0.7071, 0, -0.7071) },
-			{ "Decor_2", Vector3.new(16, 0, 16), Vector3.new(-0.7071, 0, -0.7071) },
-			{ "Decor_3", Vector3.new(-16, 0, 0), Vector3.new(1, 0, 0) },
 			{ "Bed", Vector3.new(0, 0, 11), Vector3.new(0, 0, -1) },
 		},
 		precise = {  },
@@ -336,7 +343,8 @@ local SET = {
 		root = Vector3.new(0, 0.1, 0),
 		parts = {
 			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(36, 0.2, 36), collide = false },
-			Floor = { c = Vector3.new(0, 0.125, 0), s = Vector3.new(35.8, 0.25, 35.8), collide = true },
+			Floor = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(35.8, 0.2, 35.8), collide = true },
+			Rug = { c = Vector3.new(0, 0.225, 5.5), s = Vector3.new(6.4, 0.05, 5.2), collide = false },
 			Wall_Back = { c = Vector3.new(0, 8.5, 17.8), s = Vector3.new(36, 17, 0.4), collide = true },
 			Wall_Left = { c = Vector3.new(-17.8, 8.5, 0), s = Vector3.new(0.4, 17, 35.2), collide = true },
 			Wall_Right = { c = Vector3.new(17.8, 8.5, 0), s = Vector3.new(0.4, 17, 35.2), collide = true },
@@ -355,9 +363,6 @@ local SET = {
 		att = {
 			{ "Door", Vector3.new(0, 0, -18), Vector3.new(0, 0, -1) },
 			{ "Sign", Vector3.new(0, 8.2, -18.3), Vector3.new(0, 0, -1) },
-			{ "Decor_1", Vector3.new(-16, 0, 16), Vector3.new(0.7071, 0, -0.7071) },
-			{ "Decor_2", Vector3.new(16, 0, 16), Vector3.new(-0.7071, 0, -0.7071) },
-			{ "Decor_3", Vector3.new(-16, 0, 0), Vector3.new(1, 0, 0) },
 			{ "Bed", Vector3.new(0, 0, 11), Vector3.new(0, 0, -1) },
 		},
 		precise = {  },
@@ -368,7 +373,8 @@ local SET = {
 		root = Vector3.new(0, 0.1, 0),
 		parts = {
 			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(36, 0.2, 36), collide = false },
-			Floor = { c = Vector3.new(0, 0.125, 0), s = Vector3.new(35.8, 0.25, 35.8), collide = true },
+			Floor = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(35.8, 0.2, 35.8), collide = true },
+			Rug = { c = Vector3.new(0, 0.225, 5.5), s = Vector3.new(6.4, 0.05, 5.2), collide = false },
 			Wall_Back = { c = Vector3.new(0, 8.5, 17.8), s = Vector3.new(36, 17, 0.4), collide = true },
 			Wall_Left = { c = Vector3.new(-17.8, 8.5, 0), s = Vector3.new(0.4, 17, 35.2), collide = true },
 			Wall_Right = { c = Vector3.new(17.8, 8.5, 0), s = Vector3.new(0.4, 17, 35.2), collide = true },
@@ -384,9 +390,6 @@ local SET = {
 		att = {
 			{ "Door", Vector3.new(0, 0, -18), Vector3.new(0, 0, -1) },
 			{ "Sign", Vector3.new(0, 8.2, -18.3), Vector3.new(0, 0, -1) },
-			{ "Decor_1", Vector3.new(-16, 0, 16), Vector3.new(0.7071, 0, -0.7071) },
-			{ "Decor_2", Vector3.new(16, 0, 16), Vector3.new(-0.7071, 0, -0.7071) },
-			{ "Decor_3", Vector3.new(-16, 0, 0), Vector3.new(1, 0, 0) },
 			{ "Bed", Vector3.new(0, 0, 11), Vector3.new(0, 0, -1) },
 		},
 		precise = {  },
@@ -412,9 +415,6 @@ local SET = {
 		att = {
 			{ "Door", Vector3.new(-6, 0, -12), Vector3.new(0, 0, -1) },
 			{ "Sign", Vector3.new(-6, 8.2, -12.3), Vector3.new(0, 0, -1) },
-			{ "Decor_1", Vector3.new(-10, 0, 10), Vector3.new(0.7071, 0, -0.7071) },
-			{ "Decor_2", Vector3.new(10, 0, 10), Vector3.new(-0.7071, 0, -0.7071) },
-			{ "Decor_3", Vector3.new(-10, 0, 0), Vector3.new(1, 0, 0) },
 			{ "Bed", Vector3.new(0, 0, -4), Vector3.new(0, 0, 1) },
 		},
 		precise = {  },
@@ -425,7 +425,8 @@ local SET = {
 		root = Vector3.new(0, 0.1, 0),
 		parts = {
 			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(24, 0.2, 24), collide = false },
-			Floor = { c = Vector3.new(0, 0.125, 0), s = Vector3.new(23.8, 0.25, 23.8), collide = true },
+			Floor = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(23.8, 0.2, 23.8), collide = true },
+			Rug = { c = Vector3.new(0, 0.225, -3.6), s = Vector3.new(4.4, 0.05, 3), collide = false },
 			Wall_Back = { c = Vector3.new(0, 8.5, 11.8), s = Vector3.new(24, 17, 0.4), collide = true },
 			Wall_Left = { c = Vector3.new(-11.8, 8.5, 0), s = Vector3.new(0.4, 17, 23.2), collide = true },
 			Wall_Right = { c = Vector3.new(11.8, 8.5, 0), s = Vector3.new(0.4, 17, 23.2), collide = true },
@@ -440,9 +441,6 @@ local SET = {
 		att = {
 			{ "Door", Vector3.new(-6, 0, -12), Vector3.new(0, 0, -1) },
 			{ "Sign", Vector3.new(-6, 8.2, -12.3), Vector3.new(0, 0, -1) },
-			{ "Decor_1", Vector3.new(-10, 0, 10), Vector3.new(0.7071, 0, -0.7071) },
-			{ "Decor_2", Vector3.new(10, 0, 10), Vector3.new(-0.7071, 0, -0.7071) },
-			{ "Decor_3", Vector3.new(-10, 0, 0), Vector3.new(1, 0, 0) },
 			{ "Bed", Vector3.new(0, 0, -4), Vector3.new(0, 0, 1) },
 		},
 		precise = {  },
@@ -469,9 +467,6 @@ local SET = {
 		att = {
 			{ "Door", Vector3.new(-6, 0, -12), Vector3.new(0, 0, -1) },
 			{ "Sign", Vector3.new(-6, 8.2, -12.3), Vector3.new(0, 0, -1) },
-			{ "Decor_1", Vector3.new(-10, 0, 10), Vector3.new(0.7071, 0, -0.7071) },
-			{ "Decor_2", Vector3.new(10, 0, 10), Vector3.new(-0.7071, 0, -0.7071) },
-			{ "Decor_3", Vector3.new(-10, 0, 0), Vector3.new(1, 0, 0) },
 			{ "Bed", Vector3.new(0, 0, -4), Vector3.new(0, 0, 1) },
 		},
 		precise = {  },
@@ -482,7 +477,8 @@ local SET = {
 		root = Vector3.new(0, 0.1, 0),
 		parts = {
 			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(24, 0.2, 24), collide = false },
-			Floor = { c = Vector3.new(0, 0.125, 0), s = Vector3.new(23.8, 0.25, 23.8), collide = true },
+			Floor = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(23.8, 0.2, 23.8), collide = true },
+			Rug = { c = Vector3.new(0, 0.225, -3.4), s = Vector3.new(4, 0.05, 3), collide = false },
 			Wall_Back = { c = Vector3.new(0, 8.5, 11.8), s = Vector3.new(24, 17, 0.4), collide = true },
 			Wall_Left = { c = Vector3.new(-11.8, 8.5, 0), s = Vector3.new(0.4, 17, 23.2), collide = true },
 			Wall_Right = { c = Vector3.new(11.8, 8.5, 0), s = Vector3.new(0.4, 17, 23.2), collide = true },
@@ -498,9 +494,6 @@ local SET = {
 		att = {
 			{ "Door", Vector3.new(-6, 0, -12), Vector3.new(0, 0, -1) },
 			{ "Sign", Vector3.new(-6, 8.2, -12.3), Vector3.new(0, 0, -1) },
-			{ "Decor_1", Vector3.new(-10, 0, 10), Vector3.new(0.7071, 0, -0.7071) },
-			{ "Decor_2", Vector3.new(10, 0, 10), Vector3.new(-0.7071, 0, -0.7071) },
-			{ "Decor_3", Vector3.new(-10, 0, 0), Vector3.new(1, 0, 0) },
 			{ "Bed", Vector3.new(0, 0, -4), Vector3.new(0, 0, 1) },
 		},
 		precise = {  },
@@ -511,7 +504,8 @@ local SET = {
 		root = Vector3.new(0, 0.1, 0),
 		parts = {
 			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(24, 0.2, 24), collide = false },
-			Floor = { c = Vector3.new(0, 0.125, 0), s = Vector3.new(23.8, 0.25, 23.8), collide = true },
+			Floor = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(23.8, 0.2, 23.8), collide = true },
+			Rug = { c = Vector3.new(0, 0.225, -3.6), s = Vector3.new(4, 0.05, 3.2), collide = false },
 			Wall_Back = { c = Vector3.new(0, 8.5, 11.8), s = Vector3.new(24, 17, 0.4), collide = true },
 			Wall_Left = { c = Vector3.new(-11.8, 8.5, 0), s = Vector3.new(0.4, 17, 23.2), collide = true },
 			Wall_Right = { c = Vector3.new(11.8, 8.5, 0), s = Vector3.new(0.4, 17, 23.2), collide = true },
@@ -528,9 +522,6 @@ local SET = {
 		att = {
 			{ "Door", Vector3.new(-6, 0, -12), Vector3.new(0, 0, -1) },
 			{ "Sign", Vector3.new(-6, 8.2, -12.3), Vector3.new(0, 0, -1) },
-			{ "Decor_1", Vector3.new(-10, 0, 10), Vector3.new(0.7071, 0, -0.7071) },
-			{ "Decor_2", Vector3.new(10, 0, 10), Vector3.new(-0.7071, 0, -0.7071) },
-			{ "Decor_3", Vector3.new(-10, 0, 0), Vector3.new(1, 0, 0) },
 			{ "Bed", Vector3.new(0, 0, -4), Vector3.new(0, 0, 1) },
 		},
 		precise = {  },
@@ -540,7 +531,7 @@ local SET = {
 	Decor_PuddleRug = {
 		root = Vector3.new(0, 0.1, 0),
 		parts = {
-			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(3.6, 0.2, 3.6), collide = false },
+			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(6, 0.2, 6), collide = false },
 			Body = { c = Vector3.new(0.1623, 0.455, 0.0713), s = Vector3.new(3.0753, 0.91, 3.186), collide = false },
 		},
 		att = {
@@ -552,7 +543,7 @@ local SET = {
 	Decor_SnackBasket = {
 		root = Vector3.new(0, 0.1, 0),
 		parts = {
-			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(2.2, 0.2, 2.2), collide = false },
+			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(3, 0.2, 3), collide = false },
 			Body = { c = Vector3.new(0, 0.955, 0), s = Vector3.new(2.02, 1.91, 2.1), collide = false },
 		},
 		att = {
@@ -564,8 +555,8 @@ local SET = {
 	Decor_RecordPlayer = {
 		root = Vector3.new(0, 0.1, 0),
 		parts = {
-			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(2.4, 0.2, 2.4), collide = false },
-			Body = { c = Vector3.new(0.0768, 2.0919, -0.1614), s = Vector3.new(2.0535, 4.1838, 2.0227), collide = false },
+			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(3, 0.2, 3), collide = false },
+			Body = { c = Vector3.new(0.0732, 2.0919, -0.0886), s = Vector3.new(2.0535, 4.1838, 2.0227), collide = false },
 		},
 		att = {
 		},
@@ -576,7 +567,7 @@ local SET = {
 	Decor_Candles = {
 		root = Vector3.new(0, 0.1, 0),
 		parts = {
-			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(2, 0.2, 2), collide = false },
+			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(3, 0.2, 3), collide = false },
 			Body = { c = Vector3.new(0, 0.775, 0), s = Vector3.new(1.7119, 1.55, 1.8), collide = false },
 			Glow_Warm_1 = { c = Vector3.new(-0.35, 1.77, 0.2), s = Vector3.new(0.1905, 0.4, 0.22), collide = false },
 			Glow_Warm_2 = { c = Vector3.new(0.35, 1.37, 0.25), s = Vector3.new(0.1905, 0.4, 0.22), collide = false },
@@ -591,7 +582,7 @@ local SET = {
 	Decor_Planter = {
 		root = Vector3.new(0, 0.1, 0),
 		parts = {
-			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(2.4, 0.2, 2.4), collide = false },
+			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(3, 0.2, 3), collide = false },
 			Body = { c = Vector3.new(0, 1.985, 0), s = Vector3.new(1.9972, 3.97, 2.1), collide = false },
 		},
 		att = {
@@ -603,7 +594,7 @@ local SET = {
 	Decor_AntiqueWardrobe = {
 		root = Vector3.new(0, 0.1, 0),
 		parts = {
-			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(3.4, 0.2, 2), collide = false },
+			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(6, 0.2, 3), collide = false },
 			Body = { c = Vector3.new(0, 3.45, -0.0433), s = Vector3.new(3.4, 6.9, 1.8866), collide = false },
 		},
 		att = {
@@ -615,8 +606,8 @@ local SET = {
 	Decor_BlackoutCurtains = {
 		root = Vector3.new(0, 0.1, 0),
 		parts = {
-			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(4, 0.2, 1), collide = false },
-			Body = { c = Vector3.new(0, 3.325, 0), s = Vector3.new(3.94, 6.65, 0.9), collide = false },
+			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(6, 0.2, 3), collide = false },
+			Body = { c = Vector3.new(0, 3.325, 0.65), s = Vector3.new(3.94, 6.65, 0.9), collide = false },
 		},
 		att = {
 		},
@@ -627,7 +618,7 @@ local SET = {
 	Decor_SandTray = {
 		root = Vector3.new(0, 0.1, 0),
 		parts = {
-			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(3, 0.2, 2.4), collide = false },
+			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(6, 0.2, 3), collide = false },
 			Body = { c = Vector3.new(0, 0.725, 0), s = Vector3.new(2.9, 1.45, 2.2), collide = false },
 		},
 		att = {
@@ -639,8 +630,8 @@ local SET = {
 	Decor_CatBasket = {
 		root = Vector3.new(0, 0.1, 0),
 		parts = {
-			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(2.6, 0.2, 2.6), collide = false },
-			Body = { c = Vector3.new(0, 0.7, 0), s = Vector3.new(2.4148, 1.4, 2.4148), collide = false },
+			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(3, 0.2, 3), collide = false },
+			Body = { c = Vector3.new(0, 0.6377, 0), s = Vector3.new(2.2, 1.2755, 2.2), collide = false },
 		},
 		att = {
 		},
@@ -651,9 +642,9 @@ local SET = {
 	Decor_Cauldron = {
 		root = Vector3.new(0, 0.1, 0),
 		parts = {
-			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(2.6, 0.2, 2.6), collide = false },
-			Body = { c = Vector3.new(0, 1.05, 0), s = Vector3.new(2.2216, 2.1, 2.2216), collide = false },
-			Glow_Magic_1 = { c = Vector3.new(0, 2.064, 0), s = Vector3.new(1.6614, 0.448, 1.6614), collide = false },
+			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(3, 0.2, 3), collide = false },
+			Body = { c = Vector3.new(0, 1.0398, 0), s = Vector3.new(2.2, 2.0796, 2.2), collide = false },
+			Glow_Magic_1 = { c = Vector3.new(0, 2.0439, 0), s = Vector3.new(1.6452, 0.4436, 1.6452), collide = false },
 		},
 		att = {
 		},
@@ -664,8 +655,8 @@ local SET = {
 	Decor_SteakPlatter = {
 		root = Vector3.new(0, 0.1, 0),
 		parts = {
-			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(2.6, 0.2, 2.6), collide = false },
-			Body = { c = Vector3.new(0.0181, 1.565, 0), s = Vector3.new(2.3188, 3.13, 2.4), collide = false },
+			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(3, 0.2, 3), collide = false },
+			Body = { c = Vector3.new(0.0181, 1.4346, 0), s = Vector3.new(2.1255, 2.8692, 2.2), collide = false },
 		},
 		att = {
 		},
@@ -676,9 +667,9 @@ local SET = {
 	Decor_MoonWindow = {
 		root = Vector3.new(0, 0.1, 0),
 		parts = {
-			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(3.4, 0.2, 1), collide = false },
-			Body = { c = Vector3.new(0, 3.3, 0), s = Vector3.new(3.2, 6.6, 0.9), collide = false },
-			Glow_Cold_1 = { c = Vector3.new(0.25, 4.3, -0.075), s = Vector3.new(1.7, 1.7, 0.05), collide = false },
+			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(6, 0.2, 3), collide = false },
+			Body = { c = Vector3.new(0, 3.3, 0.65), s = Vector3.new(3.2, 6.6, 0.9), collide = false },
+			Glow_Cold_1 = { c = Vector3.new(0.25, 4.3, 0.575), s = Vector3.new(1.7, 1.7, 0.05), collide = false },
 		},
 		att = {
 		},
@@ -689,8 +680,8 @@ local SET = {
 	Decor_PipeOrgan = {
 		root = Vector3.new(0, 0.1, 0),
 		parts = {
-			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(3.8, 0.2, 3.4), collide = false },
-			Body = { c = Vector3.new(0, 3.45, -0.1734), s = Vector3.new(3.6, 6.9, 2.8533), collide = false },
+			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(6, 0.2, 6), collide = false },
+			Body = { c = Vector3.new(0, 3.45, 1.1734), s = Vector3.new(3.6, 6.9, 2.8533), collide = false },
 		},
 		att = {
 		},
@@ -701,8 +692,8 @@ local SET = {
 	Decor_SoundproofWalls = {
 		root = Vector3.new(0, 0.1, 0),
 		parts = {
-			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(4, 0.2, 1.6), collide = false },
-			Body = { c = Vector3.new(0, 3.1, -0.0218), s = Vector3.new(3.8661, 6.2, 0.7187), collide = false },
+			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(6, 0.2, 3), collide = false },
+			Body = { c = Vector3.new(0, 3.1, 0.7407), s = Vector3.new(3.8661, 6.2, 0.7187), collide = false },
 		},
 		att = {
 		},
@@ -714,12 +705,12 @@ local SET = {
 		root = Vector3.new(0, 0.1, 0),
 		parts = {
 			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(3, 0.2, 3), collide = false },
-			Body = { c = Vector3.new(0.0436, 3.185, 0), s = Vector3.new(2.5072, 6.37, 2.5274), collide = false },
-			Glow_Warm_1 = { c = Vector3.new(1.15, 6.55, 0), s = Vector3.new(0.135, 0.32, 0.1559), collide = false },
-			Glow_Warm_2 = { c = Vector3.new(0.3554, 6.55, 1.0937), s = Vector3.new(0.135, 0.32, 0.1559), collide = false },
-			Glow_Warm_3 = { c = Vector3.new(-0.9304, 6.55, 0.676), s = Vector3.new(0.135, 0.32, 0.1559), collide = false },
-			Glow_Warm_4 = { c = Vector3.new(-0.9304, 6.55, -0.676), s = Vector3.new(0.135, 0.32, 0.1559), collide = false },
-			Glow_Warm_5 = { c = Vector3.new(0.3554, 6.55, -1.0937), s = Vector3.new(0.135, 0.32, 0.1559), collide = false },
+			Body = { c = Vector3.new(0.0088, 2.7724, 0), s = Vector3.new(2.1824, 5.5448, 2.2), collide = false },
+			Glow_Warm_1 = { c = Vector3.new(0.9718, 5.7014, 0), s = Vector3.new(0.1175, 0.2785, 0.1357), collide = false },
+			Glow_Warm_2 = { c = Vector3.new(0.2802, 5.7014, 0.952), s = Vector3.new(0.1175, 0.2785, 0.1357), collide = false },
+			Glow_Warm_3 = { c = Vector3.new(-0.839, 5.7014, 0.5884), s = Vector3.new(0.1175, 0.2785, 0.1357), collide = false },
+			Glow_Warm_4 = { c = Vector3.new(-0.839, 5.7014, -0.5884), s = Vector3.new(0.1175, 0.2785, 0.1357), collide = false },
+			Glow_Warm_5 = { c = Vector3.new(0.2802, 5.7014, -0.952), s = Vector3.new(0.1175, 0.2785, 0.1357), collide = false },
 		},
 		att = {
 		},
@@ -727,12 +718,59 @@ local SET = {
 		light = 12,
 		lightAll = false,
 	},
-	RoomPlaque = {
-		root = Vector3.new(0, 0, 0.15),
+	Decor_Bench = {
+		root = Vector3.new(0, 0.1, 0),
 		parts = {
-			Root = { c = Vector3.new(0, 0, 0.15), s = Vector3.new(1, 0.2, 0.2), collide = false },
-			Board = { c = Vector3.new(0, 0, 0.127), s = Vector3.new(4, 1.3, 0.346), collide = false },
-			Face = { c = Vector3.new(0, 0, -0.045), s = Vector3.new(3.5, 0.84, 0.03), collide = false },
+			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(9, 0.2, 3), collide = false },
+			Body = { c = Vector3.new(0, 2, 0), s = Vector3.new(6.9, 4, 2), collide = false },
+		},
+		att = {
+		},
+		precise = {  },
+		light = 12,
+		lightAll = false,
+	},
+	Decor_UrnPlanter = {
+		root = Vector3.new(0, 0.1, 0),
+		parts = {
+			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(3, 0.2, 3), collide = false },
+			Body = { c = Vector3.new(0, 1.44, 0), s = Vector3.new(2.0325, 2.88, 2.0325), collide = false },
+		},
+		att = {
+		},
+		precise = {  },
+		light = 12,
+		lightAll = false,
+	},
+	Decor_RugRunner = {
+		root = Vector3.new(0, 0.1, 0),
+		parts = {
+			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(12, 0.2, 6), collide = false },
+			Body = { c = Vector3.new(0, 0.06, 0), s = Vector3.new(12, 0.12, 6), collide = false },
+		},
+		att = {
+		},
+		precise = {  },
+		light = 12,
+		lightAll = false,
+	},
+	Decor_RugCorner = {
+		root = Vector3.new(0, 0.1, 0),
+		parts = {
+			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(6, 0.2, 6), collide = false },
+			Body = { c = Vector3.new(0, 0.06, 0), s = Vector3.new(6, 0.12, 6), collide = false },
+		},
+		att = {
+		},
+		precise = {  },
+		light = 12,
+		lightAll = false,
+	},
+	Decor_RugSquare = {
+		root = Vector3.new(0, 0.1, 0),
+		parts = {
+			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(12, 0.2, 12), collide = false },
+			Body = { c = Vector3.new(0, 0.06, 0), s = Vector3.new(12, 0.12, 12), collide = false },
 		},
 		att = {
 		},

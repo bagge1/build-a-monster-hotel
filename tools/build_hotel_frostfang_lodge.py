@@ -1,8 +1,9 @@
 """Frostfang Lodge (Location 2): the hotel kit's second set, a draft for August's review.
 
-The 6 rooms and 2 amenities of Pieces.luau (location = 2), the Lobby, the
-stair core (StairCore, StairCoreTop), the HotelSign and the 6 Location 2
-decor pieces, each authored on tools/hotel_kit.py in the frames and with the
+The 6 rooms and 2 amenities of Pieces.luau (location = 2), the Lobby (a
+shell), the FrontDesk, the stair core (StairCore, StairCoreTop), the
+HotelSign, the RoomPlaque and the 11 Location 2 decor pieces (the last five
+the old lobby's bench, planter and carpet), each authored on tools/hotel_kit.py in the frames and with the
 attachments of the Luau blockout (src/server/HotelKit.luau), so a delivered
 model replaces geometry and nothing else (CLAUDE.md). The shared structure
 (Lobby, stairs, sign) keeps the Haunted Manor's colliding boxes exactly:
@@ -31,7 +32,8 @@ SET = 'hotel/frostfang_lodge'
 ROOMS = [('IglooRoom', 2, 2), ('IceCave', 2, 3), ('YetiDen', 3, 3), ('FrostLoft', 2, 3),
          ('GlacierSuite', 3, 3), ('AuroraDome', 3, 3)]
 AMENITIES = ['CocoaLounge', 'AuroraDeck']
-DECOR = ['IceBlock', 'CocoaMug', 'PrankBox', 'RockPile', 'SnowGlobe', 'AuroraLamp']
+DECOR = ['IceBlock', 'CocoaMug', 'PrankBox', 'RockPile', 'SnowGlobe', 'AuroraLamp',
+         'Bench', 'UrnPlanter', 'RugRunner', 'RugCorner', 'RugSquare']   # the last five: the old lobby's
 
 # The lodge's palette (Locations.luau id 2: ground 200,215,230 = 'ground', facade
 # 120,160,200 = 'facade', trim 240,250,255 = 'trim'). A third value is a glow key.
@@ -511,50 +513,19 @@ def aurora_deck():
 # --- The lobby, the stair core and the sign (the Haunted Manor's colliding boxes, re-dressed) -----
 
 def lobby():
+    """The shell (MODELS.md, "Lobby", his ruling 2026-10-19, GDD 5.4): the front wall round the arch, its
+    lantern and sconces, and the plank Floor; the desk, the benches, the pines and the carpet are pieces
+    the player places now (FrontDesk, Decor_Bench, Decor_UrnPlanter, the rugs)."""
     begin('Lobby', 'Lobby', (LOBBY_W, 0.2, LOBBY_D), root_centre=(0, 0.1, LOBBY_D / 2))
-    declare('Rug', False)       # the blockout's Rug does not collide either
+    declare('Floor', False)     # as the blockout's: people walk on the plot's slab under it
     # The floor: long planks to the lobby's edges, in three woods.
     woods = ('wood', 'wood_light', 'log')
     for k in range(int(LOBBY_D)):
-        span('Rug', (-LOBBY_W / 2, 0, k), (LOBBY_W / 2, 0.1, k + 1), woods[k % 3], bevel=0.02)
-    # A carpet from the door into the lobby, and on along the queue to the desk.
-    qz = K.blockout_attachments('Lobby')['Desk'][0][2]
-    dx = K.LOBBY_COUNTER_TOP[1][0] + 0.3
-    span('Rug', (-2.2, 0.1, 0.8), (2.2, 0.13, qz + 1.5), 'cream')
-    # The far end stops 0.3 short, so its border runs on round the turn toward the desk
-    # (the end was bare red past the turn's edge: his report, 2026-10-19).
-    span('Rug', (-1.9, 0.13, 0.8), (1.9, 0.15, qz + 1.2), 'red')
-    for z in (1.5, qz - 1.8):
-        span('Rug', (-1.9, 0.15, z - 0.12), (1.9, 0.16, z + 0.12), 'cream')
-    span('Rug', (dx, 0.1, qz - 1.5), (-2.2, 0.13, qz + 1.5), 'cream')
-    span('Rug', (dx + 0.3, 0.13, qz - 1.2), (-1.9, 0.15, qz + 1.2), 'red')
+        span('Floor', (-LOBBY_W / 2, 0, k), (LOBBY_W / 2, K.LOBBY_FLOOR_TOP, k + 1), woods[k % 3], bevel=0.02)
     # The front wall round the arch (MODELS.md, "Lobby"): the lodge's facade blue to the street,
     # logs inside as in its rooms, its crown snow (it meets the slab above, so no snow on its top).
     K.lobby_front_wall(outside='facade', paper=('log', 'log_dark'), wainscot='wood_dark', crown='snow',
                        plinth='stone_dark', frame='log_dark', sill='snow')
-    # The front desk across the -X end, served toward +X (the entrance): logs laid along it.
-    (lo, hi), (tlo, thi) = K.LOBBY_COUNTER, K.LOBBY_COUNTER_TOP
-    span('Desk', lo, hi, 'log_dark', bevel=0.1)
-    for y in (0.55, 1.45, 2.35):
-        cyl('Desk', (0, 0, 0), 0.42, hi[2] - lo[2] - 0.2, 'log', n=8, m=K.at((hi[0] - 0.12, y, lo[2] + 0.1), rx=90))
-    zc = (lo[2] + hi[2]) / 2
-    for z in (zc - 3.0, zc, zc + 3.0):
-        flake('Desk', (hi[0] + 0.33, 2.4, z), 0.45, 'white', wall='side')
-    span('Desk', tlo, thi, 'wood_light', bevel=0.05)
-    span('Desk', (tlo[0], 3.75, tlo[2]), (tlo[0] + 0.6, 3.82, thi[2]), 'snow')
-    K.lobby_bell('Desk', hi[0] - 0.4, thi[1], qz, 'gold')   # at the check-in prompt
-    span('Desk', (hi[0] - 1.3, 3.8, qz + 0.8), (hi[0] - 0.4, 3.95, qz + 1.8), 'red', bevel=0.03)
-    K.lobby_till(body='red_dark', keys='cream', drawer='gold', screen='cream')
-    # The desk lamp on the counter's near end.
-    K.lobby_lamp('iron', 'red')
-    # The key rack against the end, behind the clerk.
-    K.lobby_keyrack(cabinet='log_dark', drawer='wood_light', knob='iron', board='wood',
-                    tags=('gold', 'gold', 'red'), cornice='snow', face='cream', hands='black')
-    # The waiting area: log benches with their backs to the front wall, pines in tubs.
-    for k, (x0, x1) in enumerate(K.LOBBY_BENCHES):
-        K.lobby_bench(f'Bench_{k + 1}', x0, x1, frame='log_dark', cushion='red', back='log')
-    for k, (x, z) in enumerate(K.LOBBY_PLANTERS):
-        pine_tree(f'Planter_{k + 1}', (x, 0, z), h=5.0, r=1.1)
     # The front arch: log pillars and a snowy timber gable (opening 9 wide, 9 tall at its sides).
     for name, x in (('ArchLeft', -5), ('ArchRight', 5)):
         span(name, (x - 0.5, 0, 0), (x + 0.5, 0.6, 1), 'stone_dark', bevel=0.08)
@@ -583,11 +554,37 @@ def lobby():
             box('Dressing', (dx, 10.0, 1.5 + dz), (0.08, 1.3, 0.08), 'iron')
     sphere('Glow_Warm_1', (0, 10.0, 1.5), (0.3, 0.45, 0.3), 'lamp', n=8, rings=5)
     for n, x in enumerate(K.LOBBY_SCONCES):
-        K.lobby_sconce(x, 7.2, n + 3, 'iron', candle='cream')
+        K.lobby_sconce(x, 7.2, n + 2, 'iron', candle='cream')
     for aname, (pos, look) in K.blockout_attachments('Lobby').items():
         attach(aname, pos, look)
-    finish(note='an indoor reception: the front wall, logs inside, round the snowy gable; the log desk across '
-                'the end with its key rack and clock, log benches and pines, the back row clear for the floor-1 doors')
+    finish(note='the lobby shell: the front wall, logs inside, round the snowy gable, its lantern and sconces, '
+                'the plank floor; everything else is placed by the player')
+
+
+def front_desk():
+    """The reception desk as a piece (MODELS.md, "Front desk"): the old lodge desk re-laid, served toward
+    -Z: logs laid along the counter with snowflakes on them, a light wood top with snow along the clerk's
+    edge, the bell, the ledger, the till, the lamp, the key rack and clock behind the clerk."""
+    begin('FrontDesk', 'Desk', (K.DESK_W, 0.2, K.DESK_D))
+    (lo, hi), (tlo, thi) = K.DESK_COUNTER, K.DESK_TOP
+    span('Counter', lo, hi, 'log_dark', bevel=0.1)
+    zf = tlo[2] + 0.42          # the logs' front reaches the top's served edge
+    for y in (0.55, 1.45, 2.35):
+        cyl('Counter', (0, 0, 0), 0.42, hi[0] - lo[0] - 0.2, 'log', n=8, m=at((lo[0] + 0.1, y, zf), rz=-90))
+    for x in (-3.0, 0.0, 3.0):
+        flake('Dressing', (x, 2.4, tlo[2] - 0.03), 0.45, 'white')
+    span('Counter', tlo, thi, 'wood_light', bevel=0.05)
+    span('Counter', (tlo[0], 3.75, thi[2] - 0.6), (thi[0], 3.82, thi[2]), 'snow')
+    K.desk_bell('Dressing', 0.0, thi[1], lo[2] + 0.4, 'gold')          # at the check-in prompt
+    span('Dressing', (0.8, thi[1], lo[2] + 0.4), (1.8, thi[1] + 0.15, lo[2] + 1.3), 'red', bevel=0.03)
+    K.desk_till(body='red_dark', keys='cream', drawer='gold', screen='cream')
+    K.desk_lamp('iron', 'red')
+    K.desk_keyrack(cabinet='log_dark', drawer='wood_light', knob='iron', board='wood',
+                   tags=('gold', 'gold', 'red'), cornice='snow', face='cream', hands='black')
+    for aname, (pos, look) in K.blockout_attachments('Desk').items():
+        attach(aname, pos, look)
+    finish(note='the old lodge desk as a 2 x 1 piece: logs along the counter with snowflakes, a light top edged '
+                'with snow, a bell, a ledger, a red till, a red-shaded lamp, the key rack and clock behind the clerk')
 
 
 def stairs(top):
@@ -662,15 +659,45 @@ def hotel_sign():
     finish(note='log posts and a 16 x 6 board for the SurfaceGui, a snowy gable crest with a lit snowflake, icicles')
 
 
-# --- Decor (origin at the base centre, front -Z, at most 4 x 4 x 7) -------------------------------
+# --- Decor (MODELS.md, "Decor": origin at the base centre, front -Z, fw x fd squares of 3 studs) ----
+# The pieces built before the 3-stud grid are refitted (K.refit_decor: scaled down at most 0.5, shifted),
+# with no other change of look. The ids are shared with Haunted Manor, one model per kit.
 
-def decor(id_, fw, fd):
-    begin(f'Decor_{id_}', 'Decor', (fw, 0.2, fd))
-    declare('Body', False)          # the blockout's Body does not collide
+decor = K.decor
+
+
+def d_bench():
+    decor('Bench', 3, 1, 'Floor')
+    K.decor_bench(7.0, frame='log_dark', cushion='red', back='log')
+    finish(note='the old lodge bench: dark logs, a red cushion, log back rails, arms')
+
+
+def d_urn_planter():
+    decor('UrnPlanter', 1, 1, 'Floor')
+    pine_tree('Body', (0, 0, 0), h=5.0, r=1.1)
+    finish(note='the old lobby planter: a snowy pine in a wooden tub')
+
+
+def d_rug_runner():
+    decor('RugRunner', 4, 2, 'Rug')
+    K.rug('runner', border='cream', field='red', pin='cream', motif='cream', motif_inner='red_dark')
+    finish(note='the old red-and-cream carpet as a 12 x 6 runner: cream borders on its long sides, its ends open')
+
+
+def d_rug_corner():
+    decor('RugCorner', 2, 2, 'Rug')
+    K.rug('corner', border='cream', field='red', pin='cream', motif='cream', motif_inner='red_dark')
+    finish(note='the runner\'s corner: bordered on +X and +Z, joining a runner from -X and one toward -Z')
+
+
+def d_rug_square():
+    decor('RugSquare', 4, 4, 'Rug')
+    K.rug('square', border='cream', field='red', pin='cream', motif='cream', motif_inner='red_dark')
+    finish(note='a 12 x 12 cream-bordered red rug with a medallion')
 
 
 def d_ice_block():
-    decor('IceBlock', 3.0, 3.0)
+    decor('IceBlock', 1, 1, 'Floor')
     span('Body', (-1.3, 0, -1.3), (1.3, 2.4, 1.3), 'ice', bevel=0.25)
     span('Body', (-1.0, 2.38, -1.0), (1.0, 2.5, 1.0), 'snow', bevel=0.06)
     for x, y in ((-0.85, 1.9), (0.9, 0.6)):           # frost glints on the front
@@ -679,11 +706,12 @@ def d_ice_block():
     fish = [(-0.5, 1.2), (0.0, 1.5), (0.4, 1.3), (0.7, 1.55), (0.7, 0.85), (0.4, 1.1), (0.0, 0.9)]
     prism('Body', fish, -1.36, -1.3, 'orange', plane='xy')
     box('Body', (-0.25, 1.25, -1.37), (0.1, 0.1, 0.04), 'black')
+    K.refit_decor()
     finish(note='a chamfered ice block with a snow cap and a little orange fish frozen inside')
 
 
 def d_cocoa_mug():
-    decor('CocoaMug', 3.0, 3.0)
+    decor('CocoaMug', 1, 1, 'Floor')
     lathe('Body', [(0.9, 0), (0.95, 0.1), (1.0, 1.7), (1.02, 1.8), (0.9, 1.8), (0.9, 1.65), (0, 1.65)], 'red', n=12)
     lathe('Body', [(1.01, 0.7), (1.04, 0.7), (1.04, 1.0), (1.01, 1.0)], 'cream', n=12, closed=True)
     lathe('Body', [(0, 1.6), (0.9, 1.6), (0.9, 1.68), (0, 1.68)], 'cocoa', n=12)
@@ -695,11 +723,12 @@ def d_cocoa_mug():
         lathe('Body', [(0.12, -0.05), (0.18, -0.05), (0.18, 0.05), (0.12, 0.05)], 'white', n=8, closed=True,
               m=at((x, 2.4 + k * 0.5, z), rx=90))
     flake('Body', (0, 1.32, -1.0), 0.25, 'white')
+    K.refit_decor()
     finish(note='a giant red mug of cocoa with marshmallows, steam curls and a snowflake')
 
 
 def d_prank_box():
-    decor('PrankBox', 2.4, 2.4)
+    decor('PrankBox', 1, 1, 'Floor')
     span('Body', (-0.9, 0, -0.9), (0.9, 1.8, 0.9), 'pink', bevel=0.1)
     for x, y in ((-0.45, 0.5), (0.4, 1.25), (0.5, 0.45), (-0.4, 1.35)):
         cyl('Body', (0, 0, 0), 0.16, 0.04, 'yellow', n=8, m=at((x, y, -0.88), rx=-90))
@@ -715,11 +744,12 @@ def d_prank_box():
         sphere('Body', (x, 3.95, -0.55), 0.07, 'black', n=6, rings=3)
     cyl('Body', (0, 4.25, 0), 0.5, 0.12, 'red', n=10)
     cyl('Body', (0, 4.37, 0), 0.32, 0.45, 'red', n=10)
+    K.refit_decor()
     finish(note='a pink polka-dot jack-in-the-box with a snowman\'s head on the spring')
 
 
 def d_rock_pile():
-    decor('RockPile', 3.6, 3.6)
+    decor('RockPile', 2, 2, 'Floor')
     for (x, y, z), r in (((-0.8, 0.6, 0.3), (0.95, 0.6, 0.85)), ((0.75, 0.5, 0.5), (0.85, 0.5, 0.8)),
                          ((0.1, 0.45, -0.8), (0.8, 0.45, 0.7)), ((-0.1, 1.3, 0.2), (0.7, 0.55, 0.65)),
                          ((0.15, 1.95, 0.1), (0.45, 0.35, 0.42))):
@@ -728,11 +758,12 @@ def d_rock_pile():
                          ((-1.05, 1.1, 0.3), (0.5, 0.1, 0.45)), ((0.95, 0.92, 0.6), (0.45, 0.08, 0.4)),
                          ((0.15, 0.85, -0.95), (0.4, 0.08, 0.35))):
         sphere('Body', (x, y, z), r, 'snow', n=7, rings=3)
+    K.refit_decor()
     finish(note='a pile of round grey stones with snow caps')
 
 
 def d_snow_globe():
-    decor('SnowGlobe', 2.6, 2.6)
+    decor('SnowGlobe', 1, 1, 'Floor')
     lathe('Body', [(1.1, 0), (1.15, 0.1), (1.0, 0.7), (0.85, 0.75), (0, 0.75)], 'wood', n=12)
     lathe('Body', [(1.11, 0.25), (1.14, 0.25), (1.14, 0.45), (1.11, 0.45)], 'gold', n=12, closed=True)
     lathe('Body', [(0, 0.75), (0.7, 0.75), (0.86, 1.1), (0.9, 1.55), (0.82, 1.95), (0.58, 2.25), (0.28, 2.42),
@@ -743,16 +774,18 @@ def d_snow_globe():
     prism('Body', [(0.12, 1.15), (0.55, 1.15), (0.55, 1.45), (0.335, 1.68), (0.12, 1.45)], -0.95, -0.8, 'red', plane='xy')
     for x, y in ((-0.5, 1.75), (0.4, 1.95), (0.1, 2.2), (-0.15, 1.45), (0.6, 1.6)):
         sphere('Body', (x, y, -0.86), (0.05, 0.05, 0.03), 'white', n=6, rings=3)
+    K.refit_decor()
     finish(note='an ice-blue snow globe on a wooden base with a gold band, a pine and a red cabin on its front')
 
 
 def d_aurora_lamp():
-    decor('AuroraLamp', 2.4, 2.4)
+    decor('AuroraLamp', 1, 1, 'Floor')
     lathe('Body', [(0.8, 0), (0.85, 0.1), (0.6, 0.35), (0.15, 0.45), (0.12, 3.6), (0.2, 3.7)], 'wood', n=10)
     lathe('Body', [(0.82, 0.12), (0.86, 0.12), (0.86, 0.22), (0.82, 0.22)], 'gold', n=10, closed=True)
     lathe('Glow_Magic_1', [(0.0, 3.7), (0.9, 3.75), (1.0, 4.4), (0.75, 5.0), (0.3, 5.3), (0, 5.35)], 'aurora', n=10)
     lathe('Body', [(1.0, 4.3), (1.04, 4.3), (1.04, 4.5), (1.0, 4.5)], 'violet', n=10, closed=True)
     sphere('Body', (0, 5.45, 0), (0.18, 0.14, 0.18), 'gold', n=6, rings=3)
+    K.refit_decor()
     finish(note='a standing lamp whose rounded shade glows aurora green, banded violet')
 
 
@@ -772,7 +805,9 @@ def room_plaque():
     finish(proxy=False, note='a log plaque with a snow-white rim; the code writes on its Face')
 
 DECOR_BUILD = {'IceBlock': d_ice_block, 'CocoaMug': d_cocoa_mug, 'PrankBox': d_prank_box,
-               'RockPile': d_rock_pile, 'SnowGlobe': d_snow_globe, 'AuroraLamp': d_aurora_lamp}
+               'RockPile': d_rock_pile, 'SnowGlobe': d_snow_globe, 'AuroraLamp': d_aurora_lamp,
+               'Bench': d_bench, 'UrnPlanter': d_urn_planter, 'RugRunner': d_rug_runner,
+               'RugCorner': d_rug_corner, 'RugSquare': d_rug_square}
 ROOM_BUILD = {'IglooRoom': igloo_room, 'IceCave': ice_cave, 'YetiDen': yeti_den, 'FrostLoft': frost_loft,
               'GlacierSuite': glacier_suite, 'AuroraDome': aurora_dome}
 AMENITY_BUILD = {'CocoaLounge': cocoa_lounge, 'AuroraDeck': aurora_deck}
@@ -781,7 +816,8 @@ AMENITY_BUILD = {'CocoaLounge': cocoa_lounge, 'AuroraDeck': aurora_deck}
 def main():
     K.use_palette(PALETTE)
     K.start_set(SET)
-    order = ([('IglooRoom', igloo_room), ('Lobby', lobby), ('StairCore', lambda: stairs(False)),
+    order = ([('IglooRoom', igloo_room), ('Lobby', lobby), ('FrontDesk', front_desk),
+              ('StairCore', lambda: stairs(False)),
               ('StairCoreTop', lambda: stairs(True)), ('HotelSign', hotel_sign), ('RoomPlaque', room_plaque)]
              + [(n, f) for n, f in ROOM_BUILD.items() if n != 'IglooRoom']
              + list(AMENITY_BUILD.items())
@@ -795,7 +831,7 @@ def main():
         except K.Refused as e:
             print(str(e), flush=True)
             refused.append(name)
-    rows = [(['Lobby', 'HotelSign'], 8, 1.0),
+    rows = [(['Lobby', 'FrontDesk', 'HotelSign'], 8, 1.0),
             ([n for n, _, _ in ROOMS], 5, 1.0),
             (list(AMENITY_BUILD) + ['StairCore', 'StairCoreTop'], 5, 1.0),
             ([f'Decor_{n}' for n in DECOR] + ['RoomPlaque'], 2.5, 2.0)]

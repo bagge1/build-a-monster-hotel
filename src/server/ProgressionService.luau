@@ -124,8 +124,7 @@ local function rebirth(player: Player, force: boolean?)
 	data.cash = Constants.Economy.StartCash
 	data.till = 0
 	data.runCash = 0
-	data.layout = {}
-	data.floors = 1
+	PlayerData.resetHotel(data) -- the start area, the desk, one floor (§5.4)
 	data.reviews = {}
 	data.rebirths += 1
 	local from = data.location

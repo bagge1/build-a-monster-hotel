@@ -18,7 +18,7 @@ keeps the rest of the manifest). About 30 s, headless, Workbench only.
 
 ## What is here
 
-- `fbx/<Name>.fbx`: 32 models, the file name the contract name
+- `fbx/<Name>.fbx`: 39 models, the file name the contract name
   (`ServerStorage.HotelKit.HauntedManor.<Name>`). The atlas is embedded in each.
 - `manifest.json`: every piece's Root, every part's box (Roblox studs, piece
   frame), triangles, whether it collides, and **every attachment** (position,
@@ -34,51 +34,59 @@ keeps the rest of the manifest). About 30 s, headless, Workbench only.
 
 | Piece | Kind | Triangles / budget | LOD_Proxy | Parts besides Root |
 |---|---|---|---|---|
-| `StandardRoom` | Room 2x2 | 2,480 / 6,000 | 108 | Floor, Wall_Back, Wall_Left, Wall_Right, Wall_Lintel, Wall_FrontLeft, Wall_FrontRight, Dressing, Glow_Warm_1, Bed, Furniture, Glow_Warm_2 |
-| `GardenRoom` | Room 2x2 | 2,848 / 6,000 | 108 | walls, Floor, Dressing, Glow_Warm_1, Bed, Furniture |
-| `AtticRoom` | Room 2x2 | 2,420 / 6,000 | 108 | walls, Floor, Dressing, Glow_Warm_1, Bed, Furniture |
-| `SarcophagusSuite` | Room 2x3 | 2,320 / 6,000 | 108 | walls, Floor, Dressing, Glow_Warm_1, Bed, Furniture, Glow_Warm_2 |
-| `PotionLoft` | Room 2x3 | 3,080 / 6,000 | 108 | walls, Floor, Dressing, Glow_Warm_1, Bed, Furniture, Glow_Magic_1 |
-| `DenRoom` | Room 3x3 | 2,276 / 6,000 | 108 | walls, Floor, Dressing, Glow_Warm_1, Bed, Furniture |
-| `CoffinSuite` | Room 3x3 | 2,232 / 6,000 | 108 | walls, Floor, Dressing, Glow_Warm_1..4, Bed, Furniture |
-| `OperaSuite` | Room 3x3 | 2,900 / 6,000 | 108 | walls, Floor, Dressing, Glow_Warm_1, Bed, Furniture |
-| `SnackBar` | Amenity 2x2 | 2,434 / 6,000 | 96 | walls, Floor, Dressing, Glow_Warm_1, Centrepiece |
-| `MusicRoom` | Amenity 2x2 | 2,032 / 6,000 | 96 | walls, Floor, Dressing, Glow_Warm_1, Centrepiece |
-| `GraveyardGarden` | Amenity 2x2 | 2,372 / 6,000 | 96 | walls, Floor, Dressing, Glow_Warm_1..2, Centrepiece |
-| `QuietLibrary` | Amenity 2x2 | 3,820 / 6,000 | 96 | walls, Floor, Dressing, Glow_Warm_1..2, Centrepiece |
-| `OrganHall` | Amenity 2x2 | 2,266 / 6,000 | 96 | walls, Floor, Dressing, Glow_Warm_1..3, Centrepiece |
-| `Lobby` | Lobby 72x12 | 6,818 / 8,000 | 144 | Rug, Wall_FrontLeft, Dressing, Wall_FrontRight, Desk, Till, KeyRack, Bench_1, Bench_2, Planter_1, Planter_2, ArchLeft, ArchRight, ArchTop, Glow_Warm_1..5 |
-| `StairCore` | Stairs | 1,276 / 8,000 | 180 | Step_Up_1..5, Landing, Step_Down_1..5, Wall_Left, Wall_Right, Wall_Back, Divider, Dressing, Glow_Warm_1 |
-| `StairCoreTop` | Stairs | 1,612 / 8,000 | 192 | as StairCore, plus Rail_Top; walls 15.5 tall |
+| `StandardRoom` | Room 2x2 | 3,360 / 6,000 | 108 | the six walls, Floor, Rug, Dressing, Bed, Furniture, Glow_Warm_1..2 |
+| `Lobby` | Lobby 144x24 (shell) | 3,604 / 10,000 | 60 | Floor, Wall_FrontLeft, Dressing, Wall_FrontRight, ArchLeft, ArchRight, ArchTop, Glow_Warm_1..7 |
+| `FrontDesk` | Desk 2x1 | 2,318 / 3,000 | 36 | Counter, Dressing, Till, KeyRack, Glow_Warm_1 |
+| `StairCore` | Stairs | 1,692 / 8,000 | 240 | Step_Up_1..8, Landing, Step_Down_1..7, Wall_Left, Wall_Right, Wall_Back, Divider, Dressing, Glow_Warm_1 |
+| `StairCoreTop` | Stairs | 2,228 / 8,000 | 252 | Step_Up_1..8, Landing, Step_Down_1..7, Wall_Left, Wall_Right, Wall_Back, Divider, Rail_Top, Dressing, Glow_Warm_1 |
 | `HotelSign` | Sign | 400 / 3,000 (draft ceiling) | none | PostLeft, PostRight, Board, Crest, Glow_Cold_1 |
-| `Decor_PuddleRug` | Decor | 228 / 1,500 | none | Body |
-| `Decor_SnackBasket` | Decor | 384 / 1,500 | none | Body |
-| `Decor_RecordPlayer` | Decor | 336 / 1,500 | none | Body |
-| `Decor_Candles` | Decor | 312 / 1,500 | none | Body, Glow_Warm_1..3 |
-| `Decor_Planter` | Decor | 456 / 1,500 | none | Body |
-| `Decor_AntiqueWardrobe` | Decor | 544 / 1,500 | none | Body |
-| `Decor_BlackoutCurtains` | Decor | 304 / 1,500 | none | Body |
-| `Decor_SandTray` | Decor | 354 / 1,500 | none | Body |
-| `Decor_CatBasket` | Decor | 440 / 1,500 | none | Body |
-| `Decor_Cauldron` | Decor | 478 / 1,500 | none | Body, Glow_Magic_1 |
-| `Decor_SteakPlatter` | Decor | 282 / 1,500 | none | Body |
-| `Decor_MoonWindow` | Decor | 432 / 1,500 | none | Body, Glow_Cold_1 |
-| `Decor_PipeOrgan` | Decor | 566 / 1,500 | none | Body |
-| `Decor_SoundproofWalls` | Decor | 972 / 1,500 | none | Body |
-| `Decor_Chandelier` | Decor | 784 / 1,500 | none | Body, Glow_Warm_1..5 |
+| `RoomPlaque` | Cosmetic | 160 / 2,000 (draft ceiling) | none | Board, Face |
+| `GardenRoom` | Room 2x2 | 3,728 / 6,000 | 108 | the six walls, Floor, Rug, Dressing, Bed, Furniture, Glow_Warm_1 |
+| `AtticRoom` | Room 2x2 | 3,432 / 6,000 | 108 | the six walls, Floor, Dressing, Bed, Furniture, Glow_Warm_1 |
+| `SarcophagusSuite` | Room 2x3 | 3,200 / 6,000 | 108 | the six walls, Floor, Rug, Dressing, Bed, Furniture, Glow_Warm_1..2 |
+| `PotionLoft` | Room 2x3 | 3,960 / 6,000 | 108 | the six walls, Floor, Rug, Dressing, Bed, Furniture, Glow_Warm_1, Glow_Magic_1 |
+| `DenRoom` | Room 3x3 | 3,332 / 6,000 | 108 | the six walls, Floor, Rug, Dressing, Bed, Furniture, Glow_Warm_1 |
+| `CoffinSuite` | Room 3x3 | 3,288 / 6,000 | 108 | the six walls, Floor, Rug, Dressing, Bed, Furniture, Glow_Warm_1..4 |
+| `OperaSuite` | Room 3x3 | 3,956 / 6,000 | 108 | the six walls, Floor, Rug, Dressing, Bed, Furniture, Glow_Warm_1 |
+| `SnackBar` | Amenity 2x2 | 3,314 / 6,000 | 96 | the six walls, Floor, Dressing, Centrepiece, Glow_Warm_1 |
+| `MusicRoom` | Amenity 2x2 | 2,912 / 6,000 | 96 | the six walls, Floor, Rug, Dressing, Centrepiece, Glow_Warm_1 |
+| `GraveyardGarden` | Amenity 2x2 | 3,252 / 6,000 | 96 | the six walls, Floor, Dressing, Centrepiece, Glow_Warm_1..2 |
+| `QuietLibrary` | Amenity 2x2 | 4,700 / 6,000 | 96 | the six walls, Floor, Rug, Dressing, Centrepiece, Glow_Warm_1..2 |
+| `OrganHall` | Amenity 2x2 | 3,146 / 6,000 | 96 | the six walls, Floor, Rug, Dressing, Centrepiece, Glow_Warm_1..3 |
+| `Decor_PuddleRug` | Decor 2x2 Floor | 228 / 1,500 | none | Body |
+| `Decor_SnackBasket` | Decor 1x1 Floor | 384 / 1,500 | none | Body |
+| `Decor_RecordPlayer` | Decor 1x1 Floor | 336 / 1,500 | none | Body |
+| `Decor_Candles` | Decor 1x1 Floor | 312 / 1,500 | none | Body, Glow_Warm_1..3 |
+| `Decor_Planter` | Decor 1x1 Floor | 456 / 1,500 | none | Body |
+| `Decor_AntiqueWardrobe` | Decor 2x1 Floor | 544 / 1,500 | none | Body |
+| `Decor_BlackoutCurtains` | Decor 2x1 Wall | 304 / 1,500 | none | Body |
+| `Decor_SandTray` | Decor 2x1 Floor | 354 / 1,500 | none | Body |
+| `Decor_CatBasket` | Decor 1x1 Floor | 440 / 1,500 | none | Body |
+| `Decor_Cauldron` | Decor 1x1 Floor | 478 / 1,500 | none | Body, Glow_Magic_1 |
+| `Decor_SteakPlatter` | Decor 1x1 Floor | 282 / 1,500 | none | Body |
+| `Decor_MoonWindow` | Decor 2x1 Wall | 432 / 1,500 | none | Body, Glow_Cold_1 |
+| `Decor_PipeOrgan` | Decor 2x2 Wall | 566 / 1,500 | none | Body |
+| `Decor_SoundproofWalls` | Decor 2x1 Wall | 972 / 1,500 | none | Body |
+| `Decor_Chandelier` | Decor 1x1 Floor | 784 / 1,500 | none | Body, Glow_Warm_1..5 |
+| `Decor_Bench` | Decor 3x1 Floor | 628 / 1,500 | none | Body |
+| `Decor_UrnPlanter` | Decor 1x1 Floor | 268 / 1,500 | none | Body |
+| `Decor_RugRunner` | Decor 4x2 Rug | 156 / 1,500 | none | Body |
+| `Decor_RugCorner` | Decor 2x2 Rug | 120 / 1,500 | none | Body |
+| `Decor_RugSquare` | Decor 4x4 Rug | 204 / 1,500 | none | Body |
 
 Triangles exclude `Root` and `LOD_Proxy` are counted separately (500 ceiling).
 
 ## How each piece is cut (MODELS.md rule 7)
 
 - **Collides:** `Floor`, every `Wall_*`, `Bed` / `Centrepiece`, `Furniture`
-  (one compact piece on the right wall), the lobby's `Desk`, `Till`, `Arch*`,
-  `Planter_n`, every stair box, the sign's posts and `Board`. Each is a
-  compact shape, so `Box` collision is its true shape.
+  (one compact piece on the right wall), the lobby's `Wall_Front*` and
+  `Arch*`, the front desk's `Counter`, `Till` and `KeyRack`, every stair box,
+  the sign's posts and `Board`. Each is a compact shape, so `Box` collision is
+  its true shape.
 - **Does not collide:** `Root`, `Dressing` (pictures, sconces, trims, rafters,
   ivy, awnings: everything on the walls, merged into one mesh), `Glow_*`,
-  `LOD_Proxy`, the lobby's `Rug` and the sign's `Crest` (as the blockout), and
-  each decor `Body` (the blockout's Body does not collide either).
+  `LOD_Proxy`, a room's `Rug`, the lobby's `Floor` and the sign's `Crest` (as
+  the blockout), and every decor `Body` (a placed piece never traps a player).
 - **Walls are exactly the blockout's boxes** (`Wall_Back`, `Wall_Left`,
   `Wall_Right`, `Wall_FrontLeft`, `Wall_FrontRight`, `Wall_Lintel`): the bands,
   chamfers and the door jambs are inside those boxes, and the lintel is a
@@ -350,3 +358,136 @@ The handrail and the jambs are rebuilt and re-staged with every room and
 both stair cores, imported, saved and synced the same night (25/25); the
 stair cores' dressing tops out at 17.85, under the upper floor. The jambs and
 the lamps are not yet seen in a playtest.
+
+## 2026-10-19: free building (the lobby shell, the front desk, decor on the 3-stud grid)
+
+His ruling (GDD §5.4): everything in the hotel can be rebuilt, the reception
+too. Built to the contract `MODELS.md` was rewritten to the same day ("Lobby
+(`Lobby`): the shell", "Front desk", "Decor", "Floor finishes"), and enforced
+by `finish()` and the validator (`tools/hotel_kit.py`).
+
+- **`Lobby` is the shell.** The front wall (`Wall_FrontLeft`, `Wall_FrontRight`,
+  the blockout's boxes) with its windows, the pointed arch, its lantern
+  (`Glow_Warm_1`), the six sconces (`Glow_Warm_2..7`, renumbered), and the plum
+  tiled `Floor` (renamed from `Rug`): one part over the whole 144 × 24, y 0 to
+  0.1, not colliding, as the blockout's floor (people walk on the plot's slab
+  under it). The desk, till, key rack, benches, planters and carpet are gone
+  from it. Attachments: `Entrance` (0, 0, 0), `Spawn` (8, 0, 18), `SignBoard`
+  (48, 0, −5), `Trap_1..3` (x −16, 16, 48; z 6), all looking −Z; no desk
+  points (the code mirrors them from the `FrontDesk`). 3,604 triangles.
+- **`FrontDesk`** (new, kind `Desk`, 24 × 12, served toward −Z): the old desk
+  re-laid in its own frame. The counter x −4.5..4.5, z −4.0..−2.2, with five
+  violet panels and gold rosettes on its served face; its gold top x ±4.7,
+  z −4.2..−1.9, **at 3.8**; the bell at (0, 3.8, −3.6) and the ledger beside it,
+  the antique till on the +X end (x 2.8..4.0, keys toward the clerk), the
+  teal-shaded lamp (`Glow_Warm_1`) on the −X end; bell, ledger and lamp are
+  `Dressing`, so the `Counter` box tops out at 3.8. The `KeyRack` with its
+  clock: x −2.6..2.6, z 5.15..6.0, 9.5 tall. Attachments `Desk` (0, 3.8, −4.2),
+  `Till` (3.4, 3.8, −4.2), `Clerk` (0, 0, 1.5), all looking −Z; `Queue_1..4`
+  at (0, 0, −8 / −11 / −14 / −17) looking +Z. 2,318 triangles of 3,000,
+  `LOD_Proxy` 36. The shapes are the kit's (`desk_till`, `desk_keyrack`,
+  `desk_lamp`, `desk_bell`, re-authored in the desk's frame).
+- **The old lobby's furniture as decor** (ids shared with Frostfang Lodge, one
+  model per kit): `Decor_Bench` 3x1 Floor (the bench, 7 long, its back toward
+  +Z), `Decor_UrnPlanter` 1x1 Floor (the stone urn with a pumpkin), and the
+  gold-and-crimson carpet as three rugs (`hotel_kit.rug`): `Decor_RugRunner`
+  4x2 (12 × 6, gold borders on ±Z, its ends open), `Decor_RugCorner` 2x2
+  (borders on +X and +Z, open on −X and −Z, the inner borders turning in its
+  −X −Z corner), `Decor_RugSquare` 4x4 (bordered all round, a medallion).
+  Rugs are 0.12 tall and run to their footprint's edges: the border colour
+  under all, the field on it, a pin line and diamond motifs a hair proud,
+  one motif every 3 studs along a runner, so runners join end to end and a
+  corner turns two into an L with the borders and pin lines unbroken
+  (close-ups rendered and looked at).
+- **Every existing decor refitted to the 3-stud grid** (`refit_decor`: a
+  uniform scale down when at most 0.5 too wide, the least shift that brings it
+  inside, a Wall piece's back onto z = 3fd/2 − 0.4; nothing else changed;
+  each refit is in the manifest's `decor.refit`):
+
+  | Decor | Footprint, layer | Triangles | Refit |
+  |---|---|---|---|
+  | `Decor_PuddleRug` | 2x2 Floor | 228 | none |
+  | `Decor_SnackBasket` | 1x1 Floor | 384 | none |
+  | `Decor_RecordPlayer` | 1x1 Floor | 336 | shifted 0.07 toward −Z (its horn) |
+  | `Decor_Candles` | 1x1 Floor | 312 | none |
+  | `Decor_Planter` | 1x1 Floor | 456 | none |
+  | `Decor_AntiqueWardrobe` | 2x1 Floor | 544 | none |
+  | `Decor_BlackoutCurtains` | 2x1 Wall | 304 | back onto the wall (+0.65 z) |
+  | `Decor_SandTray` | 2x1 Floor | 354 | none |
+  | `Decor_CatBasket` | 1x1 Floor | 440 | scale 0.911 |
+  | `Decor_Cauldron` | 1x1 Floor | 478 | scale 0.990 |
+  | `Decor_SteakPlatter` | 1x1 Floor | 282 | scale 0.917 |
+  | `Decor_MoonWindow` | 2x1 Wall | 432 | back onto the wall (+0.65 z) |
+  | `Decor_PipeOrgan` | 2x2 Wall | 566 | back onto the wall (+1.35 z) |
+  | `Decor_SoundproofWalls` | 2x1 Wall | 972 | back onto the wall (+0.76 z) |
+  | `Decor_Chandelier` | 1x1 Floor | 784 | scale 0.870 (its ring was 2.53 across; now 5.8 tall) |
+  | `Decor_Bench` | 3x1 Floor | 628 | new |
+  | `Decor_UrnPlanter` | 1x1 Floor | 268 | new |
+  | `Decor_RugRunner` | 4x2 Rug | 156 | new |
+  | `Decor_RugCorner` | 2x2 Rug | 120 | new |
+  | `Decor_RugSquare` | 4x4 Rug | 204 | new |
+
+- **Rooms and amenities**: each has exactly one `Floor`, now the walking
+  surface alone (y 0..0.2, colliding; `finish()` checks it). The rugs that were
+  merged into it are their own `Rug` part, not colliding, so a floor finish
+  laid on `Floor` recolours the planks and not the rug: `StandardRoom`,
+  `GardenRoom`, `SarcophagusSuite`, `PotionLoft`, `DenRoom`, `CoffinSuite`,
+  `OperaSuite`, `MusicRoom`, `QuietLibrary`, `OrganHall`. Their furniture
+  stays in `Bed` / `Furniture` / `Centrepiece`. `Decor_1..3` are gone from
+  every room and amenity (and their slot check from the kit): `AtticRoom`,
+  `SnackBar` and `GraveyardGarden` differ from HEAD only by those
+  attachments, their geometry identical, so they are not re-staged.
+- `StairCore`, `StairCoreTop`, `HotelSign` and `RoomPlaque` are unchanged
+  (their manifest records are identical to HEAD's).
+
+**Validated** (Blender, headless): 39/39 pieces through `finish()` and
+re-imported: the shell's rules (the front wall = the blockout's boxes, the
+entrance 4 × 7 clear, `Floor` one part over 144 × 24 with its top at most 0.1,
+nothing colliding behind the front wall from z 0.8 to 24 and y 0.15 to 17, no
+desk points on the lobby); the desk's (Root 24 × 0.2 × 12, nothing outside it,
+the `Counter`'s top at 3.8, `Desk` and `Till` on its served edge, nothing
+colliding in x −12..−5 or 5..12 up to y 7, `KeyRack` inside its zone, a 5-stud
+person walking to the `Clerk` from both side edges and from `Queue_1` to the
+counter, `Glow_Warm_1`, 3,000 triangles); each decor inside its layer's
+envelope. The cosmetics set still passes against the new shell (7/7,
+`tools/build_cosmetics_hotel.py`). **Studio runtime is not tested**: nothing
+here is imported, placed, walked or lit; how the code stands decor on a
+`Floor`'s top, turns it, and mirrors the desk's points onto the lobby is not
+seen.
+
+**One contract number held differently:** the arch stands 0.2 proud of the
+front wall's inner face (to z 1.0), as approved and as the cosmetics are
+fitted to it. The clear-floor check counts `ArchLeft`, `ArchRight` and
+`ArchTop` as the front wall and holds them to |x| ≤ 6, z ≤ 1.0 (Frostfang's
+snow cap overhangs the pillars to 5.9).
+
+**Staged** in the main checkout's `blender/_import/` (52 FBX with
+Frostfang's): this set's `Lobby`, `FrontDesk`, the 20 decor and the ten rooms
+and amenities with a `Rug` part.
+
+### Blind review 2026-10-19 (free building; Fable, one round)
+
+Five pictures in `review/blind/free_building/` (not in git): both kits' lobby
+with a `FrontDesk`, a runner, a square rug, a bench and two urn planters
+placed, from just inside the entrance, from behind the desk, and raised over
+the whole lobby; the lodge's rug pieces joined into an L with the bench and
+planter; a close-up of where two runners meet the corner.
+
+| # | The reviewer's finding | Triage |
+|---|---|---|
+| 1 | The queue spot is not at the bell; in the lodge the guest stands at the arch | **False**: `Queue_1` is (0, 0, −8), straight in front of the bell at x 0 (picture 1 looks from 8 studs to the left); the figure at the arch is a player coming in |
+| 2 | The till reads as a birdhouse from the guest's side | **His call** (a look): its keys face the clerk by his report (2026-10-19); the guests see its marquee plate. Recommendation: keep |
+| 3 | The key rack stands a full cell behind the counter | **False** against the contract: the clerk's space (z −1.9 to 5.15) is `MODELS.md`'s, the approved desk's sizes (the rack stood 8 behind the counter there too) |
+| 4 | The figures' heads are white boxes with a slot | **False**: the render's stand-in person (the slot marks its facing), not a game model |
+| 5 | The manor's bell is gold on a gold top | **His call** (a look, the approved desk's colours). Recommendation: keep; the check-in prompt marks the spot |
+| 6 | The floor checker is a cell per square, reads as the grid | Size: **false** (6-stud tiles, half a cell, chosen in an earlier review over 12). The look: **his call**, and the floor finish he picks replaces it |
+| 7 | The lodge's window sill is above head height | **False**: both kits' windows are the kit's 6 × 9 at y 3 to 12; the sill at 3, under a 5-stud person's shoulder |
+| 8 | The manor is murky; the desk a dark slab | **False** for this work: the approved desk's palette, unchanged; the dark is the preview's light |
+| 9 | A notch where the lodge's runner meets the corner | **False**: the close-up shows the borders and pin lines unbroken; the corner's inner border square (−3 to −2.5) meets the runner's border (−3 to −2.5) exactly |
+| 10 | The key tags do not read | Kept, as decided in the lobby rework (round 3.7: larger tags would clutter) |
+
+Not judged by the reviewer: the counter's height (3.8, the contract's and his
+approved desk's; already his call, WAITING §2.13); whether the clerk passes
+round both ends (proven: the kit walks a 5-stud person from both side edges
+to the `Clerk`); the arch's size (unchanged); the runner's open ends (by
+design, so runners join).

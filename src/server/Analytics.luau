@@ -13,8 +13,10 @@
 ]]
 
 local AnalyticsService = game:GetService("AnalyticsService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
 
+local Pieces = require(ReplicatedStorage.Shared.Pieces)
 local PlayerData = require(ServerScriptService.Server.PlayerData)
 
 local Analytics = {}
@@ -75,7 +77,6 @@ function Analytics.Start()
 	-- The firsts of §13.5, from the systems that see them (required here, at
 	-- Start, so none of them has to know about analytics).
 	local Server = ServerScriptService.Server
-	local ReplicatedStorage = game:GetService("ReplicatedStorage")
 	local Species = require(ReplicatedStorage.Shared.Species) :: any
 	local BuildService = require(Server.BuildService) :: any
 	local GuestService = require(Server.GuestService) :: any
@@ -86,7 +87,8 @@ function Analytics.Start()
 		if what == "Place" and data then
 			Analytics.first(player, "FirstRoom")
 			for _, rec in data.layout do
-				if rec.item ~= "StandardRoom" then
+				local piece = Pieces.get(rec.item)
+				if piece and piece.kind == "Room" and rec.item ~= "StandardRoom" then
 					Analytics.first(player, "FirstThemedRoom")
 				end
 			end
