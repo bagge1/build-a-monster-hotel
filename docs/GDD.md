@@ -260,7 +260,20 @@ the game** (his words, 2026-10-19: "det ska vara mycket customizable, detta
 - **A forest round the street**, so the plot is not a bare lawn, and the
   Night Bus drives in round a bend out of the forest instead of appearing.
 
-Open (WAITING §2), with Claude's proposal: an area's size (4 × 5 cells
+**His yes to Claude's proposals (2026-10-19), every number a PLACEHOLDER:**
+areas of 4 × 5 cells behind the lobby, six to a floor, bought for every floor
+at once, the front middle one owned at the start; a stair is a 2×2 piece
+joining its floor to the one above on the same cells, every floor reached by
+at least one, the last to a floor with rooms not removable, the first to a
+new floor free; the front desk (with till and key rack) anywhere on floor 1
+the guests reach from the entrance, exactly one, the lobby a shell and its
+benches, planters and carpet pieces; decor on a 3-stud grid in 90° turns in
+rooms, lobby and hallways, a room's tags from the decor inside it, floors
+chosen per room, lobby and hallway; tiers from decor points (each item's
+points from its price), T2 at 100 and T3 at 300 for a 2×2 room, more for
+larger, +50 % pay a tier; a forecourt 24 studs deep, an 8-stud pavement, a
+6-stud path to the arch, the plots moved 24 studs back. What was open before
+his yes: an area's size (4 × 5 cells
 behind the lobby, six to a floor, so two 2×2 rooms either side of a
 hallway fit one), whether an area is bought for every floor at once, how a
 stair joins two floors, where the desk may stand, and how freely decor is

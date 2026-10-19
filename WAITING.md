@@ -242,7 +242,7 @@ Med Claudes skärmdump där det finns en. -->
    köps och placeras, allt går att bygga om, även receptionen, och man kan
    byta golv och ställa ut mattor och dekor; GDD §5.4 och §18). Det som är
    öppet står i punkt 16.
-16. **Att bygga fritt: det som är öppet** (2026-10-19, GDD §5.4). Fem frågor,
+16. ~~**Att bygga fritt: det som är öppet**~~ (besvarat 2026-10-19: ja till Claudes rekommendationer nedan, alla tal platshållare; GDD §5.4) (2026-10-19, GDD §5.4). Fem frågor,
    med Claudes rekommendation:
    - **Områdena:** 4 × 5 celler (48 × 60 studs) bakom lobbyn, tre i bredd och
      två på djupet, sex per våning. Två 2×2-rum på var sida om en korridor
@@ -287,7 +287,7 @@ Med Claudes skärmdump där det finns en. -->
    Claude modellerar och visar som grå silhuetter först, och en väg som går
    in i skogen i båda ändar. Görs i en egen session; utseendet är ditt.
 
-19. **En förgård framför hotellet** (din idé, 2026-10-19): en trottoar som
+19. ~~**En förgård framför hotellet**~~ (besvarat 2026-10-19: ja till rekommendationen, 24 studs; GDD §5.4) (din idé, 2026-10-19): en trottoar som
    gästerna går på, en gång fram till entrén, och fällorna placeras där (i
    dag sitter de på tre platser i lobbyn). **Att bestämma:** hur djup.
    **Rekommendation:** 24 studs (två celler) mellan trottoaren och fasaden,
