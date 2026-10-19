@@ -827,6 +827,15 @@ itself after 24 h.
   time.
 - **Notifications:** the opt-in is offered once, after the first move-in.
   Sending them needs Open Cloud from outside the game (not built).
+- **Gift passes** (§10.1 point 4; built 2026-10-19 as WAITING §2.6's
+  recommended option, reversible): one developer product per pass, "Gift:
+  <pass>", at the pass's own price. The giver picks a player **on the same
+  street** (server) who does not own the pass; the purchase sends the pass to
+  the recipient's profile as a ProfileStore message, so it arrives even if
+  they leave before the purchase finishes, and it is kept **as if bought**
+  (never cleared by the join's ownership check). If the recipient is lost
+  (a receipt retried on another server after a crash), the giver gets the
+  pass rather than nothing.
 
 ### A.10 Events (§8.2)
 

@@ -11,6 +11,11 @@
 	(DevGrant `receipt`).
 
 	Facade packs (§10.2, 99–249 each) wait for the facade models.
+
+	GIFTS (§10.1 point 4, GDD Appendix A.9): every pass has a developer
+	product "Gift: <pass>" at the pass's price (a PLACEHOLDER: the GDD gives no
+	gift price), made below from the pass list so the two never drift apart.
+	A pass cannot be bought for someone else, which is why a gift is a product.
 ]]
 
 export type Entry = {
@@ -21,6 +26,7 @@ export type Entry = {
 	price: number,
 	text: string,
 	image: string?, -- a ui/ file name, uploaded later (UiImages)
+	gift: string?, -- a gift product: the key of the pass it gives
 }
 
 local Store = {}
@@ -142,6 +148,21 @@ Store.Entries = {
 		text = "Watch an ad: double cash for 15 minutes.",
 	},
 } :: { Entry }
+
+-- A gift product per pass (§10.1 point 4). Their ids are placeholders like the rest.
+for _, e in table.clone(Store.Entries) do
+	if e.kind == "Pass" then
+		table.insert(Store.Entries, {
+			key = `Gift_{e.key}`,
+			name = `Gift: {e.name}`,
+			kind = "Product",
+			id = 0,
+			price = e.price, -- PLACEHOLDER: the pass's own price
+			text = `Give {e.name} to a player on your street.`,
+			gift = e.key,
+		})
+	end
+end
 
 Store.ByKey = {} :: { [string]: Entry }
 for _, e in Store.Entries do

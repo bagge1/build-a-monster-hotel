@@ -88,6 +88,8 @@ export type Data = {
 	codes: { [string]: boolean },
 	receipts: { string },
 	passes: { [string]: boolean },
+	gifted: { [string]: boolean }, -- passes given by another player (§10.1 point 4), kept as if bought
+	giftTo: { [string]: number }, -- pass key -> the UserId this player is buying it for now
 	boosts: { [string]: number }, -- name -> seconds of play time left
 	settings: { [string]: boolean },
 	lastSeen: number,
@@ -128,6 +130,8 @@ local TEMPLATE: Data = {
 	codes = {},
 	receipts = {},
 	passes = {},
+	gifted = {},
+	giftTo = {},
 	boosts = {},
 	settings = { music = true, sfx = true, lowGraphics = false },
 	lastSeen = 0,
@@ -144,6 +148,8 @@ local profiles: { [Player]: any } = {}
 local loadedCallbacks: { (Player, Data) -> () } = {}
 local releaseCallbacks: { (Player, Data) -> () } = {}
 local departedCallbacks: { (Player) -> () } = {}
+local messageCallbacks: { (Player, Data, any) -> boolean } = {}
+local keys: { [Player]: string } = {}
 local settled: { [Player]: boolean } = {}
 
 local function migrate(data: Data)
@@ -213,7 +219,8 @@ local function settle(player: Player, profile: any)
 end
 
 local function onPlayerAdded(player: Player)
-	local profile = store:StartSessionAsync(profileKey(player), {
+	local key = profileKey(player)
+	local profile = store:StartSessionAsync(key, {
 		Cancel = function()
 			return player.Parent ~= Players
 		end,
@@ -245,6 +252,7 @@ local function onPlayerAdded(player: Player)
 	end)
 
 	profiles[player] = profile
+	keys[player] = key
 	PlayerData.publish(player)
 	for _, callback in loadedCallbacks do
 		local ok, err = pcall(callback, player, profile.Data)
@@ -252,6 +260,19 @@ local function onPlayerAdded(player: Player)
 			warn(`[playerdata] load handler failed for {player.Name}: {err}`)
 		end
 	end
+	-- Messages sent to this profile (`PlayerData.message`), now and while the session lasts.
+	profile:MessageHandler(function(message: any, processed: () -> ())
+		for _, callback in messageCallbacks do
+			local ok, taken = pcall(callback, player, profile.Data, message)
+			if not ok then
+				warn(`[playerdata] message handler failed for {player.Name}: {taken}`)
+			elseif taken == true then
+				processed()
+				PlayerData.publish(player)
+				return
+			end
+		end
+	end)
 end
 
 local function onPlayerRemoving(player: Player)
@@ -268,6 +289,7 @@ local function onPlayerRemoving(player: Player)
 		end
 	end
 	settled[player] = nil
+	keys[player] = nil
 end
 
 -- Called with each loaded profile; a player already loaded is called at once.
@@ -286,6 +308,35 @@ end
 -- Called after a player has gone, to drop what a system held for them.
 function PlayerData.onDeparted(callback: (Player) -> ())
 	table.insert(departedCallbacks, callback)
+end
+
+--[[ Handles a message sent to a profile (`PlayerData.message`): returns true
+	when it took the message, which removes it from the profile for good. ]]
+function PlayerData.onMessage(callback: (Player, Data, any) -> boolean)
+	table.insert(messageCallbacks, callback)
+end
+
+--[[ Sends a message to a player's profile, online or not (ProfileStore's
+	MessageAsync: it waits in the profile until a session takes it). A player
+	on this server is saved at once so the message arrives in seconds, not at
+	the next auto-save. False when the send failed. ]]
+function PlayerData.message(userId: number, message: { [string]: any }): boolean
+	local key = `Player_{userId}`
+	local here: Player? = nil
+	for player, k in keys do
+		if player.UserId == userId then
+			key, here = k, player
+		end
+	end
+	local ok, sent = pcall(store.MessageAsync, store, key, message)
+	if not ok or sent ~= true then
+		warn(`[playerdata] message to {key} failed: {sent}`)
+		return false
+	end
+	if here then
+		PlayerData.save(here)
+	end
+	return true
 end
 
 function PlayerData.get(player: Player): Data?

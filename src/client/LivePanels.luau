@@ -6,6 +6,10 @@
 	login calendar, codes). Every button sends an intent the server rechecks;
 	Roblox's own purchase prompt does the buying.
 
+	A pass row has a **Gift** button (§10.1 point 4): it opens a row of the
+	other players on the street, and picking one sends the intent; the server
+	checks it and prompts the gift product.
+
 	Also the notification opt-in (§9 "Return prompts"): offered once, after the
 	first move-in, never at join.
 ]]
@@ -26,6 +30,7 @@ local storeWindow: Frame
 local storeBody: Frame
 local dailyWindow: Frame
 local dailyBody: Frame
+local giftFor: string? = nil -- the pass key whose recipient is being picked
 
 local function clear(f: Instance)
 	for _, c in f:GetChildren() do
@@ -70,8 +75,61 @@ local function drawStore()
 		Ui.Colour.Teal
 	)
 	ad.LayoutOrder = 1
-	local list = Ui.scroll(storeBody, "List", UDim2.new(1, 0, 1, -84))
-	list.LayoutOrder = 2
+	local picking = 0
+	if giftFor then
+		local others = {}
+		for _, p in Players:GetPlayers() do
+			if p ~= me then
+				table.insert(others, p)
+			end
+		end
+		picking = 52
+		local row = Ui.frame(storeBody, "GiftPicker", UDim2.new(1, 0, 0, 46), nil, Ui.Colour.Ink)
+		row.LayoutOrder = 2
+		Ui.corner(row, 10)
+		Ui.list(row, Enum.FillDirection.Horizontal, 6)
+		Ui.padding(row, 4)
+		local passName = giftFor
+		for _, e in s.entries do
+			if e.key == giftFor then
+				passName = e.name
+			end
+		end
+		local pickHead = Ui.label(
+			row,
+			"Head",
+			if #others > 0 then `Gift {passName} to:` else "Nobody else is on your street yet.",
+			UDim2.fromOffset(if #others > 0 then 220 else 380, 38),
+			15,
+			Ui.Colour.Gold
+		)
+		pickHead.LayoutOrder = 0
+		for i, p in others do
+			local pick = Ui.button(
+				row,
+				`To_{p.UserId}`,
+				p.DisplayName,
+				UDim2.fromOffset(140, 38),
+				function()
+					local pass = giftFor
+					giftFor = nil
+					if pass then
+						Net.send("Gift", pass, p.UserId)
+					end
+					drawStore()
+				end,
+				Ui.Colour.Teal
+			)
+			pick.LayoutOrder = i
+		end
+		local cancel = Ui.button(row, "Cancel", "Cancel", UDim2.fromOffset(90, 38), function()
+			giftFor = nil
+			drawStore()
+		end, Ui.Colour.Panel)
+		cancel.LayoutOrder = 100
+	end
+	local list = Ui.scroll(storeBody, "List", UDim2.new(1, 0, 1, -84 - picking))
+	list.LayoutOrder = 3
 	Ui.list(list, Enum.FillDirection.Vertical, 6)
 	for i, e in s.entries do
 		if e.key ~= "AdCash2x15" then
@@ -114,6 +172,15 @@ local function drawStore()
 					else Ui.Colour.Panel
 			)
 			b.Position = UDim2.new(1, -128, 0, 7)
+			if e.giftable then
+				name.Size = UDim2.new(1, -250, 0, 24)
+				text.Size = UDim2.new(1, -250, 0, 26)
+				local g = Ui.button(row, "Gift", "🎁 Gift", UDim2.fromOffset(92, 44), function()
+					giftFor = e.key
+					drawStore()
+				end, if e.giftOnSale then Ui.Colour.Pumpkin else Ui.Colour.Panel)
+				g.Position = UDim2.new(1, -228, 0, 7)
+			end
 		end
 	end
 end
@@ -245,6 +312,15 @@ function LivePanels.Start()
 			drawDaily()
 		end
 	end, 3)
+	local function playersChanged()
+		if storeWindow.Visible and giftFor then
+			drawStore()
+		end
+	end
+	Players.PlayerAdded:Connect(playersChanged)
+	Players.PlayerRemoving:Connect(function()
+		task.defer(playersChanged)
+	end)
 	State.changed:Connect(function()
 		if storeWindow.Visible then
 			drawStore()

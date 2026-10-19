@@ -49,6 +49,7 @@ local DEFS: { [string]: Def } = {
 	Settings = { dir = "C2S", args = { "string", "boolean" }, rate = 0.25 },
 	Ping = { dir = "C2S", args = { "string" }, rate = 3 }, -- a quick ping (§7)
 	Buy = { dir = "C2S", args = { "string" }, rate = 1 }, -- a store entry id: the server prompts
+	Gift = { dir = "C2S", args = { "string", "number" }, rate = 1 }, -- a pass key, the recipient's UserId (§10.1)
 	Ad = { dir = "C2S", rate = 5 }, -- a rewarded ad (§10.2)
 	Collect = { dir = "C2S", rate = 0.5 }, -- the till, from the HUD (a pass or nearby)
 	Ready = { dir = "C2S", rate = 1 }, -- the client has started and wants its state

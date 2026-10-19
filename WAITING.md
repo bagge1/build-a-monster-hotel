@@ -74,11 +74,13 @@ Med Claudes skärmdump där det finns en. -->
    (bygga? sälja? flytta?) och om det ska kräva vänskap på Roblox.
    **Rekommendation:** bygga och placera, aldrig sälja; bara Roblox-vänner.
 
-6. **Presentversioner av passen** (GDD §10.1 punkt 4: "Gift versions of every
-   pass") är inte byggda. Det behöver: en produkt per pass i Creator Hub
-   ("Gift: Night Manager" osv.) och ett beslut om mottagaren måste vara på
-   samma server. **Rekommendation:** bara spelare på samma gata till att börja
-   med (enkelt och säkert); presenten sparas hos mottagaren som om passet var köpt.
+6. **Presentversioner av passen** (GDD §10.1 punkt 4) är **byggda som
+   rekommendationen** (2026-10-19, GDD Appendix A.9): en knapp **🎁 Gift** på
+   varje pass i Store, man väljer en spelare på samma gata, och presenten
+   sparas hos mottagaren som om passet var köpt (den kommer fram även om hen
+   har gått). Priset är passets eget (platshållare). **Att bestämma:** är det
+   rätt, eller ska man kunna ge till vänner som inte är på servern?
+   Produkterna behövs i Creator Hub (§3.2).
 
 7. **Ekonomins takt** (2026-10-19, `archive/BALANCE-2026-10-19.md`, modellen
    `tools/balance_model.py`). Inga värden är ändrade; det här är mätningar mot
@@ -104,7 +106,9 @@ Med Claudes skärmdump där det finns en. -->
    fem pass (Auto-Collect Till 149, Night Manager 249, Resident Wing+ 249,
    Extra Floor 299, VIP Lobby 399) och nio produkter (Starter Pack 99, Call the
    Bus 39, 2x Cash 49 och 149, 2x Friendship 79, Cash Pouch/Sack/Vault 49/149/449,
-   och en gratis "2x Cash (ad)" som rewarded ad-belöning). Ge Claude id:na så
+   och en gratis "2x Cash (ad)" som rewarded ad-belöning), plus fem
+   presentprodukter, en per pass ("Gift: Auto-Collect Till" osv., samma pris
+   som passet, §2.6). Ge Claude id:na så
    skrivs de in i `src/shared/Store.luau`; tills dess står de som "Soon".
    Ikoner till dem ritas i natt (`ui/`). Slå också på **Managed Pricing** (§10.1).
 3. **Notifikationer** (GDD §9): spelet ber om opt-in efter första move-in, men

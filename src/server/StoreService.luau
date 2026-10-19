@@ -15,6 +15,13 @@
 	Rewarded ads (§10.2): optional, 13+ only (`PolicyService`), and the reward
 	is a non-random developer product granted through ProcessReceipt.
 
+	Gift passes (§10.1 point 4; GDD Appendix A.9, WAITING §2.6's recommended
+	option): the giver picks a player on the street, the target is saved in
+	the giver's `giftTo`, and the gift product's receipt sends the pass to the
+	recipient's PROFILE as a message (`PlayerData.message`), so it arrives even
+	if they left before the purchase finished. The recipient keeps it in
+	`gifted`, which the join's ownership check never clears.
+
 	Every id is a placeholder (`Store.luau`) until August creates them
 	(WAITING.md §3).
 ]]
@@ -90,6 +97,25 @@ local function grantFor(player: Player, key: string): ((PlayerData.Data) -> bool
 			return true
 		end
 	end
+	local entry = Store.ByKey[key]
+	local pass = entry and entry.gift
+	if pass then
+		return function(data)
+			-- A target lost (a retry on another server after a crash) gives the pass to the giver,
+			-- never nothing: a paid purchase is always granted (Appendix A.9).
+			local to = data.giftTo[pass] or player.UserId
+			local sent = PlayerData.message(to, {
+				kind = "GiftPass",
+				pass = pass,
+				from = player.DisplayName,
+			})
+			if not sent then
+				return false
+			end
+			data.giftTo[pass] = nil
+			return true
+		end
+	end
 	if key == "CallBus" then
 		return function()
 			BusService.callNow(player.DisplayName)
@@ -137,7 +163,7 @@ local function refreshPasses(player: Player)
 				e.id
 			)
 			if ok then
-				data.passes[e.key] = owns or nil
+				data.passes[e.key] = owns or data.gifted[e.key] or nil
 			end
 		end
 	end
@@ -167,6 +193,55 @@ local function buy(player: Player, key: string)
 		end
 		MarketplaceService:PromptProductPurchase(player, e.id)
 	end
+end
+
+-- A gift (§10.1 point 4): a pass for another player on the street, bought as its gift product.
+local function gift(player: Player, pass: string, userId: number)
+	local e = Store.ByKey[`Gift_{pass}`]
+	local data = PlayerData.get(player)
+	local target = Players:GetPlayerByUserId(userId)
+	if not e or not data then
+		return
+	end
+	if not target or target == player then
+		Net.fire(player, "Toast", "Pick another player on your street.", "Bad")
+		return
+	end
+	local theirs = PlayerData.get(target)
+	if not theirs then
+		return
+	end
+	if theirs.passes[pass] then
+		Net.fire(
+			player,
+			"Toast",
+			`{target.DisplayName} already has {Store.ByKey[pass].name}.`,
+			"Bad"
+		)
+		return
+	end
+	if e.id == 0 then
+		Net.fire(player, "Toast", "Gifts are coming soon!", "Bad")
+		return
+	end
+	data.giftTo[pass] = userId
+	MarketplaceService:PromptProductPurchase(player, e.id)
+end
+
+-- A pass given to this player (a gift product's message, from any server).
+local function receiveGift(player: Player, data: PlayerData.Data, message: any): boolean
+	if typeof(message) ~= "table" or message.kind ~= "GiftPass" then
+		return false
+	end
+	local e = Store.ByKey[message.pass]
+	if e and e.kind == "Pass" then
+		data.gifted[e.key] = true
+		data.passes[e.key] = true
+		Net.fire(player, "Toast", `{message.from or "A friend"} gave you {e.name}!`, "Unlock")
+		Analytics.event(player, `Gifted_{e.key}`)
+		StateService.mark(player)
+	end
+	return true -- taken: a message for a pass that no longer exists is dropped, not kept forever
 end
 
 -- A rewarded video ad (§10.2): optional, 13+, its reward a product granted by ProcessReceipt.
@@ -222,6 +297,8 @@ end
 function StoreService.Init()
 	MarketplaceService.ProcessReceipt = processReceipt
 	Net.on("Buy", buy)
+	Net.on("Gift", gift)
+	PlayerData.onMessage(receiveGift)
 	Net.on("Ad", ad)
 end
 
@@ -251,6 +328,10 @@ function StoreService.Start()
 	StateService.provide("store", function(player, data)
 		local entries = {}
 		for _, e in Store.Entries do
+			if e.gift then
+				continue -- drawn as the Gift button on its pass's row
+			end
+			local giftEntry = Store.ByKey[`Gift_{e.key}`]
 			table.insert(entries, {
 				key = e.key,
 				name = e.name,
@@ -260,6 +341,8 @@ function StoreService.Start()
 				onSale = e.id ~= 0,
 				owned = (e.kind == "Pass" and data.passes[e.key] == true)
 					or (e.key == "StarterPack" and data.cosmetics.StarterPack == true),
+				giftable = giftEntry ~= nil,
+				giftOnSale = giftEntry ~= nil and giftEntry.id ~= 0,
 			})
 		end
 		local cash = {}
@@ -278,6 +361,21 @@ function StoreService.Start()
 		local id = args[2] or `dev-{os.clock()}`
 		local ok = PlayerData.grantOnce(player, id, grant)
 		return `{key} purchase {id}: saved={ok}`
+	end)
+	DevGrant.register("gift", function(player, args)
+		-- A gift product's receipt for `args[1]` (a pass key) to UserId `args[2]` (default: yourself).
+		local pass = args[1] or "NightManager"
+		local data = PlayerData.get(player)
+		if not data or not Store.ByKey[`Gift_{pass}`] then
+			return `no gift for {pass}`
+		end
+		data.giftTo[pass] = tonumber(args[2]) or player.UserId
+		local ok = PlayerData.grantOnce(
+			player,
+			`dev-gift-{os.clock()}`,
+			grantFor(player, `Gift_{pass}`) :: any
+		)
+		return `gift {pass} to {data.giftTo[pass] or "sent"}: saved={ok}`
 	end)
 	DevGrant.register("pass", function(player, args)
 		local data = PlayerData.get(player)
