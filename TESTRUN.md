@@ -218,21 +218,40 @@ multiply a capture's x and y by viewport width / 1920 (3434 / 1920 on his screen
 His ruling, 2026-10-19 evening: 12-stud cells, 18-stud floors, walls up to
 the slab (`CLAUDE.md`, "The scale of a person"; `MODELS.md`, "Hotel kit").
 
-- [ ] The 27 rescaled imports (both kits' rooms, amenities, `Lobby`,
-  `StairCore`, `StairCoreTop`) set, read back, saved and synced; a
-  `PrimaryPart` on each synced copy; no empty MeshPart.
-- [ ] A three-floor hotel built from the kit: every room's walls meet the
-  slab above (a ray up from each wall's top hits the slab within 0.05).
-- [ ] Rays out through every floor-1 door onto the lobby's back row
-  (z 12–24) and along the back row at 1, 3, 5 studs: no hit.
-- [ ] Walkers (5 studs): street → threshold → `Queue_1` → the back row →
-  `Clerk`; floor 1 → 2 → 3 up both stair cores (15 steps a storey) and back
-  down, no Climbing or Freefall.
-- [ ] A guest walks to a floor-2 room by the stair core's `Path_n`.
-- [ ] The build camera frames the 144-stud plot; the ghost sits on its cells.
-- [ ] The in-game blind review (street at eye height, the raised camera, the
-  lobby, a room, the stairs), and the first review's open findings 2, 4, 7,
-  8, 10 (Haunted Manor README) verified.
+- [x] The 27 rescaled imports (both kits' rooms, amenities, `Lobby`,
+  `StairCore`, `StairCoreTop`) set, read back (Box on every mesh, no
+  Default, Root and proxy hidden, attachments made), saved and synced: 27/27
+  synced copies match their imports (meshes, sizes, textures, collision), a
+  `PrimaryPart` and attachments on each, no empty MeshPart.
+- [x] A three-floor hotel built from the kit (`fill CoffinSuite`, 24 suites,
+  test profile `Test_Scale1019`): every wall below the top floor meets the
+  slab above (84/84, a ray up from each wall's top hits it within 0.05); the
+  top floor's 60 walls stand open.
+- [ ] Rays out through every door (24 doors, 288 rays at 1, 3, 5, 6.5 studs)
+  and along the lobby's back row (9 rays): one door blocked. Coffin Suite at
+  cells x 9–11, z 4–6 on floor 1 opens straight onto the stair core's back
+  wall: `Grid` counts the core's cells as walkable from every side, but the
+  core is walled at the back and sides. Not the rescale's (the grid logic is
+  per cell); a follow-up. The back row: clear (only the avatar).
+- [x] Walkers (the 5-stud avatar): street → threshold → `Queue_1` → the back
+  row → `Clerk` → the core → up both storeys (15 steps each) → and back down:
+  every waypoint reached, no Climbing or Freefall.
+- [x] A guest (Vampire Count) to a floor-2 room: its path runs `Bottom` →
+  `Path_1` → `Path_2` → `Top` → its door. On floor 2 the path crosses the
+  stair core's cells (the same grid gap as the door above): the guest glides
+  through the floor-2 flight. Follow-up with the door.
+- [x] The build camera frames the 144-stud plot; a Standard Room's ghost is
+  23.6 studs square on its four cells, its door marker over the cell in front.
+- [x] The in-game blind review (street, raised, lobby, a room, the stairs;
+  the desk's picture was lost when the playtest ended) and its triage
+  (Haunted Manor README). The first review's open findings: 2 the sign's text
+  draws, seen from the raised camera (straight-ahead still to see); 4 the
+  stair's top is no longer a void, it is the open top floor (no roof, his);
+  7 the "red slivers": the down flight's handrail standing up through the
+  floor above, fixed; 8 the pale rectangle is the place's own
+  `SpawnLocation` in the middle of the street (WAITING §2.13); 10 not seen.
+- [ ] The 25 re-staged models (rooms' jambs, the stairs' handrail) imported
+  and checked; the street lamps flanking each entrance seen (WAITING §0.6).
 
 ## August keeps
 
@@ -254,3 +273,4 @@ the slab (`CLAUDE.md`, "The scale of a person"; `MODELS.md`, "Hotel kit").
 - 2026-10-19 15:33 Phase 9: the real models synced, built, rayed and walked; the lobby desk in front of floor-1 doors to WAITING §2.10.
 - 2026-10-19 15:34 Phase 9: Frostfang's rooms rayed beside the street, all clear.
 - 2026-10-19 17:55 Phase 10: the new lobby imported, rayed and walked; PrimaryPart lost by Rojo's live sync, fixed in HotelKit; the in-game review paused for his scale question.
+- 2026-10-19 night Phase 11: the doubled scale imported (27), walls meet the slab, walked up and down three floors, a guest up the stairs; a door onto the stair core's back and guests through the core on floor 2 (grid, follow-up); the in-game review's handrail, jambs and lamps fixed, 25 re-staged.

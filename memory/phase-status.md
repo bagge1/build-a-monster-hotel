@@ -21,16 +21,15 @@ its first run and triage are in the Haunted Manor README).
 
 **Next, in order:** (1) **The doubled scale** (his ruling 2026-10-19
 evening, `CLAUDE.md` "The scale of a person": double only what makes the
-hotel less cramped). Built, not yet in Studio: `MODELS.md` "Hotel kit"
-rewritten, `Constants.Grid` (cell 12, floor 18, walls 17, Wing 48) and
-`Street` (gap 36, lane ±278, his and Claude's picks, GDD §18), both kits and
-the Luau blockouts (lobby 144 × 24, stairs 15 steps a storey), the build
-camera and LOD from the plot size. Five blind reviews triaged in the sets'
-READMEs; his calls in WAITING §2.13. **27 models staged in
-`blender/_import/` (WAITING §0.5)**; after his *importerat*: skill `import`
-(two sets share names: `FrostfangLodge_` prefix), then `TESTRUN.md` phase 11
-(walls meet the slab, rays, walkers up 15-step stairs, the in-game blind
-review with the first review's open findings 2, 4, 7, 8, 10). (2) Open TESTRUN
+hotel less cramped). Built, imported and played (`TESTRUN.md` phase 11):
+walls meet the slab, three floors walked, a guest up the stairs, the build
+camera; the in-game blind review triaged in the Haunted Manor README. **25
+models re-staged** (the jambs, the stairs' handrail; WAITING §0.6): after his
+*importerat*, skill `import` again (`FrostfangLodge_` prefix for the shared
+stair names) and look at the lamps. His calls in WAITING §2.13. **A grid gap
+found** (not the rescale's): `Grid` treats the stair core's cells as walkable
+from every side, so a door may open onto the core's back wall and guests on
+upper floors glide through the core; a follow-up. (2) Open TESTRUN
 items: piece menu by clicks, rebirth by the panel's button, a two-player gift,
 pictures of the cosmetics after their import. Frostfang's rooms are not yet
 built in a plot (a rebirth). Economy pacing: `tools/balance_model.py`

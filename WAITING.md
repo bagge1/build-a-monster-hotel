@@ -23,7 +23,9 @@ Connect: knappen under fliken Plugins i Studio. -->
    setens `README.md`).
 4. ~~**Importera elva modeller**~~ (gjort 2026-10-19: alla elva inställda,
    sparade och synkade; lobbyn är strålad och gången, `TESTRUN.md` fas 10).
-5. **Importera 27 modeller i den dubbla skalan** (2026-10-19). Båda
+5. ~~**Importera 27 modeller i den dubbla skalan**~~ (gjort 2026-10-19:
+   alla 27 inställda, sparade och synkade; hotellet gånget och strålat,
+   `TESTRUN.md` fas 11.) Båda
    hotellens rum, bekvämligheter, `Lobby`, `StairCore` och `StairCoreTop`,
    ombyggda i den nya skalan (en cell 12 studs, en våning 18, väggarna upp
    till bjälklaget). Importera **alla filer i `blender/_import/`** till
@@ -32,6 +34,14 @@ Connect: knappen under fliken Plugins i Studio. -->
    döper om dem. Skylten och dekoren är oförändrade och ingår inte. Bilden:
    `archive/screens/2026-10-19_doubled_scale.jpg` (övre raden Haunted Manor,
    nedre Frostfang: gatan, lobbyn mot disken, ett rum, trappan).
+
+6. **Importera 25 modeller igen** (2026-10-19, granskningen i spelet):
+   trappans ledstång stack upp genom våningen ovanför, och dörrkarmarna gick
+   högre än bågen. Alla rum och bekvämligheter och båda hotellens
+   `StairCore` och `StairCoreTop`. Importera **alla filer i
+   `blender/_import/`** till **Workspace** i en dialog och skriv
+   *importerat*. Gatlyktorna står nu parvis vid varje entré (koden, ingen
+   import).
 
 ## §1 Att titta på eller spela
 
@@ -199,6 +209,14 @@ Med Claudes skärmdump där det finns en. -->
      taklist. **Rekommendation:** som i punkt 11, vänta till fasadbitarna;
      vill du ha entrén mer synlig nu kan bågen bli större (dörrar ska vara
      minst 4 × 7, så bara utseendet bestämmer).
+   - Granskningen i spelet: "översta våningen står öppen mot himlen" (inget
+     tak) och "fönstren har inget glas". **Rekommendation:** taket med
+     fasadbitarna; glas kan koden lägga i fönstren när du vill.
+   - Den ljusa rutan mitt på gatan är platsens egen `SpawnLocation` (12 × 12
+     studs, från Studios mall); spelet använder den inte, spelarna börjar vid
+     lobbyns `Spawn`. **Rekommendation:** ta bort den. Claude kan ta bort den
+     i Studio; den är borta för gott när du sparar och publicerar (File →
+     Publish to Roblox).
 
 ## §3 Creator Hub och publicering
 

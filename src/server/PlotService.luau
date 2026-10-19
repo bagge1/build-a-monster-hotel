@@ -577,8 +577,9 @@ local function buildStreet()
 		Color3.fromRGB(60, 50, 70),
 		Enum.Material.Metal
 	)
-	-- Lamps along the lane, both sides.
-	for x = -half, half, 32 do
+	-- Lamps along the lane, both sides: six to a plot's pitch, a pair flanking each entrance.
+	local step = (StreetLayout.PlotSize + Constants.Street.PlotGap) / 6
+	for x = -math.floor((half - step / 2) / step) * step - step / 2, half, step do
 		for _, side in { 1, -1 } do
 			local post = block(
 				"LampPost",

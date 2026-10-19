@@ -322,3 +322,29 @@ new pictures.
 
 Not yet seen by a reviewer: the hallway faces' wainscot (round 3's fix). The
 in-game review after the import covers it (`TESTRUN.md` phase 11).
+
+### Imported and in the game (2026-10-19 night)
+
+The 27 rescaled models imported, set, saved and synced (27/27 match); a
+three-floor hotel of Coffin Suites built from them, walked and rayed
+(`TESTRUN.md` phase 11).
+
+**In-game blind review** (Fable; the street, the raised camera, the lobby, a
+room's door, the stairs):
+
+| # | The finding | Triage |
+|---|---|---|
+| 1 | The entrance is a bare cut-out; the lamps flank a window, not the door | Entrance: **his call** (WAITING §2.13). Lamps: **confirmed**, the code laid them every 32 studs blind to the plots; now six to a plot's pitch, a pair flanking each entrance |
+| 2 | Upper floors unfinished: open to the sky, a stair in the air, an orange plank stuck through the floor | The plank: **confirmed**, the flight down's handrail rose 3 studs through the upper floor; it now stops under it (17.9). The open top floor: **his call** (no roof; the first review's 9) |
+| 3 | The lobby is a tunnel; the desk tiny from the door | **His call**, already put (WAITING §2.13) |
+| 4 | The carpet's dog-leg | **False**: the carpet he approved (door to queue), unchanged |
+| 5 | The door's posts rise past the arch | **Confirmed**: the jamb trim ran to the arch's apex (8.6); it stops where the arch springs (7) |
+| 6 | The Coffin Suite is sparse; the standing coffin reads as a wardrobe | **His call** (WAITING §2.13, the rooms) |
+| 7 | A blank wall, an orange hairline, a floating handrail | **False**: the hairline is the facade's sill along the lobby's end; the handrail has four brackets (small at this distance); the landing has no open edge |
+| 8 | Window frames orange and trims yellow; windows without glass | **His call** (a look): open windows are the first draft's |
+| 9 | Lamps inside the facade line | **False**: 3 studs in front of the plot, perspective |
+| 10 | The sign is far from the door | **False**: his ruling (the forecourt's corner) |
+| 11 | The steps are too tall | **False**: 1.2 rise, 1.5 tread (the contract), walked |
+
+The handrail and the jambs are rebuilt and re-staged with every room and
+both stair cores (WAITING §0.6). **Studio**: the new ones not yet imported.

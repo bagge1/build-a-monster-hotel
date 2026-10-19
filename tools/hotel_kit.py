@@ -653,7 +653,10 @@ def stair_handrails(metal, post):
     zl, yl = STAIR_LANDING_Z, STAIR_LANDING_Y
     ang = math.degrees(math.atan2(rise, tread))
     xw = S / 2 - T - 0.3
-    for sx, za, ya, zb, yb in ((-1, z0, 0.0, zl, yl), (1, zl, yl, zl - tread * STAIR_DOWN, FLOOR)):
+    # The flight down's rail stops where it would reach the upper floor's surface: above it, it stood
+    # 3 studs up through the floor (in-game blind review 2026-10-19).
+    f = (FLOOR - 3.2 - yl) / (FLOOR - yl)
+    for sx, za, ya, zb, yb in ((-1, z0, 0.0, zl, yl), (1, zl, yl, zl - tread * STAIR_DOWN * f, yl + (FLOOR - yl) * f)):
         x = sx * xw
         length = math.hypot(zb - za, yb - ya)
         mid = (x, (ya + yb) / 2 + 3.0, (za + zb) / 2)
@@ -711,7 +714,7 @@ def room_shell(w, d, paper, wainscot='wood_dark', crown='gold', outside='plum', 
             continue
         front = name.startswith('Wall_Front')
         x0, x1 = lo.x, hi.x
-        jamb_top = DOOR_H + 1.6           # the arch's head: above it the wall runs on to the corner
+        jamb_top = DOOR_H                 # where the arch springs: above it the wall runs on to the corner
         if name == 'Wall_FrontLeft':      # the door's jamb is the piece's own trim-coloured end
             x1 = hi.x - jamb
             span(name, (x1, 0, lo.z), (hi.x, jamb_top, hi.z), crown, bevel=0.06)
