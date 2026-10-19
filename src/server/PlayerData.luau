@@ -95,6 +95,7 @@ export type Data = {
 	likesGiven: { day: number, plots: { [string]: boolean } },
 	funnel: { [string]: boolean },
 	cosmetics: { [string]: boolean },
+	traps: { string }, -- the lobby's trap slots (§8.1), "" when empty
 }
 
 local TEMPLATE: Data = {
@@ -134,6 +135,7 @@ local TEMPLATE: Data = {
 	likesGiven = { day = 0, plots = {} },
 	funnel = {},
 	cosmetics = {},
+	traps = { "", "", "" },
 }
 
 local store = ProfileStore.New("MonsterHotel_Players_v1", TEMPLATE)

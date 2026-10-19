@@ -276,9 +276,50 @@ local function buildHotel(plot: Plot, data: PlayerData.Data?)
 	for id, rec in data.layout do
 		buildPiece(plot, id, rec)
 	end
+	if plot.owner then
+		PlotService.refreshTraps(plot.owner)
+	end
 	for _, handler in builtHandlers do
 		task.spawn(handler, plot)
 	end
+end
+
+-- The lobby's traps (§8.1), drawn at its `Trap_n` attachments (a blockout until the kit has them).
+function PlotService.refreshTraps(player: Player)
+	local plot = byPlayer[player]
+	local data = PlayerData.get(player)
+	local root = plot and plot.lobby and plot.lobby.PrimaryPart
+	if not plot or not data or not root then
+		return
+	end
+	local old = plot.model:FindFirstChild("Traps")
+	if old then
+		old:Destroy()
+	end
+	local folder = Instance.new("Folder")
+	folder.Name = "Traps"
+	for slot, id in data.traps do
+		local a = root:FindFirstChild(`Trap_{slot}`) :: Attachment?
+		local trap = nil
+		for _, t in Constants.Traps do
+			if t.id == id then
+				trap = t
+			end
+		end
+		if a and trap then
+			local part = Instance.new("Part")
+			part.Name = `Trap_{slot}`
+			part.Anchored = true
+			part.CanCollide = false
+			part.Size = Vector3.new(3, 0.3, 3)
+			part.Color = trap.colour
+			part.Material = Enum.Material.SmoothPlastic
+			part.CFrame = a.WorldCFrame * CFrame.new(0, 0.15, 0)
+			part:SetAttribute("Trap", trap.id)
+			part.Parent = folder
+		end
+	end
+	folder.Parent = plot.model
 end
 
 function PlotService.rebuild(player: Player)

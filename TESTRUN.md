@@ -135,5 +135,5 @@ multiply a capture's x and y by viewport width / 1920 (3434 / 1920 on his screen
 - 2026-10-19 03:40 Phase 4 items 1–5 pass; the phone layout fixed.
 - 2026-10-19 03:45 Phase 5 items 1–3 pass; Gloom's disappearing bubble fixed.
 - 2026-10-19 03:50 Phase 6 items 1–2 pass.
-- 2026-10-19 04:05 Leftovers: announcement, Help, holiday, camp, defended night, settings pass.
+- 2026-10-19 04:01 Leftovers: announcement, Help, holiday, camp, defended night, settings pass.
 - 2026-10-19 03:24 Stairs: the first landing (2 studs) jammed a walker; widened to 4, both storeys walked up and down.

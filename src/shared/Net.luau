@@ -53,6 +53,7 @@ local DEFS: { [string]: Def } = {
 	Collect = { dir = "C2S", rate = 0.5 }, -- the till, from the HUD (a pass or nearby)
 	Ready = { dir = "C2S", rate = 1 }, -- the client has started and wants its state
 	CandyShop = { dir = "C2S", args = { "string" }, rate = 0.5 }, -- an event shop item key
+	Trap = { dir = "C2S", args = { "number", "string" }, rate = 0.3 }, -- lobby trap slot, trap id ("" clears)
 
 	-- Server to client: what to draw.
 	State = { dir = "S2C" }, -- (table) the profile's drawable state

@@ -234,6 +234,30 @@ Constants.HunterNight = {
 	BonusBusSize = 6, -- PLACEHOLDER
 }
 
+-- §8.1, Appendix A.8: traps in the lobby's three trap slots. Each scares the
+-- first hunter that comes within reach of it, once a night. PLACEHOLDER all.
+Constants.Traps = {
+	{
+		id = "SlimePuddle",
+		name = "Slime Puddle",
+		cost = 500,
+		colour = Color3.fromRGB(110, 220, 120),
+	},
+	{
+		id = "CreakyBoards",
+		name = "Creaky Floorboards",
+		cost = 2000,
+		colour = Color3.fromRGB(140, 100, 70),
+	},
+	{
+		id = "PortraitEyes",
+		name = "Portrait with Eyes",
+		cost = 8000,
+		colour = Color3.fromRGB(200, 170, 90),
+	},
+}
+Constants.TrapReach = 10 -- studs from the trap
+
 -- §7: social.
 Constants.Social = {
 	FriendBonus = 0.10, -- +10 % while 2+ friends play together (§7)

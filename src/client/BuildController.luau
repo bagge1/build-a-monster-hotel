@@ -426,6 +426,51 @@ local function openMenu(id: number)
 	menu.Visible = true
 end
 
+-- ===== Traps (§8.1): the lobby's three trap slots =====
+
+local function openTraps()
+	for _, c in menuBody:GetChildren() do
+		if not c:IsA("UIListLayout") then
+			c:Destroy()
+		end
+	end
+	(menu:FindFirstChild("Title") :: TextLabel).Text = "Lobby traps"
+	local hint = Ui.label(
+		menuBody,
+		"Hint",
+		"Each trap scares the first hunter that comes near it, once a Hunter Night.",
+		UDim2.new(1, 0, 0, 40),
+		16,
+		Ui.Colour.Muted
+	)
+	hint.LayoutOrder = 0
+	local traps = build().traps or { "", "", "" }
+	for slot = 1, #traps do
+		local row = Ui.frame(menuBody, `Slot_{slot}`, UDim2.new(1, 0, 0, 50))
+		row.BackgroundTransparency = 1
+		row.LayoutOrder = slot
+		Ui.list(row, Enum.FillDirection.Horizontal, 6)
+		local label = Ui.label(row, "Label", `Slot {slot}`, UDim2.fromOffset(70, 46), 18)
+		label.LayoutOrder = 0
+		for i, t in Constants.Traps do
+			local b = Ui.button(
+				row,
+				t.id,
+				`{t.name}\n{Format.cash(t.cost)}`,
+				UDim2.fromOffset(150, 46),
+				function()
+					Net.send("Trap", slot, t.id)
+					menu.Visible = false
+				end,
+				if traps[slot] == t.id then Ui.Colour.Pumpkin else Ui.Colour.PanelLight
+			)
+			b.LayoutOrder = i
+			b.TextSize = 14
+		end
+	end
+	menu.Visible = true
+end
+
 -- ===== The strip of piece cards =====
 
 local function redrawCards()
@@ -594,6 +639,7 @@ function BuildController.Init()
 	end)
 	placeButton = tool("Place", "✔ Place", 9, place, Ui.Colour.Good)
 	placeButton.Visible = false
+	tool("Traps", "Traps", 9.5, openTraps)
 	tool("Done", "Done", 10, function()
 		setActive(false)
 	end, Ui.Colour.Bad)

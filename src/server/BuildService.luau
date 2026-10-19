@@ -397,6 +397,7 @@ function BuildService.Start()
 			end
 		end
 		return {
+			traps = data.traps,
 			unlockedDecor = unlockedDecor,
 			layout = layout,
 			floors = data.floors,

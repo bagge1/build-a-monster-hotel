@@ -60,6 +60,7 @@ local nextNight = 0
 local total, reached = 0, 0
 local securityAt: { [Player]: number } = {}
 local camp: Part
+local trapsUsed: { [Player]: { [number]: boolean } } = {} -- this night's sprung traps
 
 local function length(path: { Vector3 }): number
 	local t = 0
@@ -196,6 +197,7 @@ function HunterService.start(scale: number?)
 	if active then
 		return
 	end
+	table.clear(trapsUsed)
 	active = true
 	total, reached = 0, 0
 	nightEnd = os.clock() + H.Duration
@@ -278,6 +280,62 @@ local function boo(player: Player, id: number)
 	Net.fire(player, "Toast", "Boo! The hunter ran off screaming.", "Good")
 end
 
+local function setTrap(player: Player, slot: number, id: string)
+	local data = PlayerData.get(player)
+	if not data or slot % 1 ~= 0 or slot < 1 or slot > #data.traps then
+		return
+	end
+	if id == "" then
+		data.traps[slot] = ""
+	else
+		local trap = nil
+		for _, t in Constants.Traps do
+			if t.id == id then
+				trap = t
+			end
+		end
+		if not trap or data.traps[slot] == id then
+			return
+		end
+		if not PlayerData.spend(player, trap.cost) then
+			Net.fire(player, "Refused", "Trap", "Cash")
+			return
+		end
+		data.traps[slot] = id
+		Net.fire(
+			player,
+			"Toast",
+			`{trap.name} set in the lobby. It scares one hunter a night.`,
+			"Good"
+		)
+	end
+	PlotService.refreshTraps(player)
+	StateService.mark(player)
+end
+
+-- A set trap scares the first hunter that comes within reach of it, once a night (§8.1).
+local function springTraps()
+	for _, h in hunters do
+		local owner = h.plot.owner
+		local data = owner and PlayerData.get(owner)
+		if h.state == "Approach" and owner and data then
+			local used = trapsUsed[owner] or {}
+			trapsUsed[owner] = used
+			for slot, id in data.traps do
+				if id ~= "" and not used[slot] then
+					local at = PlotService.lobbyPoint(h.plot, `Trap_{slot}`)
+					if at and (here(h) - at.Position).Magnitude < Constants.TrapReach + 6 then
+						used[slot] = true
+						flee(h)
+						Net.fire(owner, "Toast", "Your trap scared a hunter away!", "Good")
+						break
+					end
+				end
+			end
+		end
+	end
+end
+
 local function tick()
 	local now = os.clock()
 	if not active and now >= nextNight then
@@ -295,6 +353,7 @@ local function tick()
 	end
 	-- Security staff (§4.6): scare a hunter near their hotel every few seconds.
 	if active then
+		springTraps()
 		for player, data in PlayerData.loaded() do
 			local staff = ResidentService.staff(data, "Security")
 			local power = 0
@@ -378,6 +437,7 @@ function HunterService.Init()
 	folder.Name = "Hunters"
 	folder.Parent = ReplicatedStorage
 	Net.on("Boo", boo)
+	Net.on("Trap", setTrap)
 end
 
 function HunterService.Start()
