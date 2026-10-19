@@ -10,7 +10,7 @@
   (§13.1), VIP Lobbys gyllene namnskylt (§10.2), Bellhop kortar
   incheckningen (§4.6).
 - **Pågår:** väntar på street och free-building (arbetar fortfarande).
-- **Väntar på August:** WAITING §2.20 (VIP-märkets utseende), §2.21
+- **Väntar på August:** WAITING §2.22 (VIP-märkets utseende), §2.23
   (Bellhops tal för incheckningen).
 
 Obevakad session (`/loop`, självstyrd) medan August är borta (från ca 20:00 i
@@ -107,14 +107,14 @@ Obevakad session (`/loop`, självstyrd) medan August är borta (från ca 20:00 i
   Provat (testprofil `Test_Vip1019`): ingen skylt utan passet, skylt inom
   2 s med `pass VIPLobby`, tillbaka 3,6 s efter respawn, Roblox eget namn
   dolt, inga fel. BillboardGui syns inte i skärmdumpar, så utseendet är inte
-  sett: WAITING §2.20.
+  sett: WAITING §2.22.
 - **20:14** CI-lint föll på Selene: Selene avslutar med kod 1 även på
   varningar, och main har varningen `BusRenderer` skuggar `bus`. Street-grenen
   tar bort den (selene 0 varningar där), så CI blir grön när street är inne.
   Inte rättad på main för att inte krocka med street.
 - **20:16** g: Bellhop kortar incheckningen (§4.6 "check-in time"):
   `Staff.deskDelay` delar Front Desks väntan med 1 + 0,25 × bästa Bellhops
-  effektivitet; talet PLACEHOLDER i GDD A.5 och WAITING §2.21. Ny regel i
+  effektivitet; talet PLACEHOLDER i GDD A.5 och WAITING §2.23. Ny regel i
   staff-specen (en Bellhop gör aldrig incheckningen långsammare): **8/8** i
   Studio. Uppmätt (testprofil `Test_Bell1019`, Skeleton på Front Desk): utan
   Bellhop 6,4 och 6,3 s från kön till incheckad; med Mummyn som Bellhop

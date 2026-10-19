@@ -30,7 +30,11 @@ forecourt, a forest the bus drives out of, and free building (areas, placed
 stairs, a movable desk, rugs and decor, floors, tiers from furnishing, staff
 seen working). **Customizing is the game's most important thing** (his words).
 Open questions in WAITING §2.16 and §2.19. **Next: three sessions**: (A) the
-street: forecourt, Night Bus, forest; (B) free building; (C) staff walking
+street: **built on branch `claude/street-bus-forest-253849`** (the forecourt,
+the Night Bus's two stops and browsing, no walk-ins, the forest; five trees
+staged for import, WAITING §0 punkt 8; his calls §2.20–2.21), specs pass
+under Lune, **not run in Studio** (TESTRUN phase 12, after the merge and a
+Rojo restart); (B) free building; (C) staff walking
 to their work.
 
 **Earlier next steps:** (1) **The doubled scale** (his ruling 2026-10-19

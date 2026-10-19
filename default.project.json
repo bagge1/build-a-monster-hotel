@@ -53,6 +53,11 @@
 				"$path": {
 					"optional": "assets/Monsters"
 				}
+			},
+			"Scenery": {
+				"$path": {
+					"optional": "assets/Scenery"
+				}
 			}
 		},
 		"StarterPlayer": {

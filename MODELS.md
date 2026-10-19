@@ -28,6 +28,7 @@ names:
 | Any model | The rules; What a model costs to draw; Checklist before handing a set over |
 | A room, an amenity, the lobby, the stairs, a facade, decor | Hotel kit |
 | A monster, a hunter, the bus | Monsters and street NPCs |
+| A tree | Street scenery: trees |
 | Code that reads a model | the section for the name the code looks up: grep the name |
 
 ---
@@ -102,6 +103,7 @@ allow.
   | The hotel sign | 3,000 (draft) |
   | A sign or lobby cosmetic | 2,000 (draft) |
   | A monster | 4,000, plus `LOD_Proxy` 300 |
+  | A tree | 800, plus `LOD_Proxy` 100 |
   | The bus | 8,000, plus `LOD_Proxy` 500 |
 
 - **Transparent surfaces: few and large.** Every transparent part is
@@ -206,12 +208,15 @@ works as a hotel"):
   0.3 to 7), the whole length. Every floor-1 room door opens onto it, and so
   does the stair core. The clerk reaches the desk through it.
 - **The waiting area** (`Bench_<n>`, `Planter_<n>`) is in the front row on the
-  stair side (+X), clear of the entrance and of the trap squares (3 × 3 round
-  each `Trap_n`).
+  stair side (+X), clear of the entrance.
+
+The hotel sign's `SignBoard` and the traps' `Trap_n` were the lobby's until
+2026-10-19; they are the **forecourt's** now (below, "Forecourt"), and a lobby
+needs neither.
 
 `finish()` refuses a lobby that breaks these: the walls' boxes, the back row,
 the entrance (4 × 7), and a 5-stud person's walk from the entrance to every
-queue spot, trap, the spawn and, through the back row, the clerk.
+queue spot, the spawn and, through the back row, the clerk.
 
 | Name | What | The code |
 |---|---|---|
@@ -222,8 +227,6 @@ queue spot, trap, the spawn and, through the back row, the clerk.
 | `Queue_1`–`Queue_4` (attachments) | x −58, −54.5, −51, −47.5 at z 5, LookVector −X (at the desk); 1 nearest the desk | The desk queue |
 | `Till` (attachment) | (−60.8, 3.8, 9.4): the till on the counter, LookVector +X | Collect prompt |
 | `Spawn` (attachment) | (8, 0, 18), in the back row | The plot's spawn |
-| `SignBoard` (attachment) | (48, 0, −5): out front at the stair-side corner of the forecourt, 48 studs off the entrance, the sign's base, LookVector toward the street | The hotel sign (§3) |
-| `Trap_1`–`Trap_3` (attachments) | x −16, 16, 48 at z 6 | Hunter Night's traps (§8.1) |
 
 ### Stair core (`StairCore`)
 
@@ -251,6 +254,30 @@ pieces per floor: `Facade_Wall` (one cell wide, one floor high: 12 × 18) and
 `HotelSign` carries `Board`, a part whose front face (−Z) takes the sign's
 SurfaceGui (a Decal or SurfaceGui on a part's `Front` face is the plain case).
 The sign is not scaled: posts and a 16 × 6 board at (0, 8, 0).
+
+### Forecourt (`Forecourt`)
+
+The ground between the lane and the hotel's front wall (his yes, 2026-10-19,
+GDD §5.4): **24 studs deep**, the plots moved 24 studs back from the lane to
+make it. Its first 8 studs from the lane are the **pavement**, which is the
+street's (one strip along each side of the lane, built by `StreetService`,
+where the bus's guests browse); the other 16 are the plot's **yard**, with a
+**path 6 wide** from the pavement to the entrance arch. Built by the code for
+now (a blockout in `HotelKit.forecourt`, in the plot's ground colours), inside
+the plot's `Base` folder; a delivered `Forecourt` per hotel kit replaces its
+geometry and nothing else.
+
+Authored with its origin at the **entrance** (the middle of the plot's front
+edge, on the walking surface), the street toward −Z: the yard is x −72 to 72,
+z −16 to 0; the pavement beyond it, z −24 to −16, is not the model's.
+Nothing stands on the path (x −3 to 3) or in front of the arch.
+
+| Name | What | The code |
+|---|---|---|
+| `Root` | 144 × 0.2 × 16, centred (0, 0.1, −8) | Placement |
+| `PathFoot` (attachment) | (0, 0, −16): where the path meets the pavement, LookVector +Z (toward the entrance) | Where a guest leaves the pavement for the hotel, and comes back to it |
+| `SignBoard` (attachment) | (60, 0, −12): the stair-side corner of the yard, the sign's base, LookVector −Z (toward the street) | The hotel sign (§3) |
+| `Trap_1`–`Trap_3` (attachments) | (−8, 0, −12), (8, 0, −12), (−8, 0, −4): beside the path, each with a clear 3 × 3 square round it, LookVector −Z | Hunter Night's traps (§8.1) |
 
 ### Cosmetics (`Cosmetic_<Id>`, e.g. `Cosmetic_PumpkinSign`)
 
@@ -355,6 +382,33 @@ looking +Z. `Wheel_1`–`Wheel_4` (front-left, front-right, rear-left,
 rear-right) are their own parts. `Glow_Warm_1` all the glass, `Glow_Warm_2`
 and `Glow_Warm_3` the left and right headlamps (the code hangs its headlight
 on `_2`), `Glow_Warm_4` the roof lantern, `Glow_Warm_5` the tail lamps.
+
+---
+
+## Street scenery: trees (`Tree_<Name>`)
+
+The forest round Creepy Lane (his idea, 2026-10-19, GDD §5.4): every client
+places the trees itself (`ForestRenderer`, a seeded scatter from
+`src/shared/Forest.luau`), so the templates go to `ReplicatedStorage.Scenery`
+(`assets/Scenery/`), one `.rbxm` per tree, **named its id** (`Tree_Crooked`).
+Which trees stand behind a plot follows that plot's location (`Forest.Sets`).
+
+**The frame.** Standing on y = 0, origin at the centre of the trunk's foot,
+upright along +Y; no front (the scatter turns each tree at random). Heights in
+studs against the 5-stud person and the 18-stud floor: a hotel of three
+floors is 54 tall, and the trees stand 22–40.
+
+| Name | What | The code |
+|---|---|---|
+| `Root` | Invisible, anchored, the trunk's foot × the tree's height × the foot (a fir's: its lowest tier's reach, so nobody stands inside its crown), bottom at y = 0 | The model's `PrimaryPart`; **the tree's only collider** (the code sets `CanCollide` on it, so a person walks into the trunk, not into a branch's box) |
+| `Body` | The trunk and every branch, one mesh, bark-coloured | Drawn |
+| `Trim`, `Light`, `Dark` | Flat-coloured parts: needles, snow, a hollow | Drawn |
+| `Glow_Eyes_1`, `Glow_Eyes_2` | A pair of eyes in a hollow, on the spooky trees only | Neon (rule 1), never a light |
+| `LOD_Proxy` | Silhouette and base colour, at most 100 triangles, hidden | Shown instead of the tree beyond `Forest.ProxyDistance` |
+
+**What a tree costs**: hundreds stand round the street on a phone, so a tree
+is **at most 800 triangles** beside a 100-triangle proxy, at most six parts,
+no textures (one colour a part), and nothing that collides but `Root`.
 
 ---
 

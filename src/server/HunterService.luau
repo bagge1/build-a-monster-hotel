@@ -305,7 +305,7 @@ local function setTrap(player: Player, slot: number, id: string)
 		Net.fire(
 			player,
 			"Toast",
-			`{trap.name} set in the lobby. It scares one hunter a night.`,
+			`{trap.name} set in the forecourt. It scares one hunter a night.`,
 			"Good"
 		)
 	end
@@ -323,7 +323,7 @@ local function springTraps()
 			trapsUsed[owner] = used
 			for slot, id in data.traps do
 				if id ~= "" and not used[slot] then
-					local at = PlotService.lobbyPoint(h.plot, `Trap_{slot}`)
+					local at = PlotService.forecourtPoint(h.plot, `Trap_{slot}`)
 					if at and (here(h) - at.Position).Magnitude < Constants.TrapReach + 6 then
 						used[slot] = true
 						flee(h)

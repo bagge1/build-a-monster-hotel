@@ -495,7 +495,7 @@ local function openMenu(id: number)
 	menu.Visible = true
 end
 
--- ===== Traps (§8.1): the lobby's three trap slots =====
+-- ===== Traps (§8.1): the forecourt's three trap slots (§5.4) =====
 
 local function openTraps()
 	for _, c in menuBody:GetChildren() do
@@ -503,7 +503,7 @@ local function openTraps()
 			c:Destroy()
 		end
 	end
-	(menu:FindFirstChild("Title") :: TextLabel).Text = "Lobby traps"
+	(menu:FindFirstChild("Title") :: TextLabel).Text = "Forecourt traps"
 	local hint = Ui.label(
 		menuBody,
 		"Hint",

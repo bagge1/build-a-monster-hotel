@@ -27,6 +27,10 @@ MODELS.md, "Monsters and street NPCs", as finish() enforces it:
 - 4,000 triangles without the proxy, height within 10 % of `look.height`, no
   coplanar faces between pieces, every part closed.
 
+Street NPCs (`NPCS`) and street scenery (trees, registered by a set's script
+with `scenery()`) are begun and finished the same way, each kind with its own
+checks in finish() and validate().
+
 Run headless only, e.g.
     blender -b --python-exit-code 1 -P tools/build_monsters_l1.py
 `-- norender` skips the contact sheet. The sheet is Workbench only, one image.
@@ -84,6 +88,29 @@ NPCS = {
                  'root': (24, 8, 9), 'budget': BUS_BUDGET, 'proxy': BUS_PROXY_BUDGET},
 }
 
+# --- Street scenery: trees (MODELS.md, "Street scenery: trees") ------------------------
+# A tree is begun and finished like a street NPC, kind 'tree': no front, a column
+# Root (the trunk's foot x the height, the code's only collider), at most six parts,
+# 800 triangles and a 100-triangle proxy. Its target (height, Root) is the set's
+# own: a build script registers each with scenery() before begin().
+TREE_BUDGET, TREE_PROXY_BUDGET = 800, 100
+TREE_MAX_PARTS = 6
+TREE_HEIGHTS = (22.0, 40.0)    # MODELS.md: beside a 54-stud hotel of three floors
+SCENERY = {}
+
+
+def scenery(sid, height, foot, need=('Body',), proxy_colour=None):
+    """Register a tree `sid` (`Tree_<Name>`): `height` in studs, `foot` the trunk's
+    width at the ground (the Root column's side), `need` the parts it must have,
+    `proxy_colour` (sRGB) the far proxy's colour when the Body's is not what the
+    tree reads as from afar (a fir's needles, not its trunk)."""
+    assert re.match(r'^Tree_[A-Z][A-Za-z]+$', sid), f'{sid}: a tree is named Tree_<Name>'
+    assert TREE_HEIGHTS[0] <= height <= TREE_HEIGHTS[1], f'{sid}: {height} studs, MODELS.md says {TREE_HEIGHTS}'
+    SCENERY[sid] = {'kind': 'tree', 'height': height, 'colour': None, 'eyes': None, 'shape': 'Tree',
+                    'location': 0, 'need': tuple(need), 'front': None, 'facing': None,
+                    'root': (foot, foot, height), 'budget': TREE_BUDGET, 'proxy': TREE_PROXY_BUDGET,
+                    'proxy_colour': proxy_colour}
+
 
 # --- Species.luau: the targets the code draws today ---------------------------------
 def species_table():
@@ -121,7 +148,7 @@ def roblox(v):
 class _Model:
     def __init__(self, sid, set_dir, colours):
         self.id, self.set_dir = sid, set_dir
-        self.target = SPECIES[sid] if sid in SPECIES else NPCS[sid]
+        self.target = SPECIES[sid] if sid in SPECIES else NPCS[sid] if sid in NPCS else SCENERY[sid]
         self.kind = self.target.get('kind', 'monster')
         self.part_re = PART_RE if self.kind == 'monster' else STREET_PART_RE
         self.marker_names = MARKERS if self.kind == 'monster' else ALL_MARKERS
@@ -163,7 +190,8 @@ def begin(sid, set_dir, colours=None):
     and glows' colours, sRGB 0-255, e.g. {'Dark': (40, 30, 50)}; Body and the eyes
     default to Species.luau's look."""
     global m
-    assert sid in SPECIES or sid in NPCS, f'{sid} is not a species id in Species.luau nor a street NPC'
+    assert sid in SPECIES or sid in NPCS or sid in SCENERY, \
+        f'{sid} is not a species id in Species.luau, a street NPC nor a registered tree'
     m = _Model(sid, set_dir, colours)
     assert m.colours['Body'] is not None, f'{sid}: a street NPC\'s Body colour is given to begin()'
     return m.target['height']
@@ -653,7 +681,7 @@ def _proxy(parts, lo, hi):
     else:
         raise AssertionError(f'{m.id}: LOD_Proxy did not decimate under {budget}')
     px.data.materials.clear()
-    m.colours['LOD_Proxy'] = m.colours['Body']
+    m.colours['LOD_Proxy'] = m.target.get('proxy_colour') or m.colours['Body']
     px.data.materials.append(_material('LOD_Proxy'))
     for poly in px.data.polygons:
         poly.use_smooth = True
@@ -717,8 +745,13 @@ def finish(note=''):
     else:
         assert lo.z <= 0.02, f'{tag}: a walker floats {lo.z:.3f} over the floor'
         feet = [p for ob in visible for p in (ob.matrix_world @ v.co for v in ob.data.vertices) if p.z < 0.08]
-        fx = (min(p.x for p in feet) + max(p.x for p in feet)) / 2
-        fy = (min(p.y for p in feet) + max(p.y for p in feet)) / 2
+        if m.kind == 'tree':
+            # A gnarled trunk's foot is not symmetric: its centre is the ring's centroid, not its extents' middle.
+            fx = sum(p.x for p in feet) / len(feet)
+            fy = sum(p.y for p in feet) / len(feet)
+        else:
+            fx = (min(p.x for p in feet) + max(p.x for p in feet)) / 2
+            fy = (min(p.y for p in feet) + max(p.y for p in feet)) / 2
         assert abs(fx) < 0.05 and abs(fy) < 0.3, f'{tag}: origin not between the feet ({fx:.2f}, {fy:.2f})'
     blo, bhi = _bounds([parts['Body']])
     body_c = (blo + bhi) / 2
@@ -728,7 +761,10 @@ def finish(note=''):
         assert ec1.x > 0 > ec2.x, f'{tag}: Glow_Eyes_1 must be the monster\'s left (+X in Blender)'
         assert max(ec1.y, ec2.y) < body_c.y - 0.1, f'{tag}: the eyes are not on the front (-Y): it does not face -Z'
         assert abs(ec1.x + ec2.x) < 0.02 and abs(ec1.z - ec2.z) < 0.02, f'{tag}: the eyes are not a mirrored pair'
-    if not monster:
+    if m.kind == 'tree':
+        # MODELS.md, "Street scenery: trees": few parts, nothing but Root collides (the import's Box).
+        assert len(parts) + 2 <= TREE_MAX_PARTS, f'{tag}: {len(parts) + 2} parts with Root and LOD_Proxy > {TREE_MAX_PARTS}'
+    if not monster and t.get('front'):
         # The facing: the `front` part ahead of the Body along `facing`.
         f = Vector(t['facing'])
         flo, fhi = _bounds([parts[t['front']]])
@@ -803,8 +839,8 @@ def finish(note=''):
         rec['root_size_blender'] = list(root_size)
         rec['root_size_roblox'] = [root_size[0], root_size[2], root_size[1]]
         rec['front'] = t['front']
-        rec['facing_blender'] = list(t['facing'])
-        rec['facing_roblox'] = roblox(Vector(t['facing']))
+        rec['facing_blender'] = list(t['facing']) if t['facing'] else None
+        rec['facing_roblox'] = roblox(Vector(t['facing'])) if t['facing'] else None
         rec['need'] = list(t['need'])
         rec['rig'] = rec['rig'].replace('the client bobs them', 'the client moves it whole')
     if m.looks:
@@ -1087,7 +1123,7 @@ def validate(set_dir, species):
             ey = [sum(world(meshes[e]), Vector()) / len(meshes[e].data.vertices) for e in ('Glow_Eyes_1', 'Glow_Eyes_2')]
             by = (min(p.y for p in bp) + max(p.y for p in bp)) / 2
             check(max(e.y for e in ey) < by and ey[0].x > 0 > ey[1].x, 'eyes on the front (-Y, Roblox -Z), Glow_Eyes_1 on the left')
-        else:
+        elif rec.get('front'):
             f = Vector(rec['facing_blender'])
             fp = world(meshes[rec['front']])
             fc = sum(fp, Vector()) / len(fp)
@@ -1101,7 +1137,12 @@ def validate(set_dir, species):
         'whether the importer carries a material\'s plain colour to MeshPart.Color (manifest has every colour)',
         'the look at the game\'s camera and at Tiny 0.5 / Giant 1.5 scale',
         'animations: none exist (no rig)']
-    if any(recs[s].get('kind', 'monster') != 'monster' for s in species):
+    if any(recs[s].get('kind') == 'tree' for s in species):
+        report['collision_note'] = ('A tree\'s Root is its only collider (MODELS.md, "Street scenery: trees"): '
+                                    'ForestRenderer sets CanCollide on Root at runtime, so a person walks into '
+                                    'the trunk; Box on every mesh, PreciseConvexDecomposition on none.')
+        report['not_validated'][2] = 'the look in the game, at night, among hundreds of its kind and at 0.8-1.25 scale'
+    elif any(recs[s].get('kind', 'monster') != 'monster' for s in species):
         report['collision_note'] = ('Street models collide with nothing (HunterRenderer and BusRenderer draw them '
                                     'CanCollide/CanQuery/CanTouch off): Box on every mesh, '
                                     'PreciseConvexDecomposition on none.')

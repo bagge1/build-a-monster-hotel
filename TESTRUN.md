@@ -315,6 +315,54 @@ way from `GuestService.pathToDoor`.
 - [A] (Two players need his Test → Start Test Session.) A second player visiting sees the walk and the "✓" too.
 - [x] Studio's output: no `[residents] tick failed`.
 
+## Phase 12 (the street: forecourt, Night Bus, forest; after the merge)
+
+Built on `claude/street-bus-forest-253849` (GDD §3, §4.3, §5.4, A.1, A.3).
+Verified there by stylua, selene, `rojo build` and the specs under Lune
+(`bus`, `street` and the other pure specs; `data` needs Studio); **nothing of
+it has run in Studio.** Needs August's Rojo restart first (the
+`assets/Scenery` mapping, WAITING §0 punkt 8).
+
+- [ ] The sync landed (`tools/sync_sizes.py`), `ReplicatedStorage.Scenery`
+  exists; the spec bundle passes in a playtest, `street` and `data` included.
+- [ ] The forecourt: plot fronts at z = ±48; the pavements one strip along
+  each lane edge; each plot's yard with the path to the arch; the sign at the
+  stair-side corner (not in front of the entrance); a bought trap drawn
+  beside the path. Rays down over the lane, pavement, yard and path find a
+  floor at y = 1 everywhere, no gap and no step but the kerb; a walker goes
+  lane → pavement → path → arch.
+- [ ] Hunter Night: a hunter walks up the path and a trap beside it scares it.
+- [ ] The bus comes out of the trees north-west of the street, round the
+  west bend onto the lane's north half, stops with its door at x = −90, then
+  at x = 90, and goes round the east bend into the trees; it never passes
+  through the leaderboard, the Hunter Camp, a lamp or a shelter (sample its
+  box along the drive). Call the Bus brings it in out of the forest.
+- [ ] Half the guests step off at each stop; each browses the pavements
+  (north and south, east and west in turn), stepping toward each owned
+  hotel's entrance and looking about 2 s; **Pitch** works the whole minute;
+  then it walks across the lane if needed, along the pavement and up the path
+  to its pick's desk queue.
+- [ ] A guest no hotel takes, one that gave up at the desk and one that
+  checked out all walk to the nearest stop and wait on the pavement; the next
+  bus at that stop takes them. Nobody walks off the end of the lane.
+- [ ] The bus's size: `nextbus` before an arrival and the guests counted
+  after it: 40 % of the street's Vacant rooms rounded up, 2–4 per player.
+- [ ] No walk-ins: with rooms vacant and no bus, no guest appears. The
+  tutorial's Slime walks in from the pavement about 6 s after the first room,
+  before the first bus; the Vampire Count rides the third bus after the goal
+  card, booked, and walks straight to the hotel.
+- [ ] The forest: trees all round, none on a plot, its forecourt or Wing, the
+  lane, the pavements or the road; blockouts before the import, the models
+  after (§0 punkt 8). A person walks into a bare tree's trunk and stops at a
+  fir's lowest tier; trees beyond 260 studs are their proxies; low graphics
+  draws about half; a Frostfang plot's band is snowy firs; every hollow tree
+  faces the street.
+- [ ] Performance on the phone emulation (the forest, a full bus browsing):
+  frame time against phase 11's.
+- [ ] The in-game blind review (skill `blind-review`): the street at eye
+  height, the raised camera over a forecourt, the bus at a stop with guests
+  stepping off, the forest's edge behind the plots and at a bend.
+
 ## August keeps
 
 - How the street, the lobby and the rooms look (every look is a night draft).

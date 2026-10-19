@@ -1,7 +1,7 @@
 --!strict
 --[[
 	The global leaderboards (GDD §7 "Global: Book completion, lifetime guests,
-	weekly event score"), on a board by the bus stop.
+	weekly event score"), on a board at the lane's west end.
 
 	Each is an OrderedDataStore keyed by user id. A player's own score is
 	written when they leave and every few minutes while they play (never more
@@ -134,10 +134,10 @@ local function buildBoard()
 	board.Size = Vector3.new(30, 12, 1)
 	board.Color = Color3.fromRGB(46, 32, 70)
 	board.Material = Enum.Material.SmoothPlastic
-	-- By the bus stop, its front face toward the lane.
+	-- At the lane's west end on its south half, clear of the bus (which drives the north half), its front toward the lane.
 	board.CFrame = CFrame.lookAt(
-		StreetLayout.BusStop + Vector3.new(-14, 8, 14),
-		StreetLayout.BusStop + Vector3.new(-14, 8, 0)
+		StreetLayout.WestEnd + Vector3.new(-14, 8, -14),
+		StreetLayout.WestEnd + Vector3.new(-14, 8, 0)
 	)
 	local gui = Instance.new("SurfaceGui")
 	gui.Face = Enum.NormalId.Front

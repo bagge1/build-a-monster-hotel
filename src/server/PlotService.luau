@@ -1,6 +1,7 @@
 --!strict
 --[[
-	Creepy Lane and its six plots (GDD §3, Appendix A.1).
+	Creepy Lane's six plots (GDD §3, Appendix A.1); the lane itself is
+	`StreetService`'s.
 
 	On joining, a player gets the nearest free plot (`StreetLayout.ClaimOrder`)
 	and their saved hotel is rebuilt there: the layout is saved relative to the
@@ -20,7 +21,6 @@
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
-local Lighting = game:GetService("Lighting")
 
 local Constants = require(ReplicatedStorage.Shared.Constants)
 local Grid = require(ReplicatedStorage.Shared.Grid)
@@ -281,9 +281,9 @@ local function buildHotel(plot: Plot, data: PlayerData.Data?)
 	end
 
 	local sign = HotelKit.sign(plot.location)
-	local board = root:FindFirstChild("SignBoard") :: Attachment?
+	local board = PlotService.forecourtPoint(plot, "SignBoard")
 	if board then
-		sign:PivotTo(board.WorldCFrame)
+		sign:PivotTo(board)
 	end
 	sign.Parent = plot.model
 	plot.sign = sign
@@ -371,12 +371,11 @@ function PlotService.refreshCosmetics(player: Player)
 	end
 end
 
--- The lobby's traps (§8.1), drawn at its `Trap_n` attachments (a blockout until the kit has them).
+-- The forecourt's traps (§8.1, §5.4), drawn at its `Trap_n` attachments (a blockout until the kit has them).
 function PlotService.refreshTraps(player: Player)
 	local plot = byPlayer[player]
 	local data = PlayerData.get(player)
-	local root = plot and plot.lobby and plot.lobby.PrimaryPart
-	if not plot or not data or not root then
+	if not plot or not data then
 		return
 	end
 	local old = plot.model:FindFirstChild("Traps")
@@ -386,7 +385,7 @@ function PlotService.refreshTraps(player: Player)
 	local folder = Instance.new("Folder")
 	folder.Name = "Traps"
 	for slot, id in data.traps do
-		local a = root:FindFirstChild(`Trap_{slot}`) :: Attachment?
+		local a = PlotService.forecourtPoint(plot, `Trap_{slot}`)
 		local trap = nil
 		for _, t in Constants.Traps do
 			if t.id == id then
@@ -401,7 +400,7 @@ function PlotService.refreshTraps(player: Player)
 			part.Size = Vector3.new(3, 0.3, 3)
 			part.Color = trap.colour
 			part.Material = Enum.Material.SmoothPlastic
-			part.CFrame = a.WorldCFrame * CFrame.new(0, 0.15, 0)
+			part.CFrame = a * CFrame.new(0, 0.15, 0)
 			part:SetAttribute("Trap", trap.id)
 			part.Parent = folder
 		end
@@ -456,6 +455,15 @@ end
 -- The world frame of an attachment on a plot's lobby, or nil.
 function PlotService.lobbyPoint(plot: Plot, name: string): CFrame?
 	local root = plot.lobby and plot.lobby.PrimaryPart
+	local a = root and root:FindFirstChild(name)
+	return if a and a:IsA("Attachment") then a.WorldCFrame else nil
+end
+
+-- The world frame of an attachment on a plot's forecourt (MODELS.md, "Forecourt"), or nil.
+function PlotService.forecourtPoint(plot: Plot, name: string): CFrame?
+	local base = plot.model:FindFirstChild("Base")
+	local forecourt = base and base:FindFirstChild("Forecourt")
+	local root = if forecourt and forecourt:IsA("Model") then forecourt.PrimaryPart else nil
 	local a = root and root:FindFirstChild(name)
 	return if a and a:IsA("Attachment") then a.WorldCFrame else nil
 end
@@ -542,111 +550,7 @@ local function release(player: Player)
 	buildHotel(plot, nil)
 end
 
-local function buildStreet()
-	local old = workspace:FindFirstChild("Street")
-	if old then
-		old:Destroy()
-	end
-	local street = Instance.new("Folder")
-	street.Name = "Street"
-	local half = Constants.Street.LaneHalfLength
-	local th = G.SlabThickness
-	local function block(
-		name: string,
-		size: Vector3,
-		at: Vector3,
-		colour: Color3,
-		material: Enum.Material?
-	)
-		local p = Instance.new("Part")
-		p.Name = name
-		p.Anchored = true
-		p.Size = size
-		p.CFrame = CFrame.new(at)
-		p.Color = colour
-		p.Material = material or Enum.Material.Cobblestone
-		p.TopSurface = Enum.SurfaceType.Smooth
-		p.Parent = street
-		return p
-	end
-	local front = Constants.Street.FrontOffset
-	block(
-		"Lane",
-		Vector3.new(2 * half + 40, th, 2 * front),
-		Vector3.new(0, th / 2, 0),
-		Color3.fromRGB(75, 70, 90)
-	)
-	block(
-		"Kerb_North",
-		Vector3.new(2 * half + 40, 0.3, 1),
-		Vector3.new(0, th + 0.15, front - 0.5),
-		Color3.fromRGB(120, 110, 140),
-		Enum.Material.SmoothPlastic
-	)
-	block(
-		"Kerb_South",
-		Vector3.new(2 * half + 40, 0.3, 1),
-		Vector3.new(0, th + 0.15, -front + 0.5),
-		Color3.fromRGB(120, 110, 140),
-		Enum.Material.SmoothPlastic
-	)
-	local stop = block(
-		"BusStop",
-		Vector3.new(8, 0.4, 6),
-		StreetLayout.BusStop + Vector3.new(0, 0.2, -6), -- between the guests' line and the bus
-		Color3.fromRGB(240, 150, 60),
-		Enum.Material.SmoothPlastic
-	)
-	stop:SetAttribute("BusStop", true)
-	block(
-		"BusStopSign",
-		Vector3.new(0.6, 8, 0.6),
-		StreetLayout.BusStop + Vector3.new(3, 4, -8.5), -- clear of the bus (z −19..−11)
-		Color3.fromRGB(60, 50, 70),
-		Enum.Material.Metal
-	)
-	-- Lamps along the lane, both sides: six to a plot's pitch, a pair flanking each entrance.
-	local step = (StreetLayout.PlotSize + Constants.Street.PlotGap) / 6
-	for x = -math.floor((half - step / 2) / step) * step - step / 2, half, step do
-		for _, side in { 1, -1 } do
-			local post = block(
-				"LampPost",
-				Vector3.new(0.6, 10, 0.6),
-				Vector3.new(x, th + 5, side * (front - 3)),
-				Color3.fromRGB(40, 35, 50),
-				Enum.Material.Metal
-			)
-			local bulb = block(
-				"Glow_Warm_1",
-				Vector3.new(1.4, 1.4, 1.4),
-				Vector3.new(x, th + 10.5, side * (front - 3)),
-				Color3.fromRGB(255, 190, 110),
-				Enum.Material.Neon
-			)
-			bulb.Shape = Enum.PartType.Ball
-			bulb.CanCollide = false
-			local light = Instance.new("PointLight")
-			light.Range = 24
-			light.Brightness = 0.9
-			light.Color = Color3.fromRGB(255, 190, 120)
-			light.Parent = bulb
-			post.CanCollide = true
-		end
-	end
-	street.Parent = workspace
-
-	-- Cozy-creepy night (GDD §12): moonlight blue and purple, never black.
-	Lighting.ClockTime = 0.5
-	Lighting.Brightness = 2
-	Lighting.Ambient = Color3.fromRGB(105, 95, 140)
-	Lighting.OutdoorAmbient = Color3.fromRGB(125, 115, 165)
-	Lighting.FogColor = Color3.fromRGB(40, 30, 70)
-	Lighting.FogStart = 250
-	Lighting.FogEnd = 900
-end
-
 function PlotService.Init()
-	buildStreet()
 	local old = workspace:FindFirstChild("Plots")
 	if old then
 		old:Destroy()
@@ -678,12 +582,6 @@ function PlotService.Init()
 		}
 		plots[i] = plot
 		buildHotel(plot, nil)
-	end
-	-- The place's own spawn and baseplate stay; the baseplate becomes night ground.
-	local baseplate = workspace:FindFirstChild("Baseplate")
-	if baseplate and baseplate:IsA("BasePart") then
-		baseplate.Color = Color3.fromRGB(45, 55, 50)
-		baseplate.Material = Enum.Material.Grass
 	end
 end
 

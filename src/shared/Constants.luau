@@ -27,10 +27,26 @@ Constants.Grid = {
 Constants.Street = {
 	Plots = 6, -- §3
 	PlotGap = 36, -- Claude's pick in his range 24–48, 2026-10-19 (GDD §18): 144-stud plots span ±252
-	FrontOffset = 24, -- his pick, 2026-10-19: kept, the lane stays 48 wide
+	LaneHalfWidth = 24, -- his pick, 2026-10-19: kept, the lane stays 48 wide
+	ForecourtDepth = 24, -- his yes, 2026-10-19 (§5.4): the lane's edge to the facade; the plots moved 24 back
+	PavementWidth = 8, -- his yes (§5.4): along the lane's edge, the guests walk on it
+	PathWidth = 6, -- his yes (§5.4): from the pavement to the entrance arch
 	LaneHalfLength = 278, -- the lane runs x -278..278, 26 past the last plot
-	BusStopX = -278,
+	BusStopX = 90, -- his ruling, 2026-10-19 (§3): stops at x = ±90, between the first two plots and the last two
 	HunterCampX = 278,
+	BendRadius = 60, -- PLACEHOLDER: the road's bend into the forest at each end of the lane
+	ForestRoad = 360, -- PLACEHOLDER: how far from the lane the road runs on into the forest
+}
+
+-- §5.4: the forest round the street (his idea, 2026-10-19). PLACEHOLDER all.
+Constants.Forest = {
+	Seed = 1019, -- the same forest on every client and every server
+	Spacing = 22, -- studs: one tree to a jittered cell of this size
+	Fill = 0.75, -- the share of cells that get a tree
+	Depth = 150, -- studs from the street's clearing to the forest's outer edge
+	Clearing = 14, -- studs kept clear round the plots, the lane and the road
+	LowGraphics = 0.5, -- the share of trees the low graphics tier draws
+	ProxyDistance = 260, -- studs from the camera beyond which a tree is its LOD_Proxy
 }
 
 -- §4.2: rarity values (starting numbers).
@@ -110,16 +126,21 @@ Constants.Economy = {
 
 -- §4.3: the Night Bus and how a guest picks a hotel.
 Constants.Bus = {
-	Interval = 240, -- every 4 minutes (§4.3)
+	Interval = 180, -- every 3 minutes (his ruling, 2026-10-19, §4.3)
 	EpicEvery = 3, -- an Epic guaranteed every 3rd bus (§4.3)
 	LegendaryEvery = 1800, -- on the :00 and :30 buses, server clock (§4.3)
 	MythicEvery = 7200, -- the Midnight Bus every 2 hours (§4.3)
-	BaseSize = 6, -- 6–10 guests scaled by player count (§4.3)
-	SizePerPlayer = 1, -- PLACEHOLDER: +1 per player beyond the first
-	MaxSize = 10,
+	VacantShare = 0.4, -- 40 % of the street's vacant rooms, rounded up (his ruling, 2026-10-19)
+	MinPerPlayer = 2, -- PLACEHOLDER: at least 2 guests per player on the server (Claude's bound)
+	MaxPerPlayer = 4, -- PLACEHOLDER: at most 4 per player (Claude's bound)
 	FirstBusDelay = 105, -- PLACEHOLDER: a fresh server's first bus at 1:45 (§11)
-	BrowseSpeed = 8, -- PLACEHOLDER: studs/s down the lane
-	GuestSpacing = 4, -- PLACEHOLDER: studs between guests leaving the bus
+	BrowseTime = 60, -- about a minute browsing before a guest picks (his yes, 2026-10-19)
+	EntrancePause = 2, -- a couple of seconds at each entrance (his yes, 2026-10-19)
+	BrowseSpeed = 8, -- PLACEHOLDER: studs/s along the pavement
+	Speed = 50, -- PLACEHOLDER: the bus's cruising speed, studs/s
+	Brake = 50, -- PLACEHOLDER: studs to slow from cruising to a stop (and to speed up again)
+	StopTime = 7, -- PLACEHOLDER: seconds at each stop
+	StepOff = 0.6, -- PLACEHOLDER: seconds between guests stepping off
 }
 
 Constants.Scoring = {
@@ -159,13 +180,9 @@ Constants.Stay = {
 	ReviewsKept = 30, -- the last 30 reviews (§5.3)
 }
 
-Constants.WalkIn = {
-	BaseInterval = 30, -- PLACEHOLDER (Appendix A.3)
-	PerRoom = 0.15,
-	RatingPivot = 3,
-	MinInterval = 8,
-	MaxInterval = 60,
-	TutorialDelay = 6, -- PLACEHOLDER: the first Slime after the first room (§11 0:30)
+-- §11: the tutorial's first guest, the only one that does not come on the bus (his ruling, 2026-10-19).
+Constants.Tutorial = {
+	FirstGuestDelay = 6, -- PLACEHOLDER: the first Slime after the first room (§11 0:30)
 }
 
 -- §5.3, Appendix A.4: the rating.
@@ -237,7 +254,7 @@ Constants.HunterNight = {
 	BonusBusSize = 6, -- PLACEHOLDER
 }
 
--- §8.1, Appendix A.8: traps in the lobby's three trap slots. Each scares the
+-- §8.1, Appendix A.8: traps in the forecourt's three trap slots (§5.4). Each scares the
 -- first hunter that comes within reach of it, once a night. PLACEHOLDER all.
 Constants.Traps = {
 	{
