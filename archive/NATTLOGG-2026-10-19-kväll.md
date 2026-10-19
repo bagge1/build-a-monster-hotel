@@ -304,5 +304,5 @@ Obevakad session (`/loop`, självstyrd) medan August är borta (från ca 20:00 i
   9 604 delar (förut 677 träd och 2 279 delar), 120 hela nära kameran; inga
   fel. Bilder: `archive/screens/2026-10-19_forest_thicket.jpg` och
   `_forest_long.jpg`.
-- **22:45** August om skogen: "Skogen ser bra ut nu." Noterat i GDD §5.4.
+- **22:43** August om skogen: "Skogen ser bra ut nu." Noterat i GDD §5.4.
 
