@@ -141,3 +141,13 @@ The cosmetics set found each `HotelSign` post's top ring poking ~0.07 studs out
 of the Board's front face, where the sign's text goes. The posts now end under
 the Board (5 tall, ring at y 4.6–5.0). Rebuilt; validation passes. The saved
 `assets/HotelKit/.../HotelSign.rbxm` is the old one until the next import.
+
+## Imported (2026-10-19, afternoon)
+
+August imported the whole batch (69 FBX, one dialog). The set's import script
+ran in the Edit datamodel and was read back in a separate call: no `Default`
+collision, no empty mesh, Root and LOD_Proxy hidden on every model. Saved to
+`assets/` with `tools/save_imports.py`. **Not yet synced** (Rojo needs a
+restart: the folders did not exist when it started), so **Studio runtime is not
+tested**: not seen in the game, not walked. The Workspace copies wait in
+`ServerStorage._ImportHold` for the sync check.

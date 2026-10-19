@@ -92,3 +92,13 @@ Whether the importer carries a material's plain colour into `MeshPart.Color`
 is unknown, so `import_settings.luau` sets every colour. The axis conversion
 and the marker positions are as Sector Omega's kit found them, not re-checked
 in this game. `import_settings.luau` parses but has not been run.
+
+## Imported (2026-10-19, afternoon)
+
+August imported the whole batch (69 FBX, one dialog). The set's import script
+ran in the Edit datamodel and was read back in a separate call: no `Default`
+collision, no empty mesh, Root and LOD_Proxy hidden on every model. Saved to
+`assets/` with `tools/save_imports.py`. **Not yet synced** (Rojo needs a
+restart: the folders did not exist when it started), so **Studio runtime is not
+tested**: not seen in the game, not walked. The Workspace copies wait in
+`ServerStorage._ImportHold` for the sync check.

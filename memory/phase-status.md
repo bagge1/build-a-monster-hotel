@@ -11,8 +11,18 @@ cosmetics (night drafts, GDD Appendix A.9–A.10). **Save, load and offline
 earnings are proven** on the real DataStore (test profile `Test_Persist1019`).
 All 69 models (both locations' monsters, Hunter, Night Bus, both hotel kits)
 are imported, set and saved in `assets/`, but **not yet synced**: Rojo needs
-one more restart (WAITING §0.3), and their 69 Workspace copies stay until the
-synced ones are checked; then the playtest with real models. Economy pacing:
+one more restart (WAITING §0.3). Their 69 Studio copies wait in
+`ServerStorage._ImportHold` for the sync check (compare mesh ids, sizes,
+collision), then delete them and `_ClaudeSerialize`.
+
+**Next, in order:** (1) after his restart: the sync check, the cleanup, and
+the playtest with real models (a walker on both kits' stairs, guests,
+residents, the bus, hunters; rays over floors and doorways; pictures to
+WAITING §1). (2) Stage the next import: both kits' `HotelSign` (posts fixed,
+`1de1317`; Frostfang's as `FrostfangLodge_HotelSign`) and the seven
+cosmetics (`blender/cosmetics/hotel/`), clearing `blender/_import/` of the 69
+first. (3) Open TESTRUN items: piece menu by clicks, rebirth by the panel's
+button, a two-player gift. Economy pacing:
 `tools/balance_model.py` (archive/BALANCE-2026-10-19.md).
 
 | Phase | Built | Run in Studio | Next |

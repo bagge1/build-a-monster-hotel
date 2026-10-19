@@ -76,3 +76,13 @@ Studio:** at the stop the bus (lane z = −15, 8 wide: z −19 to −11, x ±12 
 `BusStop.X`) overlaps `BusStopSign` (PlotService: `BusStop + (3, 4, −12)`), as
 the blockout already does; nothing collides, but the post will stand inside
 the bus.
+
+## Imported (2026-10-19, afternoon)
+
+August imported the whole batch (69 FBX, one dialog). The set's import script
+ran in the Edit datamodel and was read back in a separate call: no `Default`
+collision, no empty mesh, Root and LOD_Proxy hidden on every model. Saved to
+`assets/` with `tools/save_imports.py`. **Not yet synced** (Rojo needs a
+restart: the folders did not exist when it started), so **Studio runtime is not
+tested**: not seen in the game, not walked. The Workspace copies wait in
+`ServerStorage._ImportHold` for the sync check.

@@ -71,3 +71,13 @@ the model, the Root 2 × h × 2, the markers where the manifest says.
 camera, at Tiny 0.5 / Giant 1.5 or with a mutation); whether the importer
 carries plain material colours (`import_settings.luau` sets every colour);
 `import_settings.luau` parses as Luau by construction but has not been run.
+
+## Imported (2026-10-19, afternoon)
+
+August imported the whole batch (69 FBX, one dialog). The set's import script
+ran in the Edit datamodel and was read back in a separate call: no `Default`
+collision, no empty mesh, Root and LOD_Proxy hidden on every model. Saved to
+`assets/` with `tools/save_imports.py`. **Not yet synced** (Rojo needs a
+restart: the folders did not exist when it started), so **Studio runtime is not
+tested**: not seen in the game, not walked. The Workspace copies wait in
+`ServerStorage._ImportHold` for the sync check.

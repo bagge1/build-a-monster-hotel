@@ -38,7 +38,6 @@ Med Claudes skärmdump där det finns en. -->
 2. **Utseendet på gränssnittet** (2026-10-19): lila paneler, orange/turkos
    knappar, typsnittet Fredoka One, Gloom-bubblan högst upp i mitten. Nattens
    utkast; inget är bestämt.
-
 3. **Store med presentknappar** (2026-10-19): bilden
    `archive/screens/2026-10-19_store_gifts.jpg`. En **🎁 Gift**-knapp på varje
    pass, raden för att välja mottagare överst. Nattutkast; utseendet är ditt.
@@ -48,6 +47,10 @@ Med Claudes skärmdump där det finns en. -->
    sign, Icicle sign, Lantern sign, två familjevapen (Haunted Manor och
    Frostfang) och Bat bunting och Fairy lights över entrén, på båda hotellens
    skyltar och valv. Inget är importerat än; utseendet är ditt.
+
+5. **Boo! på avstånd** (2026-10-19): servern godtar Boo! på 35 studs, men
+   Claude kan inte se om knappen syns på skärmen så långt bort. När du spelar
+   en Hunter Night: syns Boo! och fungerar den på ungefär 35 studs?
 
 ## §2 Beslut
 
