@@ -33,6 +33,18 @@ Open questions in WAITING §2.16 and §2.19. **Next: three sessions**: (A) the
 street: forecourt, Night Bus, forest; (B) free building; (C) staff walking
 to their work.
 
+**(B) Free building is built on branch `claude/free-building-4b66e3`**
+(2026-10-19, not merged, **not run in Studio**): areas, placed stairs, the
+`FrontDesk` piece (its points mirrored onto the lobby), decor on 3-stud
+squares (`Grid`, `Furnish`, `Layout`), floor finishes, tiers T1–T3 from decor
+points; PlayerData schema 2 rebuilds every hotel from the start area. The
+lobby shell, desks, rugs and refitted decor are staged for import; the new
+Haunted Manor decor is grey silhouettes for his pick (WAITING §2.20). Pure
+specs now also run outside Studio: `lune run tools/run_specs.luau .` (Lune
+and luau-lsp installed globally by rokit). After the merge: TESTRUN phase 12.
+`tools/balance_model.py` stops on the changed tier formula until it models
+furnishing.
+
 **Earlier next steps:** (1) **The doubled scale** (his ruling 2026-10-19
 evening, `CLAUDE.md` "The scale of a person": double only what makes the
 hotel less cramped). Built, imported and played (`TESTRUN.md` phase 11):
