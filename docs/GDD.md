@@ -788,7 +788,9 @@ the Frostfang preview. Skippable at any step, never locking movement.
 Hunters walk from the east end of the street, each toward one hotel, and take
 45 s to reach its entrance. A hunter at the door nets one guest (or, with none, a
 resident) and leaves. **Boo!** scares a hunter within 40 studs (a click or tap
-on it). Traps: none in the first draft. A defended night (fewer than half the
+on it). **Traps** (the lobby's `Trap_1`–`Trap_3`): Slime Puddle $500, Creaky
+Floorboards $2,000, Portrait with Eyes $8,000 (PLACEHOLDER; all three act
+alike for now); each scares the first hunter within 10 studs, once a night. A defended night (fewer than half the
 hunters reached a door) pays every player on the street 5 minutes of their
 income and sends a bonus bus of Rare-or-better guests. A netted resident is in
 the Hunter Camp at the east end; a prompt there rescues it, or it comes back by
