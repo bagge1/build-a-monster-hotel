@@ -1,0 +1,19 @@
+# One dependency, on purpose: ProfileStore's session locking is what makes
+# duplicating a profile across servers impossible, and that is not something to
+# hand-roll. `lm-loleris/profilestore` is the author's own package (the
+# registry holds re-uploads under other scopes; the official repository,
+# github.com/MadStudioRoblox/ProfileStore, names this one). Check that before
+# ever changing the line below. Restored with `wally install`; the lockfile is
+# committed, ServerPackages/ is not.
+
+[package]
+name = "august/monster-hotel"
+version = "0.1.0"
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+
+[dependencies]
+
+# Server realm: it touches DataStores and must never replicate to a client.
+[server-dependencies]
+ProfileStore = "lm-loleris/profilestore@1.0.3"
