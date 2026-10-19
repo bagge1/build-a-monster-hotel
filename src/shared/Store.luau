@@ -10,7 +10,9 @@
 	"coming soon" and cannot be bought; the grant behind it is still tested
 	(DevGrant `receipt`).
 
-	Facade packs (§10.2, 99–249 each) wait for the facade models.
+	Facade packs (§10.2, 99–249 each) are passes; what each one wears is a
+	Facade-slot cosmetic in `Cosmetics.luau` naming the pass. Their prices
+	within the GDD's range are PLACEHOLDERS.
 
 	GIFTS (§10.1 point 4, GDD Appendix A.9): every pass has a developer
 	product "Gift: <pass>" at the pass's price (a PLACEHOLDER: the GDD gives no
@@ -72,6 +74,39 @@ Store.Entries = {
 		id = 0,
 		price = 399,
 		text = "VIP badge, gold name tag, a VIP lounge decor set, +1 daily reroll.",
+	},
+	-- Facade packs (§10.2): cosmetic only, worn with the build mode's Style tool.
+	{
+		key = "FacadeGothic",
+		name = "Gothic facade pack",
+		kind = "Pass",
+		id = 0,
+		price = 99, -- PLACEHOLDER within §10.2's 99–249
+		text = "A Gothic exterior for your hotel. Cosmetic only.",
+	},
+	{
+		key = "FacadeNeon",
+		name = "Neon facade pack",
+		kind = "Pass",
+		id = 0,
+		price = 149, -- PLACEHOLDER
+		text = "A Neon exterior for your hotel. Cosmetic only.",
+	},
+	{
+		key = "FacadeCandy",
+		name = "Candy facade pack",
+		kind = "Pass",
+		id = 0,
+		price = 199, -- PLACEHOLDER
+		text = "A Candy exterior for your hotel. Cosmetic only.",
+	},
+	{
+		key = "FacadePirate",
+		name = "Pirate facade pack",
+		kind = "Pass",
+		id = 0,
+		price = 249, -- PLACEHOLDER
+		text = "A Pirate exterior for your hotel. Cosmetic only.",
 	},
 	-- Developer products (§10.2)
 	{

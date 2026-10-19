@@ -19,6 +19,7 @@ export type Cosmetic = {
 	from: string, -- where it is earned, for the Style list
 	colour: Color3, -- the blockout's colour (the facade's, for a facade cosmetic)
 	trim: Color3?, -- a facade cosmetic's trim
+	pass: string?, -- the Store pass that owns it (§10.2's facade packs)
 }
 
 local Cosmetics = {}
@@ -83,6 +84,43 @@ Cosmetics.List = {
 		colour = Color3.fromRGB(90, 170, 100),
 		trim = Color3.fromRGB(190, 255, 150),
 	},
+	-- §10.2's facade packs, each a pass (Store.luau); colour schemes until the kit has styles.
+	{
+		id = "Cosmetic_GothicFacade",
+		name = "Gothic facade",
+		slot = "Facade",
+		from = "the Gothic facade pack",
+		colour = Color3.fromRGB(55, 50, 65),
+		trim = Color3.fromRGB(170, 40, 60),
+		pass = "FacadeGothic",
+	},
+	{
+		id = "Cosmetic_NeonFacade",
+		name = "Neon facade",
+		slot = "Facade",
+		from = "the Neon facade pack",
+		colour = Color3.fromRGB(30, 25, 60),
+		trim = Color3.fromRGB(80, 255, 230),
+		pass = "FacadeNeon",
+	},
+	{
+		id = "Cosmetic_CandyFacade",
+		name = "Candy facade",
+		slot = "Facade",
+		from = "the Candy facade pack",
+		colour = Color3.fromRGB(255, 170, 200),
+		trim = Color3.fromRGB(255, 255, 255),
+		pass = "FacadeCandy",
+	},
+	{
+		id = "Cosmetic_PirateFacade",
+		name = "Pirate facade",
+		slot = "Facade",
+		from = "the Pirate facade pack",
+		colour = Color3.fromRGB(110, 75, 50),
+		trim = Color3.fromRGB(230, 190, 90),
+		pass = "FacadePirate",
+	},
 } :: { Cosmetic }
 
 Cosmetics.ById = {} :: { [string]: Cosmetic }
@@ -92,6 +130,15 @@ end
 
 function Cosmetics.get(id: string): Cosmetic?
 	return Cosmetics.ById[id]
+end
+
+-- Whether a profile owns cosmetic `id`: earned (`cosmetics`) or through its pass (`passes`).
+function Cosmetics.owns(data: any, id: string): boolean
+	local c = Cosmetics.ById[id]
+	if not c then
+		return false
+	end
+	return data.cosmetics[id] == true or (c.pass ~= nil and data.passes[c.pass] == true)
 end
 
 -- A completed family's cosmetic (BookService), by location id.

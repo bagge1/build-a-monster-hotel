@@ -297,7 +297,7 @@ local function equip(player: Player, slot: string, id: string)
 	end
 	if id ~= "" then
 		local c = Cosmetics.get(id)
-		if not c or c.slot ~= slot or not data.cosmetics[id] then
+		if not c or c.slot ~= slot or not Cosmetics.owns(data, id) then
 			Net.fire(player, "Refused", "Equip", "You don't have that yet")
 			return
 		end
@@ -445,7 +445,7 @@ function BuildService.Start()
 				name = c.name,
 				slot = c.slot,
 				from = c.from,
-				owned = data.cosmetics[c.id] == true,
+				owned = Cosmetics.owns(data, c.id),
 			})
 		end
 		return {

@@ -115,7 +115,9 @@ Med Claudes skärmdump där det finns en. -->
    fem pass (Auto-Collect Till 149, Night Manager 249, Resident Wing+ 249,
    Extra Floor 299, VIP Lobby 399) och nio produkter (Starter Pack 99, Call the
    Bus 39, 2x Cash 49 och 149, 2x Friendship 79, Cash Pouch/Sack/Vault 49/149/449,
-   och en gratis "2x Cash (ad)" som rewarded ad-belöning), plus fem
+   och en gratis "2x Cash (ad)" som rewarded ad-belöning), plus fyra
+   facade packs som pass (Gothic 99, Neon 149, Candy 199, Pirate 249: GDD:ns
+   spann 99–249, priserna är platshållare att bestämma) och nio
    presentprodukter, en per pass ("Gift: Auto-Collect Till" osv., samma pris
    som passet, §2.6). Ge Claude id:na så
    skrivs de in i `src/shared/Store.luau`; tills dess står de som "Soon".

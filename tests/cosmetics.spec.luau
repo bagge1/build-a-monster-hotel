@@ -1,5 +1,6 @@
 local Cosmetics = require(Shared.Cosmetics)
 local Events = require(Shared.Events)
+local Store = require(Shared.Store)
 
 describe("Cosmetics", function()
 	it("every cosmetic is named Cosmetic_<Id> and goes in a known slot", function()
@@ -30,5 +31,22 @@ describe("Cosmetics", function()
 	it("the built families' cosmetics can be worn", function()
 		expect.truthy(Cosmetics.get(Cosmetics.family(1)), "Haunted Manor")
 		expect.truthy(Cosmetics.get(Cosmetics.family(2)), "Frostfang")
+	end)
+
+	it("a cosmetic sold as a pass names a pass in the Store, and the pass is worn", function()
+		for _, c in Cosmetics.List do
+			if c.pass then
+				local e = Store.ByKey[c.pass]
+				expect.truthy(e and e.kind == "Pass", `{c.id} pass {c.pass}`)
+				expect.truthy(
+					Cosmetics.owns({ cosmetics = {}, passes = { [c.pass] = true } }, c.id),
+					`{c.id} owned by its pass`
+				)
+				expect.truthy(
+					not Cosmetics.owns({ cosmetics = {}, passes = {} }, c.id),
+					`{c.id} not owned without it`
+				)
+			end
+		end
 	end)
 end)

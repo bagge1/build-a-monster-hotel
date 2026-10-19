@@ -293,7 +293,7 @@ end
 local function worn(data: PlayerData.Data, slot: string): Cosmetics.Cosmetic?
 	local id = data.equipped[slot]
 	local c = id and Cosmetics.get(id)
-	return if c and c.slot == slot and data.cosmetics[id] then c else nil
+	return if c and c.slot == slot and Cosmetics.owns(data, id) then c else nil
 end
 
 --[[ The facade, in its cosmetic's colours, and the sign and lobby cosmetics at
