@@ -15,10 +15,12 @@
 	Each entry says why it sits where it does.
 ]]
 
--- local ServerScriptService = game:GetService("ServerScriptService")
+local ServerScriptService = game:GetService("ServerScriptService")
+
+local Server = ServerScriptService.Server
 
 local systems: { { Init: () -> (), Start: () -> () } } = {
-	-- require(ServerScriptService.Server.PlayerData), -- early: nearly every system reads a profile
+	require(Server.PlayerData) :: any, -- first: nearly every system reads a profile
 }
 
 local function run(phase: string)

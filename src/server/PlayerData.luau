@@ -1,0 +1,426 @@
+--!strict
+--[[
+	Player persistence on ProfileStore (GDD §13.3; the pattern is Sector
+	Omega's, D:\Roblox\playbook\PATTERNS.md, "Persistence and money").
+
+	A session lock is what makes duplicating a profile across servers
+	impossible, which is why the only dependency is ProfileStore
+	(`lm-loleris/profilestore`, the author's own package, `wally.toml`).
+
+	WHAT IT HOLDS (§13.3): currencies; the layout (piece ids, plot-relative
+	cells, rotations, tiers, decor); residents (species, mutation, role);
+	friendship; the Monster Book; the Moon Tree; reviews; the tutorial; daily
+	and login state; codes; passes; boosts; settings; and the processed
+	PurchaseIds, so a receipt is never granted twice.
+
+	ONE WRITER, MANY AUTHORS: systems change `Data` through what they get from
+	`get`, and anything that must happen on the way out arrives through
+	`onRelease`, so this file never requires a gameplay system.
+
+	A MOCK SAVES NOTHING AND SAYS NOTHING (DEVNOTES.md, "Data"): without
+	DataStore access ProfileStore falls back to a mock that succeeds at every
+	write. The state is published as `workspace.DataStoreState` and warned
+	about loudly unless it is `Access`.
+]]
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local ServerScriptService = game:GetService("ServerScriptService")
+local ServerStorage = game:GetService("ServerStorage")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local Constants = require(ReplicatedStorage.Shared.Constants)
+
+local packages = ServerScriptService:FindFirstChild("ServerPackages")
+if not packages or not packages:FindFirstChild("ProfileStore") then
+	error(
+		"[playerdata] ServerScriptService.ServerPackages.ProfileStore is missing: "
+			.. "run `wally install` and let Rojo sync it. Nothing can be saved without it."
+	)
+end
+local ProfileStore =
+	require((packages :: Instance):FindFirstChild("ProfileStore") :: ModuleScript) :: any
+
+local PlayerData = {}
+
+--[[ Bump only when the shape changes in a way old data cannot satisfy, and add
+	the step to `migrate` in the same commit. The game is not live (CLAUDE.md),
+	so until it is, a shape change may simply start everyone over. ]]
+local SCHEMA_VERSION = 1
+
+export type PieceRecord = {
+	item: string,
+	floor: number,
+	x: number,
+	z: number,
+	r: number,
+	tier: number,
+	decor: { string },
+}
+export type ResidentRecord = { species: string, mutation: string, role: string, campUntil: number }
+export type Data = {
+	version: number,
+	cash: number,
+	till: number,
+	runCash: number, -- earned this run, for rebirth (§6.4)
+	lifetimeCash: number,
+	location: number,
+	rebirths: number,
+	shards: number,
+	moonTree: { [string]: number },
+	floors: number,
+	layout: { [string]: PieceRecord },
+	nextId: number,
+	unlocked: { [string]: boolean }, -- room types unlocked, kept through rebirth (§6.4)
+	residents: { [string]: ResidentRecord },
+	nextResident: number,
+	friendship: { [string]: number },
+	book: { [string]: { [string]: boolean } }, -- species -> mutation ("Normal") -> found
+	families: { [string]: boolean }, -- location id -> completed
+	titles: { [string]: boolean },
+	reviews: { number },
+	stats: { [string]: number },
+	tutorial: string,
+	daily: { day: number, list: { any }, rerolls: number, done: { [string]: boolean } },
+	login: { streak: number, lastDay: number, claimedDay: number },
+	codes: { [string]: boolean },
+	receipts: { string },
+	passes: { [string]: boolean },
+	boosts: { [string]: number }, -- name -> seconds of play time left
+	settings: { [string]: boolean },
+	lastSeen: number,
+	likes: number,
+	likesGiven: { day: number, plots: { [string]: boolean } },
+	funnel: { [string]: boolean },
+	cosmetics: { [string]: boolean },
+}
+
+local TEMPLATE: Data = {
+	version = SCHEMA_VERSION,
+	cash = Constants.Economy.StartCash,
+	till = 0,
+	runCash = 0,
+	lifetimeCash = 0,
+	location = 1,
+	rebirths = 0,
+	shards = 0,
+	moonTree = {},
+	floors = 1,
+	layout = {},
+	nextId = 1,
+	unlocked = {},
+	residents = {},
+	nextResident = 1,
+	friendship = {},
+	book = {},
+	families = {},
+	titles = {},
+	reviews = {},
+	stats = {},
+	tutorial = "Start",
+	daily = { day = 0, list = {}, rerolls = 0, done = {} },
+	login = { streak = 0, lastDay = 0, claimedDay = 0 },
+	codes = {},
+	receipts = {},
+	passes = {},
+	boosts = {},
+	settings = { music = true, sfx = true, lowGraphics = false },
+	lastSeen = 0,
+	likes = 0,
+	likesGiven = { day = 0, plots = {} },
+	funnel = {},
+	cosmetics = {},
+}
+
+local store = ProfileStore.New("MonsterHotel_Players_v1", TEMPLATE)
+
+local profiles: { [Player]: any } = {}
+local loadedCallbacks: { (Player, Data) -> () } = {}
+local releaseCallbacks: { (Player, Data) -> () } = {}
+local departedCallbacks: { (Player) -> () } = {}
+local settled: { [Player]: boolean } = {}
+
+local function migrate(data: Data)
+	if typeof(data.version) ~= "number" then
+		data.version = SCHEMA_VERSION
+	end
+	data.version = SCHEMA_VERSION
+end
+
+-- Watch the store's state and say so loudly unless it is Access (DEVNOTES.md, "Data").
+task.spawn(function()
+	local waited = 0
+	while ProfileStore.DataStoreState == "NotReady" and waited < 30 do
+		waited += task.wait(0.25)
+	end
+	local state = ProfileStore.DataStoreState
+	workspace:SetAttribute("DataStoreState", state)
+	if state ~= "Access" then
+		warn(
+			`[playerdata] DataStore state is {state}: PROFILES ARE A MOCK AND NOTHING WILL BE SAVED`
+		)
+	else
+		print("[playerdata] DataStore Access")
+	end
+end)
+
+--[[ STUDIO ONLY: a test profile in place of the player's own, so a playtest
+	can start fresh without touching August's. Set ServerStorage's
+	`StudioProfile` attribute to a name beginning `Test_` before Play. Off
+	before release (memory phase-status). ]]
+local function profileKey(player: Player): string
+	if RunService:IsStudio() and player.UserId > 0 then
+		local test = ServerStorage:GetAttribute("StudioProfile")
+		if typeof(test) == "string" and string.sub(test, 1, 5) == "Test_" then
+			warn(`[playerdata] STUDIO TEST PROFILE Player_{test} in place of {player.Name}'s own`)
+			return `Player_{test}`
+		end
+	end
+	return `Player_{player.UserId}`
+end
+
+-- The values a HUD reads at any moment, as attributes on the player (a copy for drawing).
+function PlayerData.publish(player: Player)
+	local profile = profiles[player]
+	local d = if profile then profile.Data else nil
+	player:SetAttribute("Cash", if d then d.cash else nil)
+	player:SetAttribute("Till", if d then d.till else nil)
+	player:SetAttribute("Shards", if d then d.shards else nil)
+	player:SetAttribute("Location", if d then d.location else nil)
+	player:SetAttribute("Floors", if d then d.floors else nil)
+	player:SetAttribute("Tutorial", if d then d.tutorial else nil)
+	player:SetAttribute("Loaded", d ~= nil)
+end
+
+local function settle(player: Player, profile: any)
+	if settled[player] then
+		return
+	end
+	settled[player] = true
+	profile.Data.lastSeen = os.time()
+	for _, callback in releaseCallbacks do
+		local ok, err = pcall(callback, player, profile.Data)
+		if not ok then
+			warn(`[playerdata] release handler failed for {player.Name}: {err}`)
+		end
+	end
+end
+
+local function onPlayerAdded(player: Player)
+	local profile = store:StartSessionAsync(profileKey(player), {
+		Cancel = function()
+			return player.Parent ~= Players
+		end,
+	})
+	if not profile then
+		player:Kick("Could not load your save data. Please rejoin.")
+		return
+	end
+	profile:AddUserId(player.UserId)
+	profile:Reconcile()
+	migrate(profile.Data)
+
+	if player.Parent ~= Players then
+		profile:EndSession()
+		return
+	end
+
+	local lastSaveReason: string? = nil
+	profile.OnLastSave:Connect(function(reason: string)
+		lastSaveReason = reason
+		settle(player, profile)
+	end)
+	profile.OnSessionEnd:Connect(function()
+		profiles[player] = nil
+		if lastSaveReason == "Shutdown" or lastSaveReason == "Manual" then
+			return
+		end
+		player:Kick("Your save data was opened elsewhere. Please rejoin.")
+	end)
+
+	profiles[player] = profile
+	PlayerData.publish(player)
+	for _, callback in loadedCallbacks do
+		local ok, err = pcall(callback, player, profile.Data)
+		if not ok then
+			warn(`[playerdata] load handler failed for {player.Name}: {err}`)
+		end
+	end
+end
+
+local function onPlayerRemoving(player: Player)
+	local profile = profiles[player]
+	if profile then
+		settle(player, profile)
+		profiles[player] = nil
+		profile:EndSession()
+	end
+	for _, callback in departedCallbacks do
+		local ok, err = pcall(callback, player)
+		if not ok then
+			warn(`[playerdata] departure handler failed for {player.Name}: {err}`)
+		end
+	end
+	settled[player] = nil
+end
+
+-- Called with each loaded profile; a player already loaded is called at once.
+function PlayerData.onLoaded(callback: (Player, Data) -> ())
+	table.insert(loadedCallbacks, callback)
+	for player, profile in profiles do
+		task.spawn(callback, player, profile.Data)
+	end
+end
+
+-- Called once per session as it ends, while changes to `Data` are still saved.
+function PlayerData.onRelease(callback: (Player, Data) -> ())
+	table.insert(releaseCallbacks, callback)
+end
+
+-- Called after a player has gone, to drop what a system held for them.
+function PlayerData.onDeparted(callback: (Player) -> ())
+	table.insert(departedCallbacks, callback)
+end
+
+function PlayerData.get(player: Player): Data?
+	local profile = profiles[player]
+	return if profile then profile.Data else nil
+end
+
+function PlayerData.waitFor(player: Player): Data?
+	while player.Parent == Players do
+		local data = PlayerData.get(player)
+		if data then
+			return data
+		end
+		task.wait()
+	end
+	return nil
+end
+
+function PlayerData.loaded(): { [Player]: Data }
+	local out = {}
+	for player, profile in profiles do
+		out[player] = profile.Data
+	end
+	return out
+end
+
+-- Adds cash (positive) to the wallet; earned cash counts toward the run and lifetime.
+function PlayerData.earn(player: Player, amount: number)
+	local d = PlayerData.get(player)
+	if not d or amount <= 0 or amount ~= amount then
+		return
+	end
+	d.cash += amount
+	d.runCash += amount
+	d.lifetimeCash += amount
+	player:SetAttribute("Cash", d.cash)
+end
+
+-- Adds to the till (§4.4), counting toward the run when it is collected.
+function PlayerData.addTill(player: Player, amount: number)
+	local d = PlayerData.get(player)
+	if not d or amount <= 0 or amount ~= amount then
+		return
+	end
+	d.till = math.min(Constants.Economy.TillCap, d.till + amount)
+	player:SetAttribute("Till", d.till)
+end
+
+-- Spends `amount` if the wallet holds it; true when spent.
+function PlayerData.spend(player: Player, amount: number): boolean
+	local d = PlayerData.get(player)
+	if not d or amount ~= amount or amount < 0 or d.cash < amount then
+		return false
+	end
+	d.cash -= amount
+	player:SetAttribute("Cash", d.cash)
+	return true
+end
+
+function PlayerData.addShards(player: Player, amount: number)
+	local d = PlayerData.get(player)
+	if not d then
+		return
+	end
+	d.shards = math.max(0, d.shards + amount)
+	player:SetAttribute("Shards", d.shards)
+end
+
+function PlayerData.stat(player: Player, name: string, delta: number?)
+	local d = PlayerData.get(player)
+	if d then
+		d.stats[name] = (d.stats[name] or 0) + (delta or 1)
+	end
+end
+
+-- Saves now, in the background (ProfileStore's own merging is enough at this size).
+function PlayerData.save(player: Player)
+	local profile = profiles[player]
+	if profile and profile:IsActive() and not settled[player] then
+		profile:Save()
+	end
+end
+
+function PlayerData.isClosing(): boolean
+	return ProfileStore.IsClosing == true
+end
+
+--[[ A Robux grant (§13.3): `grant` changes the data and returns whether it
+	granted; it runs only if `purchaseId` is not already among the receipts,
+	and the id is remembered in the same change. Then this yields until a save
+	holds the id, so ProcessReceipt acknowledges only goods on disk; false is
+	"not yet", never "refused for good". ]]
+function PlayerData.grantOnce(player: Player, purchaseId: string, grant: (Data) -> boolean): boolean
+	local profile = profiles[player]
+	if not profile or not profile:IsActive() then
+		return false
+	end
+	local data: Data = profile.Data
+	if not table.find(data.receipts, purchaseId) then
+		local ok, granted = pcall(grant, data)
+		if not ok or granted ~= true then
+			warn(`[playerdata] purchase {purchaseId} for {player.Name} not granted: {granted}`)
+			return false
+		end
+		table.insert(data.receipts, purchaseId)
+		while #data.receipts > 200 do
+			table.remove(data.receipts, 1)
+		end
+		PlayerData.publish(player)
+	end
+	-- Wait for a save that holds it.
+	local saved = false
+	local connection = profile.OnAfterSave:Connect(function(last: any)
+		if
+			typeof(last) == "table"
+			and typeof(last.receipts) == "table"
+			and table.find(last.receipts, purchaseId)
+		then
+			saved = true
+		end
+	end)
+	profile:Save()
+	local waited = 0
+	while not saved and profile:IsActive() and waited < 30 do
+		waited += task.wait(0.1)
+	end
+	connection:Disconnect()
+	return saved
+end
+
+function PlayerData.Init()
+	Players.PlayerRemoving:Connect(onPlayerRemoving)
+end
+
+function PlayerData.Start()
+	Players.PlayerAdded:Connect(onPlayerAdded)
+	for _, player in Players:GetPlayers() do
+		task.spawn(onPlayerAdded, player)
+	end
+end
+
+PlayerData.Template = TEMPLATE
+
+return PlayerData

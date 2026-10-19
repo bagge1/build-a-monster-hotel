@@ -615,3 +615,178 @@ After the soft launch we apply for Kids/Select eligibility:
 | 2026-10-19 | Standard ~5-stud avatar, 6-stud grid cells | His ruling on the scale of a person (CLAUDE.md) |
 | 2026-10-19 | GitHub repo `build-a-monster-hotel`, private; folder renamed to match | His ruling |
 | 2026-10-19 | Night sessions may commit, push and run DataStore-writing playtests | His go (the game is not live) |
+| 2026-10-19 | *Night draft:* remote layer is a thin typed wrapper over RemoteEvents (`src/shared/Net.luau`), not Blink/Zap (§13.6) | Reversible: every remote is declared in one file, so swapping the transport touches one module |
+| 2026-10-19 | *Night draft:* guest paths are a grid graph over free cells (§13.6) | Cheaper and deterministic, as the section leaned; Appendix A.1 |
+
+---
+
+## Appendix A. Night drafts (2026-10-19), for August's review
+
+The first night sprint built the game from this document. Where the document
+leaves a value or a shape open, the night took a **reversible draft**, written
+here before it was built. **Nothing in this appendix is his decision yet.**
+Every number below is a **placeholder** (tagged `PLACEHOLDER` in
+`src/shared/Constants.luau`); the questions that are his are in `WAITING.md` §2.
+
+### A.1 The street and the plot (§3)
+
+- **Street:** one straight pedestrian lane along world X. Plots 1–3 on the north
+  side face south, plots 4–6 on the south side face north. Plot fronts are 24
+  studs from the centre line; plots are 72 studs wide with 24-stud gaps. The
+  **bus stop is at the west end**. Guests from a bus walk east down the centre
+  of the lane ("browsing"), then turn to the hotel they picked.
+- **The plot frame:** cell (x, z), x 0–11 along the street, z 0–11 away from it;
+  floor 1 at ground level, each floor 12 studs above the last.
+- **Reserved cells:** the **Lobby** is the front two rows of floor 1 (z 0–1):
+  entrance in the middle, front desk, till, waiting spots. The **stair core** is
+  cells x 10–11, z 2–3 on every floor (stairs for players; guests glide up it).
+- **The Resident Wing** is a garden behind the hotel (24 studs deep), where
+  residents wander.
+- **Hallways are the free cells.** A room's door opens onto the cell in front
+  of its front edge. A placement is refused if its door cell is not free and
+  connected to the floor's way in (the lobby on floor 1, the stair core above),
+  or if it would cut off another room's door. That connectivity graph is also
+  the guests' path graph (§13.6, "a graph").
+
+### A.2 Pieces and prices (§5, §6.2)
+
+| Room | Base cost (PLACEHOLDER except Standard) |
+|---|---|
+| Standard Room | $50 (GDD §6.3) |
+| Garden Room | $150 |
+| Attic Room | $400 |
+| Sarcophagus Suite | $1,500 |
+| Potion Loft | $4,000 |
+| Den Room | $12,000 |
+| Coffin Suite | $40,000 |
+| Opera Suite | $250,000 |
+
+- **Floors:** floor 1 is free; floor 2 $500, floor 3 $5,000 (PLACEHOLDER). Cap
+  3, +1 with the Extra Floor pass.
+- **Decor** sits in a room's decor slots (three per room, attachments
+  `Decor_1`–`Decor_3`) and gives that room preference tags:
+
+  | Decor | Tags | Cost (PLACEHOLDER) |
+  |---|---|---|
+  | Puddle Rug | damp | $30 |
+  | Snack Basket | snacks | $40 |
+  | Record Player | music, slow music | $60 |
+  | Candles | candles, darkness | $40 |
+  | Planter | garden | $50 |
+  | Antique Wardrobe | antique furniture | $300 |
+  | Blackout Curtains | dark, darkness, quiet | $250 |
+  | Sand Tray | dry | $250 |
+  | Cat Basket | cats | $1,200 |
+  | Cauldron | cauldron | $1,500 |
+  | Moon Window | moonlight | $5,000 |
+  | Steak Platter | steak | $4,000 |
+  | Pipe Organ | organ music, music | $15,000 |
+  | Chandelier | chandelier | $60,000 |
+  | Soundproof Walls | silence, quiet | $50,000 |
+
+- **Amenities** are 2×2 pieces on a floor: they add their tags to every room on
+  that floor and score **Fun**.
+
+  | Amenity | Tags | Cost (PLACEHOLDER) |
+  |---|---|---|
+  | Snack Bar | snacks | $300 |
+  | Music Room | music, slow music | $800 |
+  | Graveyard Garden | garden, darkness | $2,500 |
+  | Quiet Library | quiet, antique furniture | $6,000 |
+  | Organ Hall | organ music, music | $30,000 |
+
+- **Upgrading a room tier** costs base × 4^tier (T1→T2 is 4× the base).
+- **Selling** a room refunds half of what it cost (PLACEHOLDER); an occupied or
+  reserved room cannot be sold.
+
+### A.3 Guests (§4.3, §4.4)
+
+- **Satisfaction** (0–100) = 40 + 15 per preference matched + 5 per tier above
+  T1 + 5 per amenity on the floor (at most 15) + 10 per request fulfilled by the
+  player (5 by staff) − 10 per request that ran out − 1 per 5 s waited at the
+  desk past 10 s (at most −20). **Matching both preferences makes a T1 stay
+  happy (80).**
+- **Tip** on check-out = pay rate × stay × satisfaction/100 × 0.25.
+- **Review** = 1 + floor(satisfaction / 25) stars, 1–5.
+- **Requests:** one per stay, at a random moment in its middle half, open for
+  30 s. Fulfilled at the room's door.
+- **Cleaning:** a hold of 2 s at the room's door; Housekeeping staff clean a
+  room after 20 s.
+- **Walk-ins:** each hotel gets one every 30 s ÷ (1 + 0.15 × rooms) × (3 ÷
+  rating), clamped to 8–60 s, Common or Uncommon only, of a species the hotel
+  has a vacant room for. Shown walking in from the street.
+- **Browsing** lasts as long as the walk down the lane (~40 s). Each guest
+  decides at the east end; one with no eligible hotel leaves the street. A
+  guest waits at most 60 s at the desk, then leaves unhappy (a 1★ review).
+- **Newcomer boost** (§4.3): +1.0 score for hotels rated 2★ or less, Common and
+  Uncommon guests only.
+- **Bus size:** 6 guests for one player, +1 per extra player, at most 10.
+
+### A.4 Rating (§5.3)
+
+Each category 0–100: **Comfort** from room tiers and the share of preferences
+matched in recent stays; **Service** from desk waits and requests fulfilled;
+**Cleanliness** from the share of rooms clean now; **Fun** 15 per amenity and
+20 per Entertainment staff; **Style** 4 per decor piece and 10 per distinct room
+type. The rating = the mean of (1 + 4 × category mean / 100) and the mean of the
+last 30 reviews (the category part alone with no reviews), rounded to a half
+star, 1–5.
+
+### A.5 Collection (§4.5, §4.6)
+
+- **Resident Wing** capacity 6, +1 per Moon Tree level, +6 with the pass.
+- **Staff effect:** a staff member of its species' best role works at 100 %, any
+  other at 60 %. Front Desk checks a waiting guest in after 6 s ÷ efficiency;
+  Housekeeping cleans after 20 s ÷ efficiency; Room Service fulfils after 12 s ÷
+  efficiency (counting as staff); Bellhop makes guests walk 25 % faster;
+  Entertainment adds 20 Fun; Security scares a hunter in reach every 8 s.
+- **Book rewards:** a species found pays 60 s of that species' pay; a family
+  completed is +5 % income; a mutation set completed gives a title.
+- **Releasing a resident** ("holiday") gives Moon Shards by rarity: 1 / 2 / 4 /
+  8 / 15 / 30.
+
+### A.6 Progression (§6.4–§6.6)
+
+- **Moon Tree nodes:** Cash +10 % (5 levels), Wing +1 slot (5), Offline +15 min
+  (4, so +1 h), Bus score +5 % (5), Cleaning −10 % (3), Daily reroll +1 (2).
+  Base cost 5 shards, ×1.5 per level.
+- **Frostfang Lodge** (Location 2) draft roster, all original:
+
+  | Species | Rarity | Room | Preferences | Staff | Quirk |
+  |---|---|---|---|---|---|
+  | Snowball Sprite | Common | Igloo Room | cold, cocoa | Room Service | Rolls instead of walking |
+  | Ice Imp | Common | Igloo Room | cold, mischief | Bellhop | Leaves frost handprints |
+  | Frost Troll | Uncommon | Ice Cave | cold, stone | Security | Sleeps standing up |
+  | Yeti | Rare | Yeti Den | snow, quiet | Housekeeping | Shakes off snow at check-in |
+  | Snow Witch | Epic | Frost Loft | cocoa, northern lights | Entertainment | Knits icicles |
+  | Ice Wyrm | Legendary | Glacier Suite | cold, northern lights | Front Desk | Coils around the desk |
+  | Aurora Spirit | Mythic | Aurora Dome | northern lights, silence | Entertainment | Paints the sky green |
+
+  Rooms (PLACEHOLDER costs, ×20 Location 1's ladder): Igloo Room 2×2 $1,000;
+  Ice Cave 2×3 $8,000 (2★); Yeti Den 3×3 $60,000 (3★); Frost Loft 2×3 $200,000
+  (3.5★); Glacier Suite 3×3 $800,000 (4★); Aurora Dome 3×3 $5M (4★ + 1
+  Legendary resident). Decor adds Ice Block (cold), Cocoa Mug (cocoa), Snow
+  Globe (snow), Rock Pile (stone), Prank Box (mischief), Aurora Lamp (northern
+  lights).
+- **Second-run rebirth** needs 4★, $20M earned this run (×20) and an Ice Wyrm
+  resident (PLACEHOLDER, mirrors the first).
+
+### A.7 First-time experience (§11)
+
+Gloom's steps, each seen happen on the server: Build a Standard Room → check in
+the walk-in Slime → collect the till → buy a second room → see a bus (pitch one)
+→ the Slime moves in (the tutorial Slime's stay counts as happy and needs 1
+friendship) → the goal card (the tutorial unlocks the Coffin Suite and sends a
+Vampire Count once one is built) → clean a room → assign the Slime to staff →
+the Frostfang preview. Skippable at any step, never locking movement.
+
+### A.8 Hunter Night (§8.1)
+
+Hunters walk from the east end of the street, each toward one hotel, and take
+45 s to reach its entrance. A hunter at the door nets one guest (or, with none, a
+resident) and leaves. **Boo!** scares a hunter within 40 studs (a click or tap
+on it). Traps: none in the first draft. A defended night (fewer than half the
+hunters reached a door) pays every player on the street 5 minutes of their
+income and sends a bonus bus of Rare-or-better guests. A netted resident is in
+the Hunter Camp at the east end; a prompt there rescues it, or it comes back by
+itself after 24 h.

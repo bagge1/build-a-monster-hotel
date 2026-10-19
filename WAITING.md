@@ -20,6 +20,19 @@ Med Claudes skärmdump där det finns en. -->
 
 <!-- En fråga i taget, med alternativen och Claudes rekommendation. -->
 
+1. **Nattens utkast i GDD Appendix A** (2026-10-19). Allt som GDD:n inte
+   bestämde valde natten som ett utkast så att spelet kunde byggas: priser på
+   rum utöver Standard Room, decor och amenities, satisfaction-formeln,
+   rating-formeln, hur walk-ins kommer, Frostfang Lodges arter och rum, Moon
+   Tree-noderna, Hunter Night-detaljerna. Varje tal är märkt `PLACEHOLDER` i
+   `src/shared/Constants.luau`. **Rekommendation:** spela först, läs sedan A.2
+   (priser) och A.3 (satisfaction): det är de som styr hur det känns. Inget är
+   ditt beslut förrän du sagt det.
+
 ## §3 Creator Hub och publicering
 
-<!-- Det som bara görs i Creator Hub eller Studios File-meny. -->
+1. **Slå på Studio Access to API Services** (2026-10-19). Playtesten visar
+   `DataStore state is NoAccess`: utan den sparas ingenting, ProfileStore kör
+   en mock och varje spelare börjar om. I Studio: **File → Experience
+   Settings → Security → Enable Studio Access to API Services**, sedan
+   **Save**. Det är det enda som hindrar att save och load kan provas.
