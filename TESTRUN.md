@@ -263,8 +263,10 @@ the slab (`CLAUDE.md`, "The scale of a person"; `MODELS.md`, "Hotel kit").
   textures match; six synced copies without `PrimaryPart`, which `HotelKit`
   sets itself). Every stair core's dressing now tops out at 17.85, under the
   upper floor (18): the handrail no longer stands through it.
-- [ ] The jambs and the street lamps (a pair flanking each entrance) seen in a
-  playtest: not run, another session was testing the grid in Studio.
+- [x] The jambs and the street lamps seen in a playtest: lamps at ±15 from
+  each entrance (x −15, 15, 165, 195 ...), a pair flanking the arch; the
+  jamb trim stops where the arch springs. From the street straight ahead the
+  sign's text draws (the first review's finding 2, closed).
 
 ## August keeps
 

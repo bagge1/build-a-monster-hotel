@@ -24,8 +24,8 @@ evening, `CLAUDE.md` "The scale of a person": double only what makes the
 hotel less cramped). Built, imported and played (`TESTRUN.md` phase 11):
 walls meet the slab, three floors walked, a guest up the stairs, the build
 camera; the in-game blind review triaged in the Haunted Manor README, its
-fixes (the jambs, the stairs' handrail) imported and synced too. Still to see
-in a playtest: the jambs and the street lamps flanking each entrance. His calls in WAITING §2.13. **A grid gap
+fixes (the jambs, the stairs' handrail, the lamps) imported, synced and seen
+in a playtest. Phase 11 is closed but for his calls (WAITING §2.13). His calls in WAITING §2.13. **A grid gap
 found** (not the rescale's): `Grid` treats the stair core's cells as walkable
 from every side, so a door may open onto the core's back wall and guests on
 upper floors glide through the core; a follow-up. (2) Open TESTRUN
