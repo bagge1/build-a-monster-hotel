@@ -20,6 +20,9 @@ in a playtest, whose changes are thrown away.
    files, and only those, into one folder, `blender/_import/`, so he picks them
    all in one dialog: every kind together, never a folder per kind. Look at
    what is already staged there first (another session's batch) and keep it.
+   **The folder holds nothing but the FBX to import** (his ask, 2026-10-19):
+   an import leaves a `<Name>.fbm/` folder per FBX (its unpacked atlas);
+   delete those, and the imported FBX, once the batch is saved (step 5).
    Name the folder when asking, and put the import in `WAITING.md` §0. Once the
    game has its first sets, write `tools/import_settings.py` to stage a batch
    and print step 2's Luau from the sets' own `validation.json`
@@ -83,8 +86,9 @@ in a playtest, whose changes are thrown away.
    `ServerStorage`): collision, mesh ids and sizes against the Workspace
    import, **no empty MeshPart**, and a `PrimaryPart` on each (Rojo's live
    sync can drop it, `DEVNOTES.md`). Then deletes the Workspace copies and
-   `ServerStorage._ClaudeSerialize`, strikes the import in `WAITING.md` and
-   updates the set's README.
+   `ServerStorage._ClaudeSerialize`, empties `blender/_import/` of the batch
+   (its FBX and the `.fbm/` folders the import left), strikes the import in
+   `WAITING.md` and updates the set's README.
 
 ## Before and after
 
