@@ -910,6 +910,20 @@ rounded to a half star, 1–5. (First draft used a straight line and gave an
 empty hotel 2.5★, unlocking §5.2's 2★ and 2.5★ rooms at once; seen in the
 first playtest, 2026-10-19.)
 
+**Staff coverage and rooms cleaned on time** (§5.3's "staff coverage",
+"rooms cleaned on time, Housekeeping coverage"; PLACEHOLDER, every number
+here, WAITING §2.26). Points added on top of the formulas above, each
+category still clamped to 0–100, so a hotel without staff scores as before
+and more staff or quicker cleaning never lowers a category. A role's
+**coverage** is its staff's summed efficiency (A.5) over what the hotel needs,
+0–1: Front Desk needs 1 (one desk), Room Service and Housekeeping 1 per
+4 rooms (at least 1). **Service** + 10 × Front Desk coverage + 10 × Room
+Service coverage (only once someone has stayed). **Cleanliness** + 10 ×
+Housekeeping coverage + 10 × the share of the last 20 cleanings done within
+40 s of the room getting dirty, every room dirty longer than that right now
+counting as a late one (only with rooms). A Mummy on Housekeeping (60 %) in a
+4-room hotel gives +6.
+
 ### A.5 Collection (§4.5, §4.6)
 
 - **Resident Wing** capacity 6, +1 per Moon Tree level, +6 with the pass.

@@ -206,6 +206,17 @@ Constants.Rating = {
 	ServiceWaitPerPoint = 1, -- −1 service per second of mean desk wait
 	ServiceSampleSize = 20, -- recent check-ins
 	CategoryCurve = 1.5, -- stars from categories: 1 + 4 × (mean/100)^1.5
+	-- Staff coverage and rooms cleaned on time (§5.3; PLACEHOLDER, every value
+	-- below, WAITING §2.26): points added on top, so a hotel without staff
+	-- scores as it did before them.
+	ServicePerDeskCoverage = 10, -- Service at full Front Desk coverage
+	ServicePerRoomServiceCoverage = 10, -- Service at full Room Service coverage
+	CleanPerHousekeepingCoverage = 10, -- Cleanliness at full Housekeeping coverage
+	CleanPerOnTime = 10, -- Cleanliness when every recent cleaning was on time
+	DesksCovered = 1, -- Front Desk efficiency that covers the desk
+	RoomsPerStaff = 4, -- rooms one Room Service or Housekeeping at 100 % covers
+	CleanOnTime = 40, -- seconds a room may stay dirty and still be cleaned on time
+	CleanSampleSize = 20, -- recent cleanings
 }
 
 -- §4.6, Appendix A.5: residents and staff.

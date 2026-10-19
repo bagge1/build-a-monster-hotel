@@ -74,6 +74,97 @@ describe("Rating", function()
 		)
 	end)
 
+	-- §5.3: Service from staff coverage, Cleanliness from Housekeeping coverage
+	-- and rooms cleaned on time. Rules, not values (Appendix A.4 PLACEHOLDER).
+	it("more staff coverage never lowers Service or Cleanliness", function()
+		local levels = { 0, 0.6, 1, 1.6, 3, 10 }
+		for _, over in { {}, { meanWait = 0, requestShare = 1 }, { dirtyRooms = 2, rooms = 2 } } do
+			for n = 1, #levels - 1 do
+				local lo, hi = levels[n], levels[n + 1]
+				local function cats(e)
+					local o = table.clone(over)
+					o.frontDesk, o.roomService, o.housekeeping = e, e, e
+					return Rating.categories(inputs(o))
+				end
+				local a, b = cats(lo), cats(hi)
+				expect.atLeast(b.Service, a.Service, `Service {lo} → {hi}`)
+				expect.atLeast(b.Cleanliness, a.Cleanliness, `Cleanliness {lo} → {hi}`)
+				for _, name in Rating.Order do
+					if name ~= "Service" and name ~= "Cleanliness" then
+						expect.eq(b[name], a[name], `{name} untouched by staff`)
+					end
+				end
+			end
+		end
+		-- One role at a time, too.
+		for _, role in { "frontDesk", "roomService", "housekeeping" } do
+			local none = Rating.categories(inputs())
+			local some = Rating.categories(inputs({ [role] = 1 }))
+			expect.atLeast(some.Service, none.Service, role)
+			expect.atLeast(some.Cleanliness, none.Cleanliness, role)
+		end
+	end)
+
+	it("on-time cleaning never scores below late cleaning", function()
+		for _, over in { {}, { dirtyRooms = 1 }, { dirtyRooms = 2 }, { housekeeping = 1 } } do
+			local prev = -1
+			for _, share in { 0, 0.25, 0.5, 1 } do
+				local o = table.clone(over)
+				o.onTimeShare = share
+				local c = Rating.categories(inputs(o)).Cleanliness
+				expect.atLeast(c, prev, `on-time share {share}`)
+				prev = c
+			end
+		end
+	end)
+
+	it("with or without staff, every category stays within 0 and 100", function()
+		local hotels = {
+			{ frontDesk = 0, roomService = 0, housekeeping = 0, onTimeShare = 0 },
+			{ frontDesk = 99, roomService = 99, housekeeping = 99, onTimeShare = 1 },
+			{
+				frontDesk = 99,
+				roomService = 99,
+				housekeeping = 99,
+				onTimeShare = 5,
+				meanWait = 0,
+				requestShare = 1,
+				perks = { Service = 50, Cleanliness = 50 },
+			},
+			{ frontDesk = 99, roomService = 99, housekeeping = 99, meanWait = 999, dirtyRooms = 2 },
+			{
+				frontDesk = 5,
+				housekeeping = 5,
+				rooms = 0,
+				roomTiers = {},
+				checkIns = 0,
+				onTimeShare = 1,
+			},
+			{ onTimeShare = -1 },
+		}
+		for _, over in hotels do
+			local c = Rating.categories(inputs(over))
+			for _, name in Rating.Order do
+				expect.atLeast(c[name], 0, name)
+				expect.atMost(c[name], 100, name)
+			end
+		end
+	end)
+
+	it("staff earn nothing in a hotel nobody has stayed in or without rooms", function()
+		local c = Rating.categories(inputs({
+			roomTiers = {},
+			rooms = 0,
+			checkIns = 0,
+			frontDesk = 3,
+			roomService = 3,
+			housekeeping = 3,
+			onTimeShare = 1,
+		}))
+		expect.eq(c.Service, 0, "no Service yet")
+		expect.eq(c.Cleanliness, 0, "no Cleanliness without rooms")
+	end)
+
 	it("a hotel with nothing in it rates the lowest", function()
 		local empty = inputs({
 			roomTiers = {},
