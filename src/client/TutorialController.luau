@@ -15,6 +15,7 @@ local RunService = game:GetService("RunService")
 
 local Net = require(ReplicatedStorage.Shared.Net)
 local Ui = require(script.Parent.Ui)
+local UiImages = require(script.Parent.UiImages)
 
 local TutorialController = {}
 
@@ -151,9 +152,21 @@ function TutorialController.Init()
 	cap.MinSize = Vector2.new(300, 0)
 	cap.Parent = bubble
 	bubble.Visible = false
-	local face = Ui.label(bubble, "Face", "🦇", UDim2.fromOffset(48, 48), 36)
-	face.Position = UDim2.fromOffset(6, 6)
-	face.TextXAlignment = Enum.TextXAlignment.Center
+	-- Gloom's portrait (ui/Gloom.png, UiImages); the bat emoji if it is not uploaded.
+	local portrait = UiImages.Gloom
+	if portrait and portrait ~= "" then
+		local face = Instance.new("ImageLabel")
+		face.Name = "Face"
+		face.BackgroundTransparency = 1
+		face.Image = portrait
+		face.Size = UDim2.fromOffset(52, 52)
+		face.Position = UDim2.fromOffset(4, 4)
+		face.Parent = bubble
+	else
+		local face = Ui.label(bubble, "Face", "🦇", UDim2.fromOffset(48, 48), 36)
+		face.Position = UDim2.fromOffset(6, 6)
+		face.TextXAlignment = Enum.TextXAlignment.Center
+	end
 	local name = Ui.label(bubble, "Name", "Gloom", UDim2.fromOffset(60, 18), 14, Ui.Colour.Gold)
 	name.Position = UDim2.fromOffset(0, 54)
 	name.TextXAlignment = Enum.TextXAlignment.Center

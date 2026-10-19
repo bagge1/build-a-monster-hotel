@@ -1,0 +1,1696 @@
+{
+  "set": "monsters/haunted_manor",
+  "frame": "Blender -Y front, +Z up, +X the monster's left; Roblox (x, y, z) = Blender (-x, z, y)",
+  "models": [
+    {
+      "species": "Slime",
+      "shape": "Blob",
+      "fbx": "fbx/Slime.fbx",
+      "height_target": 3.0,
+      "height": 3.117,
+      "bounds_blender": [
+        [
+          -1.694,
+          -1.607,
+          0.0
+        ],
+        [
+          1.791,
+          1.799,
+          3.117
+        ]
+      ],
+      "triangles": 2010,
+      "triangles_proxy": 278,
+      "budget": {
+        "model": 4000,
+        "proxy": 300,
+        "mesh_cap": 20000
+      },
+      "parts": [
+        {
+          "part": "Body",
+          "triangles": 822,
+          "colour": [
+            110,
+            220,
+            120
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Glow_Eyes_1",
+          "triangles": 168,
+          "colour": [
+            255,
+            255,
+            255
+          ],
+          "material": "Neon"
+        },
+        {
+          "part": "Dark",
+          "triangles": 360,
+          "colour": [
+            45,
+            32,
+            60
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Light",
+          "triangles": 216,
+          "colour": [
+            255,
+            255,
+            255
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Glow_Eyes_2",
+          "triangles": 168,
+          "colour": [
+            255,
+            255,
+            255
+          ],
+          "material": "Neon"
+        },
+        {
+          "part": "Trim",
+          "triangles": 240,
+          "colour": [
+            255,
+            150,
+            180
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Hand",
+          "triangles": 12,
+          "colour": [
+            255,
+            0,
+            255
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Nameplate",
+          "triangles": 12,
+          "colour": [
+            255,
+            0,
+            255
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Root",
+          "triangles": 12,
+          "colour": [
+            128,
+            128,
+            128
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "LOD_Proxy",
+          "triangles": 278,
+          "colour": [
+            110,
+            220,
+            120
+          ],
+          "material": "SmoothPlastic"
+        }
+      ],
+      "markers_blender": {
+        "Hand": [
+          -1.55,
+          0.0,
+          1.0
+        ],
+        "Nameplate": [
+          0.0,
+          0.0,
+          4.1
+        ]
+      },
+      "markers_roblox": {
+        "Hand": [
+          1.55,
+          1.0,
+          0.0
+        ],
+        "Nameplate": [
+          -0.0,
+          4.1,
+          0.0
+        ]
+      },
+      "markers_roblox_from_root": {
+        "Hand": [
+          1.55,
+          -0.5,
+          0.0
+        ],
+        "Nameplate": [
+          -0.0,
+          2.6,
+          0.0
+        ]
+      },
+      "coplanar_overlaps": "none",
+      "rig": "none: static meshes, no bones, no Animations folder (the client bobs them)",
+      "note": "Blob; the client bobs and wobbles it. Hand is the right side of the body (no arms)."
+    },
+    {
+      "species": "Skeleton",
+      "shape": "Biped",
+      "fbx": "fbx/Skeleton.fbx",
+      "height_target": 5.0,
+      "height": 4.9,
+      "bounds_blender": [
+        [
+          -1.15,
+          -1.021,
+          0.0
+        ],
+        [
+          1.15,
+          0.88,
+          4.9
+        ]
+      ],
+      "triangles": 3692,
+      "triangles_proxy": 273,
+      "budget": {
+        "model": 4000,
+        "proxy": 300,
+        "mesh_cap": 20000
+      },
+      "parts": [
+        {
+          "part": "Body",
+          "triangles": 2504,
+          "colour": [
+            235,
+            230,
+            215
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Dark",
+          "triangles": 608,
+          "colour": [
+            45,
+            32,
+            60
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Glow_Eyes_1",
+          "triangles": 168,
+          "colour": [
+            150,
+            225,
+            255
+          ],
+          "material": "Neon"
+        },
+        {
+          "part": "Glow_Eyes_2",
+          "triangles": 168,
+          "colour": [
+            150,
+            225,
+            255
+          ],
+          "material": "Neon"
+        },
+        {
+          "part": "Trim",
+          "triangles": 208,
+          "colour": [
+            40,
+            170,
+            170
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Hand",
+          "triangles": 12,
+          "colour": [
+            255,
+            0,
+            255
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Nameplate",
+          "triangles": 12,
+          "colour": [
+            255,
+            0,
+            255
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Root",
+          "triangles": 12,
+          "colour": [
+            128,
+            128,
+            128
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "LOD_Proxy",
+          "triangles": 273,
+          "colour": [
+            235,
+            230,
+            215
+          ],
+          "material": "SmoothPlastic"
+        }
+      ],
+      "markers_blender": {
+        "Hand": [
+          -0.95,
+          -0.4,
+          1.6
+        ],
+        "Nameplate": [
+          0.0,
+          0.0,
+          5.9
+        ]
+      },
+      "markers_roblox": {
+        "Hand": [
+          0.95,
+          1.6,
+          -0.4
+        ],
+        "Nameplate": [
+          -0.0,
+          5.9,
+          0.0
+        ]
+      },
+      "markers_roblox_from_root": {
+        "Hand": [
+          0.95,
+          -0.9,
+          -0.4
+        ],
+        "Nameplate": [
+          -0.0,
+          3.4,
+          0.0
+        ]
+      },
+      "coplanar_overlaps": "none",
+      "rig": "none: static meshes, no bones, no Animations folder (the client bobs them)",
+      "note": "Biped; a teal bow tie for the Front Desk."
+    },
+    {
+      "species": "PumpkinHead",
+      "shape": "Biped",
+      "fbx": "fbx/PumpkinHead.fbx",
+      "height_target": 4.5,
+      "height": 4.507,
+      "bounds_blender": [
+        [
+          -1.219,
+          -1.06,
+          0.0
+        ],
+        [
+          1.219,
+          1.06,
+          4.507
+        ]
+      ],
+      "triangles": 2116,
+      "triangles_proxy": 280,
+      "budget": {
+        "model": 4000,
+        "proxy": 300,
+        "mesh_cap": 20000
+      },
+      "parts": [
+        {
+          "part": "Dark",
+          "triangles": 640,
+          "colour": [
+            80,
+            50,
+            40
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Trim",
+          "triangles": 968,
+          "colour": [
+            70,
+            150,
+            85
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Body",
+          "triangles": 432,
+          "colour": [
+            240,
+            140,
+            40
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Glow_Eyes_1",
+          "triangles": 8,
+          "colour": [
+            255,
+            190,
+            60
+          ],
+          "material": "Neon"
+        },
+        {
+          "part": "Glow_Eyes_2",
+          "triangles": 8,
+          "colour": [
+            255,
+            190,
+            60
+          ],
+          "material": "Neon"
+        },
+        {
+          "part": "Glow_Warm_1",
+          "triangles": 24,
+          "colour": [
+            255,
+            190,
+            60
+          ],
+          "material": "Neon"
+        },
+        {
+          "part": "Hand",
+          "triangles": 12,
+          "colour": [
+            255,
+            0,
+            255
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Nameplate",
+          "triangles": 12,
+          "colour": [
+            255,
+            0,
+            255
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Root",
+          "triangles": 12,
+          "colour": [
+            128,
+            128,
+            128
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "LOD_Proxy",
+          "triangles": 280,
+          "colour": [
+            240,
+            140,
+            40
+          ],
+          "material": "SmoothPlastic"
+        }
+      ],
+      "markers_blender": {
+        "Hand": [
+          -0.86,
+          -0.22,
+          1.45
+        ],
+        "Nameplate": [
+          0.0,
+          0.0,
+          5.4
+        ]
+      },
+      "markers_roblox": {
+        "Hand": [
+          0.86,
+          1.45,
+          -0.22
+        ],
+        "Nameplate": [
+          -0.0,
+          5.4,
+          0.0
+        ]
+      },
+      "markers_roblox_from_root": {
+        "Hand": [
+          0.86,
+          -0.8,
+          -0.22
+        ],
+        "Nameplate": [
+          -0.0,
+          3.15,
+          0.0
+        ]
+      },
+      "coplanar_overlaps": "none",
+      "rig": "none: static meshes, no bones, no Animations folder (the client bobs them)",
+      "note": "Biped; carved face lit warm: Glow_Eyes_1/2 and the mouth Glow_Warm_1 (quirk: \"head glows brighter when happy\")."
+    },
+    {
+      "species": "Ghost",
+      "shape": "Float",
+      "fbx": "fbx/Ghost.fbx",
+      "height_target": 4.5,
+      "height": 4.5,
+      "bounds_blender": [
+        [
+          -1.482,
+          -1.38,
+          0.34
+        ],
+        [
+          1.482,
+          1.38,
+          4.5
+        ]
+      ],
+      "triangles": 1692,
+      "triangles_proxy": 278,
+      "budget": {
+        "model": 4000,
+        "proxy": 300,
+        "mesh_cap": 20000
+      },
+      "parts": [
+        {
+          "part": "Body",
+          "triangles": 624,
+          "colour": [
+            220,
+            235,
+            255
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Glow_Eyes_1",
+          "triangles": 168,
+          "colour": [
+            110,
+            90,
+            230
+          ],
+          "material": "Neon"
+        },
+        {
+          "part": "Dark",
+          "triangles": 360,
+          "colour": [
+            45,
+            32,
+            60
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Light",
+          "triangles": 96,
+          "colour": [
+            255,
+            255,
+            255
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Glow_Eyes_2",
+          "triangles": 168,
+          "colour": [
+            110,
+            90,
+            230
+          ],
+          "material": "Neon"
+        },
+        {
+          "part": "Trim",
+          "triangles": 240,
+          "colour": [
+            255,
+            150,
+            180
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Hand",
+          "triangles": 12,
+          "colour": [
+            255,
+            0,
+            255
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Nameplate",
+          "triangles": 12,
+          "colour": [
+            255,
+            0,
+            255
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Root",
+          "triangles": 12,
+          "colour": [
+            128,
+            128,
+            128
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "LOD_Proxy",
+          "triangles": 278,
+          "colour": [
+            220,
+            235,
+            255
+          ],
+          "material": "SmoothPlastic"
+        }
+      ],
+      "markers_blender": {
+        "Hand": [
+          -1.4,
+          -0.1,
+          2.35
+        ],
+        "Nameplate": [
+          0.0,
+          0.0,
+          5.4
+        ]
+      },
+      "markers_roblox": {
+        "Hand": [
+          1.4,
+          2.35,
+          -0.1
+        ],
+        "Nameplate": [
+          -0.0,
+          5.4,
+          0.0
+        ]
+      },
+      "markers_roblox_from_root": {
+        "Hand": [
+          1.4,
+          0.1,
+          -0.1
+        ],
+        "Nameplate": [
+          -0.0,
+          3.15,
+          0.0
+        ]
+      },
+      "coplanar_overlaps": "none",
+      "rig": "none: static meshes, no bones, no Animations folder (the client bobs them)",
+      "note": "Float: the sheet hovers, its wavy hem 0.34 over the floor at its lowest. Hand is the right arm nub."
+    },
+    {
+      "species": "Mummy",
+      "shape": "Biped",
+      "fbx": "fbx/Mummy.fbx",
+      "height_target": 5.5,
+      "height": 5.45,
+      "bounds_blender": [
+        [
+          -0.999,
+          -1.25,
+          0.0
+        ],
+        [
+          0.999,
+          0.796,
+          5.45
+        ]
+      ],
+      "triangles": 2432,
+      "triangles_proxy": 278,
+      "budget": {
+        "model": 4000,
+        "proxy": 300,
+        "mesh_cap": 20000
+      },
+      "parts": [
+        {
+          "part": "Body",
+          "triangles": 1248,
+          "colour": [
+            215,
+            200,
+            160
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Trim",
+          "triangles": 356,
+          "colour": [
+            185,
+            168,
+            128
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Dark",
+          "triangles": 360,
+          "colour": [
+            45,
+            32,
+            60
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Glow_Eyes_1",
+          "triangles": 168,
+          "colour": [
+            180,
+            255,
+            120
+          ],
+          "material": "Neon"
+        },
+        {
+          "part": "Light",
+          "triangles": 96,
+          "colour": [
+            255,
+            255,
+            255
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Glow_Eyes_2",
+          "triangles": 168,
+          "colour": [
+            180,
+            255,
+            120
+          ],
+          "material": "Neon"
+        },
+        {
+          "part": "Hand",
+          "triangles": 12,
+          "colour": [
+            255,
+            0,
+            255
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Nameplate",
+          "triangles": 12,
+          "colour": [
+            255,
+            0,
+            255
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Root",
+          "triangles": 12,
+          "colour": [
+            128,
+            128,
+            128
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "LOD_Proxy",
+          "triangles": 278,
+          "colour": [
+            215,
+            200,
+            160
+          ],
+          "material": "SmoothPlastic"
+        }
+      ],
+      "markers_blender": {
+        "Hand": [
+          -0.75,
+          -1.05,
+          2.95
+        ],
+        "Nameplate": [
+          0.0,
+          0.0,
+          6.4
+        ]
+      },
+      "markers_roblox": {
+        "Hand": [
+          0.75,
+          2.95,
+          -1.05
+        ],
+        "Nameplate": [
+          -0.0,
+          6.4,
+          0.0
+        ]
+      },
+      "markers_roblox_from_root": {
+        "Hand": [
+          0.75,
+          0.2,
+          -1.05
+        ],
+        "Nameplate": [
+          -0.0,
+          3.65,
+          0.0
+        ]
+      },
+      "coplanar_overlaps": "none",
+      "rig": "none: static meshes, no bones, no Animations folder (the client bobs them)",
+      "note": "Biped, arms forward; one bandage end hanging behind (quirk \"trails bandages\")."
+    },
+    {
+      "species": "Zombie",
+      "shape": "Biped",
+      "fbx": "fbx/Zombie.fbx",
+      "height_target": 5.5,
+      "height": 5.75,
+      "bounds_blender": [
+        [
+          -1.0,
+          -1.25,
+          0.0
+        ],
+        [
+          1.0,
+          0.9,
+          5.75
+        ]
+      ],
+      "triangles": 2784,
+      "triangles_proxy": 276,
+      "budget": {
+        "model": 4000,
+        "proxy": 300,
+        "mesh_cap": 20000
+      },
+      "parts": [
+        {
+          "part": "Dark",
+          "triangles": 1080,
+          "colour": [
+            55,
+            60,
+            95
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Trim",
+          "triangles": 288,
+          "colour": [
+            130,
+            80,
+            170
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Body",
+          "triangles": 840,
+          "colour": [
+            120,
+            170,
+            110
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Glow_Eyes_1",
+          "triangles": 168,
+          "colour": [
+            255,
+            245,
+            170
+          ],
+          "material": "Neon"
+        },
+        {
+          "part": "Light",
+          "triangles": 204,
+          "colour": [
+            250,
+            250,
+            240
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Glow_Eyes_2",
+          "triangles": 168,
+          "colour": [
+            255,
+            245,
+            170
+          ],
+          "material": "Neon"
+        },
+        {
+          "part": "Hand",
+          "triangles": 12,
+          "colour": [
+            255,
+            0,
+            255
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Nameplate",
+          "triangles": 12,
+          "colour": [
+            255,
+            0,
+            255
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Root",
+          "triangles": 12,
+          "colour": [
+            128,
+            128,
+            128
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "LOD_Proxy",
+          "triangles": 276,
+          "colour": [
+            120,
+            170,
+            110
+          ],
+          "material": "SmoothPlastic"
+        }
+      ],
+      "markers_blender": {
+        "Hand": [
+          -0.7,
+          -1.05,
+          2.93
+        ],
+        "Nameplate": [
+          0.0,
+          0.0,
+          6.5
+        ]
+      },
+      "markers_roblox": {
+        "Hand": [
+          0.7,
+          2.93,
+          -1.05
+        ],
+        "Nameplate": [
+          -0.0,
+          6.5,
+          0.0
+        ]
+      },
+      "markers_roblox_from_root": {
+        "Hand": [
+          0.7,
+          0.18,
+          -1.05
+        ],
+        "Nameplate": [
+          -0.0,
+          3.75,
+          0.0
+        ]
+      },
+      "coplanar_overlaps": "none",
+      "rig": "none: static meshes, no bones, no Animations folder (the client bobs them)",
+      "note": "Biped, arms forward; a torn purple shirt and one tooth."
+    },
+    {
+      "species": "Witch",
+      "shape": "Biped",
+      "fbx": "fbx/Witch.fbx",
+      "height_target": 5.5,
+      "height": 5.5,
+      "bounds_blender": [
+        [
+          -1.15,
+          -1.15,
+          0.0
+        ],
+        [
+          1.15,
+          1.15,
+          5.5
+        ]
+      ],
+      "triangles": 2794,
+      "triangles_proxy": 276,
+      "budget": {
+        "model": 4000,
+        "proxy": 300,
+        "mesh_cap": 20000
+      },
+      "parts": [
+        {
+          "part": "Dark",
+          "triangles": 660,
+          "colour": [
+            45,
+            32,
+            60
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Body",
+          "triangles": 670,
+          "colour": [
+            150,
+            90,
+            200
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Skin",
+          "triangles": 576,
+          "colour": [
+            150,
+            210,
+            140
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Trim",
+          "triangles": 420,
+          "colour": [
+            240,
+            140,
+            40
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Glow_Eyes_1",
+          "triangles": 168,
+          "colour": [
+            255,
+            210,
+            90
+          ],
+          "material": "Neon"
+        },
+        {
+          "part": "Light",
+          "triangles": 96,
+          "colour": [
+            255,
+            255,
+            255
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Glow_Eyes_2",
+          "triangles": 168,
+          "colour": [
+            255,
+            210,
+            90
+          ],
+          "material": "Neon"
+        },
+        {
+          "part": "Hand",
+          "triangles": 12,
+          "colour": [
+            255,
+            0,
+            255
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Nameplate",
+          "triangles": 12,
+          "colour": [
+            255,
+            0,
+            255
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Root",
+          "triangles": 12,
+          "colour": [
+            128,
+            128,
+            128
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "LOD_Proxy",
+          "triangles": 276,
+          "colour": [
+            150,
+            90,
+            200
+          ],
+          "material": "SmoothPlastic"
+        }
+      ],
+      "markers_blender": {
+        "Hand": [
+          -0.85,
+          -0.25,
+          2.0
+        ],
+        "Nameplate": [
+          0.0,
+          0.0,
+          6.4
+        ]
+      },
+      "markers_roblox": {
+        "Hand": [
+          0.85,
+          2.0,
+          -0.25
+        ],
+        "Nameplate": [
+          -0.0,
+          6.4,
+          0.0
+        ]
+      },
+      "markers_roblox_from_root": {
+        "Hand": [
+          0.85,
+          -0.75,
+          -0.25
+        ],
+        "Nameplate": [
+          -0.0,
+          3.65,
+          0.0
+        ]
+      },
+      "coplanar_overlaps": "none",
+      "rig": "none: static meshes, no bones, no Animations folder (the client bobs them)",
+      "note": "Biped; mint skin, orange hair, a bent hat. No cauldron or broom (props are the code's)."
+    },
+    {
+      "species": "Werewolf",
+      "shape": "Biped",
+      "fbx": "fbx/Werewolf.fbx",
+      "height_target": 6.5,
+      "height": 6.497,
+      "bounds_blender": [
+        [
+          -1.533,
+          -1.47,
+          0.0
+        ],
+        [
+          1.533,
+          2.05,
+          6.497
+        ]
+      ],
+      "triangles": 2988,
+      "triangles_proxy": 266,
+      "budget": {
+        "model": 4000,
+        "proxy": 300,
+        "mesh_cap": 20000
+      },
+      "parts": [
+        {
+          "part": "Body",
+          "triangles": 1524,
+          "colour": [
+            120,
+            95,
+            75
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Trim",
+          "triangles": 388,
+          "colour": [
+            205,
+            175,
+            135
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Dark",
+          "triangles": 320,
+          "colour": [
+            40,
+            30,
+            35
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Glow_Eyes_1",
+          "triangles": 168,
+          "colour": [
+            255,
+            190,
+            50
+          ],
+          "material": "Neon"
+        },
+        {
+          "part": "Light",
+          "triangles": 384,
+          "colour": [
+            245,
+            240,
+            230
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Glow_Eyes_2",
+          "triangles": 168,
+          "colour": [
+            255,
+            190,
+            50
+          ],
+          "material": "Neon"
+        },
+        {
+          "part": "Hand",
+          "triangles": 12,
+          "colour": [
+            255,
+            0,
+            255
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Nameplate",
+          "triangles": 12,
+          "colour": [
+            255,
+            0,
+            255
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Root",
+          "triangles": 12,
+          "colour": [
+            128,
+            128,
+            128
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "LOD_Proxy",
+          "triangles": 266,
+          "colour": [
+            120,
+            95,
+            75
+          ],
+          "material": "SmoothPlastic"
+        }
+      ],
+      "markers_blender": {
+        "Hand": [
+          -1.15,
+          -0.45,
+          2.0
+        ],
+        "Nameplate": [
+          0.0,
+          -0.1,
+          7.4
+        ]
+      },
+      "markers_roblox": {
+        "Hand": [
+          1.15,
+          2.0,
+          -0.45
+        ],
+        "Nameplate": [
+          -0.0,
+          7.4,
+          -0.1
+        ]
+      },
+      "markers_roblox_from_root": {
+        "Hand": [
+          1.15,
+          -1.25,
+          -0.45
+        ],
+        "Nameplate": [
+          -0.0,
+          4.15,
+          -0.1
+        ]
+      },
+      "coplanar_overlaps": "none",
+      "rig": "none: static meshes, no bones, no Animations folder (the client bobs them)",
+      "note": "Biped, a big fluffy wolf; blunt round claws, nothing sharp."
+    },
+    {
+      "species": "VampireCount",
+      "shape": "Biped",
+      "fbx": "fbx/VampireCount.fbx",
+      "height_target": 6.0,
+      "height": 5.92,
+      "bounds_blender": [
+        [
+          -1.35,
+          -0.728,
+          0.0
+        ],
+        [
+          1.35,
+          1.013,
+          5.92
+        ]
+      ],
+      "triangles": 3920,
+      "triangles_proxy": 269,
+      "budget": {
+        "model": 4000,
+        "proxy": 300,
+        "mesh_cap": 20000
+      },
+      "parts": [
+        {
+          "part": "Dark",
+          "triangles": 892,
+          "colour": [
+            28,
+            22,
+            34
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Body",
+          "triangles": 1204,
+          "colour": [
+            60,
+            40,
+            80
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Light",
+          "triangles": 236,
+          "colour": [
+            250,
+            250,
+            250
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Trim",
+          "triangles": 580,
+          "colour": [
+            190,
+            35,
+            60
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Skin",
+          "triangles": 636,
+          "colour": [
+            232,
+            226,
+            242
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Glow_Eyes_1",
+          "triangles": 168,
+          "colour": [
+            255,
+            60,
+            60
+          ],
+          "material": "Neon"
+        },
+        {
+          "part": "Glow_Eyes_2",
+          "triangles": 168,
+          "colour": [
+            255,
+            60,
+            60
+          ],
+          "material": "Neon"
+        },
+        {
+          "part": "Hand",
+          "triangles": 12,
+          "colour": [
+            255,
+            0,
+            255
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Nameplate",
+          "triangles": 12,
+          "colour": [
+            255,
+            0,
+            255
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Root",
+          "triangles": 12,
+          "colour": [
+            128,
+            128,
+            128
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "LOD_Proxy",
+          "triangles": 269,
+          "colour": [
+            60,
+            40,
+            80
+          ],
+          "material": "SmoothPlastic"
+        }
+      ],
+      "markers_blender": {
+        "Hand": [
+          -0.95,
+          -0.5,
+          1.78
+        ],
+        "Nameplate": [
+          0.0,
+          0.0,
+          6.9
+        ]
+      },
+      "markers_roblox": {
+        "Hand": [
+          0.95,
+          1.78,
+          -0.5
+        ],
+        "Nameplate": [
+          -0.0,
+          6.9,
+          0.0
+        ]
+      },
+      "markers_roblox_from_root": {
+        "Hand": [
+          0.95,
+          -1.22,
+          -0.5
+        ],
+        "Nameplate": [
+          -0.0,
+          3.9,
+          0.0
+        ]
+      },
+      "coplanar_overlaps": "none",
+      "rig": "none: static meshes, no bones, no Animations folder (the client bobs them)",
+      "note": "Biped; cape with a red lining and a tall collar, two tiny fangs, red eyes (Species.luau look.eyes)."
+    },
+    {
+      "species": "GrandBanshee",
+      "shape": "Float",
+      "fbx": "fbx/GrandBanshee.fbx",
+      "height_target": 7.0,
+      "height": 7.05,
+      "bounds_blender": [
+        [
+          -1.6,
+          -1.6,
+          0.25
+        ],
+        [
+          1.6,
+          1.6,
+          7.05
+        ]
+      ],
+      "triangles": 2636,
+      "triangles_proxy": 274,
+      "budget": {
+        "model": 4000,
+        "proxy": 300,
+        "mesh_cap": 20000
+      },
+      "parts": [
+        {
+          "part": "Body",
+          "triangles": 624,
+          "colour": [
+            150,
+            220,
+            230
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Skin",
+          "triangles": 608,
+          "colour": [
+            215,
+            240,
+            245
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Light",
+          "triangles": 520,
+          "colour": [
+            236,
+            246,
+            255
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Trim",
+          "triangles": 152,
+          "colour": [
+            240,
+            200,
+            90
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Glow_Eyes_1",
+          "triangles": 168,
+          "colour": [
+            200,
+            255,
+            255
+          ],
+          "material": "Neon"
+        },
+        {
+          "part": "Dark",
+          "triangles": 360,
+          "colour": [
+            45,
+            32,
+            60
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Glow_Eyes_2",
+          "triangles": 168,
+          "colour": [
+            200,
+            255,
+            255
+          ],
+          "material": "Neon"
+        },
+        {
+          "part": "Hand",
+          "triangles": 12,
+          "colour": [
+            255,
+            0,
+            255
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Nameplate",
+          "triangles": 12,
+          "colour": [
+            255,
+            0,
+            255
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Root",
+          "triangles": 12,
+          "colour": [
+            128,
+            128,
+            128
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "LOD_Proxy",
+          "triangles": 274,
+          "colour": [
+            150,
+            220,
+            230
+          ],
+          "material": "SmoothPlastic"
+        }
+      ],
+      "markers_blender": {
+        "Hand": [
+          -1.0,
+          -0.45,
+          4.3
+        ],
+        "Nameplate": [
+          0.0,
+          0.0,
+          8.0
+        ]
+      },
+      "markers_roblox": {
+        "Hand": [
+          1.0,
+          4.3,
+          -0.45
+        ],
+        "Nameplate": [
+          -0.0,
+          8.0,
+          0.0
+        ]
+      },
+      "markers_roblox_from_root": {
+        "Hand": [
+          1.0,
+          0.8,
+          -0.45
+        ],
+        "Nameplate": [
+          -0.0,
+          4.5,
+          0.0
+        ]
+      },
+      "coplanar_overlaps": "none",
+      "rig": "none: static meshes, no bones, no Animations folder (the client bobs them)",
+      "note": "Float: an opera diva, one arm raised mid-song; gown hem 0.25 over the floor."
+    }
+  ]
+}

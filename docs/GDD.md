@@ -814,3 +814,19 @@ itself after 24 h.
 - **Notifications:** the opt-in is offered once, after the first move-in.
   Sending them needs Open Cloud from outside the game (not built).
 
+### A.10 Events (§8.2)
+
+All by the UTC clock, the same on every server:
+
+- **Full Moon weekend** (Saturday and Sunday): Legendary bus weight ×3, Epic ×2.
+- **Full Moon Hunt** (Saturday 20:00): a Hunter Night with twice the hunters.
+- **Monster Parade** (Friday 18:00–18:10, announced at 17:45): a bus every
+  minute; Common ×0.5, Rare ×2, Epic ×3, Legendary ×4.
+- **Seasons:** Halloween (1 October – 3 November) rolls the Pumpkin mutation
+  at 3 % and has Candy; Winter (10 December – 5 January) rolls Frosted.
+- **Candy:** +1 per happy stay (+2 Epic, +3 Legendary and up), +10 for a
+  defended Hunter Night; starts from zero each season.
+- **Candy shop (Halloween):** Jack-o'-Lantern decor (30; candles, garden, any
+  location), Pumpkin sign (60) and Bat bunting (90) cosmetics. The cosmetics
+  are not drawn yet (no facade or sign models).
+

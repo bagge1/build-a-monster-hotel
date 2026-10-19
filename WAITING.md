@@ -11,6 +11,17 @@ Designfrågor som inte brådskar står i `docs/GDD.md` (§17) tills de gör det.
 <!-- En import: vilken mapp i blender/_import/ du väljer i dialogen.
 Connect: knappen under fliken Plugins i Studio. -->
 
+1. **Starta om `rojo serve`** (2026-10-19): `default.project.json` har fått
+   en ny mappning (`assets/Monsters` → `ReplicatedStorage.Monsters`) och Rojo
+   läser projektfilen bara när den startar. Tryck sedan **Connect** under
+   fliken **Plugins** i Studio.
+2. **Importera monstren (Location 1, tio stycken).** I Studio: **File →
+   Import 3D**, öppna mappen
+   `D:\Roblox\build-a-monster-hotel\blender\_import\monsters_l1_2026-10-19\`,
+   markera alla tio filerna (håll Ctrl och tryck A), importera till
+   **Workspace** och skriv *importerat*. Inställningar, sparning och
+   kontroller gör Claude. Bilden på dem: `blender/monsters/haunted_manor/review/sheet.png`.
+
 ## §1 Att titta på eller spela
 
 <!-- Det bara en människa kan bedöma: hur det känns, hur det ser ut.

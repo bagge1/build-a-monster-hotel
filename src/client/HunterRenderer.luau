@@ -205,7 +205,7 @@ function HunterRenderer.Init()
 	local gui = Ui.screen("Hud", 1)
 	timer = Ui.label(gui, "HunterTimer", "", UDim2.fromOffset(420, 26), 18, Ui.Colour.Bad)
 	timer.AnchorPoint = Vector2.new(0.5, 0)
-	timer.Position = UDim2.new(0.5, 0, 0, 190)
+	timer.Position = UDim2.new(0.5, 0, 0, 244)
 	timer.TextXAlignment = Enum.TextXAlignment.Center
 	timer.TextStrokeTransparency = 0.3
 	timer.Visible = false

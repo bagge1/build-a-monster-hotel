@@ -1,0 +1,158 @@
+--!strict
+--[[
+	The events calendar (GDD §8.2), as pure functions of the server clock
+	(UTC), so every server agrees on what is on without asking anyone:
+
+	  - FULL MOON WEEKEND (Saturday and Sunday): more Legendaries and Epics on
+	    the bus (the Werewolf is the full moon's Epic).
+	  - FULL MOON HUNT (Saturday 20:00 UTC): a Hunter Night with twice the hunters.
+	  - MONSTER PARADE (Friday 18:00–18:10 UTC, announced from 17:45): a bus
+	    every minute, weighted to the rare.
+	  - THE SEASON: Halloween (1 October – 3 November), our biggest event (§8.2):
+	    Candy from every happy stay, the Pumpkin mutation, the Candy shop.
+	    Winter (10 December – 5 January) rolls Frosted.
+
+	Every time and weight here is a night draft (GDD Appendix A.10).
+]]
+
+local Constants = require(script.Parent.Constants)
+local Mutations = require(script.Parent.Mutations)
+
+local Events = {}
+
+local function parts(t: number): any
+	return os.date("!*t", t)
+end
+
+function Events.fullMoonWeekend(t: number): boolean
+	local d = parts(t)
+	return d.wday == 7 or d.wday == 1 -- Saturday, Sunday
+end
+
+-- The Saturday Full Moon Hunt's start, for the week of `t` (nil on other days).
+function Events.huntStart(t: number): number?
+	local d = parts(t)
+	if d.wday ~= 7 then
+		return nil
+	end
+	return t - (d.hour * 3600 + d.min * 60 + d.sec) + 20 * 3600
+end
+
+Events.ParadeLength = 10 * 60
+Events.ParadeNotice = 15 * 60
+Events.ParadeInterval = 60
+
+-- The Friday Monster Parade's start, for the week of `t` (nil on other days).
+function Events.paradeStart(t: number): number?
+	local d = parts(t)
+	if d.wday ~= 6 then
+		return nil
+	end
+	return t - (d.hour * 3600 + d.min * 60 + d.sec) + 18 * 3600
+end
+
+function Events.parade(t: number): boolean
+	local s = Events.paradeStart(t)
+	return s ~= nil and t >= s and t < s + Events.ParadeLength
+end
+
+export type Season =
+	{ id: string, name: string, mutation: string, chance: number, currency: boolean }
+
+local SEASONS: { { from: { number }, to: { number }, season: Season } } = {
+	{
+		from = { 10, 1 },
+		to = { 11, 3 },
+		season = {
+			id = "Halloween",
+			name = "Halloween",
+			mutation = "Pumpkin",
+			chance = 0.03,
+			currency = true,
+		},
+	},
+	{
+		from = { 12, 10 },
+		to = { 1, 5 },
+		season = {
+			id = "Winter",
+			name = "Winter",
+			mutation = "Frosted",
+			chance = 0.03,
+			currency = false,
+		},
+	},
+}
+
+local function within(month: number, day: number, from: { number }, to: { number }): boolean
+	local v, a, b = month * 100 + day, from[1] * 100 + from[2], to[1] * 100 + to[2]
+	if a <= b then
+		return v >= a and v <= b
+	end
+	return v >= a or v <= b -- across New Year
+end
+
+function Events.season(t: number): Season?
+	local d = parts(t)
+	for _, s in SEASONS do
+		if within(d.month, d.day, s.from, s.to) then
+			return s.season
+		end
+	end
+	return nil
+end
+
+-- The bus's rarity weights at `t`: the GDD's (§4.2), raised on a Full Moon weekend or a Parade.
+function Events.weights(t: number): { [string]: number }
+	local w = {}
+	for id, r in Constants.Rarity do
+		w[id] = r.weight
+	end
+	if Events.fullMoonWeekend(t) then
+		w.Legendary *= 3
+		w.Epic *= 2
+	end
+	if Events.parade(t) then
+		w.Common *= 0.5
+		w.Rare *= 2
+		w.Epic *= 3
+		w.Legendary *= 4
+	end
+	return w
+end
+
+-- A mutation rolled at `t`: the season's own first (§4.5 "Seasonal: event only"), then the usual.
+function Events.rollMutation(r: number, t: number): string?
+	local s = Events.season(t)
+	if s then
+		if r < s.chance then
+			return s.mutation
+		end
+		r = (r - s.chance) / (1 - s.chance)
+	end
+	return Mutations.roll(r)
+end
+
+-- The Candy shop (§8.2): event cosmetics and decor, bought with Candy.
+Events.CandyShop = {
+	{
+		key = "Decor_JackOLantern",
+		name = "Jack-o'-Lantern decor",
+		cost = 30,
+		text = "A decor piece for any room: candles, garden.",
+	},
+	{
+		key = "Cosmetic_PumpkinSign",
+		name = "Pumpkin sign",
+		cost = 60,
+		text = "Your hotel sign, carved from a pumpkin.",
+	},
+	{
+		key = "Cosmetic_BatBunting",
+		name = "Bat bunting",
+		cost = 90,
+		text = "Paper bats strung across your lobby.",
+	},
+}
+
+return Events

@@ -390,7 +390,14 @@ function BuildService.Start()
 			buildable[p.id] = if ok then true else (why or "Locked")
 			costs[p.id] = Economy.pieceCost(p.id, BuildService.owned(data, p.id))
 		end
+		local unlockedDecor = {}
+		for _, d in Pieces.DecorList do
+			if data.unlocked[`Decor_{d.id}`] then
+				unlockedDecor[d.id] = true
+			end
+		end
 		return {
+			unlockedDecor = unlockedDecor,
 			layout = layout,
 			floors = data.floors,
 			maxFloors = BuildService.maxFloors(data),

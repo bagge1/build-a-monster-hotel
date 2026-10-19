@@ -24,6 +24,7 @@ local ServerScriptService = game:GetService("ServerScriptService")
 
 local Bus = require(ReplicatedStorage.Shared.Bus)
 local Constants = require(ReplicatedStorage.Shared.Constants)
+local Events = require(ReplicatedStorage.Shared.Events)
 local Mutations = require(ReplicatedStorage.Shared.Mutations)
 local Net = require(ReplicatedStorage.Shared.Net)
 local Pieces = require(ReplicatedStorage.Shared.Pieces)
@@ -84,11 +85,12 @@ local function draw(index: number, previous: number, at: number): { Passenger }
 		locationsPresent(),
 		function()
 			return rng:NextNumber()
-		end
+		end,
+		Events.weights(at)
 	)
 	local list = {}
 	for _, id in ids do
-		table.insert(list, { species = id, mutation = Mutations.roll(rng:NextNumber()) })
+		table.insert(list, { species = id, mutation = Events.rollMutation(rng:NextNumber(), at) })
 	end
 	return list
 end
@@ -206,9 +208,11 @@ local function arrive()
 		task.spawn(h, busIndex)
 	end
 	-- Draw the next bus now, so its rare guest can be announced a bus ahead.
-	nextAt = os.clock() + B.Interval
-	workspace:SetAttribute("NextBusAt", workspace:GetServerTimeNow() + B.Interval)
-	nextList = draw(busIndex + 1, now, now + B.Interval)
+	-- A Monster Parade (§8.2) runs a bus a minute.
+	local interval = if Events.parade(now) then Events.ParadeInterval else B.Interval
+	nextAt = os.clock() + interval
+	workspace:SetAttribute("NextBusAt", workspace:GetServerTimeNow() + interval)
+	nextList = draw(busIndex + 1, now, now + interval)
 	announceNext(nextList :: { Passenger })
 end
 

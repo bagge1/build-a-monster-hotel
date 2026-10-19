@@ -1,37 +1,42 @@
 {
 	"name": "monster-hotel",
-	"globIgnorePaths": ["**/*.tmp", "**/*.tmp.*"],
+	"globIgnorePaths": [
+		"**/*.tmp",
+		"**/*.tmp.*"
+	],
 	"tree": {
 		"$className": "DataModel",
-
 		"Workspace": {
 			"$className": "Workspace",
 			"$properties": {
 				"StreamingEnabled": true
 			}
 		},
-
 		"ServerScriptService": {
 			"$className": "ServerScriptService",
 			"Server": {
 				"$path": "src/server"
 			},
 			"ServerPackages": {
-				"$path": { "optional": "ServerPackages" }
+				"$path": {
+					"optional": "ServerPackages"
+				}
 			}
 		},
-
 		"ServerStorage": {
 			"$className": "ServerStorage"
 		},
-
 		"ReplicatedStorage": {
 			"$className": "ReplicatedStorage",
 			"Shared": {
 				"$path": "src/shared"
+			},
+			"Monsters": {
+				"$path": {
+					"optional": "assets/Monsters"
+				}
 			}
 		},
-
 		"StarterPlayer": {
 			"$className": "StarterPlayer",
 			"StarterPlayerScripts": {

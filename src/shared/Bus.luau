@@ -41,15 +41,18 @@ function Bus.size(players: number): number
 	)
 end
 
--- A rarity by weight, from a uniform `r` in [0, 1).
-function Bus.rollRarity(r: number): Constants.RarityId
+-- A rarity by weight (the GDD's, or an event's: `Events.weights`), from a uniform `r` in [0, 1).
+function Bus.rollRarity(r: number, weights: { [string]: number }?): Constants.RarityId
+	local function w(id: string): number
+		return if weights then (weights[id] or 0) else Constants.Rarity[id].weight
+	end
 	local total = 0
 	for _, id in Constants.RarityOrder do
-		total += Constants.Rarity[id].weight
+		total += w(id)
 	end
 	local at = 0
 	for _, id in Constants.RarityOrder do
-		at += Constants.Rarity[id].weight / total
+		at += w(id) / total
 		if r < at then
 			return id
 		end
@@ -75,7 +78,8 @@ function Bus.passengers(
 	flags: Flags,
 	size: number,
 	locations: { [number]: boolean },
-	rand: () -> number
+	rand: () -> number,
+	weights: { [string]: number }?
 ): { string }
 	local out: { string } = {}
 	local function pickOf(rarity: string): string?
@@ -106,7 +110,7 @@ function Bus.passengers(
 		add("Epic")
 	end
 	while #out < size do
-		add(Bus.rollRarity(rand()))
+		add(Bus.rollRarity(rand(), weights))
 	end
 	return out
 end

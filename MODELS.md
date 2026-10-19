@@ -218,6 +218,19 @@ between its feet (or under its body). Heights against the 5-stud person:
 A mutation's scale is the client's `Model:ScaleTo` (Tiny 0.5, Giant 1.5), so a
 model must look right at both.
 
+**How markers travel** (the first set, 2026-10-19). FBX carries no
+attachments: `Nameplate` and `Hand` (the right hand) arrive as 0.2-stud marker
+parts, and the import step turns each into an Attachment of that name under
+`Root` and deletes the part. The same step sets `PrimaryPart = Root`, hides
+`Root`, sets a pivot on the floor (cancelling the importer's −90° X turn,
+`DEVNOTES.md`), sets every part's colour from the set's `manifest.json`, and
+removes any imported SurfaceAppearance (it would stop a mutation's tint). The
+set's `import_settings.luau` does all of it.
+
+**Colour parts.** Besides `Body`, a monster may have one flat-coloured part
+each called `Skin`, `Trim`, `Dark` and `Light`, untextured. A mutation tints
+every one of them; the eyes and `Glow_*` parts keep their own colour.
+
 ### Hunters (`Hunter`) and the bus (`NightBus`)
 
 Same frame and `Root` rule. `Hunter` carries `Nameplate`. `NightBus` is

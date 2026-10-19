@@ -184,7 +184,15 @@ local function net(h: Hunter)
 	end
 end
 
-function HunterService.start()
+local defendedHandlers: { () -> () } = {}
+
+-- Called when a night is defended (the season's Candy, Appendix A.10).
+function HunterService.onDefended(handler: () -> ())
+	table.insert(defendedHandlers, handler)
+end
+
+-- Starts a Hunter Night; `scale` multiplies the hunters (the Full Moon Hunt, §8.2).
+function HunterService.start(scale: number?)
 	if active then
 		return
 	end
@@ -199,7 +207,7 @@ function HunterService.start()
 	)
 	for _, plot in PlotService.all() do
 		if plot.owner then
-			for i = 1, H.HuntersPerHotel do
+			for i = 1, H.HuntersPerHotel * (scale or 1) do
 				spawnHunter(plot, (i - 1) * 25 + math.random() * 10)
 			end
 		end
@@ -243,6 +251,9 @@ local function finish()
 			"Rare"
 		)
 		BusService.callNow(nil)
+		for _, h in defendedHandlers do
+			task.spawn(h)
+		end
 	else
 		Net.fireAll(
 			"Announce",

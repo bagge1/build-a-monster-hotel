@@ -407,7 +407,7 @@ local function openMenu(id: number)
 		local list = Ui.scroll(menuBody, "Decor", UDim2.new(1, 0, 0, 220))
 		Ui.list(list, Enum.FillDirection.Vertical, 6)
 		for i, d in Pieces.DecorList do
-			if d.location == build().location then
+			if d.location == build().location or (build().unlockedDecor or {})[d.id] then
 				local b = Ui.button(
 					list,
 					d.id,

@@ -33,7 +33,7 @@ local Pieces = require(ReplicatedStorage.Shared.Pieces)
 local Species = require(ReplicatedStorage.Shared.Species)
 local Stay = require(ReplicatedStorage.Shared.Stay)
 local StreetLayout = require(ReplicatedStorage.Shared.StreetLayout)
-local Mutations = require(ReplicatedStorage.Shared.Mutations)
+local Events = require(ReplicatedStorage.Shared.Events)
 local PlayerData = require(ServerScriptService.Server.PlayerData)
 local PlotService = require(ServerScriptService.Server.PlotService)
 local HotelService = require(ServerScriptService.Server.HotelService)
@@ -415,7 +415,7 @@ function GuestService.spawnWalkIn(
 	if not chosen or not offer then
 		return nil
 	end
-	local mutation = Mutations.roll(rng:NextNumber())
+	local mutation = Events.rollMutation(rng:NextNumber(), os.time())
 	local g = newGuest(chosen, mutation, if opts and opts.source then opts.source else "WalkIn")
 	g.happyFloor = opts and opts.happyFloor
 	-- From the lane beside the plot.

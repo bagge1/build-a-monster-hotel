@@ -17,6 +17,7 @@ local TweenService = game:GetService("TweenService")
 local Format = require(ReplicatedStorage.Shared.Format)
 local Net = require(ReplicatedStorage.Shared.Net)
 local Ui = require(script.Parent.Ui)
+local UiImages = require(script.Parent.UiImages)
 
 local Hud = {}
 
@@ -128,6 +129,18 @@ function Hud.pop(amount: number, at: Vector3?, kind: string?)
 	end)
 end
 
+-- The drawn icon (UiImages) and its tint for each menu button; a button
+-- without one keeps its text's own emoji.
+local ICONS: { [string]: { string | Color3 } } = {
+	BuildButton = { "Icon_Build", Ui.Colour.Pumpkin },
+	RatingButton = { "Icon_Rating", Ui.Colour.Gold },
+	ResidentsButton = { "Icon_Residents", Ui.Colour.Teal },
+	BookButton = { "Icon_Book", Color3.fromRGB(200, 150, 255) },
+	ProgressionButton = { "Icon_Moon", Ui.Colour.Moon },
+	StoreButton = { "Icon_Store", Ui.Colour.Good },
+	DailyButton = { "Icon_Daily", Color3.fromRGB(255, 130, 160) },
+}
+
 -- A menu button on the left or right edge, in `order`.
 function Hud.button(
 	name: string,
@@ -137,8 +150,26 @@ function Hud.button(
 	order: number?
 ): TextButton
 	local parent = if side == "Left" then left else right
+	local icon = ICONS[name]
+	local id = icon and UiImages[icon[1] :: string]
+	if id and id ~= "" then
+		text = (string.gsub(text, "^[^%w]+", ""))
+	end
 	local b = Ui.button(parent, name, text, UDim2.fromOffset(110, 44), onClick)
 	b.LayoutOrder = order or 0
+	if id and id ~= "" then
+		local img = Instance.new("ImageLabel")
+		img.Name = "Icon"
+		img.BackgroundTransparency = 1
+		img.Image = id
+		img.ImageColor3 = icon[2] :: Color3
+		img.Size = UDim2.fromOffset(34, 34)
+		img.Position = UDim2.new(0, -30, 0.5, -17) -- the padding below moves children too
+		img.Parent = b
+		local pad = Instance.new("UIPadding")
+		pad.PaddingLeft = UDim.new(0, 34)
+		pad.Parent = b
+	end
 	return b
 end
 
@@ -193,7 +224,7 @@ function Hud.Init()
 
 	banner = Ui.label(gui, "Banner", "", UDim2.new(0.8, 0, 0, 50), 28, Ui.Colour.Moon)
 	banner.AnchorPoint = Vector2.new(0.5, 0)
-	banner.Position = UDim2.new(0.5, 0, 0, 56)
+	banner.Position = UDim2.new(0.5, 0, 0, 192) -- under the bus countdown and Gloom's bubble
 	banner.TextXAlignment = Enum.TextXAlignment.Center
 	banner.TextStrokeTransparency = 0.2
 	banner.Visible = false

@@ -67,6 +67,8 @@ export type Data = {
 	location: number,
 	rebirths: number,
 	shards: number,
+	candy: number, -- the season's event currency (§6.1), kept for the event's duration
+	candySeason: string,
 	moonTree: { [string]: number },
 	floors: number,
 	layout: { [string]: PieceRecord },
@@ -104,6 +106,8 @@ local TEMPLATE: Data = {
 	location = 1,
 	rebirths = 0,
 	shards = 0,
+	candy = 0,
+	candySeason = "",
 	moonTree = {},
 	floors = 1,
 	layout = {},
