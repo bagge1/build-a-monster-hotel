@@ -476,6 +476,35 @@ Med Claudes skärmdump där det finns en. -->
    rena, men ingenting du redan balanserat flyttas; (B) är tydligare men bör
    prövas i modellen först.
 
+27. **Tempot efter bussarna: rebirth tar 3,5–5,4 timmar** (2026-10-19 kväll,
+   mätt med en uppdaterad kopia av `tools/balance_model.py`, median av 8
+   körningar; rapporten `archive/BALANCE-2026-10-19-evening.md`). Utan
+   walk-ins kommer högst 4 gäster var 3:e minut för en ensam spelare (80 i
+   timmen; förut upp till 450). Rummen står tomma 84–90 % av tiden. Med
+   tutorial / utan: $1M efter 2:33 / 4:25 h (förut 1:02 / 1:19), rebirth
+   efter 3:33 / 5:24 h. GDD:ns mål är 60–90 minuter. Dina beslut rörs inte
+   (bussens intervall, 40 %, BasePay). **Att bestämma:** vad som ska ge
+   efter. Förslag med uppmätt effekt:
+   - bussens gränser 2–4 → 3–8 per spelare (platshållare): $1M 2:12 / 2:58 h;
+   - vistelserna dubblade (Common 180 s … Legendary 600 s; startvärden i
+     §4.2): $1M 1:39 / 2:41 h;
+   - båda: $1M 1:20 / 1:54 h, rebirth 3:08 / 4:30 h (väntar på Vampire
+     Count som resident);
+   - båda och Legendarys vänskap 10 → 5: rebirth **1:40 / 2:41 h**.
+   **Rekommendation:** båda och vänskapen 5, sedan spela och känna efter.
+   (Mätt före tutorialens Commons, som bara rör de första två bussarna.)
+
+28. **Tutorialens gratis Coffin Suite får inte plats** (2026-10-19 kväll,
+   samma mätning). Goal-kortet ger en gratis Coffin Suite (3×3), men
+   startområdet (4×5 celler) rymmer den inte bredvid tutorialens två
+   Standard Rooms med gång till dörrarna, och en våning för $500 har en ny
+   spelare först efter ungefär 14 minuter. Då kommer Vampire Count inte
+   heller. **Att bestämma:** hur det ska gå ihop. **Förslag:** (a) Goal-kortet
+   ger också nästa område eller våning gratis; (b) startområdet blir 5×6;
+   (c) tutorialen bygger bara ett Standard Room före sviten.
+   **Rekommendation:** (a), ett gratis område bredvid startområdet, eftersom
+   det också lär ut att köpa områden.
+
 ## §3 Creator Hub och publicering
 
 1. ~~**Slå på Studio Access to API Services**~~ (gjort 2026-10-19: på i
