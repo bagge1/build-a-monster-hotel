@@ -295,6 +295,39 @@ Med Claudes skärmdump där det finns en. -->
    skylten står kvar i förgårdens hörn. Tomterna flyttas då 24 studs bort från
    gatan. Hör ihop med Night Bus (gästerna strövar på trottoaren) och skogen.
 
+20. **Att bygga fritt: det som är byggt och det som är ditt** (2026-10-19,
+   GDD §5.4, A.1, A.2; grenen `claude/free-building-4b66e3`, inte spelad i
+   Studio än, `TESTRUN.md` fas 12). Byggt enligt ditt ja: områden, trappor
+   som bitar, en flyttbar disk, dekor på ett rutnät av 3 studs, golv per rum,
+   lobby och korridor, och tier från inredning. Fem saker är dina:
+   - **De nya dekorbitarna för Haunted Manor** (klockor, blommor, växter,
+     möbler, piano): grå silhuetter i
+     `blender/hotel/haunted_manor/review/` (Grandfather Clock, Wall Clock,
+     Black Roses, Carnivorous Plant, Ghost Fern, Armchair, Velvet Sofa,
+     Bookshelf, Side Table, Grand Piano; A/B där det finns två). **Välj
+     utseende**, och sätt taggar och priser: Claudes förslag står i GDD A.2
+     (till exempel Grand Piano: music, slow music, $2 500). Tills du valt
+     visas de som enkla block i spelet.
+   - **Talen** (alla platshållare): områdena $1 000, $3 000, $8 000, $20 000,
+     $50 000; en trappa $250 (den första till en ny våning gratis); golv
+     gratis; försäljning ger halva priset tillbaka. **Ett fynd om tier:** med
+     1 poäng per $ når en Coffin Suite ($40 000) T3 med $675 dekor, medan ett
+     Standard Room ($50) behöver $300. **Rekommendation:** låt gränserna följa
+     rummets pris (till exempel T2 vid 2 × rummets pris i dekor och T3 vid
+     6 ×), så att dyra rum kräver dyrare inredning.
+   - **Raderna ovanför lobbyn på våning 2 och uppåt** är i dag ett galleri:
+     man går där, ställer dekor och trappor, men inga rum (områdena är 4 × 5
+     bakom lobbyn, som du sa ja till). **Alternativet:** de främre områdena
+     når ända fram till gatan ovanför våning 1 (4 × 7 där). **Rekommendation:**
+     se galleriet i spelet först.
+   - **Områden som inte är köpta** ligger kvar innanför fasaden med en mörk
+     platta och en prislapp i byggläget. **Alternativet:** fasaden och
+     bjälklagen följer bara de köpta områdena, så hotellet växer synligt.
+     **Rekommendation:** spela med plattorna först; det andra är ett större
+     bygge (fasaden är gatusessionens).
+   - **Comfort i betyget** räknar nu rummens tier mot högsta tier (T3 av T3
+     ger fullt, som T5 av T5 gjorde); förr gav T1 20 av 100, nu 33.
+
 ## §3 Creator Hub och publicering
 
 1. ~~**Slå på Studio Access to API Services**~~ (gjort 2026-10-19: på i

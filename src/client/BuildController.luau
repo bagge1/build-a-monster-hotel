@@ -262,7 +262,7 @@ local function drawAreaLabels()
 			)
 			text.TextXAlignment = Enum.TextXAlignment.Center
 			text.TextStrokeTransparency = 0.3
-			tag.Parent = gui
+			tag.Parent = me.PlayerGui -- a billboard inside a ScreenGui is never drawn
 			table.insert(areaLabels, tag)
 		end
 	end
