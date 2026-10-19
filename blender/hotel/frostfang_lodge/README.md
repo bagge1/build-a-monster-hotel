@@ -21,12 +21,12 @@ keeps the rest of the manifest). About 40 s, headless, Workbench only.
 
 ## What is here
 
-- `fbx/<Name>.fbx`: 18 models, the file name the contract name
+- `fbx/<Name>.fbx`: 25 models, the file name the contract name
   (`ServerStorage.HotelKit.FrostfangLodge.<Name>`; the code looks the folder
   up as the Location's name without spaces). The atlas is embedded in each.
 - `manifest.json`: every piece's Root, every part's box (Roblox studs, piece
   frame), triangles, whether it collides, every attachment, and the palette.
-- `validation.json`: the validator's results per piece (18 of 18 ok),
+- `validation.json`: the validator's results per piece (25 of 25 ok),
   `collision_precise` (empty for every piece), and what was not validated.
 - `import_fixup.luau`: the import's step 2 (skill `import`), generated from
   the manifest; it makes the attachments, Root, the pivot, collision, glows.
@@ -38,24 +38,31 @@ keeps the rest of the manifest). About 40 s, headless, Workbench only.
 
 | Piece | Kind | Triangles / budget | LOD_Proxy | Parts besides Root |
 |---|---|---|---|---|
-| `IglooRoom` | Room 2x2 | 4,774 / 6,000 | 108 | Floor, the six walls, Dressing, Glow_Warm_1, Bed, Furniture, Glow_Warm_2 |
-| `IceCave` | Room 2x3 | 4,036 / 6,000 | 108 | walls, Floor, Dressing, Glow_Warm_1, Bed, Furniture, Glow_Cold_1 |
-| `YetiDen` | Room 3x3 | 4,662 / 6,000 | 108 | walls, Floor, Dressing, Glow_Warm_1, Bed, Furniture, Glow_Warm_2 |
-| `FrostLoft` | Room 2x3 | 5,462 / 6,000 | 108 | walls, Floor, Dressing, Glow_Warm_1, Bed, Furniture |
-| `GlacierSuite` | Room 3x3 | 4,566 / 6,000 | 108 | walls, Floor, Dressing, Glow_Warm_1..2, Bed, Furniture, Glow_Cold_1 |
-| `AuroraDome` | Room 3x3 | 4,926 / 6,000 | 108 | walls, Floor, Dressing, Glow_Warm_1, Glow_Magic_1..3, Bed, Furniture |
-| `CocoaLounge` | Amenity 2x2 | 5,312 / 6,000 | 96 | walls, Floor, Dressing, Glow_Warm_1, Centrepiece |
-| `AuroraDeck` | Amenity 2x2 | 3,894 / 6,000 | 96 | walls, Floor, Dressing, Glow_Warm_1, Glow_Magic_1..2, Centrepiece |
-| `Lobby` | Lobby 72x12 | 6,358 / 8,000 | 144 | Rug, Wall_FrontLeft, Dressing, Wall_FrontRight, Desk, Till, KeyRack, Bench_1, Bench_2, Planter_1, Planter_2, ArchLeft, ArchRight, ArchTop, Glow_Warm_1..5 |
-| `StairCore` | Stairs | 2,678 / 8,000 | 180 | Step_Up_1..5, Landing, Step_Down_1..5, Wall_Left, Wall_Right, Wall_Back, Divider, Dressing, Glow_Warm_1 |
-| `StairCoreTop` | Stairs | 3,542 / 8,000 | 192 | as StairCore, plus Rail_Top; walls 15.5 tall |
+| `IglooRoom` | Room 2x2 | 4,726 / 6,000 | 108 | the six walls, Floor, Rug, Dressing, Bed, Furniture, Glow_Warm_1..2 |
+| `Lobby` | Lobby 144x24 (shell) | 4,372 / 10,000 | 60 | Floor, Wall_FrontLeft, Dressing, Wall_FrontRight, ArchLeft, ArchRight, ArchTop, Glow_Warm_1..7 |
+| `FrontDesk` | Desk 2x1 | 2,278 / 3,000 | 36 | Counter, Dressing, Till, KeyRack, Glow_Warm_1 |
+| `StairCore` | Stairs | 4,018 / 8,000 | 240 | Step_Up_1..8, Landing, Step_Down_1..7, Wall_Left, Wall_Right, Wall_Back, Divider, Dressing, Glow_Warm_1 |
+| `StairCoreTop` | Stairs | 5,082 / 8,000 | 252 | Step_Up_1..8, Landing, Step_Down_1..7, Wall_Left, Wall_Right, Wall_Back, Divider, Rail_Top, Dressing, Glow_Warm_1 |
 | `HotelSign` | Sign | 516 / 3,000 (draft ceiling) | none | PostLeft, PostRight, Board, Crest, Glow_Cold_1 |
-| `Decor_IceBlock` | Decor | 160 / 1,500 | none | Body |
-| `Decor_CocoaMug` | Decor | 790 / 1,500 | none | Body |
-| `Decor_PrankBox` | Decor | 658 / 1,500 | none | Body |
-| `Decor_RockPile` | Decor | 362 / 1,500 | none | Body |
-| `Decor_SnowGlobe` | Decor | 502 / 1,500 | none | Body |
-| `Decor_AuroraLamp` | Decor | 392 / 1,500 | none | Body, Glow_Magic_1 |
+| `RoomPlaque` | Cosmetic | 160 / 2,000 (draft ceiling) | none | Board, Face |
+| `IceCave` | Room 2x3 | 4,084 / 6,000 | 108 | the six walls, Floor, Rug, Dressing, Bed, Furniture, Glow_Warm_1, Glow_Cold_1 |
+| `YetiDen` | Room 3x3 | 4,886 / 6,000 | 108 | the six walls, Floor, Rug, Dressing, Bed, Furniture, Glow_Warm_1..2 |
+| `FrostLoft` | Room 2x3 | 5,718 / 6,000 | 108 | the six walls, Floor, Rug, Dressing, Bed, Furniture, Glow_Warm_1 |
+| `GlacierSuite` | Room 3x3 | 4,790 / 6,000 | 108 | the six walls, Floor, Rug, Dressing, Bed, Furniture, Glow_Warm_1..2, Glow_Cold_1 |
+| `AuroraDome` | Room 3x3 | 5,726 / 6,000 | 108 | the six walls, Floor, Rug, Dressing, Bed, Furniture, Glow_Warm_1, Glow_Magic_1..3 |
+| `CocoaLounge` | Amenity 2x2 | 5,264 / 6,000 | 96 | the six walls, Floor, Rug, Dressing, Centrepiece, Glow_Warm_1 |
+| `AuroraDeck` | Amenity 2x2 | 3,846 / 6,000 | 96 | the six walls, Floor, Dressing, Centrepiece, Glow_Warm_1, Glow_Magic_1..2 |
+| `Decor_IceBlock` | Decor 1x1 Floor | 160 / 1,500 | none | Body |
+| `Decor_CocoaMug` | Decor 1x1 Floor | 790 / 1,500 | none | Body |
+| `Decor_PrankBox` | Decor 1x1 Floor | 658 / 1,500 | none | Body |
+| `Decor_RockPile` | Decor 2x2 Floor | 362 / 1,500 | none | Body |
+| `Decor_SnowGlobe` | Decor 1x1 Floor | 502 / 1,500 | none | Body |
+| `Decor_AuroraLamp` | Decor 1x1 Floor | 392 / 1,500 | none | Body, Glow_Magic_1 |
+| `Decor_Bench` | Decor 3x1 Floor | 628 / 1,500 | none | Body |
+| `Decor_UrnPlanter` | Decor 1x1 Floor | 162 / 1,500 | none | Body |
+| `Decor_RugRunner` | Decor 4x2 Rug | 156 / 1,500 | none | Body |
+| `Decor_RugCorner` | Decor 2x2 Rug | 120 / 1,500 | none | Body |
+| `Decor_RugSquare` | Decor 4x4 Rug | 204 / 1,500 | none | Body |
 
 Triangles exclude `Root`; `LOD_Proxy` is counted separately (500 ceiling).
 The rooms are about twice the Haunted Manor's (2.2k-3.1k): the log stripes
@@ -70,11 +77,12 @@ pieces round the door, with the stripes, chamfers and jambs inside them; the
 lintel a **round** arch here (`room_shell(lintel='round')`), its box the
 blockout's 4 x 3 x 0.4, the opening 4 wide, 7 tall at the jambs and 8.6 at
 the crown. `Floor`, every `Wall_*`, `Bed` / `Centrepiece`, `Furniture` (one
-compact piece on the right wall), the lobby's `Desk`, `Till`, `Arch*`,
-`Planter_n`, every stair box, the sign's posts and `Board` collide;
+compact piece on the right wall), the lobby's `Wall_Front*` and `Arch*`, the
+front desk's `Counter`, `Till` and `KeyRack`, every stair box, the sign's
+posts and `Board` collide;
 `Dressing` (snow cornice, icicles, lanterns, windows, pictures, ribbons,
-stars, the yeti footprints), `Glow_*`, `LOD_Proxy`, the lobby's `Rug`, the
-sign's `Crest` and each decor `Body` do not.
+stars, the yeti footprints), `Glow_*`, `LOD_Proxy`, a room's `Rug`, the
+lobby's `Floor`, the sign's `Crest` and every decor `Body` do not.
 
 **The shared structure against the Haunted Manor's** (compared from the two
 manifests): `StairCore`, `StairCoreTop` and `HotelSign` have **identical
@@ -207,3 +215,62 @@ the slab). Every piece validates (18/18). **Not run in Studio.**
 | 1.10, 2.7 | Two window sizes | **False**: all 6 × 9, the camera stands off centre |
 | 2.6 | The till reads as a toy house; the key board as a calendar; the counter at the chin | Till and keys: kept from the lobby rework, to be seen in the game. The counter: **his call** |
 | 2.8 | Stairs through a room doorway | **False**: the Igloo Room's wall courses |
+
+## 2026-10-19: free building (the lobby shell, the front desk, decor on the 3-stud grid)
+
+The same rework as Haunted Manor's, on the same kit and contract (that
+README, "free building", for the rules, the checks and the blind review,
+which looked at both kits). The lodge's own:
+
+- **`Lobby` is the shell**: the front wall in log stripes inside and facade
+  blue outside, the snowy timber gable over the arch with its icicles, the
+  lantern (`Glow_Warm_1`), six iron sconces (`Glow_Warm_2..7`), and the plank
+  `Floor` (renamed from `Rug`), one part over 144 × 24, y 0 to 0.1, not
+  colliding. The same attachments as Haunted Manor's (`Entrance`, `Spawn`,
+  `SignBoard`, `Trap_1..3`). 4,372 triangles.
+- **`FrontDesk`** (24 × 12, served toward −Z): three logs laid along the
+  counter's served face (their fronts at the top's edge, z −4.2) with three
+  snowflakes on them (`Dressing`), a light wood top at 3.8 with a strip of
+  snow along the clerk's edge (to 3.82), the bell, a red ledger, the red till,
+  the red-shaded iron lamp (`Glow_Warm_1`), the log key rack with its clock.
+  The same boxes, attachments and checks as Haunted Manor's. 2,278 triangles
+  of 3,000, `LOD_Proxy` 36.
+- **The old lobby's furniture as decor**: `Decor_Bench` 3x1 Floor (dark logs, a
+  red cushion), `Decor_UrnPlanter` 1x1 Floor (a snowy pine in a wooden tub,
+  162 triangles), and the red-and-cream carpet as `Decor_RugRunner` 4x2,
+  `Decor_RugCorner` 2x2 and `Decor_RugSquare` 4x4 (cream borders and pin
+  lines, cream diamonds).
+- **Every existing decor refitted** (`refit_decor`, recorded in the manifest):
+
+  | Decor | Footprint, layer | Triangles | Refit |
+  |---|---|---|---|
+  | `Decor_IceBlock` | 1x1 Floor | 160 | scale 0.818: it was 0.49 too deep with the fish 0.09 proud of its face, past the 0.4 the brief allowed |
+  | `Decor_CocoaMug` | 1x1 Floor | 790 | scale 0.892, shifted 0.23 toward −X (its handle) |
+  | `Decor_PrankBox` | 1x1 Floor | 658 | shifted 0.05 toward −X (its crank) |
+  | `Decor_RockPile` | 2x2 Floor | 362 | none |
+  | `Decor_SnowGlobe` | 1x1 Floor | 502 | scale 0.990 |
+  | `Decor_AuroraLamp` | 1x1 Floor | 392 | none |
+  | `Decor_Bench` | 3x1 Floor | 628 | new |
+  | `Decor_UrnPlanter` | 1x1 Floor | 162 | new |
+  | `Decor_RugRunner` | 4x2 Rug | 156 | new |
+  | `Decor_RugCorner` | 2x2 Rug | 120 | new |
+  | `Decor_RugSquare` | 4x4 Rug | 204 | new |
+
+- **Rooms and amenities**: one `Floor` each, the walking surface alone; the
+  merged rugs are their own non-colliding `Rug` part in `IglooRoom`,
+  `IceCave`, `YetiDen`, `FrostLoft`, `GlacierSuite`, `AuroraDome` and
+  `CocoaLounge`. `Decor_1..3` are gone; `AuroraDeck` differs from HEAD only by
+  them and is not re-staged. `StairCore`, `StairCoreTop`, `HotelSign` and
+  `RoomPlaque` are unchanged.
+
+**Validated** (Blender, headless): 25/25 through `finish()` and re-imported,
+with the shell's, the desk's and the decor layers' rules. **Studio runtime is
+not tested.**
+
+**Staged** in the main checkout's `blender/_import/`: the seven whose names
+are Haunted Manor's too as `FrostfangLodge_Lobby`, `FrostfangLodge_FrontDesk`,
+`FrostfangLodge_Decor_Bench`, `FrostfangLodge_Decor_UrnPlanter`,
+`FrostfangLodge_Decor_RugRunner`, `FrostfangLodge_Decor_RugCorner`,
+`FrostfangLodge_Decor_RugSquare` (renamed after the fix-up, skill `import`);
+the six refitted decor and the seven rooms with a `Rug` part under their own
+names.

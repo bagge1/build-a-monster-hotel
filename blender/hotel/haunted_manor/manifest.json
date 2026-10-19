@@ -298,16 +298,30 @@
     "Floor": {
      "centre": [
       0.0,
-      0.125,
+      0.1,
       0.0
      ],
      "size": [
       23.8,
-      0.25,
+      0.2,
       23.8
      ],
-     "triangles": 792,
+     "triangles": 704,
      "collide": true
+    },
+    "Rug": {
+     "centre": [
+      0.0,
+      0.225,
+      3.6
+     ],
+     "size": [
+      5.0,
+      0.05,
+      3.6
+     ],
+     "triangles": 88,
+     "collide": false
     },
     "Wall_Back": {
      "centre": [
@@ -503,42 +517,6 @@
       -1.0
      ]
     },
-    "Decor_1": {
-     "pos": [
-      -10.0,
-      0.0,
-      10.0
-     ],
-     "look": [
-      0.7071,
-      0.0,
-      -0.7071
-     ]
-    },
-    "Decor_2": {
-     "pos": [
-      10.0,
-      0.0,
-      10.0
-     ],
-     "look": [
-      -0.7071,
-      0.0,
-      -0.7071
-     ]
-    },
-    "Decor_3": {
-     "pos": [
-      -10.0,
-      0.0,
-      0.0
-     ],
-     "look": [
-      1.0,
-      0.0,
-      0.0
-     ]
-    },
     "Bed": {
      "pos": [
       0.0,
@@ -589,18 +567,18 @@
      "triangles": 12,
      "collide": false
     },
-    "Rug": {
+    "Floor": {
      "centre": [
       0.0,
-      0.075,
+      0.05,
       12.0
      ],
      "size": [
       144.0,
-      0.15,
+      0.1,
       24.0
      ],
-     "triangles": 1200,
+     "triangles": 1152,
      "collide": false
     },
     "Wall_FrontLeft": {
@@ -621,14 +599,14 @@
      "centre": [
       0.0,
       8.8,
-      1.4205
+      0.96
      ],
      "size": [
       144.0,
       16.4,
-      2.801
+      1.88
      ],
-     "triangles": 1656,
+     "triangles": 1500,
      "collide": false
     },
     "Wall_FrontRight": {
@@ -643,146 +621,6 @@
       0.8
      ],
      "triangles": 108,
-     "collide": true
-    },
-    "Desk": {
-     "centre": [
-      -62.05,
-      2.12,
-      6.0
-     ],
-     "size": [
-      2.3,
-      4.24,
-      9.4
-     ],
-     "triangles": 778,
-     "collide": true
-    },
-    "Till": {
-     "centre": [
-      -62.025,
-      4.66,
-      9.6133
-     ],
-     "size": [
-      1.25,
-      1.72,
-      1.6266
-     ],
-     "triangles": 192,
-     "collide": true
-    },
-    "Glow_Warm_2": {
-     "centre": [
-      -62.3,
-      5.05,
-      2.0
-     ],
-     "size": [
-      0.4435,
-      0.48,
-      0.4435
-     ],
-     "triangles": 48,
-     "collide": false
-    },
-    "KeyRack": {
-     "centre": [
-      -71.575,
-      4.75,
-      6.0
-     ],
-     "size": [
-      0.85,
-      9.5,
-      5.2
-     ],
-     "triangles": 1132,
-     "collide": true
-    },
-    "Bench_1": {
-     "centre": [
-      29.0,
-      2.0,
-      1.95
-     ],
-     "size": [
-      6.7,
-      4.0,
-      2.0
-     ],
-     "triangles": 616,
-     "collide": true
-    },
-    "Bench_2": {
-     "centre": [
-      43.5,
-      2.0,
-      1.95
-     ],
-     "size": [
-      6.9,
-      4.0,
-      2.0
-     ],
-     "triangles": 616,
-     "collide": true
-    },
-    "Bench_3": {
-     "centre": [
-      53.5,
-      2.0,
-      1.95
-     ],
-     "size": [
-      6.9,
-      4.0,
-      2.0
-     ],
-     "triangles": 616,
-     "collide": true
-    },
-    "Planter_1": {
-     "centre": [
-      36.0,
-      1.44,
-      2.0
-     ],
-     "size": [
-      2.0325,
-      2.88,
-      2.0325
-     ],
-     "triangles": 256,
-     "collide": true
-    },
-    "Planter_2": {
-     "centre": [
-      48.5,
-      1.44,
-      2.0
-     ],
-     "size": [
-      2.0325,
-      2.88,
-      2.0325
-     ],
-     "triangles": 256,
-     "collide": true
-    },
-    "Planter_3": {
-     "centre": [
-      70.6,
-      1.44,
-      2.0
-     ],
-     "size": [
-      2.0325,
-      2.88,
-      2.0325
-     ],
-     "triangles": 256,
      "collide": true
     },
     "ArchLeft": {
@@ -841,7 +679,7 @@
      "triangles": 64,
      "collide": false
     },
-    "Glow_Warm_3": {
+    "Glow_Warm_2": {
      "centre": [
       -43.0,
       7.03,
@@ -855,7 +693,7 @@
      "triangles": 36,
      "collide": false
     },
-    "Glow_Warm_4": {
+    "Glow_Warm_3": {
      "centre": [
       -29.0,
       7.03,
@@ -869,7 +707,7 @@
      "triangles": 36,
      "collide": false
     },
-    "Glow_Warm_5": {
+    "Glow_Warm_4": {
      "centre": [
       -14.0,
       7.03,
@@ -883,7 +721,7 @@
      "triangles": 36,
      "collide": false
     },
-    "Glow_Warm_6": {
+    "Glow_Warm_5": {
      "centre": [
       14.0,
       7.03,
@@ -897,7 +735,7 @@
      "triangles": 36,
      "collide": false
     },
-    "Glow_Warm_7": {
+    "Glow_Warm_6": {
      "centre": [
       29.0,
       7.03,
@@ -911,7 +749,7 @@
      "triangles": 36,
      "collide": false
     },
-    "Glow_Warm_8": {
+    "Glow_Warm_7": {
      "centre": [
       52.5,
       7.03,
@@ -929,14 +767,14 @@
      "centre": [
       0.0,
       8.5,
-      5.35
+      0.5
      ],
      "size": [
       144.0,
       17.0,
-      10.7
+      1.0
      ],
-     "triangles": 168,
+     "triangles": 60,
      "collide": false
     }
    },
@@ -951,42 +789,6 @@
       0.0,
       0.0,
       -1.0
-     ]
-    },
-    "Desk": {
-     "pos": [
-      -60.8,
-      3.8,
-      5.0
-     ],
-     "look": [
-      1.0,
-      0.0,
-      0.0
-     ]
-    },
-    "Clerk": {
-     "pos": [
-      -66.0,
-      0.0,
-      6.0
-     ],
-     "look": [
-      1.0,
-      0.0,
-      0.0
-     ]
-    },
-    "Till": {
-     "pos": [
-      -60.8,
-      3.8,
-      9.4
-     ],
-     "look": [
-      1.0,
-      0.0,
-      0.0
      ]
     },
     "Spawn": {
@@ -1011,54 +813,6 @@
       0.0,
       0.0,
       -1.0
-     ]
-    },
-    "Queue_1": {
-     "pos": [
-      -58.0,
-      0.0,
-      5.0
-     ],
-     "look": [
-      -1.0,
-      0.0,
-      0.0
-     ]
-    },
-    "Queue_2": {
-     "pos": [
-      -54.5,
-      0.0,
-      5.0
-     ],
-     "look": [
-      -1.0,
-      0.0,
-      0.0
-     ]
-    },
-    "Queue_3": {
-     "pos": [
-      -51.0,
-      0.0,
-      5.0
-     ],
-     "look": [
-      -1.0,
-      0.0,
-      0.0
-     ]
-    },
-    "Queue_4": {
-     "pos": [
-      -47.5,
-      0.0,
-      5.0
-     ],
-     "look": [
-      -1.0,
-      0.0,
-      0.0
      ]
     },
     "Trap_1": {
@@ -1098,11 +852,219 @@
      ]
     }
    },
-   "triangles": 8574,
+   "triangles": 3604,
    "budget": 10000,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "an indoor reception: the front wall with windows round the arch, the desk across the end with its key rack and clock, benches and pumpkin planters, the back row clear for the floor-1 doors"
+   "note": "the lobby shell: the front wall with windows round the pointed arch, its lantern and sconces, the plum tiled floor; everything else is placed by the player"
+  },
+  "FrontDesk": {
+   "name": "FrontDesk",
+   "kind": "Desk",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     24.0,
+     0.2,
+     12.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      24.0,
+      0.2,
+      12.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Counter": {
+     "centre": [
+      0.0,
+      1.9,
+      -3.05
+     ],
+     "size": [
+      9.4,
+      3.8,
+      2.3
+     ],
+     "triangles": 548,
+     "collide": true
+    },
+    "Dressing": {
+     "centre": [
+      -1.3855,
+      4.7,
+      -2.9844
+     ],
+     "size": [
+      6.371,
+      1.8,
+      1.8108
+     ],
+     "triangles": 386,
+     "collide": false
+    },
+    "Till": {
+     "centre": [
+      3.6075,
+      4.66,
+      -3.175
+     ],
+     "size": [
+      1.615,
+      1.72,
+      1.25
+     ],
+     "triangles": 192,
+     "collide": true
+    },
+    "Glow_Warm_1": {
+     "centre": [
+      -3.75,
+      5.05,
+      -2.9
+     ],
+     "size": [
+      0.4435,
+      0.48,
+      0.4435
+     ],
+     "triangles": 48,
+     "collide": false
+    },
+    "KeyRack": {
+     "centre": [
+      0.0,
+      4.75,
+      5.575
+     ],
+     "size": [
+      5.2,
+      9.5,
+      0.85
+     ],
+     "triangles": 1132,
+     "collide": true
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      4.75,
+      0.9
+     ],
+     "size": [
+      9.4,
+      9.5,
+      10.2
+     ],
+     "triangles": 36,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Desk": {
+     "pos": [
+      0.0,
+      3.8,
+      -4.2
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    "Till": {
+     "pos": [
+      3.4,
+      3.8,
+      -4.2
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    "Clerk": {
+     "pos": [
+      0.0,
+      0.0,
+      1.5
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    "Queue_1": {
+     "pos": [
+      0.0,
+      0.0,
+      -8.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    },
+    "Queue_2": {
+     "pos": [
+      0.0,
+      0.0,
+      -11.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    },
+    "Queue_3": {
+     "pos": [
+      0.0,
+      0.0,
+      -14.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    },
+    "Queue_4": {
+     "pos": [
+      0.0,
+      0.0,
+      -17.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 2318,
+   "budget": 3000,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "the old lobby desk as a 2 x 1 piece: a dark counter with violet panels and a gold top, a bell, a ledger, an antique till, a teal-shaded lamp, the key rack and clock behind the clerk"
   },
   "StairCore": {
    "name": "StairCore",
@@ -2015,6 +1977,73 @@
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
    "note": "posts and a 16 x 6 board for the SurfaceGui, a gable crest with a lit crescent moon and bats"
   },
+  "RoomPlaque": {
+   "name": "RoomPlaque",
+   "kind": "Cosmetic",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.0,
+     0.15
+    ],
+    "size": [
+     1.0,
+     0.2,
+     0.2
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.0,
+      0.15
+     ],
+     "size": [
+      1.0,
+      0.2,
+      0.2
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Board": {
+     "centre": [
+      0.0,
+      0.0,
+      0.127
+     ],
+     "size": [
+      4.0,
+      1.3,
+      0.346
+     ],
+     "triangles": 136,
+     "collide": false
+    },
+    "Face": {
+     "centre": [
+      0.0,
+      0.0,
+      -0.045
+     ],
+     "size": [
+      3.5,
+      0.84,
+      0.03
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 160,
+   "budget": 2000,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a dark wooden plaque with a gold rim; the code writes on its Face"
+  },
   "GardenRoom": {
    "name": "GardenRoom",
    "kind": "Room",
@@ -2052,16 +2081,30 @@
     "Floor": {
      "centre": [
       0.0,
-      0.125,
+      0.1,
       0.0
      ],
      "size": [
       23.8,
-      0.25,
+      0.2,
       23.8
      ],
-     "triangles": 792,
+     "triangles": 704,
      "collide": true
+    },
+    "Rug": {
+     "centre": [
+      0.0,
+      0.225,
+      3.6
+     ],
+     "size": [
+      4.6,
+      0.05,
+      3.4
+     ],
+     "triangles": 88,
+     "collide": false
     },
     "Wall_Back": {
      "centre": [
@@ -2241,42 +2284,6 @@
       0.0,
       0.0,
       -1.0
-     ]
-    },
-    "Decor_1": {
-     "pos": [
-      -10.0,
-      0.0,
-      10.0
-     ],
-     "look": [
-      0.7071,
-      0.0,
-      -0.7071
-     ]
-    },
-    "Decor_2": {
-     "pos": [
-      10.0,
-      0.0,
-      10.0
-     ],
-     "look": [
-      -0.7071,
-      0.0,
-      -0.7071
-     ]
-    },
-    "Decor_3": {
-     "pos": [
-      -10.0,
-      0.0,
-      0.0
-     ],
-     "look": [
-      1.0,
-      0.0,
-      0.0
      ]
     },
     "Bed": {
@@ -2526,42 +2533,6 @@
       -1.0
      ]
     },
-    "Decor_1": {
-     "pos": [
-      -10.0,
-      0.0,
-      10.0
-     ],
-     "look": [
-      0.7071,
-      0.0,
-      -0.7071
-     ]
-    },
-    "Decor_2": {
-     "pos": [
-      10.0,
-      0.0,
-      10.0
-     ],
-     "look": [
-      -0.7071,
-      0.0,
-      -0.7071
-     ]
-    },
-    "Decor_3": {
-     "pos": [
-      -10.0,
-      0.0,
-      0.0
-     ],
-     "look": [
-      1.0,
-      0.0,
-      0.0
-     ]
-    },
     "Bed": {
      "pos": [
       0.0,
@@ -2618,16 +2589,30 @@
     "Floor": {
      "centre": [
       0.0,
-      0.125,
+      0.1,
       0.0
      ],
      "size": [
       23.8,
-      0.25,
+      0.2,
       35.8
      ],
-     "triangles": 792,
+     "triangles": 704,
      "collide": true
+    },
+    "Rug": {
+     "centre": [
+      0.0,
+      0.225,
+      6.0
+     ],
+     "size": [
+      4.8,
+      0.05,
+      4.0
+     ],
+     "triangles": 88,
+     "collide": false
     },
     "Wall_Back": {
      "centre": [
@@ -2823,42 +2808,6 @@
       -1.0
      ]
     },
-    "Decor_1": {
-     "pos": [
-      -10.0,
-      0.0,
-      16.0
-     ],
-     "look": [
-      0.7071,
-      0.0,
-      -0.7071
-     ]
-    },
-    "Decor_2": {
-     "pos": [
-      10.0,
-      0.0,
-      16.0
-     ],
-     "look": [
-      -0.7071,
-      0.0,
-      -0.7071
-     ]
-    },
-    "Decor_3": {
-     "pos": [
-      -10.0,
-      0.0,
-      0.0
-     ],
-     "look": [
-      1.0,
-      0.0,
-      0.0
-     ]
-    },
     "Bed": {
      "pos": [
       0.0,
@@ -2915,16 +2864,30 @@
     "Floor": {
      "centre": [
       0.0,
-      0.125,
+      0.1,
       0.0
      ],
      "size": [
       23.8,
-      0.25,
+      0.2,
       35.8
      ],
-     "triangles": 792,
+     "triangles": 704,
      "collide": true
+    },
+    "Rug": {
+     "centre": [
+      0.0,
+      0.225,
+      6.0
+     ],
+     "size": [
+      4.4,
+      0.05,
+      4.4
+     ],
+     "triangles": 88,
+     "collide": false
     },
     "Wall_Back": {
      "centre": [
@@ -3120,42 +3083,6 @@
       -1.0
      ]
     },
-    "Decor_1": {
-     "pos": [
-      -10.0,
-      0.0,
-      16.0
-     ],
-     "look": [
-      0.7071,
-      0.0,
-      -0.7071
-     ]
-    },
-    "Decor_2": {
-     "pos": [
-      10.0,
-      0.0,
-      16.0
-     ],
-     "look": [
-      -0.7071,
-      0.0,
-      -0.7071
-     ]
-    },
-    "Decor_3": {
-     "pos": [
-      -10.0,
-      0.0,
-      0.0
-     ],
-     "look": [
-      1.0,
-      0.0,
-      0.0
-     ]
-    },
     "Bed": {
      "pos": [
       0.0,
@@ -3212,16 +3139,30 @@
     "Floor": {
      "centre": [
       0.0,
-      0.125,
+      0.1,
       0.0
      ],
      "size": [
       35.8,
-      0.25,
+      0.2,
       35.8
      ],
-     "triangles": 1144,
+     "triangles": 1056,
      "collide": true
+    },
+    "Rug": {
+     "centre": [
+      0.0,
+      0.225,
+      5.5
+     ],
+     "size": [
+      6.0,
+      0.05,
+      5.0
+     ],
+     "triangles": 88,
+     "collide": false
     },
     "Wall_Back": {
      "centre": [
@@ -3403,42 +3344,6 @@
       -1.0
      ]
     },
-    "Decor_1": {
-     "pos": [
-      -16.0,
-      0.0,
-      16.0
-     ],
-     "look": [
-      0.7071,
-      0.0,
-      -0.7071
-     ]
-    },
-    "Decor_2": {
-     "pos": [
-      16.0,
-      0.0,
-      16.0
-     ],
-     "look": [
-      -0.7071,
-      0.0,
-      -0.7071
-     ]
-    },
-    "Decor_3": {
-     "pos": [
-      -16.0,
-      0.0,
-      0.0
-     ],
-     "look": [
-      1.0,
-      0.0,
-      0.0
-     ]
-    },
     "Bed": {
      "pos": [
       0.0,
@@ -3495,16 +3400,30 @@
     "Floor": {
      "centre": [
       0.0,
-      0.125,
+      0.1,
       0.0
      ],
      "size": [
       35.8,
-      0.25,
+      0.2,
       35.8
      ],
-     "triangles": 1144,
+     "triangles": 1056,
      "collide": true
+    },
+    "Rug": {
+     "centre": [
+      0.0,
+      0.225,
+      5.5
+     ],
+     "size": [
+      6.4,
+      0.05,
+      5.2
+     ],
+     "triangles": 88,
+     "collide": false
     },
     "Wall_Back": {
      "centre": [
@@ -3728,42 +3647,6 @@
       -1.0
      ]
     },
-    "Decor_1": {
-     "pos": [
-      -16.0,
-      0.0,
-      16.0
-     ],
-     "look": [
-      0.7071,
-      0.0,
-      -0.7071
-     ]
-    },
-    "Decor_2": {
-     "pos": [
-      16.0,
-      0.0,
-      16.0
-     ],
-     "look": [
-      -0.7071,
-      0.0,
-      -0.7071
-     ]
-    },
-    "Decor_3": {
-     "pos": [
-      -16.0,
-      0.0,
-      0.0
-     ],
-     "look": [
-      1.0,
-      0.0,
-      0.0
-     ]
-    },
     "Bed": {
      "pos": [
       0.0,
@@ -3820,16 +3703,30 @@
     "Floor": {
      "centre": [
       0.0,
-      0.125,
+      0.1,
       0.0
      ],
      "size": [
       35.8,
-      0.25,
+      0.2,
       35.8
      ],
-     "triangles": 1144,
+     "triangles": 1056,
      "collide": true
+    },
+    "Rug": {
+     "centre": [
+      0.0,
+      0.225,
+      5.5
+     ],
+     "size": [
+      6.4,
+      0.05,
+      5.2
+     ],
+     "triangles": 88,
+     "collide": false
     },
     "Wall_Back": {
      "centre": [
@@ -4009,42 +3906,6 @@
       0.0,
       0.0,
       -1.0
-     ]
-    },
-    "Decor_1": {
-     "pos": [
-      -16.0,
-      0.0,
-      16.0
-     ],
-     "look": [
-      0.7071,
-      0.0,
-      -0.7071
-     ]
-    },
-    "Decor_2": {
-     "pos": [
-      16.0,
-      0.0,
-      16.0
-     ],
-     "look": [
-      -0.7071,
-      0.0,
-      -0.7071
-     ]
-    },
-    "Decor_3": {
-     "pos": [
-      -16.0,
-      0.0,
-      0.0
-     ],
-     "look": [
-      1.0,
-      0.0,
-      0.0
      ]
     },
     "Bed": {
@@ -4280,42 +4141,6 @@
       -1.0
      ]
     },
-    "Decor_1": {
-     "pos": [
-      -10.0,
-      0.0,
-      10.0
-     ],
-     "look": [
-      0.7071,
-      0.0,
-      -0.7071
-     ]
-    },
-    "Decor_2": {
-     "pos": [
-      10.0,
-      0.0,
-      10.0
-     ],
-     "look": [
-      -0.7071,
-      0.0,
-      -0.7071
-     ]
-    },
-    "Decor_3": {
-     "pos": [
-      -10.0,
-      0.0,
-      0.0
-     ],
-     "look": [
-      1.0,
-      0.0,
-      0.0
-     ]
-    },
     "Bed": {
      "pos": [
       0.0,
@@ -4372,16 +4197,30 @@
     "Floor": {
      "centre": [
       0.0,
-      0.125,
+      0.1,
       0.0
      ],
      "size": [
       23.8,
-      0.25,
+      0.2,
       23.8
      ],
-     "triangles": 792,
+     "triangles": 704,
      "collide": true
+    },
+    "Rug": {
+     "centre": [
+      0.0,
+      0.225,
+      -3.6
+     ],
+     "size": [
+      4.4,
+      0.05,
+      3.0
+     ],
+     "triangles": 88,
+     "collide": false
     },
     "Wall_Back": {
      "centre": [
@@ -4547,42 +4386,6 @@
       0.0,
       0.0,
       -1.0
-     ]
-    },
-    "Decor_1": {
-     "pos": [
-      -10.0,
-      0.0,
-      10.0
-     ],
-     "look": [
-      0.7071,
-      0.0,
-      -0.7071
-     ]
-    },
-    "Decor_2": {
-     "pos": [
-      10.0,
-      0.0,
-      10.0
-     ],
-     "look": [
-      -0.7071,
-      0.0,
-      -0.7071
-     ]
-    },
-    "Decor_3": {
-     "pos": [
-      -10.0,
-      0.0,
-      0.0
-     ],
-     "look": [
-      1.0,
-      0.0,
-      0.0
      ]
     },
     "Bed": {
@@ -4832,42 +4635,6 @@
       -1.0
      ]
     },
-    "Decor_1": {
-     "pos": [
-      -10.0,
-      0.0,
-      10.0
-     ],
-     "look": [
-      0.7071,
-      0.0,
-      -0.7071
-     ]
-    },
-    "Decor_2": {
-     "pos": [
-      10.0,
-      0.0,
-      10.0
-     ],
-     "look": [
-      -0.7071,
-      0.0,
-      -0.7071
-     ]
-    },
-    "Decor_3": {
-     "pos": [
-      -10.0,
-      0.0,
-      0.0
-     ],
-     "look": [
-      1.0,
-      0.0,
-      0.0
-     ]
-    },
     "Bed": {
      "pos": [
       0.0,
@@ -4924,16 +4691,30 @@
     "Floor": {
      "centre": [
       0.0,
-      0.125,
+      0.1,
       0.0
      ],
      "size": [
       23.8,
-      0.25,
+      0.2,
       23.8
      ],
-     "triangles": 792,
+     "triangles": 704,
      "collide": true
+    },
+    "Rug": {
+     "centre": [
+      0.0,
+      0.225,
+      -3.4
+     ],
+     "size": [
+      4.0,
+      0.05,
+      3.0
+     ],
+     "triangles": 88,
+     "collide": false
     },
     "Wall_Back": {
      "centre": [
@@ -5115,42 +4896,6 @@
       -1.0
      ]
     },
-    "Decor_1": {
-     "pos": [
-      -10.0,
-      0.0,
-      10.0
-     ],
-     "look": [
-      0.7071,
-      0.0,
-      -0.7071
-     ]
-    },
-    "Decor_2": {
-     "pos": [
-      10.0,
-      0.0,
-      10.0
-     ],
-     "look": [
-      -0.7071,
-      0.0,
-      -0.7071
-     ]
-    },
-    "Decor_3": {
-     "pos": [
-      -10.0,
-      0.0,
-      0.0
-     ],
-     "look": [
-      1.0,
-      0.0,
-      0.0
-     ]
-    },
     "Bed": {
      "pos": [
       0.0,
@@ -5207,16 +4952,30 @@
     "Floor": {
      "centre": [
       0.0,
-      0.125,
+      0.1,
       0.0
      ],
      "size": [
       23.8,
-      0.25,
+      0.2,
       23.8
      ],
-     "triangles": 792,
+     "triangles": 704,
      "collide": true
+    },
+    "Rug": {
+     "centre": [
+      0.0,
+      0.225,
+      -3.6
+     ],
+     "size": [
+      4.0,
+      0.05,
+      3.2
+     ],
+     "triangles": 88,
+     "collide": false
     },
     "Wall_Back": {
      "centre": [
@@ -5412,42 +5171,6 @@
       -1.0
      ]
     },
-    "Decor_1": {
-     "pos": [
-      -10.0,
-      0.0,
-      10.0
-     ],
-     "look": [
-      0.7071,
-      0.0,
-      -0.7071
-     ]
-    },
-    "Decor_2": {
-     "pos": [
-      10.0,
-      0.0,
-      10.0
-     ],
-     "look": [
-      -0.7071,
-      0.0,
-      -0.7071
-     ]
-    },
-    "Decor_3": {
-     "pos": [
-      -10.0,
-      0.0,
-      0.0
-     ],
-     "look": [
-      1.0,
-      0.0,
-      0.0
-     ]
-    },
     "Bed": {
      "pos": [
       0.0,
@@ -5478,9 +5201,9 @@
      0.0
     ],
     "size": [
-     3.6,
+     6.0,
      0.2,
-     3.6
+     6.0
     ]
    },
    "parts": {
@@ -5491,9 +5214,9 @@
       0.0
      ],
      "size": [
-      3.6,
+      6.0,
       0.2,
-      3.6
+      6.0
      ],
      "triangles": 12,
      "collide": false
@@ -5518,7 +5241,24 @@
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "a puddle-blue rug with ripples and a rubber duck"
+   "note": "a puddle-blue rug with ripples and a rubber duck",
+   "decor": {
+    "fw": 2,
+    "fd": 2,
+    "layer": "Floor",
+    "footprint_studs": [
+     6.0,
+     6.0
+    ],
+    "refit": {
+     "scale": 1.0,
+     "shift": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    }
+   }
   },
   "Decor_SnackBasket": {
    "name": "Decor_SnackBasket",
@@ -5531,9 +5271,9 @@
      0.0
     ],
     "size": [
-     2.2,
+     3.0,
      0.2,
-     2.2
+     3.0
     ]
    },
    "parts": {
@@ -5544,9 +5284,9 @@
       0.0
      ],
      "size": [
-      2.2,
+      3.0,
       0.2,
-      2.2
+      3.0
      ],
      "triangles": 12,
      "collide": false
@@ -5571,7 +5311,24 @@
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "a wicker basket of candies and a cookie"
+   "note": "a wicker basket of candies and a cookie",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ],
+    "refit": {
+     "scale": 1.0,
+     "shift": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    }
+   }
   },
   "Decor_RecordPlayer": {
    "name": "Decor_RecordPlayer",
@@ -5584,9 +5341,9 @@
      0.0
     ],
     "size": [
-     2.4,
+     3.0,
      0.2,
-     2.4
+     3.0
     ]
    },
    "parts": {
@@ -5597,18 +5354,18 @@
       0.0
      ],
      "size": [
-      2.4,
+      3.0,
       0.2,
-      2.4
+      3.0
      ],
      "triangles": 12,
      "collide": false
     },
     "Body": {
      "centre": [
-      0.0768,
+      0.0732,
       2.0919,
-      -0.1614
+      -0.0886
      ],
      "size": [
       2.0535,
@@ -5624,7 +5381,24 @@
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "a wooden cabinet gramophone with a gold flower horn"
+   "note": "a wooden cabinet gramophone with a gold flower horn",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ],
+    "refit": {
+     "scale": 1.0,
+     "shift": [
+      -0.0035,
+      0.0,
+      0.0727
+     ]
+    }
+   }
   },
   "Decor_Candles": {
    "name": "Decor_Candles",
@@ -5637,9 +5411,9 @@
      0.0
     ],
     "size": [
-     2.0,
+     3.0,
      0.2,
-     2.0
+     3.0
     ]
    },
    "parts": {
@@ -5650,9 +5424,9 @@
       0.0
      ],
      "size": [
-      2.0,
+      3.0,
       0.2,
-      2.0
+      3.0
      ],
      "triangles": 12,
      "collide": false
@@ -5719,7 +5493,24 @@
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "three cream candles on a gold dish, each flame its own glow"
+   "note": "three cream candles on a gold dish, each flame its own glow",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ],
+    "refit": {
+     "scale": 1.0,
+     "shift": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    }
+   }
   },
   "Decor_Planter": {
    "name": "Decor_Planter",
@@ -5732,9 +5523,9 @@
      0.0
     ],
     "size": [
-     2.4,
+     3.0,
      0.2,
-     2.4
+     3.0
     ]
    },
    "parts": {
@@ -5745,9 +5536,9 @@
       0.0
      ],
      "size": [
-      2.4,
+      3.0,
       0.2,
-      2.4
+      3.0
      ],
      "triangles": 12,
      "collide": false
@@ -5772,7 +5563,24 @@
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "a stone pot with a teal band and a violet-budded spooky plant"
+   "note": "a stone pot with a teal band and a violet-budded spooky plant",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ],
+    "refit": {
+     "scale": 1.0,
+     "shift": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    }
+   }
   },
   "Decor_AntiqueWardrobe": {
    "name": "Decor_AntiqueWardrobe",
@@ -5785,9 +5593,9 @@
      0.0
     ],
     "size": [
-     3.4,
+     6.0,
      0.2,
-     2.0
+     3.0
     ]
    },
    "parts": {
@@ -5798,9 +5606,9 @@
       0.0
      ],
      "size": [
-      3.4,
+      6.0,
       0.2,
-      2.0
+      3.0
      ],
      "triangles": 12,
      "collide": false
@@ -5825,7 +5633,24 @@
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "a tall carved wardrobe with a crown top and gold knobs"
+   "note": "a tall carved wardrobe with a crown top and gold knobs",
+   "decor": {
+    "fw": 2,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     6.0,
+     3.0
+    ],
+    "refit": {
+     "scale": 1.0,
+     "shift": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    }
+   }
   },
   "Decor_BlackoutCurtains": {
    "name": "Decor_BlackoutCurtains",
@@ -5838,9 +5663,9 @@
      0.0
     ],
     "size": [
-     4.0,
+     6.0,
      0.2,
-     1.0
+     3.0
     ]
    },
    "parts": {
@@ -5851,9 +5676,9 @@
       0.0
      ],
      "size": [
-      4.0,
+      6.0,
       0.2,
-      1.0
+      3.0
      ],
      "triangles": 12,
      "collide": false
@@ -5862,7 +5687,7 @@
      "centre": [
       0.0,
       3.325,
-      0.0
+      0.65
      ],
      "size": [
       3.94,
@@ -5878,7 +5703,24 @@
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "heavy plum curtains on an iron rod, closed, a gold tie across each"
+   "note": "heavy plum curtains on an iron rod, closed, a gold tie across each",
+   "decor": {
+    "fw": 2,
+    "fd": 1,
+    "layer": "Wall",
+    "footprint_studs": [
+     6.0,
+     3.0
+    ],
+    "refit": {
+     "scale": 1.0,
+     "shift": [
+      0.0,
+      0.0,
+      0.65
+     ]
+    }
+   }
   },
   "Decor_SandTray": {
    "name": "Decor_SandTray",
@@ -5891,9 +5733,9 @@
      0.0
     ],
     "size": [
-     3.0,
+     6.0,
      0.2,
-     2.4
+     3.0
     ]
    },
    "parts": {
@@ -5904,9 +5746,9 @@
       0.0
      ],
      "size": [
-      3.0,
+      6.0,
       0.2,
-      2.4
+      3.0
      ],
      "triangles": 12,
      "collide": false
@@ -5931,7 +5773,24 @@
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "a wooden tray of raked sand with a little pyramid"
+   "note": "a wooden tray of raked sand with a little pyramid",
+   "decor": {
+    "fw": 2,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     6.0,
+     3.0
+    ],
+    "refit": {
+     "scale": 1.0,
+     "shift": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    }
+   }
   },
   "Decor_CatBasket": {
    "name": "Decor_CatBasket",
@@ -5944,9 +5803,9 @@
      0.0
     ],
     "size": [
-     2.6,
+     3.0,
      0.2,
-     2.6
+     3.0
     ]
    },
    "parts": {
@@ -5957,9 +5816,9 @@
       0.0
      ],
      "size": [
-      2.6,
+      3.0,
       0.2,
-      2.6
+      3.0
      ],
      "triangles": 12,
      "collide": false
@@ -5967,13 +5826,13 @@
     "Body": {
      "centre": [
       0.0,
-      0.7,
+      0.6377,
       0.0
      ],
      "size": [
-      2.4148,
-      1.4,
-      2.4148
+      2.2,
+      1.2755,
+      2.2
      ],
      "triangles": 428,
      "collide": false
@@ -5984,7 +5843,24 @@
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "a woven basket, a pink cushion and a sleeping black cat"
+   "note": "a woven basket, a pink cushion and a sleeping black cat",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ],
+    "refit": {
+     "scale": 0.911,
+     "shift": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    }
+   }
   },
   "Decor_Cauldron": {
    "name": "Decor_Cauldron",
@@ -5997,9 +5873,9 @@
      0.0
     ],
     "size": [
-     2.6,
+     3.0,
      0.2,
-     2.6
+     3.0
     ]
    },
    "parts": {
@@ -6010,9 +5886,9 @@
       0.0
      ],
      "size": [
-      2.6,
+      3.0,
       0.2,
-      2.6
+      3.0
      ],
      "triangles": 12,
      "collide": false
@@ -6020,13 +5896,13 @@
     "Body": {
      "centre": [
       0.0,
-      1.05,
+      1.0398,
       0.0
      ],
      "size": [
-      2.2216,
-      2.1,
-      2.2216
+      2.2,
+      2.0796,
+      2.2
      ],
      "triangles": 310,
      "collide": false
@@ -6034,13 +5910,13 @@
     "Glow_Magic_1": {
      "centre": [
       0.0,
-      2.064,
+      2.0439,
       0.0
      ],
      "size": [
-      1.6614,
-      0.448,
-      1.6614
+      1.6452,
+      0.4436,
+      1.6452
      ],
      "triangles": 156,
      "collide": false
@@ -6051,7 +5927,24 @@
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "an iron cauldron on three legs over logs, a glowing green brew with bubbles"
+   "note": "an iron cauldron on three legs over logs, a glowing green brew with bubbles",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ],
+    "refit": {
+     "scale": 0.9903,
+     "shift": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    }
+   }
   },
   "Decor_SteakPlatter": {
    "name": "Decor_SteakPlatter",
@@ -6064,9 +5957,9 @@
      0.0
     ],
     "size": [
-     2.6,
+     3.0,
      0.2,
-     2.6
+     3.0
     ]
    },
    "parts": {
@@ -6077,9 +5970,9 @@
       0.0
      ],
      "size": [
-      2.6,
+      3.0,
       0.2,
-      2.6
+      3.0
      ],
      "triangles": 12,
      "collide": false
@@ -6087,13 +5980,13 @@
     "Body": {
      "centre": [
       0.0181,
-      1.565,
+      1.4346,
       0.0
      ],
      "size": [
-      2.3188,
-      3.13,
-      2.4
+      2.1255,
+      2.8692,
+      2.2
      ],
      "triangles": 270,
      "collide": false
@@ -6104,7 +5997,24 @@
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "a steak with its bone on a white platter, on a pedestal table"
+   "note": "a steak with its bone on a white platter, on a pedestal table",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ],
+    "refit": {
+     "scale": 0.9167,
+     "shift": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    }
+   }
   },
   "Decor_MoonWindow": {
    "name": "Decor_MoonWindow",
@@ -6117,9 +6027,9 @@
      0.0
     ],
     "size": [
-     3.4,
+     6.0,
      0.2,
-     1.0
+     3.0
     ]
    },
    "parts": {
@@ -6130,9 +6040,9 @@
       0.0
      ],
      "size": [
-      3.4,
+      6.0,
       0.2,
-      1.0
+      3.0
      ],
      "triangles": 12,
      "collide": false
@@ -6141,7 +6051,7 @@
      "centre": [
       0.0,
       3.3,
-      0.0
+      0.65
      ],
      "size": [
       3.2,
@@ -6155,7 +6065,7 @@
      "centre": [
       0.25,
       4.3,
-      -0.075
+      0.575
      ],
      "size": [
       1.7,
@@ -6171,7 +6081,24 @@
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "a freestanding gothic window, a full moon glowing in the night pane"
+   "note": "a freestanding gothic window, a full moon glowing in the night pane",
+   "decor": {
+    "fw": 2,
+    "fd": 1,
+    "layer": "Wall",
+    "footprint_studs": [
+     6.0,
+     3.0
+    ],
+    "refit": {
+     "scale": 1.0,
+     "shift": [
+      0.0,
+      0.0,
+      0.65
+     ]
+    }
+   }
   },
   "Decor_PipeOrgan": {
    "name": "Decor_PipeOrgan",
@@ -6184,9 +6111,9 @@
      0.0
     ],
     "size": [
-     3.8,
+     6.0,
      0.2,
-     3.4
+     6.0
     ]
    },
    "parts": {
@@ -6197,9 +6124,9 @@
       0.0
      ],
      "size": [
-      3.8,
+      6.0,
       0.2,
-      3.4
+      6.0
      ],
      "triangles": 12,
      "collide": false
@@ -6208,7 +6135,7 @@
      "centre": [
       0.0,
       3.45,
-      -0.1734
+      1.1734
      ],
      "size": [
       3.6,
@@ -6224,7 +6151,24 @@
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "a small pipe organ: seven gold pipes over a dark console and its bench"
+   "note": "a small pipe organ: seven gold pipes over a dark console and its bench",
+   "decor": {
+    "fw": 2,
+    "fd": 2,
+    "layer": "Wall",
+    "footprint_studs": [
+     6.0,
+     6.0
+    ],
+    "refit": {
+     "scale": 1.0,
+     "shift": [
+      0.0,
+      0.0,
+      1.3467
+     ]
+    }
+   }
   },
   "Decor_SoundproofWalls": {
    "name": "Decor_SoundproofWalls",
@@ -6237,9 +6181,9 @@
      0.0
     ],
     "size": [
-     4.0,
+     6.0,
      0.2,
-     1.6
+     3.0
     ]
    },
    "parts": {
@@ -6250,9 +6194,9 @@
       0.0
      ],
      "size": [
-      4.0,
+      6.0,
       0.2,
-      1.6
+      3.0
      ],
      "triangles": 12,
      "collide": false
@@ -6261,7 +6205,7 @@
      "centre": [
       0.0,
       3.1,
-      -0.0218
+      0.7407
      ],
      "size": [
       3.8661,
@@ -6277,7 +6221,24 @@
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "a three-panel folding screen of quilted violet pads"
+   "note": "a three-panel folding screen of quilted violet pads",
+   "decor": {
+    "fw": 2,
+    "fd": 1,
+    "layer": "Wall",
+    "footprint_studs": [
+     6.0,
+     3.0
+    ],
+    "refit": {
+     "scale": 1.0,
+     "shift": [
+      0.0,
+      0.0,
+      0.7625
+     ]
+    }
+   }
   },
   "Decor_Chandelier": {
    "name": "Decor_Chandelier",
@@ -6312,84 +6273,84 @@
     },
     "Body": {
      "centre": [
-      0.0436,
-      3.185,
+      0.0088,
+      2.7724,
       0.0
      ],
      "size": [
-      2.5072,
-      6.37,
-      2.5274
+      2.1824,
+      5.5448,
+      2.2
      ],
      "triangles": 652,
      "collide": false
     },
     "Glow_Warm_1": {
      "centre": [
-      1.15,
-      6.55,
+      0.9718,
+      5.7014,
       0.0
      ],
      "size": [
-      0.135,
-      0.32,
-      0.1559
+      0.1175,
+      0.2785,
+      0.1357
      ],
      "triangles": 24,
      "collide": false
     },
     "Glow_Warm_2": {
      "centre": [
-      0.3554,
-      6.55,
-      1.0937
+      0.2802,
+      5.7014,
+      0.952
      ],
      "size": [
-      0.135,
-      0.32,
-      0.1559
+      0.1175,
+      0.2785,
+      0.1357
      ],
      "triangles": 24,
      "collide": false
     },
     "Glow_Warm_3": {
      "centre": [
-      -0.9304,
-      6.55,
-      0.676
+      -0.839,
+      5.7014,
+      0.5884
      ],
      "size": [
-      0.135,
-      0.32,
-      0.1559
+      0.1175,
+      0.2785,
+      0.1357
      ],
      "triangles": 24,
      "collide": false
     },
     "Glow_Warm_4": {
      "centre": [
-      -0.9304,
-      6.55,
-      -0.676
+      -0.839,
+      5.7014,
+      -0.5884
      ],
      "size": [
-      0.135,
-      0.32,
-      0.1559
+      0.1175,
+      0.2785,
+      0.1357
      ],
      "triangles": 24,
      "collide": false
     },
     "Glow_Warm_5": {
      "centre": [
-      0.3554,
-      6.55,
-      -1.0937
+      0.2802,
+      5.7014,
+      -0.952
      ],
      "size": [
-      0.135,
-      0.32,
-      0.1559
+      0.1175,
+      0.2785,
+      0.1357
      ],
      "triangles": 24,
      "collide": false
@@ -6400,74 +6361,334 @@
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "a standing iron chandelier: a gold ring of five candles and crystal drops"
+   "note": "a standing iron chandelier: a gold ring of five candles and crystal drops",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ],
+    "refit": {
+     "scale": 0.8704,
+     "shift": [
+      -0.0348,
+      0.0,
+      0.0
+     ]
+    }
+   }
   },
-  "RoomPlaque": {
-   "name": "RoomPlaque",
-   "kind": "Cosmetic",
+  "Decor_Bench": {
+   "name": "Decor_Bench",
+   "kind": "Decor",
    "footprint_cells": null,
    "root": {
     "centre": [
      0.0,
-     0.0,
-     0.15
+     0.1,
+     0.0
     ],
     "size": [
-     1.0,
+     9.0,
      0.2,
-     0.2
+     3.0
     ]
    },
    "parts": {
     "Root": {
      "centre": [
       0.0,
-      0.0,
-      0.15
+      0.1,
+      0.0
      ],
      "size": [
-      1.0,
+      9.0,
       0.2,
-      0.2
+      3.0
      ],
      "triangles": 12,
      "collide": false
     },
-    "Board": {
+    "Body": {
      "centre": [
       0.0,
-      0.0,
-      0.127
+      2.0,
+      0.0
      ],
      "size": [
+      6.9,
       4.0,
-      1.3,
-      0.346
+      2.0
      ],
-     "triangles": 136,
-     "collide": false
-    },
-    "Face": {
-     "centre": [
-      0.0,
-      0.0,
-      -0.045
-     ],
-     "size": [
-      3.5,
-      0.84,
-      0.03
-     ],
-     "triangles": 12,
+     "triangles": 616,
      "collide": false
     }
    },
    "attachments": {},
-   "triangles": 160,
-   "budget": 2000,
+   "triangles": 628,
+   "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "a dark wooden plaque with a gold rim; the code writes on its Face"
+   "note": "the old lobby bench: dark wood, a crimson cushion, violet back rails, arms",
+   "decor": {
+    "fw": 3,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     9.0,
+     3.0
+    ]
+   }
+  },
+  "Decor_UrnPlanter": {
+   "name": "Decor_UrnPlanter",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      1.44,
+      0.0
+     ],
+     "size": [
+      2.0325,
+      2.88,
+      2.0325
+     ],
+     "triangles": 256,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 268,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "the old lobby planter: a stone urn with a pumpkin among leaves",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ]
+   }
+  },
+  "Decor_RugRunner": {
+   "name": "Decor_RugRunner",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     12.0,
+     0.2,
+     6.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      12.0,
+      0.2,
+      6.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      0.06,
+      0.0
+     ],
+     "size": [
+      12.0,
+      0.12,
+      6.0
+     ],
+     "triangles": 144,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 156,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "the old gold-and-crimson carpet as a 12 x 6 runner: gold borders on its long sides, its ends open",
+   "decor": {
+    "fw": 4,
+    "fd": 2,
+    "layer": "Rug",
+    "footprint_studs": [
+     12.0,
+     6.0
+    ]
+   }
+  },
+  "Decor_RugCorner": {
+   "name": "Decor_RugCorner",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     6.0,
+     0.2,
+     6.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      6.0,
+      0.2,
+      6.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      0.06,
+      0.0
+     ],
+     "size": [
+      6.0,
+      0.12,
+      6.0
+     ],
+     "triangles": 108,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 120,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "the runner's corner: bordered on +X and +Z, joining a runner from -X and one toward -Z",
+   "decor": {
+    "fw": 2,
+    "fd": 2,
+    "layer": "Rug",
+    "footprint_studs": [
+     6.0,
+     6.0
+    ]
+   }
+  },
+  "Decor_RugSquare": {
+   "name": "Decor_RugSquare",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     12.0,
+     0.2,
+     12.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      12.0,
+      0.2,
+      12.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      0.06,
+      0.0
+     ],
+     "size": [
+      12.0,
+      0.12,
+      12.0
+     ],
+     "triangles": 192,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 204,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a 12 x 12 gold-bordered crimson rug with a medallion",
+   "decor": {
+    "fw": 4,
+    "fd": 4,
+    "layer": "Rug",
+    "footprint_studs": [
+     12.0,
+     12.0
+    ]
+   }
   }
  }
 }

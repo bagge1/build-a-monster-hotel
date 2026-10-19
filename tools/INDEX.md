@@ -69,64 +69,80 @@ subset (it rewrites the set's manifest with only those).
 ## hotel_kit.py
 
 The shared kit for every hotel piece (MODELS.md, "Hotel kit"): rooms,
-amenities, the lobby, the stair core, the sign, decor. A build script is, per
-piece, `begin()` + its shapes + `finish()`, then `end_set()` once
-(`build_hotel_haunted_manor.py` is the pattern). Shapes are authored in
-**Roblox coordinates** (X right, Y up, door toward -Z, y = 0 where feet stand);
-`rb2bl()` makes Blender's (-x, z, y), the same mapping as monster_kit.
-`finish()` refuses a piece that breaks the contract; the blockout's numbers
-(`src/server/HotelKit.luau`) are ported in `blockout_*()` for the checks.
-Attachments travel in `manifest.json` and are made by the generated
-`import_fixup.luau`. Headless only; the one preview is a Workbench sheet.
+amenities, the lobby shell, the front desk, the stair core, the sign, decor.
+A build script is, per piece, `begin()` (or `decor()`) + its shapes +
+`finish()`, then `end_set()` once (`build_hotel_haunted_manor.py` is the
+pattern). Shapes are authored in **Roblox coordinates** (X right, Y up, door
+toward -Z, y = 0 where feet stand); `rb2bl()` makes Blender's (-x, z, y), the
+same mapping as monster_kit. `finish()` refuses a piece that breaks the
+contract; the blockout's numbers (`src/server/HotelKit.luau`) are ported in
+`blockout_*()` for the checks. Attachments travel in `manifest.json` and are
+made by the generated `import_fixup.luau`. Headless only; the one preview is
+a Workbench sheet.
 
 ### Constants
 
-- `CELL`, `WALL`, `FLOOR`, `T` :53 the grid (12), wall height (17, to the slab), floor (18), wall thickness (0.4): his ruling of 2026-10-19 evening
-- `DOOR_W`, `DOOR_H` :54 the door opening's minimum, 4 x 7; `LOBBY_W`, `LOBBY_D` :55 144 x 24
-- `TOL` :56 an attachment's tolerance against the blockout (0.1)
-- `PERSON`, `PERSON_R` :57 the 5-stud person and the half-width the walk check sweeps
-- `BUDGET` :59 triangles per kind (MODELS.md; the lobby 10,000, `Sign` 3,000 a draft), `MESH_CAP` :62, `PROXY_BUDGET` :63
-- `GLOW_KEYS` :64, `GLOW_COLOURS` :65 what the fix-up lights each key as
-- `PALETTE` :72 the set's flat colours, a third value marks a glow colour; one 256 px atlas of 8 x 8 cells
-- `LOBBY_*` :396–422 layout A at the doubled scale: the front wall, the back row, the counter, the key rack, benches, planters, windows (`LOBBY_WIN_LO`/`HI`, 3 to 12), sconces
-- `STAIR_*` :597 the stair core: 24 wide, 8 steps up and 7 on, 1.2 rise, 1.5 tread, the landing's z and y
-- `RAIL_Y` :671 the picture rail in a room's 17-stud wall
+- `CELL`, `WALL`, `FLOOR`, `T` :56 the grid (12), wall height (17, to the slab), floor (18), wall thickness (0.4): his ruling of 2026-10-19 evening
+- `DOOR_W`, `DOOR_H` :57 the door opening's minimum, 4 x 7; `LOBBY_W`, `LOBBY_D` :58 144 x 24
+- `TOL` :59 an attachment's tolerance against the blockout (0.1)
+- `PERSON`, `PERSON_R` :60 the 5-stud person and the half-width the walk check sweeps
+- `BUDGET` :62 triangles per kind (MODELS.md; the lobby 10,000, `Desk` 3,000, `Sign` 3,000 a draft), `MESH_CAP` :65, `PROXY_BUDGET` :66
+- `GLOW_KEYS` :67, `GLOW_COLOURS` :68 what the fix-up lights each key as
+- `PALETTE` :75 the set's flat colours, a third value marks a glow colour; one 256 px atlas of 8 x 8 cells
+- `LOBBY_*` :405–426 the shell: the front wall (`LOBBY_WALL_*`, `LOBBY_ARCH_X`), `LOBBY_FLOOR_TOP` (0.1), `LOBBY_CLEAR` (nothing collides behind the wall), the arch's place (`LOBBY_ARCH_PARTS`, `_DEPTH`, `_SPAN`), windows (`LOBBY_WIN_LO`/`HI`, 3 to 12), sconces
+- `DESK_*` :431–436 the front desk (MODELS.md, "Front desk"): 24 x 12, the counter, its top at 3.8, the key rack's zone, the clear sides (|x| >= 5), the till's x
+- `DECOR_*` :575–577 the decor grid: 3-stud squares, the 0.4 inset, 7 tall, a rug 0.15; the layers `Floor`, `Rug`, `Wall`; `DECOR_REFIT_MAX` (0.5); `RUG_BORDER`, `RUG_PIN` :651
+- `STAIR_*` :728 the stair core: 24 wide, 8 steps up and 7 on, 1.2 rise, 1.5 tread, the landing's z and y
+- `RAIL_Y` :805 the picture rail in a room's 17-stud wall
 
 ### Functions
 
-- `begin(name, kind, size, root_centre, w, d)` :155 a piece and its Root; kinds `Room`, `Amenity`, `Lobby`, `Stairs`, `Sign`, `Decor`, `Cosmetic`
-- `want(name)` :163 false when `-- only A,B` leaves it out
-- `attach(name, pos, look=None)` :167 an attachment (Roblox coords, LookVector)
-- `declare(part, collide)` :171 whether a part collides (default: all but Root, Dressing*, Glow_*, LOD_Proxy)
-- `at(pos, rx, ry, rz)` :235 a transform for `m=`
-- `box(part, c, s, col, bevel, m)` :244, `span(part, lo, hi, col, bevel, m)` :267 boxes; `col` a palette name or `{'top'|'bottom'|'front'|'back'|'left'|'right'|'side'|'rest': name}`
-- `lathe(part, profile, col, n, base, scale, m, phase, closed)` :273 revolve (r, y); `closed` for rings
-- `cyl(...)` :308, `sphere(part, c, radii, col, n, rings)` :312
-- `prism(part, pts, a0, a1, col, plane)` :321 any polygon (concave too) extruded; planes `xy`, `xz`, `zy`
-- `arch_points(x0, x1, spring, apex, n)` :333 a pointed arch's outline; `round_arch_points` :347
-- `door_x(w)` :357, `blockout_attachments(kind, w, d)` :361, `blockout_lobby_walls()` :401, `blockout_room_walls(w, d)` :576, `blockout_stairs(top)` :604 the Luau blockout's numbers
-- `lobby_front_wall(...)` :425, `lobby_sconce` :474, `lobby_lamp` :485, `lobby_bench` :496, `lobby_bell` :512, `lobby_till` :520, `lobby_keyrack` :542 the lobby's shared shapes
-- `stair_soffits(col)` :630, `stair_handrails(metal, post)` :649 the stair core's dressing
-- `room_shell(w, d, paper, wainscot, crown, outside, floor, rug, lamp, lintel, stripes)` :674 floor, the six walls (the blockout's boxes, in bands), the arched lintel, the sconce and `Glow_Warm_1`, every attachment
-- `picture(c, size, frame, inner, wall)` :762 a framed picture on a wall's inner face (Dressing)
-- `check_piece(piece, boxes, tris, faults)` :815 the contract on boxes; used by finish() and validate()
-- `finish(proxy=None, note='')` :1016 glow and attachment checks, check_piece, meshes with atlas UVs, LOD_Proxy, FBX; raises `Refused`
-- `start_set(set_dir)` :1125, `end_set(title, layout_rows)` :1138 manifest (merged on `-- only`), .blend, the sheet, validate, import_fixup.luau (lights sized to the piece; the lobby lights every lamp)
-- `validate()` :1217 re-import each FBX; names, boxes to 0.02, triangles, UVs, material, atlas, check_piece again; writes validation.json
+- `begin(name, kind, size, root_centre, w, d)` :160 a piece and its Root; kinds `Room`, `Amenity`, `Lobby`, `Desk`, `Stairs`, `Sign`, `Decor`, `Cosmetic`
+- `want(name)` :169 false when `-- only A,B` leaves it out
+- `attach(name, pos, look=None)` :173 an attachment (Roblox coords, LookVector)
+- `declare(part, collide)` :177 whether a part collides (default: all but Root, Dressing*, Glow_*, LOD_Proxy)
+- `at(pos, rx, ry, rz)` :241 a transform for `m=`
+- `box(part, c, s, col, bevel, m)` :250, `span(part, lo, hi, col, bevel, m)` :273 boxes; `col` a palette name or `{'top'|'bottom'|'front'|'back'|'left'|'right'|'side'|'rest': name}`
+- `lathe(part, profile, col, n, base, scale, m, phase, closed)` :279 revolve (r, y); `closed` for rings
+- `cyl(...)` :314, `sphere(part, c, radii, col, n, rings)` :318
+- `prism(part, pts, a0, a1, col, plane)` :327 any polygon (concave too) extruded; planes `xy`, `xz`, `zy`
+- `arch_points(x0, x1, spring, apex, n)` :339 a pointed arch's outline; `round_arch_points` :353
+- `door_x(w)` :363, `blockout_attachments(kind, w, d)` :367 (rooms: Door, Sign, Bed; the lobby: Entrance, Spawn, SignBoard, Trap_1..3; the desk: Desk, Till, Clerk, Queue_1..4), `blockout_lobby_walls()` :415, `blockout_room_walls(w, d)` :707, `blockout_stairs(top)` :735 the Luau blockout's numbers
+- `lobby_front_wall(...)` :439, `lobby_sconce` :488 the lobby shell's shared shapes
+- `desk_lamp(metal, shade)` :499 (its bulb `Glow_Warm_1`), `desk_bell(part, x, y, z, metal)` :510, `desk_till(body, keys, drawer, screen)` :518, `desk_keyrack(...)` :543 the front desk's shared shapes, in the desk's frame
+- `decor(id_, fw, fd, layer)` :580 begin `Decor_<id_>` on fw x fd 3-stud squares; `decor_bounds(piece)` :589 its envelope; `refit_decor()` :596 fits a pre-grid body (scale down at most 0.5, the least shift, a Wall piece's back onto the wall), recorded in the manifest
+- `decor_bench(length, frame, cushion, back)` :631 the old lobby bench as `Decor_Bench`; `rug(kind, border, field, pin, motif, motif_inner)` :654 `runner` (4x2), `corner` (2x2), `square` (4x4) rugs that join edge to edge
+- `stair_soffits(col)` :761, `stair_handrails(metal, post)` :780 the stair core's dressing
+- `room_shell(w, d, paper, wainscot, crown, outside, floor, rug, lamp, lintel, stripes)` :808 floor, the six walls (the blockout's boxes, in bands), the arched lintel, the sconce and `Glow_Warm_1`, its own non-colliding `Rug`, every attachment
+- `picture(c, size, frame, inner, wall)` :899 a framed picture on a wall's inner face (Dressing)
+- `check_piece(piece, boxes, tris, faults)` :952 the contract on boxes, per kind (a room's Floor alone; the lobby shell; the desk; the decor layers); used by finish() and validate()
+- `finish(proxy=None, note='')` :1186 glow and attachment checks, check_piece, meshes with atlas UVs, LOD_Proxy, FBX, the record (a decor's fw, fd, layer and refit); raises `Refused`
+- `start_set(set_dir)` :1300, `end_set(title, layout_rows)` :1313 manifest (merged on `-- only`), .blend, the sheet, validate, import_fixup.luau (lights sized to the piece; the lobby lights every lamp)
+- `validate()` :1392 re-import each FBX; names, boxes to 0.02, triangles, UVs, material, atlas, check_piece again; writes validation.json
 
-Internal: `_part` :175, `_side_of` :186, `_colour` :202, `_add` :209, `_bounds` :785, `_overlap` :798, `footprint` :802, `_atlas` :965, `_uv` :1002, `_proxy` :1008, `_sheet` :1178, `_lua_v` :1302, `_fixup_luau` :1306.
+Internal: `_part` :181, `_side_of` :192, `_colour` :208, `_add` :215, `_bounds` :922, `_tris_rb` :927, `_overlap` :935, `footprint` :939, `_atlas` :1135, `_uv` :1172, `_proxy` :1178, `_sheet` :1353, `_lua_v` :1490, `_fixup_luau` :1494.
+
+Free building (2026-10-19): the lobby became a shell (its desk, benches,
+planters and carpet removed; `Floor` one part), kind `Desk` was added for the
+`FrontDesk` (the old desk's shapes re-authored in its frame as `desk_*`), the
+decor rules became the 3-stud grid's (`decor`, `refit_decor`, `rug`,
+`decor_bench`), a room's rug moved out of its `Floor`, and `Decor_1..3` left
+the rooms. Pieces not named there rebuild with identical manifest records.
 
 ## build_hotel_haunted_manor.py
 
-Location 1's hotel kit: 8 rooms, 5 amenities, Lobby, StairCore,
-StairCoreTop, HotelSign and 15 `Decor_<Id>`, one function each; output
-`blender/hotel/haunted_manor/`. `-- only Lobby,StandardRoom` builds a subset,
-`-- nopreview` skips the sheet.
+Location 1's hotel kit: 8 rooms, 5 amenities, the Lobby shell, FrontDesk,
+StairCore, StairCoreTop, HotelSign, RoomPlaque and 20 `Decor_<Id>` (the last
+five the old lobby's: Bench, UrnPlanter, RugRunner, RugCorner, RugSquare),
+one function each; output `blender/hotel/haunted_manor/`. `-- only
+Lobby,StandardRoom` builds a subset, `-- nopreview` skips the sheet.
 
 ## build_hotel_frostfang_lodge.py
 
-Location 2's hotel kit (Frostfang Lodge): 6 rooms, 2 amenities, Lobby,
-StairCore, StairCoreTop, HotelSign and 6 `Decor_<Id>`, one function each;
+Location 2's hotel kit (Frostfang Lodge): 6 rooms, 2 amenities, the Lobby
+shell, FrontDesk, StairCore, StairCoreTop, HotelSign, RoomPlaque and 11
+`Decor_<Id>` (the last five the old lobby's, ids shared with Haunted Manor),
+one function each;
 output `blender/hotel/frostfang_lodge/`. Its own palette (`PALETTE`, through
 `K.use_palette`). `-- only Lobby,IglooRoom` builds a subset, `-- nopreview`
 skips the sheet.
@@ -136,24 +152,23 @@ Lodge helpers: `flake` :63 a six-armed snowflake on a face, `icicle` :81,
 `lantern` :105 a wall lantern with its `Glow_Warm_<n>`, `window` :120 a night
 pane with a snowy sill, `aurora_ribbon` :143 a wavy band on a wall,
 `lodge_shell` :155 room_shell in the lodge's dress (round lintel, facade blue,
-lantern), `lodge_bed` :168 (head `log` or `ice`, a plaid quilt), `mug` :208,
-`pine_tree` :216.
+lantern), `lodge_bed` :169 (head `log` or `ice`, a plaid quilt), `mug` :209,
+`pine_tree` :217.
 
 Added to `hotel_kit.py` for it (2026-10-19, additive; a full Haunted Manor
-rebuild after them is byte-identical): `use_palette(entries)` :95 a set's own
-atlas palette; `round_arch_points(x0, x1, spring, apex, n)` :339;
-`room_shell(..., lintel='pointed'|'round', stripes=7)` :431, where `paper`
+rebuild after them is byte-identical): `use_palette(entries)` :101 a set's own
+atlas palette; `round_arch_points(x0, x1, spring, apex, n)` :353;
+`room_shell(..., lintel='pointed'|'round', stripes=7)` :808, where `paper`
 may be a tuple of colours laid in horizontal stripes (logs, snow blocks).
-The kit's own line numbers above, after :77, now run 17 to 33 lines later.
 
 Added to `hotel_kit.py` for the cosmetics (2026-10-19, additive; both hotel
 kits rebuilt after them give byte-identical manifest, validation and fix-up,
 and FBXs of the same size): kind `Cosmetic` (`BUDGET` 2,000, a draft; no
-part required; nothing may collide); `Piece.checks` :142, a list of
+part required; nothing may collide); `Piece.checks` :149, a list of
 `fn(piece, tris, stage) -> [faults]` that `finish()` (stage `built`) and
 `validate()` (stage `fbx`) run on the triangles in Roblox coordinates;
-`Piece.allowed`, the (lo, hi) envelope `footprint()` :546 returns when set;
-`_tris_rb(ob)` :534. Lines after :138 run about 5 to 25 later than above.
+`Piece.allowed`, the (lo, hi) envelope `footprint()` :939 returns when set;
+`_tris_rb(ob)` :927.
 
 ## build_cosmetics_hotel.py
 
