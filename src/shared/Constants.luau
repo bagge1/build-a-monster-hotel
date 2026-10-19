@@ -161,6 +161,7 @@ Constants.Scoring = {
 	PitchBonus = 0.15, -- +15 % score toward the pitcher's hotel (§4.3)
 	NewcomerBoost = 1.0, -- PLACEHOLDER (Appendix A.3)
 	NewcomerMaxRating = 2, -- PLACEHOLDER: hotels at or under 2★
+	TutorialBoost = 10, -- PLACEHOLDER: a tutorial Common's score toward the hotel it came for (§11 1:45, Appendix A.7)
 	JitterLow = 0.9, -- score *= random(0.9, 1.1)
 	JitterHigh = 1.1,
 	PitchRange = 14, -- PLACEHOLDER: studs from the guest
@@ -193,6 +194,8 @@ Constants.Stay = {
 -- §11: the tutorial's first guest, the only one that does not come on the bus (his ruling, 2026-10-19).
 Constants.Tutorial = {
 	FirstGuestDelay = 6, -- PLACEHOLDER: the first Slime after the first room (§11 0:30)
+	CommonBuses = 2, -- PLACEHOLDER: the buses that bring a new hotel its Commons (§11 1:45)
+	CommonsPerBus = 2, -- PLACEHOLDER: at most this many Commons per hotel on such a bus
 }
 
 -- §5.3, Appendix A.4: the rating.

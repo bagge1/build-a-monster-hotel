@@ -59,6 +59,34 @@ describe("Scoring", function()
 		)
 	end)
 
+	it(
+		"the tutorial's weight helps only a Common, toward its hotel, never an ineligible one",
+		function()
+			local plain = cand()
+			local brought = cand({ tutorial = true })
+			expect.truthy(
+				Scoring.score(brought, "Common", 1) > Scoring.score(plain, "Common", 1),
+				"a Common weighted toward the hotel it came for"
+			)
+			for _, rarity in { "Uncommon", "Rare", "Epic", "Legendary", "Mythic" } do
+				expect.eq(
+					Scoring.score(brought, rarity, 1),
+					Scoring.score(plain, rarity, 1),
+					`never a {rarity}`
+				)
+			end
+			local shut = cand({ id = "new", eligible = false, tutorial = true, rating = 1 })
+			local other = cand({ id = "other", rating = 1, prefsMatched = 0 })
+			expect.eq((Scoring.pick({ shut, other }, "Common", { 1, 1 }) :: any).id, "other")
+			local pitched = cand({ tutorial = true, pitched = true })
+			expect.atLeast(
+				Scoring.score(pitched, "Common", 1),
+				Scoring.score(brought, "Common", 1),
+				"a pitch still counts on top"
+			)
+		end
+	)
+
 	it("ties go to the nearest", function()
 		local far = cand({ id = "far", distance = 50 })
 		local near = cand({ id = "near", distance = 5 })

@@ -58,6 +58,13 @@ coverage and cleanings within 40 s to Cleanliness, on top of the old
 formulas; specs pass under Lune, **not run in Studio** (TESTRUN "Rating:
 staff coverage…", after the merge); his call WAITING §2.26.
 
+**The tutorial's Commons and the named ping** (§11 1:45, §7) are built on
+branch `worktree-agent-af840fbd28a857dd3` (2026-10-19, not merged, **not run
+in Studio**): the first 2 tutorial buses bring Commons for the new hotel's
+vacant rooms, +10 toward it (PLACEHOLDER all, WAITING §2.25); "Need a room"
+names the rarest street guest's room. After the merge: TESTRUN "Tutorial
+Commons and the named ping".
+
 **Earlier next steps:** (1) **The doubled scale** (his ruling 2026-10-19
 evening, `CLAUDE.md` "The scale of a person": double only what makes the
 hotel less cramped). Built, imported and played (`TESTRUN.md` phase 11):

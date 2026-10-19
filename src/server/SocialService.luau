@@ -9,7 +9,9 @@
 	  - FRIEND BONUS: +10 % income for everyone on the street while two or more
 	    friends play together (an `Income` category of its own, §6.2).
 	  - QUICK PINGS: a few set phrases over your head ("Need a Coffin Suite!",
-	    "Pitching!", "Thanks!").
+	    "Pitching!", "Thanks!"). "Need a ...!" names the room the rarest guest
+	    on the street wants, browsing or announced for the next bus; with
+	    none, it is the generic phrase. The server words it, not the client.
 	  - LEADERBOARD (street): rating and likes in the player list.
 
 	  - VIP LOBBY (§10.2): the badge and the gold name tag (`vipTag`).
@@ -22,11 +24,15 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
 
+local Bus = require(ReplicatedStorage.Shared.Bus)
 local Net = require(ReplicatedStorage.Shared.Net)
+local Pieces = require(ReplicatedStorage.Shared.Pieces)
+local Species = require(ReplicatedStorage.Shared.Species)
 local PlayerData = require(ServerScriptService.Server.PlayerData)
 local PlotService = require(ServerScriptService.Server.PlotService)
 local HotelService = require(ServerScriptService.Server.HotelService)
 local Income = require(ServerScriptService.Server.Income)
+local BusService = require(ServerScriptService.Server.BusService)
 local DevGrant = require(ServerScriptService.Server.DevGrant)
 
 local SocialService = {}
@@ -163,8 +169,20 @@ local function likePrompt(plot: PlotService.Plot)
 	end)
 end
 
+-- "Need a Coffin Suite!" (§7): the room the rarest guest on the street wants, or the generic phrase.
+local function needRoom(): string
+	local id = Bus.rarest(BusService.wanted())
+	local sp = id and Species.get(id)
+	local room = sp and Pieces.get(sp.room)
+	if not room then
+		return SocialService.Pings.NeedRoom
+	end
+	local article = if string.find(room.name, "^[AEIOU]") then "an" else "a"
+	return `Need {article} {room.name}!`
+end
+
 local function ping(player: Player, key: string)
-	local text = SocialService.Pings[key]
+	local text = if key == "NeedRoom" then needRoom() else SocialService.Pings[key]
 	local character = player.Character
 	local head = character and character:FindFirstChild("Head")
 	if not text or not head then
