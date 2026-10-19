@@ -210,7 +210,7 @@ Obevakad session (`/loop`, självstyrd) medan August är borta (från ca 20:00 i
   Clean. Pingen: "Need a Coffin Suite!" med en Vampire Count annonserad.
   Kassans E-prompt gick inte att utlösa via MCP bredvid diskens (båda E,
   bara en visas): WAITING §1.10. Specar 97/97 i Studio.
-- **21:00** d: mätningen klar (agent, kopia av `tools/balance_model.py`
+- **20:58** d: mätningen klar (agent, kopia av `tools/balance_model.py`
   utanför repot eftersom sju formelvakter i den spårade faller efter
   kvällens ändringar). Rebirth efter **3:33 / 5:24 h** (med / utan
   tutorial; förut 1:02 / 4:04; mål 60–90 min); $1M efter 2:33 / 4:25 h;
