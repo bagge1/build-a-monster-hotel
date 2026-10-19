@@ -21,6 +21,13 @@ local Server = ServerScriptService.Server
 
 local systems: { { Init: () -> (), Start: () -> () } } = {
 	require(Server.PlayerData) :: any, -- first: nearly every system reads a profile
+	require(Server.Income) :: any, -- before anything pays: providers register in Start
+	require(Server.DevGrant) :: any, -- Studio only; commands register in other systems' Start
+	require(Server.StateService) :: any, -- before the systems that provide sections
+	require(Server.PlotService) :: any, -- the street and plots, before anything is built on them
+	require(Server.HotelService) :: any, -- each hotel's live state, after its plot
+	require(Server.BuildService) :: any, -- placement, after the hotel it checks
+	require(Server.GuestService) :: any, -- guests, after the hotels they stay in
 }
 
 local function run(phase: string)

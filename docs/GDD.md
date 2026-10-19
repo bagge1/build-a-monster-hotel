@@ -728,9 +728,12 @@ Each category 0–100: **Comfort** from room tiers and the share of preferences
 matched in recent stays; **Service** from desk waits and requests fulfilled;
 **Cleanliness** from the share of rooms clean now; **Fun** 15 per amenity and
 20 per Entertainment staff; **Style** 4 per decor piece and 10 per distinct room
-type. The rating = the mean of (1 + 4 × category mean / 100) and the mean of the
-last 30 reviews (the category part alone with no reviews), rounded to a half
-star, 1–5.
+type. A hotel nobody has stayed in has no Service, and one with no rooms no
+Cleanliness. The rating = the mean of (1 + 4 × (category mean / 100)^1.5) and
+the mean of the last 30 reviews (the category part alone with no reviews),
+rounded to a half star, 1–5. (First draft used a straight line and gave an
+empty hotel 2.5★, unlocking §5.2's 2★ and 2.5★ rooms at once; seen in the
+first playtest, 2026-10-19.)
 
 ### A.5 Collection (§4.5, §4.6)
 

@@ -62,6 +62,18 @@ function Grid.isLobby(floor: number, _x: number, z: number): boolean
 	return floor == 1 and z < G.LobbyRows
 end
 
+--[[ Above floor 1, the cells just in front of the stair core are its
+	landing: the flight up starts and the flight down ends there, so nothing
+	may stand on them (on floor 1 they are the lobby already). ]]
+function Grid.isLanding(floor: number, x: number, z: number): boolean
+	local s = G.StairCore
+	return floor > 1 and z == s.z - 1 and x >= s.x and x < s.x + s.w
+end
+
+function Grid.isReserved(floor: number, x: number, z: number): boolean
+	return Grid.isStairCore(x, z) or Grid.isLobby(floor, x, z) or Grid.isLanding(floor, x, z)
+end
+
 --[[ The cell a door opens onto, just outside the middle of the door's edge
 	(the left of the two middles on an even edge). It can be out of bounds:
 	a door facing the plot's edge has nowhere to open, and is refused. ]]
@@ -119,13 +131,18 @@ local function walkable(_floor: number, taken: { [number]: boolean }, x: number,
 	return Grid.inBounds(x, z) and not taken[key(x, z)]
 end
 
--- The cells a floor is entered from: the lobby on floor 1, plus the stair core everywhere.
+-- The cells a floor is entered from: the lobby on floor 1, the stair core and its landing.
 function Grid.wayIn(floor: number): { Cell }
 	local out = {}
 	local s = G.StairCore
 	for x = s.x, s.x + s.w - 1 do
 		for z = s.z, s.z + s.d - 1 do
 			table.insert(out, { x = x, z = z })
+		end
+	end
+	if floor > 1 then
+		for x = s.x, s.x + s.w - 1 do
+			table.insert(out, { x = x, z = s.z - 1 })
 		end
 	end
 	if floor == 1 then
@@ -200,7 +217,7 @@ function Grid.canPlace(
 		if not Grid.inBounds(c.x, c.z) then
 			return false, "OutOfBounds"
 		end
-		if Grid.isStairCore(c.x, c.z) or Grid.isLobby(piece.floor, c.x, c.z) then
+		if Grid.isReserved(piece.floor, c.x, c.z) then
 			return false, "Reserved"
 		end
 		if taken[key(c.x, c.z)] then
@@ -271,16 +288,14 @@ function Grid.floorY(floor: number): number
 end
 
 -- The footprint's centre, plot-local, on its floor.
-function Grid.pieceCentre(
-	p: {
-		floor: number,
-		x: number,
-		z: number,
-		r: number,
-		w: number,
-		d: number,
-	}
-): Vector3
+function Grid.pieceCentre(p: {
+	floor: number,
+	x: number,
+	z: number,
+	r: number,
+	w: number,
+	d: number,
+}): Vector3
 	local ex, ez = Grid.extent(p.w, p.d, p.r)
 	return Vector3.new(
 		(p.x + ex / 2) * G.CellSize,

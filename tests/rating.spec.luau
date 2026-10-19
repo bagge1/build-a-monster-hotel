@@ -5,6 +5,7 @@ local function inputs(over)
 		roomTiers = { 1, 1 },
 		prefsShare = 0.5,
 		meanWait = 10,
+		checkIns = 5,
 		requestShare = 0.5,
 		rooms = 2,
 		dirtyRooms = 0,
@@ -44,15 +45,13 @@ describe("Rating", function()
 	end)
 
 	it("every category stays within 0 and 100", function()
-		local c = Rating.categories(
-			inputs({
-				meanWait = 999,
-				dirtyRooms = 2,
-				amenities = 99,
-				entertainers = 99,
-				decor = 999,
-			})
-		)
+		local c = Rating.categories(inputs({
+			meanWait = 999,
+			dirtyRooms = 2,
+			amenities = 99,
+			entertainers = 99,
+			decor = 999,
+		}))
 		for _, name in Rating.Order do
 			expect.atLeast(c[name], 0, name)
 			expect.atMost(c[name], 100, name)
@@ -73,6 +72,20 @@ describe("Rating", function()
 			Rating.stars(Rating.categories(inputs({ dirtyRooms = 2 })), {}),
 			"clean rooms"
 		)
+	end)
+
+	it("a hotel with nothing in it rates the lowest", function()
+		local empty = inputs({
+			roomTiers = {},
+			rooms = 0,
+			checkIns = 0,
+			prefsShare = 0,
+			requestShare = 0,
+			amenities = 0,
+			decor = 0,
+			roomTypes = 0,
+		})
+		expect.eq(Rating.stars(Rating.categories(empty), {}), 1)
 	end)
 
 	it("only the last reviews are kept", function()

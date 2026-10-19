@@ -42,6 +42,15 @@ describe("Grid", function()
 		end
 	end)
 
+	it("the stair landing above floor 1 is never built on", function()
+		local s = Constants.Grid.StairCore
+		for floor = 2, 3 do
+			for x = s.x, s.x + s.w - 1 do
+				expect.truthy(Grid.isReserved(floor, x, s.z - 1), `landing {x} on floor {floor}`)
+			end
+		end
+	end)
+
 	it("the lobby and the stair core are never built on", function()
 		expect.truthy(not Grid.canPlace({}, 1, placed("StandardRoom", 1, 0, 0, 2)), "lobby")
 		local s = Constants.Grid.StairCore

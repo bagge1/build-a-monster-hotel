@@ -318,6 +318,16 @@ function PlayerData.earn(player: Player, amount: number)
 	player:SetAttribute("Cash", d.cash)
 end
 
+-- Gives cash back (a sale's refund): into the wallet, but not earned (§6.4's run cash).
+function PlayerData.refund(player: Player, amount: number)
+	local d = PlayerData.get(player)
+	if not d or amount <= 0 or amount ~= amount then
+		return
+	end
+	d.cash += amount
+	player:SetAttribute("Cash", d.cash)
+end
+
 -- Adds to the till (§4.4), counting toward the run when it is collected.
 function PlayerData.addTill(player: Player, amount: number)
 	local d = PlayerData.get(player)

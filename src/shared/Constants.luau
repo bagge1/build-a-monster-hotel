@@ -179,6 +179,7 @@ Constants.Rating = {
 	ComfortPerTier = 20,
 	ServiceWaitPerPoint = 1, -- −1 service per second of mean desk wait
 	ServiceSampleSize = 20, -- recent check-ins
+	CategoryCurve = 1.5, -- stars from categories: 1 + 4 × (mean/100)^1.5
 }
 
 -- §4.6, Appendix A.5: residents and staff.

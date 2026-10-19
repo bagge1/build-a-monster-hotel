@@ -4,9 +4,15 @@
 	phase in a pcall, so one failing controller never stops the rest.
 ]]
 
--- local Client = script
+local Client = script
 
-local systems: { { Init: () -> (), Start: () -> () } } = {}
+local systems: { { Init: () -> (), Start: () -> () } } = {
+	require(Client.State) :: any, -- first: panels read what it receives
+	require(Client.Hud) :: any, -- before every panel that adds a button to it
+	require(Client.PromptFilter) :: any,
+	require(Client.GuestRenderer) :: any,
+	require(Client.BuildController) :: any,
+}
 
 local function run(phase: string)
 	for i, system in systems do
