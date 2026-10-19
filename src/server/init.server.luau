@@ -31,6 +31,9 @@ local systems: { { Init: () -> (), Start: () -> () } } = {
 	require(Server.BusService) :: any, -- the Night Bus, which hands guests to GuestService
 	require(Server.ResidentService) :: any, -- friendship and residents, from guests' check-outs
 	require(Server.BookService) :: any, -- the Monster Book, from check-outs and move-ins
+	require(Server.ProgressionService) :: any, -- rebirth and the Moon Tree, over all of the above
+	require(Server.Analytics) :: any, -- the funnel; its Start hooks the systems above
+	require(Server.TutorialService) :: any, -- Gloom, last: it reads what every system counts
 }
 
 local function run(phase: string)

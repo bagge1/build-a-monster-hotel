@@ -126,7 +126,7 @@ local function drawResidents()
 			local holiday = Ui.button(
 				roles,
 				"Holiday",
-				`Holiday +{Constants.Rarity[sp.rarity].releaseShards}☾`,
+				`Holiday +{Constants.Rarity[sp.rarity].releaseShards}🌙`,
 				UDim2.fromOffset(110, 48),
 				function()
 					Net.send("Release", r.id)

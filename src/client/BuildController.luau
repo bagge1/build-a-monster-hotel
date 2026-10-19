@@ -479,6 +479,16 @@ local function setActive(on: boolean)
 	active = on
 	strip.Visible = on
 	tools.Visible = on
+	local hud = me.PlayerGui:FindFirstChild("Hud")
+	local leftColumn = hud and hud:FindFirstChild("Left")
+	if leftColumn and leftColumn:IsA("GuiObject") then
+		leftColumn.Visible = not on
+	end
+	-- Gloom steps aside while building: the strip says what to do.
+	local tutorial = me.PlayerGui:FindFirstChild("Tutorial")
+	if tutorial and tutorial:IsA("ScreenGui") then
+		tutorial.Enabled = not on
+	end
 	menu.Visible = false
 	selected, moving, cell = nil, nil, nil
 	clearGhost()
@@ -507,27 +517,34 @@ end
 
 function BuildController.Init()
 	gui = Ui.screen("Build", 3)
-	-- The strip: bottom centre, clear of the corners (§11).
+	-- The strip: bottom centre, between a phone's thumbstick and jump button (§11).
 	strip = Ui.panel(
 		gui,
 		"Strip",
-		UDim2.new(0.62, 0, 0, 150),
-		UDim2.new(0.5, 0, 1, -10),
+		UDim2.new(0.55, 0, 0, 132),
+		UDim2.new(0.5, 0, 1, -8),
 		Vector2.new(0.5, 1)
 	)
+	local stripCap = Instance.new("UISizeConstraint")
+	stripCap.MinSize = Vector2.new(380, 0)
+	stripCap.Parent = strip
 	strip.Visible = false
 	info = Ui.label(strip, "Info", "Choose a piece", UDim2.new(1, -24, 0, 26), 18, Ui.Colour.Gold)
-	info.Position = UDim2.fromOffset(12, 6)
-	local tabs = Ui.frame(strip, "Tabs", UDim2.new(1, -24, 0, 0), UDim2.fromOffset(12, 32))
-	tabs.BackgroundTransparency = 1
-	cards = Ui.scroll(strip, "Cards", UDim2.new(1, -24, 0, 84), UDim2.fromOffset(12, 58), true)
+	info.Position = UDim2.fromOffset(12, 4)
+	cards = Ui.scroll(strip, "Cards", UDim2.new(1, -24, 0, 86), UDim2.fromOffset(12, 36), true)
 	Ui.list(cards, Enum.FillDirection.Horizontal, 8)
 
-	tools = Ui.frame(gui, "Tools", UDim2.fromOffset(130, 420), UDim2.new(1, -130, 0.5, 0))
-	tools.AnchorPoint = Vector2.new(1, 0.5)
+	-- The tools: three columns top-left, where the HUD's menu column is while
+	-- not building (hidden meanwhile), so ten tools fit a phone's height above
+	-- its thumbstick (§11).
+	tools = Ui.frame(gui, "Tools", UDim2.fromOffset(360, 210), UDim2.fromOffset(10, 56))
 	tools.BackgroundTransparency = 1
 	tools.Visible = false
-	Ui.list(tools, Enum.FillDirection.Vertical, 8, Enum.HorizontalAlignment.Right)
+	local grid = Instance.new("UIGridLayout")
+	grid.CellSize = UDim2.fromOffset(114, 44)
+	grid.CellPadding = UDim2.fromOffset(6, 6)
+	grid.SortOrder = Enum.SortOrder.LayoutOrder
+	grid.Parent = tools
 	local function tool(
 		name: string,
 		text: string,
@@ -535,7 +552,7 @@ function BuildController.Init()
 		fn: () -> (),
 		colour: Color3?
 	): TextButton
-		local b = Ui.button(tools, name, text, UDim2.fromOffset(130, 46), fn, colour)
+		local b = Ui.button(tools, name, text, UDim2.fromOffset(114, 44), fn, colour)
 		b.LayoutOrder = order
 		return b
 	end
@@ -554,7 +571,7 @@ function BuildController.Init()
 		updateCamera()
 		drawGhost()
 	end)
-	floorLabel = Ui.label(tools, "FloorLabel", "Floor 1", UDim2.fromOffset(130, 26), 18)
+	floorLabel = Ui.label(tools, "FloorLabel", "Floor 1", UDim2.fromOffset(114, 44), 18)
 	floorLabel.LayoutOrder = 4
 	floorLabel.TextXAlignment = Enum.TextXAlignment.Center
 	tool("Down", "▼ Floor", 5, function()

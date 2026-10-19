@@ -137,7 +137,7 @@ function Hud.button(
 	order: number?
 ): TextButton
 	local parent = if side == "Left" then left else right
-	local b = Ui.button(parent, name, text, UDim2.fromOffset(110, 48), onClick)
+	local b = Ui.button(parent, name, text, UDim2.fromOffset(110, 44), onClick)
 	b.LayoutOrder = order or 0
 	return b
 end
@@ -167,7 +167,7 @@ function Hud.Init()
 		cash.Text = Format.cash(me:GetAttribute("Cash") :: number? or 0)
 		till.Text = "Till " .. Format.cash(me:GetAttribute("Till") :: number? or 0)
 		rating.Text = Format.stars(me:GetAttribute("Rating") :: number? or 1)
-		shards.Text = "☾ " .. Format.number(me:GetAttribute("Shards") :: number? or 0)
+		shards.Text = "🌙 " .. Format.number(me:GetAttribute("Shards") :: number? or 0)
 		shards.Parent.Visible = (me:GetAttribute("Shards") :: number? or 0) > 0
 			or (me:GetAttribute("Location") :: number? or 1) > 1
 	end
@@ -176,14 +176,15 @@ function Hud.Init()
 	end
 	refresh()
 
-	left = Ui.frame(gui, "Left", UDim2.fromOffset(110, 360), UDim2.new(0, 10, 0.5, 0))
-	left.AnchorPoint = Vector2.new(0, 0.5)
+	-- The menu columns start under the top bar and stop well above the bottom
+	-- corners, where Roblox puts the thumbstick and jump on a phone (§11).
+	left = Ui.frame(gui, "Left", UDim2.new(0, 110, 1, -150), UDim2.fromOffset(10, 56))
 	left.BackgroundTransparency = 1
-	Ui.list(left, Enum.FillDirection.Vertical, 8)
-	right = Ui.frame(gui, "Right", UDim2.fromOffset(110, 360), UDim2.new(1, -10, 0.5, 0))
-	right.AnchorPoint = Vector2.new(1, 0.5)
+	Ui.list(left, Enum.FillDirection.Vertical, 6)
+	right = Ui.frame(gui, "Right", UDim2.new(0, 110, 1, -150), UDim2.new(1, -10, 0, 56))
+	right.AnchorPoint = Vector2.new(1, 0)
 	right.BackgroundTransparency = 1
-	Ui.list(right, Enum.FillDirection.Vertical, 8, Enum.HorizontalAlignment.Right)
+	Ui.list(right, Enum.FillDirection.Vertical, 6, Enum.HorizontalAlignment.Right)
 
 	toasts = Ui.frame(gui, "Toasts", UDim2.fromOffset(420, 200), UDim2.new(0.5, 0, 0, 110))
 	toasts.AnchorPoint = Vector2.new(0.5, 0)

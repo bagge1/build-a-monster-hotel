@@ -64,6 +64,24 @@ multiply a capture's x and y by viewport width / 1920 (3434 / 1920 on his screen
 - [!] The windows' close cross drew as an empty box (Fredoka One has no ✕): now "X".
 - [ ] Holiday gives Moon Shards; offline earnings on rejoin (needs DataStore access).
 
+## Phase 4 (M4, progression)
+
+- [x] A fresh profile starts Gloom at Build; each step closes by itself when
+  done: build → the tutorial Slime arrives (walk-ins wait for it) → desk →
+  till → second room → a pitch → the Slime moves in (1 friendship) → the goal
+  card (Coffin Suite unlocked, one free) → clean → a staff job → the preview → Done.
+- [x] The free Coffin Suite costs $0 and the scheduled Vampire Count walks in.
+- [x] Rebirth (dev-forced, $4M run): Frostfang Lodge, $100, 20 Moon Shards,
+  residents and unlocked room types kept, the plot rebuilt in Frostfang colours.
+- [x] Moon Tree: two nodes bought for 5 shards each; income ×1.1.
+- [x] A Frostfang walk-in (Snowball Sprite) takes the Igloo Room.
+- [!] Phone (iPhone 14 landscape, 749×388): the HUD columns started above the
+  top bar, Gloom covered the screen, build tools overflowed the height. Fixed:
+  columns under the top bar, Gloom narrower at top centre and hidden while
+  building, tools in three columns top-left.
+- [ ] The phone layout seen again after the fix.
+- [ ] Rebirth through the panel's button when every requirement is met.
+
 ## August keeps
 
 - How the street, the lobby and the rooms look (every look is a night draft).
@@ -73,5 +91,5 @@ multiply a capture's x and y by viewport width / 1920 (3434 / 1920 on his screen
 
 - 2026-10-19 03:20 T0 and Phase 1 items 1–8 pass (the night's playtest), commit `daf7ffa`.
 - 2026-10-19 03:27 Phase 2 items 1–3 pass.
-- 2026-10-19 03:40 Phase 3 items 1–4 pass; two client bugs fixed.
+- 2026-10-19 03:32 Phase 3 items 1–4 pass; two client bugs fixed.
 - 2026-10-19 03:24 Stairs: the first landing (2 studs) jammed a walker; widened to 4, both storeys walked up and down.

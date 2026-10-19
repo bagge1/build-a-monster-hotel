@@ -16,6 +16,8 @@ local systems: { { Init: () -> (), Start: () -> () } } = {
 	require(Client.RatingPanel) :: any,
 	require(Client.ResidentRenderer) :: any,
 	require(Client.CollectionPanels) :: any,
+	require(Client.ProgressionPanel) :: any,
+	require(Client.TutorialController) :: any, -- last: it points at every other panel's buttons
 }
 
 local function run(phase: string)

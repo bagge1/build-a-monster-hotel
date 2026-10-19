@@ -134,6 +134,12 @@ local function place(player: Player, item: string, floor: number, x: number, z: 
 		return
 	end
 	local cost = Economy.pieceCost(item, BuildService.owned(data, item))
+	-- A free build the tutorial gave (Appendix A.7: the goal card's Coffin Suite).
+	local voucher = `voucher_{item}`
+	if (data.stats[voucher] or 0) > 0 then
+		cost = 0
+		data.stats[voucher] -= 1
+	end
 	if not PlayerData.spend(player, cost) then
 		refuse(player, "Place", "Cash")
 		return

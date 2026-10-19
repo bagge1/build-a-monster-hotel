@@ -1,0 +1,201 @@
+--!strict
+--[[
+	Gloom, the bat concierge (GDD §11, Appendix A.7): a speech bubble with what
+	to do next, an arrow at the thing to press or the place to go, and Skip.
+	The step is the server's (`Tutorial` attribute, `TutorialService`); this
+	only draws it. Nothing here blocks movement.
+
+	Gloom's look is a night draft (WAITING.md §1); his name is GDD §17's open
+	question 6.
+]]
+
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
+
+local Net = require(ReplicatedStorage.Shared.Net)
+local Ui = require(script.Parent.Ui)
+
+local TutorialController = {}
+
+local me = Players.LocalPlayer
+
+type Step = { text: string, ui: string?, world: string? }
+local STEPS: { [string]: Step } = {
+	Build = {
+		text = "Welcome, new manager! I'm Gloom. Tap Build and place a Standard Room ($50 of your $100).",
+		ui = "Hud.Left.BuildButton",
+	},
+	CheckIn = {
+		text = "A Slime is on its way! Go to the front desk and check it in.",
+		world = "Desk",
+	},
+	Collect = {
+		text = "Guests pay into your till every second. Collect it at the till!",
+		world = "Till",
+	},
+	SecondRoom = { text = "Business is booming. Build a second room!", ui = "Hud.Left.BuildButton" },
+	Bus = {
+		text = "The Night Bus brings guests for every hotel on the street. Walk up to one and Pitch it!",
+		ui = "Hud.BusCountdown",
+	},
+	MoveIn = {
+		text = "Happy guests become friends, and friends move in. Your Slime is nearly ready...",
+		ui = "Hud.Left.BookButton",
+	},
+	Goal = {
+		text = "Big news: a Vampire Count wants to stay! Build a Coffin Suite. The first one is on me.",
+		ui = "Hud.Left.BuildButton",
+	},
+	Clean = {
+		text = "Rooms need cleaning after a stay. Hold Clean at a dirty room's door.",
+		world = nil,
+	},
+	Staff = {
+		text = "Residents can work! Open Residents and give your Slime a job (Room Service suits it).",
+		ui = "Hud.Left.ResidentsButton",
+	},
+	Preview = {
+		text = "Reach 4★, earn $1M and befriend a Vampire Count, and Frostfang Lodge awaits. Your residents earn while you're away, up to 2 hours!",
+		ui = "Hud.Right.ProgressionButton",
+	},
+}
+
+local bubble: Frame
+local text: TextLabel
+local nextButton: TextButton
+local arrow: TextLabel
+local worldArrow: BillboardGui?
+
+local function find(path: string): GuiObject?
+	local inst: Instance? = me:FindFirstChild("PlayerGui")
+	for _, part in string.split(path, ".") do
+		inst = inst and inst:FindFirstChild(part, true)
+	end
+	return if inst and inst:IsA("GuiObject") then inst else nil
+end
+
+-- Whether a GUI object and every one of its ancestors is shown.
+local function shown(g: GuiObject): boolean
+	local node: Instance? = g
+	while node and node:IsA("GuiObject") do
+		if not node.Visible then
+			return false
+		end
+		node = node.Parent
+	end
+	return true
+end
+
+local function plotModel(): Model?
+	local plots = workspace:FindFirstChild("Plots")
+	local m = plots and plots:FindFirstChild(`Plot_{me:GetAttribute("Plot")}`)
+	return if m and m:IsA("Model") then m else nil
+end
+
+local function setWorldArrow(name: string?)
+	if worldArrow then
+		worldArrow:Destroy()
+		worldArrow = nil
+	end
+	local plot = plotModel()
+	local lobby = plot and plot:FindFirstChild("Lobby")
+	local root = lobby and lobby:FindFirstChild("Root")
+	local a = name and root and root:FindFirstChild(name)
+	if not a or not a:IsA("Attachment") then
+		return
+	end
+	local bb = Instance.new("BillboardGui")
+	bb.Name = "GloomArrow"
+	bb.Size = UDim2.fromOffset(80, 80)
+	bb.StudsOffset = Vector3.new(0, 4, 0)
+	bb.AlwaysOnTop = true
+	bb.Adornee = a
+	local l = Ui.label(bb, "Arrow", "⬇", UDim2.fromScale(1, 1), 60, Ui.Colour.Gold)
+	l.TextXAlignment = Enum.TextXAlignment.Center
+	l.TextStrokeTransparency = 0
+	bb.Parent = me:WaitForChild("PlayerGui")
+	worldArrow = bb
+end
+
+local function refresh()
+	local step = me:GetAttribute("Tutorial") :: string?
+	local s = step and STEPS[step]
+	bubble.Visible = s ~= nil
+	arrow.Visible = false
+	setWorldArrow(nil)
+	if not s then
+		return
+	end
+	text.Text = s.text
+	nextButton.Visible = step == "Preview"
+	setWorldArrow(s.world)
+end
+
+function TutorialController.Init()
+	local gui = Ui.screen("Tutorial", 5)
+	-- Top centre, under the bus countdown: never the bottom corners (§11), and
+	-- narrow enough on a phone to leave the hotel in view.
+	bubble = Ui.panel(
+		gui,
+		"Gloom",
+		UDim2.new(0.5, 0, 0, 104),
+		UDim2.new(0.5, 0, 0, 80),
+		Vector2.new(0.5, 0)
+	)
+	local cap = Instance.new("UISizeConstraint")
+	cap.MaxSize = Vector2.new(460, 104)
+	cap.MinSize = Vector2.new(300, 0)
+	cap.Parent = bubble
+	bubble.Visible = false
+	local face = Ui.label(bubble, "Face", "🦇", UDim2.fromOffset(48, 48), 36)
+	face.Position = UDim2.fromOffset(6, 6)
+	face.TextXAlignment = Enum.TextXAlignment.Center
+	local name = Ui.label(bubble, "Name", "Gloom", UDim2.fromOffset(60, 18), 14, Ui.Colour.Gold)
+	name.Position = UDim2.fromOffset(0, 54)
+	name.TextXAlignment = Enum.TextXAlignment.Center
+	text = Ui.label(bubble, "Text", "", UDim2.new(1, -70, 1, -54), 16)
+	text.Position = UDim2.fromOffset(62, 6)
+	text.TextYAlignment = Enum.TextYAlignment.Top
+	local skip = Ui.button(bubble, "Skip", "Skip tutorial", UDim2.fromOffset(110, 44), function()
+		Net.send("Tutorial", "Skip")
+	end, Ui.Colour.Panel)
+	skip.Position = UDim2.new(1, -116, 1, -48)
+	skip.TextSize = 14
+	nextButton = Ui.button(bubble, "Next", "Got it!", UDim2.fromOffset(96, 44), function()
+		Net.send("Tutorial", "Next")
+	end, Ui.Colour.Teal)
+	nextButton.Position = UDim2.new(1, -218, 1, -48)
+	arrow = Ui.label(gui, "Arrow", "◀", UDim2.fromOffset(50, 50), 44, Ui.Colour.Gold)
+	arrow.TextStrokeTransparency = 0
+	arrow.Visible = false
+end
+
+function TutorialController.Start()
+	me:GetAttributeChangedSignal("Tutorial"):Connect(refresh)
+	me:GetAttributeChangedSignal("Plot"):Connect(refresh)
+	refresh()
+	-- The arrow follows its UI target and bobs.
+	RunService.Heartbeat:Connect(function()
+		local step = me:GetAttribute("Tutorial") :: string?
+		local s = step and STEPS[step]
+		local target = s and s.ui and find(s.ui)
+		if target and shown(target) then
+			local p = target.AbsolutePosition
+			local size = target.AbsoluteSize
+			local bob = math.sin(os.clock() * 6) * 6
+			arrow.Position = UDim2.fromOffset(p.X + size.X + 8 + bob, p.Y + size.Y / 2 - 25)
+			arrow.Visible = true
+		else
+			arrow.Visible = false
+		end
+	end)
+	Net.listen("Moment", function(kind: string)
+		if kind == "OpenBook" then
+			local panels = require(script.Parent.CollectionPanels) :: any
+			panels.openBook()
+		end
+	end)
+end
+
+return TutorialController
