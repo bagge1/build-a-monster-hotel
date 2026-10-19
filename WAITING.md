@@ -38,6 +38,10 @@ Med Claudes skärmdump där det finns en. -->
    knappar, typsnittet Fredoka One, Gloom-bubblan högst upp i mitten. Nattens
    utkast; inget är bestämt.
 
+3. **Store med presentknappar** (2026-10-19): bilden
+   `archive/screens/2026-10-19_store_gifts.jpg`. En **🎁 Gift**-knapp på varje
+   pass, raden för att välja mottagare överst. Nattutkast; utseendet är ditt.
+
 ## §2 Beslut
 
 <!-- En fråga i taget, med alternativen och Claudes rekommendation. -->

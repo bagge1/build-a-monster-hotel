@@ -34,7 +34,8 @@ multiply a capture's x and y by viewport width / 1920 (3434 / 1920 on his screen
   storeys and comes back down (after the landing was widened to 4 studs).
 - [x] A guest to a floor 2 room walks the stairs' own turns and the floor's hallway.
 - [ ] Upgrade, decorate, move and sell from the piece menu, by clicks.
-- [A] Save and load by rejoining: blocked on WAITING.md §3.1 (no DataStore access).
+- [x] Save and load by rejoining (14:32, test profile): $16,105, 7 shards, two
+  residents, a gifted pass and `lastSeen` all came back after Stop and Play.
 
 ## Phase 2 (M2, the street)
 
@@ -66,7 +67,8 @@ multiply a capture's x and y by viewport width / 1920 (3434 / 1920 on his screen
 - [x] Holiday gives Moon Shards (+8 for an Epic Werewolf).
 - [x] Perks (04:14): a Grand Banshee resident makes income ×1.1; a Ghost adds 5
   Cleanliness to the rating's categories; each resident's perk shows in Residents.
-- [A] Offline earnings on rejoin: needs DataStore access (WAITING §3.1).
+- [x] Offline earnings on rejoin (14:32): away 155 s, Wing $15.22/s online; the till
+  rose $259.50 → $1,418.25 at join, ≈ 50 % × 15.22 × ~145 s plus a few seconds online.
 
 ## Phase 4 (M4, progression)
 
@@ -124,6 +126,21 @@ multiply a capture's x and y by viewport width / 1920 (3434 / 1920 on his screen
 - [x] A defended night (dev `defend`): +5 minutes of income, +10 Candy, the
   thank-you bus called at once.
 - [x] Settings by their remote: low graphics turns shadows off; music off stops it.
+
+## Phase 8 (the afternoon's drafts: gifts, Winter, cosmetics)
+
+- [x] A gift (dev `gift`) goes through a real ProfileStore message and arrives in
+  under 8 s: `gifted` and `passes` hold it, and it survives a rejoin.
+- [x] The Store shows a **🎁 Gift** button on each of the nine passes and no gift
+  rows; a real click opens the picker ("Nobody else is on your street yet" alone).
+- [ ] Gifting to a second player: needs **Server and Clients** (two players).
+- [x] Winter by the event calendar (+60 days): Season "Winter", Snowflakes from
+  zero, the Events button ❄; the Snowman bought for 30 (50 → 20) and unlocked.
+- [x] Cosmetics by the `Equip` remote: Pumpkin sign at the Board's front face,
+  Fairy lights at the Entrance, the Gothic facade's colours (45 walls, 3 trims);
+  an unknown id refused.
+- [ ] The Style tool by clicks, and pictures of the cosmetics: after the
+  imported models leave Workspace (WAITING §0.3).
 
 ## Phase 7 (social, GDD §7)
 
