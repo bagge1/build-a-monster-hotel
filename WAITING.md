@@ -21,6 +21,12 @@ Connect: knappen under fliken Plugins i Studio. -->
 3. ~~**Starta om `rojo serve` en gång till**~~ (gjort 2026-10-19: alla 69
    modeller har kommit fram och stämmer del för del med importen; noterat i
    setens `README.md`).
+4. **Importera nio modeller** (2026-10-19): välj alla filer i mappen
+   `blender/_import/` i importdialogen (Studio, importera till **Workspace**)
+   och säg *importerat*. Det är båda hotellens rättade **HotelSign**
+   (Frostfangs heter `FrostfangLodge_HotelSign`) och de sju kosmetikorna
+   (Pumpkin sign, Icicle sign, Lantern sign, de två familjevapnen, Bat bunting,
+   Fairy lights). Resten gör Claude.
 
 ## §1 Att titta på eller spela
 
@@ -29,8 +35,8 @@ Med Claudes skärmdump där det finns en. -->
 
 1. **Spela första kvarten** (2026-10-19). Tryck **Play** i Studio: Gloom leder
    dig genom bygga, checka in, kassan, bussen, en Slime som flyttar in, Coffin
-   Suite och städning. Allt du ser är grå blockout-utkast (inga modeller än);
-   utseendet är ditt att döma. Säg i vanliga ord vad som känns fel.
+   Suite och städning. Rummen, lobbyn, trapporna, monstren och bussen är nu
+   de riktiga modellerna (se punkt 6); utseendet är ditt att döma. Säg i vanliga ord vad som känns fel.
 2. **Utseendet på gränssnittet** (2026-10-19): lila paneler, orange/turkos
    knappar, typsnittet Fredoka One, Gloom-bubblan högst upp i mitten. Nattens
    utkast; inget är bestämt.

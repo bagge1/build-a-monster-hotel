@@ -148,3 +148,12 @@ each, the atlas embedded.
   shows as two small bumps in `review/closeup.png`. The fix is in the kits'
   `hotel_sign()` (a ring no wider than the board is thick, or the post ending
   under the board).
+
+## Staged (2026-10-19, 15:40)
+
+The seven FBX are in `blender/_import/` with both kits' fixed `HotelSign`
+(Frostfang's as `FrostfangLodge_HotelSign.fbx`), nine in one dialog
+(WAITING §0.4). After *importerat*: this set's `import_fixup.luau` and each
+kit's for its sign (skill `import`), saved to `assets/Cosmetics/` and
+`assets/HotelKit/<Location>/HotelSign.rbxm`. No Rojo restart is needed: both
+folders are already synced.
