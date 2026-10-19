@@ -464,11 +464,19 @@ stay economy`). Merged 2026-10-19 20:50 and played (test profile
 
 Built on `worktree-agent-af840fbd28a857dd3` (GDD Appendix A.7, WAITING
 §2.25). Verified there by stylua, selene, `rojo build` and the pure specs
-under Lune (`bus`, `scoring` and the rest, 86/86); **nothing of it has run in
-Studio.** No Rojo restart needed (no project file changed).
+under Lune (`bus`, `scoring` and the rest, 86/86). Merged 2026-10-19 20:55 and
+played 20:56–21:08 on fresh profiles `Test_Tut1019b`/`c` through the
+tutorial's first steps by the game's own prompts and remotes.
 
-- [ ] The spec bundle passes in a playtest, `bus` and `scoring` included.
-- [ ] A fresh profile (`DevCommand tutorial Build`): build two Standard
+- [x] (All 14 files, 97/97.) The spec bundle passes in a playtest, `bus` and `scoring` included.
+- [x] (One room for $50: the Slime walked in ~5 s later, queued at ~19 s; checked
+  in by the desk's prompt; Collect by the HUD; a second room at SecondRoom;
+  the bus then: drawn "Skeleton, Werewolf", arrived Skeleton and Slime, the
+  size unchanged; the Skeleton picked this hotel's room 3. Pitch and a second
+  player's 4★ hotel not tried. **Found:** the tutorial's Slime gave up at
+  the desk after 60 s like any guest (a 1★ review, the CheckIn step stuck
+  until a bus); fixed: the tutorial's guest never gives up at the desk, seen
+  queued 70 s.) A fresh profile (`DevCommand tutorial Build`): build two Standard
   Rooms, check the Slime in; the next bus (`bus`) carries up to 2 Commons
   that take a Standard Room (`nextbus` before it shows the drawn list; the
   Commons replace its tail at arrival), the bus's size unchanged, its Epic or
@@ -477,7 +485,8 @@ Studio.** No Rojo restart needed (no project file changed).
 - [ ] The weighting stops after 2 such buses (`data`: `tutorialCommonBuses`
   2) and on Skip; it never starts while the step is Build or CheckIn (the
   Slime keeps its room); a hotel with only a Coffin Suite vacant gets none.
-- [ ] The ping menu's "Need a room": with a Vampire Count announced
+- [ ] (With a Vampire Count announced: "Need a Coffin Suite!" over the head.
+  The browsing and empty-street cases not tried.) The ping menu's "Need a room": with a Vampire Count announced
   (`legendary`), it reads "Need a Coffin Suite!" over the head; with Commons
   browsing and nothing announced, the room the rarest of them wants ("Need an
   Attic Room!" for a Ghost); with the street empty, "Need a room for that
@@ -510,3 +519,4 @@ Studio.** No Rojo restart needed (no project file changed).
 - 2026-10-19 20:33 Phase 12 (street) after the merge: specs 82/82 (13 files); forecourt rayed and walked; the bus's drive and stops, browsing, the stops' waiting and boarding, a trap's scare; the forest's placement (blockouts). Scenery, the tree import, the tutorial's guests, the phone's frame time and the in-game review open.
 - 2026-10-19 20:42 Phase 13 (free building) after the merge, before the import: specs 90/90; refusals, areas, a free stair and a walker up it to floor 2, guests' paths to floor 2, the desk moved with its points, decor and its doorway refusal, finishes. The menu's clicks, floor 3 and everything after the import open.
 - 2026-10-19 20:52 Rating's staff coverage after the merge: Front Desk +10 and Room Service +10 to Service, back when unassigned (a second Assign within 0.25 s is dropped by the rate limit, not a fault).
+- 2026-10-19 21:08 Tutorial Commons and the named ping after the merge: specs 97/97; the tutorial to Clean on a fresh profile; the first tutorial bus brought two Commons, one picked the hotel; the ping named the Coffin Suite. Fixed: the tutorial's guest gave up at the desk. The till's E prompt could not be triggered through the MCP beside the desk's (both E, OnePerButton, 3 studs apart): WAITING §1.10.

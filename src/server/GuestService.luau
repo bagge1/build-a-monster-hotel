@@ -779,7 +779,9 @@ local function tick()
 				publish(g)
 			end
 		elseif g.state == "Queued" then
-			if g.owner and now - (g.deskSince or now) > S.DeskPatience then
+			-- The tutorial's guest waits as long as the new player needs (§11: the
+			-- tutorial never traps anyone, and its stay counts as happy).
+			if g.owner and not g.tutorialFriend and now - (g.deskSince or now) > S.DeskPatience then
 				-- Gave up waiting: a 1-star review, and the room is free again.
 				local player = g.owner
 				leaveQueue(player, g)

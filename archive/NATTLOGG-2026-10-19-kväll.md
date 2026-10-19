@@ -185,4 +185,29 @@ Obevakad session (`/loop`, självstyrd) medan August är borta (från ca 20:00 i
   ett fullt hotell; mäts igen när trädmodellerna är importerade. Inget
   rättat: ljusen i dekoren är ett utseende, och bildtiden avgörs på en
   riktig telefon (WAITING §1).
+- **20:47** Agenten för Rating-indata klar (`01286f2`): Front Desk, Room
+  Service och Housekeeping ger upp till +10 vardera och städning i tid upp
+  till +10, ovanpå de gamla formlerna (PLACEHOLDER, WAITING §2.26).
+  Granskad och sammanslagen; specar 34/34 under Lune.
+- **20:49** Rating i playtest (`Test_Rate1019`): utan personal Service 64,4;
+  Skeleton på Front Desk 74,4; plus Slime på Room Service 84,4; tillbaka till
+  64,4 när de tas bort. En andra `Assign` inom 0,25 s släpps av spelets
+  hastighetsgräns, inget fel.
+- **20:55** Agenten för tutorialens Commons och pingen klar (`22aaf4e`):
+  de två första bussarna i tutorialen byter upp till 2 dragna gäster mot
+  Commons som hotellets rum tar, med +10 i poäng mot hotellet (PLACEHOLDER,
+  WAITING §2.25); "Need a ...!" nämner rummet som den sällsyntaste gästen på
+  gatan vill ha. Inget cirkulärt beroende (SocialService → BusService).
+  Sammanslagen; specar gröna under Lune.
+- **21:08** Tutorialen i playtest från början (`Test_Tut1019b`/`c`), med
+  spelets egna prompter och remotes: ett rum för $50, tutorialens Slime går
+  in ~5 s senare och köar. **Fel hittat:** Slimen gav upp vid disken efter
+  60 s som vilken gäst som helst (1 stjärna, steget CheckIn fast till nästa
+  buss). **Rättat** i `GuestService`: tutorialens gäst ger aldrig upp vid
+  disken (sett i kö i 70 s). Sedan: incheckad med diskens prompt, Collect,
+  andra rummet, bussen tog en Skeleton och en Slime (Werewolf byttes ut,
+  storleken oförändrad), Skeletonen valde hotellet, stegen Bus → Goal →
+  Clean. Pingen: "Need a Coffin Suite!" med en Vampire Count annonserad.
+  Kassans E-prompt gick inte att utlösa via MCP bredvid diskens (båda E,
+  bara en visas): WAITING §1.10. Specar 97/97 i Studio.
 

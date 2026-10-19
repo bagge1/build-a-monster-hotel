@@ -134,6 +134,12 @@ Med Claudes skärmdump där det finns en. -->
    det. Spela en stund på din telefon med ett fullt hotell och säg om det
    hackar; då mäter Claude vad som drar mest.
 
+10. **Kassan och disken med E** (2026-10-19 kväll). Kassans prompt och
+   diskens sitter 3 studs isär, båda på E, och bara en av dem visas åt
+   gången. Claude kunde inte utlösa kassans prompt bredvid diskens
+   (inkasseringen gick via HUD:ens Collect). Prova i spelet: står du vid
+   disken, går det lätt att välja kassan? Säg till om det är krångligt.
+
 ## §2 Beslut
 
 <!-- En fråga i taget, med alternativen och Claudes rekommendation. -->
