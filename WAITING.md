@@ -22,7 +22,8 @@ Connect: knappen under fliken Plugins i Studio. -->
    under fliken **Plugins** i Studio. Mapparna `assets/Monsters` och
    `assets/HotelKit/...` fanns inte när Rojo startade i morse, och Rojo läser
    bara in sådana mappar när det startar (`DEVNOTES.md`). Tills dess syns inga
-   av de nya modellerna i spelet. Säg till när det är gjort; modellerna i
+   av de nya modellerna i spelet. Samma omstart tar också med den nya mappen
+   `assets/Cosmetics` (för kosmetikans modeller senare). Säg till när det är gjort; modellerna i
    Workspace ligger kvar tills Claude har sett att de kommit fram.
 
 ## §1 Att titta på eller spela
