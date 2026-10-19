@@ -257,6 +257,10 @@ local function buildHotel(plot: Plot, data: PlayerData.Data?)
 	sign.Parent = plot.model
 	plot.sign = sign
 
+	local facade = HotelKit.facade(plot.location, data.floors)
+	placeLocal(facade, plot.frame)
+	facade.Parent = plot.model
+
 	for floor = 2, data.floors do
 		local slab = HotelKit.slab(plot.location, floor)
 		placeLocal(slab, plot.frame)

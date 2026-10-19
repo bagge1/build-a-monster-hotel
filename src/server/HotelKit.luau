@@ -485,6 +485,88 @@ function HotelKit.slab(location: number, floor: number): Folder
 	return folder
 end
 
+--[[ The facade (MODELS.md, "Facade and sign"; GDD §5.1): walls on the left,
+	right and back edges of every floor, just outside the grid so they never
+	take a cell or block a door, with window openings, and on floor 1 a
+	doorway at the back to the Resident Wing. The street side stays open: it is
+	the lobby's entrance. Plot-local, as a Folder (a blockout until the kit has
+	`Facade_Wall` pieces). ]]
+function HotelKit.facade(location: number, floors: number): Folder
+	local loc = Locations.get(location)
+	local folder = Instance.new("Folder")
+	folder.Name = "Facade"
+	local P = G.Cells * CELL
+	local t = 0.6
+	local wall = darker(loc.facade, 0.85)
+	local trim = loc.trim
+	-- One side: a run of `length` studs along `axis`, outside the grid at `offset`.
+	local function side(
+		name: string,
+		floor: number,
+		axis: "X" | "Z",
+		fixed: number,
+		gapFrom: number?,
+		gapTo: number?
+	)
+		local y0 = (floor - 1) * FLOOR + G.SlabThickness
+		local function at(
+			along: number,
+			height: number,
+			centreY: number,
+			length: number
+		): (Vector3, Vector3)
+			if axis == "X" then
+				return Vector3.new(length, height, t), Vector3.new(along, centreY, fixed)
+			end
+			return Vector3.new(t, height, length), Vector3.new(fixed, centreY, along)
+		end
+		local function piece(
+			partName: string,
+			a0: number,
+			a1: number,
+			h0: number,
+			h1: number,
+			colour: Color3
+		)
+			if a1 - a0 < 0.05 then
+				return
+			end
+			local size, centre = at((a0 + a1) / 2, h1 - h0, y0 + (h0 + h1) / 2, a1 - a0)
+			part(folder, partName, size, centre, { Color = colour })
+		end
+		local top = FLOOR - G.SlabThickness
+		local function band(partName: string, h0: number, h1: number, colour: Color3)
+			if gapFrom and gapTo then
+				piece(partName, 0, gapFrom, h0, h1, colour)
+				piece(partName, gapTo, P, h0, h1, colour)
+			else
+				piece(partName, 0, P, h0, h1, colour)
+			end
+		end
+		band(`{name}_Low`, 0, 3, wall)
+		piece(`{name}_High`, 0, P, 8, top, wall)
+		-- Posts between window openings, one per cell, 2 wide.
+		for c = 0, G.Cells do
+			local x = c * CELL
+			local a0, a1 = math.max(0, x - 1), math.min(P, x + 1)
+			if not (gapFrom and gapTo and a1 > gapFrom and a0 < gapTo) then
+				piece(`{name}_Post`, a0, a1, 3, 8, wall)
+			end
+		end
+		piece(`{name}_Sill`, 0, P, 2.8, 3.2, trim)
+	end
+	for floor = 1, floors do
+		side(`Left_{floor}`, floor, "Z", -t / 2)
+		side(`Right_{floor}`, floor, "Z", P + t / 2)
+		if floor == 1 then
+			side(`Back_{floor}`, floor, "X", P + t / 2, P / 2 - 4, P / 2 + 4)
+		else
+			side(`Back_{floor}`, floor, "X", P + t / 2)
+		end
+	end
+	return folder
+end
+
 --[[ The ground: the plot's base, its lobby floor and the Resident Wing's
 	garden behind (Appendix A.1). Plot-local, as a Folder. ]]
 function HotelKit.base(location: number): Folder

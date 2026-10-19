@@ -135,6 +135,15 @@ local function setHidden()
 	if not m then
 		return
 	end
+	-- The facade's parts carry their floor in their names (`Left_2_Post`).
+	local facade = m:FindFirstChild("Facade")
+	for _, p in (if facade then facade:GetChildren() else {}) do
+		local f = tonumber(string.match(p.Name, "^%a+_(%d+)_"))
+		if p:IsA("BasePart") and f and f > floor then
+			p.LocalTransparencyModifier = 1
+			hidden[p] = true
+		end
+	end
 	for _, child in m:GetDescendants() do
 		if child:IsA("Model") or child:IsA("Folder") then
 			local f = child:GetAttribute("Floor") :: number?

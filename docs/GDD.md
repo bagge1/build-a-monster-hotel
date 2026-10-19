@@ -642,6 +642,9 @@ Every number below is a **placeholder** (tagged `PLACEHOLDER` in
   cells x 10–11, z 2–3 on every floor (stairs for players; guests glide up it).
 - **The Resident Wing** is a garden behind the hotel (24 studs deep), where
   residents wander.
+- **The facade:** walls with window openings along the left, right and back
+  edges of every floor, just outside the grid (never on a cell); floor 1's
+  back wall has an 8-stud doorway to the Wing. The street side stays open.
 - **Hallways are the free cells.** A room's door opens onto the cell in front
   of its front edge. A placement is refused if its door cell is not free and
   connected to the floor's way in (the lobby on floor 1, the stair core above),
