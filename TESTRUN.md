@@ -123,8 +123,12 @@ multiply a capture's x and y by viewport width / 1920 (3434 / 1920 on his screen
   the wall beside it; a packed hotel with its facade is 1,205 parts.
 - [x] LOD: a packed hotel's 174 beds, pillows and lamps (58 lights) hide when
   the camera is far and come back when it returns.
-- [ ] Boo! at ~35 studs fired the prompt but nothing came back: probably
-  refused for reach; check what a player sees at 30–40 studs.
+- [?] Boo! at ~35 studs (15:25): the server **accepts** it (a prompt triggered at
+  35.0 studs counted `boos` 1 and the hunter left), so reach is not the fault.
+  Repeats did not reach the server, with no refusal either, and
+  `PromptShown` never fired even at 20 studs: whether the prompt shows on
+  screen at 30–40 studs cannot be told through the MCP (focus, a moving
+  hunter). Left for a person: does Boo! appear and work from ~35 studs?
 - [x] A resident in the Hunter Camp (dev `camp`) is away from the Wing; the
   camp's prompt rescues it.
 - [x] A defended night (dev `defend`): +5 minutes of income, +10 Candy, the
