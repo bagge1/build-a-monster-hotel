@@ -400,7 +400,7 @@ floors is 54 tall, and the trees stand 22–40.
 
 | Name | What | The code |
 |---|---|---|
-| `Root` | Invisible, anchored, the trunk's foot × the tree's height × the foot, bottom at y = 0 | The model's `PrimaryPart`; **the tree's only collider** (the code sets `CanCollide` on it, so a person walks into the trunk, not into a branch's box) |
+| `Root` | Invisible, anchored, the trunk's foot × the tree's height × the foot (a fir's: its lowest tier's reach, so nobody stands inside its crown), bottom at y = 0 | The model's `PrimaryPart`; **the tree's only collider** (the code sets `CanCollide` on it, so a person walks into the trunk, not into a branch's box) |
 | `Body` | The trunk and every branch, one mesh, bark-coloured | Drawn |
 | `Trim`, `Light`, `Dark` | Flat-coloured parts: needles, snow, a hollow | Drawn |
 | `Glow_Eyes_1`, `Glow_Eyes_2` | A pair of eyes in a hollow, on the spooky trees only | Neon (rule 1), never a light |

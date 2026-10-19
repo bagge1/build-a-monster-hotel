@@ -135,11 +135,16 @@ local function place(d: Drawn)
 	local id = Forest.pickId(zoneLocation[t.zone] or 1, t.pick)
 	local m = make(id)
 	m:ScaleTo(t.scale)
-	-- A hair into the ground, so a root never floats on a slope.
-	m:PivotTo(
-		CFrame.new(t.position.X, groundAt(t.position) - 0.2, t.position.Z)
-			* CFrame.Angles(0, t.yaw, 0)
-	)
+	-- Planted: the foot's lower lip under the ground, so the trunk rises out of it (a blind review read the
+	-- whole foot as a pot), and no root floats on a slope.
+	local at = Vector3.new(t.position.X, groundAt(t.position) - 0.6, t.position.Z)
+	local cf = CFrame.new(at) * CFrame.Angles(0, t.yaw, 0)
+	if Forest.FacesStreet[id] then
+		-- Its front toward the nearest point of the lane, so the eyes are seen.
+		local lane = Constants.Street.LaneHalfLength
+		cf = CFrame.lookAt(at, Vector3.new(math.clamp(at.X, -lane, lane), at.Y, 0))
+	end
+	m:PivotTo(cf)
 	d.proxy = nil
 	d.shown = {}
 	d.far = nil

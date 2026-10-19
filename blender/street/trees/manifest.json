@@ -1,0 +1,477 @@
+{
+  "set": "street/trees",
+  "frame": "Blender +Z up, the trunk's foot on the origin; no front but Tree_Hollow's eyes (Blender -Y, Roblox -Z); Roblox (x, y, z) = Blender (-x, z, y)",
+  "models": [
+    {
+      "species": "Tree_Crooked",
+      "shape": "Tree",
+      "fbx": "fbx/Tree_Crooked.fbx",
+      "height_target": 29.0,
+      "height": 29.091,
+      "bounds_blender": [
+        [
+          -10.916,
+          -2.303,
+          0.0
+        ],
+        [
+          10.71,
+          1.907,
+          29.091
+        ]
+      ],
+      "triangles": 756,
+      "triangles_proxy": 73,
+      "budget": {
+        "model": 800,
+        "proxy": 100,
+        "mesh_cap": 20000
+      },
+      "parts": [
+        {
+          "part": "Body",
+          "triangles": 744,
+          "colour": [
+            96,
+            76,
+            88
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Root",
+          "triangles": 12,
+          "colour": [
+            128,
+            128,
+            128
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "LOD_Proxy",
+          "triangles": 73,
+          "colour": [
+            96,
+            76,
+            88
+          ],
+          "material": "SmoothPlastic"
+        }
+      ],
+      "markers_blender": {},
+      "markers_roblox": {},
+      "markers_roblox_from_root": {},
+      "coplanar_overlaps": "none",
+      "rig": "none: static meshes, no bones, no Animations folder (the client moves it whole)",
+      "note": "A crooked bare tree: a thick trunk zigzagging up and leaning a little, four branches reaching out and curling up like claws, each forking into twigs. Haunted Manor.",
+      "kind": "tree",
+      "root_size_blender": [
+        3.0,
+        3.0,
+        29.0
+      ],
+      "root_size_roblox": [
+        3.0,
+        29.0,
+        3.0
+      ],
+      "front": null,
+      "facing_blender": null,
+      "facing_roblox": null,
+      "need": [
+        "Body"
+      ]
+    },
+    {
+      "species": "Tree_Bare",
+      "shape": "Tree",
+      "fbx": "fbx/Tree_Bare.fbx",
+      "height_target": 35.0,
+      "height": 34.796,
+      "bounds_blender": [
+        [
+          -8.117,
+          -1.947,
+          0.0
+        ],
+        [
+          8.308,
+          4.495,
+          34.796
+        ]
+      ],
+      "triangles": 780,
+      "triangles_proxy": 73,
+      "budget": {
+        "model": 800,
+        "proxy": 100,
+        "mesh_cap": 20000
+      },
+      "parts": [
+        {
+          "part": "Body",
+          "triangles": 768,
+          "colour": [
+            156,
+            150,
+            146
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Root",
+          "triangles": 12,
+          "colour": [
+            128,
+            128,
+            128
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "LOD_Proxy",
+          "triangles": 73,
+          "colour": [
+            156,
+            150,
+            146
+          ],
+          "material": "SmoothPlastic"
+        }
+      ],
+      "markers_blender": {},
+      "markers_roblox": {},
+      "markers_roblox_from_root": {},
+      "coplanar_overlaps": "none",
+      "rig": "none: static meshes, no bones, no Animations folder (the client moves it whole)",
+      "note": "A tall dead tree, silvery grey: a thick straight trunk forking at 16 studs into bare limbs that reach up and out and fork again into twigs, one limb snapped short and another broken off. Haunted Manor.",
+      "kind": "tree",
+      "root_size_blender": [
+        3.0,
+        3.0,
+        35.0
+      ],
+      "root_size_roblox": [
+        3.0,
+        35.0,
+        3.0
+      ],
+      "front": null,
+      "facing_blender": null,
+      "facing_roblox": null,
+      "need": [
+        "Body"
+      ]
+    },
+    {
+      "species": "Tree_Hollow",
+      "shape": "Tree",
+      "fbx": "fbx/Tree_Hollow.fbx",
+      "height_target": 22.0,
+      "height": 21.912,
+      "bounds_blender": [
+        [
+          -7.881,
+          -3.392,
+          0.0
+        ],
+        [
+          8.084,
+          3.392,
+          21.912
+        ]
+      ],
+      "triangles": 784,
+      "triangles_proxy": 75,
+      "budget": {
+        "model": 800,
+        "proxy": 100,
+        "mesh_cap": 20000
+      },
+      "parts": [
+        {
+          "part": "Body",
+          "triangles": 628,
+          "colour": [
+            104,
+            82,
+            88
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Dark",
+          "triangles": 48,
+          "colour": [
+            22,
+            14,
+            26
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Glow_Eyes_1",
+          "triangles": 48,
+          "colour": [
+            255,
+            214,
+            92
+          ],
+          "material": "Neon"
+        },
+        {
+          "part": "Glow_Eyes_2",
+          "triangles": 48,
+          "colour": [
+            255,
+            214,
+            92
+          ],
+          "material": "Neon"
+        },
+        {
+          "part": "Root",
+          "triangles": 12,
+          "colour": [
+            128,
+            128,
+            128
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "LOD_Proxy",
+          "triangles": 75,
+          "colour": [
+            104,
+            82,
+            88
+          ],
+          "material": "SmoothPlastic"
+        }
+      ],
+      "markers_blender": {},
+      "markers_roblox": {},
+      "markers_roblox_from_root": {},
+      "coplanar_overlaps": "none",
+      "rig": "none: static meshes, no bones, no Animations folder (the client moves it whole)",
+      "note": "A short, fat, gnarled tree with a dark hollow in its front and a pair of warm glowing eyes peeping out of it (cozy creepy, never scary); three stubby branches. Haunted Manor, rare.",
+      "kind": "tree",
+      "root_size_blender": [
+        5.0,
+        5.0,
+        22.0
+      ],
+      "root_size_roblox": [
+        5.0,
+        22.0,
+        5.0
+      ],
+      "front": null,
+      "facing_blender": null,
+      "facing_roblox": null,
+      "need": [
+        "Body",
+        "Dark",
+        "Glow_Eyes_1",
+        "Glow_Eyes_2"
+      ]
+    },
+    {
+      "species": "Tree_Fir",
+      "shape": "Tree",
+      "fbx": "fbx/Tree_Fir.fbx",
+      "height_target": 36.0,
+      "height": 36.0,
+      "bounds_blender": [
+        [
+          -8.2,
+          -7.799,
+          0.0
+        ],
+        [
+          8.2,
+          7.799,
+          36.0
+        ]
+      ],
+      "triangles": 260,
+      "triangles_proxy": 80,
+      "budget": {
+        "model": 800,
+        "proxy": 100,
+        "mesh_cap": 20000
+      },
+      "parts": [
+        {
+          "part": "Body",
+          "triangles": 58,
+          "colour": [
+            96,
+            76,
+            88
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Trim",
+          "triangles": 190,
+          "colour": [
+            50,
+            92,
+            84
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Root",
+          "triangles": 12,
+          "colour": [
+            128,
+            128,
+            128
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "LOD_Proxy",
+          "triangles": 80,
+          "colour": [
+            50,
+            92,
+            84
+          ],
+          "material": "SmoothPlastic"
+        }
+      ],
+      "markers_blender": {},
+      "markers_roblox": {},
+      "markers_roblox_from_root": {},
+      "coplanar_overlaps": "none",
+      "rig": "none: static meshes, no bones, no Animations folder (the client moves it whole)",
+      "note": "A dark fir: a trunk under five drooping tiers of needles with scalloped rims, narrowing to a point. Haunted Manor and Frostfang Lodge.",
+      "kind": "tree",
+      "root_size_blender": [
+        10.0,
+        10.0,
+        36.0
+      ],
+      "root_size_roblox": [
+        10.0,
+        36.0,
+        10.0
+      ],
+      "front": null,
+      "facing_blender": null,
+      "facing_roblox": null,
+      "need": [
+        "Body",
+        "Trim"
+      ]
+    },
+    {
+      "species": "Tree_SnowFir",
+      "shape": "Tree",
+      "fbx": "fbx/Tree_SnowFir.fbx",
+      "height_target": 33.0,
+      "height": 33.2,
+      "bounds_blender": [
+        [
+          -7.6,
+          -7.228,
+          0.0
+        ],
+        [
+          7.6,
+          7.228,
+          33.2
+        ]
+      ],
+      "triangles": 350,
+      "triangles_proxy": 80,
+      "budget": {
+        "model": 800,
+        "proxy": 100,
+        "mesh_cap": 20000
+      },
+      "parts": [
+        {
+          "part": "Body",
+          "triangles": 58,
+          "colour": [
+            96,
+            76,
+            88
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Trim",
+          "triangles": 190,
+          "colour": [
+            62,
+            104,
+            98
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Light",
+          "triangles": 90,
+          "colour": [
+            226,
+            236,
+            246
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Root",
+          "triangles": 12,
+          "colour": [
+            128,
+            128,
+            128
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "LOD_Proxy",
+          "triangles": 80,
+          "colour": [
+            150,
+            172,
+            176
+          ],
+          "material": "SmoothPlastic"
+        }
+      ],
+      "markers_blender": {},
+      "markers_roblox": {},
+      "markers_roblox_from_root": {},
+      "coplanar_overlaps": "none",
+      "rig": "none: static meshes, no bones, no Animations folder (the client moves it whole)",
+      "note": "A snowy fir: frosty tiers of needles, each under a cap of snow with a dripping edge. Frostfang Lodge.",
+      "kind": "tree",
+      "root_size_blender": [
+        9.5,
+        9.5,
+        33.0
+      ],
+      "root_size_roblox": [
+        9.5,
+        33.0,
+        9.5
+      ],
+      "front": null,
+      "facing_blender": null,
+      "facing_roblox": null,
+      "need": [
+        "Body",
+        "Trim",
+        "Light"
+      ]
+    }
+  ]
+}

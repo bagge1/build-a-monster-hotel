@@ -39,6 +39,9 @@ Forest.Sets = {
 	},
 } :: { [number]: { { id: string, weight: number } } }
 
+-- Trees that look at the street, not into the woods: the hollow's eyes are on its front (−Z).
+Forest.FacesStreet = { Tree_Hollow = true } :: { [string]: boolean }
+
 -- Every tree id any set uses.
 Forest.Ids = {} :: { string }
 do
@@ -143,7 +146,8 @@ function Forest.layout(): { Tree }
 				rng:NextNumber(),
 				rng:NextNumber(),
 				rng:NextNumber()
-			local p = Vector3.new(x + (0.15 + 0.7 * jx) * step, y, z + (0.15 + 0.7 * jz) * step)
+			-- Jittered within the middle half of its cell: neighbours never closer than half a cell.
+			local p = Vector3.new(x + (0.25 + 0.5 * jx) * step, y, z + (0.25 + 0.5 * jz) * step)
 			if fill < F.Fill and not Forest.cleared(p) then
 				table.insert(out, {
 					position = p,

@@ -77,6 +77,12 @@ Studio:** at the stop the bus (lane z = −15, 8 wide: z −19 to −11, x ±12 
 the blockout already does; nothing collides, but the post will stand inside
 the bus.
 
+**Since 2026-10-19 (the street session):** the bus drives east along the
+lane's north half (z = 15), round a bend out of the forest and back into it,
+and stops twice (x = −90 and 90), its `Door` (+Z) toward the north pavement;
+BusRenderer stops it so the `Door` attachment is at the stop. The old stop and
+its sign at the west end are gone, so the finding above no longer stands.
+
 ## Imported (2026-10-19, afternoon)
 
 August imported the whole batch (69 FBX, one dialog). The set's import script

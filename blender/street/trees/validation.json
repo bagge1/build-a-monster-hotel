@@ -1,0 +1,119 @@
+{
+  "set": "street/trees",
+  "models": {
+    "Tree_Crooked": {
+      "checks": [
+        "part names round-trip (3 parts)",
+        "MODELS.md names present: Body, LOD_Proxy, Root",
+        "every other part an allowed name (Skin/Trim/Dark/Light/Wheel_n/Glow_<Colour>_n)",
+        "triangle counts as built",
+        "one material and one UV layer per part",
+        "closed geometry (all but the proxy)",
+        "756 triangles within 800",
+        "LOD_Proxy 73 within 100",
+        "height 29.09 studs against 29.0 (+/- 10 %)",
+        "nothing under the floor",
+        "Root [3.0, 29.0, 3.0] (Roblox x, y, z), bottom at 0, centred on the origin",
+        " markers where the manifest says"
+      ],
+      "triangles": 756,
+      "triangles_proxy": 73,
+      "height": 29.091,
+      "height_target": 29.0
+    },
+    "Tree_Bare": {
+      "checks": [
+        "part names round-trip (3 parts)",
+        "MODELS.md names present: Body, LOD_Proxy, Root",
+        "every other part an allowed name (Skin/Trim/Dark/Light/Wheel_n/Glow_<Colour>_n)",
+        "triangle counts as built",
+        "one material and one UV layer per part",
+        "closed geometry (all but the proxy)",
+        "780 triangles within 800",
+        "LOD_Proxy 73 within 100",
+        "height 34.80 studs against 35.0 (+/- 10 %)",
+        "nothing under the floor",
+        "Root [3.0, 35.0, 3.0] (Roblox x, y, z), bottom at 0, centred on the origin",
+        " markers where the manifest says"
+      ],
+      "triangles": 780,
+      "triangles_proxy": 73,
+      "height": 34.796,
+      "height_target": 35.0
+    },
+    "Tree_Hollow": {
+      "checks": [
+        "part names round-trip (6 parts)",
+        "MODELS.md names present: Body, Dark, Glow_Eyes_1, Glow_Eyes_2, LOD_Proxy, Root",
+        "every other part an allowed name (Skin/Trim/Dark/Light/Wheel_n/Glow_<Colour>_n)",
+        "triangle counts as built",
+        "one material and one UV layer per part",
+        "closed geometry (all but the proxy)",
+        "784 triangles within 800",
+        "LOD_Proxy 75 within 100",
+        "height 21.91 studs against 22.0 (+/- 10 %)",
+        "nothing under the floor",
+        "Root [5.0, 22.0, 5.0] (Roblox x, y, z), bottom at 0, centred on the origin",
+        " markers where the manifest says"
+      ],
+      "triangles": 784,
+      "triangles_proxy": 75,
+      "height": 21.912,
+      "height_target": 22.0
+    },
+    "Tree_Fir": {
+      "checks": [
+        "part names round-trip (4 parts)",
+        "MODELS.md names present: Body, LOD_Proxy, Root, Trim",
+        "every other part an allowed name (Skin/Trim/Dark/Light/Wheel_n/Glow_<Colour>_n)",
+        "triangle counts as built",
+        "one material and one UV layer per part",
+        "closed geometry (all but the proxy)",
+        "260 triangles within 800",
+        "LOD_Proxy 80 within 100",
+        "height 36.00 studs against 36.0 (+/- 10 %)",
+        "nothing under the floor",
+        "Root [10.0, 36.0, 10.0] (Roblox x, y, z), bottom at 0, centred on the origin",
+        " markers where the manifest says"
+      ],
+      "triangles": 260,
+      "triangles_proxy": 80,
+      "height": 36.0,
+      "height_target": 36.0
+    },
+    "Tree_SnowFir": {
+      "checks": [
+        "part names round-trip (5 parts)",
+        "MODELS.md names present: Body, LOD_Proxy, Light, Root, Trim",
+        "every other part an allowed name (Skin/Trim/Dark/Light/Wheel_n/Glow_<Colour>_n)",
+        "triangle counts as built",
+        "one material and one UV layer per part",
+        "closed geometry (all but the proxy)",
+        "350 triangles within 800",
+        "LOD_Proxy 80 within 100",
+        "height 33.20 studs against 33.0 (+/- 10 %)",
+        "nothing under the floor",
+        "Root [9.5, 33.0, 9.5] (Roblox x, y, z), bottom at 0, centred on the origin",
+        " markers where the manifest says"
+      ],
+      "triangles": 350,
+      "triangles_proxy": 80,
+      "height": 33.2,
+      "height_target": 33.0
+    }
+  },
+  "collision_precise": {
+    "Tree_Crooked": [],
+    "Tree_Bare": [],
+    "Tree_Hollow": [],
+    "Tree_Fir": [],
+    "Tree_SnowFir": []
+  },
+  "collision_note": "A tree's Root is its only collider (MODELS.md, \"Street scenery: trees\"): ForestRenderer sets CanCollide on Root at runtime, so a person walks into the trunk; Box on every mesh, PreciseConvexDecomposition on none.",
+  "not_validated": [
+    "nothing in Studio: the import, the axis conversion, the marker positions there, the colours arriving",
+    "whether the importer carries a material's plain colour to MeshPart.Color (manifest has every colour)",
+    "the look in the game, at night, among hundreds of its kind and at 0.8-1.25 scale",
+    "animations: none exist (no rig)"
+  ]
+}
