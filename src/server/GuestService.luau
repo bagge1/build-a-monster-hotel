@@ -70,6 +70,7 @@ export type Guest = {
 	requestsStaff: number,
 	requestsMissed: number,
 	happyFloor: number?, -- the tutorial's: a stay at least this happy (Appendix A.7)
+	tutorialFriend: boolean?, -- the tutorial Slime: moves in after 1 happy stay (§6.3)
 	pitches: { [number]: number }, -- user id -> plot index (§4.3)
 	wish: string?,
 	config: Configuration,
@@ -386,7 +387,11 @@ end
 function GuestService.spawnWalkIn(
 	player: Player,
 	speciesId: string?,
-	opts: { happyFloor: number?, source: string? }?
+	opts: {
+		happyFloor: number?,
+		source: string?,
+		tutorialFriend: boolean?,
+	}?
 ): Guest?
 	local data = PlayerData.get(player)
 	local plot = PlotService.of(player)
@@ -418,6 +423,7 @@ function GuestService.spawnWalkIn(
 	local mutation = Events.rollMutation(rng:NextNumber(), os.time())
 	local g = newGuest(chosen, mutation, if opts and opts.source then opts.source else "WalkIn")
 	g.happyFloor = opts and opts.happyFloor
+	g.tutorialFriend = opts ~= nil and opts.tutorialFriend == true
 	-- From the lane beside the plot.
 	local front = StreetLayout.laneFront(plot.index)
 	local side = if rng:NextNumber() < 0.5 then -1 else 1
@@ -773,7 +779,11 @@ local function tick()
 	end
 	-- Walk-ins.
 	for player, data in PlayerData.loaded() do
-		if not walkInsOff[player] and PlotService.of(player) then
+		local hotel = HotelService.get(player)
+		if hotel and next(hotel.rooms) == nil then
+			-- No room yet: the clock starts with the first one, not at joining.
+			nextWalkIn[player] = nil
+		elseif not walkInsOff[player] and PlotService.of(player) then
 			local at = nextWalkIn[player]
 			if not at then
 				nextWalkIn[player] = now + walkInInterval(player)

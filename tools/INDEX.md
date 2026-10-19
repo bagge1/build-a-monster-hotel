@@ -101,3 +101,26 @@ Location 1's hotel kit: 8 rooms, 5 amenities, Lobby, StairCore,
 StairCoreTop, HotelSign and 15 `Decor_<Id>`, one function each; output
 `blender/hotel/haunted_manor/`. `-- only Lobby,StandardRoom` builds a subset,
 `-- nopreview` skips the sheet.
+
+## build_hotel_frostfang_lodge.py
+
+Location 2's hotel kit (Frostfang Lodge): 6 rooms, 2 amenities, Lobby,
+StairCore, StairCoreTop, HotelSign and 6 `Decor_<Id>`, one function each;
+output `blender/hotel/frostfang_lodge/`. Its own palette (`PALETTE`, through
+`K.use_palette`). `-- only Lobby,IglooRoom` builds a subset, `-- nopreview`
+skips the sheet.
+
+Lodge helpers: `flake` :63 a six-armed snowflake on a face, `icicle` :81,
+`snow_edges` :85 the snow cornice and icicles on every wall top,
+`lantern` :105 a wall lantern with its `Glow_Warm_<n>`, `window` :120 a night
+pane with a snowy sill, `aurora_ribbon` :143 a wavy band on a wall,
+`lodge_shell` :155 room_shell in the lodge's dress (round lintel, facade blue,
+lantern), `lodge_bed` :168 (head `log` or `ice`, a plaid quilt), `mug` :208,
+`pine_tree` :216.
+
+Added to `hotel_kit.py` for it (2026-10-19, additive; a full Haunted Manor
+rebuild after them is byte-identical): `use_palette(entries)` :95 a set's own
+atlas palette; `round_arch_points(x0, x1, spring, apex, n)` :339;
+`room_shell(..., lintel='pointed'|'round', stripes=7)` :431, where `paper`
+may be a tuple of colours laid in horizontal stripes (logs, snow blocks).
+The kit's own line numbers above, after :77, now run 17 to 33 lines later.

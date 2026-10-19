@@ -45,7 +45,7 @@ local STEPS: { [string]: Step } = {
 		ui = "Hud.Left.BookButton",
 	},
 	Goal = {
-		text = "Big news: a Vampire Count wants to stay! Build a Coffin Suite. The first one is on me.",
+		text = "Big news: a Vampire Count arrives in 3 buses! Build a Coffin Suite. The first one is on me.",
 		ui = "Hud.Left.BuildButton",
 	},
 	Clean = {

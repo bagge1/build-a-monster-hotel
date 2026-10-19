@@ -92,6 +92,23 @@ ATLAS_N, ATLAS_CELL = 8, 32
 assert len(PALETTE) <= ATLAS_N * ATLAS_N
 
 
+def use_palette(entries):
+    """A set's own palette (one atlas per set): `entries` as PALETTE's, replacing it
+    for every piece built after the call. The kit itself paints Root and LOD_Proxy
+    'grey', so a set's palette has a 'grey'. Not calling it keeps the Haunted
+    Manor palette above (added for Frostfang Lodge, 2026-10-19)."""
+    global PALETTE, COLOUR, GLOW_OF, _ATLAS
+    entries = list(entries)
+    assert len(entries) <= ATLAS_N * ATLAS_N, f'{len(entries)} colours > the atlas {ATLAS_N * ATLAS_N}'
+    assert any(e[0] == 'grey' for e in entries), "the palette needs 'grey' (Root, LOD_Proxy)"
+    for e in entries:
+        assert len(e) == 2 or e[2] in GLOW_KEYS, f'{e[0]}: glow key {e[2]!r} not in {GLOW_KEYS}'
+    PALETTE = entries
+    COLOUR = {e[0]: i for i, e in enumerate(PALETTE)}
+    GLOW_OF = {e[0]: e[2] for e in PALETTE if len(e) > 2}
+    _ATLAS = None
+
+
 def rb2bl(v):
     """A Roblox point (x right, y up, -z the street) in Blender's frame."""
     return Vector((-v[0], v[2], v[1]))
@@ -319,6 +336,14 @@ def arch_points(x0, x1, spring, apex, n=4, top=None):
     return out
 
 
+def round_arch_points(x0, x1, spring, apex, n=6):
+    """A round (elliptical) arch's outline from x0 to x1, springing at `spring`,
+    its crown at `apex`: the points along it, left to right."""
+    mid, hw = (x0 + x1) / 2, (x1 - x0) / 2
+    return [(mid - hw * math.cos(math.pi * i / n), spring + (apex - spring) * math.sin(math.pi * i / n))
+            for i in range(n + 1)]
+
+
 # --- The blockout's numbers (src/server/HotelKit.luau), for the checks ----------------
 
 def door_x(w):
@@ -404,10 +429,12 @@ def blockout_stairs(top):
 # --- The room shell ------------------------------------------------------------------------
 
 def room_shell(w, d, paper, wainscot='wood_dark', crown='gold', outside='plum', floor=('wood', 'wood_light'),
-               rug=None, lamp=True):
+               rug=None, lamp=True, lintel='pointed', stripes=7):
     """Floor, walls in pieces round the door, the lamp and every attachment of a
     room or amenity: exactly the blockout's boxes, dressed by colour bands.
-    `paper` is the wall colour; `floor` two plank colours, or one for a plain floor."""
+    `paper` is the wall colour, or a tuple of colours laid in `stripes`
+    horizontal bands (logs, snow blocks); `floor` two plank colours, or one for
+    a plain floor; `lintel` 'pointed' or 'round', the arch over the door."""
     W, D = w * CELL, d * CELL
     # Floor: planks along Z, a hair of groove between them by their chamfer.
     fw, fd = W - 0.2, D - 0.2
@@ -433,7 +460,8 @@ def room_shell(w, d, paper, wainscot='wood_dark', crown='gold', outside='plum', 
         lo, hi = c - s / 2, c + s / 2
         if name == 'Wall_Lintel':
             # A pointed arch from the 7-stud head: the opening only grows; the box stays the blockout's.
-            pts = arch_points(dx - DOOR_W / 2, dx + DOOR_W / 2, DOOR_H, DOOR_H + 1.6, n=4)
+            pts = (round_arch_points(dx - DOOR_W / 2, dx + DOOR_W / 2, DOOR_H, DOOR_H + 1.6, n=6)
+                   if lintel == 'round' else arch_points(dx - DOOR_W / 2, dx + DOOR_W / 2, DOOR_H, DOOR_H + 1.6, n=4))
             outline = [(dx - DOOR_W / 2, WALL)] + pts + [(dx + DOOR_W / 2, WALL)]
             prism(name, list(reversed(outline)), zf, zb, {'front': outside, 'rest': crown})
             continue
@@ -448,7 +476,12 @@ def room_shell(w, d, paper, wainscot='wood_dark', crown='gold', outside='plum', 
 
         def col(base):
             return {'front': outside, 'rest': base} if front else base
-        bands = [(0.0, 3.2, wainscot), (3.2, 9.4, paper), (9.4, WALL, crown)]
+        if isinstance(paper, (tuple, list)):
+            k = 6.2 / stripes
+            bands = ([(0.0, 3.2, wainscot)] + [(3.2 + i * k, 3.2 + (i + 1) * k, paper[i % len(paper)])
+                                               for i in range(stripes)] + [(9.4, WALL, crown)])
+        else:
+            bands = [(0.0, 3.2, wainscot), (3.2, 9.4, paper), (9.4, WALL, crown)]
         for y0, y1, cname in bands:
             y0, y1 = max(y0, lo.y), min(y1, hi.y)
             if y1 - y0 > 1e-3 and x1 - x0 > 1e-3:

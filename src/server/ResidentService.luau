@@ -206,7 +206,9 @@ local function onCheckout(player: Player, g: GuestService.Guest, satisfaction: n
 	local before = data.friendship[g.species] or 0
 	local now = before + gain
 	data.friendship[g.species] = now
-	local threshold = if g.source == "Tutorial"
+	-- Only the tutorial's own Slime needs just 1 friendship (§6.3, Appendix A.7);
+	-- every other guest, the tutorial's Vampire Count too, needs its rarity's.
+	local threshold = if g.tutorialFriend
 		then Constants.Residents.TutorialFriendship
 		else ResidentService.threshold(g.species)
 	local early = rng:NextNumber() < Constants.Rarity[sp.rarity].moveInChance

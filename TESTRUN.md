@@ -73,7 +73,8 @@ multiply a capture's x and y by viewport width / 1920 (3434 / 1920 on his screen
   done: build → the tutorial Slime arrives (walk-ins wait for it) → desk →
   till → second room → a pitch → the Slime moves in (1 friendship) → the goal
   card (Coffin Suite unlocked, one free) → clean → a staff job → the preview → Done.
-- [x] The free Coffin Suite costs $0 and the scheduled Vampire Count walks in.
+- [x] The free Coffin Suite costs $0 and the scheduled Vampire Count walks in
+  three buses after the goal card (04:24), needing the Legendary's 10 friendship.
 - [x] Rebirth (dev-forced, $4M run): Frostfang Lodge, $100, 20 Moon Shards,
   residents and unlocked room types kept, the plot rebuilt in Frostfang colours.
 - [x] Moon Tree: two nodes bought for 5 shards each; income ×1.1.

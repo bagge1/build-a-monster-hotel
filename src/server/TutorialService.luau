@@ -27,6 +27,7 @@ local BuildService = require(ServerScriptService.Server.BuildService)
 local GuestService = require(ServerScriptService.Server.GuestService)
 local StateService = require(ServerScriptService.Server.StateService)
 local Analytics = require(ServerScriptService.Server.Analytics)
+local DevGrant = require(ServerScriptService.Server.DevGrant)
 
 local TutorialService = {}
 
@@ -111,6 +112,7 @@ local function setStep(player: Player, data: PlayerData.Data, s: string)
 		BuildService.tutorialUnlock(player, "CoffinSuite")
 		data.stats.voucher_CoffinSuite = 1
 		data.stats.tutorialGoal = 1
+		data.stats.tutorialGoalBus = workspace:GetAttribute("BusIndex") :: number? or 0
 	elseif s == "MoveIn" then
 		Net.fire(player, "Moment", "OpenBook", {})
 	end
@@ -121,8 +123,15 @@ end
 local function tick(player: Player, data: PlayerData.Data)
 	local s = step(data)
 	if s == "Done" then
-		-- The scheduled Vampire Count, once a Coffin Suite stands (§11 10:00–15:00).
-		if stat(data, "tutorialGoal") == 1 and stat(data, "tutorialVampire") == 0 then
+		-- The scheduled Vampire Count: three buses after the goal card ("A Vampire
+		-- Count arrives in 3 buses", §11), once a Coffin Suite stands.
+		local busesSince = (workspace:GetAttribute("BusIndex") :: number? or 0)
+			- stat(data, "tutorialGoalBus")
+		if
+			stat(data, "tutorialGoal") == 1
+			and stat(data, "tutorialVampire") == 0
+			and busesSince >= 3
+		then
 			for _, rec in data.layout do
 				if rec.item == "CoffinSuite" then
 					local g = GuestService.spawnWalkIn(
@@ -149,11 +158,11 @@ local function tick(player: Player, data: PlayerData.Data)
 		slimeSent[player] = true
 		task.delay(Constants.WalkIn.TutorialDelay, function()
 			if PlayerData.get(player) then
-				GuestService.spawnWalkIn(
-					player,
-					"Slime",
-					{ source = "Tutorial", happyFloor = Constants.Stay.Happy }
-				)
+				GuestService.spawnWalkIn(player, "Slime", {
+					source = "Tutorial",
+					happyFloor = Constants.Stay.Happy,
+					tutorialFriend = true,
+				})
 				Net.fire(player, "Announce", "A Slime is checking in!", "Bus")
 			end
 		end)
@@ -190,6 +199,13 @@ function TutorialService.Start()
 			GuestService.setWalkIns(player, false)
 		end
 		player:SetAttribute("Tutorial", step(data))
+	end)
+	DevGrant.register("tutorial", function(player, args)
+		local data = PlayerData.get(player)
+		if data and args[1] then
+			setStep(player, data, args[1])
+		end
+		return `tutorial {data and data.tutorial} goalBus {data and data.stats.tutorialGoalBus}`
 	end)
 	PlayerData.onDeparted(function(player)
 		stepStarted[player] = nil

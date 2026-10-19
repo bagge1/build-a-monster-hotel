@@ -13,7 +13,7 @@ Connect: knappen under fliken Plugins i Studio. -->
 
 1. **Starta om `rojo serve`** (2026-10-19): `default.project.json` har fått
    två nya mappningar (`assets/Monsters` → `ReplicatedStorage.Monsters`,
-   `assets/HotelKit/HauntedManor` → `ServerStorage.HotelKit`) och Rojo
+   `assets/HotelKit/HauntedManor` och `.../FrostfangLodge` → `ServerStorage.HotelKit`) och Rojo
    läser projektfilen bara när den startar. Tryck sedan **Connect** under
    fliken **Plugins** i Studio.
 2. **Importera monstren (Location 1, tio stycken).** I Studio: **File →
@@ -29,6 +29,13 @@ Connect: knappen under fliken Plugins i Studio. -->
    **Workspace** och skriv *importerat*. Fästpunkter, inställningar, sparning
    och kontroller gör Claude. Bilden: `blender/hotel/haunted_manor/review/contact_sheet.png`.
    Rummen, lobbyn, trappan, skylten och 15 dekorsaker; allt nattens utkast.
+4. **Importera hotellkitet (Frostfang Lodge, 18 modeller).** I Studio: **File →
+   Import 3D**, öppna mappen
+   `D:\Roblox\build-a-monster-hotel\blender\_import\hotel_frostfang_lodge_2026-10-19\`,
+   markera alla 18 filerna (håll Ctrl och tryck A), importera till
+   **Workspace** och skriv *importerat*. Bilden:
+   `blender/hotel/frostfang_lodge/review/contact_sheet.png`. Sex rum, två
+   Amenities, lobbyn, trappan, skylten och sex dekorsaker; allt nattens utkast.
 
 ## §1 Att titta på eller spela
 
@@ -81,6 +88,21 @@ Med Claudes skärmdump där det finns en. -->
    ("Gift: Night Manager" osv.) och ett beslut om mottagaren måste vara på
    samma server. **Rekommendation:** bara spelare på samma gata till att börja
    med (enkelt och säkert); presenten sparas hos mottagaren som om passet var köpt.
+
+7. **Ekonomins takt** (2026-10-19, `archive/BALANCE-2026-10-19.md`, modellen
+   `tools/balance_model.py`). Inga värden är ändrade; det här är mätningar mot
+   §6.3. Med tutorialen går rebirth att göra efter 1:02 (målet 60–90 min).
+   Utan tutorialen tar det ungefär **4 timmar**, och flaskhalsen är Vampire
+   Count som resident: 10 glada vistelser (§4.2) med Vampires bara på :00/:30-
+   bussarna. Andra fynd: ratingen når 5★ på 20–45 minuter (recensionerna blir
+   nästan alltid 5★, och Fun/Style fylls billigt), inkomsten slutar växa efter
+   30–45 minuter (walk-ins högst var 8:e sekund, tre våningar fulla), och köp
+   kostar oftast långt under 2–5 minuters inkomst (§6.2). Rapporten ger ett par
+   alternativ per fynd; **valet är ditt**. **Rekommendation:** läs fynd 2 och 3
+   först (Vampire-flaskhalsen och ratingen), de styr mest.
+   Natten rättade två saker som var buggar mot designen, inte värden: bara
+   tutorialens Slime behöver 1 friendship (Vampire Count räknades också), och
+   tutorialens Vampire kommer nu tre bussar efter målkortet (§11), inte direkt.
 
 ## §3 Creator Hub och publicering
 
