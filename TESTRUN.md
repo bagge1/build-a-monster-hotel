@@ -97,6 +97,19 @@ multiply a capture's x and y by viewport width / 1920 (3434 / 1920 on his screen
   (WAITING §3), and Roblox's purchase prompt is CoreGui (his click).
 - [ ] The Daily panel by clicks: claim a finished request, reroll one.
 
+## Phase 6 (M6, polish)
+
+- [x] Hunter Night (dev `hunters`): two hunters per hotel walk in from the east
+  with a countdown under the HUD; **Boo!** by the hunter's prompt at ~15 studs
+  sends it running; a hunter at the door nets a guest (a guest before a
+  resident); one of two through the door is not a defended night.
+- [x] Every sound id loads in a playtest (`IsLoaded`, `TimeLength`).
+- [ ] Boo! at ~35 studs fired the prompt but nothing came back: probably
+  refused for reach; check what a player sees at 30–40 studs.
+- [ ] A resident netted to the Hunter Camp, rescued at the camp's prompt.
+- [ ] A defended night: everyone paid, the thank-you bus of rare guests.
+- [ ] Settings: music, effects and low graphics toggled by clicks.
+
 ## August keeps
 
 - How the street, the lobby and the rooms look (every look is a night draft).
@@ -107,4 +120,7 @@ multiply a capture's x and y by viewport width / 1920 (3434 / 1920 on his screen
 - 2026-10-19 03:20 T0 and Phase 1 items 1–8 pass (the night's playtest), commit `daf7ffa`.
 - 2026-10-19 03:27 Phase 2 items 1–3 pass.
 - 2026-10-19 03:32 Phase 3 items 1–4 pass; two client bugs fixed.
+- 2026-10-19 03:40 Phase 4 items 1–5 pass; the phone layout fixed.
+- 2026-10-19 03:45 Phase 5 items 1–3 pass; Gloom's disappearing bubble fixed.
+- 2026-10-19 03:50 Phase 6 items 1–2 pass.
 - 2026-10-19 03:24 Stairs: the first landing (2 studs) jammed a walker; widened to 4, both storeys walked up and down.

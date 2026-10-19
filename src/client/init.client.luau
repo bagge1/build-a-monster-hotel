@@ -18,6 +18,8 @@ local systems: { { Init: () -> (), Start: () -> () } } = {
 	require(Client.CollectionPanels) :: any,
 	require(Client.ProgressionPanel) :: any,
 	require(Client.LivePanels) :: any,
+	require(Client.HunterRenderer) :: any,
+	require(Client.Sound) :: any,
 	require(Client.TutorialController) :: any, -- last: it points at every other panel's buttons
 }
 

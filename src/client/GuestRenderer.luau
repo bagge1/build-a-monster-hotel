@@ -244,7 +244,9 @@ local function frame()
 	end)
 	for i, entry in order do
 		local d = entry.d
-		local show = i <= MAX_DRAWN and entry.dist <= DRAW_RADIUS
+		-- The low graphics tier draws half as many (§13.4's budget for a low-end phone).
+		local cap = if me:GetAttribute("LowGraphics") then MAX_DRAWN // 2 else MAX_DRAWN
+		local show = i <= cap and entry.dist <= DRAW_RADIUS
 		if show and not d.model then
 			spawnModel(d)
 		elseif not show and d.model then
