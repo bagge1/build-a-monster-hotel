@@ -38,6 +38,7 @@ local systems: { { Init: () -> (), Start: () -> () } } = {
 	require(Server.EventService) :: any, -- the calendar's events, over the bus, guests and hunters
 	require(Server.SettingsService) :: any,
 	require(Server.SocialService) :: any, -- likes, friend bonus, pings, the street leaderboard
+	require(Server.LeaderboardService) :: any, -- the global boards by the bus stop
 	require(Server.Analytics) :: any, -- the funnel; its Start hooks the systems above
 	require(Server.TutorialService) :: any, -- Gloom, last: it reads what every system counts
 }

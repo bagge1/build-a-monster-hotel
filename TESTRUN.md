@@ -123,6 +123,8 @@ multiply a capture's x and y by viewport width / 1920 (3434 / 1920 on his screen
   Likes) is in the player list; a hotel's own Like prompt is hidden from its owner.
 - [!] The Street Favourite badge reached the sign a step late and the Likes
   column did not follow likes. Fixed (`SocialService.likesChanged`).
+- [x] The global board stands by the bus stop with its three lists; without
+  DataStore access it says so. Its scores: [A] (WAITING §3.1).
 - [A] Liking another hotel, the friend bonus: need two players (**Test → Start
   Test Session → Server and Clients**, his).
 
