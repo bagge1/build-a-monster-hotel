@@ -134,3 +134,10 @@ after them wrote a byte-identical `manifest.json`, `validation.json` and
   the back could block the walk to the stair core), with a plank floor, a red
   runner, a log desk with snowflakes, a snowy timber gable over the entrance
   with a lantern, and snowy pines in the far corners.
+
+## 2026-10-19 afternoon: the sign posts
+
+The cosmetics set found each `HotelSign` post's top ring poking ~0.07 studs out
+of the Board's front face, where the sign's text goes. The posts now end under
+the Board (5 tall, ring at y 4.6–5.0). Rebuilt; validation passes. The saved
+`assets/HotelKit/.../HotelSign.rbxm` is the old one until the next import.

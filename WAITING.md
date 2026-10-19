@@ -43,6 +43,12 @@ Med Claudes skärmdump där det finns en. -->
    `archive/screens/2026-10-19_store_gifts.jpg`. En **🎁 Gift**-knapp på varje
    pass, raden för att välja mottagare överst. Nattutkast; utseendet är ditt.
 
+4. **Kosmetika för hotellet** (2026-10-19, nattutkast): bilden
+   `blender/cosmetics/hotel/review/front.png` (fler i samma mapp). Pumpkin
+   sign, Icicle sign, Lantern sign, två familjevapen (Haunted Manor och
+   Frostfang) och Bat bunting och Fairy lights över entrén, på båda hotellens
+   skyltar och valv. Inget är importerat än; utseendet är ditt.
+
 ## §2 Beslut
 
 <!-- En fråga i taget, med alternativen och Claudes rekommendation. -->
@@ -107,6 +113,14 @@ Med Claudes skärmdump där det finns en. -->
    Då behöver de ett rum där (t.ex. vilket rum som helst av rätt storlek).
    **Rekommendation:** ja, ett Frostfang-monster per buss ibland, i ett
    Standard Room; det är det som gör det till en crossover.
+
+9. **Skyltens eget vapen när man bär en skylt-kosmetika** (2026-10-19). Varje
+   hotells skylt har redan ett gavelvapen ovanför tavlan (månen, snöflingan).
+   Familjevapnen (kosmetika) står framför det och döljer mitten av det.
+   **Alternativ:** (a) behåll båda; (b) dölj skyltens eget vapen medan en
+   skylt-kosmetika bärs; (c) dölj det bara för familjevapnen.
+   **Rekommendation:** (c): ramarna (pumpa, istappar, lyktor) passar ihop med
+   gaveln, vapnen gör det inte.
 
 ## §3 Creator Hub och publicering
 

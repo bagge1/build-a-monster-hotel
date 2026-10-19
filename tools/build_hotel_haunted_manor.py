@@ -602,7 +602,8 @@ def hotel_sign():
     begin('HotelSign', 'Sign', (16, 0.2, 1))
     for name, x in (('PostLeft', -7), ('PostRight', 7)):
         span(name, (x - 0.4, 0, -0.4), (x + 0.4, 0.5, 0.4), 'stone_dark', bevel=0.06)
-        lathe(name, [(0.3, 0.5), (0.3, 5.6), (0.4, 5.8), (0.4, 6.0)], 'wood_dark', n=8, base=(x, 0, 0))
+        # The post ends under the Board (bottom y 5): its ring never reaches the board's text face.
+        lathe(name, [(0.3, 0.5), (0.3, 4.6), (0.4, 4.8), (0.4, 5.0)], 'wood_dark', n=8, base=(x, 0, 0))
     # The Board: a plain box, its front (-Z) the SurfaceGui's face.
     box('Board', (0, 8, 0), (16, 6, 0.6), {'front': 'night', 'back': 'plum_dark', 'rest': 'gold'}, bevel=0.08)
     # A crest over it: a gable with a crescent moon (lit) and two bats.

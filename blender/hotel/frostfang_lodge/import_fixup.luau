@@ -141,8 +141,8 @@ local SET = {
 		root = Vector3.new(0, 0.1, 0),
 		parts = {
 			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(16, 0.2, 1), collide = false },
-			PostLeft = { c = Vector3.new(-7, 3, 0), s = Vector3.new(0.8, 6, 0.8), collide = true },
-			PostRight = { c = Vector3.new(7, 3, 0), s = Vector3.new(0.8, 6, 0.8), collide = true },
+			PostLeft = { c = Vector3.new(-7, 2.5, 0), s = Vector3.new(0.8, 5, 0.8), collide = true },
+			PostRight = { c = Vector3.new(7, 2.5, 0), s = Vector3.new(0.8, 5, 0.8), collide = true },
 			Board = { c = Vector3.new(0, 8, 0), s = Vector3.new(16, 6, 0.6), collide = true },
 			Crest = { c = Vector3.new(0, 8.875, 0), s = Vector3.new(16, 9.75, 0.7), collide = false },
 			Glow_Cold_1 = { c = Vector3.new(0, 12, -0.3), s = Vector3.new(1.1, 1.0131, 0.06), collide = false },

@@ -149,3 +149,10 @@ re-imported FBX, for:
 - The lobby keeps the blockout's open plan (no walls), with a checkerboard
   floor, a crimson runner, the arch with a jack-o'-lantern and two pumpkin
   planters in the far corners.
+
+## 2026-10-19 afternoon: the sign posts
+
+The cosmetics set found each `HotelSign` post's top ring poking ~0.07 studs out
+of the Board's front face, where the sign's text goes. The posts now end under
+the Board (5 tall, ring at y 4.6–5.0). Rebuilt; validation passes. The saved
+`assets/HotelKit/.../HotelSign.rbxm` is the old one until the next import.
