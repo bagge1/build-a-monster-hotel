@@ -62,8 +62,32 @@ and writes its log as `archive/NATTLOGG-2026-10-19.md`.
    - Mutations.
 
    *Done:* played in Studio.
-5. **If there's time:** M4's rebirth and the Gloom tutorial (GDD §6.4, §11), or monster and hotel-kit
-   models in Blender (skill `modelling`), staged for his import in `WAITING.md` §0.
+5. **M4, progression** (GDD §6, §11).
+   - Economy pass on the GDD's starting values (no rebalancing).
+   - Rebirth, Moon Shards and the Moon Tree.
+   - Location 2, Frostfang Lodge.
+   - The Gloom tutorial.
+   - Mobile UI.
+
+   *Done:* played in Studio, including a phone-sized run (skill `playtest`).
+6. **M5, live systems** (GDD §9, §10).
+   - Receipts, passes and products wired to placeholder ids (creating them in Creator Hub is his:
+     `WAITING.md` §3).
+   - Rewarded ads.
+   - Daily requests, the login calendar, codes, notifications.
+   - The analytics funnel.
+7. **M6, polish** (GDD §8, §12).
+   - Hunter Night.
+   - Sound.
+   - Performance budgets checked on the low device tier.
+   - Interface images drawn by script.
+   - Monster and hotel-kit models built in Blender and staged for his import (`WAITING.md` §0).
+8. **Then keep going** down the GDD (§6.6's later locations, §8's events) until usage or the
+   GDD runs out.
+
+**The goal is the whole game in this sitting.** Get as far down the list as possible, in order.
+Each step closes only when it has been played in Studio. What only August can do (imports,
+Creator Hub, looks) is queued in `WAITING.md`, never waited for.
 
 **Blocked steps:**
 - **Studio not connected:** keep building the code and specs, write "not run in Studio" in the log and
