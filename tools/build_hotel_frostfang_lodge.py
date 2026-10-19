@@ -25,7 +25,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import hotel_kit as K  # noqa: E402
 from hotel_kit import (begin, finish, box, span, cyl, lathe, sphere, prism, attach, declare,  # noqa: E402
-                       room_shell, picture, at, CELL, T)
+                       room_shell, picture, at, CELL, T, WALL, LOBBY_W, LOBBY_D, STAIR_S)
 
 SET = 'hotel/frostfang_lodge'
 ROOMS = [('IglooRoom', 2, 2), ('IceCave', 2, 3), ('YetiDen', 3, 3), ('FrostLoft', 2, 3),
@@ -85,21 +85,22 @@ def icicle(part, x, y, z, length, r=0.13, col='ice'):
 def snow_edges(W, D, icicles=True, col='snow'):
     """A snow cornice along the top of every wall's inner face, and icicles under it."""
     hw, hd, lip = W / 2 - T, D / 2 - T, 0.24
-    span('Dressing', (-hw, 9.55, hd - lip), (hw, 10.0, hd), col, bevel=0.1)
-    span('Dressing', (-hw, 9.55, -hd), (hw, 10.0, -hd + lip), col, bevel=0.1)
-    span('Dressing', (-hw, 9.55, -hd + lip), (-hw + lip, 10.0, hd - lip), col, bevel=0.1)
-    span('Dressing', (hw - lip, 9.55, -hd + lip), (hw, 10.0, hd - lip), col, bevel=0.1)
+    y0, y1 = WALL - 0.45, WALL
+    span('Dressing', (-hw, y0, hd - lip), (hw, y1, hd), col, bevel=0.1)
+    span('Dressing', (-hw, y0, -hd), (hw, y1, -hd + lip), col, bevel=0.1)
+    span('Dressing', (-hw, y0, -hd + lip), (-hw + lip, y1, hd - lip), col, bevel=0.1)
+    span('Dressing', (hw - lip, y0, -hd + lip), (hw, y1, hd - lip), col, bevel=0.1)
     if not icicles:
         return
     lengths = (0.9, 0.5, 0.7, 0.4, 1.1, 0.6)
     k = 0
     x = -hw + 0.8
     while x < hw - 0.6:
-        icicle('Dressing', x, 9.6, hd - 0.12, lengths[k % 6]); k += 1; x += 1.3
+        icicle('Dressing', x, WALL - 0.4, hd - 0.12, lengths[k % 6]); k += 1; x += 1.3
     for sx in (-1, 1):
         z = -hd + 1.2
         while z < hd - 0.6:
-            icicle('Dressing', sx * (hw - 0.12), 9.6, z, lengths[k % 6]); k += 1; z += 1.4
+            icicle('Dressing', sx * (hw - 0.12), WALL - 0.4, z, lengths[k % 6]); k += 1; z += 1.4
 
 
 def lantern(x, y, z, wall, n, col='iron'):
@@ -283,8 +284,8 @@ def ice_cave():
     lathe('Furniture', [(0.25, 0.9), (0.25, 1.9), (0, 2.4)], 'ice_deep', n=6, base=(xr - 1.15, 0, -4.9),
           m=None)
     # Longer stalactites over the back of the cave.
-    for x, ln in ((-4.2, 1.8), (-2.6, 1.2), (2.4, 1.5), (4.0, 2.0)):
-        icicle('Dressing', x, 9.6, D / 2 - T - 0.6, ln, r=0.22, col='ice_deep')
+    for x, ln in ((-8.6, 3.4), (-6.2, 2.4), (-4.2, 3.0), (-2.6, 2.0), (2.4, 2.6), (4.0, 3.6), (6.4, 2.2), (8.8, 3.0)):
+        icicle('Dressing', x, WALL - 0.4, D / 2 - T - 0.6, ln, r=0.22, col='ice_deep')
     window((-W / 2 + T, 6.4, -4.5), (3.0, 2.0), 'left')
     finish(note='an ice-brick cave: a stone slab bed under furs, a glowing crystal cluster, stalactites')
 
@@ -349,12 +350,14 @@ def frost_loft():
                     icicle('Furniture', xr - 1.05, y, z0 + 0.7 + j * 1.0, 0.45, r=0.1)
     for z in (z0 + 1.2, z1 - 1.2):          # knitting needles stuck in the top ball
         cyl('Furniture', (0, 0, 0), 0.04, 1.0, 'gold', n=4, m=at((xr - 0.65, 4.0, z), rx=20 if z < -4 else -20))
-    # Rafters under the roof, stars hanging from them.
-    for z in (-5.0, 0.0, 5.0):
-        span('Dressing', (-W / 2 + T, 8.95, z - 0.25), (W / 2 - T, 9.45, z + 0.25), 'wood_dark', bevel=0.05)
-    for x, z in ((-4.0, -2.5), (-1.5, 2.5), (1.5, -2.5), (4.0, 2.5)):
-        cyl('Dressing', (x, 8.3, z), 0.03, 0.7, 'iron', n=4)
-        flake('Dressing', (x, 7.9, z), 0.35, 'ice', 'back')
+    # Rafters under the slab, stars hanging from them on long threads.
+    ry = WALL - 2.05
+    for z in (-12.0, -4.0, 4.0):
+        span('Dressing', (-W / 2 + T, ry, z - 0.25), (W / 2 - T, ry + 0.5, z + 0.25), 'wood_dark', bevel=0.05)
+    for x, z, y in ((-6.0, -4.0, 9.9), (-2.0, 4.0, 10.6), (2.0, -4.0, 10.2), (6.0, 4.0, 9.6), (-4.0, -12.0, 10.4),
+                    (4.0, -12.0, 9.8)):
+        cyl('Dressing', (x, y + 0.4, z), 0.03, ry - y - 0.4, 'iron', n=4)
+        flake('Dressing', (x, y, z), 0.35, 'ice', 'back')
     # An aurora window on the left wall.
     xl = -W / 2 + T
     picture((xl, 6.3, -4.5), (3.4, 2.4), 'wood', 'night', 'left')
@@ -404,15 +407,15 @@ def aurora_dome():
                        floor=('navy', 'ink'), rug=(6.4, 5.2, -3.5, 'lilac', 'violet'))
     # The northern lights across the back and both side walls (three Magic glows).
     hd, hw = D / 2 - T, W / 2 - T
-    aurora_ribbon('Glow_Magic_1', -7.6, 7.6, 6.4, hd - 0.05, 0.6, 'aurora', seg=10, h=0.45)
+    aurora_ribbon('Glow_Magic_1', -hw + 2, hw - 2, 9.0, hd - 0.05, 0.9, 'aurora', seg=16, h=0.5)
     for n, sx in ((2, -1), (3, 1)):
-        aurora_ribbon(f'Glow_Magic_{n}', -7.4, 2.4, 7.2, sx * (hw - 0.05), 0.5, 'aurora', wall='left', seg=7, h=0.4)
-    # Stars.
-    for k in range(18):
-        x = -7.6 + (k * 3.7) % 15.2
-        y = 4.2 + (k * 1.7) % 4.6
-        if abs(y - 6.4) < 0.9:
-            y -= 1.6
+        aurora_ribbon(f'Glow_Magic_{n}', -hd + 3, hd - 7, 9.6, sx * (hw - 0.05), 0.8, 'aurora', wall='left', seg=12, h=0.45)
+    # Stars over the bed and up to the crown.
+    for k in range(34):
+        x = -hw + 1.5 + (k * 7.3) % (2 * hw - 3)
+        y = 4.2 + (k * 2.9) % 11.4
+        if abs(y - 9.0) < 1.4:
+            y -= 2.6
         sphere('Dressing', (x, y, hd - 0.04), (0.11, 0.11, 0.04), 'yellow' if k % 3 else 'white', n=6, rings=3)
     # A cloud bed: puffs of snow on a low base, a violet blanket.
     zb, zf = D / 2 - T - 0.05, D / 2 - 6.1
@@ -508,37 +511,37 @@ def aurora_deck():
 # --- The lobby, the stair core and the sign (the Haunted Manor's colliding boxes, re-dressed) -----
 
 def lobby():
-    begin('Lobby', 'Lobby', (72, 0.2, 12), root_centre=(0, 0.1, 6))
+    begin('Lobby', 'Lobby', (LOBBY_W, 0.2, LOBBY_D), root_centre=(0, 0.1, LOBBY_D / 2))
     declare('Rug', False)       # the blockout's Rug does not collide either
     # The floor: long planks to the lobby's edges, in three woods.
     woods = ('wood', 'wood_light', 'log')
-    for k in range(12):
-        span('Rug', (-36, 0, k), (36, 0.1, k + 1), woods[k % 3], bevel=0.02)
+    for k in range(int(LOBBY_D)):
+        span('Rug', (-LOBBY_W / 2, 0, k), (LOBBY_W / 2, 0.1, k + 1), woods[k % 3], bevel=0.02)
     # A carpet from the door into the lobby, and on along the queue to the desk.
-    span('Rug', (-2.2, 0.1, 0.8), (2.2, 0.13, 6.0), 'cream')
-    span('Rug', (-1.9, 0.13, 0.8), (1.9, 0.15, 6.0), 'red')
-    for z in (1.5, 4.9):
+    qz = K.blockout_attachments('Lobby')['Desk'][0][2]
+    dx = K.LOBBY_COUNTER_TOP[1][0] + 0.3
+    span('Rug', (-2.2, 0.1, 0.8), (2.2, 0.13, qz + 1.5), 'cream')
+    span('Rug', (-1.9, 0.13, 0.8), (1.9, 0.15, qz + 1.5), 'red')
+    for z in (1.5, qz - 1.8):
         span('Rug', (-1.9, 0.15, z - 0.12), (1.9, 0.16, z + 0.12), 'cream')
-    span('Rug', (-24.6, 0.1, 1.4), (-2.2, 0.13, 4.4), 'cream')
-    span('Rug', (-24.3, 0.13, 1.7), (-1.9, 0.15, 4.1), 'red')
+    span('Rug', (dx, 0.1, qz - 1.5), (-2.2, 0.13, qz + 1.5), 'cream')
+    span('Rug', (dx + 0.3, 0.13, qz - 1.2), (-1.9, 0.15, qz + 1.2), 'red')
     # The front wall round the arch (MODELS.md, "Lobby"): the lodge's facade blue to the street,
-    # logs inside as in its rooms, snow along its top.
+    # logs inside as in its rooms, its crown snow (it meets the slab above, so no snow on its top).
     K.lobby_front_wall(outside='facade', paper=('log', 'log_dark'), wainscot='wood_dark', crown='snow',
                        plinth='stone_dark', frame='log_dark', sill='snow')
-    for x0, x1 in ((-36, -K.LOBBY_ARCH_X), (K.LOBBY_ARCH_X, 36)):
-        span('Dressing', (x0, K.LOBBY_WALL_TOP, 0.0), (x1, K.LOBBY_WALL_TOP + 0.3, K.LOBBY_WALL_T + 0.1), 'snow', bevel=0.1)
     # The front desk across the -X end, served toward +X (the entrance): logs laid along it.
     (lo, hi), (tlo, thi) = K.LOBBY_COUNTER, K.LOBBY_COUNTER_TOP
     span('Desk', lo, hi, 'log_dark', bevel=0.1)
     for y in (0.55, 1.45, 2.35):
         cyl('Desk', (0, 0, 0), 0.42, hi[2] - lo[2] - 0.2, 'log', n=8, m=K.at((hi[0] - 0.12, y, lo[2] + 0.1), rx=90))
     zc = (lo[2] + hi[2]) / 2
-    for z in (zc - 1.9, zc, zc + 1.9):
+    for z in (zc - 3.0, zc, zc + 3.0):
         flake('Desk', (hi[0] + 0.33, 2.4, z), 0.45, 'white', wall='side')
     span('Desk', tlo, thi, 'wood_light', bevel=0.05)
     span('Desk', (tlo[0], 3.75, tlo[2]), (tlo[0] + 0.6, 3.82, thi[2]), 'snow')
-    K.lobby_bell('Desk', -25.6, thi[1], 2.9, 'gold')   # at the check-in prompt
-    span('Desk', (-26.5, 3.8, 3.7), (-25.6, 3.95, 4.7), 'red', bevel=0.03)
+    K.lobby_bell('Desk', hi[0] - 0.4, thi[1], qz, 'gold')   # at the check-in prompt
+    span('Desk', (hi[0] - 1.3, 3.8, qz + 0.8), (hi[0] - 0.4, 3.95, qz + 1.8), 'red', bevel=0.03)
     K.lobby_till(body='red_dark', keys='cream', drawer='gold', screen='cream')
     # The desk lamp on the counter's near end.
     K.lobby_lamp('iron', 'red')
@@ -560,16 +563,23 @@ def lobby():
     snow = [(-5.9, 9.4), (-5.5, 9.45), (0, 11.15), (5.5, 9.45), (5.9, 9.4), (5.9, 9.75), (0, 11.75), (-5.9, 9.75)]
     prism('ArchTop', snow, 0.0, 1.0, 'snow', plane='xy')
     flake('ArchTop', (0, 10.1, 0.03), 0.5, 'trim')
+    # The wall over the snowy gable, up to the slab: the arch is a door's height, the wall the storey's.
+    over = [(-5.5, 9.9), (0, 11.76), (5.5, 9.9), (5.5, K.LOBBY_WIN_HI), (-5.5, K.LOBBY_WIN_HI)]
+    prism('ArchTop', over, 0.0, K.LOBBY_WALL_T, {'front': 'facade', 'back': 'log', 'rest': 'log'}, plane='xy')
+    course = K.LOBBY_WIN_HI + 0.5
+    span('ArchTop', (-5.5, K.LOBBY_WIN_HI, 0.0), (5.5, course, K.LOBBY_WALL_T), 'snow')
+    span('ArchTop', (-5.5, course, 0.0), (5.5, WALL - 0.4, K.LOBBY_WALL_T), {'front': 'facade', 'back': 'log', 'rest': 'log'})
+    span('ArchTop', (-5.5, WALL - 0.4, 0.0), (5.5, WALL, K.LOBBY_WALL_T), 'snow')
     for x in (-4.2, -2.6, 2.4, 4.0):
         icicle('Dressing', x, 9.0, 0.5, 0.5 + 0.2 * (abs(x) % 2), r=0.12)
-    # The lantern hanging inside the arch.
-    cyl('Dressing', (0, 9.2, 1.5), 0.05, 1.5, 'iron', n=4)
-    box('Dressing', (0, 9.2, 1.5), (0.8, 0.12, 0.8), 'iron')
-    box('Dressing', (0, 7.8, 1.5), (0.8, 0.12, 0.8), 'iron')
+    # The lantern hanging inside the arch, its chain from the ceiling.
+    cyl('Dressing', (0, 10.7, 1.5), 0.05, WALL - 10.7, 'iron', n=4)
+    box('Dressing', (0, 10.7, 1.5), (0.8, 0.12, 0.8), 'iron')
+    box('Dressing', (0, 9.3, 1.5), (0.8, 0.12, 0.8), 'iron')
     for dx in (-0.36, 0.36):
         for dz in (-0.36, 0.36):
-            box('Dressing', (dx, 8.5, 1.5 + dz), (0.08, 1.3, 0.08), 'iron')
-    sphere('Glow_Warm_1', (0, 8.5, 1.5), (0.3, 0.45, 0.3), 'lamp', n=8, rings=5)
+            box('Dressing', (dx, 10.0, 1.5 + dz), (0.08, 1.3, 0.08), 'iron')
+    sphere('Glow_Warm_1', (0, 10.0, 1.5), (0.3, 0.45, 0.3), 'lamp', n=8, rings=5)
     for n, x in enumerate(K.LOBBY_SCONCES):
         K.lobby_sconce(x, 7.2, n + 3, 'iron', candle='cream')
     for aname, (pos, look) in K.blockout_attachments('Lobby').items():
@@ -580,7 +590,7 @@ def lobby():
 
 def stairs(top):
     name = 'StairCoreTop' if top else 'StairCore'
-    begin(name, 'Stairs', (12, 0.2, 12))
+    begin(name, 'Stairs', (STAIR_S, 0.2, STAIR_S))
     # Every walked box is the blockout's, exactly (K.blockout_stairs); only colour and chamfers are added.
     for sname, (c, s) in K.blockout_stairs(top).items():
         c, s = K.Vector(c), K.Vector(s)
@@ -617,12 +627,15 @@ def stairs(top):
     for aname, (pos, look) in K.blockout_attachments('Stairs').items():
         attach(aname, pos, look)
     # A lantern over the flight up, high on the left wall, and a snowy-mountain picture over the landing.
-    lantern(-6 + T, 11.6, -1.0, 'left', 1)
-    yp = 9.6 if not top else 10.6
-    picture((0, yp, 6 - T), (2.6, 2.4), 'wood', 'sky')
+    hs = STAIR_S / 2
+    lantern(-hs + T, 14.6, -4.0, 'left', 1)
+    K.stair_handrails('wood_dark', 'iron')
+    K.stair_soffits('log_dark')
+    yp = K.STAIR_LANDING_Y + (3.6 if not top else 4.6)
+    picture((0, yp, hs - T), (2.6, 2.4), 'wood', 'sky')
     prism('Dressing', [(-1.0, yp - 0.95), (1.0, yp - 0.95), (0.25, yp + 0.6), (-0.05, yp + 0.3), (-0.4, yp + 0.75)],
-          6 - T - 0.16, 6 - T - 0.1, 'ice_deep', plane='xy')
-    prism('Dressing', [(-0.62, yp + 0.3), (-0.4, yp + 0.75), (-0.2, yp + 0.47)], 6 - T - 0.2, 6 - T - 0.14, 'snow', plane='xy')
+          hs - T - 0.16, hs - T - 0.1, 'ice_deep', plane='xy')
+    prism('Dressing', [(-0.62, yp + 0.3), (-0.4, yp + 0.75), (-0.2, yp + 0.47)], hs - T - 0.2, hs - T - 0.14, 'snow', plane='xy')
     finish(note='the walker-proven switchback in logs, red-carpeted, snow on the walls\' tops' + (', railed round the stairwell' if top else ''))
 
 

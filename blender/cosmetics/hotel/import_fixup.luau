@@ -24,6 +24,8 @@ local SET = {
 		att = {
 		},
 		precise = {  },
+		light = 12,
+		lightAll = false,
 	},
 	Cosmetic_IcicleSign = {
 		root = Vector3.new(0, 0, 0.3),
@@ -35,6 +37,8 @@ local SET = {
 		att = {
 		},
 		precise = {  },
+		light = 12,
+		lightAll = false,
 	},
 	Cosmetic_LanternSign = {
 		root = Vector3.new(0, 0, 0.3),
@@ -48,6 +52,8 @@ local SET = {
 		att = {
 		},
 		precise = {  },
+		light = 12,
+		lightAll = false,
 	},
 	Cosmetic_Family1 = {
 		root = Vector3.new(0, 0, 0.3),
@@ -59,6 +65,8 @@ local SET = {
 		att = {
 		},
 		precise = {  },
+		light = 12,
+		lightAll = false,
 	},
 	Cosmetic_Family2 = {
 		root = Vector3.new(0, 0, 0.3),
@@ -70,6 +78,8 @@ local SET = {
 		att = {
 		},
 		precise = {  },
+		light = 12,
+		lightAll = false,
 	},
 	Cosmetic_BatBunting = {
 		root = Vector3.new(0, 0.1, 0),
@@ -81,6 +91,8 @@ local SET = {
 		att = {
 		},
 		precise = {  },
+		light = 12,
+		lightAll = false,
 	},
 	Cosmetic_FairyLights = {
 		root = Vector3.new(0, 0.1, 0),
@@ -104,6 +116,8 @@ local SET = {
 		att = {
 		},
 		precise = {  },
+		light = 12,
+		lightAll = false,
 	},
 }
 
@@ -171,9 +185,9 @@ for name, spec in SET do
 			p.Material = Enum.Material.Neon
 			p.Color = GLOW[key] or GLOW.Warm
 			p.CastShadow = false
-			if string.match(pname, "_1$") and not p:FindFirstChildOfClass("PointLight") then
+			if (spec.lightAll or string.match(pname, "_1$")) and not p:FindFirstChildOfClass("PointLight") then
 				local light = Instance.new("PointLight")
-				light.Range = 12
+				light.Range = if spec.lightAll then 16 else spec.light
 				light.Brightness = 0.6
 				light.Color = p.Color
 				light.Shadows = false

@@ -178,3 +178,32 @@ The reviewers' lodge-only findings:
 | 2.3 | The till faces the guest | **False** by design: the owner collects at the till from the served side, where its prompt is |
 | 2.7 | Room arches are tall and narrow | **False** for this work: the rooms are unchanged (4 wide, the contract) |
 | 2.8 | The rooms are bare | **False**: the players place the decor |
+
+## 2026-10-19 night: the doubled scale
+
+The same rescale as Haunted Manor's (that README, "the doubled scale"): rooms
+24 × 24 to 36 × 36 with 17-stud walls, the lobby 144 × 24, the stair core
+24 × 24 with 15 steps a storey, the sign and decor unchanged. The lodge's
+own: the log and snow-block walls keep their courses' size (twice as many,
+unchamfered, so the rooms stay under 6,000 triangles), the snow cornice and
+icicles under the slab, the ice cave's stalactites longer, the frost loft's
+rafters under the slab with its stars on threads, the aurora dome's lights
+and stars across its wider walls, no snow on the lobby wall's top (it meets
+the slab). Every piece validates (18/18). **Not run in Studio.**
+
+### Blind reviews of the renders (2026-10-19 night, Fable, two rounds)
+
+| Round, # | The finding | Triage |
+|---|---|---|
+| 1.1, 2.1 | The facade does not read as a log lodge | **His call**, already put (WAITING §2.11: logs outside the front wall now, if he wants) |
+| 1.2, 2.2 | The entrance is lost; the sign's crest looks like a second entrance | **His call**: WAITING §2.13 |
+| 1.3 | "The stairs are at the desk" | **False**: that is the Igloo Room's snow-block wall seen through its door; the stairs are at the far end (x 120 to 144) |
+| 1.4, 2.3 | The lobby is a tunnel; the desk is unreadable from the door | **His call**: WAITING §2.13 |
+| 1.5 | The room doorway is a 3-stud slot | **False**: 4 × 7 clear, checked by `finish()` |
+| 1.6 | The room-side wall: flat panels, bright seams | **Confirmed**: the seams were the doors' 17-stud snow jambs, now to the arch's head; the wainscot and crown now run round the outside |
+| 1.7, 2.4 | Stairwell: the floor looks missing, a lip at its mouth, a picture at floor level, a tall bottom riser | **False**: the floor is the code's ground; the lip is the lobby planks' 0.1 edge; the picture is 3.6 over the landing; every rise is 1.2. The open underside: **confirmed**, a soffit |
+| 1.8, 2.5 | The room is empty; the pictures hang high | **His call**: WAITING §2.13 |
+| 1.9 | The posts' bases read as pipe couplers | **His call**, already put (the arch's columns) |
+| 1.10, 2.7 | Two window sizes | **False**: all 6 × 9, the camera stands off centre |
+| 2.6 | The till reads as a toy house; the key board as a calendar; the counter at the chin | Till and keys: kept from the lobby rework, to be seen in the game. The counter: **his call** |
+| 2.8 | Stairs through a room doorway | **False**: the Igloo Room's wall courses |

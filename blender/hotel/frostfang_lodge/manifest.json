@@ -270,9 +270,9 @@
      0.0
     ],
     "size": [
-     12.0,
+     24.0,
      0.2,
-     12.0
+     24.0
     ]
    },
    "parts": {
@@ -283,9 +283,9 @@
       0.0
      ],
      "size": [
-      12.0,
+      24.0,
       0.2,
-      12.0
+      24.0
      ],
      "triangles": 12,
      "collide": false
@@ -297,64 +297,64 @@
       0.0
      ],
      "size": [
-      11.8,
+      23.8,
       0.25,
-      11.8
+      23.8
      ],
-     "triangles": 440,
+     "triangles": 792,
      "collide": true
     },
     "Wall_Back": {
      "centre": [
       0.0,
-      5.0,
-      5.8
+      8.5,
+      11.8
      ],
      "size": [
-      12.0,
-      10.0,
+      24.0,
+      17.0,
       0.4
      ],
-     "triangles": 396,
+     "triangles": 268,
      "collide": true
     },
     "Wall_Left": {
      "centre": [
-      -5.8,
-      5.0,
+      -11.8,
+      8.5,
       0.0
      ],
      "size": [
       0.4,
-      10.0,
-      11.2
+      17.0,
+      23.2
      ],
-     "triangles": 396,
+     "triangles": 268,
      "collide": true
     },
     "Wall_Right": {
      "centre": [
-      5.8,
-      5.0,
+      11.8,
+      8.5,
       0.0
      ],
      "size": [
       0.4,
-      10.0,
-      11.2
+      17.0,
+      23.2
      ],
-     "triangles": 396,
+     "triangles": 268,
      "collide": true
     },
     "Wall_Lintel": {
      "centre": [
-      -3.0,
-      8.5,
-      -5.8
+      -6.0,
+      12.0,
+      -11.8
      ],
      "size": [
       4.0,
-      3.0,
+      10.0,
       0.4
      ],
      "triangles": 32,
@@ -362,51 +362,51 @@
     },
     "Wall_FrontLeft": {
      "centre": [
-      -5.5,
-      5.0,
-      -5.8
+      -10.0,
+      8.5,
+      -11.8
      ],
      "size": [
-      1.0,
-      10.0,
+      4.0,
+      17.0,
       0.4
      ],
-     "triangles": 440,
+     "triangles": 324,
      "collide": true
     },
     "Wall_FrontRight": {
      "centre": [
-      2.5,
-      5.0,
-      -5.8
+      4.0,
+      8.5,
+      -11.8
      ],
      "size": [
-      7.0,
-      10.0,
+      16.0,
+      17.0,
       0.4
      ],
-     "triangles": 440,
+     "triangles": 324,
      "collide": true
     },
     "Dressing": {
      "centre": [
       0.005,
-      7.49,
+      10.99,
       0.03
      ],
      "size": [
-      11.23,
-      5.02,
-      11.26
+      23.23,
+      12.02,
+      23.26
      ],
-     "triangles": 1226,
+     "triangles": 1442,
      "collide": false
     },
     "Glow_Warm_1": {
      "centre": [
       0.0,
       8.15,
-      4.9
+      10.9
      ],
      "size": [
       0.4065,
@@ -420,7 +420,7 @@
      "centre": [
       0.0,
       1.8,
-      2.725
+      8.725
      ],
      "size": [
       3.9,
@@ -432,7 +432,7 @@
     },
     "Furniture": {
      "centre": [
-      4.86,
+      10.86,
       1.905,
       -1.6
      ],
@@ -446,7 +446,7 @@
     },
     "Glow_Warm_2": {
      "centre": [
-      4.95,
+      10.95,
       3.3,
       -0.8
      ],
@@ -461,13 +461,13 @@
     "LOD_Proxy": {
      "centre": [
       0.0,
-      5.0,
+      8.5,
       0.0
      ],
      "size": [
-      12.0,
-      10.0,
-      12.0
+      24.0,
+      17.0,
+      24.0
      ],
      "triangles": 108,
      "collide": false
@@ -476,9 +476,9 @@
    "attachments": {
     "Door": {
      "pos": [
-      -3.0,
+      -6.0,
       0.0,
-      -6.0
+      -12.0
      ],
      "look": [
       0.0,
@@ -488,9 +488,9 @@
     },
     "Sign": {
      "pos": [
-      -3.0,
+      -6.0,
       8.2,
-      -6.3
+      -12.3
      ],
      "look": [
       0.0,
@@ -500,9 +500,9 @@
     },
     "Decor_1": {
      "pos": [
-      -4.0,
+      -10.0,
       0.0,
-      4.0
+      10.0
      ],
      "look": [
       0.7071,
@@ -512,9 +512,9 @@
     },
     "Decor_2": {
      "pos": [
-      4.0,
+      10.0,
       0.0,
-      4.0
+      10.0
      ],
      "look": [
       -0.7071,
@@ -524,7 +524,7 @@
     },
     "Decor_3": {
      "pos": [
-      -4.0,
+      -10.0,
       0.0,
       0.0
      ],
@@ -538,7 +538,7 @@
      "pos": [
       0.0,
       0.0,
-      -1.0
+      5.0
      ],
      "look": [
       0.0,
@@ -547,7 +547,7 @@
      ]
     }
    },
-   "triangles": 4774,
+   "triangles": 4726,
    "budget": 6000,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
@@ -561,12 +561,12 @@
     "centre": [
      0.0,
      0.1,
-     6.0
+     12.0
     ],
     "size": [
-     72.0,
+     144.0,
      0.2,
-     12.0
+     24.0
     ]
    },
    "parts": {
@@ -574,12 +574,12 @@
      "centre": [
       0.0,
       0.1,
-      6.0
+      12.0
      ],
      "size": [
-      72.0,
+      144.0,
       0.2,
-      12.0
+      24.0
      ],
      "triangles": 12,
      "collide": false
@@ -588,77 +588,77 @@
      "centre": [
       0.0,
       0.08,
-      6.0
-     ],
-     "size": [
-      72.0,
-      0.16,
       12.0
      ],
-     "triangles": 600,
+     "size": [
+      144.0,
+      0.16,
+      24.0
+     ],
+     "triangles": 1128,
      "collide": false
     },
     "Wall_FrontLeft": {
      "centre": [
-      -20.75,
-      5.5,
+      -38.75,
+      8.5,
       0.4
      ],
      "size": [
-      30.5,
-      11.0,
+      66.5,
+      17.0,
       0.8
      ],
-     "triangles": 276,
+     "triangles": 528,
      "collide": true
     },
     "Dressing": {
      "centre": [
       0.0,
-      5.95,
-      1.0855
+      8.8,
+      1.4205
      ],
      "size": [
-      72.0,
-      10.7,
-      2.171
+      144.0,
+      16.4,
+      2.801
      ],
-     "triangles": 1056,
+     "triangles": 1688,
      "collide": false
     },
     "Wall_FrontRight": {
      "centre": [
-      20.75,
-      5.5,
+      38.75,
+      8.5,
       0.4
      ],
      "size": [
-      30.5,
-      11.0,
+      66.5,
+      17.0,
       0.8
      ],
-     "triangles": 216,
+     "triangles": 528,
      "collide": true
     },
     "Desk": {
      "centre": [
-      -26.02,
+      -62.02,
       2.12,
-      3.8
+      6.0
      ],
      "size": [
       2.36,
       4.24,
-      6.2
+      9.4
      ],
      "triangles": 738,
      "collide": true
     },
     "Till": {
      "centre": [
-      -25.975,
+      -61.975,
       4.66,
-      6.1133
+      8.7133
      ],
      "size": [
       1.25,
@@ -670,9 +670,9 @@
     },
     "Glow_Warm_2": {
      "centre": [
-      -26.3,
+      -62.3,
       5.05,
-      1.35
+      2.0
      ],
      "size": [
       0.4435,
@@ -684,9 +684,9 @@
     },
     "KeyRack": {
      "centre": [
-      -35.575,
+      -71.575,
       4.75,
-      3.8
+      6.0
      ],
      "size": [
       0.85,
@@ -698,12 +698,12 @@
     },
     "Bench_1": {
      "centre": [
-      14.75,
+      29.0,
       2.0,
       1.95
      ],
      "size": [
-      7.4,
+      6.7,
       4.0,
       2.0
      ],
@@ -712,12 +712,26 @@
     },
     "Bench_2": {
      "centre": [
-      30.0,
+      43.5,
       2.0,
       1.95
      ],
      "size": [
-      5.9,
+      6.9,
+      4.0,
+      2.0
+     ],
+     "triangles": 616,
+     "collide": true
+    },
+    "Bench_3": {
+     "centre": [
+      53.5,
+      2.0,
+      1.95
+     ],
+     "size": [
+      6.9,
       4.0,
       2.0
      ],
@@ -726,7 +740,7 @@
     },
     "Planter_1": {
      "centre": [
-      20.75,
+      36.0,
       2.91,
       2.0
      ],
@@ -740,7 +754,21 @@
     },
     "Planter_2": {
      "centre": [
-      34.6,
+      48.5,
+      2.91,
+      2.0
+     ],
+     "size": [
+      2.0325,
+      5.82,
+      2.0325
+     ],
+     "triangles": 150,
+     "collide": true
+    },
+    "Planter_3": {
+     "centre": [
+      70.6,
       2.91,
       2.0
      ],
@@ -783,21 +811,21 @@
     "ArchTop": {
      "centre": [
       0.0,
-      10.375,
+      13.0,
       0.5
      ],
      "size": [
       11.8,
-      2.75,
+      8.0,
       1.0
      ],
-     "triangles": 152,
+     "triangles": 204,
      "collide": true
     },
     "Glow_Warm_1": {
      "centre": [
       0.0,
-      8.5,
+      10.0,
       1.5
      ],
      "size": [
@@ -810,7 +838,7 @@
     },
     "Glow_Warm_3": {
      "centre": [
-      -15.5,
+      -43.0,
       7.03,
       1.32
      ],
@@ -824,7 +852,7 @@
     },
     "Glow_Warm_4": {
      "centre": [
-      17.0,
+      -29.0,
       7.03,
       1.32
      ],
@@ -838,7 +866,49 @@
     },
     "Glow_Warm_5": {
      "centre": [
-      30.0,
+      -14.0,
+      7.03,
+      1.32
+     ],
+     "size": [
+      0.1386,
+      0.34,
+      0.16
+     ],
+     "triangles": 36,
+     "collide": false
+    },
+    "Glow_Warm_6": {
+     "centre": [
+      14.0,
+      7.03,
+      1.32
+     ],
+     "size": [
+      0.1386,
+      0.34,
+      0.16
+     ],
+     "triangles": 36,
+     "collide": false
+    },
+    "Glow_Warm_7": {
+     "centre": [
+      29.0,
+      7.03,
+      1.32
+     ],
+     "size": [
+      0.1386,
+      0.34,
+      0.16
+     ],
+     "triangles": 36,
+     "collide": false
+    },
+    "Glow_Warm_8": {
+     "centre": [
+      52.5,
       7.03,
       1.32
      ],
@@ -853,15 +923,15 @@
     "LOD_Proxy": {
      "centre": [
       0.0,
-      5.875,
-      3.4633
+      8.5,
+      5.35
      ],
      "size": [
-      72.0,
-      11.75,
-      6.9266
+      144.0,
+      17.0,
+      10.7
      ],
-     "triangles": 144,
+     "triangles": 168,
      "collide": false
     }
    },
@@ -880,9 +950,9 @@
     },
     "Desk": {
      "pos": [
-      -24.8,
+      -60.8,
       3.8,
-      2.9
+      5.0
      ],
      "look": [
       1.0,
@@ -892,9 +962,9 @@
     },
     "Clerk": {
      "pos": [
-      -30.0,
+      -66.0,
       0.0,
-      3.8
+      6.0
      ],
      "look": [
       1.0,
@@ -904,9 +974,9 @@
     },
     "Till": {
      "pos": [
-      -24.8,
+      -60.8,
       3.8,
-      5.9
+      8.5
      ],
      "look": [
       1.0,
@@ -916,9 +986,9 @@
     },
     "Spawn": {
      "pos": [
-      4.0,
+      8.0,
       0.0,
-      8.0
+      18.0
      ],
      "look": [
       0.0,
@@ -928,7 +998,7 @@
     },
     "SignBoard": {
      "pos": [
-      24.0,
+      48.0,
       0.0,
       -5.0
      ],
@@ -940,9 +1010,9 @@
     },
     "Queue_1": {
      "pos": [
-      -22.0,
+      -58.0,
       0.0,
-      2.9
+      5.0
      ],
      "look": [
       -1.0,
@@ -952,9 +1022,9 @@
     },
     "Queue_2": {
      "pos": [
-      -18.5,
+      -54.5,
       0.0,
-      2.9
+      5.0
      ],
      "look": [
       -1.0,
@@ -964,9 +1034,9 @@
     },
     "Queue_3": {
      "pos": [
-      -15.0,
+      -51.0,
       0.0,
-      2.9
+      5.0
      ],
      "look": [
       -1.0,
@@ -976,9 +1046,9 @@
     },
     "Queue_4": {
      "pos": [
-      -11.5,
+      -47.5,
       0.0,
-      2.9
+      5.0
      ],
      "look": [
       -1.0,
@@ -988,9 +1058,9 @@
     },
     "Trap_1": {
      "pos": [
-      -8.0,
+      -16.0,
       0.0,
-      3.0
+      6.0
      ],
      "look": [
       0.0,
@@ -1000,9 +1070,9 @@
     },
     "Trap_2": {
      "pos": [
-      8.0,
+      16.0,
       0.0,
-      3.0
+      6.0
      ],
      "look": [
       0.0,
@@ -1012,9 +1082,9 @@
     },
     "Trap_3": {
      "pos": [
-      24.0,
+      48.0,
       0.0,
-      3.0
+      6.0
      ],
      "look": [
       0.0,
@@ -1023,8 +1093,8 @@
      ]
     }
    },
-   "triangles": 6358,
-   "budget": 8000,
+   "triangles": 9008,
+   "budget": 10000,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
    "note": "an indoor reception: the front wall, logs inside, round the snowy gable; the log desk across the end with its key rack and clock, log benches and pines, the back row clear for the floor-1 doors"
@@ -1040,9 +1110,9 @@
      0.0
     ],
     "size": [
-     12.0,
+     24.0,
      0.2,
-     12.0
+     24.0
     ]
    },
    "parts": {
@@ -1053,21 +1123,21 @@
       0.0
      ],
      "size": [
-      12.0,
+      24.0,
       0.2,
-      12.0
+      24.0
      ],
      "triangles": 12,
      "collide": false
     },
     "Step_Up_1": {
      "centre": [
-      -3.0,
+      -6.0,
       0.7,
-      -4.75
+      -10.75
      ],
      "size": [
-      6.0,
+      12.0,
       1.0,
       1.5
      ],
@@ -1076,12 +1146,12 @@
     },
     "Step_Up_2": {
      "centre": [
-      -3.0,
+      -6.0,
       1.9,
-      -3.25
+      -9.25
      ],
      "size": [
-      6.0,
+      12.0,
       1.0,
       1.5
      ],
@@ -1090,12 +1160,12 @@
     },
     "Step_Up_3": {
      "centre": [
-      -3.0,
+      -6.0,
       3.1,
-      -1.75
+      -7.75
      ],
      "size": [
-      6.0,
+      12.0,
       1.0,
       1.5
      ],
@@ -1104,12 +1174,12 @@
     },
     "Step_Up_4": {
      "centre": [
-      -3.0,
+      -6.0,
       4.3,
-      -0.25
+      -6.25
      ],
      "size": [
-      6.0,
+      12.0,
       1.0,
       1.5
      ],
@@ -1118,12 +1188,54 @@
     },
     "Step_Up_5": {
      "centre": [
-      -3.0,
+      -6.0,
       5.5,
-      1.25
+      -4.75
      ],
      "size": [
-      6.0,
+      12.0,
+      1.0,
+      1.5
+     ],
+     "triangles": 44,
+     "collide": true
+    },
+    "Step_Up_6": {
+     "centre": [
+      -6.0,
+      6.7,
+      -3.25
+     ],
+     "size": [
+      12.0,
+      1.0,
+      1.5
+     ],
+     "triangles": 44,
+     "collide": true
+    },
+    "Step_Up_7": {
+     "centre": [
+      -6.0,
+      7.9,
+      -1.75
+     ],
+     "size": [
+      12.0,
+      1.0,
+      1.5
+     ],
+     "triangles": 44,
+     "collide": true
+    },
+    "Step_Up_8": {
+     "centre": [
+      -6.0,
+      9.1,
+      -0.25
+     ],
+     "size": [
+      12.0,
       1.0,
       1.5
      ],
@@ -1133,25 +1245,25 @@
     "Landing": {
      "centre": [
       0.0,
-      5.5,
-      4.0
+      9.1,
+      6.25
      ],
      "size": [
-      12.0,
+      24.0,
       1.0,
-      4.0
+      11.5
      ],
      "triangles": 44,
      "collide": true
     },
     "Step_Down_1": {
      "centre": [
-      3.0,
-      6.7,
-      1.25
+      6.0,
+      10.3,
+      -0.25
      ],
      "size": [
-      6.0,
+      12.0,
       1.0,
       1.5
      ],
@@ -1160,12 +1272,12 @@
     },
     "Step_Down_2": {
      "centre": [
-      3.0,
-      7.9,
-      -0.25
+      6.0,
+      11.5,
+      -1.75
      ],
      "size": [
-      6.0,
+      12.0,
       1.0,
       1.5
      ],
@@ -1174,12 +1286,12 @@
     },
     "Step_Down_3": {
      "centre": [
-      3.0,
-      9.1,
-      -1.75
+      6.0,
+      12.7,
+      -3.25
      ],
      "size": [
-      6.0,
+      12.0,
       1.0,
       1.5
      ],
@@ -1188,12 +1300,12 @@
     },
     "Step_Down_4": {
      "centre": [
-      3.0,
-      10.3,
-      -3.25
+      6.0,
+      13.9,
+      -4.75
      ],
      "size": [
-      6.0,
+      12.0,
       1.0,
       1.5
      ],
@@ -1202,93 +1314,121 @@
     },
     "Step_Down_5": {
      "centre": [
-      3.0,
-      11.5,
-      -5.0
+      6.0,
+      15.1,
+      -6.25
      ],
      "size": [
-      6.0,
+      12.0,
       1.0,
-      2.0
+      1.5
+     ],
+     "triangles": 44,
+     "collide": true
+    },
+    "Step_Down_6": {
+     "centre": [
+      6.0,
+      16.3,
+      -7.75
+     ],
+     "size": [
+      12.0,
+      1.0,
+      1.5
+     ],
+     "triangles": 44,
+     "collide": true
+    },
+    "Step_Down_7": {
+     "centre": [
+      6.0,
+      17.5,
+      -10.25
+     ],
+     "size": [
+      12.0,
+      1.0,
+      3.5
      ],
      "triangles": 44,
      "collide": true
     },
     "Wall_Left": {
      "centre": [
-      -5.8,
-      6.0,
+      -11.8,
+      9.0,
       0.0
      ],
      "size": [
       0.4,
-      12.0,
-      12.0
+      18.0,
+      24.0
      ],
-     "triangles": 572,
+     "triangles": 880,
      "collide": true
     },
     "Wall_Right": {
      "centre": [
-      5.8,
-      6.0,
+      11.8,
+      9.0,
       0.0
      ],
      "size": [
       0.4,
-      12.0,
-      12.0
+      18.0,
+      24.0
      ],
-     "triangles": 572,
+     "triangles": 880,
      "collide": true
     },
     "Wall_Back": {
      "centre": [
       0.0,
-      6.0,
-      5.8
+      9.0,
+      11.8
      ],
      "size": [
-      12.0,
-      12.0,
+      24.0,
+      18.0,
       0.4
      ],
-     "triangles": 572,
+     "triangles": 880,
      "collide": true
     },
     "Divider": {
      "centre": [
       0.0,
-      6.0,
-      -1.75
+      9.0,
+      -5.5
      ],
      "size": [
       0.4,
-      12.0,
-      7.5
+      18.0,
+      12.0
      ],
      "triangles": 132,
      "collide": true
     },
     "Dressing": {
      "centre": [
-      -2.18,
-      10.275,
-      2.1225
+      -0.02,
+      12.0,
+      0.0444
      ],
      "size": [
-      6.96,
-      3.75,
-      6.995
+      23.28,
+      18.0937,
+      23.1512
      ],
-     "triangles": 286,
+     "triangles": 482,
      "collide": false
     },
     "Glow_Warm_1": {
      "centre": [
-      -4.9,
-      11.15,
-      -1.0
+      -10.9,
+      14.15,
+      -4.0
      ],
      "size": [
       0.4065,
@@ -1301,53 +1441,53 @@
     "LOD_Proxy": {
      "centre": [
       0.0,
-      6.0,
+      9.0,
       0.0
      ],
      "size": [
-      12.0,
-      12.0,
-      12.0
+      24.0,
+      18.0,
+      24.0
      ],
-     "triangles": 180,
+     "triangles": 240,
      "collide": false
     }
    },
    "attachments": {
     "Bottom": {
      "pos": [
-      -3.0,
+      -6.0,
       0.0,
-      -5.75
+      -11.75
      ],
      "look": null
     },
     "Path_1": {
      "pos": [
-      -3.0,
-      6.0,
-      4.0
+      -6.0,
+      9.6,
+      6.25
      ],
      "look": null
     },
     "Path_2": {
      "pos": [
-      3.0,
       6.0,
-      4.0
+      9.6,
+      6.25
      ],
      "look": null
     },
     "Top": {
      "pos": [
-      3.0,
-      12.0,
-      -5.75
+      6.0,
+      18.0,
+      -11.75
      ],
      "look": null
     }
    },
-   "triangles": 2678,
+   "triangles": 4018,
    "budget": 8000,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
@@ -1364,9 +1504,9 @@
      0.0
     ],
     "size": [
-     12.0,
+     24.0,
      0.2,
-     12.0
+     24.0
     ]
    },
    "parts": {
@@ -1377,21 +1517,21 @@
       0.0
      ],
      "size": [
-      12.0,
+      24.0,
       0.2,
-      12.0
+      24.0
      ],
      "triangles": 12,
      "collide": false
     },
     "Step_Up_1": {
      "centre": [
-      -3.0,
+      -6.0,
       0.7,
-      -4.75
+      -10.75
      ],
      "size": [
-      6.0,
+      12.0,
       1.0,
       1.5
      ],
@@ -1400,12 +1540,12 @@
     },
     "Step_Up_2": {
      "centre": [
-      -3.0,
+      -6.0,
       1.9,
-      -3.25
+      -9.25
      ],
      "size": [
-      6.0,
+      12.0,
       1.0,
       1.5
      ],
@@ -1414,12 +1554,12 @@
     },
     "Step_Up_3": {
      "centre": [
-      -3.0,
+      -6.0,
       3.1,
-      -1.75
+      -7.75
      ],
      "size": [
-      6.0,
+      12.0,
       1.0,
       1.5
      ],
@@ -1428,12 +1568,12 @@
     },
     "Step_Up_4": {
      "centre": [
-      -3.0,
+      -6.0,
       4.3,
-      -0.25
+      -6.25
      ],
      "size": [
-      6.0,
+      12.0,
       1.0,
       1.5
      ],
@@ -1442,12 +1582,54 @@
     },
     "Step_Up_5": {
      "centre": [
-      -3.0,
+      -6.0,
       5.5,
-      1.25
+      -4.75
      ],
      "size": [
-      6.0,
+      12.0,
+      1.0,
+      1.5
+     ],
+     "triangles": 44,
+     "collide": true
+    },
+    "Step_Up_6": {
+     "centre": [
+      -6.0,
+      6.7,
+      -3.25
+     ],
+     "size": [
+      12.0,
+      1.0,
+      1.5
+     ],
+     "triangles": 44,
+     "collide": true
+    },
+    "Step_Up_7": {
+     "centre": [
+      -6.0,
+      7.9,
+      -1.75
+     ],
+     "size": [
+      12.0,
+      1.0,
+      1.5
+     ],
+     "triangles": 44,
+     "collide": true
+    },
+    "Step_Up_8": {
+     "centre": [
+      -6.0,
+      9.1,
+      -0.25
+     ],
+     "size": [
+      12.0,
       1.0,
       1.5
      ],
@@ -1457,25 +1639,25 @@
     "Landing": {
      "centre": [
       0.0,
-      5.5,
-      4.0
+      9.1,
+      6.25
      ],
      "size": [
-      12.0,
+      24.0,
       1.0,
-      4.0
+      11.5
      ],
      "triangles": 44,
      "collide": true
     },
     "Step_Down_1": {
      "centre": [
-      3.0,
-      6.7,
-      1.25
+      6.0,
+      10.3,
+      -0.25
      ],
      "size": [
-      6.0,
+      12.0,
       1.0,
       1.5
      ],
@@ -1484,12 +1666,12 @@
     },
     "Step_Down_2": {
      "centre": [
-      3.0,
-      7.9,
-      -0.25
+      6.0,
+      11.5,
+      -1.75
      ],
      "size": [
-      6.0,
+      12.0,
       1.0,
       1.5
      ],
@@ -1498,12 +1680,12 @@
     },
     "Step_Down_3": {
      "centre": [
-      3.0,
-      9.1,
-      -1.75
+      6.0,
+      12.7,
+      -3.25
      ],
      "size": [
-      6.0,
+      12.0,
       1.0,
       1.5
      ],
@@ -1512,12 +1694,12 @@
     },
     "Step_Down_4": {
      "centre": [
-      3.0,
-      10.3,
-      -3.25
+      6.0,
+      13.9,
+      -4.75
      ],
      "size": [
-      6.0,
+      12.0,
       1.0,
       1.5
      ],
@@ -1526,107 +1708,135 @@
     },
     "Step_Down_5": {
      "centre": [
-      3.0,
-      11.5,
-      -5.0
+      6.0,
+      15.1,
+      -6.25
      ],
      "size": [
-      6.0,
+      12.0,
       1.0,
-      2.0
+      1.5
+     ],
+     "triangles": 44,
+     "collide": true
+    },
+    "Step_Down_6": {
+     "centre": [
+      6.0,
+      16.3,
+      -7.75
+     ],
+     "size": [
+      12.0,
+      1.0,
+      1.5
+     ],
+     "triangles": 44,
+     "collide": true
+    },
+    "Step_Down_7": {
+     "centre": [
+      6.0,
+      17.5,
+      -10.25
+     ],
+     "size": [
+      12.0,
+      1.0,
+      3.5
      ],
      "triangles": 44,
      "collide": true
     },
     "Wall_Left": {
      "centre": [
-      -5.8,
-      7.75,
+      -11.8,
+      10.75,
       0.0
      ],
      "size": [
       0.4,
-      15.5,
-      12.0
+      21.5,
+      24.0
      ],
-     "triangles": 748,
+     "triangles": 1056,
      "collide": true
     },
     "Wall_Right": {
      "centre": [
-      5.8,
-      7.75,
+      11.8,
+      10.75,
       0.0
      ],
      "size": [
       0.4,
-      15.5,
-      12.0
+      21.5,
+      24.0
      ],
-     "triangles": 748,
+     "triangles": 1056,
      "collide": true
     },
     "Wall_Back": {
      "centre": [
       0.0,
-      7.75,
-      5.8
+      10.75,
+      11.8
      ],
      "size": [
-      12.0,
-      15.5,
+      24.0,
+      21.5,
       0.4
      ],
-     "triangles": 748,
+     "triangles": 1056,
      "collide": true
     },
     "Divider": {
      "centre": [
       0.0,
-      7.75,
-      -1.75
+      10.75,
+      -5.5
      ],
      "size": [
       0.4,
-      15.5,
-      7.5
+      21.5,
+      12.0
      ],
      "triangles": 132,
      "collide": true
     },
     "Rail_Top": {
      "centre": [
-      -3.0,
-      13.75,
-      -5.0
+      -6.0,
+      19.75,
+      -11.0
      ],
      "size": [
-      6.0,
+      12.0,
       3.5,
       0.4
      ],
-     "triangles": 336,
+     "triangles": 536,
      "collide": true
     },
     "Dressing": {
      "centre": [
-      -2.18,
-      10.775,
-      2.1225
+      -0.02,
+      12.0,
+      0.0444
      ],
      "size": [
-      6.96,
-      2.75,
-      6.995
+      23.28,
+      18.0937,
+      23.1512
      ],
-     "triangles": 286,
+     "triangles": 482,
      "collide": false
     },
     "Glow_Warm_1": {
      "centre": [
-      -4.9,
-      11.15,
-      -1.0
+      -10.9,
+      14.15,
+      -4.0
      ],
      "size": [
       0.4065,
@@ -1639,53 +1849,53 @@
     "LOD_Proxy": {
      "centre": [
       0.0,
-      7.75,
+      10.75,
       0.0
      ],
      "size": [
-      12.0,
-      15.5,
-      12.0
+      24.0,
+      21.5,
+      24.0
      ],
-     "triangles": 192,
+     "triangles": 252,
      "collide": false
     }
    },
    "attachments": {
     "Bottom": {
      "pos": [
-      -3.0,
+      -6.0,
       0.0,
-      -5.75
+      -11.75
      ],
      "look": null
     },
     "Path_1": {
      "pos": [
-      -3.0,
-      6.0,
-      4.0
+      -6.0,
+      9.6,
+      6.25
      ],
      "look": null
     },
     "Path_2": {
      "pos": [
-      3.0,
       6.0,
-      4.0
+      9.6,
+      6.25
      ],
      "look": null
     },
     "Top": {
      "pos": [
-      3.0,
-      12.0,
-      -5.75
+      6.0,
+      18.0,
+      -11.75
      ],
      "look": null
     }
    },
-   "triangles": 3542,
+   "triangles": 5082,
    "budget": 8000,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
@@ -1814,9 +2024,9 @@
      0.0
     ],
     "size": [
-     12.0,
+     24.0,
      0.2,
-     18.0
+     36.0
     ]
    },
    "parts": {
@@ -1827,9 +2037,9 @@
       0.0
      ],
      "size": [
-      12.0,
+      24.0,
       0.2,
-      18.0
+      36.0
      ],
      "triangles": 12,
      "collide": false
@@ -1841,64 +2051,64 @@
       0.0
      ],
      "size": [
-      11.8,
+      23.8,
       0.25,
-      17.8
+      35.8
      ],
-     "triangles": 440,
+     "triangles": 792,
      "collide": true
     },
     "Wall_Back": {
      "centre": [
       0.0,
-      5.0,
-      8.8
+      8.5,
+      17.8
      ],
      "size": [
-      12.0,
-      10.0,
+      24.0,
+      17.0,
       0.4
      ],
-     "triangles": 396,
+     "triangles": 268,
      "collide": true
     },
     "Wall_Left": {
      "centre": [
-      -5.8,
-      5.0,
+      -11.8,
+      8.5,
       0.0
      ],
      "size": [
       0.4,
-      10.0,
-      17.2
+      17.0,
+      35.2
      ],
-     "triangles": 396,
+     "triangles": 268,
      "collide": true
     },
     "Wall_Right": {
      "centre": [
-      5.8,
-      5.0,
+      11.8,
+      8.5,
       0.0
      ],
      "size": [
       0.4,
-      10.0,
-      17.2
+      17.0,
+      35.2
      ],
-     "triangles": 396,
+     "triangles": 268,
      "collide": true
     },
     "Wall_Lintel": {
      "centre": [
-      -3.0,
-      8.5,
-      -8.8
+      -6.0,
+      12.0,
+      -17.8
      ],
      "size": [
       4.0,
-      3.0,
+      10.0,
       0.4
      ],
      "triangles": 32,
@@ -1906,51 +2116,51 @@
     },
     "Wall_FrontLeft": {
      "centre": [
-      -5.5,
-      5.0,
-      -8.8
+      -10.0,
+      8.5,
+      -17.8
      ],
      "size": [
-      1.0,
-      10.0,
+      4.0,
+      17.0,
       0.4
      ],
-     "triangles": 440,
+     "triangles": 324,
      "collide": true
     },
     "Wall_FrontRight": {
      "centre": [
-      2.5,
-      5.0,
-      -8.8
+      4.0,
+      8.5,
+      -17.8
      ],
      "size": [
-      7.0,
-      10.0,
+      16.0,
+      17.0,
       0.4
      ],
-     "triangles": 440,
+     "triangles": 324,
      "collide": true
     },
     "Dressing": {
      "centre": [
       -0.01,
-      7.64,
+      11.14,
       0.03
      ],
      "size": [
-      11.22,
-      4.72,
-      17.26
+      23.22,
+      11.72,
+      35.26
      ],
-     "triangles": 994,
+     "triangles": 1306,
      "collide": false
     },
     "Glow_Warm_1": {
      "centre": [
       0.0,
       8.15,
-      7.9
+      16.9
      ],
      "size": [
       0.4065,
@@ -1964,7 +2174,7 @@
      "centre": [
       0.0,
       1.935,
-      5.725
+      14.725
      ],
      "size": [
       3.9,
@@ -1976,7 +2186,7 @@
     },
     "Furniture": {
      "centre": [
-      4.84,
+      10.84,
       1.75,
       -4.0
      ],
@@ -1990,7 +2200,7 @@
     },
     "Glow_Cold_1": {
      "centre": [
-      4.85,
+      10.85,
       2.6,
       -4.5
      ],
@@ -2005,13 +2215,13 @@
     "LOD_Proxy": {
      "centre": [
       0.0,
-      5.0,
+      8.5,
       0.0
      ],
      "size": [
-      12.0,
-      10.0,
-      18.0
+      24.0,
+      17.0,
+      36.0
      ],
      "triangles": 108,
      "collide": false
@@ -2020,9 +2230,9 @@
    "attachments": {
     "Door": {
      "pos": [
-      -3.0,
+      -6.0,
       0.0,
-      -9.0
+      -18.0
      ],
      "look": [
       0.0,
@@ -2032,9 +2242,9 @@
     },
     "Sign": {
      "pos": [
-      -3.0,
+      -6.0,
       8.2,
-      -9.3
+      -18.3
      ],
      "look": [
       0.0,
@@ -2044,9 +2254,9 @@
     },
     "Decor_1": {
      "pos": [
-      -4.0,
+      -10.0,
       0.0,
-      7.0
+      16.0
      ],
      "look": [
       0.7071,
@@ -2056,9 +2266,9 @@
     },
     "Decor_2": {
      "pos": [
-      4.0,
+      10.0,
       0.0,
-      7.0
+      16.0
      ],
      "look": [
       -0.7071,
@@ -2068,7 +2278,7 @@
     },
     "Decor_3": {
      "pos": [
-      -4.0,
+      -10.0,
       0.0,
       0.0
      ],
@@ -2082,7 +2292,7 @@
      "pos": [
       0.0,
       0.0,
-      2.0
+      11.0
      ],
      "look": [
       0.0,
@@ -2091,7 +2301,7 @@
      ]
     }
    },
-   "triangles": 4036,
+   "triangles": 4084,
    "budget": 6000,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
@@ -2111,9 +2321,9 @@
      0.0
     ],
     "size": [
-     18.0,
+     36.0,
      0.2,
-     18.0
+     36.0
     ]
    },
    "parts": {
@@ -2124,9 +2334,9 @@
       0.0
      ],
      "size": [
-      18.0,
+      36.0,
       0.2,
-      18.0
+      36.0
      ],
      "triangles": 12,
      "collide": false
@@ -2138,64 +2348,64 @@
       0.0
      ],
      "size": [
-      17.8,
+      35.8,
       0.25,
-      17.8
+      35.8
      ],
-     "triangles": 616,
+     "triangles": 1144,
      "collide": true
     },
     "Wall_Back": {
      "centre": [
       0.0,
-      5.0,
-      8.8
+      8.5,
+      17.8
      ],
      "size": [
-      18.0,
-      10.0,
+      36.0,
+      17.0,
       0.4
      ],
-     "triangles": 396,
+     "triangles": 268,
      "collide": true
     },
     "Wall_Left": {
      "centre": [
-      -8.8,
-      5.0,
+      -17.8,
+      8.5,
       0.0
      ],
      "size": [
       0.4,
-      10.0,
-      17.2
+      17.0,
+      35.2
      ],
-     "triangles": 396,
+     "triangles": 268,
      "collide": true
     },
     "Wall_Right": {
      "centre": [
-      8.8,
-      5.0,
+      17.8,
+      8.5,
       0.0
      ],
      "size": [
       0.4,
-      10.0,
-      17.2
+      17.0,
+      35.2
      ],
-     "triangles": 396,
+     "triangles": 268,
      "collide": true
     },
     "Wall_Lintel": {
      "centre": [
       0.0,
-      8.5,
-      -8.8
+      12.0,
+      -17.8
      ],
      "size": [
       4.0,
-      3.0,
+      10.0,
       0.4
      ],
      "triangles": 32,
@@ -2203,51 +2413,51 @@
     },
     "Wall_FrontLeft": {
      "centre": [
-      -5.5,
-      5.0,
-      -8.8
+      -10.0,
+      8.5,
+      -17.8
      ],
      "size": [
-      7.0,
-      10.0,
+      16.0,
+      17.0,
       0.4
      ],
-     "triangles": 440,
+     "triangles": 324,
      "collide": true
     },
     "Wall_FrontRight": {
      "centre": [
-      5.5,
-      5.0,
-      -8.8
+      10.0,
+      8.5,
+      -17.8
      ],
      "size": [
-      7.0,
-      10.0,
+      16.0,
+      17.0,
       0.4
      ],
-     "triangles": 440,
+     "triangles": 324,
      "collide": true
     },
     "Dressing": {
      "centre": [
       -0.005,
-      5.115,
+      8.615,
       0.03
      ],
      "size": [
-      17.21,
-      9.77,
-      17.26
+      35.21,
+      16.77,
+      35.26
      ],
-     "triangles": 1266,
+     "triangles": 1578,
      "collide": false
     },
     "Glow_Warm_1": {
      "centre": [
       0.0,
       8.15,
-      7.9
+      16.9
      ],
      "size": [
       0.4065,
@@ -2261,7 +2471,7 @@
      "centre": [
       0.0,
       0.675,
-      5.725
+      14.725
      ],
      "size": [
       3.7671,
@@ -2273,7 +2483,7 @@
     },
     "Furniture": {
      "centre": [
-      7.65,
+      16.65,
       4.625,
       -4.5579
      ],
@@ -2287,7 +2497,7 @@
     },
     "Glow_Warm_2": {
      "centre": [
-      7.0,
+      16.0,
       0.85,
       -3.0
      ],
@@ -2302,13 +2512,13 @@
     "LOD_Proxy": {
      "centre": [
       0.0,
-      5.0,
+      8.5,
       0.0
      ],
      "size": [
-      18.0,
-      10.0,
-      18.0
+      36.0,
+      17.0,
+      36.0
      ],
      "triangles": 108,
      "collide": false
@@ -2319,7 +2529,7 @@
      "pos": [
       0.0,
       0.0,
-      -9.0
+      -18.0
      ],
      "look": [
       0.0,
@@ -2331,7 +2541,7 @@
      "pos": [
       0.0,
       8.2,
-      -9.3
+      -18.3
      ],
      "look": [
       0.0,
@@ -2341,9 +2551,9 @@
     },
     "Decor_1": {
      "pos": [
-      -7.0,
+      -16.0,
       0.0,
-      7.0
+      16.0
      ],
      "look": [
       0.7071,
@@ -2353,9 +2563,9 @@
     },
     "Decor_2": {
      "pos": [
-      7.0,
+      16.0,
       0.0,
-      7.0
+      16.0
      ],
      "look": [
       -0.7071,
@@ -2365,7 +2575,7 @@
     },
     "Decor_3": {
      "pos": [
-      -7.0,
+      -16.0,
       0.0,
       0.0
      ],
@@ -2379,7 +2589,7 @@
      "pos": [
       0.0,
       0.0,
-      2.0
+      11.0
      ],
      "look": [
       0.0,
@@ -2388,7 +2598,7 @@
      ]
     }
    },
-   "triangles": 4662,
+   "triangles": 4886,
    "budget": 6000,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
@@ -2408,9 +2618,9 @@
      0.0
     ],
     "size": [
-     12.0,
+     24.0,
      0.2,
-     18.0
+     36.0
     ]
    },
    "parts": {
@@ -2421,9 +2631,9 @@
       0.0
      ],
      "size": [
-      12.0,
+      24.0,
       0.2,
-      18.0
+      36.0
      ],
      "triangles": 12,
      "collide": false
@@ -2435,64 +2645,64 @@
       0.0
      ],
      "size": [
-      11.8,
+      23.8,
       0.25,
-      17.8
+      35.8
      ],
-     "triangles": 440,
+     "triangles": 792,
      "collide": true
     },
     "Wall_Back": {
      "centre": [
       0.0,
-      5.0,
-      8.8
+      8.5,
+      17.8
      ],
      "size": [
-      12.0,
-      10.0,
+      24.0,
+      17.0,
       0.4
      ],
-     "triangles": 396,
+     "triangles": 268,
      "collide": true
     },
     "Wall_Left": {
      "centre": [
-      -5.8,
-      5.0,
+      -11.8,
+      8.5,
       0.0
      ],
      "size": [
       0.4,
-      10.0,
-      17.2
+      17.0,
+      35.2
      ],
-     "triangles": 396,
+     "triangles": 268,
      "collide": true
     },
     "Wall_Right": {
      "centre": [
-      5.8,
-      5.0,
+      11.8,
+      8.5,
       0.0
      ],
      "size": [
       0.4,
-      10.0,
-      17.2
+      17.0,
+      35.2
      ],
-     "triangles": 396,
+     "triangles": 268,
      "collide": true
     },
     "Wall_Lintel": {
      "centre": [
-      -3.0,
-      8.5,
-      -8.8
+      -6.0,
+      12.0,
+      -17.8
      ],
      "size": [
       4.0,
-      3.0,
+      10.0,
       0.4
      ],
      "triangles": 32,
@@ -2500,51 +2710,51 @@
     },
     "Wall_FrontLeft": {
      "centre": [
-      -5.5,
-      5.0,
-      -8.8
+      -10.0,
+      8.5,
+      -17.8
      ],
      "size": [
-      1.0,
-      10.0,
+      4.0,
+      17.0,
       0.4
      ],
-     "triangles": 440,
+     "triangles": 324,
      "collide": true
     },
     "Wall_FrontRight": {
      "centre": [
-      2.5,
-      5.0,
-      -8.8
+      4.0,
+      8.5,
+      -17.8
      ],
      "size": [
-      7.0,
-      10.0,
+      16.0,
+      17.0,
       0.4
      ],
-     "triangles": 440,
+     "triangles": 324,
      "collide": true
     },
     "Dressing": {
      "centre": [
       -0.01,
-      7.55,
+      11.05,
       0.03
      ],
      "size": [
-      11.22,
-      4.9,
-      17.26
+      23.22,
+      11.9,
+      35.26
      ],
-     "triangles": 1506,
+     "triangles": 2026,
      "collide": false
     },
     "Glow_Warm_1": {
      "centre": [
       0.0,
       8.15,
-      7.9
+      16.9
      ],
      "size": [
       0.4065,
@@ -2558,7 +2768,7 @@
      "centre": [
       0.0,
       1.955,
-      5.7351
+      14.7351
      ],
      "size": [
       3.9,
@@ -2570,7 +2780,7 @@
     },
     "Furniture": {
      "centre": [
-      4.99,
+      10.99,
       2.5,
       -4.4
      ],
@@ -2585,13 +2795,13 @@
     "LOD_Proxy": {
      "centre": [
       0.0,
-      5.0,
+      8.5,
       0.0
      ],
      "size": [
-      12.0,
-      10.0,
-      18.0
+      24.0,
+      17.0,
+      36.0
      ],
      "triangles": 108,
      "collide": false
@@ -2600,9 +2810,9 @@
    "attachments": {
     "Door": {
      "pos": [
-      -3.0,
+      -6.0,
       0.0,
-      -9.0
+      -18.0
      ],
      "look": [
       0.0,
@@ -2612,9 +2822,9 @@
     },
     "Sign": {
      "pos": [
-      -3.0,
+      -6.0,
       8.2,
-      -9.3
+      -18.3
      ],
      "look": [
       0.0,
@@ -2624,9 +2834,9 @@
     },
     "Decor_1": {
      "pos": [
-      -4.0,
+      -10.0,
       0.0,
-      7.0
+      16.0
      ],
      "look": [
       0.7071,
@@ -2636,9 +2846,9 @@
     },
     "Decor_2": {
      "pos": [
-      4.0,
+      10.0,
       0.0,
-      7.0
+      16.0
      ],
      "look": [
       -0.7071,
@@ -2648,7 +2858,7 @@
     },
     "Decor_3": {
      "pos": [
-      -4.0,
+      -10.0,
       0.0,
       0.0
      ],
@@ -2662,7 +2872,7 @@
      "pos": [
       0.0,
       0.0,
-      2.0
+      11.0
      ],
      "look": [
       0.0,
@@ -2671,7 +2881,7 @@
      ]
     }
    },
-   "triangles": 5462,
+   "triangles": 5718,
    "budget": 6000,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
@@ -2691,9 +2901,9 @@
      0.0
     ],
     "size": [
-     18.0,
+     36.0,
      0.2,
-     18.0
+     36.0
     ]
    },
    "parts": {
@@ -2704,9 +2914,9 @@
       0.0
      ],
      "size": [
-      18.0,
+      36.0,
       0.2,
-      18.0
+      36.0
      ],
      "triangles": 12,
      "collide": false
@@ -2718,64 +2928,64 @@
       0.0
      ],
      "size": [
-      17.8,
+      35.8,
       0.25,
-      17.8
+      35.8
      ],
-     "triangles": 616,
+     "triangles": 1144,
      "collide": true
     },
     "Wall_Back": {
      "centre": [
       0.0,
-      5.0,
-      8.8
+      8.5,
+      17.8
      ],
      "size": [
-      18.0,
-      10.0,
+      36.0,
+      17.0,
       0.4
      ],
-     "triangles": 396,
+     "triangles": 268,
      "collide": true
     },
     "Wall_Left": {
      "centre": [
-      -8.8,
-      5.0,
+      -17.8,
+      8.5,
       0.0
      ],
      "size": [
       0.4,
-      10.0,
-      17.2
+      17.0,
+      35.2
      ],
-     "triangles": 396,
+     "triangles": 268,
      "collide": true
     },
     "Wall_Right": {
      "centre": [
-      8.8,
-      5.0,
+      17.8,
+      8.5,
       0.0
      ],
      "size": [
       0.4,
-      10.0,
-      17.2
+      17.0,
+      35.2
      ],
-     "triangles": 396,
+     "triangles": 268,
      "collide": true
     },
     "Wall_Lintel": {
      "centre": [
       0.0,
-      8.5,
-      -8.8
+      12.0,
+      -17.8
      ],
      "size": [
       4.0,
-      3.0,
+      10.0,
       0.4
      ],
      "triangles": 32,
@@ -2783,51 +2993,51 @@
     },
     "Wall_FrontLeft": {
      "centre": [
-      -5.5,
-      5.0,
-      -8.8
+      -10.0,
+      8.5,
+      -17.8
      ],
      "size": [
-      7.0,
-      10.0,
+      16.0,
+      17.0,
       0.4
      ],
-     "triangles": 440,
+     "triangles": 324,
      "collide": true
     },
     "Wall_FrontRight": {
      "centre": [
-      5.5,
-      5.0,
-      -8.8
+      10.0,
+      8.5,
+      -17.8
      ],
      "size": [
-      7.0,
-      10.0,
+      16.0,
+      17.0,
       0.4
      ],
-     "triangles": 440,
+     "triangles": 324,
      "collide": true
     },
     "Dressing": {
      "centre": [
       0.02,
-      7.65,
+      11.15,
       0.03
      ],
      "size": [
-      17.28,
-      4.7,
-      17.26
+      35.28,
+      11.7,
+      35.26
      ],
-     "triangles": 1032,
+     "triangles": 1344,
      "collide": false
     },
     "Glow_Warm_1": {
      "centre": [
       0.0,
       8.15,
-      7.9
+      16.9
      ],
      "size": [
       0.4065,
@@ -2841,7 +3051,7 @@
      "centre": [
       0.0,
       2.2,
-      5.7665
+      14.7665
      ],
      "size": [
       3.8716,
@@ -2853,7 +3063,7 @@
     },
     "Furniture": {
      "centre": [
-      7.87,
+      16.87,
       2.6813,
       -3.0
      ],
@@ -2867,7 +3077,7 @@
     },
     "Glow_Cold_1": {
      "centre": [
-      7.8,
+      16.8,
       3.725,
       -1.7
      ],
@@ -2881,7 +3091,7 @@
     },
     "Glow_Warm_2": {
      "centre": [
-      7.9,
+      16.9,
       7.55,
       2.8
      ],
@@ -2896,13 +3106,13 @@
     "LOD_Proxy": {
      "centre": [
       0.0,
-      5.0,
+      8.5,
       0.0
      ],
      "size": [
-      18.0,
-      10.0,
-      18.0
+      36.0,
+      17.0,
+      36.0
      ],
      "triangles": 108,
      "collide": false
@@ -2913,7 +3123,7 @@
      "pos": [
       0.0,
       0.0,
-      -9.0
+      -18.0
      ],
      "look": [
       0.0,
@@ -2925,7 +3135,7 @@
      "pos": [
       0.0,
       8.2,
-      -9.3
+      -18.3
      ],
      "look": [
       0.0,
@@ -2935,9 +3145,9 @@
     },
     "Decor_1": {
      "pos": [
-      -7.0,
+      -16.0,
       0.0,
-      7.0
+      16.0
      ],
      "look": [
       0.7071,
@@ -2947,9 +3157,9 @@
     },
     "Decor_2": {
      "pos": [
-      7.0,
+      16.0,
       0.0,
-      7.0
+      16.0
      ],
      "look": [
       -0.7071,
@@ -2959,7 +3169,7 @@
     },
     "Decor_3": {
      "pos": [
-      -7.0,
+      -16.0,
       0.0,
       0.0
      ],
@@ -2973,7 +3183,7 @@
      "pos": [
       0.0,
       0.0,
-      2.0
+      11.0
      ],
      "look": [
       0.0,
@@ -2982,7 +3192,7 @@
      ]
     }
    },
-   "triangles": 4566,
+   "triangles": 4790,
    "budget": 6000,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
@@ -3002,9 +3212,9 @@
      0.0
     ],
     "size": [
-     18.0,
+     36.0,
      0.2,
-     18.0
+     36.0
     ]
    },
    "parts": {
@@ -3015,9 +3225,9 @@
       0.0
      ],
      "size": [
-      18.0,
+      36.0,
       0.2,
-      18.0
+      36.0
      ],
      "triangles": 12,
      "collide": false
@@ -3029,64 +3239,64 @@
       0.0
      ],
      "size": [
-      17.8,
+      35.8,
       0.25,
-      17.8
+      35.8
      ],
-     "triangles": 616,
+     "triangles": 1144,
      "collide": true
     },
     "Wall_Back": {
      "centre": [
       0.0,
-      5.0,
-      8.8
+      8.5,
+      17.8
      ],
      "size": [
-      18.0,
-      10.0,
+      36.0,
+      17.0,
       0.4
      ],
-     "triangles": 396,
+     "triangles": 268,
      "collide": true
     },
     "Wall_Left": {
      "centre": [
-      -8.8,
-      5.0,
+      -17.8,
+      8.5,
       0.0
      ],
      "size": [
       0.4,
-      10.0,
-      17.2
+      17.0,
+      35.2
      ],
-     "triangles": 396,
+     "triangles": 268,
      "collide": true
     },
     "Wall_Right": {
      "centre": [
-      8.8,
-      5.0,
+      17.8,
+      8.5,
       0.0
      ],
      "size": [
       0.4,
-      10.0,
-      17.2
+      17.0,
+      35.2
      ],
-     "triangles": 396,
+     "triangles": 268,
      "collide": true
     },
     "Wall_Lintel": {
      "centre": [
       0.0,
-      8.5,
-      -8.8
+      12.0,
+      -17.8
      ],
      "size": [
       4.0,
-      3.0,
+      10.0,
       0.4
      ],
      "triangles": 32,
@@ -3094,51 +3304,51 @@
     },
     "Wall_FrontLeft": {
      "centre": [
-      -5.5,
-      5.0,
-      -8.8
+      -10.0,
+      8.5,
+      -17.8
      ],
      "size": [
-      7.0,
-      10.0,
+      16.0,
+      17.0,
       0.4
      ],
-     "triangles": 440,
+     "triangles": 324,
      "collide": true
     },
     "Wall_FrontRight": {
      "centre": [
-      5.5,
-      5.0,
-      -8.8
+      10.0,
+      8.5,
+      -17.8
      ],
      "size": [
-      7.0,
-      10.0,
+      16.0,
+      17.0,
       0.4
      ],
-     "triangles": 440,
+     "triangles": 324,
      "collide": true
     },
     "Dressing": {
      "centre": [
       -0.005,
-      6.895,
+      10.545,
       0.03
      ],
      "size": [
-      17.21,
-      6.21,
-      17.26
+      35.21,
+      12.91,
+      35.26
      ],
-     "triangles": 1094,
+     "triangles": 1790,
      "collide": false
     },
     "Glow_Warm_1": {
      "centre": [
       0.0,
       8.15,
-      7.9
+      16.9
      ],
      "size": [
       0.4065,
@@ -3150,51 +3360,51 @@
     },
     "Glow_Magic_1": {
      "centre": [
-      0.007,
-      6.4347,
-      8.55
+      -0.0308,
+      9.0299,
+      17.55
      ],
      "size": [
-      15.4488,
-      1.5843,
+      31.4146,
+      2.2386,
       0.06
      ],
-     "triangles": 120,
+     "triangles": 192,
      "collide": false
     },
     "Glow_Magic_2": {
      "centre": [
-      -8.55,
-      7.2295,
-      -2.5084
+      -17.55,
+      9.6463,
+      -2.0029
      ],
      "size": [
       0.06,
-      1.3471,
-      9.9889
+      1.9608,
+      25.4245
      ],
-     "triangles": 84,
+     "triangles": 144,
      "collide": false
     },
     "Glow_Magic_3": {
      "centre": [
-      8.55,
-      7.2295,
-      -2.5084
+      17.55,
+      9.6463,
+      -2.0029
      ],
      "size": [
       0.06,
-      1.3471,
-      9.9889
+      1.9608,
+      25.4245
      ],
-     "triangles": 84,
+     "triangles": 144,
      "collide": false
     },
     "Bed": {
      "centre": [
       0.0,
       0.975,
-      5.725
+      14.725
      ],
      "size": [
       3.9,
@@ -3206,7 +3416,7 @@
     },
     "Furniture": {
      "centre": [
-      7.8176,
+      16.8176,
       2.3319,
       -1.7662
      ],
@@ -3221,13 +3431,13 @@
     "LOD_Proxy": {
      "centre": [
       0.0,
-      5.0,
+      8.5,
       0.0
      ],
      "size": [
-      18.0,
-      10.0,
-      18.0
+      36.0,
+      17.0,
+      36.0
      ],
      "triangles": 108,
      "collide": false
@@ -3238,7 +3448,7 @@
      "pos": [
       0.0,
       0.0,
-      -9.0
+      -18.0
      ],
      "look": [
       0.0,
@@ -3250,7 +3460,7 @@
      "pos": [
       0.0,
       8.2,
-      -9.3
+      -18.3
      ],
      "look": [
       0.0,
@@ -3260,9 +3470,9 @@
     },
     "Decor_1": {
      "pos": [
-      -7.0,
+      -16.0,
       0.0,
-      7.0
+      16.0
      ],
      "look": [
       0.7071,
@@ -3272,9 +3482,9 @@
     },
     "Decor_2": {
      "pos": [
-      7.0,
+      16.0,
       0.0,
-      7.0
+      16.0
      ],
      "look": [
       -0.7071,
@@ -3284,7 +3494,7 @@
     },
     "Decor_3": {
      "pos": [
-      -7.0,
+      -16.0,
       0.0,
       0.0
      ],
@@ -3298,7 +3508,7 @@
      "pos": [
       0.0,
       0.0,
-      2.0
+      11.0
      ],
      "look": [
       0.0,
@@ -3307,7 +3517,7 @@
      ]
     }
    },
-   "triangles": 4926,
+   "triangles": 5726,
    "budget": 6000,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
@@ -3327,9 +3537,9 @@
      0.0
     ],
     "size": [
-     12.0,
+     24.0,
      0.2,
-     12.0
+     24.0
     ]
    },
    "parts": {
@@ -3340,9 +3550,9 @@
       0.0
      ],
      "size": [
-      12.0,
+      24.0,
       0.2,
-      12.0
+      24.0
      ],
      "triangles": 12,
      "collide": false
@@ -3354,64 +3564,64 @@
       0.0
      ],
      "size": [
-      11.8,
+      23.8,
       0.25,
-      11.8
+      23.8
      ],
-     "triangles": 440,
+     "triangles": 792,
      "collide": true
     },
     "Wall_Back": {
      "centre": [
       0.0,
-      5.0,
-      5.8
+      8.5,
+      11.8
      ],
      "size": [
-      12.0,
-      10.0,
+      24.0,
+      17.0,
       0.4
      ],
-     "triangles": 396,
+     "triangles": 268,
      "collide": true
     },
     "Wall_Left": {
      "centre": [
-      -5.8,
-      5.0,
+      -11.8,
+      8.5,
       0.0
      ],
      "size": [
       0.4,
-      10.0,
-      11.2
+      17.0,
+      23.2
      ],
-     "triangles": 396,
+     "triangles": 268,
      "collide": true
     },
     "Wall_Right": {
      "centre": [
-      5.8,
-      5.0,
+      11.8,
+      8.5,
       0.0
      ],
      "size": [
       0.4,
-      10.0,
-      11.2
+      17.0,
+      23.2
      ],
-     "triangles": 396,
+     "triangles": 268,
      "collide": true
     },
     "Wall_Lintel": {
      "centre": [
-      -3.0,
-      8.5,
-      -5.8
+      -6.0,
+      12.0,
+      -11.8
      ],
      "size": [
       4.0,
-      3.0,
+      10.0,
       0.4
      ],
      "triangles": 32,
@@ -3419,51 +3629,51 @@
     },
     "Wall_FrontLeft": {
      "centre": [
-      -5.5,
-      5.0,
-      -5.8
+      -10.0,
+      8.5,
+      -11.8
      ],
      "size": [
-      1.0,
-      10.0,
+      4.0,
+      17.0,
       0.4
      ],
-     "triangles": 440,
+     "triangles": 324,
      "collide": true
     },
     "Wall_FrontRight": {
      "centre": [
-      2.5,
-      5.0,
-      -5.8
+      4.0,
+      8.5,
+      -11.8
      ],
      "size": [
-      7.0,
-      10.0,
+      16.0,
+      17.0,
       0.4
      ],
-     "triangles": 440,
+     "triangles": 324,
      "collide": true
     },
     "Dressing": {
      "centre": [
       -0.01,
-      7.54,
+      11.04,
       0.03
      ],
      "size": [
-      11.22,
-      4.92,
-      11.26
+      23.22,
+      11.92,
+      23.26
      ],
-     "triangles": 1294,
+     "triangles": 1510,
      "collide": false
     },
     "Glow_Warm_1": {
      "centre": [
       0.0,
       8.15,
-      4.9
+      10.9
      ],
      "size": [
       0.4065,
@@ -3477,12 +3687,12 @@
      "centre": [
       0.0,
       2.6,
-      2.75
+      5.75
      ],
      "size": [
       3.9,
       5.2,
-      5.7
+      11.7
      ],
      "triangles": 1418,
      "collide": true
@@ -3490,13 +3700,13 @@
     "LOD_Proxy": {
      "centre": [
       0.0,
-      5.0,
+      8.5,
       0.0
      ],
      "size": [
-      12.0,
-      10.0,
-      12.0
+      24.0,
+      17.0,
+      24.0
      ],
      "triangles": 96,
      "collide": false
@@ -3505,9 +3715,9 @@
    "attachments": {
     "Door": {
      "pos": [
-      -3.0,
+      -6.0,
       0.0,
-      -6.0
+      -12.0
      ],
      "look": [
       0.0,
@@ -3517,9 +3727,9 @@
     },
     "Sign": {
      "pos": [
-      -3.0,
+      -6.0,
       8.2,
-      -6.3
+      -12.3
      ],
      "look": [
       0.0,
@@ -3529,9 +3739,9 @@
     },
     "Decor_1": {
      "pos": [
-      -4.0,
+      -10.0,
       0.0,
-      4.0
+      10.0
      ],
      "look": [
       0.7071,
@@ -3541,9 +3751,9 @@
     },
     "Decor_2": {
      "pos": [
-      4.0,
+      10.0,
       0.0,
-      4.0
+      10.0
      ],
      "look": [
       -0.7071,
@@ -3553,7 +3763,7 @@
     },
     "Decor_3": {
      "pos": [
-      -4.0,
+      -10.0,
       0.0,
       0.0
      ],
@@ -3567,7 +3777,7 @@
      "pos": [
       0.0,
       0.0,
-      -2.0
+      -4.0
      ],
      "look": [
       0.0,
@@ -3576,7 +3786,7 @@
      ]
     }
    },
-   "triangles": 5312,
+   "triangles": 5264,
    "budget": 6000,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
@@ -3596,9 +3806,9 @@
      0.0
     ],
     "size": [
-     12.0,
+     24.0,
      0.2,
-     12.0
+     24.0
     ]
    },
    "parts": {
@@ -3609,9 +3819,9 @@
       0.0
      ],
      "size": [
-      12.0,
+      24.0,
       0.2,
-      12.0
+      24.0
      ],
      "triangles": 12,
      "collide": false
@@ -3623,64 +3833,64 @@
       0.0
      ],
      "size": [
-      11.8,
+      23.8,
       0.2,
-      11.8
+      23.8
      ],
-     "triangles": 352,
+     "triangles": 704,
      "collide": true
     },
     "Wall_Back": {
      "centre": [
       0.0,
-      5.0,
-      5.8
+      8.5,
+      11.8
      ],
      "size": [
-      12.0,
-      10.0,
+      24.0,
+      17.0,
       0.4
      ],
-     "triangles": 396,
+     "triangles": 268,
      "collide": true
     },
     "Wall_Left": {
      "centre": [
-      -5.8,
-      5.0,
+      -11.8,
+      8.5,
       0.0
      ],
      "size": [
       0.4,
-      10.0,
-      11.2
+      17.0,
+      23.2
      ],
-     "triangles": 396,
+     "triangles": 268,
      "collide": true
     },
     "Wall_Right": {
      "centre": [
-      5.8,
-      5.0,
+      11.8,
+      8.5,
       0.0
      ],
      "size": [
       0.4,
-      10.0,
-      11.2
+      17.0,
+      23.2
      ],
-     "triangles": 396,
+     "triangles": 268,
      "collide": true
     },
     "Wall_Lintel": {
      "centre": [
-      -3.0,
-      8.5,
-      -5.8
+      -6.0,
+      12.0,
+      -11.8
      ],
      "size": [
       4.0,
-      3.0,
+      10.0,
       0.4
      ],
      "triangles": 32,
@@ -3688,49 +3898,49 @@
     },
     "Wall_FrontLeft": {
      "centre": [
-      -5.5,
-      5.0,
-      -5.8
+      -10.0,
+      8.5,
+      -11.8
      ],
      "size": [
-      1.0,
-      10.0,
+      4.0,
+      17.0,
       0.4
      ],
-     "triangles": 440,
+     "triangles": 324,
      "collide": true
     },
     "Wall_FrontRight": {
      "centre": [
-      2.5,
-      5.0,
-      -5.8
+      4.0,
+      8.5,
+      -11.8
      ],
      "size": [
-      7.0,
-      10.0,
+      16.0,
+      17.0,
       0.4
      ],
-     "triangles": 440,
+     "triangles": 324,
      "collide": true
     },
     "Dressing": {
      "centre": [
       0.025,
-      6.925,
+      10.425,
       0.01
      ],
      "size": [
-      11.27,
-      6.15,
-      11.22
+      23.27,
+      13.15,
+      23.22
      ],
-     "triangles": 802,
+     "triangles": 1018,
      "collide": false
     },
     "Glow_Warm_1": {
      "centre": [
-      4.9,
+      10.9,
       7.75,
       -2.0
      ],
@@ -3746,7 +3956,7 @@
      "centre": [
       0.0057,
       6.8281,
-      5.44
+      11.44
      ],
      "size": [
       7.8637,
@@ -3760,7 +3970,7 @@
      "centre": [
       0.0032,
       5.6237,
-      5.44
+      11.44
      ],
      "size": [
       7.3784,
@@ -3787,13 +3997,13 @@
     "LOD_Proxy": {
      "centre": [
       0.0,
-      5.0,
+      8.5,
       0.0
      ],
      "size": [
-      12.0,
-      10.0,
-      12.0
+      24.0,
+      17.0,
+      24.0
      ],
      "triangles": 96,
      "collide": false
@@ -3802,9 +4012,9 @@
    "attachments": {
     "Door": {
      "pos": [
-      -3.0,
+      -6.0,
       0.0,
-      -6.0
+      -12.0
      ],
      "look": [
       0.0,
@@ -3814,9 +4024,9 @@
     },
     "Sign": {
      "pos": [
-      -3.0,
+      -6.0,
       8.2,
-      -6.3
+      -12.3
      ],
      "look": [
       0.0,
@@ -3826,9 +4036,9 @@
     },
     "Decor_1": {
      "pos": [
-      -4.0,
+      -10.0,
       0.0,
-      4.0
+      10.0
      ],
      "look": [
       0.7071,
@@ -3838,9 +4048,9 @@
     },
     "Decor_2": {
      "pos": [
-      4.0,
+      10.0,
       0.0,
-      4.0
+      10.0
      ],
      "look": [
       -0.7071,
@@ -3850,7 +4060,7 @@
     },
     "Decor_3": {
      "pos": [
-      -4.0,
+      -10.0,
       0.0,
       0.0
      ],
@@ -3864,7 +4074,7 @@
      "pos": [
       0.0,
       0.0,
-      -2.0
+      -4.0
      ],
      "look": [
       0.0,
@@ -3873,7 +4083,7 @@
      ]
     }
    },
-   "triangles": 3894,
+   "triangles": 3846,
    "budget": 6000,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",

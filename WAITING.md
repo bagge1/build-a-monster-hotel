@@ -23,6 +23,15 @@ Connect: knappen under fliken Plugins i Studio. -->
    setens `README.md`).
 4. ~~**Importera elva modeller**~~ (gjort 2026-10-19: alla elva inställda,
    sparade och synkade; lobbyn är strålad och gången, `TESTRUN.md` fas 10).
+5. **Importera 27 modeller i den dubbla skalan** (2026-10-19). Båda
+   hotellens rum, bekvämligheter, `Lobby`, `StairCore` och `StairCoreTop`,
+   ombyggda i den nya skalan (en cell 12 studs, en våning 18, väggarna upp
+   till bjälklaget). Importera **alla filer i `blender/_import/`** till
+   **Workspace** i en dialog och skriv *importerat*. Frostfangs tre som
+   delar namn med Haunted Manors heter `FrostfangLodge_...` i mappen; Claude
+   döper om dem. Skylten och dekoren är oförändrade och ingår inte. Bilden:
+   `archive/screens/2026-10-19_doubled_scale.jpg` (övre raden Haunted Manor,
+   nedre Frostfang: gatan, lobbyn mot disken, ett rum, trappan).
 
 ## §1 Att titta på eller spela
 
@@ -165,6 +174,31 @@ Med Claudes skärmdump där det finns en. -->
    bjälklaget; möbler, dörrar och trappsteg behåller personens storlek. Står i
    `CLAUDE.md`, "The scale of a person", och GDD §3 och §18. Byggs i en egen
    session.)
+
+13. **Den dubbla skalan: det granskarna såg som är ditt** (2026-10-19,
+   fem blinda granskningar av renderingarna, setens `README.md`). Det som var
+   fel är rättat (väggen över entrén, dörrkarmarna, mattorna, en list och en
+   bröstpanel på rummens väggar mot lobbyn, trappans ledstång). Kvar är fyra
+   saker som är utseende, med Claudes rekommendation:
+   - "Lobbyn är en lång korridor och disken syns inte från dörren." Lobbyn är
+     nu 144 × 24 studs, och disken står 60 studs från entrén (layout A, vid
+     gaveln bort från trappan). **Rekommendation:** gå den i spelet först; blir
+     den tom, möblera sträckan mellan entrén och disken (soffgrupper, mattor),
+     hellre än att flytta disken.
+   - "Rummen är tomma lådor." Ett 2×2-rum är 24 × 24 × 17 studs med samma säng
+     och möbel som förut. **Rekommendation:** en möbelgrupp till i varje rum
+     (en fåtölj med ett sidobord, en garderob) och större tavlor; spelarnas
+     dekor fyller resten.
+   - "Disken når hakan." Disken är 3,8 studs hög, 76 % av en 5-studs person
+     (en riktig disk är ungefär 61 %, 3,1 studs). Du godkände disken i
+     lobbyomgörningen. **Rekommendation:** sänk till 3,2 när du ser den i
+     spelet, om den känns hög.
+   - "Fasaden är platt och entrén syns inte" (i alla rundor). Entrébågen är
+     dörrstor (9 × 9) i en 144 studs lång vägg, och inget får sticka ut
+     utanför tomten. Claude har lagt till en list ovanför fönstren och en
+     taklist. **Rekommendation:** som i punkt 11, vänta till fasadbitarna;
+     vill du ha entrén mer synlig nu kan bågen bli större (dörrar ska vara
+     minst 4 × 7, så bara utseendet bestämmer).
 
 ## §3 Creator Hub och publicering
 

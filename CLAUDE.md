@@ -53,7 +53,11 @@ cramped. Could probably double everything just about"; the cell was 6 and the
 floor 12 before, 4 in the first GDD draft). A 2×2 room is 24 × 24 studs; walls
 reach the slab above (17 clear). The spaces doubled, not the things in them:
 furniture, doors, counters and steps stay built for the 5-stud person (GDD §3,
-§5). Monsters are measured against the same 5-stud person.
+§5). Monsters are measured against the same 5-stud person. **Double only what
+makes the hotel less cramped**, not every number by rule (his words, the same
+evening: "when I said double everything, i didnt mean *everything* just
+because, only things that made sense to double, like making the hotel less
+cramped").
 
 Everything a person uses (seats, doors, stairs, counters, railings, walkways)
 is built for that height, and a clearance is measured against it, never against

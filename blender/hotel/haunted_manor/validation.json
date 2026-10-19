@@ -11,7 +11,7 @@
     "the atlas travels embedded in the FBX",
     "the contract re-checked on the re-imported boxes: Root, footprint, wall boxes = blockout, door opening 4 x 7, Door -> Bed walk for a 5-stud person, decor slots, budgets"
    ],
-   "triangles": 2480,
+   "triangles": 3360,
    "budget": 6000,
    "collision_precise": [],
    "attachments": [
@@ -27,13 +27,13 @@
    "ok": true,
    "faults": [],
    "checks": [
-    "21 part names round-trip",
+    "26 part names round-trip",
     "every box within 0.02 stud and every triangle count as built (orientation and scale)",
     "the atlas travels embedded in the FBX",
     "the contract re-checked on the re-imported boxes (Root, footprint, kind rules, budgets)"
    ],
-   "triangles": 6818,
-   "budget": 8000,
+   "triangles": 8574,
+   "budget": 10000,
    "collision_precise": [],
    "attachments": [
     "Clerk",
@@ -55,12 +55,12 @@
    "ok": true,
    "faults": [],
    "checks": [
-    "19 part names round-trip",
+    "24 part names round-trip",
     "every box within 0.02 stud and every triangle count as built (orientation and scale)",
     "the atlas travels embedded in the FBX",
     "the contract re-checked on the re-imported boxes (Root, footprint, kind rules, budgets)"
    ],
-   "triangles": 1276,
+   "triangles": 1692,
    "budget": 8000,
    "collision_precise": [],
    "attachments": [
@@ -74,12 +74,12 @@
    "ok": true,
    "faults": [],
    "checks": [
-    "20 part names round-trip",
+    "25 part names round-trip",
     "every box within 0.02 stud and every triangle count as built (orientation and scale)",
     "the atlas travels embedded in the FBX",
     "the contract re-checked on the re-imported boxes (Root, footprint, kind rules, budgets)"
    ],
-   "triangles": 1612,
+   "triangles": 2228,
    "budget": 8000,
    "collision_precise": [],
    "attachments": [
@@ -112,7 +112,7 @@
     "the atlas travels embedded in the FBX",
     "the contract re-checked on the re-imported boxes: Root, footprint, wall boxes = blockout, door opening 4 x 7, Door -> Bed walk for a 5-stud person, decor slots, budgets"
    ],
-   "triangles": 2848,
+   "triangles": 3728,
    "budget": 6000,
    "collision_precise": [],
    "attachments": [
@@ -133,7 +133,7 @@
     "the atlas travels embedded in the FBX",
     "the contract re-checked on the re-imported boxes: Root, footprint, wall boxes = blockout, door opening 4 x 7, Door -> Bed walk for a 5-stud person, decor slots, budgets"
    ],
-   "triangles": 2420,
+   "triangles": 3432,
    "budget": 6000,
    "collision_precise": [],
    "attachments": [
@@ -154,7 +154,7 @@
     "the atlas travels embedded in the FBX",
     "the contract re-checked on the re-imported boxes: Root, footprint, wall boxes = blockout, door opening 4 x 7, Door -> Bed walk for a 5-stud person, decor slots, budgets"
    ],
-   "triangles": 2320,
+   "triangles": 3200,
    "budget": 6000,
    "collision_precise": [],
    "attachments": [
@@ -175,7 +175,7 @@
     "the atlas travels embedded in the FBX",
     "the contract re-checked on the re-imported boxes: Root, footprint, wall boxes = blockout, door opening 4 x 7, Door -> Bed walk for a 5-stud person, decor slots, budgets"
    ],
-   "triangles": 3080,
+   "triangles": 3960,
    "budget": 6000,
    "collision_precise": [],
    "attachments": [
@@ -196,7 +196,7 @@
     "the atlas travels embedded in the FBX",
     "the contract re-checked on the re-imported boxes: Root, footprint, wall boxes = blockout, door opening 4 x 7, Door -> Bed walk for a 5-stud person, decor slots, budgets"
    ],
-   "triangles": 2276,
+   "triangles": 3332,
    "budget": 6000,
    "collision_precise": [],
    "attachments": [
@@ -217,7 +217,7 @@
     "the atlas travels embedded in the FBX",
     "the contract re-checked on the re-imported boxes: Root, footprint, wall boxes = blockout, door opening 4 x 7, Door -> Bed walk for a 5-stud person, decor slots, budgets"
    ],
-   "triangles": 2232,
+   "triangles": 3288,
    "budget": 6000,
    "collision_precise": [],
    "attachments": [
@@ -238,7 +238,7 @@
     "the atlas travels embedded in the FBX",
     "the contract re-checked on the re-imported boxes: Root, footprint, wall boxes = blockout, door opening 4 x 7, Door -> Bed walk for a 5-stud person, decor slots, budgets"
    ],
-   "triangles": 2900,
+   "triangles": 3956,
    "budget": 6000,
    "collision_precise": [],
    "attachments": [
@@ -259,7 +259,7 @@
     "the atlas travels embedded in the FBX",
     "the contract re-checked on the re-imported boxes: Root, footprint, wall boxes = blockout, door opening 4 x 7, Door -> Bed walk for a 5-stud person, decor slots, budgets"
    ],
-   "triangles": 2434,
+   "triangles": 3314,
    "budget": 6000,
    "collision_precise": [],
    "attachments": [
@@ -280,7 +280,7 @@
     "the atlas travels embedded in the FBX",
     "the contract re-checked on the re-imported boxes: Root, footprint, wall boxes = blockout, door opening 4 x 7, Door -> Bed walk for a 5-stud person, decor slots, budgets"
    ],
-   "triangles": 2032,
+   "triangles": 2912,
    "budget": 6000,
    "collision_precise": [],
    "attachments": [
@@ -301,7 +301,7 @@
     "the atlas travels embedded in the FBX",
     "the contract re-checked on the re-imported boxes: Root, footprint, wall boxes = blockout, door opening 4 x 7, Door -> Bed walk for a 5-stud person, decor slots, budgets"
    ],
-   "triangles": 2372,
+   "triangles": 3252,
    "budget": 6000,
    "collision_precise": [],
    "attachments": [
@@ -322,7 +322,7 @@
     "the atlas travels embedded in the FBX",
     "the contract re-checked on the re-imported boxes: Root, footprint, wall boxes = blockout, door opening 4 x 7, Door -> Bed walk for a 5-stud person, decor slots, budgets"
    ],
-   "triangles": 3820,
+   "triangles": 4700,
    "budget": 6000,
    "collision_precise": [],
    "attachments": [
@@ -343,7 +343,7 @@
     "the atlas travels embedded in the FBX",
     "the contract re-checked on the re-imported boxes: Root, footprint, wall boxes = blockout, door opening 4 x 7, Door -> Bed walk for a 5-stud person, decor slots, budgets"
    ],
-   "triangles": 2266,
+   "triangles": 3146,
    "budget": 6000,
    "collision_precise": [],
    "attachments": [

@@ -120,7 +120,9 @@ local function updateCamera()
 	local angle = view * math.pi / 2
 	local back = frame:VectorToWorldSpace(Vector3.new(math.sin(angle), 0, -math.cos(angle)))
 	camera.CameraType = Enum.CameraType.Scriptable
-	camera.CFrame = CFrame.lookAt(centre + back * 50 + Vector3.new(0, 62, 0), centre)
+	-- The whole plot in view: the distance grows with the plot (50 back, 62 up for 72 studs).
+	camera.CFrame =
+		CFrame.lookAt(centre + back * (size * 0.7) + Vector3.new(0, size * 0.86, 0), centre)
 end
 
 local function setHidden()

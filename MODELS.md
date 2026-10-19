@@ -95,7 +95,8 @@ allow.
   | Kind | Triangles |
   |---|---|
   | A room or amenity | 6,000 (a 3×3 suite with its decor slots empty) |
-  | Lobby, stairs | 8,000 each |
+  | The lobby | 10,000 (144 × 24 studs since the doubled scale: four times the first draft's floor, one per hotel) |
+  | Stairs | 8,000 |
   | A facade | 10,000 |
   | A decor piece | 1,500 |
   | The hotel sign | 3,000 (draft) |
@@ -117,25 +118,28 @@ allow.
 
 ## Hotel kit
 
-> **Being rescaled** (his ruling, 2026-10-19 evening, `CLAUDE.md` "The scale
-> of a person"): the cell becomes 12 studs and a floor 18, with walls up to
-> the slab; furniture, doors, counters and steps stay person-sized. The
-> numbers below are still the 6-stud contract until the rescale rewrites them,
-> and this section is rewritten first.
-
 Everything a hotel is built from (GDD §5, Appendix A.1–A.2). One set per
 location (`blender/hotel/<location>/`); one `.rbxm` per piece in
 `assets/HotelKit/<Location>/`, which `default.project.json` maps to
 `ServerStorage.HotelKit.<Location>`: **only the server reads these** (it builds
 every hotel in Workspace, and the built hotel replicates).
 
+**The scale** (his ruling, 2026-10-19 evening, `CLAUDE.md` "The scale of a
+person"): the spaces are twice the first draft's, the things in them are not.
+A cell is **12 studs**, a floor **18**, and every wall reaches the slab above.
+Furniture, beds, counters, decor, doors (openings at least 4 × 7) and steps
+(at most 1.2 rise, at least 1.5 tread) stay built for the 5-stud person;
+a room gets more room round them, never bigger furniture.
+
 **The frame.** Every piece is authored at rotation 0, **its door toward −Z**
 (the street), with its origin at the **centre of its footprint on the floor's
 walking surface** (y = 0 is where feet stand). A footprint is w × d cells of
-**6 studs** (`Constants.Grid.CellSize`), so a 2×2 room is 12 × 12 studs, a 2×3
-is 12 × 18 (18 along Z), a 3×3 is 18 × 18. **Nothing may stand outside the
-footprint**: the cell next door is somebody's hallway. A floor is 12 studs; walls
-stop at 10 (`Constants.Grid.WallHeight`), so the slab above has room.
+**12 studs** (`Constants.Grid.CellSize`), so a 2×2 room is 24 × 24 studs, a 2×3
+is 24 × 36 (36 along Z), a 3×3 is 36 × 36. **Nothing may stand outside the
+footprint**: the cell next door is somebody's hallway. A floor is **18 studs**
+(`Constants.Grid.FloorHeight`): a 1-stud slab and **17 clear**. Walls are **17
+tall** (`Constants.Grid.WallHeight`), so they meet the underside of the slab
+above; on the top floor they stand open to the sky.
 
 **Every piece has one `Root` part**: invisible, anchored, `CanCollide` off,
 `CanQuery` off, the footprint's size × 0.2 tall, centred on the origin. It
@@ -160,13 +164,17 @@ leaf would block every guest.
 
 ### Rooms and amenities (`<PieceId>`, e.g. `StandardRoom`, `SnackBar`)
 
+Walls 0.4 thick and 17 tall, inside the footprint: `Wall_Back` the full width,
+`Wall_Left` and `Wall_Right` between it and the front, the front wall in
+pieces round the door, and `Wall_Lintel` over the door from 7 to 17.
+
 | Name | What | The code |
 |---|---|---|
 | `Root` | The part above | Placement; every attachment |
-| `Door` (attachment) | The middle of the door's threshold, on the floor, **its LookVector pointing out** of the room | Cleaning and request prompts; the guest's last waypoint before the bed. Must sit over the cell `Grid.doorInside` names: at rotation 0 on the −Z wall, at x = (floor((w−1)/2) + 0.5) × 6 − w × 3 |
-| `Bed` (attachment) | Where a guest rests, facing the way it lies | The guest's destination |
-| `Decor_1`–`Decor_3` (attachments) | Where a decor piece stands, its LookVector the way the piece faces | Decor placement (`Pieces.DecorSlots`) |
-| `Sign` (attachment) | Outside, above the door | The room's name and its state (vacant, dirty, a request) |
+| `Door` (attachment) | The middle of the door's threshold, on the floor, **its LookVector pointing out** of the room | Cleaning and request prompts; the guest's last waypoint before the bed. Must sit over the cell `Grid.doorInside` names: at rotation 0 on the −Z wall, at x = (floor((w−1)/2) + 0.5) × 12 − w × 6 (−6 for a 2-wide piece, 0 for a 3-wide) |
+| `Bed` (attachment) | Where a guest rests, facing the way it lies: a room's 7 studs in from the back wall (z = D/2 − 7, facing −Z), an amenity's at z = −D/6 facing +Z (the centrepiece) | The guest's destination |
+| `Decor_1`–`Decor_3` (attachments) | Where a decor piece stands, its LookVector the way the piece faces: the two back corners, 2 studs in from both walls, and the left wall's middle | Decor placement (`Pieces.DecorSlots`) |
+| `Sign` (attachment) | Outside, above the door: (door x, 8.2, −D/2 − 0.3) | The room's name and its state (vacant, dirty, a request) |
 | `DoorLeaf` (part) | The door that swings, hinged at its own `Hinge` attachment | Opened when a guest passes (rule 2) |
 | `Glow_<Colour>_<n>` | Lamps | Lit by the code (rule 1) |
 | `Wall_<n>` | Walls, **in pieces apart round the door** (`DEVNOTES.md`, "A decomposition closes small openings") | Collision `Box` each |
@@ -175,27 +183,31 @@ The door opening is at least **4 studs wide and 7 tall** (a 5-stud person).
 
 ### Lobby (`Lobby`)
 
-The front two rows of floor 1 (12 × 2 cells: 72 × 12 studs), authored with its
-origin at the **middle of its front edge** on the walking surface; the street
-is toward −Z.
+The front two rows of floor 1 (12 × 2 cells: **144 × 24 studs**), authored
+with its origin at the **middle of its front edge** on the walking surface;
+the street is toward −Z. The front row is z 0–12, the back row z 12–24.
 
 **An indoor reception** (his ruling and pick, 2026-10-19, layout A of the grey
-silhouettes; `modelling/taste.md`, "A hotel works as a hotel"):
+silhouettes, at the scale of the same evening; `modelling/taste.md`, "A hotel
+works as a hotel"):
 
-- **A front wall** on the street edge (z 0–0.8, 11 tall, the facade's height),
-  with the entrance arch in the middle (opening 9 wide, 9 tall) and windows.
-  Two pieces apart round the arch, `Wall_FrontLeft` (x −36 to −5.5) and
-  `Wall_FrontRight` (x 5.5 to 36), each exactly the blockout's box.
+- **A front wall** on the street edge (z 0–0.8, **17 tall**, up to the slab),
+  with the entrance arch in the middle (opening 9 wide, 9 tall: a door, so
+  not scaled) and tall windows (6 wide, y 3–12) at x −50, ±36, ±22 and 64
+  (none behind the desk, none behind the sign). Two pieces apart round the
+  arch, `Wall_FrontLeft` (x −72 to −5.5) and `Wall_FrontRight` (x 5.5 to 72),
+  each exactly the blockout's box.
 - **The desk across the end away from the stair core** (−X; on the right as
-  seen from the street): the counter x −27 to −25, z 0.9 to 6.7, its served
-  side toward +X (the entrance). Behind it the clerk's space, x −35.4 to −27,
-  with the `KeyRack` against the end. The `Till` stands on the counter.
-- **The back row is clear**: nothing that collides stands in z 7 to 12 (y 0.3
-  to 7), the whole length. Every floor-1 room door opens onto it, and so does
-  the stair core. The clerk reaches the desk through it.
+  seen from the street): the counter x −63 to −61.2, z 1.5 to 10.5, its top at
+  3.8, its served side toward +X (the entrance). Behind it the clerk's space,
+  x −71.15 to −63, with the `KeyRack` against the end (x −72 to −71.15). The
+  `Till` stands on the counter's far end.
+- **The back row is clear**: nothing that collides stands in z 12 to 24 (y
+  0.3 to 7), the whole length. Every floor-1 room door opens onto it, and so
+  does the stair core. The clerk reaches the desk through it.
 - **The waiting area** (`Bench_<n>`, `Planter_<n>`) is in the front row on the
-  stair side, clear of the entrance and of the trap squares (3 × 3 round each
-  `Trap_n`).
+  stair side (+X), clear of the entrance and of the trap squares (3 × 3 round
+  each `Trap_n`).
 
 `finish()` refuses a lobby that breaks these: the walls' boxes, the back row,
 the entrance (4 × 7), and a 5-stud person's walk from the entrance to every
@@ -203,36 +215,42 @@ queue spot, trap, the spawn and, through the back row, the clerk.
 
 | Name | What | The code |
 |---|---|---|
-| `Root` | 72 × 0.2 × 12 | Placement |
+| `Root` | 144 × 0.2 × 24, centred (0, 0.1, 12) | Placement |
 | `Entrance` (attachment) | (0, 0, 0): the front door's threshold, LookVector toward the street | Where guests walk in |
-| `Desk` (attachment) | (−24.8, 3.8, 2.9): the counter's served edge, LookVector +X, toward the guests | Check-in prompt |
-| `Clerk` (attachment) | (−30, 0, 3.8): where the front-desk resident stands, behind the counter, LookVector +X | The Front Desk staff's post |
-| `Queue_1`–`Queue_4` (attachments) | x −22, −18.5, −15, −11.5 at z 2.9, LookVector −X (at the desk); 1 nearest the desk | The desk queue |
-| `Till` (attachment) | (−24.8, 3.8, 5.9): the till on the counter, LookVector +X | Collect prompt |
-| `Spawn` (attachment) | (4, 0, 8) | The plot's spawn |
-| `SignBoard` (attachment) | (24, 0, −5): out front at the stair-side corner of the forecourt, 24 studs off the entrance, the sign's base, LookVector toward the street | The hotel sign (§3) |
-| `Trap_1`–`Trap_3` (attachments) | x −8, 8, 24 at z 3 | Hunter Night's traps (§8.1) |
+| `Desk` (attachment) | (−60.8, 3.8, 5): the counter's served edge, LookVector +X, toward the guests | Check-in prompt |
+| `Clerk` (attachment) | (−66, 0, 6): where the front-desk resident stands, behind the counter, LookVector +X | The Front Desk staff's post |
+| `Queue_1`–`Queue_4` (attachments) | x −58, −54.5, −51, −47.5 at z 5, LookVector −X (at the desk); 1 nearest the desk | The desk queue |
+| `Till` (attachment) | (−60.8, 3.8, 8.5): the till on the counter, LookVector +X | Collect prompt |
+| `Spawn` (attachment) | (8, 0, 18), in the back row | The plot's spawn |
+| `SignBoard` (attachment) | (48, 0, −5): out front at the stair-side corner of the forecourt, 48 studs off the entrance, the sign's base, LookVector toward the street | The hotel sign (§3) |
+| `Trap_1`–`Trap_3` (attachments) | x −16, 16, 48 at z 6 | Hunter Night's traps (§8.1) |
 
 ### Stair core (`StairCore`)
 
-Cells x 10–11, z 2–3 of every floor: 12 × 12 studs, one floor high (12 studs),
-origin at its footprint's centre on the lower floor's walking surface. Steps at
-most **1.2 studs** rise and at least **1.5 studs** tread; flights at least 4
-studs wide; **the landing at least 4 studs deep** (a 2-stud landing jammed a
-walker against the divider, 2026-10-19); a railing on every open side.
+Cells x 10–11, z 2–3 of every floor: **24 × 24 studs**, one floor high (18
+studs), origin at its footprint's centre on the lower floor's walking surface.
+**15 steps a storey**, each 1.2 rise and 1.5 tread, as a switchback: the
+flight up (`Step_Up_1`–`8`, x −12 to 0) climbs +Z from z −11.5 to the
+`Landing` at 9.6 (z 0.5 to 12, 11.5 deep); the flight down (`Step_Down_1`–`7`,
+x 0 to 12) comes back −Z to the upper floor at 18, its last step reaching the
+core's front edge under the upper slab's 1-stud lip. Flights 12 wide; the
+landing at least 4 deep (a 2-stud landing jammed a walker against the divider,
+2026-10-19); walls on the outer sides and the back and a `Divider` between the
+flights, 18 tall (21.5 on `StairCoreTop`, which adds `Rail_Top`).
 
 | Name | What | The code |
 |---|---|---|
-| `Bottom`, `Top` (attachments) | The foot and head of the storey's stairs, on the walking surface | Where a guest's walk up starts and ends |
-| `Path_1`, `Path_2`… (attachments) | The turns between, in order (the landing's two ends) | A guest walks Bottom → Path_n → Top |
+| `Bottom`, `Top` (attachments) | (−6, 0, −11.75) and (6, 18, −11.75): the foot and head of the storey's stairs, on the walking surface | Where a guest's walk up starts and ends |
+| `Path_1`, `Path_2` (attachments) | (−6, 9.6, 6.25) and (6, 9.6, 6.25): the landing's two ends | A guest walks Bottom → Path_n → Top |
 
 ### Facade (`Facade`) and sign (`HotelSign`)
 
 The exterior shell round a hotel of `Floors` floors is built by the code from
-pieces per floor: `Facade_Wall` (one cell wide, one floor high) and
+pieces per floor: `Facade_Wall` (one cell wide, one floor high: 12 × 18) and
 `Facade_Corner`, each origin at its base centre, outside face toward −Z.
 `HotelSign` carries `Board`, a part whose front face (−Z) takes the sign's
 SurfaceGui (a Decal or SurfaceGui on a part's `Front` face is the plain case).
+The sign is not scaled: posts and a 16 × 6 board at (0, 8, 0).
 
 ### Cosmetics (`Cosmetic_<Id>`, e.g. `Cosmetic_PumpkinSign`)
 

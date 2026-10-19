@@ -213,6 +213,27 @@ multiply a capture's x and y by viewport width / 1920 (3434 / 1920 on his screen
   1 stud under the slab above (walls 10, clear height 11). Waits on his
   answer on the scale (WAITING §2.12).
 
+## Phase 11 (the doubled scale, after the import)
+
+His ruling, 2026-10-19 evening: 12-stud cells, 18-stud floors, walls up to
+the slab (`CLAUDE.md`, "The scale of a person"; `MODELS.md`, "Hotel kit").
+
+- [ ] The 27 rescaled imports (both kits' rooms, amenities, `Lobby`,
+  `StairCore`, `StairCoreTop`) set, read back, saved and synced; a
+  `PrimaryPart` on each synced copy; no empty MeshPart.
+- [ ] A three-floor hotel built from the kit: every room's walls meet the
+  slab above (a ray up from each wall's top hits the slab within 0.05).
+- [ ] Rays out through every floor-1 door onto the lobby's back row
+  (z 12–24) and along the back row at 1, 3, 5 studs: no hit.
+- [ ] Walkers (5 studs): street → threshold → `Queue_1` → the back row →
+  `Clerk`; floor 1 → 2 → 3 up both stair cores (15 steps a storey) and back
+  down, no Climbing or Freefall.
+- [ ] A guest walks to a floor-2 room by the stair core's `Path_n`.
+- [ ] The build camera frames the 144-stud plot; the ghost sits on its cells.
+- [ ] The in-game blind review (street at eye height, the raised camera, the
+  lobby, a room, the stairs), and the first review's open findings 2, 4, 7,
+  8, 10 (Haunted Manor README) verified.
+
 ## August keeps
 
 - How the street, the lobby and the rooms look (every look is a night draft).

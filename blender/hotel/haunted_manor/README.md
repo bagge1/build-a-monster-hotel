@@ -248,3 +248,77 @@ the desk, and close up at the desk. Each round had a new reviewer and new pictur
 | 3.3 | The till reads as a modern terminal | **Confirmed**: an antique register with a marquee plate and a crank. Not yet seen by a reviewer: the in-game review covers it |
 | 3.4 | The counter items sit at the back edge | **False**: the bell is 0.7 studs from the guest's edge |
 | 3.7 | The keys do not read at game distance | Kept: larger tags would clutter. Look at it in the game |
+
+## 2026-10-19 night: the doubled scale
+
+His ruling, 2026-10-19 evening (`CLAUDE.md`, "The scale of a person"): a cell
+is 12 studs, a floor 18, every wall reaches the slab above; furniture, doors,
+counters, decor and steps keep the 5-stud person's size. The contract was
+rewritten first (`MODELS.md`, "Hotel kit"), then the kit, this script and the
+Luau blockout (`src/server/HotelKit.luau`) to the same boxes.
+
+- **Rooms and amenities**: 24 × 24 (2×2), 24 × 36, 36 × 36; walls 17 tall in
+  bands (wainscot to 3.2, paper, a picture rail at 10.6, paper, a crown under
+  the slab); the door jamb's trim stops at the arch's head (8.6). Beds and
+  furniture are the first draft's, against the same walls; rugs keep their
+  place by the bed (rooms) or at the guest's spot (amenities, now z −D/6); the
+  attic's rafters and the potion loft's herbs hang from under the slab; the
+  organ's console stands against its pipes. The front wall's outer face (the
+  lobby's or a hallway's) carries the room's wainscot, rail and crown round
+  the hotel's outside colour.
+- **Lobby**: 144 × 24. The front wall 17 tall, up to the slab, with six tall
+  windows (6 × 9), a string course over them, a cornice, the inside wainscot
+  to the sills, and the wall carried on over the arch (the arch is a door's
+  size, 9 × 9). Layout A at the new size: the counter x −63 to −61.2 across
+  z 1.5 to 10.5 (3.8 tall, 9 long), the clerk's space and the key rack behind
+  it, the queue along z 5, three benches and three planters on the stair
+  side, the back row z 12 to 24 clear. 6-stud floor tiles. The entrance
+  lantern hangs above the arch's head (its bottom 9.24; the tallest guest is
+  7.5). 8,562 triangles: the lobby budget is 10,000 now (`MODELS.md`, four
+  times the floor).
+- **Stair core**: 24 × 24, 15 steps a storey (8 up to a landing 11.5 deep at
+  9.6, 7 on to 18), 1.2 rise, 1.5 tread, flights 12 wide; a handrail on each
+  outer wall and a soffit under the flight down (Dressing).
+- **The sign and the decor are unchanged** (their manifest records are
+  identical); only `SignBoard` moved, to (48, 0, −5).
+
+Validated (Blender, headless): every piece builds through `finish()` and
+re-imports clean (32/32), including the lobby's walls, back row, entrance and
+the 5-stud walks to every queue spot, trap, the spawn and the clerk; the
+cosmetics set still fits both kits' new lobby and sign
+(`tools/build_cosmetics_hotel.py`, 7/7). **Not run in Studio.**
+
+### Blind reviews of the renders (2026-10-19 night, Fable, three rounds)
+
+Floor 1 assembled from the FBX at the plot's layout (lobby, sign, four rooms,
+the stair core, grey placeholders for the code's facade and slab, a 5-stud
+figure at the queue, the clerk's post, the entrance, a door and the stairs):
+the street at eye height, the raised camera, the lobby both ways, a room from
+its door, the stairs, the desk from the queue. Each round a new reviewer and
+new pictures.
+
+| Round, # | The finding | Triage |
+|---|---|---|
+| 1.1 | The entrance is a full-height slot, a void over the arch | **Confirmed**: the wall went to 17, the arch stayed 9 (11.8 at its apex). Fixed: `ArchTop` carries the wall on to the slab, in the kit and the blockout |
+| 1.2, 2.2, 3.4 | The facade reads as a warehouse; blank above the windows; the entrance is small | Blank band: **confirmed**, a string course over the windows and a cornice. Flatness and the entrance's size: **his call**, WAITING §2.13 |
+| 1.3, 3.4 | Chrome pillars; posts that carry nothing | **His call**, already put (WAITING §2.11, the pale columns); the shine is Workbench's |
+| 1.4, 2.9, 3.3 | The lobby's room-side wall is glossy black, unlike its street wall | Shine: **false**, the preview's specular. The mismatch: **confirmed**, the rooms' front walls show the wainscot, rail and crown outside too |
+| 1.5, 2.1, 3.1 | The lobby is a long empty corridor; the desk a speck from the door | **His call**: WAITING §2.13 (144 long now, the desk 60 from the door) |
+| 1.6 | The 12-stud checker reads as patchy light | **Confirmed**: 6-stud tiles |
+| 1.7 | The runner leaks onto the street | **False**: it starts at z 0.8, inside the wall; `finish()` refuses anything at z < 0 |
+| 1.8, 2.6, 3.2 | The room is an empty box | **His call**: WAITING §2.13. The rug far from the bed: **confirmed**, rugs keep their place by the bed |
+| 1.9, 2.6 | Door jambs: a fat gold slab beside the door | **Confirmed**: the jamb ran the wall's 17; it stops at the arch's head (8.6) |
+| 1.10, 3.8 | Room doorways read as green windows | **False**: the Garden Room's and the Den's own colours seen through their doors |
+| 1.11, 2.3, 3.7 | Stairs: no rail, a floating ladder from below | **Confirmed**: a handrail on each outer wall, a soffit under the flight down. The inner side is the divider wall; the "ledge" is the landing's edge under the first step down |
+| 1.12, 2.7 | White blocks on the counter | **False**: the avatars' heads and the till's plate (picture 8) |
+| 1.13, 2.5, 3.9 | The sign hides a window | **False**, parallax: the board spans x 40 to 56, the windows 33 to 39 and 61 to 67, and it stands 5 in front |
+| 1.14 | The lobby has no wainscot, the room has | **Confirmed**: the wainscot to the sills inside |
+| 2.4 | The bottom step juts past the stairwell wall | **False**: the step's end lies inside `Wall_Left` (x −12 to −11.6), the step starts at z −11.5 |
+| 2.8 | A dotted band over the door (z-fighting) | **Confirmed**: the string course overlapped the infill's face; now separate pieces |
+| 2.10 | The entrance lantern clips a tall guest | **Confirmed** (7.74 against the tallest guest's 7.5): it hangs above the arch's head, its bottom at 9.24 |
+| 3.5 | Two window types | **False**: all six are 6 × 9; the camera stands 20 off centre |
+| 3.6 | The counter is neck-high | **His call** (his approved desk, 3.8): WAITING §2.13 |
+| 3.10 | A gold fitting at knee height by the desk | **False** as far as can be found: nothing is mounted there but the wainscot rail, which runs the whole wall |
+
+Not yet seen by a reviewer: the hallway faces' wainscot (round 3's fix). The
+in-game review after the import covers it (`TESTRUN.md` phase 11).

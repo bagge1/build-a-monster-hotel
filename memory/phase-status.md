@@ -5,7 +5,7 @@ metadata:
   type: project
 ---
 
-**State (2026-10-19, 15:33):** M0–M6 built in code and played in
+**State (2026-10-19, night):** M0–M6 built in code and played in
 Studio, plus §7 social, §8.2 events (now with Winter), gift passes and worn
 cosmetics (night drafts, GDD Appendix A.9–A.10). **Save, load and offline
 earnings are proven** on the real DataStore (test profile `Test_Persist1019`).
@@ -19,21 +19,23 @@ as a patio. His rules are in `modelling/taste.md`; a **blind review** by a
 context-free model now comes before he sees any picture (skill `blind-review`;
 its first run and triage are in the Haunted Manor README).
 
-**Next, in order:** (1) **Rescale the hotel** (his ruling 2026-10-19
-evening, `CLAUDE.md` "The scale of a person", GDD §18): cell 6 → 12 studs,
-floor 12 → 18, walls up to the slab, furniture, doors and steps unscaled.
-`MODELS.md` "Hotel kit" first, then `Constants.Grid`, the kit and both kits'
-build scripts, the stairs (walker-proven again), the Luau blockouts, the
-street layout, the build camera; rebuild, blind review, one import of every
-hotel model. (2) The lobby rework (layout A, his approved look) is imported,
-rayed and walked (TESTRUN phase 10); its in-game blind review and the first
-review's open findings 2, 4, 7, 8, 10 wait for the rescale. Seen in the game
-already: the sign's board blank from straight ahead but drawn from above
-(finding 2), red marks at the slab corners (finding 7). (3) Open TESTRUN
+**Next, in order:** (1) **The doubled scale** (his ruling 2026-10-19
+evening, `CLAUDE.md` "The scale of a person": double only what makes the
+hotel less cramped). Built, not yet in Studio: `MODELS.md` "Hotel kit"
+rewritten, `Constants.Grid` (cell 12, floor 18, walls 17, Wing 48) and
+`Street` (gap 36, lane ±278, his and Claude's picks, GDD §18), both kits and
+the Luau blockouts (lobby 144 × 24, stairs 15 steps a storey), the build
+camera and LOD from the plot size. Five blind reviews triaged in the sets'
+READMEs; his calls in WAITING §2.13. **27 models staged in
+`blender/_import/` (WAITING §0.5)**; after his *importerat*: skill `import`
+(two sets share names: `FrostfangLodge_` prefix), then `TESTRUN.md` phase 11
+(walls meet the slab, rays, walkers up 15-step stairs, the in-game blind
+review with the first review's open findings 2, 4, 7, 8, 10). (2) Open TESTRUN
 items: piece menu by clicks, rebirth by the panel's button, a two-player gift,
-pictures of the cosmetics after their import. Frostfang's rooms and amenities
-are rayed clean beside the street, not yet built in a plot (a rebirth).
-Economy pacing: `tools/balance_model.py` (archive/BALANCE-2026-10-19.md).
+pictures of the cosmetics after their import. Frostfang's rooms are not yet
+built in a plot (a rebirth). Economy pacing: `tools/balance_model.py`
+(archive/BALANCE-2026-10-19.md). Guests now walk twice as far inside a hotel
+and ~70 s down the lane: watch the stay timings in phase 11.
 
 | Phase | Built | Run in Studio | Next |
 |---|---|---|---|

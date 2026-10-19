@@ -21,6 +21,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import hotel_kit as K  # noqa: E402
 from hotel_kit import (begin, finish, box, span, cyl, lathe, sphere, prism, attach, declare,  # noqa: E402
                        room_shell, picture, arch_points, CELL, WALL, T, want)
+from hotel_kit import LOBBY_W, LOBBY_D, STAIR_S  # noqa: E402
 
 SET = 'hotel/haunted_manor'
 ROOMS = [  # id, w, d (Pieces.luau)
@@ -159,14 +160,15 @@ def attic_room():
     for i, colr in enumerate(('rose', 'teal_light', 'amber', 'violet')):
         span('Bed', (-1.9 + i * 0.95, 1.2, zf), (-0.95 + i * 0.95, 1.62, zf + 3.4), colr, bevel=0.12)
     span('Bed', (-1.2, 1.45, zb - 1.4), (1.2, 2.0, zb - 0.3), 'cream', bevel=0.2)
-    # Rafters in the top of the room, clear of a person's head.
-    for z in (-3.2, 0.4, 3.6):
+    # Rafters in the top of the room, under the slab, clear of a person's head.
+    ry = WALL - 2.1
+    for z in (-8.4, -2.8, 2.8, 8.4):
         for sgn in (-1, 1):
             ang = math.degrees(math.atan2(1.6, W / 2 - T))
             box('Dressing', (0, 0, 0), (W / 2 - T + 0.3, 0.45, 0.45), 'wood_dark', bevel=0.05,
-                m=K.Matrix.Translation((sgn * (W / 4 - T / 2), 8.9, z)) @ K.Matrix.Rotation(K.math.radians(-sgn * ang), 4, 'Z'))
-        box('Dressing', (0, 9.75, z), (0.6, 0.5, 0.5), 'wood', bevel=0.05)
-    span('Dressing', (-0.3, 9.5, -D / 2 + T - 0.02), (0.3, 9.95, D / 2 - T + 0.02), 'wood_dark')
+                m=K.Matrix.Translation((sgn * (W / 4 - T / 2), ry, z)) @ K.Matrix.Rotation(K.math.radians(-sgn * ang), 4, 'Z'))
+        box('Dressing', (0, ry + 0.85, z), (0.6, 0.5, 0.5), 'wood', bevel=0.05)
+    span('Dressing', (-0.3, ry + 0.6, -D / 2 + T - 0.02), (0.3, ry + 1.05, D / 2 - T + 0.02), 'wood_dark')
     # A round window on the back wall (a moonlit pane, not a light).
     zw = D / 2 - T
     lathe('Dressing', [(1.0, 0), (1.0, 0.14)], 'wood', n=10, base=(0, 0, 0),
@@ -249,9 +251,9 @@ def potion_loft():
                 else:
                     lathe('Furniture', [(0.25, y + 0.2), (0.3, y + 0.55), (0.1, y + 0.85), (0.1, y + 1.15)], c, n=6,
                           base=(xr - 0.6, 0, z))
-    # Herb bundles hanging from the crown.
+    # Herb bundles hanging on long strings from under the slab.
     for x, z in ((-4.5, 4.5), (-1.5, 6.5), (1.5, 6.5), (4.5, 4.5)):
-        cyl('Dressing', (x, 9.0, z), 0.04, 0.6, 'iron', n=4)
+        cyl('Dressing', (x, 9.0, z), 0.04, WALL - 9.05, 'iron', n=4)
         lathe('Dressing', [(0.0, 7.8), (0.35, 8.5), (0.15, 9.0)], 'leaf' if x < 0 else 'straw', n=6, base=(x, 0, z))
     moon_picture((-W / 2 + T, 6.3, -4.5), (2.6, 2.0), 'left')
     finish(note='a witch\'s bed, a potion shelf with one glowing flask, herbs hanging')
@@ -479,20 +481,21 @@ def quiet_library():
 def organ_hall():
     W, D = amenity('OrganHall', 'plum', 'plum_deep', 'gold', ('plum_dark', 'stone_dark'), rug=(4.0, 3.2, -1.6, 'crimson', 'wine'))
     zw = D / 2 - T
-    span('Centrepiece', (-1.95, 0, 2.0), (1.95, 3.0, 3.8), 'wood_dark', bevel=0.1)
-    span('Centrepiece', (-1.8, 3.0, 2.0), (1.8, 3.3, 2.9), 'white', bevel=0.03)
-    span('Centrepiece', (-1.8, 3.3, 2.5), (1.8, 3.55, 3.0), 'black', bevel=0.03)
-    span('Centrepiece', (-1.95, 3.0, 3.0), (1.95, 4.4, 3.8), 'wood_dark', bevel=0.08)
+    zc = zw - 1.8                     # the console's back, against the pipes (it stood 1.8 off the wall)
+    span('Centrepiece', (-1.95, 0, zc - 1.8), (1.95, 3.0, zc), 'wood_dark', bevel=0.1)
+    span('Centrepiece', (-1.8, 3.0, zc - 1.8), (1.8, 3.3, zc - 0.9), 'white', bevel=0.03)
+    span('Centrepiece', (-1.8, 3.3, zc - 1.3), (1.8, 3.55, zc - 0.8), 'black', bevel=0.03)
+    span('Centrepiece', (-1.95, 3.0, zc - 0.8), (1.95, 4.4, zc), 'wood_dark', bevel=0.08)
     for i, h in enumerate((5.2, 6.2, 7.0, 7.6, 7.0, 6.2, 5.2)):     # under the sconce at 8.2
         x = -1.62 + i * 0.54
         cyl('Centrepiece', (x, 4.4, zw - 0.6), 0.25, h - 4.4, 'gold', n=8)
         lathe('Centrepiece', [(0.25, h), (0.0, h + 0.35)], 'gold', n=8, base=(x, 0, zw - 0.6))
         span('Centrepiece', (x - 0.12, 5.0, zw - 0.87), (x + 0.12, 5.4, zw - 0.83), 'black')
-    span('Centrepiece', (-1.3, 0, 0.6), (1.3, 1.6, 1.4), 'wood', bevel=0.08)
+    span('Centrepiece', (-1.3, 0, zc - 3.2), (1.3, 1.6, zc - 2.4), 'wood', bevel=0.08)
     for k, x in enumerate((-1.6, 1.6)):
-        cyl('Centrepiece', (x, 4.4, 2.6), 0.2, 0.12, 'gold', n=8)
-        cyl('Centrepiece', (x, 4.52, 2.6), 0.11, 0.6, 'cream', n=6)
-        sphere(f'Glow_Warm_{k + 2}', (x, 5.32, 2.6), (0.12, 0.22, 0.12), 'flame', n=6, rings=4)
+        cyl('Centrepiece', (x, 4.4, zc - 1.2), 0.2, 0.12, 'gold', n=8)
+        cyl('Centrepiece', (x, 4.52, zc - 1.2), 0.11, 0.6, 'cream', n=6)
+        sphere(f'Glow_Warm_{k + 2}', (x, 5.32, zc - 1.2), (0.12, 0.22, 0.12), 'flame', n=6, rings=4)
     for wall, x in (('left', -W / 2 + T), ('right', W / 2 - T)):
         picture((x, 7.0, -2.0), (2.0, 2.6), 'gold', 'wine', wall)
     finish(note='a pipe organ in gold pipes and dark wood, its bench, two candles')
@@ -502,18 +505,22 @@ def organ_hall():
 
 def lobby():
     import math
-    begin('Lobby', 'Lobby', (72, 0.2, 12), root_centre=(0, 0.1, 6))
+    begin('Lobby', 'Lobby', (LOBBY_W, 0.2, LOBBY_D), root_centre=(0, 0.1, LOBBY_D / 2))
     declare('Rug', False)       # the blockout's Rug does not collide either
-    # The floor: the whole lobby to its edges (the plot's ground showed at the threshold and the ends).
-    for i in range(12):
-        for j in range(2):
-            x0, z0 = -36 + i * 6, j * 6
-            span('Rug', (x0, 0, z0), (x0 + 6, 0.1, z0 + 6), 'plum' if (i + j) % 2 else 'plum_dark', bevel=0.02)
+    # The floor: the whole lobby to its edges (the plot's ground showed at the threshold and the ends),
+    # in 6-stud tiles (a cell's 12 read as patchy light, not a checkerboard: blind review 2026-10-19).
+    tile = CELL / 2
+    for i in range(int(LOBBY_W // tile)):
+        for j in range(int(LOBBY_D // tile)):
+            x0, z0 = -LOBBY_W / 2 + i * tile, j * tile
+            span('Rug', (x0, 0, z0), (x0 + tile, 0.1, z0 + tile), 'plum' if (i + j) % 2 else 'plum_dark')
     # A carpet from the door into the lobby, and on along the queue to the desk.
-    span('Rug', (-2.2, 0.1, 0.8), (2.2, 0.13, 6.0), 'gold')
-    span('Rug', (-1.9, 0.13, 0.8), (1.9, 0.15, 6.0), 'crimson')
-    span('Rug', (-24.6, 0.1, 1.4), (-2.2, 0.13, 4.4), 'gold')
-    span('Rug', (-24.3, 0.13, 1.7), (-1.9, 0.15, 4.1), 'crimson')
+    qz = K.blockout_attachments('Lobby')['Desk'][0][2]
+    dx = K.LOBBY_COUNTER_TOP[1][0] + 0.3
+    span('Rug', (-2.2, 0.1, 0.8), (2.2, 0.13, qz + 1.5), 'gold')
+    span('Rug', (-1.9, 0.13, 0.8), (1.9, 0.15, qz + 1.5), 'crimson')
+    span('Rug', (dx, 0.1, qz - 1.5), (-2.2, 0.13, qz + 1.5), 'gold')
+    span('Rug', (dx + 0.3, 0.13, qz - 1.2), (-1.9, 0.15, qz + 1.2), 'crimson')
     # The front wall round the arch (MODELS.md, "Lobby"), the hotel's outside colour to the street.
     K.lobby_front_wall(outside='plum', paper='lilac', wainscot='plum_dark', crown='gold',
                        plinth='stone_dark', frame='wood_dark', sill='gold')
@@ -521,12 +528,12 @@ def lobby():
     (lo, hi), (tlo, thi) = K.LOBBY_COUNTER, K.LOBBY_COUNTER_TOP
     span('Desk', lo, hi, 'wood_dark', bevel=0.1)
     zc = (lo[2] + hi[2]) / 2
-    for z in (zc - 1.9, zc, zc + 1.9):
+    for z in (zc - 3.6, zc - 1.8, zc, zc + 1.8, zc + 3.6):
         span('Desk', (hi[0] - 0.1, 0.5, z - 0.75), (hi[0] + 0.13, 3.0, z + 0.75), 'violet', bevel=0.06)
         sphere('Desk', (hi[0] + 0.14, 1.75, z), (0.06, 0.35, 0.35), 'gold', n=8, rings=4)
     span('Desk', tlo, thi, 'gold', bevel=0.05)
-    K.lobby_bell('Desk', -25.6, thi[1], 2.9, 'gold')   # at the check-in prompt
-    span('Desk', (-26.5, 3.8, 3.7), (-25.6, 3.95, 4.7), 'crimson', bevel=0.03)
+    K.lobby_bell('Desk', hi[0] - 0.4, thi[1], qz, 'gold')   # at the check-in prompt
+    span('Desk', (hi[0] - 1.3, 3.8, qz + 0.8), (hi[0] - 0.4, 3.95, qz + 1.8), 'crimson', bevel=0.03)
     K.lobby_till(body='wood_dark', keys='pumpkin', drawer='gold', screen='bone')
     # The desk lamp on the counter's near end.
     K.lobby_lamp('gold', 'teal')
@@ -551,14 +558,21 @@ def lobby():
     outline = [(-5.5, 9.0)] + [(-5.5, 10.4), (0, 11.8), (5.5, 10.4)] + [(5.5, 9.0)] + list(reversed(inner))
     prism('ArchTop', outline, 0.05, 0.95, {'front': 'plum', 'back': 'plum', 'rest': 'gold'}, plane='xy')
     pumpkin('ArchTop', (0, 11.15, 0.5), 0.4)
-    # The lantern hanging inside the arch.
-    cyl('Dressing', (0, 9.2, 1.5), 0.05, 1.5, 'iron', n=4)
-    box('Dressing', (0, 9.2, 1.5), (0.8, 0.12, 0.8), 'iron')
-    box('Dressing', (0, 7.8, 1.5), (0.8, 0.12, 0.8), 'iron')
+    # The wall over the gable, up to the slab: the arch is a door's height, the wall the storey's.
+    over = [(-5.5, 10.41), (0, 11.81), (5.5, 10.41), (5.5, K.LOBBY_WIN_HI), (-5.5, K.LOBBY_WIN_HI)]
+    prism('ArchTop', over, 0.0, K.LOBBY_WALL_T, {'front': 'plum', 'back': 'lilac', 'rest': 'lilac'}, plane='xy')
+    course = K.LOBBY_WIN_HI + 0.5
+    span('ArchTop', (-5.5, K.LOBBY_WIN_HI, 0.0), (5.5, course, K.LOBBY_WALL_T), 'gold')
+    span('ArchTop', (-5.5, course, 0.0), (5.5, WALL - 0.4, K.LOBBY_WALL_T), {'front': 'plum', 'back': 'lilac', 'rest': 'lilac'})
+    span('ArchTop', (-5.5, WALL - 0.4, 0.0), (5.5, WALL, K.LOBBY_WALL_T), 'gold')
+    # The lantern hanging inside the arch, its chain from the ceiling.
+    cyl('Dressing', (0, 10.7, 1.5), 0.05, WALL - 10.7, 'iron', n=4)
+    box('Dressing', (0, 10.7, 1.5), (0.8, 0.12, 0.8), 'iron')
+    box('Dressing', (0, 9.3, 1.5), (0.8, 0.12, 0.8), 'iron')
     for dx in (-0.36, 0.36):
         for dz in (-0.36, 0.36):
-            box('Dressing', (dx, 8.5, 1.5 + dz), (0.08, 1.3, 0.08), 'iron')
-    sphere('Glow_Warm_1', (0, 8.5, 1.5), (0.3, 0.45, 0.3), 'lamp', n=8, rings=5)
+            box('Dressing', (dx, 10.0, 1.5 + dz), (0.08, 1.3, 0.08), 'iron')
+    sphere('Glow_Warm_1', (0, 10.0, 1.5), (0.3, 0.45, 0.3), 'lamp', n=8, rings=5)
     for n, x in enumerate(K.LOBBY_SCONCES):
         K.lobby_sconce(x, 7.2, n + 3, 'gold', candle='bone')
     for aname, (pos, look) in K.blockout_attachments('Lobby').items():
@@ -569,7 +583,7 @@ def lobby():
 
 def stairs(top):
     name = 'StairCoreTop' if top else 'StairCore'
-    begin(name, 'Stairs', (12, 0.2, 12))
+    begin(name, 'Stairs', (STAIR_S, 0.2, STAIR_S))
     # Every walked box is the blockout's, exactly (K.blockout_stairs); only colour and chamfers are added.
     for sname, (c, s) in K.blockout_stairs(top).items():
         c, s = K.Vector(c), K.Vector(s)
@@ -598,9 +612,13 @@ def stairs(top):
     for aname, (pos, look) in K.blockout_attachments('Stairs').items():
         attach(aname, pos, look)
     # A light over the flight up, high on the left wall, and a portrait over the landing.
-    sconce(-6 + T, 11.4, -1.0, 'left', 1)
-    picture((0, 9.6 if not top else 10.6, 6 - T), (2.4, 2.6), 'gold', 'plum')
-    sphere('Dressing', (0, 9.9 if not top else 10.9, 6 - T - 0.13), (0.55, 0.6, 0.05), 'lilac', n=8, rings=4)
+    hs = STAIR_S / 2
+    sconce(-hs + T, 14.5, -4.0, 'left', 1)
+    K.stair_handrails('gold', 'iron')
+    K.stair_soffits('plum_dark')
+    yp = K.STAIR_LANDING_Y + (3.6 if not top else 4.6)
+    picture((0, yp, hs - T), (2.4, 2.6), 'gold', 'plum')
+    sphere('Dressing', (0, yp + 0.3, hs - T - 0.13), (0.55, 0.6, 0.05), 'lilac', n=8, rings=4)
     finish(note='the walker-proven switchback, crimson-carpeted' + (', railed round the stairwell' if top else ''))
 
 

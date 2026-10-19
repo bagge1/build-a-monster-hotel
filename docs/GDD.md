@@ -614,6 +614,7 @@ After the soft launch we apply for Kids/Select eligibility:
 | 2026-10-19 | Iron Frontier (C+D) stashed as the next game | `D:\Roblox\iron-frontier\CONCEPT.md` |
 | 2026-10-19 | Standard ~5-stud avatar, 6-stud grid cells | His ruling on the scale of a person (CLAUDE.md) |
 | 2026-10-19 | **The grid doubles: 12-stud cells, 18-stud floors**, walls up to the slab; furniture, doors and steps stay person-sized | His ruling after walking the new lobby in the game: "its a bit cramped. Could probably double everything just about. The roof is also a couple studs above the walls, not connected." Picked over "only the lobby" and 1.5×, and 18 over 12 or 24 studs a floor |
+| 2026-10-19 | The street at the doubled scale: the lane stays 48 wide, the Resident Wing 48 deep, **36-stud gaps** between the 144-stud plots, the lane to ±278 | His picks for the lane and the Wing; the gap was Claude's pick within the 24–48 he gave ("Do what you think seems reasonable"): twice the room between hotels without stretching the lane more than needed (about 70 s to browse it at BrowseSpeed 8). His clarification: "only things that made sense to double, like making the hotel less cramped" (`CLAUDE.md`) |
 | 2026-10-19 | GitHub repo `build-a-monster-hotel`, private; folder renamed to match | His ruling |
 | 2026-10-19 | Night sessions may commit, push and run DataStore-writing playtests | His go (the game is not live) |
 | 2026-10-19 | The lobby is an indoor reception: a front wall with the entrance arch and windows; the desk across the end away from the stairs, served toward the entrance, a key rack behind the clerk; the back row clear for the floor-1 doors; the hotel sign on its posts at the stair-side corner of the forecourt, off the entrance (layout A and the corner sign of three grey drafts; `MODELS.md`, "Lobby") | His rulings: nothing in front of an entrance, a counter a person can stand at, a lobby that reads as a reception and not a patio (`modelling/taste.md`) |
@@ -634,7 +635,8 @@ Every number below is a **placeholder** (tagged `PLACEHOLDER` in
 
 - **Street:** one straight pedestrian lane along world X. Plots 1–3 on the north
   side face south, plots 4–6 on the south side face north. Plot fronts are 24
-  studs from the centre line; plots are 72 studs wide with 24-stud gaps. The
+  studs from the centre line (the lane stays 48 wide); plots are 144 studs wide
+  with 36-stud gaps, so the lane runs to ±278 (26 past the last plot). The
   **bus stop is at the west end**. Guests from a bus walk east down the centre
   of the lane ("browsing"), then turn to the hotel they picked.
 - **The plot frame:** cell (x, z), x 0–11 along the street, z 0–11 away from it;
@@ -642,7 +644,7 @@ Every number below is a **placeholder** (tagged `PLACEHOLDER` in
 - **Reserved cells:** the **Lobby** is the front two rows of floor 1 (z 0–1):
   entrance in the middle, front desk, till, waiting spots. The **stair core** is
   cells x 10–11, z 2–3 on every floor (stairs for players; guests glide up it).
-- **The Resident Wing** is a garden behind the hotel (24 studs deep), where
+- **The Resident Wing** is a garden behind the hotel (48 studs deep), where
   residents wander.
 - **The facade:** walls with window openings along the left, right and back
   edges of every floor, just outside the grid (never on a cell); floor 1's

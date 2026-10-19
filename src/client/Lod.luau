@@ -12,10 +12,15 @@
 ]]
 
 local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local Constants = require(ReplicatedStorage.Shared.Constants)
+local StreetLayout = require(ReplicatedStorage.Shared.StreetLayout)
 
 local Lod = {}
 
-local FAR = 120 -- studs from the camera to a plot's centre (about one plot and a gap away)
+-- Studs from the camera to a plot's centre: about one plot and a gap away.
+local FAR = (StreetLayout.PlotSize + Constants.Street.PlotGap) * 1.25
 local me = Players.LocalPlayer
 
 local DETAIL =
@@ -57,7 +62,9 @@ local function step()
 		if plot:IsA("Model") then
 			local origin = plot:GetAttribute("Origin")
 			if typeof(origin) == "CFrame" then
-				local centre = origin:PointToWorldSpace(Vector3.new(36, 0, 36))
+				local centre = origin:PointToWorldSpace(
+					Vector3.new(StreetLayout.PlotSize / 2, 0, StreetLayout.PlotSize / 2)
+				)
 				local isFar = (Vector3.new(centre.X, eye.Y, centre.Z) - eye).Magnitude > FAR
 				if far[plot] ~= isFar then
 					far[plot] = isFar

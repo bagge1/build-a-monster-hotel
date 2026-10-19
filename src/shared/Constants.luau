@@ -14,23 +14,23 @@ local Constants = {}
 
 -- §3, Appendix A.1: the street, the plot and the grid.
 Constants.Grid = {
-	CellSize = 6, -- his ruling, 2026-10-19
+	CellSize = 12, -- his ruling, 2026-10-19 evening (§3, §18): 2×2 room = 24 × 24 studs
 	Cells = 12, -- a 12 × 12 grid per floor (§3)
-	FloorHeight = 12, -- about 12 studs (§3)
+	FloorHeight = 18, -- his ruling, 2026-10-19 evening: a 1-stud slab and 17 clear
 	LobbyRows = 2, -- PLACEHOLDER: floor 1's front rows z 0..1 are the lobby
 	StairCore = { x = 10, z = 2, w = 2, d = 2 }, -- PLACEHOLDER: cells on every floor
 	SlabThickness = 1,
-	WallHeight = 10, -- PLACEHOLDER: room walls, under the 12-stud floor
-	WingDepth = 24, -- PLACEHOLDER: the Resident Wing garden behind the hotel
+	WallHeight = 17, -- walls reach the slab above (his ruling): FloorHeight − SlabThickness
+	WingDepth = 48, -- his pick, 2026-10-19 (doubled with the grid): the Resident Wing garden behind the hotel
 }
 
 Constants.Street = {
 	Plots = 6, -- §3
-	PlotGap = 24, -- PLACEHOLDER
-	FrontOffset = 24, -- PLACEHOLDER: plot fronts from the lane's centre line
-	LaneHalfLength = 170, -- PLACEHOLDER: the lane runs x -170..170
-	BusStopX = -170,
-	HunterCampX = 170,
+	PlotGap = 36, -- Claude's pick in his range 24–48, 2026-10-19 (GDD §18): 144-stud plots span ±252
+	FrontOffset = 24, -- his pick, 2026-10-19: kept, the lane stays 48 wide
+	LaneHalfLength = 278, -- the lane runs x -278..278, 26 past the last plot
+	BusStopX = -278,
+	HunterCampX = 278,
 }
 
 -- §4.2: rarity values (starting numbers).

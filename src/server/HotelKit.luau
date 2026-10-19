@@ -249,11 +249,13 @@ function HotelKit.decor(id: string, location: number): Model
 	return model
 end
 
---[[ The lobby (MODELS.md, "Lobby"): the front two rows of floor 1, origin at
-	the middle of its front edge, the street toward −Z. An indoor reception (his
-	pick, 2026-10-19): a front wall round the entrance arch, the desk across the
-	−X end served toward +X, the back row (z 7–12) clear for the floor-1 doors,
-	benches in the front row on the stair side. ]]
+--[[ The lobby (MODELS.md, "Lobby"): the front two rows of floor 1, 144 × 24
+	studs, origin at the middle of its front edge, the street toward −Z. An
+	indoor reception (his pick, 2026-10-19, at the doubled scale of the same
+	evening): a front wall up to the slab round the entrance arch, the desk
+	across the −X end served toward +X, the back row (z 12–24) clear for the
+	floor-1 doors, benches in the front row on the stair side. The arch, the
+	counter and the benches are a person's size, not the grid's. ]]
 function HotelKit.lobby(location: number): Model
 	local found = template(location, "Lobby")
 	if found then
@@ -269,9 +271,9 @@ function HotelKit.lobby(location: number): Model
 		Vector3.new(0, 0.05, Dp / 2),
 		{ Color = darker(loc.facade, 0.8), CanCollide = false }
 	)
-	-- The front wall, two pieces apart round the arch (each exactly the kit's box).
+	-- The front wall up to the slab, two pieces apart round the arch (each exactly the kit's box).
 	local wallColour = darker(loc.facade, 0.85)
-	local half, arch, top, t = L / 2, 5.5, 11, 0.8
+	local half, arch, top, t = L / 2, 5.5, WALL, 0.8
 	for _, side in { -1, 1 } do
 		part(
 			model,
@@ -283,27 +285,34 @@ function HotelKit.lobby(location: number): Model
 	end
 	part(model, "ArchLeft", Vector3.new(1, 9, 1), Vector3.new(-5, 4.5, 0.5), { Color = loc.trim })
 	part(model, "ArchRight", Vector3.new(1, 9, 1), Vector3.new(5, 4.5, 0.5), { Color = loc.trim })
-	part(model, "ArchTop", Vector3.new(11, 1, 1), Vector3.new(0, 9.5, 0.5), { Color = loc.trim })
-	-- The desk: the counter x −27..−25.2, z 0.9..6.7, its top 3.8; the till on its far end.
+	-- Over the arch (a door's height) the wall goes on up to the slab.
+	part(
+		model,
+		"ArchTop",
+		Vector3.new(11, top - 9, 1),
+		Vector3.new(0, (9 + top) / 2, 0.5),
+		{ Color = loc.trim }
+	)
+	-- The desk: the counter x −63..−61.2, z 1.5..10.5, its top 3.8; the till on its far end.
 	part(
 		model,
 		"Desk",
-		Vector3.new(1.8, 3.5, 5.8),
-		Vector3.new(-26.1, 1.75, 3.8),
+		Vector3.new(1.8, 3.5, 9),
+		Vector3.new(-62.1, 1.75, 6),
 		{ Color = Color3.fromRGB(110, 70, 50) }
 	)
 	part(
 		model,
 		"DeskTop",
-		Vector3.new(2.3, 0.3, 6.2),
-		Vector3.new(-26.05, 3.65, 3.8),
+		Vector3.new(2.3, 0.3, 9.4),
+		Vector3.new(-62.05, 3.65, 6),
 		{ Color = loc.trim }
 	)
 	part(
 		model,
 		"Till",
 		Vector3.new(1.2, 1.1, 1.2),
-		Vector3.new(-26, 4.35, 5.9),
+		Vector3.new(-62, 4.35, 8.5),
 		{ Color = Color3.fromRGB(230, 200, 90) }
 	)
 	-- The key rack against the −X end, behind the clerk.
@@ -311,11 +320,11 @@ function HotelKit.lobby(location: number): Model
 		model,
 		"KeyRack",
 		Vector3.new(0.8, 9.6, 5.2),
-		Vector3.new(-35.6, 4.8, 3.8),
+		Vector3.new(-71.6, 4.8, 6),
 		{ Color = Color3.fromRGB(80, 55, 40) }
 	)
 	-- Benches in the front row on the stair side, their backs to the wall.
-	for i, span in { { 11, 18.5 }, { 27, 33 } } do
+	for i, span in { { 25.6, 32.4 }, { 40, 47 }, { 50, 57 } } do
 		part(
 			model,
 			`Bench_{i}`,
@@ -325,47 +334,47 @@ function HotelKit.lobby(location: number): Model
 		)
 	end
 	lamp(model, 1, Vector3.new(0, 8.5, 1.5), Color3.fromRGB(255, 190, 120))
-	lamp(model, 2, Vector3.new(-26.4, 6, 1.4), Color3.fromRGB(255, 190, 120))
+	lamp(model, 2, Vector3.new(-62.3, 6, 2.3), Color3.fromRGB(255, 190, 120))
 
 	attach(root, "Entrance", Vector3.new(0, 0, 0), Vector3.new(0, 0, -1))
-	attach(root, "Desk", Vector3.new(-24.8, 3.8, 2.9), Vector3.new(1, 0, 0))
-	attach(root, "Clerk", Vector3.new(-30, 0, 3.8), Vector3.new(1, 0, 0))
-	for i, x in { -22, -18.5, -15, -11.5 } do
-		attach(root, `Queue_{i}`, Vector3.new(x, 0, 2.9), Vector3.new(-1, 0, 0))
+	attach(root, "Desk", Vector3.new(-60.8, 3.8, 5), Vector3.new(1, 0, 0))
+	attach(root, "Clerk", Vector3.new(-66, 0, 6), Vector3.new(1, 0, 0))
+	for i, x in { -58, -54.5, -51, -47.5 } do
+		attach(root, `Queue_{i}`, Vector3.new(x, 0, 5), Vector3.new(-1, 0, 0))
 	end
-	attach(root, "Till", Vector3.new(-24.8, 3.8, 5.9), Vector3.new(1, 0, 0))
-	attach(root, "Spawn", Vector3.new(4, 0, 8), Vector3.new(0, 0, -1))
-	attach(root, "SignBoard", Vector3.new(24, 0, -5), Vector3.new(0, 0, -1))
+	attach(root, "Till", Vector3.new(-60.8, 3.8, 8.5), Vector3.new(1, 0, 0))
+	attach(root, "Spawn", Vector3.new(8, 0, 18), Vector3.new(0, 0, -1))
+	attach(root, "SignBoard", Vector3.new(48, 0, -5), Vector3.new(0, 0, -1))
 	for i = 1, 3 do
-		attach(root, `Trap_{i}`, Vector3.new(-24 + 16 * i, 0, 3), Vector3.new(0, 0, -1))
+		attach(root, `Trap_{i}`, Vector3.new(-48 + 32 * i, 0, 6), Vector3.new(0, 0, -1))
 	end
 	return model
 end
 
 --[[ One storey of the stair core (MODELS.md, "Stair core"), from a floor to
-	the next: a switchback of two flights of five 1.2-stud steps, 1.5 deep and
-	6 wide, with a landing 4 deep between them (the first draft's 2-stud
-	landing jammed a walker against the divider, 2026-10-19). Origin at the
-	core's footprint centre on the lower floor. `top` adds the railings the
-	topmost floor needs round the open stairwell. ]]
+	the next: a switchback of 15 steps of 1.2 rise and 1.5 tread, eight up to
+	the landing and seven on to the floor above, each flight 12 wide, the
+	landing 11.5 deep (a 2-stud landing jammed a walker against the divider,
+	2026-10-19). Origin at the core's footprint centre on the lower floor.
+	`top` adds the railings the topmost floor needs round the open stairwell. ]]
 function HotelKit.stairs(location: number, top: boolean): Model
 	local found = template(location, if top then "StairCoreTop" else "StairCore")
 	if found then
 		return found
 	end
 	local loc = Locations.get(location)
-	local S = G.StairCore.w * CELL -- 12
+	local S = G.StairCore.w * CELL -- 24
 	local model, root = shell("StairCore", Vector3.new(S, 0.2, S), Vector3.new(0, 0.1, 0))
 	local stepColour = darker(loc.facade, 1.1)
 	local wallColour = darker(loc.facade, 0.7)
-	local steps, tread = 5, 1.5
-	local rise = FLOOR / 2 / steps
-	-- In the core's frame: x −6..6, z −6..6. The flight up climbs +Z on the left half (x < 0)
+	local up, down, tread = 8, 7, 1.5
+	local rise = FLOOR / (up + down) -- 1.2
+	-- In the core's frame: x −12..12, z −12..12. The flight up climbs +Z on the left half (x < 0)
 	-- from z0, the flight down comes back −Z on the right half.
 	local z0 = -S / 2 + 0.5
-	local landingStart = z0 + tread * steps
+	local landingStart = z0 + tread * up
 	local landingDepth = S / 2 - landingStart
-	for i = 1, steps do
+	for i = 1, up do
 		local zc = z0 + tread * (i - 0.5)
 		part(
 			model,
@@ -375,7 +384,7 @@ function HotelKit.stairs(location: number, top: boolean): Model
 			{ Color = stepColour }
 		)
 	end
-	local landingY = rise * steps
+	local landingY = rise * up
 	part(
 		model,
 		"Landing",
@@ -383,11 +392,11 @@ function HotelKit.stairs(location: number, top: boolean): Model
 		Vector3.new(0, landingY - 0.5, landingStart + landingDepth / 2),
 		{ Color = stepColour }
 	)
-	for i = 1, steps do
+	for i = 1, down do
 		local zc = landingStart - tread * (i - 0.5)
 		local h = landingY + rise * i
 		-- The last step reaches back to the core's edge, under the upper slab's lip.
-		local front = if i == steps then -S / 2 else zc - tread / 2
+		local front = if i == down then -S / 2 else zc - tread / 2
 		local back = zc + tread / 2
 		part(
 			model,
@@ -588,22 +597,28 @@ function HotelKit.facade(
 				piece(partName, 0, P, h0, h1, colour)
 			end
 		end
-		band(`{name}_Low`, 0, 3, wall)
-		piece(`{name}_High`, 0, P, 8, top, wall)
+		-- Windows 4 wide and 9 tall (y 3..12) over a person's sill, two to a cell.
+		local winLow, winHigh = 3, 12
+		band(`{name}_Low`, 0, winLow, wall)
+		piece(`{name}_High`, 0, P, winHigh, top, wall)
 		-- Floor 1's sides are solid along the lobby: its end walls, the key rack's back.
 		local solid = if axis == "Z" and floor == 1 then G.LobbyRows * CELL else 0
 		if solid > 0 then
-			piece(`{name}_Lobby`, 0, solid, 3, 8, wall)
+			piece(`{name}_Lobby`, 0, solid, winLow, winHigh, wall)
 		end
-		-- Posts between window openings, one per cell, 2 wide.
-		for c = 0, G.Cells do
-			local x = c * CELL
+		-- Posts between the window openings, every half cell, 2 wide.
+		for c = 0, 2 * G.Cells do
+			local x = c * CELL / 2
 			local a0, a1 = math.max(solid, x - 1), math.min(P, x + 1)
 			if a1 > a0 and not (gapFrom and gapTo and a1 > gapFrom and a0 < gapTo) then
-				piece(`{name}_Post`, a0, a1, 3, 8, wall)
+				piece(`{name}_Post`, a0, a1, winLow, winHigh, wall)
 			end
 		end
-		piece(`{name}_Sill`, 0, P, 2.8, 3.2, trim)
+		-- A doorway is a door's height (9), not the window band's: a lintel over the gap.
+		if gapFrom and gapTo then
+			piece(`{name}_Lintel`, gapFrom, gapTo, 9, winHigh, wall)
+		end
+		piece(`{name}_Sill`, 0, P, winLow - 0.2, winLow + 0.2, trim)
 	end
 	for floor = 1, floors do
 		side(`Left_{floor}`, floor, "Z", -t / 2)

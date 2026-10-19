@@ -18,7 +18,7 @@ local S = Constants.Street
 
 local StreetLayout = {}
 
-StreetLayout.PlotSize = G.Cells * G.CellSize -- 72 studs
+StreetLayout.PlotSize = G.Cells * G.CellSize -- 144 studs
 
 -- The walking surface of the lane and of every plot's ground floor: one slab up from y = 0.
 StreetLayout.GroundY = G.SlabThickness
