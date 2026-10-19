@@ -392,7 +392,7 @@ desk and all, stood beside the new `FrontDesk` piece until August imports,
 WAITING §0.9): what needs the new models or the build menu's clicks stays open.
 
 - [x] (All 14 files, 90/90.) The specs in Studio (`tools/test_bundle.py`), `data` among them.
-- [ ] A new hotel: the lobby shell, the `FrontDesk` at the lobby's −X end
+- [x] (2026-10-19 22:35 after the import, `Test_FreeImp1019`: the lobby is the shell (floor, front walls, arch, lamps), the desk its own piece (counter, key rack, till); no empty MeshPart; rays over the lobby find the ground at one height but for the counter; a walker street → arch → queue → spawn, no climb or fall. The closed areas' plates not looked at.) A new hotel: the lobby shell, the `FrontDesk` at the lobby's −X end
   served toward +X, the start area (cells x 4–7, z 2–6) open and the five
   other areas under their plates on every floor; the spawn clear.
 - [x] (Before the move: Clerk (−68, 60), Queue_1 (−58, 60), Desk (−62, 60); the
@@ -573,3 +573,4 @@ August's, on a real controller.
 - 2026-10-19 21:02 Gamepad navigation after the merge: the input contexts exist with their priorities; B, R and a mouse click act as before; no error. The gamepad's own items are August's (a real controller).
 - 2026-10-19 21:06 Staff to floor 3 in a full hotel: up the placed stairs, but a 1,445-stud path outlasts the request (WAITING §2.29).
 - 2026-10-19 21:09 The piece menu by clicks: a room's menu opened by a click on it, Sell and Move done by clicks.
+- 2026-10-19 22:35 Free building after the import: 52 pieces saved and synced (agent, skill `import`); the lobby shell and the FrontDesk seen and walked. The trees wait for the Rojo restart.

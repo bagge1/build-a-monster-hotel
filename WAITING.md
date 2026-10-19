@@ -55,7 +55,9 @@ Connect: knappen under fliken Plugins i Studio. -->
    filerna** till **Workspace** i en dialog och skriv *importerat* (inte mitt
    i en playtest).
 
-8. **Importera fem träd** (2026-10-19, skogen runt gatan; grenen är
+8. **Starta om `rojo serve` och tryck Connect** (kvar av punkten; träden är
+   ~~importerade~~ 2026-10-19 22:34, sparade i `assets/Scenery/`, men syns i
+   spelet först efter omstarten). Ursprungligen: **Importera fem träd** (2026-10-19, skogen runt gatan; grenen är
    **ihopslagen i main 2026-10-19 20:27**, så det kan göras nu): först **starta
    om `rojo serve`** och tryck **Connect** (fliken **Plugins** i Studio):
    grenen lägger till mappen `assets/Scenery`, som Rojo bara ser efter en
@@ -66,7 +68,9 @@ Connect: knappen under fliken Plugins i Studio. -->
    dialog. Tills träden är importerade ritar spelet enkla klossträd på samma
    platser. Bilden: `blender/street/trees/review/sheet.png`.
 
-9. **Importera 52 modeller: att bygga fritt** (2026-10-19, grenen
+9. ~~**Importera 52 modeller: att bygga fritt**~~ (gjort 2026-10-19 22:34:
+   alla 52 inställda, sparade och synkade; lobbyskalet och `FrontDesk` sedda
+   i en playtest, `TESTRUN.md` fas 13) (2026-10-19, grenen
    `claude/free-building-4b66e3`; grenen är **ihopslagen i main 2026-10-19
    kväll**, så importera nu; tills dess står lobbyn utan disk i spelet; ta
    den i samma dialog som träden i punkt 8, alla 57 filer). Båda hotellens

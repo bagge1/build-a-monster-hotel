@@ -277,3 +277,15 @@ Obevakad session (`/loop`, självstyrd) medan August är borta (från ca 20:00 i
   timme i taget tills han är tillbaka.
 
 - **22:11** Vaknade: ingen omstart av rojo serve, ingen import (`Scenery` saknas, 57 filer i `blender/_import/`). Inget som går utan August; sover en timme till.
+- **22:29** August: *importerat* (57 modeller i Workspace). `Scenery` saknas
+  fortfarande: rojo serve inte omstartad. Importen (skill `import`) gjord av
+  en bakgrundsagent: Haunted Manor 32, Frostfang 20 (prefixet borttaget),
+  träden 5; kollision 0 Precise / 391 Box / 0 Default kvar, alla LOD_Proxy
+  dolda; synkade kopior 52/52 lika (50 utan PrimaryPart efter Rojos
+  livesynk, känt i DEVNOTES, sätts av `HotelKit.rooted`); Workspace,
+  `_ClaudeSerialize` och `blender/_import/` tömda. Committad `74c3fff`.
+- **22:35** Fas 13 efter importen (`Test_FreeImp1019`): lobbyn är skalet,
+  disken en egen bit (disk, nyckeltavla, kassa), inga tomma meshdelar,
+  strålar över lobbyn på en höjd, gångare gata → valv → kö → spawn utan
+  klättring. WAITING §0.9 struken; §0.8 kvar som omstarten.
+
