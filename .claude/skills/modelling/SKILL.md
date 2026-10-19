@@ -27,7 +27,8 @@ Read before starting, and only what the job needs:
 
 His picture or sketch → Claude's reading of it plus questions → **grey
 silhouettes beside a person at the game's scale** → he picks → detail, atlas,
-`LOD_Proxy`, FBX, validator, set README → stage the batch and put it in
+`LOD_Proxy`, FBX, validator, set README → **blind review** of the renders and
+triage (skill `blind-review`) → stage the batch and put it in
 `WAITING.md` (skill `import`) → he imports and says *importerat* → skill
 `import` → he looks in Studio. Given artistic freedom, he still reviews.
 Before asking for a yes on a draft, describe it in one line. For a mechanism
@@ -123,6 +124,10 @@ the kit before touching it.
 - [ ] `LOD_Proxy` made last, from the finished model, for anything large.
 - [ ] Close-ups of the joints rendered and looked at; the full sheet rendered
       once and sent to him.
+- [ ] **Blind review** (skill `blind-review`): the sheet and close-ups with
+      the 5-stud person sent to a fresh reviewer; every finding triaged in the
+      README (confirmed and fixed, false with the reason, or his call in
+      `WAITING.md`). He sees the set only after this.
 - [ ] The README states what was validated and what was not; "Studio runtime
       is not tested" until something has been seen running.
 - [ ] Staged in `blender/_import/`, the folder named to him, the import in

@@ -13,11 +13,15 @@ earnings are proven** on the real DataStore (test profile `Test_Persist1019`).
 for part against the imports, a hotel of every Haunted Manor piece built from
 the kit, rays over floors and doorways, both kits' stairs walked, guests,
 residents, the bus and a hunter seen as their models. The Studio copies and
-`blender/_import/` are cleared. One finding: the lobby's desk and planters
-stand in front of floor-1 doors (WAITING §2.10, his choice; recommendation (a),
-a Grid rule).
+`blender/_import/` are cleared. His review of the pictures (2026-10-19):
+the sign stands in the entrance, nobody can stand at the desk, the lobby reads
+as a patio. His rules are in `modelling/taste.md`; a **blind review** by a
+context-free model now comes before he sees any picture (skill `blind-review`;
+its first run and triage are in the Haunted Manor README).
 
-**Next, in order:** (1) WAITING §2.10 once he has chosen. (2) The next import is
+**Next, in order:** (1) Rework both kits' lobby and the sign's place by his rules:
+grey silhouettes for him first, then a blind review, then the import; verify
+the review's open findings 2, 4, 7, 8, 10 on the way. (2) The next import is
 staged (WAITING §0.4): both kits' fixed `HotelSign` and the seven cosmetics in
 `blender/_import/`; on *importerat*, skill `import` with each set's
 `import_fixup.luau`. (3) Open TESTRUN

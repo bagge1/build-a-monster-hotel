@@ -134,19 +134,12 @@ Med Claudes skärmdump där det finns en. -->
    **Rekommendation:** (c): ramarna (pumpa, istappar, lyktor) passar ihop med
    gaveln, vapnen gör det inte.
 
-10. **Lobbyns disk står framför rumsdörrar** (2026-10-19, hittat med strålar
-   i den första testkörningen med de riktiga modellerna). Ett rum på våning 1
-   längst fram öppnar sin dörr mot lobbyns bakre rad, men **Desk** (x −17…−7)
-   står bara 1,8 studs från väggen, och de två **Planter** i hörnen 1,5 studs.
-   Dörrar i fyra av tolv lägen (kolumn 0, 3, 4 och 11) går inte att gå
-   igenom, och **Till** nuddar en femte (kolumn 7) med en halv stud. Så var det
-   redan i blockouten; båda hotellens lobbyer är likadana.
-   **Alternativ:** (a) Grid förbjuder en dörr mot de lägena (bara kod, lobbyn
-   ser ut som nu, rummen kan fortfarande stå där vända åt ett annat håll);
-   (b) flytta disk, kassa och krukor framåt så att lobbyns bakre rad blir en
-   fri korridor längs rummen (båda lobbyerna byggs om och importeras, kön och
-   fällorna flyttas närmare entrén); (c) behåll. **Rekommendation:** (a): det
-   som syns är oförändrat och inget behöver importeras.
+10. ~~**Lobbyns disk står framför rumsdörrar**~~ (besvarat 2026-10-19: du
+   sa att skylten står mitt framför entrén, att man inte kan stå vid disken
+   och att lobbyn är en uteplats med en disk, inte en reception. Reglerna står
+   i `.claude/skills/modelling/taste.md`. Lobbyn och skylten görs om; Claude
+   visar grå silhuetter först. Ett nytt steg, skill `blind-review`, låter en
+   annan modell utan sammanhang granska bilderna innan du ser dem.)
 
 ## §3 Creator Hub och publicering
 

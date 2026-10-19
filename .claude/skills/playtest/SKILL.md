@@ -113,6 +113,10 @@ Studio MCP".
 
 ## Pictures and time
 
+- **Pictures of new models or a changed assembly go to a blind review**
+  (skill `blind-review`) before August sees them: rays and walkers prove a
+  path is open, not that a sign belongs in front of an entrance.
+
 - **On foot the camera is Roblox's**: set `workspace.CurrentCamera.CFrame` and
   it stays. A game camera that writes every frame needs a Studio-only override
   (an attribute on the local player the camera honours, as Sector Omega's

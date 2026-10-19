@@ -167,3 +167,27 @@ restart (2026-10-19, 15:30): all 69 synced copies match the Workspace imports
 part for part (628 parts: mesh ids, sizes, textures, collision, LOD_Proxy
 hidden, no empty MeshPart), and the Workspace copies are deleted. **Studio
 runtime is not tested yet**: not seen in the game, not walked.
+
+## Blind review 2026-10-19 (the first; skill `blind-review`)
+
+Three playtest pictures of a built hotel (street at eye height, raised
+three-quarter, inside the lobby), the reviewer told only what a lobby is for.
+Fable, no context, 3 minutes. August had found faults 1, 6 and the patio in
+the same pictures; the reviewer was not told them.
+
+| # | The reviewer's finding | Triage |
+|---|---|---|
+| 1 | The sign stands in the entrance and hides the lobby | **Confirmed**: Sign at z 17, Entrance at z 24, both x 0. His ruling too (`taste.md`). Fix: the lobby rework |
+| 2 | The sign is blank from straight ahead; reads as a menu (name and room list) | To verify: why its text did not draw in picture 1 |
+| 3 | Floor-2 rooms read as open coloured boxes | Likely false: those are the rooms' solid side walls (rotated pieces); the flat colour is a look, his |
+| 4 | The stair's top bay is a black void | To verify: floor 3 has no rooms; lighting in the stair core |
+| 5 | A ground-floor room looks empty (no bed) | Likely false: the Sarcophagus Suite's bed is out of the doorway's view |
+| 6 | The desk is small, pinched, against the column line, no served side | **Confirmed**: 1.8 studs to the wall (TESTRUN phase 9, rays). His ruling too |
+| 7 | Red slivers on edges (balcony ends, low wall tops, roof corner) | To verify: the code's facade trims, or z-fighting |
+| 8 | Placeholder street dressing: white chevrons, a pale rectangle, a crate | To verify: the pale rectangle is likely Studio's `SpawnLocation` on the street |
+| 9 | No readable roof from a raised view | His call (a look); floor 3 is an empty slab with rails |
+| 10 | Seams: a teal line along the wall base, trim edges | To verify, small |
+| 11 | Street lamps read as flat glowing discs | His call (a look) |
+
+Not found by the reviewer, found by August: that the lobby as a whole reads as
+an outdoor patio (the reviewer called it a "colonnade" without objecting).

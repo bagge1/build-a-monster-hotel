@@ -68,5 +68,16 @@ that concerns only one model goes in that set's `README.md` instead.
 - A surface pattern must not read as cracks: narrow, soft seams in a colour
   near the cells'.
 - Anything that retracts closes its bay flush.
+- **A hotel works as a hotel** (2026-10-19, the Haunted Manor lobby and sign
+  seen in a playtest; his words: "obvious faults that should be picked up"):
+  - Nothing stands in front of an entrance, a doorway or what it labels: "the
+    hotel sign is directly in front of the entrance (it obviously should not
+    be there!)".
+  - A counter has room for a person to stand at it, on the side they are
+    served from: "the check-in counter is almost in-line with the wall and you
+    cant stand there".
+  - A lobby is an indoor room that reads as a reception, not an open front
+    with a desk in it: "there is no reception really just an outside patio
+    with a checkout counter".
 - His palette in Sector Omega leaned **white, black and gold with violet and
   blue lights**; ask before assuming it carries to a new game.

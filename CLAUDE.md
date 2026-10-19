@@ -129,6 +129,7 @@ tree). Here:
 | An import (*importerat*), or staging one | skill `import` | what it points to |
 | The interface: a panel, the HUD, an image | `UI.md` | `src/client/UiView.luau` |
 | A playtest, or "does it work in the game" | skill `playtest`; `TESTRUN.md` | — |
+| Pictures of a finished model or the hotel, before he sees them | skill `blind-review` | `modelling/taste.md` |
 | Design | memory `phase-status`; the `docs/GDD.md` sections concerned | the research report |
 | What waits on August | `WAITING.md` | — |
 | A night sprint | skill `night-sprint`; `WAITING.md` | `archive/NATTLOGG-*.md` |
