@@ -280,6 +280,11 @@ Med Claudes skärmdump där det finns en. -->
    arbeta, inte stå vid disken; GDD §5.4). Byggs i en egen session: Room
    Service går till rummet och tillbaka, Housekeeping till rummet som ska
    städas, och en "✓" vid dörren när det är klart.
+   **Byggt (gren `claude/staff-walk-b4aa0b`, inte provkört i Studio):**
+   tiden är som förut, men aldrig kortare än att den hinner gå dit och stå
+   2 s vid dörren, och en anställd tar ett jobb i taget (fler anställda tar
+   fler rum samtidigt i stället för ett rum snabbare). Platshållare i GDD
+   Appendix A.5; säg till om du vill ha det på något annat sätt.
 
 18. **En skog runt gatan** (din idé, 2026-10-19: "så det inte ser ut som en
    stor gräsplätt"), och **Night Bus svänger in ur skogen** i stället för att

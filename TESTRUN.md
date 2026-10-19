@@ -268,6 +268,38 @@ the slab (`CLAUDE.md`, "The scale of a person"; `MODELS.md`, "Hotel kit").
   jamb trim stops where the arch springs. From the street straight ahead the
   sign's text draws (the first review's finding 2, closed).
 
+## Staff at work (GDD §4.6 "Staff are seen working", Appendix A.5; after the merge)
+
+Built on branch `claude/staff-walk-b4aa0b`, not yet run in Studio. Play once
+it is merged and synced, with free building's placed stairs and movable desk
+in too, since the errand reads the posts from the lobby's attachments and the
+way from `GuestService.pathToDoor`.
+
+- [ ] The staff spec: `python tools/test_bundle.py staff`, then the bundle in
+  the Server datamodel: all pass.
+- [ ] A Room Service resident (`DevCommand` `resident Slime`, assigned in the
+  panel), a guest on floor 1 and `request`: the resident leaves its post at
+  once, walks the hallway to the door, stands outside it facing in and
+  knocks; "✓ Room Service" rises at the door when the request closes; it
+  walks back to its post. The request closes no sooner than 12 s ÷ its
+  efficiency after it opened (server log or a stopwatch).
+- [ ] The same for a room on floor 3: up both flights by the guests' stairs,
+  through no wall or slab (rays along `Path`); a long walk ends the job 2 s
+  after it reaches the door, before the request's 30 s run out.
+- [ ] Housekeeping: a checkout leaves a dirty room; the resident walks to it,
+  "✓ Housekeeping" rises when the room turns clean, and it walks back.
+- [ ] Answered first: answer the request (or clean the room) yourself while
+  the resident is on its way: it turns round where it stands, no "✓".
+- [ ] Two requests and one Room Service: it serves the older first, walks
+  back, then takes the other. Two Room Service residents serve both at once,
+  each from its own post (`Slot` 1 and 2 side by side).
+- [ ] Reassigned mid-errand (to Front Desk, or back to the Wing): it is at
+  its new post at once, nothing left walking.
+- [ ] Front Desk stays behind the desk and checks guests in; Bellhop,
+  Entertainment and Security stay at their posts.
+- [ ] A second player visiting sees the walk and the "✓" too.
+- [ ] Studio's output: no `[residents] tick failed`.
+
 ## August keeps
 
 - How the street, the lobby and the rooms look (every look is a night draft).
