@@ -45,7 +45,16 @@ new `FrontDesk` piece. After the import: phase 13's model items, the new
 player's run (tutorial, bus, desk) and the in-game blind review. Also built
 that evening: CI lint (§13.1), VIP Lobby's gold name tag (§10.2, WAITING
 §2.22), Bellhop shortens check-in (§4.6, A.5 PLACEHOLDER, WAITING §2.23), the
-phone's Residents row and Ping menu. A full hotel measured 1,642 parts and
+phone's Residents row and Ping menu; and, merged and played the same
+evening, the rating's staff coverage (§5.3, WAITING §2.26), the tutorial's
+Commons on its first buses and a ping naming the wanted room (§11, §7,
+WAITING §2.25), gamepad navigation by the Input Action System (`Controls`;
+keyboard and mouse played, a real controller is his, WAITING §1.11). The
+tutorial's guest no longer gives up at the desk. The new player's tutorial
+is played Build → Done. **Pacing finding:** rebirth now takes 3.5–5.4 h
+against 60–90 min (WAITING §2.27; `tools/balance_model.py` runs again);
+the tutorial's free Coffin Suite does not fit the start area (§2.28); a
+full hotel's walks up can outlast a request (§2.29). A full hotel measured 1,642 parts and
 110 point lights (budget ~3,000 parts); the forest's blockouts are 3,385
 parts until the tree models arrive. PlayerData schema 2 rebuilds every hotel
 from the start area. Pure specs run outside Studio: `lune run
