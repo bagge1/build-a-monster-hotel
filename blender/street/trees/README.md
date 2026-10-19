@@ -106,3 +106,16 @@ separate call, and save each as `assets/Scenery/<Tree>.rbxm`:
 `ForestRenderer` looks for them in `ReplicatedStorage.Scenery`, a mapping
 this branch adds to `default.project.json` (Rojo needs a restart once it is
 merged). Until then the forest draws Luau blockouts.
+
+**Imported 2026-10-19 evening.** August imported the five with both hotel
+kits' batch; `import_settings.luau` ran in the Edit datamodel and was read
+back in a separate call: 21 meshes, all `Box`, no `Default` left, none
+colliding (`ForestRenderer` sets `CanCollide` on `Root`), no
+`SurfaceAppearance`, `Root` the hidden `PrimaryPart` with the pivot at its
+foot, `LOD_Proxy` hidden 5/5. Saved as `assets/Scenery/<Tree>.rbxm` with
+`tools/save_imports.py` (4,966–5,420 bytes; the decoded bytes deserialized
+with `Root` as `PrimaryPart`, and a `rojo build` to XML shows it on all five
+with every mesh id). **Not synced yet:** `ReplicatedStorage.Scenery` does
+not exist in Studio until August restarts `rojo serve`, so the synced copies
+are not read back and the forest still draws its blockouts; the Workspace
+copies are deleted (the files are the source). Not seen in the game.

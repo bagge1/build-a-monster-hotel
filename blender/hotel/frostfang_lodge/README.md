@@ -274,3 +274,21 @@ are Haunted Manor's too as `FrostfangLodge_Lobby`, `FrostfangLodge_FrontDesk`,
 `FrostfangLodge_Decor_RugSquare` (renamed after the fix-up, skill `import`);
 the six refitted decor and the seven rooms with a `Rug` part under their own
 names.
+
+### Imported (2026-10-19 evening)
+
+August imported the batch (57 FBX with Haunted Manor's and the trees). Once
+Haunted Manor's were saved and renamed out of the way, the seven prefixed
+imports were renamed to their own names and all 20 fixed up by
+`import_fixup.luau` (every part where the manifest says, no model stopped),
+then read back in a separate call: 151 meshes, all `Box`, no `Precise`, no
+`Default` left, Root hidden, the manifest's attachments, `LOD_Proxy` hidden
+on the 9 that have one (decor has none). Saved to
+`assets/HotelKit/FrostfangLodge/` with `tools/save_imports.py`, each shared
+name checked to differ from Haunted Manor's file. The live-synced copies
+under `ServerStorage.HotelKit.FrostfangLodge` match the imports 20/20 (mesh
+ids, sizes, textures, collision, attachments; no empty MeshPart), but **19
+arrived with `PrimaryPart` nil** (all but the new `FrontDesk`; `DEVNOTES.md`):
+the files have it (the serialized bytes deserialized, and a `rojo build` to
+XML: `Root` on all 25), and `HotelKit` sets it on every clone. Workspace
+copies deleted. **Studio runtime is not tested.**

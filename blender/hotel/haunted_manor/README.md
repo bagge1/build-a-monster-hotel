@@ -491,3 +491,21 @@ approved desk's; already his call, WAITING §2.13); whether the clerk passes
 round both ends (proven: the kit walks a 5-stud person from both side edges
 to the `Clerk`); the arch's size (unchanged); the runner's open ends (by
 design, so runners join).
+
+### Imported (2026-10-19 evening)
+
+August imported the staged batch (57 FBX with Frostfang's and the trees);
+this set's 32 (`Lobby`, `FrontDesk`, the 20 decor, the ten rooms and
+amenities with a `Rug` part) were fixed up by `import_fixup.luau` (every part
+where the manifest says, no model stopped) and read back in a separate call:
+219 meshes, all `Box`, no `Precise`, no `Default` left, Root hidden, the
+attachments the manifest names, `LOD_Proxy` hidden on the 12 that have one
+(decor has none). Saved over and beside `assets/HotelKit/HauntedManor/` with
+`tools/save_imports.py` before Frostfang's prints of the shared names. The
+live-synced copies under `ServerStorage.HotelKit.HauntedManor` match the
+imports 32/32 (mesh ids, sizes, textures, collision, attachments; no empty
+MeshPart), but **31 arrived with `PrimaryPart` nil** (all but the new
+`FrontDesk`; `DEVNOTES.md`, "Rojo's live sync drops `PrimaryPart`"): the
+files have it (a `rojo build` to XML shows `Root` on all 39), and `HotelKit`
+sets it on every clone. Workspace copies deleted. **Studio runtime is not
+tested**: the shell, the desk and the decor are not yet placed, walked or lit.
