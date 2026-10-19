@@ -1,20 +1,42 @@
 # Nattlogg — 2026-10-19, kväll
 
-## Sammanfattning (uppdateras varje varv)
+## Sammanfattning (21:10)
 
-- **Klart:** alla tre grenarna ihopslagna i main och provkörda: staff
-  (`9ff2588`), street (`8ab6eb6`), free-building (`86ae513`).
-- **Provat:** staff-specen 7/7; Room Service och Housekeeping går till rummet
-  och tillbaka med "✓"; omplacering mitt i ärendet; två på en gång. Rebirth
-  med panelens knapp; Frostfangs rum i en tomt; alla paneler på telefon
-  (två rättade: Residents-raden och Ping-menyn). Byggt ur GDD:n: CI-lint
-  (§13.1), VIP Lobbys gyllene namnskylt (§10.2), Bellhop kortar
-  incheckningen (§4.6).
-- **Pågår:** det som går utan August (ny spelare, mätning, prestanda).
-- **Väntar på August:** WAITING §0.8–0.9 (starta om rojo serve, sedan en
-  import av alla 57 filer i `blender/_import/`: fem träd och 52 bitar för
-  fri byggnad), §2.20–2.21 (streets frågor), §2.24 (fri byggnad), §2.22 (VIP-märkets utseende), §2.23
-  (Bellhops tal för incheckningen).
+**Klart och provat i Studio**
+- Alla tre grenarna är ihopslagna i main och spelade: staff (personal går
+  till rummen), street (förgård, Night Bus med två hållplatser och strövande
+  gäster, skog) och free-building (områden, trappor som bitar, flyttbar
+  disk, dekor, golv). Free-building är spelad före din import.
+- Byggt ur GDD:n och spelat: CI-lint (§13.1, grön), VIP Lobbys guldnamn
+  (§10.2), Bellhop kortar incheckningen (§4.6), personal i betyget (§5.3),
+  tutorialens Commons på första bussarna (§11), en ping som nämner rummet
+  (§7), handkontroll i alla paneler och byggläget (§11; tangentbord och mus
+  provade, handkontrollen själv är din).
+- Rättat: tutorialens gäst gav upp vid disken efter 60 s (nu väntar den);
+  telefonens Residents-rad och Ping-meny; Security-posten efter att skylten
+  flyttade ut.
+- Spelat: ny spelare hela tutorialen Build → Done (incheckning, kassan,
+  bussen, städning, personal, pitch), rebirth med panelens knapp,
+  Frostfangs rum i en tomt, piece-menyn med klick, alla paneler på telefon,
+  prestanda (fullt hotell 1 642 delar och 110 ljus, budget 3 000 delar).
+- Mätt: rebirth tar nu 3,5–5,4 timmar mot målet 60–90 minuter
+  (`archive/BALANCE-2026-10-19-evening.md`); `tools/balance_model.py`
+  fungerar igen.
+
+**Väntar på dig (allt står i `WAITING.md`)**
+- §0.8–0.9: starta om `rojo serve` och tryck **Connect**, importera sedan
+  alla 57 filer i `blender/_import/` i en dialog (fem träd, 52 bitar för
+  fri byggnad) och skriv *importerat*. Tills dess står gamla lobbyn med sin
+  disk bredvid den nya disken.
+- §1.9–1.11: en riktig telefon med fullt hotell, kassan och disken på E,
+  en handkontroll.
+- §2.20–2.29: dina beslut, viktigast §2.27 (tempot, med förslag och
+  uppmätt effekt), §2.28 (tutorialens Coffin Suite får inte plats) och
+  §2.29 (långa vägar uppåt; Room Service hinner inte fram).
+- Kvar för Claude efter importen: free-buildings modellpunkter, blind
+  granskning i spelet, skogen med riktiga träd.
+- Obs: staff-testet 19:55 körde på din egen profil; där står nu en Mummy
+  på Room Service.
 
 Obevakad session (`/loop`, självstyrd) medan August är borta (från ca 20:00 i
 2–3 timmar). Hans brief (andra versionen, 19:5x, ersätter den första):
@@ -245,4 +267,12 @@ Obevakad session (`/loop`, självstyrd) medan August är borta (från ca 20:00 i
   (130–145 s), eftersom `fill` satte trappan i lobbyraden. Spelet tillåter
   det (en trappa i lobbyraden vägras bara om den stänger en dörr). Inget
   ändrat: WAITING §2.29.
+- **21:09** b: piece-menyn med musklick (`Test_Menu1019`): klick på ett rum
+  öppnar dess meny (Move, "Sell +$28"); Sell tog bort det och betalade; Move
+  och ett klick på en ledig plats flyttade det (P_2 (−12, 84) → (12, 96),
+  gratis). Ett första försök la spökbiten delvis i lobbyraden (röd) och
+  klicket gjorde inget, som det ska.
+- **21:10** Sammanfattningen ovan skriven. Det som återstår kräver August
+  (importen, telefonen, handkontrollen, två spelare, besluten i §2). Sover en
+  timme i taget tills han är tillbaka.
 

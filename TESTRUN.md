@@ -33,7 +33,7 @@ multiply a capture's x and y by viewport width / 1920 (3434 / 1920 on his screen
 - [x] Floors 2 and 3 bought: slabs, railings, stairs. A walker climbs both
   storeys and comes back down (after the landing was widened to 4 studs).
 - [x] A guest to a floor 2 room walks the stairs' own turns and the floor's hallway.
-- [ ] Upgrade, decorate, move and sell from the piece menu, by clicks.
+- [x] (2026-10-19 21:09, `Test_Menu1019`, by mouse clicks in build mode: a click on a room opened its menu (Move, "Sell +$28"); Sell removed it and paid; Move, then a click on a free spot, moved it (no cost). Upgrade is gone from the menu since tiers come from decor (phase 13); decorating is the Decor tab.) Upgrade, decorate, move and sell from the piece menu, by clicks.
 - [x] Save and load by rejoining (14:32, test profile): $16,105, 7 shards, two
   residents, a gifted pass and `lastSeen` all came back after Stop and Play.
 
@@ -572,3 +572,4 @@ August's, on a real controller.
 - 2026-10-19 20:56 Tutorial Commons and the named ping after the merge: specs 97/97; the tutorial to Clean on a fresh profile; the first tutorial bus brought two Commons, one picked the hotel; the ping named the Coffin Suite. Fixed: the tutorial's guest gave up at the desk. The till's E prompt could not be triggered through the MCP beside the desk's (both E, OnePerButton, 3 studs apart): WAITING §1.10.
 - 2026-10-19 21:02 Gamepad navigation after the merge: the input contexts exist with their priorities; B, R and a mouse click act as before; no error. The gamepad's own items are August's (a real controller).
 - 2026-10-19 21:06 Staff to floor 3 in a full hotel: up the placed stairs, but a 1,445-stud path outlasts the request (WAITING §2.29).
+- 2026-10-19 21:09 The piece menu by clicks: a room's menu opened by a click on it, Sell and Move done by clicks.
