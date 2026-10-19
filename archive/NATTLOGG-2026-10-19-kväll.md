@@ -2,17 +2,18 @@
 
 ## Sammanfattning (uppdateras varje varv)
 
-- **Klart:** staff (`9ff2588`) och street (`8ab6eb6`) ihopslagna i main och
-  provkörda.
+- **Klart:** alla tre grenarna ihopslagna i main och provkörda: staff
+  (`9ff2588`), street (`8ab6eb6`), free-building (`86ae513`).
 - **Provat:** staff-specen 7/7; Room Service och Housekeeping går till rummet
   och tillbaka med "✓"; omplacering mitt i ärendet; två på en gång. Rebirth
   med panelens knapp; Frostfangs rum i en tomt; alla paneler på telefon
   (två rättade: Residents-raden och Ping-menyn). Byggt ur GDD:n: CI-lint
   (§13.1), VIP Lobbys gyllene namnskylt (§10.2), Bellhop kortar
   incheckningen (§4.6).
-- **Pågår:** free-building ska slås ihop.
-- **Väntar på August:** WAITING §0.8 (starta om rojo serve, importera fem
-  träd), §2.20–2.21 (streets frågor), §2.22 (VIP-märkets utseende), §2.23
+- **Pågår:** det som går utan August (ny spelare, mätning, prestanda).
+- **Väntar på August:** WAITING §0.8–0.9 (starta om rojo serve, sedan en
+  import av alla 57 filer i `blender/_import/`: fem träd och 52 bitar för
+  fri byggnad), §2.20–2.21 (streets frågor), §2.24 (fri byggnad), §2.22 (VIP-märkets utseende), §2.23
   (Bellhops tal för incheckningen).
 
 Obevakad session (`/loop`, självstyrd) medan August är borta (från ca 20:00 i
@@ -144,3 +145,26 @@ Obevakad session (`/loop`, självstyrd) medan August är borta (från ca 20:00 i
   på tomt, gård, körbana eller trottoar. Inga spelfel i konsolen. Kvar:
   Scenery och trädimporten (August), tutorialens gäster (i ny-spelar-rundan),
   telefonens bildtid, blind granskning.
+- **20:36** free-building: stylua ren, selene 1 varning (den gamla i
+  `BusRenderer`, borta efter street). Sammanslagen med `--no-ff`
+  (`86ae513`). Konflikter: GuestService (free-buildings `roomPath` via
+  `Grid.route`, staffs `toDoor` behållen), BuildController (fällmenyn heter
+  "Forecourt traps"), MODELS (lobbyn ett skal; skylt och fällor i
+  förgården), TESTRUN (free-buildings fas blev 13), WAITING (§0.9 de 52
+  bitarna i samma dialog som träden i §0.8; free-buildings §2-punkt blev
+  2.24). Efter sammanslagningen: Security-posten flyttad från `SignBoard`
+  (som nu är förgårdens) till insidan av entrén mittemot Bellhop
+  (**antagande**, går att ångra; utan det hade Security tappat sin post efter
+  importen), två oanvända namn borttagna. selene 0/0, rojo build, alla rena
+  specar under Lune. Ingen ändring i `default.project.json`.
+- **20:42** Free-buildings fas 13 i playtest före importen (testprofil
+  `Test_Free1019`; synken 74/74): 14 specfiler **90/90**. Gamla lobbyn (med
+  sin disk) står bredvid den nya `FrontDesk`-biten tills importen. Via
+  spelets remotes: rum vägras `Area`, `Lobby`, `DoorBlocked`,
+  `DoorUnreachable`, `Cash`; område 5 köpt för $1000 och 3 för $3000;
+  våning 2 köpt, trappan gratis vid (8,2); en gångare uppför trappans glid
+  till våning 2 och längs korridoren utan klättring eller fall; två gästers
+  vägar till rum på våning 2 går via trappan. Disken flyttad: kö, expedit
+  och diskpunkt följde med. Ljus på rutnätet ($40), vägrat i dörröppningen.
+  Golv lagda på rum, lobby, korridor. Inga fel i konsolen. Öppet: menyns
+  klick, våning 3, allt som kräver importen.

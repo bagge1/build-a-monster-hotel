@@ -386,32 +386,45 @@ there only by stylua, selene, `rojo build`, luau-lsp against main's
 baseline, the Blender validators and the pure specs under Lune (64 pass,
 `tools/run_specs.luau`). **Nothing below has run in Studio.** Play it on a
 fresh test profile (`Test_Free1019`): the schema step (version 2) builds every
-saved hotel again from the start area.
+saved hotel again from the start area. Merged into main 2026-10-19 20:36 and
+played 20:37–20:42 by the game's remotes **before the import** (the old lobby,
+desk and all, stood beside the new `FrontDesk` piece until August imports,
+WAITING §0.9): what needs the new models or the build menu's clicks stays open.
 
-- [ ] The specs in Studio (`tools/test_bundle.py`), `data` among them.
+- [x] (All 14 files, 90/90.) The specs in Studio (`tools/test_bundle.py`), `data` among them.
 - [ ] A new hotel: the lobby shell, the `FrontDesk` at the lobby's −X end
   served toward +X, the start area (cells x 4–7, z 2–6) open and the five
   other areas under their plates on every floor; the spawn clear.
-- [ ] The desk's points mirrored on the lobby: the tutorial's arrow at the
+- [x] (Before the move: Clerk (−68, 60), Queue_1 (−58, 60), Desk (−62, 60); the
+  tutorial's arrow and the prompts not looked at.) The desk's points mirrored on the lobby: the tutorial's arrow at the
   desk, the Front Desk resident at `Clerk`, the queue in front of the desk,
   the check-in and collect prompts on the desk.
-- [ ] Build mode: the Rooms, Amenities, Stairs, Decor and Floors tabs; a room
+- [ ] (By the remote: refused `Area` on a closed area, `Lobby` in the lobby,
+  `DoorBlocked` and `DoorUnreachable` behind two front rooms, `Cash` when
+  short; two Standard Rooms fit the front of the start area. The tabs are
+  the menu's, not clicked.) Build mode: the Rooms, Amenities, Stairs, Decor and Floors tabs; a room
   refused on a closed area (`Area`), in the lobby (`Lobby`), on the entrance;
   2–4 Standard Rooms fit the start area.
-- [ ] Areas: the labels over the closed areas on the floor in view; a tap on
+- [ ] (By the remote: area 5 behind the start area $1000, area 3 beside it
+  $3000. Labels and the tap not seen.) Areas: the labels over the closed areas on the floor in view; a tap on
   one offers it at its price; bought, its plates go on every floor; a back
   area refused until one beside it is owned.
-- [ ] A floor bought: the Stairs tab says one is free; placed in the start
+- [ ] (Floor 2 bought; a stair at (8, 2) for $0; a walker up its glide
+  (30, 1, 72) → landing y 10.6 → (42, 19, 72) and along floor 2's hallway,
+  no climb or fall. A second stair's price and `CutsOff` not tried.) A floor bought: the Stairs tab says one is free; placed in the start
   area for $0; the slab above opens over it with its lip; walked up and
   down; a second stair costs; the last stair to a floor with a room refused
   for sale (`CutsOff`); a stair stacked on another continues it (StairCore
   below, StairCoreTop above).
-- [ ] A guest to a room on floor 2 and floor 3: up the placed stairs (glide
+- [ ] (Floor 2: two Skeletons' paths up the placed stair's glide to their
+  doors at y 19, and one to floor 1. Floor 3 not built.) A guest to a room on floor 2 and floor 3: up the placed stairs (glide
   Bottom → Path_n → Top), to the door, to the bed; and back out at checkout.
-- [ ] The desk moved (tap it, Move): the queue, the prompts, the clerk and
+- [x] (By the remote, `Move` to (10, 0) r3: Clerk (56, 60), Queue_1 (46, 60),
+  Desk (50, 60) followed; the tap and the arrow not seen.) The desk moved (tap it, Move): the queue, the prompts, the clerk and
   the tutorial's arrow follow; a desk where the entrance can't reach it is
   refused.
-- [ ] Decor: placed in a room on the 3-stud grid, turned with R; refused in
+- [ ] (Candles at square (18, 11) in a room for $40; refused `Doorway` at
+  (17, 8). The rest open.) Decor: placed in a room on the 3-stud grid, turned with R; refused in
   the doorway, on the bed, across a wall; a Bookshelf only against a wall; a
   rug under an armchair; the room's plaque shows T2 at 100 points (T3 at 300
   for a 2×2); its tags meet a guest's preferences; a room moved carries its
@@ -419,7 +432,8 @@ saved hotel again from the start area.
 - [ ] Hallway decor: a bench in a cell's corner leaves the cell walkable; one
   across a cell's middle that would cut a door off refused; nothing in the
   entrance's mouth but a rug.
-- [ ] Floors: a finish laid on a room, the lobby and the hallways; "Its own
+- [ ] (Oak Boards on a room and the hallways, Dark Boards on the lobby,
+  accepted; not looked at.) Floors: a finish laid on a room, the lobby and the hallways; "Its own
   floor" brings the model's back.
 - [ ] Rays and walkers as in phase 11 over a hotel of placed stairs (`fill`).
 
@@ -448,3 +462,4 @@ saved hotel again from the start area.
 - 2026-10-19 20:03 Rebirth by the panel's button (Test_Eve1019a) and Frostfang's rooms in a plot pass.
 - 2026-10-19 20:07 The phone: all panels opened; Residents' role row and the Ping menu fixed and seen fitting.
 - 2026-10-19 20:33 Phase 12 (street) after the merge: specs 82/82 (13 files); forecourt rayed and walked; the bus's drive and stops, browsing, the stops' waiting and boarding, a trap's scare; the forest's placement (blockouts). Scenery, the tree import, the tutorial's guests, the phone's frame time and the in-game review open.
+- 2026-10-19 20:42 Phase 13 (free building) after the merge, before the import: specs 90/90; refusals, areas, a free stair and a walker up it to floor 2, guests' paths to floor 2, the desk moved with its points, decor and its doorway refusal, finishes. The menu's clicks, floor 3 and everything after the import open.
