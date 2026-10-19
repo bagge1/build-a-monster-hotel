@@ -55,6 +55,21 @@ Connect: knappen under fliken Plugins i Studio. -->
    filerna** till **Workspace** i en dialog och skriv *importerat* (inte mitt
    i en playtest).
 
+8. **Importera 52 modeller: att bygga fritt** (2026-10-19, grenen
+   `claude/free-building-4b66e3`; **importera först när grenen är
+   sammanslagen**, annars står lobbyn utan disk i spelet). Båda hotellens
+   lobby blir ett skal (golv, framvägg, valv), disken med kassan och
+   nyckeltavlan blir en egen bit (`FrontDesk`), bänkarna, krukorna och mattan
+   blir dekor (`Decor_Bench`, `Decor_UrnPlanter`, `Decor_RugRunner`,
+   `Decor_RugCorner`, `Decor_RugSquare`), all dekor passar rutnätet av 3 studs,
+   och rummens golv är en enda del (mattan i rummet är skild från golvet, så
+   att ett valt golv kan läggas på). Importera **alla filer i
+   `blender/_import/`** till **Workspace** i en dialog och skriv
+   *importerat*. Frostfangs som delar namn med Haunted Manors heter
+   `FrostfangLodge_...` i mappen; Claude döper om dem. Bilden:
+   `archive/screens/2026-10-19_lobby_shell_desk.jpg` (lobbyn uppifrån med
+   disken, bänken, krukorna och mattorna).
+
 ## §1 Att titta på eller spela
 
 <!-- Det bara en människa kan bedöma: hur det känns, hur det ser ut.
@@ -301,13 +316,20 @@ Med Claudes skärmdump där det finns en. -->
    som bitar, en flyttbar disk, dekor på ett rutnät av 3 studs, golv per rum,
    lobby och korridor, och tier från inredning. Fem saker är dina:
    - **De nya dekorbitarna för Haunted Manor** (klockor, blommor, växter,
-     möbler, piano): grå silhuetter i
-     `blender/hotel/haunted_manor/review/` (Grandfather Clock, Wall Clock,
-     Black Roses, Carnivorous Plant, Ghost Fern, Armchair, Velvet Sofa,
-     Bookshelf, Side Table, Grand Piano; A/B där det finns två). **Välj
-     utseende**, och sätt taggar och priser: Claudes förslag står i GDD A.2
-     (till exempel Grand Piano: music, slow music, $2 500). Tills du valt
-     visas de som enkla block i spelet.
+     möbler, piano): grå silhuetter bredvid en person,
+     `archive/screens/2026-10-19_decor_silhouettes.jpg` (Grandfather Clock,
+     Wall Clock, Black Roses, Carnivorous Plant, Ghost Fern, Armchair, Velvet
+     Sofa, Bookshelf, Side Table, Grand Piano). **Välj:** Grandfather Clock A
+     (golvur) eller B (kistformad), Grand Piano A (flygel) eller B (pianino;
+     då passar den också mot en vägg). **Armchair** är för smal på en ruta
+     (sitsen 1,44 bred, en person 2): **rekommendation** 2 × 1 rutor. Sätt
+     taggar och priser: Claudes förslag står i GDD A.2 (till exempel Grand
+     Piano: music, slow music, $2 500). Tills du valt visas de som enkla block
+     i spelet.
+   - **Den blinda granskningen av disken** (Haunted Manors README): kassan ser
+     ut som en fågelholk från gästens sida, klockan är guld på guldskiva, och
+     lobbygolvets schack är stort (6 studs rutor; ett golv du väljer ersätter
+     det). **Rekommendation:** behåll alla tre tills du sett dem i spelet.
    - **Talen** (alla platshållare): områdena $1 000, $3 000, $8 000, $20 000,
      $50 000; en trappa $250 (den första till en ny våning gratis); golv
      gratis; försäljning ger halva priset tillbaka. **Ett fynd om tier:** med

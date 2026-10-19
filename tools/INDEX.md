@@ -191,3 +191,11 @@ front of it, none touching either lobby). Helpers: `rod`, `chain` (a tapered
 tube), `ring`, `swag`/`string` (a hung string), `shield_pts`, `bat_pts`,
 `flake`, `icicle`. Review renders (Workbench): each cosmetic on both kits.
 `-- only A,B`, `-- nopreview`.
+
+## run_specs.luau
+
+The pure specs (`tests/*.spec.luau`) under Lune, outside Studio:
+`lune run tools/run_specs.luau . [spec ...]`. Resolves `script.Parent.X` and
+`Shared.X` to `src/shared/X.luau`, Roblox datatypes from `@lune/roblox`, a
+seeded `Random`. `data` needs the engine (Net) and runs only in Studio
+(`test_bundle.py`). Lune is global (`rokit add --global lune-org/lune`).
