@@ -314,6 +314,14 @@ function BuildService.Start()
 	PlayerData.onLoaded(function(player)
 		BuildService.refreshUnlocks(player)
 	end)
+	DevGrant.register("unlock", function(player, args)
+		local data = PlayerData.get(player)
+		if data and args[1] then
+			data.unlocked[args[1]] = true
+			StateService.mark(player)
+		end
+		return "ok"
+	end)
 	DevGrant.register("fill", function(player, args)
 		-- A full hotel for the performance budget (§13.4): every floor packed
 		-- with `item` (default StandardRoom), each with three decor pieces.

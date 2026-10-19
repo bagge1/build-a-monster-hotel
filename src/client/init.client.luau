@@ -22,6 +22,7 @@ local systems: { { Init: () -> (), Start: () -> () } } = {
 	require(Client.Sound) :: any,
 	require(Client.Pings) :: any,
 	require(Client.EventPanel) :: any,
+	require(Client.Effects) :: any,
 	require(Client.TutorialController) :: any, -- last: it points at every other panel's buttons
 }
 

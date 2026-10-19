@@ -502,12 +502,23 @@ function GuestService.checkIn(player: Player, byStaff: boolean?): Guest?
 	walk(g, path)
 	publish(g)
 	PlayerData.stat(player, "checkIns")
+	local at = here(g)
 	Net.fire(
 		player,
 		"Moment",
 		"CheckIn",
-		{ species = g.species, mutation = g.mutation, byStaff = byStaff == true }
+		{ species = g.species, mutation = g.mutation, byStaff = byStaff == true, at = at }
 	)
+	-- A rare check-in is the street's moment (§11 "a flashy check-in, a street-wide announcement").
+	if sp.rarity == "Legendary" or sp.rarity == "Mythic" then
+		local mutationName = if g.mutation then g.mutation .. " " else ""
+		Net.fireAll(
+			"Announce",
+			`{player.DisplayName} checked in a {sp.rarity} {mutationName}{sp.name}!`,
+			"Rare"
+		)
+		Net.fireAll("Moment", "RareCheckIn", { species = g.species, at = at })
+	end
 	for _, h in checkInHandlers do
 		task.spawn(h, player, g)
 	end
