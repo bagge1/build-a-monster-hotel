@@ -111,6 +111,8 @@ multiply a capture's x and y by viewport width / 1920 (3434 / 1920 on his screen
   first hunter at the door away, once.
 - [x] The facade: rays pass the Wing doorway (x 32–40) at 1.5 and 5 studs and hit
   the wall beside it; a packed hotel with its facade is 1,205 parts.
+- [x] LOD: a packed hotel's 174 beds, pillows and lamps (58 lights) hide when
+  the camera is far and come back when it returns.
 - [ ] Boo! at ~35 studs fired the prompt but nothing came back: probably
   refused for reach; check what a player sees at 30–40 studs.
 - [x] A resident in the Hunter Camp (dev `camp`) is away from the Wing; the
