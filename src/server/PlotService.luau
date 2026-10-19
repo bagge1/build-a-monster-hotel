@@ -463,7 +463,7 @@ end
 function PlotService.forecourtPoint(plot: Plot, name: string): CFrame?
 	local base = plot.model:FindFirstChild("Base")
 	local forecourt = base and base:FindFirstChild("Forecourt")
-	local root = forecourt and forecourt:IsA("Model") and forecourt.PrimaryPart
+	local root = if forecourt and forecourt:IsA("Model") then forecourt.PrimaryPart else nil
 	local a = root and root:FindFirstChild(name)
 	return if a and a:IsA("Attachment") then a.WorldCFrame else nil
 end
