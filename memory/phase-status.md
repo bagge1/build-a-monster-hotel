@@ -49,6 +49,8 @@ and luau-lsp installed globally by rokit). After the merge: TESTRUN phase 12.
 `tools/balance_model.py` stops on the changed tier formula until it models
 furnishing.
 
+**Gamepad navigation (GDD §11)** is built on branch `claude/gamepad-navigation` (2026-10-19, not merged, **not run in Studio**): `Controls.luau`, UI.md "Gamepad", TESTRUN "Gamepad navigation" (its stick and button items need his real controller).
+
 **Earlier next steps:** (1) **The doubled scale** (his ruling 2026-10-19
 evening, `CLAUDE.md` "The scale of a person": double only what makes the
 hotel less cramped). Built, imported and played (`TESTRUN.md` phase 11):

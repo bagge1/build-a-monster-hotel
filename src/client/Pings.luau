@@ -8,6 +8,7 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Net = require(ReplicatedStorage.Shared.Net)
+local Controls = require(script.Parent.Controls)
 local Ui = require(script.Parent.Ui)
 local Hud = require(script.Parent.Hud)
 
@@ -34,6 +35,10 @@ function Pings.Init()
 		Vector2.new(1, 0)
 	)
 	menu.Visible = false
+	-- The gamepad (§11): the first phrase selected when it opens, ButtonB closes it.
+	Controls.panel(menu, function()
+		menu.Visible = false
+	end)
 	Ui.padding(menu, 8)
 	local grid = Instance.new("UIGridLayout")
 	grid.CellPadding = UDim2.fromOffset(6, 6)

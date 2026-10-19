@@ -8,16 +8,20 @@
 	Panels add their own button with `Hud.button(name, text, side, onClick)`.
 	Every number is read from the player's attributes (`PlayerData.publish`),
 	a copy for drawing.
+
+	The gamepad (§11): ButtonY selects the first menu button (the left
+	column's top, else the right's) and lets it go again; the buttons' keys
+	are input actions (`Controls`, UI.md "Gamepad").
 ]]
 
 local GuiService = game:GetService("GuiService")
 local Players = game:GetService("Players")
-local UserInputService = game:GetService("UserInputService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
 
 local Format = require(ReplicatedStorage.Shared.Format)
 local Net = require(ReplicatedStorage.Shared.Net)
+local Controls = require(script.Parent.Controls)
 local Ui = require(script.Parent.Ui)
 local UiImages = require(script.Parent.UiImages)
 
@@ -29,6 +33,7 @@ local left: Frame
 local right: Frame
 local toasts: Frame
 local banner: TextLabel
+local keys: InputContext -- the menu buttons' keys
 local columnTop = 56 -- where the menu columns start (placeTop)
 
 local REFUSALS: { [string]: string } = {
@@ -169,24 +174,15 @@ local ICONS: { [string]: { string | Color3 } } = {
 
 -- A key for a menu button (his ask, 2026-10-19). It works only while its
 -- button is shown, so build mode, which hides the column, keeps R for
--- rotating a piece (BuildController closes itself on B).
+-- rotating a piece (BuildController closes itself on B; its context, of a
+-- higher priority, takes both keys while it is open).
 local KEYS: { [string]: Enum.KeyCode } = {
 	BuildButton = Enum.KeyCode.B,
 	ResidentsButton = Enum.KeyCode.R,
 }
-local keyed: { [Enum.KeyCode]: { button: TextButton, onClick: () -> () } } = {}
 
 -- Whether a GUI object and every one of its ancestors is shown.
-local function shown(g: GuiObject): boolean
-	local node: Instance? = g
-	while node and node:IsA("GuiObject") do
-		if not node.Visible then
-			return false
-		end
-		node = node.Parent
-	end
-	return true
-end
+local shown = Controls.shown
 
 -- A menu button on the left or right edge, in `order`.
 function Hud.button(
@@ -206,7 +202,11 @@ function Hud.button(
 	b.LayoutOrder = order or 0
 	local key = KEYS[name]
 	if key then
-		keyed[key] = { button = b, onClick = onClick }
+		Controls.press(keys, name, { key }, function()
+			if shown(b) then
+				onClick()
+			end
+		end)
 	end
 	if id and id ~= "" then
 		local img = Instance.new("ImageLabel")
@@ -237,6 +237,7 @@ end
 
 function Hud.Init()
 	gui = Ui.screen("Hud", 1)
+	keys = Controls.context("HudKeys", 1000, false)
 	local top = Ui.frame(gui, "Top", UDim2.new(1, 0, 0, 44), UDim2.fromOffset(0, 6))
 	top.BackgroundTransparency = 1
 	Ui.list(top, Enum.FillDirection.Horizontal, 8, Enum.HorizontalAlignment.Center)
@@ -337,14 +338,13 @@ function Hud.Init()
 end
 
 function Hud.Start()
-	UserInputService.InputBegan:Connect(function(input, processed)
-		if processed or UserInputService:GetFocusedTextBox() then
-			return
+	-- ButtonY with nothing selected (Controls' menu): the menu buttons.
+	Controls.onMenu(function()
+		local first = Controls.first(left) or Controls.first(right)
+		if first then
+			Controls.select(first)
 		end
-		local k = keyed[input.KeyCode]
-		if k and shown(k.button) then
-			k.onClick()
-		end
+		return first ~= nil
 	end)
 	Net.listen("Toast", function(text: string, kind: string?)
 		Hud.toast(

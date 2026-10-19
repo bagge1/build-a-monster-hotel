@@ -19,8 +19,18 @@
 
 	The camera looks down on the plot while building, and floors above the
 	one being built on are hidden locally (`LocalTransparencyModifier`).
+
+	The gamepad (§11, UI.md "Gamepad"): build mode opens on its cards (the
+	selection, ButtonY to and from them); a chosen card hands the left stick
+	to a cursor on the plot, which stands in for the pointer: A places or
+	taps there, RB rotates (beside R), B steps back (stop placing, leave the
+	cards, leave build mode), the D-pad changes floor (up, down) and turns
+	the view a quarter (left, right), the right stick turns and zooms. The
+	keys are input actions (`Controls`); the pointer's clicks, drags and
+	pinches stay on UserInputService.
 ]]
 
+local GuiService = game:GetService("GuiService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -33,6 +43,7 @@ local Grid = require(ReplicatedStorage.Shared.Grid)
 local Layout = require(ReplicatedStorage.Shared.Layout)
 local Net = require(ReplicatedStorage.Shared.Net)
 local Pieces = require(ReplicatedStorage.Shared.Pieces)
+local Controls = require(script.Parent.Controls)
 local State = require(script.Parent.State)
 local Ui = require(script.Parent.Ui)
 local Hud = require(script.Parent.Hud)
@@ -70,7 +81,19 @@ local tab = "Room"
 local paintTabs: () -> ()
 -- What the strip says while nothing is being placed: that a placed piece is
 -- tapped to change it (his report, 2026-10-19: no way to remove or replace a room).
-local HINT = "Choose something to build, or tap a room, decor or a closed area"
+local function idleHint(): string
+	return Controls.hint(
+		"Choose something to build, or tap a room, decor or a closed area",
+		"Y for the cards, or A on a room, decor or a closed area"
+	)
+end
+-- What the strip says while a placed piece or decor is being moved.
+local function moveHint(): string
+	return Controls.hint(
+		"Tap where it should go · right-click to stop",
+		"Steer it with the stick, A to put it down · B to stop"
+	)
+end
 local hover: Highlight? = nil
 local stopPlacing: () -> ()
 local rightDownAt: Vector2? = nil
@@ -78,6 +101,18 @@ local redrawCards: () -> ()
 local ghost: Model? = nil
 local hidden: { [BasePart]: boolean } = {}
 local areaLabels: { BillboardGui } = {}
+
+-- The gamepad (§11): a cursor on the plot in place of the pointer.
+local pad: Vector3? = nil -- plot-local, on the floor in view
+local padMarker: BasePart? = nil
+-- The plot's width the cursor crosses in a second at full zoom.
+local PAD_SPEED = 0.45
+local buildKeys: InputContext -- while building: rotate, leave, the camera
+local padKeys: InputContext -- while building with nothing selected: the cursor, A, the D-pad
+local cursorAction: InputAction
+local cameraAction: InputAction
+local toFloor: (number) -> ()
+local turnQuarter: (number) -> ()
 
 local function plotModel(): Model?
 	local index = me:GetAttribute("Plot")
@@ -396,7 +431,7 @@ local function drawGhost()
 	info.Text = if ok
 		then `{name}{if cost
 			then " · " .. (if cost == 0 then "free" else Format.cash(cost))
-			else " (move)"}  ·  R / ⟳ to rotate`
+			else " (move)"}  ·  {Controls.hint("R / ⟳ to rotate", "RB / ⟳ to rotate")}`
 		else `{name}: {Hud.refusal(why or "")}`
 	placeButton.Visible = ok == true
 end
@@ -540,6 +575,93 @@ local function showHover(id: number?, kind: string?)
 	(hover :: Highlight).Adornee = target
 end
 
+-- ===== The gamepad's cursor (§11) =====
+
+-- Where the cursor is on the screen: the pointer's stand-in.
+local function padScreen(): Vector2?
+	local frame = plotFrame()
+	local p = pad
+	if not frame or not p then
+		return nil
+	end
+	local s = camera:WorldToScreenPoint(
+		frame:PointToWorldSpace(Vector3.new(p.X, Grid.floorY(floor), p.Z))
+	)
+	return Vector2.new(s.X, s.Y)
+end
+
+local function hidePadMarker()
+	if padMarker and padMarker.Parent then
+		padMarker.Parent = nil
+	end
+end
+
+-- The ghost, the outline and the marker after the cursor (or the floor) moved;
+-- `force` redraws the ghost where it stands.
+local function padRefresh(force: boolean?)
+	local s = padScreen()
+	local frame = plotFrame()
+	local p = pad
+	if not s or not frame or not p or not active or not Controls.gamepad() then
+		hidePadMarker()
+		return
+	end
+	if placing() then
+		hidePadMarker()
+		local c = screenToAnchor(s.X, s.Y)
+		if c and (force or not cell or c.x ~= cell.x or c.z ~= cell.z) then
+			cell = c
+			drawGhost()
+		end
+		return
+	end
+	showHover(underPointer(s.X, s.Y))
+	if not padMarker then
+		-- The door marker's look: where the cursor stands while nothing is placed.
+		local m = Instance.new("Part")
+		m.Name = "BuildCursor"
+		m.Anchored = true
+		m.CanCollide = false
+		m.CanQuery = false
+		m.CanTouch = false
+		m.Material = Enum.Material.Neon
+		m.Color = Ui.Colour.Gold
+		m.Size = Vector3.new(2, 0.4, 2)
+		padMarker = m
+	end
+	local m = padMarker :: BasePart
+	m.CFrame = frame * CFrame.new(p.X, Grid.floorY(floor) + 0.3, p.Z)
+	m.Parent = workspace
+end
+
+-- The left stick: the cursor moves the way the stick points on the screen.
+local function movePad(v: Vector2, dt: number)
+	local frame = plotFrame()
+	if not frame then
+		return
+	end
+	local size = G.Cells * G.CellSize
+	local p = pad or Vector3.new(size / 2, 0, size / 2)
+	local f = frame:VectorToObjectSpace(camera.CFrame.LookVector)
+	local r = frame:VectorToObjectSpace(camera.CFrame.RightVector)
+	f = Vector3.new(f.X, 0, f.Z)
+	r = Vector3.new(r.X, 0, r.Z)
+	if f.Magnitude < 1e-3 or r.Magnitude < 1e-3 then
+		return
+	end
+	p += (r.Unit * v.X + f.Unit * v.Y) * size * PAD_SPEED * zoom * dt
+	pad = Vector3.new(math.clamp(p.X, 0, size), 0, math.clamp(p.Z, 0, size))
+	padRefresh()
+end
+
+-- A chosen card, or a piece to move, hands the stick to the cursor: the selection goes.
+local function toPlot()
+	if Controls.gamepad() then
+		Controls.select(nil)
+		padRefresh(true)
+	end
+end
+
 -- ===== Menus =====
 
 local function clearMenu(title: string)
@@ -590,7 +712,8 @@ local function startMoving(id: number, rec: any)
 	setHidden()
 	updateCamera()
 	drawAreaLabels()
-	info.Text = "Tap where it should go · right-click to stop"
+	info.Text = moveHint()
+	toPlot()
 end
 
 local function openMenu(id: number)
@@ -685,7 +808,8 @@ local function openDecorMenu(id: number)
 		floorLabel.Text = `Floor {floor}`
 		setHidden()
 		updateCamera()
-		info.Text = "Tap where it should go · right-click to stop"
+		info.Text = moveHint()
+		toPlot()
 	end, Ui.Colour.Teal)
 	Ui.button(
 		row,
@@ -834,7 +958,7 @@ function stopPlacing()
 	moving, movingDecor = nil, nil
 	clearGhost()
 	placeButton.Visible = false
-	info.Text = HINT
+	info.Text = idleHint()
 	redrawCards()
 end
 
@@ -856,6 +980,27 @@ local function card(
 	)
 	c.LayoutOrder = order
 	c.TextSize = 16
+	-- The gamepad (§11): up from a card is its tab, not the HUD beside the strip.
+	c.NextSelectionUp =
+		tools:FindFirstChild(if tab == "Room" then "Rooms" else tab, true) :: GuiObject?
+end
+
+-- The card the gamepad selects: the chosen one, else the first.
+local function firstCard(): GuiObject?
+	local name = selected
+		or selectedDecor
+		or (if selectedFinish ~= nil then `Finish_{selectedFinish}` else nil)
+	local chosen = name and cards:FindFirstChild(name)
+	if chosen and chosen:IsA("GuiButton") then
+		return chosen
+	end
+	local best: GuiButton? = nil
+	for _, c in cards:GetChildren() do
+		if c:IsA("GuiButton") and (not best or c.LayoutOrder < best.LayoutOrder) then
+			best = c
+		end
+	end
+	return best
 end
 
 function redrawCards()
@@ -879,9 +1024,13 @@ function redrawCards()
 					stopPlacing()
 					selectedDecor = d.id
 					showHover(nil)
-					info.Text = `{d.name}: tap a room or a hallway · tap the card again to stop`
+					info.Text = `{d.name}: {Controls.hint(
+						"tap a room or a hallway · tap the card again to stop",
+						"A in a room or a hallway · B to stop"
+					)}`
 					redrawCards()
 					drawGhost()
+					toPlot()
 				end)
 			end
 		end
@@ -894,8 +1043,12 @@ function redrawCards()
 				end
 				stopPlacing()
 				selectedFinish = id
-				info.Text = `{name}: tap a room, the lobby or a hallway to lay it`
+				info.Text = `{name}: {Controls.hint(
+					"tap a room, the lobby or a hallway to lay it",
+					"A on a room, the lobby or a hallway to lay it"
+				)}`
 				redrawCards()
+				toPlot()
 			end)
 		end
 		finishCard("", "Its own floor", 0)
@@ -930,9 +1083,13 @@ function redrawCards()
 					stopPlacing()
 					selected = p.id
 					showHover(nil)
-					info.Text = `{p.name}: tap the grid · tap the card again to stop`
+					info.Text = `{p.name}: {Controls.hint(
+						"tap the grid · tap the card again to stop",
+						"A on the plot · B to stop"
+					)}`
 					redrawCards()
 					drawGhost()
+					toPlot()
 				end)
 			end
 		end
@@ -949,6 +1106,19 @@ function redrawCards()
 			then `Stairs ({b.freeStairs} free)`
 			else "Stairs"
 	end
+	-- The gamepad (§11): down from the tools' last row is the cards, far below them.
+	local first = firstCard()
+	for _, name in { "Traps", "Style", "Done" } do
+		local t = tools:FindFirstChild(name, true)
+		if t and t:IsA("GuiObject") then
+			t.NextSelectionDown = first
+		end
+	end
+end
+
+-- With nothing selected, the gamepad's stick, A and D-pad act on the plot.
+local function updatePad()
+	padKeys.Enabled = active and GuiService.SelectedObject == nil
 end
 
 local function setActive(on: boolean)
@@ -970,11 +1140,30 @@ local function setActive(on: boolean)
 	moving, movingDecor, cell = nil, nil, nil
 	clearGhost()
 	showHover(nil)
+	buildKeys.Enabled = on
+	updatePad()
+	hidePadMarker()
 	if on then
 		floor = 1
 		updateCamera()
 		redrawCards()
+		local size = G.Cells * G.CellSize
+		pad = Vector3.new(size / 2, 0, size / 2)
+		-- The gamepad opens on the cards (§11).
+		if Controls.gamepad() then
+			task.defer(function()
+				if active then
+					Controls.select(
+						firstCard() or tools:FindFirstChild("Rooms", true) :: GuiObject?
+					)
+				end
+			end)
+		end
 	else
+		local sel = GuiService.SelectedObject
+		if sel and sel:IsDescendantOf(gui) then
+			Controls.select(nil)
+		end
 		camera.CameraType = Enum.CameraType.Custom
 		local character = me.Character
 		local hum = character and character:FindFirstChildOfClass("Humanoid")
@@ -1050,7 +1239,7 @@ function BuildController.Init()
 	stripCap.MinSize = Vector2.new(380, 0)
 	stripCap.Parent = strip
 	strip.Visible = false
-	info = Ui.label(strip, "Info", HINT, UDim2.new(1, -24, 0, 26), 18, Ui.Colour.Gold)
+	info = Ui.label(strip, "Info", idleHint(), UDim2.new(1, -24, 0, 26), 18, Ui.Colour.Gold)
 	info.Position = UDim2.fromOffset(12, 4)
 	cards = Ui.scroll(strip, "Cards", UDim2.new(1, -24, 0, 86), UDim2.fromOffset(12, 36), true)
 	Ui.list(cards, Enum.FillDirection.Horizontal, 8)
@@ -1113,7 +1302,7 @@ function BuildController.Init()
 
 	-- Which floor: down, the floor, up, and buying the next.
 	local floors = row()
-	local function toFloor(f: number)
+	function toFloor(f: number)
 		floor = math.clamp(f, 1, build().floors)
 		redrawCards()
 		setHidden()
@@ -1140,10 +1329,13 @@ function BuildController.Init()
 		rotation = (rotation + 1) % 4
 		drawGhost()
 	end)
-	tool(placingRow, "Turn", "↻ View", 114, function()
-		-- A quarter turn, to the next side square on.
-		yaw = (math.floor(yaw / (math.pi / 2) + 0.5) + 1) * math.pi / 2
+	-- A quarter turn (`dir` 1 or -1), to the next side square on.
+	function turnQuarter(dir: number)
+		yaw = (math.floor(yaw / (math.pi / 2) + 0.5) + dir) * math.pi / 2
 		updateCamera()
+	end
+	tool(placingRow, "Turn", "↻ View", 114, function()
+		turnQuarter(1)
 	end)
 	placeButton = tool(placingRow, "Place", "✔ Place", 114, place, Ui.Colour.Good)
 	placeButton.Visible = false
@@ -1163,6 +1355,59 @@ function BuildController.Init()
 
 	menu, menuBody = Ui.window(gui, "PieceMenu", "Piece", UDim2.fromScale(0.5, 0.6))
 	Ui.list(menuBody, Enum.FillDirection.Vertical, 8)
+
+	-- The keys and the gamepad (§11, `Controls`): above the HUD's keys (B, R)
+	-- and the avatar's controls (the left stick, A), which they take while building.
+	buildKeys = Controls.context("BuildKeys", 2000, true, false)
+	Controls.press(buildKeys, "Rotate", { Enum.KeyCode.R, Enum.KeyCode.ButtonR1 }, function()
+		rotation = (rotation + 1) % 4
+		drawGhost()
+	end)
+	-- B opens build mode from the HUD (Hud's KEYS) and closes it here.
+	Controls.press(buildKeys, "Leave", { Enum.KeyCode.B }, function()
+		setActive(false)
+	end)
+	cameraAction = Controls.direction(
+		buildKeys,
+		"Camera",
+		Enum.KeyCode.Thumbstick2,
+		{ Left = Enum.KeyCode.Comma, Right = Enum.KeyCode.Period }
+	)
+	padKeys = Controls.context("BuildPad", 2000, true, false)
+	cursorAction = Controls.direction(padKeys, "Cursor", Enum.KeyCode.Thumbstick1)
+	-- A: what a click does where the cursor is.
+	Controls.press(padKeys, "Act", { Enum.KeyCode.ButtonA }, function()
+		local s = padScreen()
+		if not active or not s or Controls.selectedRecently() then
+			return
+		end
+		if placing() then
+			local c = screenToAnchor(s.X, s.Y)
+			if c then
+				cell = c
+				drawGhost()
+				if placeButton.Visible then
+					place()
+				end
+			end
+		else
+			tapPlot(s.X, s.Y)
+		end
+	end)
+	Controls.press(padKeys, "FloorUp", { Enum.KeyCode.DPadUp }, function()
+		toFloor(floor + 1)
+		padRefresh(true)
+	end)
+	Controls.press(padKeys, "FloorDown", { Enum.KeyCode.DPadDown }, function()
+		toFloor(floor - 1)
+		padRefresh(true)
+	end)
+	Controls.press(padKeys, "ViewLeft", { Enum.KeyCode.DPadLeft }, function()
+		turnQuarter(-1)
+	end)
+	Controls.press(padKeys, "ViewRight", { Enum.KeyCode.DPadRight }, function()
+		turnQuarter(1)
+	end)
 end
 
 function BuildController.Start()
@@ -1210,15 +1455,53 @@ function BuildController.Start()
 		turnBy(math.rad(twist - twistLast))
 		twistLast = twist
 	end)
+	-- The , and . keys and the right stick (`cameraAction`): its X turns, its Y zooms
+	-- (up is in); the left stick moves the gamepad's cursor while nothing is selected.
 	RunService.RenderStepped:Connect(function(dt)
-		if not active or UserInputService:GetFocusedTextBox() then
+		if not active then
 			return
 		end
-		local turn = (if UserInputService:IsKeyDown(Enum.KeyCode.Period) then 1 else 0)
-			- (if UserInputService:IsKeyDown(Enum.KeyCode.Comma) then 1 else 0)
-		if turn ~= 0 then
-			turnBy(turn * dt * 1.5)
+		local look = Controls.read(cameraAction)
+		if look.X ~= 0 then
+			turnBy(look.X * dt * 1.5)
 		end
+		if look.Y ~= 0 then
+			zoomBy(1 - look.Y * dt * 1.2)
+		end
+		local move = if padKeys.Enabled then Controls.read(cursorAction) else Vector2.zero
+		if move ~= Vector2.zero then
+			movePad(move, dt)
+		elseif not Controls.gamepad() then
+			hidePadMarker()
+		end
+	end)
+	GuiService:GetPropertyChangedSignal("SelectedObject"):Connect(updatePad)
+	-- ButtonY (Controls' menu) in build mode: the cards, else the open tab.
+	Controls.onMenu(function()
+		if not active then
+			return false
+		end
+		Controls.select(
+			firstCard()
+				or tools:FindFirstChild(if tab == "Room" then "Rooms" else tab, true) :: GuiObject?
+		)
+		return true
+	end)
+	-- ButtonB with no panel open: stop placing, else leave the cards, else leave build mode.
+	Controls.onBack(function()
+		if not active then
+			return false
+		end
+		if selected or selectedDecor or selectedFinish or moving or movingDecor then
+			stopPlacing()
+			padRefresh()
+		elseif Controls.selectedRecently() then
+			Controls.select(nil)
+			padRefresh()
+		else
+			setActive(false)
+		end
+		return true
 	end)
 	UserInputService.InputChanged:Connect(function(input, processed)
 		if not active or processed then
@@ -1258,11 +1541,6 @@ function BuildController.Start()
 		end
 		if input.UserInputType == Enum.UserInputType.MouseButton2 then
 			rightDownAt = Vector2.new(input.Position.X, input.Position.Y)
-		elseif input.KeyCode == Enum.KeyCode.B then
-			setActive(false) -- B opens build mode from the HUD (Hud's KEYS) and closes it here
-		elseif input.KeyCode == Enum.KeyCode.R then
-			rotation = (rotation + 1) % 4
-			drawGhost()
 		elseif
 			input.UserInputType == Enum.UserInputType.MouseButton1
 			or input.UserInputType == Enum.UserInputType.Touch

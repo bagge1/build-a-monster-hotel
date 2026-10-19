@@ -8,6 +8,7 @@ local Client = script
 
 local systems: { { Init: () -> (), Start: () -> () } } = {
 	require(Client.State) :: any, -- first: panels read what it receives
+	require(Client.Controls) :: any, -- the gamepad's back and menu buttons (GDD §11)
 	require(Client.Hud) :: any, -- before every panel that adds a button to it
 	require(Client.PromptFilter) :: any,
 	require(Client.GuestRenderer) :: any,

@@ -33,6 +33,38 @@ Every menu or dialog over a window carries a cross in its top-right corner as
 well as closing on a click beside it (his ruling in Sector Omega,
 2026-10-04; confirm it carries over).
 
+### Gamepad
+
+GDD §11: gamepad navigation for everything, the Input Action System for all
+inputs. The code is `src/client/Controls.luau`.
+
+- **Every button is `Selectable`** (`Ui.button`), and a designed panel's
+  buttons must be too.
+- **Every window is a panel** (`Ui.window` calls `Controls.panel`; a menu
+  built otherwise, like `PingMenu`, calls it itself). Opened while the
+  gamepad is the input, its top-left button is selected (the cross last);
+  the selection stays inside it (`SelectionGroup`, `Stop` on every side);
+  a redraw keeps the selection on the button of the same name; closed, the
+  selection goes, so the left stick walks again.
+- **ButtonB** closes the panel on top, with no panel open it steps back
+  (build mode: stop placing, leave the cards, leave build mode).
+  **ButtonY** puts the selection on the HUD's menu buttons (in build mode
+  the cards) and takes it off again.
+- **`NextSelection*` only where the automatic order is wrong**: build mode's
+  cards go up to their tab, the tools' last row down to the cards.
+- **Keys and gamepad buttons are input actions** (`InputContext`,
+  `InputAction`, `InputBinding`, made in code under PlayerScripts): the
+  HUD's B and R at priority 1000, build mode's at 2000 (sinking, so it takes
+  B, R, the left stick and A while building), back and menu at 3000.
+  Pointer input (clicks and taps on the plot, drags, pinches, twists) stays
+  on UserInputService, since it carries a position.
+- **Build mode with a gamepad**: a cursor on the plot (the door marker's
+  gold square) stands in for the pointer. Left stick moves it, A places or
+  taps, RB rotates (beside R), D-pad up/down changes floor and left/right
+  turns the view a quarter, the right stick turns and zooms.
+- **A hint names the gamepad's button only where it names a key already**
+  (`Controls.hint`): the build strip's lines.
+
 ## Images
 
 Every image is drawn by a script in `tools/` (Python, PIL) into `ui/`,

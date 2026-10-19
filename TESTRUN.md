@@ -437,6 +437,51 @@ WAITING §0.9): what needs the new models or the build menu's clicks stays open.
   floor" brings the model's back.
 - [ ] Rays and walkers as in phase 11 over a hotel of placed stairs (`fill`).
 
+## Gamepad navigation (GDD §11, after the merge)
+
+Built on branch `claude/gamepad-navigation` (2026-10-19): `Controls.luau`
+(input actions, panels, ButtonB and ButtonY), every `Ui.window` and the Ping
+menu as panels, the HUD's keys and build mode's keys as input actions, a
+cursor on the plot for build mode (UI.md "Gamepad"). Verified there only by
+stylua, selene, `rojo build` and the pure specs under Lune. **Nothing below
+has run in Studio.** The Studio MCP sends keys and clicks, not a gamepad:
+the keyboard items run that way; a gamepad item runs only where
+`execute_luau` can stand in (selecting with `GuiService.SelectedObject`,
+reading an `InputContext`), and the feel of the sticks and buttons is
+August's, on a real controller.
+
+- [ ] The contexts exist and work where they are: `PlayerScripts.GameInputContexts`
+  holds `UiKeys` (3000), `HudKeys` (1000), `BuildKeys` and `BuildPad`
+  (2000, off until build mode opens). If no action fires, an `InputContext`
+  may need another parent (DEVNOTES: the avatar's `CharacterContext` lives
+  in `StarterPlayer.PlayerModule`).
+- [ ] Keyboard, unchanged: B opens and closes build mode (once per press, not
+  open-and-shut), R opens Residents outside build mode and rotates the ghost
+  inside it, `,` and `.` turn the build camera; none of them acts while
+  typing in the chat.
+- [ ] Every window (Rating, Residents, Book, Moon, Store, Daily, Events,
+  Settings, the piece menu, traps, style, the Ping menu): opened with
+  `GuiService.SelectedObject` set by `execute_luau` on its HUD button and
+  activated, its top-left button is selected; it stays selected through a
+  redraw (the till ticking redraws the Store); closed, the selection is nil.
+- [ ] Build mode with the gamepad as the last input: opens on the first card;
+  a card chosen lets the selection go and a ghost stands at the plot's
+  middle; `BuildPad` is on only while nothing is selected.
+- [A] (A real controller: the Studio MCP cannot press a gamepad button.)
+  ButtonY selects the HUD's Build button and lets go again; the D-pad walks
+  the columns and the window's buttons, never out of an open window; A
+  presses; ButtonB closes the window on top.
+- [A] (A real controller.) Build mode: the left stick moves the ghost (or the
+  gold cursor) the way it points on the screen, at every turn of the view;
+  the avatar does not walk or jump meanwhile; A places, and on a room, decor
+  or a closed area opens its menu (Move, Sell, Buy selected); RB rotates;
+  D-pad up/down changes floor, left/right turns the view; the right stick
+  turns and zooms (up is in); B stops placing, then leaves the cards, then
+  leaves build mode; a prompt's X (the desk's) still works outside build
+  mode.
+- [A] (A real controller.) The strip's lines name the gamepad's buttons
+  (RB, A, B, Y) after a gamepad press and the keys after a key or a click.
+
 ## August keeps
 
 - How the street, the lobby and the rooms look (every look is a night draft).
