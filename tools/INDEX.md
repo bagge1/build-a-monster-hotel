@@ -140,3 +140,24 @@ atlas palette; `round_arch_points(x0, x1, spring, apex, n)` :339;
 `room_shell(..., lintel='pointed'|'round', stripes=7)` :431, where `paper`
 may be a tuple of colours laid in horizontal stripes (logs, snow blocks).
 The kit's own line numbers above, after :77, now run 17 to 33 lines later.
+
+Added to `hotel_kit.py` for the cosmetics (2026-10-19, additive; both hotel
+kits rebuilt after them give byte-identical manifest, validation and fix-up,
+and FBXs of the same size): kind `Cosmetic` (`BUDGET` 2,000, a draft; no
+part required; nothing may collide); `Piece.checks` :142, a list of
+`fn(piece, tris, stage) -> [faults]` that `finish()` (stage `built`) and
+`validate()` (stage `fbx`) run on the triangles in Roblox coordinates;
+`Piece.allowed`, the (lo, hi) envelope `footprint()` :546 returns when set;
+`_tris_rb(ob)` :534. Lines after :138 run about 5 to 25 later than above.
+
+## build_cosmetics_hotel.py
+
+The Sign- and Lobby-slot cosmetics of `Cosmetics.luau` (MODELS.md,
+"Cosmetics"), kind `Cosmetic`; output `blender/cosmetics/hotel/`. Loads both
+hotel kits' `HotelSign.fbx` and `Lobby.fbx` first and checks every model
+against them (`sign_checks`: no triangle over the Board's face, none touching
+either sign; `lobby_checks`: lowest point >= 8, inside the arch's 5.5 span, in
+front of it, none touching either lobby). Helpers: `rod`, `chain` (a tapered
+tube), `ring`, `swag`/`string` (a hung string), `shield_pts`, `bat_pts`,
+`flake`, `icicle`. Review renders (Workbench): each cosmetic on both kits.
+`-- only A,B`, `-- nopreview`.

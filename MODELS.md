@@ -99,6 +99,7 @@ allow.
   | A facade | 10,000 |
   | A decor piece | 1,500 |
   | The hotel sign | 3,000 (draft) |
+  | A sign or lobby cosmetic | 2,000 (draft) |
   | A monster | 4,000, plus `LOD_Proxy` 300 |
   | The bus | 8,000, plus `LOD_Proxy` 500 |
 
@@ -221,6 +222,17 @@ collision off. Each slot has its own origin:
 A sign cosmetic dresses the sign (it never covers the Board's text); a lobby
 cosmetic hangs above the entrance and stays clear of a 5-stud person walking
 in (its lowest part at least 8 studs above the threshold).
+
+| Name | What | The code |
+|---|---|---|
+| `Root` | Invisible, its pivot the slot's origin | `PivotTo` onto the Board face or the Entrance |
+| `Body` | The visible mesh, as decor's | — |
+| `Glow_Warm_1`… | Flames and bulbs, their own parts | Neon, a light on `_1` (the set's `import_fixup.luau`) |
+| `LOD_Proxy` | Hidden at import | LOD |
+
+The set's build script checks both kits' `HotelSign` and `Lobby` on every
+build (`tools/build_cosmetics_hotel.py`): a kit change to the sign or the arch
+means rebuilding this set.
 
 ### Decor (`Decor_<DecorId>`, e.g. `Decor_Candles`)
 

@@ -1,0 +1,394 @@
+{
+ "set": "cosmetics/hotel",
+ "checked": "each fbx/<Name>.fbx re-imported into Blender; nothing here ran in Studio",
+ "pieces": {
+  "Cosmetic_PumpkinSign": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "4 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the piece's own checks re-run on the re-imported triangles",
+    "the contract re-checked on the re-imported boxes (Root, footprint, kind rules, budgets)",
+    "Board face clear (no triangle in x -8..8, y -3..3, z < 0.6, +0.015) and no triangle touching either kit's HotelSign (posts, Board, Crest, glow)"
+   ],
+   "triangles": 1540,
+   "budget": 2000,
+   "collision_precise": [],
+   "attachments": [],
+   "slot": "Sign",
+   "clearances": {
+    "board_face": {
+     "nearest_vertex_to_face_volume": 0.16,
+     "part": "Glow_Warm_1",
+     "face_volume": "x -8..8, y -3..3, z -inf..0.6 (the face extruded forward, and the board)"
+    },
+    "kits": {
+     "haunted_manor": {
+      "min_distance": 0.226,
+      "part": "Glow_Warm_1",
+      "kit_part": "Board"
+     },
+     "frostfang_lodge": {
+      "min_distance": 0.186,
+      "part": "Glow_Warm_1",
+      "kit_part": "Crest"
+     }
+    },
+    "bounds": {
+     "lo": [
+      -10.264,
+      -4.85,
+      0.75
+     ],
+     "hi": [
+      10.264,
+      7.297,
+      3.776
+     ],
+     "size": [
+      20.529,
+      12.147,
+      3.026
+     ]
+    }
+   }
+  },
+  "Cosmetic_IcicleSign": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "3 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the piece's own checks re-run on the re-imported triangles",
+    "the contract re-checked on the re-imported boxes (Root, footprint, kind rules, budgets)",
+    "Board face clear (no triangle in x -8..8, y -3..3, z < 0.6, +0.015) and no triangle touching either kit's HotelSign (posts, Board, Crest, glow)"
+   ],
+   "triangles": 1900,
+   "budget": 2000,
+   "collision_precise": [],
+   "attachments": [],
+   "slot": "Sign",
+   "clearances": {
+    "board_face": {
+     "nearest_vertex_to_face_volume": 0.03,
+     "part": "Body",
+     "face_volume": "x -8..8, y -3..3, z -inf..0.6 (the face extruded forward, and the board)"
+    },
+    "kits": {
+     "haunted_manor": {
+      "min_distance": 0.03,
+      "part": "Body",
+      "kit_part": "Board"
+     },
+     "frostfang_lodge": {
+      "min_distance": 0.03,
+      "part": "Body",
+      "kit_part": "Board"
+     }
+    },
+    "bounds": {
+     "lo": [
+      -9.443,
+      -4.53,
+      -0.85
+     ],
+     "hi": [
+      9.65,
+      4.25,
+      1.35
+     ],
+     "size": [
+      19.093,
+      8.78,
+      2.2
+     ]
+    }
+   }
+  },
+  "Cosmetic_LanternSign": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "5 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the piece's own checks re-run on the re-imported triangles",
+    "the contract re-checked on the re-imported boxes (Root, footprint, kind rules, budgets)",
+    "Board face clear (no triangle in x -8..8, y -3..3, z < 0.6, +0.015) and no triangle touching either kit's HotelSign (posts, Board, Crest, glow)"
+   ],
+   "triangles": 1372,
+   "budget": 2000,
+   "collision_precise": [],
+   "attachments": [],
+   "slot": "Sign",
+   "clearances": {
+    "board_face": {
+     "nearest_vertex_to_face_volume": 0.02,
+     "part": "Body",
+     "face_volume": "x -8..8, y -3..3, z -inf..0.6 (the face extruded forward, and the board)"
+    },
+    "kits": {
+     "haunted_manor": {
+      "min_distance": 0.02,
+      "part": "Body",
+      "kit_part": "Board"
+     },
+     "frostfang_lodge": {
+      "min_distance": 0.02,
+      "part": "Body",
+      "kit_part": "Board"
+     }
+    },
+    "bounds": {
+     "lo": [
+      -10.67,
+      -0.48,
+      -0.42
+     ],
+     "hi": [
+      10.67,
+      3.41,
+      1.02
+     ],
+     "size": [
+      21.34,
+      3.89,
+      1.44
+     ]
+    }
+   }
+  },
+  "Cosmetic_Family1": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "3 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the piece's own checks re-run on the re-imported triangles",
+    "the contract re-checked on the re-imported boxes (Root, footprint, kind rules, budgets)",
+    "Board face clear (no triangle in x -8..8, y -3..3, z < 0.6, +0.015) and no triangle touching either kit's HotelSign (posts, Board, Crest, glow)"
+   ],
+   "triangles": 636,
+   "budget": 2000,
+   "collision_precise": [],
+   "attachments": [],
+   "slot": "Sign",
+   "clearances": {
+    "board_face": {
+     "nearest_vertex_to_face_volume": 0.12,
+     "part": "Body",
+     "face_volume": "x -8..8, y -3..3, z -inf..0.6 (the face extruded forward, and the board)"
+    },
+    "kits": {
+     "haunted_manor": {
+      "min_distance": 0.167,
+      "part": "Body",
+      "kit_part": "Crest"
+     },
+     "frostfang_lodge": {
+      "min_distance": 0.1,
+      "part": "Body",
+      "kit_part": "Crest"
+     }
+    },
+    "bounds": {
+     "lo": [
+      -6.591,
+      3.12,
+      -0.695
+     ],
+     "hi": [
+      6.591,
+      8.464,
+      -0.15
+     ],
+     "size": [
+      13.182,
+      5.344,
+      0.545
+     ]
+    }
+   }
+  },
+  "Cosmetic_Family2": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "3 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the piece's own checks re-run on the re-imported triangles",
+    "the contract re-checked on the re-imported boxes (Root, footprint, kind rules, budgets)",
+    "Board face clear (no triangle in x -8..8, y -3..3, z < 0.6, +0.015) and no triangle touching either kit's HotelSign (posts, Board, Crest, glow)"
+   ],
+   "triangles": 840,
+   "budget": 2000,
+   "collision_precise": [],
+   "attachments": [],
+   "slot": "Sign",
+   "clearances": {
+    "board_face": {
+     "nearest_vertex_to_face_volume": 0.12,
+     "part": "Body",
+     "face_volume": "x -8..8, y -3..3, z -inf..0.6 (the face extruded forward, and the board)"
+    },
+    "kits": {
+     "haunted_manor": {
+      "min_distance": 0.167,
+      "part": "Body",
+      "kit_part": "Crest"
+     },
+     "frostfang_lodge": {
+      "min_distance": 0.1,
+      "part": "Body",
+      "kit_part": "Crest"
+     }
+    },
+    "bounds": {
+     "lo": [
+      -3.931,
+      3.12,
+      -1.082
+     ],
+     "hi": [
+      3.908,
+      7.92,
+      -0.1
+     ],
+     "size": [
+      7.839,
+      4.8,
+      0.982
+     ]
+    }
+   }
+  },
+  "Cosmetic_BatBunting": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "3 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the piece's own checks re-run on the re-imported triangles",
+    "the contract re-checked on the re-imported boxes (Root, footprint, kind rules, budgets)",
+    "lowest point >= 8.0, |x| <= 5.5 (inside the arch), z <= 0 (in front of it), no triangle touching either kit's Lobby (arch, lantern, rug, desk...)"
+   ],
+   "triangles": 1240,
+   "budget": 2000,
+   "collision_precise": [],
+   "attachments": [],
+   "slot": "Lobby",
+   "clearances": {
+    "lowest_point": 8.771,
+    "lowest_part": "Body",
+    "person_headroom": 3.771,
+    "max_abs_x": 5.129,
+    "max_z": -0.031,
+    "kits": {
+     "haunted_manor": {
+      "min_distance": 0.081,
+      "part": "Body",
+      "kit_part": "ArchTop"
+     },
+     "frostfang_lodge": {
+      "min_distance": 0.08,
+      "part": "Body",
+      "kit_part": "ArchTop"
+     }
+    },
+    "bounds": {
+     "lo": [
+      -5.129,
+      8.771,
+      -0.289
+     ],
+     "hi": [
+      5.129,
+      11.05,
+      -0.031
+     ],
+     "size": [
+      10.259,
+      2.279,
+      0.259
+     ]
+    }
+   }
+  },
+  "Cosmetic_FairyLights": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "15 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the piece's own checks re-run on the re-imported triangles",
+    "the contract re-checked on the re-imported boxes (Root, footprint, kind rules, budgets)",
+    "lowest point >= 8.0, |x| <= 5.5 (inside the arch), z <= 0 (in front of it), no triangle touching either kit's Lobby (arch, lantern, rug, desk...)"
+   ],
+   "triangles": 1508,
+   "budget": 2000,
+   "collision_precise": [],
+   "attachments": [],
+   "slot": "Lobby",
+   "clearances": {
+    "lowest_point": 8.737,
+    "lowest_part": "Glow_Warm_1",
+    "person_headroom": 3.737,
+    "max_abs_x": 5.129,
+    "max_z": -0.031,
+    "kits": {
+     "haunted_manor": {
+      "min_distance": 0.081,
+      "part": "Body",
+      "kit_part": "ArchTop"
+     },
+     "frostfang_lodge": {
+      "min_distance": 0.066,
+      "part": "Body",
+      "kit_part": "ArchTop"
+     }
+    },
+    "bounds": {
+     "lo": [
+      -5.129,
+      8.737,
+      -0.346
+     ],
+     "hi": [
+      5.129,
+      10.94,
+      -0.031
+     ],
+     "size": [
+      10.259,
+      2.203,
+      0.316
+     ]
+    }
+   }
+  }
+ },
+ "collision_precise": {
+  "Cosmetic_PumpkinSign": [],
+  "Cosmetic_IcicleSign": [],
+  "Cosmetic_LanternSign": [],
+  "Cosmetic_Family1": [],
+  "Cosmetic_Family2": [],
+  "Cosmetic_BatBunting": [],
+  "Cosmetic_FairyLights": []
+ },
+ "not_validated": [
+  "anything in Studio: the import, Roblox's side of the axis conversion (import_fixup.luau checks every part against the manifest first), the atlas upload, how it looks lit",
+  "the code placing it: HotelKit.cosmetic clones the template and PivotTo()s it onto the Board's front face (PlotService.drawCosmetics) or the Entrance; not run with these models",
+  "the kit-clearance checks use the two kits' FBX as built today; a change to a kit's sign or arch needs this set rebuilt (it re-checks on every build)",
+  "clearances to the kits are nearest-vertex distances; intersections are exact (BVH triangle overlap)",
+  "LOD_Proxy is not checked against the kits (hidden); it is held to the Board-face and arch rules",
+  "the attachments: a cosmetic has none (its origin is its pivot, set by import_fixup.luau)"
+ ]
+}

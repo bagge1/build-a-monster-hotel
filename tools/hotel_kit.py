@@ -55,7 +55,8 @@ TOL = 0.1
 PERSON = 5.0                    # the standard avatar, his ruling 2026-10-19
 PERSON_R = 0.8                  # half the width the walk check sweeps
 BUDGET = {'Room': 6000, 'Amenity': 6000, 'Lobby': 8000, 'Stairs': 8000, 'Decor': 1500,
-          'Sign': 3000}         # Sign: not in MODELS.md's table; a draft ceiling, see README
+          'Sign': 3000,         # Sign: not in MODELS.md's table; a draft ceiling, see README
+          'Cosmetic': 2000}     # Cosmetic: not in MODELS.md's table either; a draft ceiling (cosmetics set)
 MESH_CAP = 20000
 PROXY_BUDGET = 500
 GLOW_KEYS = ('Warm', 'Cold', 'Eyes', 'Magic')
@@ -137,6 +138,11 @@ class Piece:
         self.collide = {}      # name -> bool
         self.att = {}          # name -> (pos, look or None)
         self.notes = []
+        # Cosmetic (and any later kind): extra contract checks, fn(piece, tris, stage) -> [faults],
+        # tris {part: [(a, b, c), ...]} in Roblox coords, stage 'built' or 'fbx'; run by finish()
+        # and validate(). `allowed`, when set, is the (lo, hi) box footprint() returns.
+        self.checks = []
+        self.allowed = None
 
 
 P = None
@@ -525,12 +531,22 @@ def _bounds(verts):
     return Vector((min(xs), min(ys), min(zs))), Vector((max(xs), max(ys), max(zs)))
 
 
+def _tris_rb(ob):
+    """A mesh object's triangles in Roblox coordinates (world), for Piece.checks."""
+    me = ob.data
+    me.calc_loop_triangles()
+    mw = ob.matrix_world
+    return [tuple(bl2rb(mw @ me.vertices[i].co) for i in t.vertices) for t in me.loop_triangles]
+
+
 def _overlap(alo, ahi, blo, bhi, eps=1e-3):
     return all(alo[i] < bhi[i] - eps and blo[i] < ahi[i] - eps for i in range(3))
 
 
 def footprint(piece):
     """The (lo, hi) box nothing of the piece may leave."""
+    if getattr(piece, 'allowed', None) is not None:     # a cosmetic's envelope, set by its script
+        return Vector(piece.allowed[0]), Vector(piece.allowed[1])
     rc, s = piece.root_centre, piece.size
     lo = Vector((rc.x - s.x / 2, 0, rc.z - s.z / 2))
     hi = Vector((rc.x + s.x / 2, 0, rc.z + s.z / 2))
@@ -570,7 +586,10 @@ def check_piece(piece, boxes, tris, faults):
         fault(piece.size.x <= 4.0 + 1e-6 and piece.size.z <= 4.0 + 1e-6, f'decor footprint {v3(piece.size)} > 4 x 4')
     # Required parts per kind
     required = {'Room': ['Floor', 'Bed'], 'Amenity': ['Floor', 'Centrepiece'], 'Lobby': ['Desk', 'Till'],
-                'Stairs': [], 'Sign': ['Board', 'PostLeft', 'PostRight'], 'Decor': []}[kind]
+                'Stairs': [], 'Sign': ['Board', 'PostLeft', 'PostRight'], 'Decor': [], 'Cosmetic': []}[kind]
+    if kind == 'Cosmetic':      # MODELS.md, "Cosmetics": visual only, nothing collides
+        hits = [p for p, (lo, hi, col) in boxes.items() if col]
+        fault(not hits, f'a cosmetic collides: {hits}')
     if kind in ('Room', 'Amenity'):
         walls = blockout_room_walls(piece.w, piece.d)
         required += list(walls)
@@ -766,6 +785,11 @@ def finish(proxy=None, note=''):
         ob.location = rb2bl(centre)
         bpy.context.scene.collection.objects.link(ob)
         objs.append(ob)
+    if getattr(piece, 'checks', None):
+        bpy.context.view_layer.update()
+        tris_rb = {ob.name: _tris_rb(ob) for ob in objs}
+        for fn in piece.checks:
+            faults += fn(piece, tris_rb, 'built')
     total = check_piece(piece, boxes, tris, faults)
     if faults:
         for ob in objs:
@@ -952,6 +976,12 @@ def validate():
         (checks if has_image else faults).append('the atlas travels embedded in the FBX' if has_image
                                                  else 'no image came back from the FBX')
         piece = pieces[name]
+        if getattr(piece, 'checks', None):
+            bpy.context.view_layer.update()
+            tris_rb = {pname: _tris_rb(ob) for pname, ob in meshes.items()}
+            for fn in piece.checks:
+                faults += fn(piece, tris_rb, 'fbx')
+            checks.append('the piece\'s own checks re-run on the re-imported triangles')
         check_piece(piece, boxes, tris, faults)
         checks.append('the contract re-checked on the re-imported boxes: Root, footprint, wall boxes = blockout, '
                       'door opening 4 x 7, Door -> Bed walk for a 5-stud person, decor slots, budgets'
