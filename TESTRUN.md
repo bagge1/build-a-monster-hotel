@@ -464,8 +464,8 @@ stay economy`). Merged 2026-10-19 20:50 and played (test profile
 
 Built on `worktree-agent-af840fbd28a857dd3` (GDD Appendix A.7, WAITING
 §2.25). Verified there by stylua, selene, `rojo build` and the pure specs
-under Lune (`bus`, `scoring` and the rest, 86/86). Merged 2026-10-19 20:55 and
-played 20:56–21:08 on fresh profiles `Test_Tut1019b`/`c` through the
+under Lune (`bus`, `scoring` and the rest, 86/86). Merged 2026-10-19 20:51 and
+played 20:52–20:56 on fresh profiles `Test_Tut1019b`/`c` through the
 tutorial's first steps by the game's own prompts and remotes.
 
 - [x] (All 14 files, 97/97.) The spec bundle passes in a playtest, `bus` and `scoring` included.
@@ -518,5 +518,5 @@ tutorial's first steps by the game's own prompts and remotes.
 - 2026-10-19 20:07 The phone: all panels opened; Residents' role row and the Ping menu fixed and seen fitting.
 - 2026-10-19 20:33 Phase 12 (street) after the merge: specs 82/82 (13 files); forecourt rayed and walked; the bus's drive and stops, browsing, the stops' waiting and boarding, a trap's scare; the forest's placement (blockouts). Scenery, the tree import, the tutorial's guests, the phone's frame time and the in-game review open.
 - 2026-10-19 20:42 Phase 13 (free building) after the merge, before the import: specs 90/90; refusals, areas, a free stair and a walker up it to floor 2, guests' paths to floor 2, the desk moved with its points, decor and its doorway refusal, finishes. The menu's clicks, floor 3 and everything after the import open.
-- 2026-10-19 20:52 Rating's staff coverage after the merge: Front Desk +10 and Room Service +10 to Service, back when unassigned (a second Assign within 0.25 s is dropped by the rate limit, not a fault).
-- 2026-10-19 21:08 Tutorial Commons and the named ping after the merge: specs 97/97; the tutorial to Clean on a fresh profile; the first tutorial bus brought two Commons, one picked the hotel; the ping named the Coffin Suite. Fixed: the tutorial's guest gave up at the desk. The till's E prompt could not be triggered through the MCP beside the desk's (both E, OnePerButton, 3 studs apart): WAITING §1.10.
+- 2026-10-19 20:49 Rating's staff coverage after the merge: Front Desk +10 and Room Service +10 to Service, back when unassigned (a second Assign within 0.25 s is dropped by the rate limit, not a fault).
+- 2026-10-19 20:56 Tutorial Commons and the named ping after the merge: specs 97/97; the tutorial to Clean on a fresh profile; the first tutorial bus brought two Commons, one picked the hotel; the ping named the Coffin Suite. Fixed: the tutorial's guest gave up at the desk. The till's E prompt could not be triggered through the MCP beside the desk's (both E, OnePerButton, 3 studs apart): WAITING §1.10.

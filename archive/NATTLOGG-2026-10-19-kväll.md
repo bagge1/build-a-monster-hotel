@@ -193,13 +193,13 @@ Obevakad session (`/loop`, självstyrd) medan August är borta (från ca 20:00 i
   Skeleton på Front Desk 74,4; plus Slime på Room Service 84,4; tillbaka till
   64,4 när de tas bort. En andra `Assign` inom 0,25 s släpps av spelets
   hastighetsgräns, inget fel.
-- **20:55** Agenten för tutorialens Commons och pingen klar (`22aaf4e`):
+- **20:51** Agenten för tutorialens Commons och pingen klar (`22aaf4e`):
   de två första bussarna i tutorialen byter upp till 2 dragna gäster mot
   Commons som hotellets rum tar, med +10 i poäng mot hotellet (PLACEHOLDER,
   WAITING §2.25); "Need a ...!" nämner rummet som den sällsyntaste gästen på
   gatan vill ha. Inget cirkulärt beroende (SocialService → BusService).
   Sammanslagen; specar gröna under Lune.
-- **21:08** Tutorialen i playtest från början (`Test_Tut1019b`/`c`), med
+- **20:56** Tutorialen i playtest från början (`Test_Tut1019b`/`c`), med
   spelets egna prompter och remotes: ett rum för $50, tutorialens Slime går
   in ~5 s senare och köar. **Fel hittat:** Slimen gav upp vid disken efter
   60 s som vilken gäst som helst (1 stjärna, steget CheckIn fast till nästa
