@@ -18,13 +18,9 @@ Connect: knappen under fliken Plugins i Studio. -->
 2. ~~**Importera allt, 69 modeller i en import**~~ (gjort 2026-10-19:
    alla 69 inställda, kontrollerade och sparade i `assets/Monsters/`,
    `assets/HotelKit/HauntedManor/` och `assets/HotelKit/FrostfangLodge/`).
-3. **Starta om `rojo serve` en gång till** (2026-10-19) och tryck **Connect**
-   under fliken **Plugins** i Studio. Mapparna `assets/Monsters` och
-   `assets/HotelKit/...` fanns inte när Rojo startade i morse, och Rojo läser
-   bara in sådana mappar när det startar (`DEVNOTES.md`). Tills dess syns inga
-   av de nya modellerna i spelet. Samma omstart tar också med den nya mappen
-   `assets/Cosmetics` (för kosmetikans modeller senare). Säg till när det är gjort; modellerna i
-   Workspace ligger kvar tills Claude har sett att de kommit fram.
+3. ~~**Starta om `rojo serve` en gång till**~~ (gjort 2026-10-19: alla 69
+   modeller har kommit fram och stämmer del för del med importen; noterat i
+   setens `README.md`).
 
 ## §1 Att titta på eller spela
 

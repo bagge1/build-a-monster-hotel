@@ -147,7 +147,8 @@ the Board (5 tall, ring at y 4.6–5.0). Rebuilt; validation passes. The saved
 August imported the whole batch (69 FBX, one dialog). The set's import script
 ran in the Edit datamodel and was read back in a separate call: no `Default`
 collision, no empty mesh, Root and LOD_Proxy hidden on every model. Saved to
-`assets/` with `tools/save_imports.py`. **Not yet synced** (Rojo needs a
-restart: the folders did not exist when it started), so **Studio runtime is not
-tested**: not seen in the game, not walked. The Workspace copies wait in
-`ServerStorage._ImportHold` for the sync check.
+`assets/` with `tools/save_imports.py`. **Synced** after August's Rojo
+restart (2026-10-19, 15:30): all 69 synced copies match the Workspace imports
+part for part (628 parts: mesh ids, sizes, textures, collision, LOD_Proxy
+hidden, no empty MeshPart), and the Workspace copies are deleted. **Studio
+runtime is not tested yet**: not seen in the game, not walked.
