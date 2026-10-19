@@ -55,6 +55,17 @@ Connect: knappen under fliken Plugins i Studio. -->
    filerna** till **Workspace** i en dialog och skriv *importerat* (inte mitt
    i en playtest).
 
+8. **Importera fem träd** (2026-10-19, skogen runt gatan; gör det **när
+   grenen `claude/street-bus-forest-253849` är ihopslagen**): först **starta
+   om `rojo serve`** och tryck **Connect** (fliken **Plugins** i Studio):
+   grenen lägger till mappen `assets/Scenery`, som Rojo bara ser efter en
+   omstart. Sedan importerar du de fem `Tree_*.fbx` i `blender/_import/`
+   (`Tree_Crooked`, `Tree_Bare`, `Tree_Hollow`, `Tree_Fir`,
+   `Tree_SnowFir`) till **Workspace** och skriver *importerat*. Ligger det
+   filer där från en annan session vars import också står här, ta allt i en
+   dialog. Tills träden är importerade ritar spelet enkla klossträd på samma
+   platser. Bilden: `blender/street/trees/review/sheet.png`.
+
 ## §1 Att titta på eller spela
 
 <!-- Det bara en människa kan bedöma: hur det känns, hur det ser ut.
@@ -91,6 +102,14 @@ Med Claudes skärmdump där det finns en. -->
 7. ~~**Den nya lobbyn**~~ (besvarat 2026-10-19: du godkände utseendet, layout A
    i båda hotellen och skylten i förgårdens hörn; noterat i setens `README.md`.
    Claude ser den i spelet efter importen, §0 punkt 4.)
+
+8. **Gatan, när grenen är ihopslagen** (2026-10-19): förgården framför
+   varje hotell (trottoaren, gräsytan, gången fram till valvet, skylten i
+   hörnet, fällorna bredvid gången), Night Bus som kör ut ur skogen runt
+   kröken i väster, stannar vid x = −90 och 90 och kör in i skogen igen i
+   öster, gästerna som strövar på trottoarerna och stannar en stund vid
+   varje entré, och skogen runt gatan. Claude spelar igenom det först
+   (`TESTRUN.md` fas 12); utseendet och känslan är dina.
 
 ## §2 Beslut
 
@@ -281,7 +300,9 @@ Med Claudes skärmdump där det finns en. -->
    Service går till rummet och tillbaka, Housekeeping till rummet som ska
    städas, och en "✓" vid dörren när det är klart.
 
-18. **En skog runt gatan** (din idé, 2026-10-19: "så det inte ser ut som en
+18. **En skog runt gatan** (byggd 2026-10-19 på grenen
+   `claude/street-bus-forest-253849`: importen i §0 punkt 8, frågorna om
+   utseendet i punkt 20) (din idé, 2026-10-19: "så det inte ser ut som en
    stor gräsplätt"), och **Night Bus svänger in ur skogen** i stället för att
    dyka upp. Nya modeller (träd: kala, krokiga, några granar för Frostfang) som
    Claude modellerar och visar som grå silhuetter först, och en väg som går
@@ -294,6 +315,36 @@ Med Claudes skärmdump där det finns en. -->
    trottoaren 8 studs bred längs gatan, gången 6 studs bred fram till valvet;
    skylten står kvar i förgårdens hörn. Tomterna flyttas då 24 studs bort från
    gatan. Hör ihop med Night Bus (gästerna strövar på trottoaren) och skogen.
+
+20. **Träden: det granskarna såg som är ditt** (2026-10-19, fyra blinda
+   granskningar, `blender/street/trees/README.md`). Det mesta är rättat;
+   kvar är utseendefrågor:
+   - **Det ihåliga trädet** (ögonen i hålet): ett träd med ansikte, som det
+     var tänkt, eller läser det som en figur med huva? **Rekommendation:**
+     behåll ansiktet, det är "cozy creepy".
+   - **Kvistarnas toppar:** en granskare ville ha trubbigare (de flimrar
+     annars på en telefon), nästa tyckte att de trubbiga ser avsågade ut.
+     **Rekommendation:** behåll dem trubbiga.
+   - Grenarna är kantiga band utan förtjockning där de möter stammen (en
+     förtjockning kostar ungefär 40 av ett träds 800 trianglar), och
+     snölocken på granarna lämnar en grön kant under sig.
+     **Rekommendation:** låt dem vara tills du sett dem i spelet.
+
+21. **Gatan: Claudes tolkningar av dina beslut** (2026-10-19, GDD Appendix
+   A.1 och A.3; allt går att ändra):
+   - **Alla gäster åker buss därifrån också:** inte bara den som inget
+     hotell tog, utan även den som checkat ut och den som tröttnade vid
+     disken går till närmaste hållplats och väntar på nästa buss.
+   - **Tutorialens Vampire Count kommer med bussen**, bokad till spelarens
+     hotell (den strövar inte och kan inte tas av någon annan), i stället för
+     att dyka upp. Bara Slimen i början går in från ingenstans.
+   - **Hur gästerna strövar:** var fjärde gäst går samma väg (norra eller
+     södra trottoaren, öster- eller västerut), så att bussens gäster
+     tillsammans passerar alla sex hotellen; en minut räcker till två eller
+     tre entréer var.
+   - **Bussen kör på gatans norra halva**, dörren mot den norra trottoaren,
+     så hållplatserna står mellan hotell 1 och 2 och mellan 2 och 3.
+   **Rekommendation:** behåll alla fyra.
 
 ## §3 Creator Hub och publicering
 
