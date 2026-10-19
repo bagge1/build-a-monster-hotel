@@ -7,53 +7,66 @@ first-run pacing targets of GDD §6.3 and the rule of thumb of §6.2.
 It MEASURES; it never tunes. Every number is read from the game's Luau files
 (src/shared/Constants.luau, Pieces.luau, Species.luau, Mutations.luau) with a
 small Luau-literal parser, and the formulas it mirrors are guarded: if a
-formula's source line changes shape (GuestService's walk-in interval,
-Economy's cost curves, Stay's tip and review, Rating's categories and stars,
-the tutorial's voucher and its happy guests), the model stops with an error
-naming the line, rather than silently simulating an old rule.
+formula's source line changes shape (the bus's size and the tutorial's
+Commons, Economy's cost curves, Furnish's tier points, Stay's tip and review,
+Rating's categories, staff coverage and stars, the tutorial's voucher, booked
+Vampire and friendship), the model stops with an error naming the line,
+rather than silently simulating an old rule.
 
-Run:  python tools/balance_model.py [--seeds 8] [--hours 8] [--out <file for the raw tables>]
+Run:  python tools/balance_model.py [--seeds 8] [--hours 16] [--out <file for the raw tables>]
 
-WHAT IS SIMULATED (as the code implements it, 2026-10-19)
-  - Walk-ins (GuestService.walkInInterval): every BaseInterval / (1 + PerRoom x
-    rooms) x (RatingPivot / max(1, rating)) s, clamped Min..Max; a uniform pick
-    among the location's Common/Uncommon species that have a vacant room of
-    their type; best vacant room by preferences matched, then tier.
+WHAT IS SIMULATED (as the code implements it, 2026-10-19 evening)
+  - No walk-ins (GDD 4.3): every guest but the tutorial Slime rides the bus.
   - The Night Bus (BusService, Bus): first bus at FirstBusDelay on a fresh
-    server, then every Interval; BaseSize guests (solo); an Epic every
-    EpicEvery-th bus; a Legendary when a :00/:30 wall-clock boundary falls
-    between buses (the wall-clock phase is random per seed); a Mythic on 2-hour
-    boundaries; the rest by rarity weight. Solo, the one hotel gets every guest
-    it has a vacant room of the right type for at the moment the guest decides
-    (after the ~42 s browse down the lane); the rest leave the street.
+    server, then every Interval; its size clamp(ceil(VacantShare x vacant
+    rooms), MinPerPlayer, MaxPerPlayer) for one player, its guarantees inside
+    it: an Epic every EpicEvery-th bus, a Legendary when a :00/:30 wall-clock
+    boundary falls between buses (the phase random per seed), a Mythic on
+    2-hour boundaries; the rest by rarity weight. Half step off at each stop
+    (StepOff apart, the east stop EAST_STOP_AFTER s later), browse BrowseTime
+    s, then take a vacant room of their type if the hotel has one (solo, the
+    one hotel), or leave. From the decision to the desk BUS_TO_HOTEL s.
+  - The tutorial's Commons (BusService.weightCommons, Bus.commonsFor): on its
+    first CommonBuses buses past CheckIn, up to CommonsPerBus Commons for the
+    hotel's vacant room types replace drawn guests from the end of the list.
+    Their Scoring.TutorialBoost does nothing solo (no other hotel to beat).
   - A stay (GuestService, Stay): desk -> room -> pays payRate per second into
     the till, payRate = speciesPay x tierPay x mutation x milestone(type count),
     fixed at check-in; one request in the middle half of the stay, open
     RequestWindow s; satisfaction, tip, review, friendship at check-out; the
     room is then dirty until cleaned. Mutations are rolled from Mutations.luau.
-  - The rating (HotelService.inputs, Rating): recomputed every 5 s from tiers,
-    preference share, desk waits, requests, dirty rooms, amenities, decor and
-    room types, averaged with the last ReviewsKept reviews, rounded to a half.
-    Unlocks (Unlocks.met) are permanent once met.
+  - Tiers from furnishing (Furnish, GDD 5.4): a room's decor is worth its
+    price x PointsPerCash; T2/T3 at TierPoints scaled by cells over
+    TierPointsCells.
+  - The rating (HotelService.inputs, Rating): recomputed every 5 s from tiers
+    (Comfort full at MaxTier), preference share, desk waits, requests, dirty
+    rooms, amenities, decor items and room types, plus staff coverage (Room
+    Service's efficiency over rooms / RoomsPerStaff) and the share of recent
+    cleanings within CleanOnTime; averaged with the last ReviewsKept reviews,
+    rounded to a half. Unlocks (Unlocks.met) are permanent once met.
   - Residents (ResidentService): +1 friendship per happy stay, move-in at the
-    rarity's threshold or by the early chance; the tutorial's guests need
-    TutorialFriendship and are happy by force (happyFloor). A resident in the
+    rarity's threshold or by the early chance; only the tutorial Slime needs
+    TutorialFriendship; the tutorial's guests are happy by force. A resident in the
     Wing earns EarnFraction of its species' pay into the till; one on staff
     earns nothing but works (Room Service modelled; the others not used).
   - The Monster Book: a species found pays SpeciesFoundPaySeconds of its pay.
-  - The tutorial (TutorialService): walk-ins off until the first check-in; the
-    tutorial Slime 6 s after the first room; the Goal card's free Coffin Suite
-    (voucher) and the scheduled Vampire Count once a Coffin Suite stands and
-    the tutorial is Done.
+  - The tutorial (TutorialService): the tutorial Slime FirstGuestDelay s after
+    the first room, walking in (TUTORIAL_WALK s); the Goal card's free Coffin
+    Suite (voucher); a Vampire Count booked on the next bus once 2 buses have
+    passed since the Goal card, the tutorial is Done and a Coffin Suite stands
+    vacant (it skips browsing).
+  - Space (GDD 5.4, Appendix A.1): rooms and amenities only in owned areas,
+    about AREA_CELLS usable cells per area per floor after hallways; more
+    space is a floor (FloorCosts) or an area (AreaCosts, on every floor),
+    whichever is cheaper.
 
 WHAT IS NOT SIMULATED (stated so the numbers are read honestly)
   Hunter Night (its reward is +5 min of income every 90 min), events and
   seasonal mutations, daily rewards, likes/friends bonus, passes, the Moon
-  Tree, Book family bonuses (+5 %), offline earnings, pitching (solo: no other
-  hotel to win against), Front Desk / Housekeeping / Bellhop / Entertainment
-  staff, selling, replacing decor once bought, and residents' passive perks
-  (src/shared/Perks.luau: +5 % tips, +5 rating points and the like; work in
-  progress in another session on 2026-10-19, small next to the findings).
+  Tree, Book family bonuses (+5 %), offline earnings, other players on the
+  street (they split the bus), pitching, Front Desk / Housekeeping / Bellhop /
+  Entertainment staff, selling, moving rooms, replacing decor, hallway decor,
+  and residents' perks.
 
 THE PLAYER (assumptions that most affect the result)
   - Plays continuously and well: checks a guest in CHECKIN_DELAY s after it
@@ -62,13 +75,12 @@ THE PLAYER (assumptions that most affect the result)
   - Fulfils an open request personally with probability P_REQUEST_PLAYER,
     REQ_PLAYER_TIME s after it opens; the first resident is put on Room
     Service staff (the tutorial teaches it), which fulfils any request still
-    open after RoomServiceDelay / efficiency s.
-  - Floor space: floor 1 offers FLOOR1_CELLS cells and every upper floor
-    UPPER_CELLS cells for rooms and amenities after the lobby, stair core and
-    hallways (a hand layout of 2x2 rooms fits about 20 per floor). The real
-    placement rules (doors on connected hallways) are not modelled.
+    open after max(RoomServiceDelay / efficiency, its walk to the room) s.
+  - Walks inside: desk -> room ROOM_WALK s on floor 1, +ROOM_WALK_PER_FLOOR a
+    floor (floor 3 at 70 s, measured in Studio 2026-10-19 evening).
   - When the Wing is full and a better-paying monster (or the rebirth's
-    Vampire Count) wants to move in, the lowest earner goes on holiday.
+    Vampire Count) wants to move in, the player has released the lowest
+    earner in time (the game itself refuses a move-in while the Wing is full).
 
 THE GREEDY BUYING POLICY (checked every second; one purchase per check)
   1. Tutorial: first room at FIRST_ROOM_AT s; the second room as soon as it is
@@ -82,6 +94,7 @@ THE GREEDY BUYING POLICY (checked every second; one purchase per check)
      often they come), given the amenities on its floor; a missing piece is
      bought when it costs at most 90 s of income (or 30 % of cash). Empty
      slots get the cheapest piece for Style when it costs <= 20 s of income.
+     Every piece adds tier points.
   4. Amenities: up to three per floor that has rooms, the most useful tags
      first, each bought when it costs <= 3 minutes of income.
   5. The first room of a newly unlocked type, when it costs <= 5 minutes of
@@ -91,8 +104,10 @@ THE GREEDY BUYING POLICY (checked every second; one purchase per check)
      milestone, and every tier upgrade, is scored by its expected extra income per second (observed occupancy of
      that room or type, the species' observed pay, tier +50 %, the milestone
      doubling when the next room reaches 5/10/25) divided by its cost
-     (plus a floor's cost when the floor is full). The best is bought when
-     affordable; otherwise the player saves for it (rules 2-5 still run).
+     (plus a floor's or an area's cost when there is no space). A tier
+     upgrade is the decor still needed for the next tier, bought as filler
+     pieces of FILLER_COST. The best is bought when affordable; otherwise the
+     player saves for it (rules 2-5 still run).
 """
 
 from __future__ import annotations
@@ -118,13 +133,15 @@ COLLECT_EVERY = 30  # s between till collections
 P_REQUEST_PLAYER = 0.6  # chance the player fulfils a request in person
 REQ_PLAYER_TIME = (4, 20)  # s after it opens, uniform
 STAFF_ASSIGN_DELAY = 10  # s after the first move-in, it goes on Room Service
-WALKIN_WALK = 5  # s from the lane to the desk
-BUS_TO_HOTEL = 20  # s from the lane's end to the desk
-ROOM_WALK = 4  # s desk -> room on floor 1, +ROOM_WALK_PER_FLOOR per floor up
-ROOM_WALK_PER_FLOOR = 4
-FLOOR1_CELLS = 80
+TUTORIAL_WALK = 12  # s: the tutorial Slime from the pavement 40 studs along to the desk
+BUS_TO_HOTEL = 30  # s from the end of the browse to the desk (~300 studs at 10/s)
+ROOM_WALK = 20  # s desk -> room on floor 1, +ROOM_WALK_PER_FLOOR per floor up
+ROOM_WALK_PER_FLOOR = 25  # floor 3 = 70 s (measured in Studio, 2026-10-19 evening)
+EAST_STOP_AFTER = 13  # s: the bus reaches the east stop 13 s after the west (A.1)
+AREA_CELLS = 12  # cells of rooms/amenities per 4x5 area per floor after hallways (~3 rooms of 2x2, §5.4 "2-4")
 ROOM_FULL = 0.6  # a type's rooms are "full" when, on average, not vacant 60 % of the time
-UPPER_CELLS = 84
+DECOR_MATCH_SLOTS = 3  # the policy furnishes for preferences with up to 3 pieces a room
+FILLER_COST = 60  # $ per filler decor item bought for tier points (Side Table, Record Player)
 
 
 # ------------------------------------------------------- a Luau literal parser
@@ -299,19 +316,27 @@ def need(d: dict, key: str, where: str):
 
 # The formulas the model mirrors, as their source lines (whitespace ignored).
 FORMULA_GUARDS = [
-    ("src/server/GuestService.luau", "W.BaseInterval / (1 + W.PerRoom * rooms) * (W.RatingPivot / rating)"),
-    ("src/server/GuestService.luau", "local rating = math.max(1, HotelService.rating(player))"),
-    ("src/server/GuestService.luau", "if sp.rarity == \"Common\" or sp.rarity == \"Uncommon\" then"),
+    ("src/shared/Bus.luau", "math.clamp(math.ceil(B.VacantShare * vacant), B.MinPerPlayer * p, B.MaxPerPlayer * p)"),
+    ("src/server/BusService.luau", "while #list > math.max(want, guaranteed) do"),
+    ("src/server/BusService.luau", "local n = math.min(Constants.Tutorial.CommonsPerBus, slot - guaranteed)"),
+    ("src/server/BusService.luau", "list[slot] = { species = id, mutation = nil, tutorialFor = player }"),
+    ("src/server/TutorialService.luau", "and stat(data, \"tutorialCommonBuses\") < Constants.Tutorial.CommonBuses"),
+    ("src/shared/Scoring.luau", "if c.tutorial and rarity == \"Common\" then"),
+    ("src/shared/Rating.luau", "local roomsNeed = math.max(1, i.rooms / R.RoomsPerStaff)"),
+    ("src/shared/Rating.luau", "return if need > 0 then math.clamp(efficiency / need, 0, 1) else 0"),
+    ("src/shared/Rating.luau", "R.CleanPerOnTime * math.clamp(i.onTimeShare or 0, 0, 1)"),
+    ("src/server/HotelService.luau", "if room.dirtySince and now - room.dirtySince > Constants.Rating.CleanOnTime then"),
+    ("src/shared/Furnish.luau", "out[i] = math.ceil(need * scale)"),
+    ("src/shared/Furnish.luau", "return if d then math.floor(d.cost * E.PointsPerCash) else 0"),
     ("src/server/GuestService.luau", "g.requestAt = now + stay * (0.25 + 0.5 * rng:NextNumber())"),
     ("src/server/GuestService.luau", "g.payRate * S.RequestTipSeconds"),
     ("src/shared/Economy.luau", "piece.cost * E.RoomCostGrowth ^ owned + 0.5"),
-    ("src/shared/Economy.luau", "piece.cost * E.TierCostMultiplier ^ tier + 0.5"),
     ("src/shared/Economy.luau", "return 1 + E.TierPayBonus * (tier - 1)"),
     ("src/shared/Economy.luau", "* Constants.Residents.EarnFraction"),
     ("src/shared/Stay.luau", "math.floor(payRate * stay * (satisfaction / 100) * S.TipFraction)"),
     ("src/shared/Stay.luau", "math.clamp(1 + math.floor(satisfaction / 25), 1, 5)"),
     ("src/shared/Stay.luau", "math.min(S.SatisfactionAmenityMax, S.SatisfactionPerAmenity * i.amenities)"),
-    ("src/shared/Rating.luau", "math.min(100, tierMean * R.ComfortPerTier) * 0.6 + 40 * i.prefsShare"),
+    ("src/shared/Rating.luau", "math.min(100, tierMean / Constants.Economy.MaxTier * 100) * 0.6 + 40 * i.prefsShare"),
     ("src/shared/Rating.luau", "math.clamp(100 - i.meanWait * R.ServiceWaitPerPoint, 0, 100) * 0.6 + 40 * i.requestShare"),
     ("src/shared/Rating.luau", "100 * (1 - i.dirtyRooms / i.rooms)"),
     ("src/shared/Rating.luau", "math.min(100, i.amenities * R.FunPerAmenity + i.entertainers * R.FunPerEntertainer)"),
@@ -321,9 +346,11 @@ FORMULA_GUARDS = [
     ("src/server/ResidentService.luau", "then Constants.Residents.TutorialFriendship"),
     ("src/server/ResidentService.luau", "local early = rng:NextNumber() < Constants.Rarity[sp.rarity].moveInChance"),
     ("src/server/TutorialService.luau", "data.stats.voucher_CoffinSuite = 1"),
-    ("src/server/TutorialService.luau", "{ source = \"Tutorial\", happyFloor = Constants.Stay.Happy }"),
+    ("src/server/TutorialService.luau", "{ booked = player, happyFloor = Constants.Stay.Happy }"),
+    ("src/server/TutorialService.luau", "and busesSince >= 2"),
+    ("src/server/ResidentService.luau", "local threshold = if g.tutorialFriend"),
     ("src/server/BookService.luau", "math.floor(Economy.speciesPay(speciesId) * Constants.Book.SpeciesFoundPaySeconds)"),
-    ("src/server/BusService.luau", "nextList = draw(busIndex + 1, now, now + interval)"),
+    ("src/server/BusService.luau", "nextList, nextGuaranteed = draw(busIndex + 1, now, now + interval)"),
 ]
 
 
@@ -346,7 +373,7 @@ def load_game() -> dict:
     check_formulas()
     C = "src/shared/Constants.luau"
     G = {}
-    for key in ["Rarity", "Economy", "Bus", "Stay", "WalkIn", "Rating", "Residents", "Staff", "Book", "Rebirth"]:
+    for key in ["Rarity", "Economy", "Bus", "Scoring", "Stay", "Tutorial", "Rating", "Residents", "Staff", "Book", "Rebirth"]:
         G[key] = assignment(C, rf"^Constants\.{key}")
         if not isinstance(G[key], dict):
             raise ParseError(f"{C}: Constants.{key} is not a table")
@@ -354,11 +381,14 @@ def load_game() -> dict:
         for k in ["pay", "stay", "friendship", "weight", "moveInChance"]:
             need(need(G["Rarity"], r, C), k, f"{C} Rarity.{r}")
     for sect, keys in {
-        "Economy": ["StartCash", "BasePay", "RoomCostGrowth", "TierCostMultiplier", "TierPayBonus", "MaxTier", "Milestones", "FloorCosts", "FloorCap"],
-        "Bus": ["Interval", "EpicEvery", "LegendaryEvery", "MythicEvery", "BaseSize", "FirstBusDelay", "BrowseSpeed"],
+        "Economy": ["StartCash", "BasePay", "RoomCostGrowth", "TierPayBonus", "MaxTier", "TierPoints", "TierPointsCells", "PointsPerCash", "AreaCosts", "Milestones", "FloorCosts", "FloorCap"],
+        "Bus": ["Interval", "EpicEvery", "LegendaryEvery", "MythicEvery", "VacantShare", "MinPerPlayer", "MaxPerPlayer", "FirstBusDelay", "BrowseTime", "StepOff"],
         "Stay": ["SatisfactionBase", "SatisfactionPerPreference", "SatisfactionPerTier", "SatisfactionPerAmenity", "SatisfactionAmenityMax", "SatisfactionRequestPlayer", "SatisfactionRequestStaff", "SatisfactionRequestMissed", "WaitFree", "WaitPerPoint", "WaitMaxPenalty", "Happy", "TipFraction", "RequestWindow", "RequestTipSeconds", "CleanHold", "ReviewsKept"],
-        "WalkIn": ["BaseInterval", "PerRoom", "RatingPivot", "MinInterval", "MaxInterval", "TutorialDelay"],
-        "Rating": ["Min", "Max", "FunPerAmenity", "StylePerDecor", "StylePerRoomType", "ComfortPerTier", "ServiceWaitPerPoint", "ServiceSampleSize", "CategoryCurve"],
+        "Tutorial": ["FirstGuestDelay", "CommonBuses", "CommonsPerBus"],
+        "Scoring": ["TutorialBoost"],
+        "Rating": ["Min", "Max", "FunPerAmenity", "StylePerDecor", "StylePerRoomType",
+                   "ServicePerDeskCoverage", "ServicePerRoomServiceCoverage", "CleanPerHousekeepingCoverage",
+                   "CleanPerOnTime", "DesksCovered", "RoomsPerStaff", "CleanOnTime", "CleanSampleSize", "ServiceWaitPerPoint", "ServiceSampleSize", "CategoryCurve"],
         "Residents": ["EarnFraction", "WingCapacity", "TutorialFriendship"],
         "Staff": ["BestEfficiency", "OtherEfficiency", "RoomServiceDelay"],
         "Book": ["SpeciesFoundPaySeconds"],
@@ -372,12 +402,9 @@ def load_game() -> dict:
     decor = assignment("src/shared/Pieces.luau", r"^local decor\s*:\s*\{\s*Decor\s*\}")
     species = assignment("src/shared/Species.luau", r"^local rows\s*:\s*\{\s*Species\s*\}")
     muts = assignment("src/shared/Mutations.luau", r"^local rows\s*:\s*\{\s*Mutation\s*\}")
-    slots = re.search(r"Pieces\.DecorSlots\s*=\s*(\d+)", read("src/shared/Pieces.luau"))
-    if not slots:
-        raise ParseError("src/shared/Pieces.luau: no Pieces.DecorSlots")
-    G["DecorSlots"] = int(slots.group(1))
+    G["DecorSlots"] = DECOR_MATCH_SLOTS
     G["Pieces"] = {p["id"]: p for p in pieces if p.get("location") == 1}
-    G["Decor"] = {d["id"]: d for d in decor if d.get("location") == 1}
+    G["Decor"] = {d["id"]: d for d in decor if d.get("location") == 1 or (d.get("location") == 0 and d.get("always"))}
     G["Species"] = {s["id"]: s for s in species if s.get("location") == 1}
     G["Mutations"] = [(m["id"], m["chance"], m["pay"]) for m in muts if m.get("chance", 0) > 0]
     loc = re.search(r'id = 1,.*?rebirthResident = "(\w+)"', strip_comments(read("src/shared/Locations.luau")), re.S)
@@ -401,10 +428,24 @@ class Rules:
     def piece_cost(self, pid, owned):
         return math.floor(self.G["Pieces"][pid]["cost"] * self.E["RoomCostGrowth"] ** owned + 0.5)
 
-    def tier_cost(self, pid, tier):
-        if tier >= self.E["MaxTier"]:
-            return None
-        return math.floor(self.G["Pieces"][pid]["cost"] * self.E["TierCostMultiplier"] ** tier + 0.5)
+    def thresholds(self, pid):
+        p = self.G["Pieces"][pid]
+        scale = p["w"] * p["d"] / self.E["TierPointsCells"]
+        return [math.ceil(n * scale) for n in self.E["TierPoints"]]
+
+    def tier_of(self, pid, points):
+        tier = 1
+        for i, n in enumerate(self.thresholds(pid)):
+            if points >= n:
+                tier = i + 2
+        return min(tier, self.E["MaxTier"])
+
+    def tier_cost(self, room):
+        """$ of decor still needed for the room's next tier (points = price x PointsPerCash)."""
+        for n in self.thresholds(room.type):
+            if room.points < n:
+                return math.ceil((n - room.points) / self.E["PointsPerCash"])
+        return None
 
     def tier_pay(self, tier):
         return 1 + self.E["TierPayBonus"] * (tier - 1)
@@ -441,12 +482,20 @@ class Rules:
     def review(self, sat):
         return max(1, min(5, 1 + math.floor(sat / 25)))
 
-    def categories(self, tiers, prefs_share, mean_wait, checkins, req_share, rooms, dirty, amen, decor, types):
+    def categories(self, tiers, prefs_share, mean_wait, checkins, req_share, rooms, dirty, amen, decor, types,
+                   desk=0.0, room_service=0.0, housekeeping=0.0, on_time=0.0):
         R = self.R
         tm = sum(tiers) / len(tiers) if tiers else 0
-        comfort = min(100, tm * R["ComfortPerTier"]) * 0.6 + 40 * prefs_share
+        comfort = min(100, tm / self.E["MaxTier"] * 100) * 0.6 + 40 * prefs_share
         service = (max(0, min(100, 100 - mean_wait * R["ServiceWaitPerPoint"])) * 0.6 + 40 * req_share) if checkins > 0 else 0
         clean = 100 * (1 - dirty / rooms) if rooms > 0 else 0
+        # staff coverage and rooms cleaned on time (Rating.categories): points on top
+        cover = lambda eff, need: max(0, min(1, eff / need)) if need > 0 else 0
+        need = max(1, rooms / R["RoomsPerStaff"])
+        if checkins > 0:
+            service += R["ServicePerDeskCoverage"] * cover(desk, R["DesksCovered"]) + R["ServicePerRoomServiceCoverage"] * cover(room_service, need)
+        if rooms > 0:
+            clean += R["CleanPerHousekeepingCoverage"] * cover(housekeeping, need) + R["CleanPerOnTime"] * max(0, min(1, on_time))
         fun = min(100, amen * R["FunPerAmenity"])
         style = min(100, decor * R["StylePerDecor"] + types * R["StylePerRoomType"])
         return [max(0, min(100, comfort)), max(0, min(100, service)), max(0, min(100, clean)), fun, style]
@@ -467,6 +516,8 @@ class Room:
     floor: int
     tier: int = 1
     decor: list = field(default_factory=list)
+    points: int = 0
+    filler: int = 0  # decor items bought only for tier points
     state: str = "Vacant"  # Vacant | Reserved | Occupied | Dirty
     dirty_since: int = 0
     occ: float = 0.5  # EMA of not-vacant
@@ -477,7 +528,7 @@ class Guest:
     sid: str
     mut: str | None
     mut_pay: float
-    source: str  # WalkIn | Bus | Tutorial
+    source: str  # Bus | Tutorial
     room: Room
     state: str  # ToHotel | Queued | ToRoom | InRoom
     at: int  # when the current state ends
@@ -511,6 +562,12 @@ class Sim:
         self.till = 0.0
         self.run_cash = 0.0
         self.floors = 1
+        self.areas = 1
+        self.metrics_checkins = []  # (t, rarity) of every check-in
+        self.occ_log = []  # per minute: (t, room-seconds, paying room-seconds, not-vacant room-seconds)
+        self._occ_pay = self._occ_busy = self._occ_rooms = 0
+        self.booked = []  # tutorial guests riding the next bus to this hotel
+        self.tut_goal_bus = None
         self.rooms: list[Room] = []
         self.amenities: list[tuple[str, int]] = []
         self.next_id = 1
@@ -527,8 +584,8 @@ class Sim:
         self.friendship: dict = {}
         self.book: set = set()
         self.observed_pay: dict = {}  # room type -> deque of base pay of its guests
-        self.walkins_on = not tutorial
-        self.next_walkin = None
+        self.clean_times: deque = deque(maxlen=G["Rating"]["CleanSampleSize"])
+        self.tut_common_buses = 0
         self.bus_index = 0
         self.next_bus = G["Bus"]["FirstBusDelay"]
         self.wall0 = self.rng.uniform(0, 7200)  # wall clock phase (s) at join
@@ -541,7 +598,6 @@ class Sim:
         self.slime_at = None
         self.tut_goal = False
         self.tut_vampire_sent = False
-        self.first_bus_seen = False
         self.collects = self.checkins = self.cleaned = 0
         self.staff_assigned_at = None
         # metrics
@@ -573,7 +629,39 @@ class Sim:
         return used + sum(4 for a, af in self.amenities if af == f)
 
     def floor_cap(self, f):
-        return FLOOR1_CELLS if f == 1 else UPPER_CELLS
+        return AREA_CELLS * self.areas
+
+    def expand_option(self):
+        """The cheapest way to more room: a floor (12 cells on it) or an area (12 cells on every floor)."""
+        E = self.G["Economy"]
+        opts = []
+        if self.floors < E["FloorCap"]:
+            opts.append((E["FloorCosts"][self.floors], "floor"))
+        if self.areas < len(E["AreaCosts"]):
+            opts.append((E["AreaCosts"][self.areas], "area"))
+        if not opts:
+            return None
+        return min(opts)
+
+    def expand(self, t):
+        o = self.expand_option()
+        if o is None or self.cash < o[0]:
+            return False
+        self.buy(t, o[1], None, o[0])
+        if o[1] == "floor":
+            self.floors += 1
+        else:
+            self.areas += 1
+        self.mark(f"{o[1]}_{self.floors if o[1] == 'floor' else self.areas}", t)
+        return True
+
+    def add_decor(self, r, d):
+        r.decor.append(d)
+        self.add_points(r, self.G["Decor"][d]["cost"])
+
+    def add_points(self, r, cost):
+        r.points += math.floor(cost * self.G["Economy"]["PointsPerCash"])
+        r.tier = self.rules.tier_of(r.type, r.points)
 
     def floor_for(self, cells):
         for f in range(1, self.floors + 1):
@@ -647,28 +735,11 @@ class Sim:
         self.guests.append(g)
         return g
 
-    def spawn_walkin(self, t, sid=None, source="WalkIn", happy_floor=None):
-        if sid:
-            room = self.vacant_for(sid)
-            if not room:
-                return None
-            return self.spawn(t, sid, source, room, WALKIN_WALK, happy_floor)
-        opts = []
-        for s, sp in self.G["Species"].items():
-            if self.G["Species"][s]["rarity"] in ("Common", "Uncommon"):
-                r = self.vacant_for(s)
-                if r:
-                    opts.append((s, r))
-        if not opts:
+    def spawn_direct(self, t, sid, source, walk, happy_floor=None):
+        room = self.vacant_for(sid)
+        if not room:
             return None
-        s, r = opts[self.rng.randrange(len(opts))]
-        return self.spawn(t, s, source, r, WALKIN_WALK)
-
-    def walkin_interval(self):
-        W = self.G["WalkIn"]
-        rating = max(1, self.rating)
-        x = W["BaseInterval"] / (1 + W["PerRoom"] * self.room_count()) * (W["RatingPivot"] / rating)
-        return max(W["MinInterval"], min(W["MaxInterval"], x))
+        return self.spawn(t, sid, source, room, walk, happy_floor)
 
     def staff_eff(self):
         best, other = self.G["Staff"]["BestEfficiency"], self.G["Staff"]["OtherEfficiency"]
@@ -688,6 +759,7 @@ class Sim:
         g.state = "ToRoom"
         g.at = t + ROOM_WALK + ROOM_WALK_PER_FLOOR * (r.floor - 1)
         self.checkins += 1
+        self.metrics_checkins.append((t, self.G["Species"][g.sid]["rarity"]))
         if g.sid == self.G["RebirthResident"]:
             self.mark("first_vampire_checkin", t)
 
@@ -711,7 +783,7 @@ class Sim:
             self.mark("first_happy_stay", t)
             now = self.friendship.get(g.sid, 0) + 1
             self.friendship[g.sid] = now
-            thr = self.G["Residents"]["TutorialFriendship"] if g.source == "Tutorial" else self.G["Rarity"][sp["rarity"]]["friendship"]
+            thr = self.G["Residents"]["TutorialFriendship"] if getattr(g, "tutorial_friend", False) else self.G["Rarity"][sp["rarity"]]["friendship"]
             early = self.rng.random() < self.G["Rarity"][sp["rarity"]]["moveInChance"]
             if now >= thr or early:
                 self.move_in(t, g)
@@ -723,6 +795,8 @@ class Sim:
         cap = self.G["Residents"]["WingCapacity"]
         new = {"sid": g.sid, "mp": g.mut_pay, "role": ""}
         if len(self.residents) >= cap:
+            # The Wing is full: no move-in (ResidentService). A player releases the lowest earner first
+            # when a better one is coming; modelled as: the lowest idle earner was released in time.
             idle = [r for r in self.residents if r["role"] == "" and r["sid"] != self.G["RebirthResident"]]
             if not idle:
                 return
@@ -760,7 +834,8 @@ class Sim:
                     g.req_at, g.req_open = None, t
                     g.req_player_at = t + self.rng.randint(*REQ_PLAYER_TIME) if self.rng.random() < P_REQUEST_PLAYER else None
                 if g.req_open is not None:
-                    staff_at = g.req_open + self.G["Staff"]["RoomServiceDelay"] / eff if eff > 0 else math.inf
+                    walk = ROOM_WALK + ROOM_WALK_PER_FLOOR * (g.room.floor - 1) + 2
+                    staff_at = max(g.req_open + self.G["Staff"]["RoomServiceDelay"] / eff, g.req_open + walk) if eff > 0 else math.inf
                     if g.req_player_at is not None and t >= g.req_player_at and g.req_player_at <= staff_at:
                         g.rp += 1
                         self.earn_till(math.floor(g.rate * S["RequestTipSeconds"]))
@@ -809,7 +884,10 @@ class Sim:
         if flags["epic"]:
             out.append(pick("Epic"))
         total = sum(self.G["Rarity"][r]["weight"] for r in order)
-        while len(out) < B["BaseSize"]:
+        vacant = sum(1 for r in self.rooms if r.state == "Vacant")
+        size = max(B["MinPerPlayer"], min(B["MaxPerPlayer"], math.ceil(B["VacantShare"] * vacant - 1e-9)))
+        self.bus_sizes.append(size)
+        while len(out) < size:
             x, at, rr = self.rng.random(), 0.0, "Common"
             for r in order:
                 at += self.G["Rarity"][r]["weight"] / total
@@ -817,12 +895,63 @@ class Sim:
                     rr = r
                     break
             out.append(pick(rr))
-        browse = 2 * self.G["LaneHalfLength"] / B["BrowseSpeed"]
+        self.tutorial_commons(out, sum(1 for f in flags.values() if f))
+        half = math.ceil(len(out) / 2)
         for i, sid in enumerate(out):
-            self.pending_bus.append((t + int(browse + 0.6 * i), sid))
+            off = (i * B["StepOff"]) if i < half else (EAST_STOP_AFTER + (i - half) * B["StepOff"])
+            self.pending_bus.append((t + int(off + B["BrowseTime"]), sid))
             if sid == self.G["RebirthResident"]:
                 self.mark("first_vampire_on_bus", t)
+        # a booked guest (the tutorial's Vampire Count) skips browsing
+        for sid, hf in self.booked:
+            g = self.spawn_direct(t, sid, "Tutorial", BUS_TO_HOTEL, hf)
+            if g:
+                self.mark("tutorial_vampire_arrives", t)
+        self.booked = []
         self.mark("first_bus", t)
+
+    def tutorial_commons(self, out, guaranteed):
+        """BusService.weightCommons and Bus.commonsFor (§11 1:45): during the tutorial (past CheckIn, before
+        Done), on its first CommonBuses buses that bring some, up to CommonsPerBus Commons for the hotel's
+        vacant room types replace drawn guests from the end of the list, never a guarantee nor the announced
+        Legendary+. Solo, their TutorialBoost toward the hotel changes nothing: no other hotel competes."""
+        T = self.G["Tutorial"]
+        if not self.tutorial or self.tstep in ("Build", "CheckIn", "Done") or self.tut_common_buses >= T["CommonBuses"]:
+            return
+        slot = len(out) - 1  # 0-based: the last drawn guest
+        if slot < guaranteed:
+            return
+        n = min(T["CommonsPerBus"], slot + 1 - guaranteed)
+        takers: dict = {}
+        for sid, sp in self.G["Species"].items():
+            if sp["rarity"] == "Common":
+                takers.setdefault(sp["room"], []).append(sid)
+        left = {}
+        for r in self.rooms:
+            if r.state == "Vacant" and r.type in takers:
+                left[r.type] = left.get(r.type, 0) + 1
+        rooms = sorted(left)
+        ids, more = [], True
+        while len(ids) < n and more:
+            more = False
+            for room in rooms:
+                if len(ids) < n and left[room] > 0:
+                    pool = takers[room]
+                    ids.append(pool[int(self.rng.random() * len(pool))])
+                    left[room] -= 1
+                    more = True
+        rare = ("Legendary", "Mythic")
+        placed = 0
+        for sid in ids:
+            while slot >= guaranteed and self.G["Species"][out[slot]]["rarity"] in rare:
+                slot -= 1
+            if slot < guaranteed:
+                break
+            out[slot] = sid
+            slot -= 1
+            placed += 1
+        if placed:
+            self.tut_common_buses += 1
 
     def decide_bus(self, t):
         keep = []
@@ -839,10 +968,17 @@ class Sim:
         self.pending_bus = keep
 
     # ---- rating
+    def on_time_share(self, t):
+        """HotelService.inputs: recent cleanings within CleanOnTime, every room overdue now counted late."""
+        lim = self.G["Rating"]["CleanOnTime"]
+        overdue = sum(1 for r in self.rooms if r.state == "Dirty" and t - r.dirty_since > lim)
+        judged = len(self.clean_times) + overdue
+        return sum(1 for x in self.clean_times if x <= lim) / judged if judged else 0
+
     def recompute(self, t):
         tiers = [r.tier for r in self.rooms]
         dirty = sum(1 for r in self.rooms if r.state == "Dirty")
-        decor = sum(len(r.decor) for r in self.rooms)
+        decor = sum(len(r.decor) + r.filler for r in self.rooms)
         types = len({r.type for r in self.rooms})
         cats = self.rules.categories(
             tiers,
@@ -851,6 +987,7 @@ class Sim:
             len(self.waits),
             self.req_done / self.req_asked if self.req_asked else 0,
             len(self.rooms), dirty, len(self.amenities), decor, types,
+            0.0, self.staff_eff(), 0.0, self.on_time_share(t),
         )
         self.cats = cats
         self.rating = self.rules.stars(cats, list(self.reviews))
@@ -902,7 +1039,8 @@ class Sim:
         if free_slots <= 0:
             return []
         best, best_key = [], None
-        cands = [d for d in self.G["Decor"] if d not in have]
+        wanted = {p for sid in w for p in self.G["Species"][sid]["prefs"]}
+        cands = [d for d in self.G["Decor"] if d not in have and wanted & set(self.G["Decor"][d]["tags"])]
         for k in range(0, free_slots + 1):
             for combo in combinations(cands, k):
                 tags = set(floor_tags)
@@ -932,14 +1070,14 @@ class Sim:
                 if self.place_room(t, "CoffinSuite", free=True):
                     self.vouchers["CoffinSuite"] -= 1
                     return
+                if self.floor_for(9) is None:
+                    self.expand(t)  # the goal card: save for the floor or area the free suite needs
+                    return
             cost = self.rules.piece_cost("CoffinSuite", 0)
             if cost <= 20 * 60 * inc:
                 if self.cash >= cost:
-                    if self.floor_for(9) is None and self.floors < self.G["Economy"]["FloorCap"]:
-                        fc = self.G["Economy"]["FloorCosts"][self.floors]
-                        if self.cash >= fc:
-                            self.buy(t, "floor", self.floors + 1, fc)
-                            self.floors += 1
+                    if self.floor_for(9) is None:
+                        self.expand(t)
                         return
                     self.place_room(t, "CoffinSuite")
                 return  # saving for it
@@ -951,7 +1089,7 @@ class Sim:
                     if c > 10 * 60 * inc:
                         break  # out of reach for now: rule 3 buys it when it is cheap
                     if self.cash >= c:
-                        r.decor.append(d)
+                        self.add_decor(r, d)
                         self.buy(t, "decor", d, c)
                         return
                     return  # saving for it
@@ -960,7 +1098,7 @@ class Sim:
             for d in self.decor_plan(r):
                 c = self.G["Decor"][d]["cost"]
                 if c <= self.cash and (c <= 90 * inc or c <= 0.3 * self.cash):
-                    r.decor.append(d)
+                    self.add_decor(r, d)
                     self.buy(t, "decor", d, c)
                     return
         cheapest = min(self.G["Decor"], key=lambda d: self.G["Decor"][d]["cost"])
@@ -968,7 +1106,7 @@ class Sim:
         if cc <= 20 * inc and cc <= self.cash:
             for r in self.rooms:
                 if len(r.decor) < self.G["DecorSlots"] and cheapest not in r.decor:
-                    r.decor.append(cheapest)
+                    self.add_decor(r, cheapest)
                     self.buy(t, "decor", cheapest, cc)
                     return
         # 4. amenities, three per floor with rooms
@@ -996,6 +1134,13 @@ class Sim:
         for pid, p in P.items():
             if p["kind"] == "Room" and pid != "CoffinSuite" and self.type_count(pid) == 0 and self.buildable(pid):
                 c = self.rules.piece_cost(pid, 0)
+                cells = p["w"] * p["d"]
+                if self.floor_for(cells) is None:
+                    o = self.expand_option()
+                    if o and c + o[0] <= 300 * inc and c + o[0] <= self.cash:
+                        self.expand(t)
+                        return
+                    continue
                 if c <= 300 * inc and c <= self.cash and self.place_room(t, pid):
                     return
         # 6. return on cost: new rooms of owned types and tier upgrades
@@ -1012,18 +1157,19 @@ class Sim:
             cells = P[pid]["w"] * P[pid]["d"]
             extra = 0
             if self.floor_for(cells) is None:
-                extra = self.G["Economy"]["FloorCosts"][self.floors] if self.floors < self.G["Economy"]["FloorCap"] else None
+                o = self.expand_option()
+                extra = o[0] if o else None
             jump = self.rules.milestone(n + 1) > self.rules.milestone(n)
             if extra is not None and (occ >= ROOM_FULL or jump):
                 cands.append((d / (cost + extra), "room", pid, cost + extra))
             for r in mine:
-                tc = self.rules.tier_cost(pid, r.tier)
+                tc = self.rules.tier_cost(r)
                 if tc is None:
                     continue
                 d = pay * self.G["Economy"]["TierPayBonus"] * self.rules.milestone(n) * r.occ
                 cands.append((d / tc, "tier", r, tc))
         # the Attic needs floor 2: a floor is a candidate of its own while floor 2 is missing
-        if self.floors == 1 and self.floors < self.G["Economy"]["FloorCap"]:
+        if self.floors == 1 and self.floors < self.G["Economy"]["FloorCap"] and self.room_count() >= 2:
             fc = self.G["Economy"]["FloorCosts"][1]
             if fc <= 300 * inc:
                 cands.append((math.inf, "floor", None, fc))
@@ -1039,13 +1185,13 @@ class Sim:
         elif kind == "room":
             cells = P[what]["w"] * P[what]["d"]
             if self.floor_for(cells) is None:
-                fc = self.G["Economy"]["FloorCosts"][self.floors]
-                self.buy(t, "floor", self.floors + 1, fc)
-                self.floors += 1
+                self.expand(t)
+                return
             self.place_room(t, what)
         else:
             self.buy(t, "tier", f"{what.type} T{what.tier + 1}", cost)
-            what.tier += 1
+            what.filler += math.ceil(cost / FILLER_COST)
+            self.add_points(what, cost)
 
     # ---- the tutorial
     def tutorial_tick(self, t):
@@ -1056,14 +1202,14 @@ class Sim:
             done = self.room_count() >= 1
         elif s == "CheckIn":
             if self.slime_at is None:
-                self.slime_at = t + self.G["WalkIn"]["TutorialDelay"]
+                self.slime_at = t + self.G["Tutorial"]["FirstGuestDelay"]
             done = self.checkins >= 1
         elif s == "Collect":
             done = self.collects >= 1
         elif s == "SecondRoom":
             done = self.room_count() >= 2
         elif s == "Bus":
-            done = self.first_bus_seen or since > 150
+            done = self.events.get("first_bus_guest") is not None or since > 150
         elif s == "MoveIn":
             done = bool(self.residents)
         elif s == "Goal":
@@ -1075,18 +1221,21 @@ class Sim:
         elif s == "Preview":
             done = since > 5  # the player presses Next
         elif s == "Done":
-            if self.tut_goal and not self.tut_vampire_sent and self.type_count("CoffinSuite") > 0:
-                if self.spawn_walkin(t, self.G["RebirthResident"], "Tutorial", self.G["Stay"]["Happy"]):
-                    self.tut_vampire_sent = True
+            # TutorialService: booked on the next bus once 2+ buses passed since the goal and a Coffin Suite is vacant
+            if (self.tut_goal and not self.tut_vampire_sent and self.bus_index - self.tut_goal_bus >= 2
+                    and self.vacant_for(self.G["RebirthResident"])):
+                self.booked.append((self.G["RebirthResident"], self.G["Stay"]["Happy"]))
+                self.tut_vampire_sent = True
         if self.slime_at is not None and t == self.slime_at:
-            self.spawn_walkin(t, "Slime", "Tutorial", self.G["Stay"]["Happy"])
+            g = self.spawn_direct(t, "Slime", "Tutorial", TUTORIAL_WALK, self.G["Stay"]["Happy"])
+            if g:
+                g.tutorial_friend = True
         if done:
             steps = ["Build", "CheckIn", "Collect", "SecondRoom", "Bus", "MoveIn", "Goal", "Clean", "Staff", "Preview", "Done"]
             nxt = steps[steps.index(s) + 1]
             self.tstep, self.tstep_since = nxt, t
-            if nxt not in ("Build", "CheckIn"):
-                self.walkins_on = True
             if nxt == "Goal":
+                self.tut_goal_bus = self.bus_index
                 self.tut_unlocked.add("CoffinSuite")
                 self.vouchers["CoffinSuite"] = 1
                 self.tut_goal = True
@@ -1096,6 +1245,7 @@ class Sim:
     # ---- the run
     def run(self):
         self.pending_bus = []
+        self.bus_sizes = []
         self.cats = [0] * 5
         R = self.G["Rebirth"]
         for t in range(0, self.T + 1):
@@ -1105,17 +1255,12 @@ class Sim:
             if t >= self.next_bus:
                 self.bus(t)
                 self.next_bus = t + self.G["Bus"]["Interval"]
-                if t + 10 <= self.T:
-                    self.first_bus_seen = True
             self.decide_bus(t)
             self.tick_guests(t)
-            # walk-ins
-            if self.walkins_on:
-                if self.next_walkin is None:
-                    self.next_walkin = t + self.walkin_interval()
-                elif t >= self.next_walkin:
-                    self.next_walkin = t + self.walkin_interval()
-                    self.spawn_walkin(t)
+            # occupancy: rooms with a paying guest, and rooms not vacant
+            self._occ_pay += sum(1 for g in self.guests if g.state == "InRoom")
+            self._occ_busy += sum(1 for r in self.rooms if r.state != "Vacant")
+            self._occ_rooms += len(self.rooms)
             # residents into the till
             self.earn_till(sum(self.resident_pay(r) for r in self.residents if r["role"] == ""))
             if self.staff_assigned_at is not None and t >= self.staff_assigned_at and not any(r["role"] for r in self.residents):
@@ -1125,6 +1270,7 @@ class Sim:
                 if r.state == "Dirty" and t - r.dirty_since >= CLEAN_DELAY + self.G["Stay"]["CleanHold"]:
                     r.state = "Vacant"
                     self.cleaned += 1
+                    self.clean_times.append(t - r.dirty_since)
                 r.occ += ((r.state != "Vacant") - r.occ) / 120
             if self.till > 0 and (t % COLLECT_EVERY == 0 or self.tstep == "Collect"):
                 self.cash += math.floor(self.till)
@@ -1154,6 +1300,8 @@ class Sim:
                     self.rebirth_ok["all"] = t
                     break
             if t % 60 == 0:
+                self.occ_log.append((t, self._occ_rooms, self._occ_pay, self._occ_busy))
+                self._occ_pay = self._occ_busy = self._occ_rooms = 0
                 self.timeline.append((t, self.income_rate() * 60, self.rating, self.cash, self.run_cash, len(self.rooms), list(self.cats)))
         self.end = t
         return self
@@ -1194,6 +1342,24 @@ def summarize(G, sims, label):
         gaps.append(max(g) if g else None)
         mins += [p[3] / p[4] for p in s.purchases if p[5] and p[4] > 0 and p[0] >= 300]
     rb = {k: med([s.rebirth_ok[k] for s in sims]) for k in ("rating", "cash", "resident", "all")}
+    flows = {}
+    for a, b in FLOW_WINDOWS:
+        gph, pay, inc = [], [], []
+        for s in sims:
+            if s.end < b * 60 - 1:
+                continue  # the run (rebirth) ended before this window did
+            gph.append(sum(1 for x, _ in s.metrics_checkins if a * 60 <= x < b * 60) * 60 / (b - a))
+            occ = [o for o in s.occ_log if a * 60 < o[0] <= b * 60]
+            rs = sum(o[1] for o in occ)
+            pay.append(sum(o[2] for o in occ) / rs if rs else 0)
+            cash_at = lambda m: max([p[4] for p in s.timeline if p[0] <= m * 60] or [0])
+            inc.append((cash_at(b) - (cash_at(a) if a else 0)) / (b - a))
+        if len(gph) > len(sims) / 2:
+            flows[(a, b)] = (statistics.median(gph), statistics.median(pay), statistics.median(inc))
+    first_k = []
+    for s in sims:
+        hit = [p[0] for p in s.timeline if p[4] >= 250_000]
+        first_k.append(hit[0] if hit else (s.rebirth_ok["cash"]))
     return {
         "label": label,
         "first_room": ev("first_room"),
@@ -1209,6 +1375,9 @@ def summarize(G, sims, label):
         "coffin": ev("first_CoffinSuite"),
         "unlocks": {pid: ev(f"unlock_{pid}") for pid in G["Pieces"] if G["Pieces"][pid]["kind"] == "Room"},
         "rebirth": rb,
+        "flows": flows,
+        "cash250k": med(first_k),
+        "bus_size": statistics.fmean(x for s in sims for x in s.bus_sizes) if any(s.bus_sizes for s in sims) else 0,
         "longest_gap": med(gaps),
         "mins": mins,
         "sims": sims,
@@ -1242,7 +1411,7 @@ def main():
         pass
     ap = argparse.ArgumentParser()
     ap.add_argument("--seeds", type=int, default=8)
-    ap.add_argument("--hours", type=float, default=8)
+    ap.add_argument("--hours", type=float, default=16)
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
     G = load_game()
@@ -1256,6 +1425,9 @@ def main():
     if a.out:
         with open(os.path.join(ROOT, a.out) if not os.path.isabs(a.out) else a.out, "w", encoding="utf-8") as f:
             f.write(text + "\n")
+
+
+FLOW_WINDOWS = [(0, 15), (0, 60), (60, 120), (120, 180)]
 
 
 def render(G, results, a):
@@ -1295,6 +1467,18 @@ def render(G, results, a):
             L.append(f"§6.2 rule of thumb ({R['label']}, meaningful purchases after 5:00, n={len(m)}): minutes of income per purchase "
                      f"p10 {q(.1):.2f}, median {q(.5):.2f}, p90 {q(.9):.2f}, max {m[-1]:.1f}; in the 2–5 min band: {in_band:.0%}; "
                      f"longest gap between meaningful purchases (median over seeds): {fmt(R['longest_gap'])}.")
+    L.append("")
+    L.append("Guests, occupancy and income (with tutorial / tutorial skipped; '—' = the run had ended):")
+    L.append("")
+    L.append("| Minutes | Guests/hour | Paying occupancy | Income $/min (average) |")
+    L.append("|---|---|---|---|")
+    for wnd in FLOW_WINDOWS:
+        fw, ft = W["flows"].get(wnd), T["flows"].get(wnd)
+        c = lambda f, i, fm: fm(f[i]) if f else "—"
+        L.append(f"| {wnd[0]}–{wnd[1]} | {c(fw, 0, lambda x: f'{x:.0f}')} / {c(ft, 0, lambda x: f'{x:.0f}')} | "
+                 f"{c(fw, 1, lambda x: f'{x:.0%}')} / {c(ft, 1, lambda x: f'{x:.0%}')} | {c(fw, 2, money)} / {c(ft, 2, money)} |")
+    L.append("")
+    L.append(f"Mean bus size: {W['bus_size']:.1f} / {T['bus_size']:.1f}. $250k this run: {fmt(W['cash250k'])} / {fmt(T['cash250k'])}.")
     L.append("")
     marks = [1, 2, 5, 10, 15, 20, 30, 45, 60, 90, 120, 180, 240, 300, 360, 420, 480]
     L.append("| Minute | Income/min (tut.) | Rating (tut.) | Rooms (tut.) | Run cash (tut.) | Income/min (skip) | Rating (skip) | Rooms (skip) | Run cash (skip) |")
