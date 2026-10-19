@@ -44,13 +44,12 @@ cannot wait, and only if:
 - no measurement from it leaks into gameplay code: positions and offsets stay in
   the file that builds the blockout; everything else reads the attachments.
 
-## The scale of a person `[decide on day one]`
+## The scale of a person
 
-**Not ruled yet: ask him before anything a person uses is modelled.** The GDD
-sets the plot grid (12 × 12 cells of 4 studs, GDD §3) and gives monsters their
-own rigs (§12), but not the height of a player or a monster against that grid.
-Sector Omega ruled 2 studs a week in, and every clearance measured before that
-was wrong.
+**His ruling, 2026-10-19:** players keep the **standard Roblox avatar (about
+5 studs tall, not scaled)**, and the plot grid cell is **6 studs** (it was 4 in
+the first GDD draft). A 2×2 room is 12 × 12 studs; a floor is about 12 studs
+tall (GDD §3, §5). Monsters are measured against the same 5-stud person.
 
 Everything a person uses (seats, doors, stairs, counters, railings, walkways)
 is built for that height, and a clearance is measured against it, never against
