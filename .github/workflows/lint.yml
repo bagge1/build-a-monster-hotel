@@ -1,0 +1,30 @@
+# GDD §13.1: CI runs Selene and StyLua on every push and pull request.
+# Versions match rokit.toml.
+name: Lint
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: StyLua
+        uses: JohnnyMorganz/stylua-action@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          version: 2.5.2
+          args: --check src/
+
+      - name: Install Selene
+        run: |
+          curl -sSL -o selene.zip https://github.com/Kampfkarren/selene/releases/download/0.31.0/selene-0.31.0-linux.zip
+          unzip -q selene.zip -d "$HOME/selene"
+          chmod +x "$HOME/selene/selene"
+          echo "$HOME/selene" >> "$GITHUB_PATH"
+
+      - name: Selene
+        run: selene src/
