@@ -276,3 +276,4 @@ Obevakad session (`/loop`, självstyrd) medan August är borta (från ca 20:00 i
   (importen, telefonen, handkontrollen, två spelare, besluten i §2). Sover en
   timme i taget tills han är tillbaka.
 
+- **22:11** Vaknade: ingen omstart av rojo serve, ingen import (`Scenery` saknas, 57 filer i `blender/_import/`). Inget som går utan August; sover en timme till.
