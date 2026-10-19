@@ -300,6 +300,15 @@ Med Claudes skärmdump där det finns en. -->
    skylten står kvar i förgårdens hörn. Tomterna flyttas då 24 studs bort från
    gatan. Hör ihop med Night Bus (gästerna strövar på trottoaren) och skogen.
 
+20. **VIP Lobbys märke och gyllene namnskylt** (GDD §10.2, byggt
+   2026-10-19 kväll, provat i Studio med testprofil). I dag: med passet står
+   ditt namn i guld över huvudet med "VIP" framför ("VIP  oden"), i stället
+   för Roblox eget namn; märket är just det ordet "VIP" på skylten.
+   **Att bestämma:** räcker det som märke, eller vill du ha en ikon (en krona,
+   en stjärna) eller märket någon annanstans (spelarlistan)? **Rekommendation:**
+   behåll ordet på skylten tills lounge-dekoren finns, och ta ikonen då
+   tillsammans med den.
+
 ## §3 Creator Hub och publicering
 
 1. ~~**Slå på Studio Access to API Services**~~ (gjort 2026-10-19: på i

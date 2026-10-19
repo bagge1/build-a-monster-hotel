@@ -6,9 +6,10 @@
 - **Provat:** staff-specen 7/7; Room Service och Housekeeping går till rummet
   och tillbaka med "✓"; omplacering mitt i ärendet; två på en gång. Rebirth
   med panelens knapp; Frostfangs rum i en tomt; alla paneler på telefon
-  (två rättade: Residents-raden och Ping-menyn).
+  (två rättade: Residents-raden och Ping-menyn). Byggt ur GDD:n: CI-lint
+  (§13.1), VIP Lobbys gyllene namnskylt (§10.2).
 - **Pågår:** väntar på street och free-building (arbetar fortfarande).
-- **Väntar på August:** —
+- **Väntar på August:** WAITING §2.20 (VIP-märkets utseende).
 
 Obevakad session (`/loop`, självstyrd) medan August är borta (från ca 20:00 i
 2–3 timmar). Hans brief (andra versionen, 19:5x, ersätter den första):
@@ -91,3 +92,17 @@ Obevakad session (`/loop`, självstyrd) medan August är borta (från ca 20:00 i
   kolumn); MCP:ns fel, inte spelets. Obs 2: staff-testet 19:55 körde på
   Augusts egen profil (testprofilen var av): en Mummy (resident 2) lades
   till där och står på Room Service. Resten av kvällen kör på testprofiler.
+- **20:12** g: en bakgrundsagent gick igenom GDD:n. Åtta luckor; de som
+  krockar med street eller free-building väntar (tutorialens Commons på
+  första bussen §11, Service/Cleanliness av personaltäckning §5.3, pingen
+  som nämner rummet §7, gamepad/Input Action System §11). Hunter Camps
+  mini-uppdrag (§8.1) är inte beskrivet: hans.
+- **20:14** CI-lint (§13.1): `.github/workflows/lint.yml` (StyLua 2.5.2 och
+  Selene 0.31.0 som i rokit.toml). Pushad `f7609e9`; körningen stod i kö,
+  resultatet kollas nästa varv.
+- **20:20** VIP Lobby (§10.2): gyllene namnskylt "VIP  <namn>" över huvudet
+  och spelarens `VIP`-attribut, i takt med passet var 2 s (`SocialService`).
+  Provat (testprofil `Test_Vip1019`): ingen skylt utan passet, skylt inom
+  2 s med `pass VIPLobby`, tillbaka 3,6 s efter respawn, Roblox eget namn
+  dolt, inga fel. BillboardGui syns inte i skärmdumpar, så utseendet är inte
+  sett: WAITING §2.20.

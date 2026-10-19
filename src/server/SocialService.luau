@@ -12,8 +12,10 @@
 	    "Pitching!", "Thanks!").
 	  - LEADERBOARD (street): rating and likes in the player list.
 
-	Not built yet: co-managers (build rights for a friend, §7) and the global
-	leaderboards (they need DataStore access, WAITING §3.1).
+	  - VIP LOBBY (§10.2): the badge and the gold name tag (`vipTag`).
+
+	Not built yet: co-managers (build rights for a friend, §7). The global
+	leaderboards are `LeaderboardService`.
 ]]
 
 local Players = game:GetService("Players")
@@ -196,6 +198,50 @@ local function ping(player: Player, key: string)
 	end)
 end
 
+--[[ VIP Lobby's badge and gold name tag (§10.2): a gold name over the
+	head with "VIP" before it, in place of Roblox's own name, and the
+	player's `VIP` attribute for anything else that shows the badge. Kept in
+	step with the pass however it arrives (bought, gifted, restored), so it
+	is checked every few seconds rather than on one event. The look is a
+	draft (WAITING §2). ]]
+local function vipTag(player: Player)
+	local data = PlayerData.get(player)
+	local vip = data ~= nil and data.passes.VIPLobby == true
+	if player:GetAttribute("VIP") ~= vip then
+		player:SetAttribute("VIP", vip)
+	end
+	local character = player.Character
+	local head = character and character:FindFirstChild("Head")
+	local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+	if not head or not humanoid then
+		return
+	end
+	local tag = head:FindFirstChild("VipTag")
+	if vip and not tag then
+		local bb = Instance.new("BillboardGui")
+		bb.Name = "VipTag"
+		bb.Size = UDim2.fromScale(7, 1)
+		bb.StudsOffset = Vector3.new(0, 1.8, 0)
+		bb.MaxDistance = 100
+		bb.LightInfluence = 0
+		local label = Instance.new("TextLabel")
+		label.Size = UDim2.fromScale(1, 1)
+		label.BackgroundTransparency = 1
+		label.TextColor3 = Color3.fromRGB(255, 205, 80)
+		label.TextStrokeColor3 = Color3.fromRGB(46, 32, 70)
+		label.TextStrokeTransparency = 0
+		label.Font = Enum.Font.FredokaOne
+		label.TextScaled = true
+		label.Text = `VIP  {player.DisplayName}`
+		label.Parent = bb
+		bb.Parent = head
+		humanoid.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
+	elseif not vip and tag then
+		tag:Destroy()
+		humanoid.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.Viewer
+	end
+end
+
 -- The street leaderboard in the player list (§7).
 local function leaderstats(player: Player)
 	local stats = Instance.new("Folder")
@@ -235,6 +281,14 @@ function SocialService.Start()
 		task.defer(refreshFavourite)
 	end)
 	PlotService.onBuilt(likePrompt)
+	task.spawn(function()
+		while true do
+			task.wait(2)
+			for _, player in Players:GetPlayers() do
+				pcall(vipTag, player)
+			end
+		end
+	end)
 	DevGrant.register("likes", function(player, args)
 		local data = PlayerData.get(player)
 		if data then
