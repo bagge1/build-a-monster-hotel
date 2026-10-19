@@ -265,6 +265,17 @@ function BusService.Start()
 		end
 		return `in {math.floor(BusService.nextIn())}s: {table.concat(names, ", ")}`
 	end)
+	DevGrant.register("legendary", function()
+		-- Puts a Legendary on the next bus and announces it, as a half-hour bus would.
+		local pool = Bus.pool("Legendary", locationsPresent())
+		if #pool == 0 then
+			return "no Legendary at these locations"
+		end
+		nextList = nextList or {}
+		table.insert(nextList :: { Passenger }, { species = pool[1], mutation = nil })
+		announceNext(nextList :: { Passenger })
+		return `next bus: {pool[1]}`
+	end)
 	DevGrant.register("decide", function()
 		-- Ends every browse now (to see the choices without waiting for the walk).
 		for _, g in GuestService.all() do

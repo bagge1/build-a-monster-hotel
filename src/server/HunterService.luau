@@ -388,6 +388,26 @@ function HunterService.Start()
 		nextNight = os.clock()
 		return "Hunter Night now"
 	end)
+	DevGrant.register("camp", function(player)
+		-- Sends the player's first resident to the Hunter Camp (as a hunter's net would).
+		local data = PlayerData.get(player)
+		for _, r in (if data then data.residents else {}) do
+			r.campUntil = os.time() + H.CampReturn
+			ResidentService.publish(player)
+			return `{r.species} is in the camp`
+		end
+		return "no resident"
+	end)
+	DevGrant.register("defend", function()
+		-- Ends tonight's hunt as a defended one: every hunter scared off.
+		for _, h in hunters do
+			if h.state == "Approach" then
+				flee(h)
+			end
+		end
+		nightEnd = os.clock()
+		return "all hunters fleeing"
+	end)
 	DevGrant.register("hunterstate", function()
 		local lines = { `active={active} total={total} reached={reached}` }
 		for id, h in hunters do

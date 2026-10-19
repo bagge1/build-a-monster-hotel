@@ -43,9 +43,9 @@ multiply a capture's x and y by viewport width / 1920 (3434 / 1920 on his screen
   and turns to "Pitched!".
 - [x] At the lane's end each guest picks a hotel with a vacant room of its type
   (Slime, two Pumpkin Heads to plot 2) or leaves (Mummies, Witch: no room).
-- [ ] A Legendary on the next bus is announced to the street a bus ahead.
-- [ ] A request appears over an occupied room; **Help** at the door fulfils it
-  and tips (dev `request` opens one now).
+- [x] A rare guest on the next bus is announced to the street a bus ahead (a Midnight Bus's Mythic Grand Banshee, a Legendary Vampire Count).
+- [x] A request appears over an occupied room; **Help** at the door (within
+  10 studs) fulfils it and tips 10 s of pay; an unanswered one closes after 30 s.
 - [ ] The rating panel (★ Rating) shows the five bars.
 
 ## Phase 3 (M3, the collection)
@@ -62,7 +62,8 @@ multiply a capture's x and y by viewport width / 1920 (3434 / 1920 on his screen
 - [!] Two drawings of one resident at its post: a republished Wing replaced
   its folder and the client kept the old one. Fixed (ResidentRenderer).
 - [!] The windows' close cross drew as an empty box (Fredoka One has no ✕): now "X".
-- [ ] Holiday gives Moon Shards; offline earnings on rejoin (needs DataStore access).
+- [x] Holiday gives Moon Shards (+8 for an Epic Werewolf).
+- [A] Offline earnings on rejoin: needs DataStore access (WAITING §3.1).
 
 ## Phase 4 (M4, progression)
 
@@ -106,9 +107,11 @@ multiply a capture's x and y by viewport width / 1920 (3434 / 1920 on his screen
 - [x] Every sound id loads in a playtest (`IsLoaded`, `TimeLength`).
 - [ ] Boo! at ~35 studs fired the prompt but nothing came back: probably
   refused for reach; check what a player sees at 30–40 studs.
-- [ ] A resident netted to the Hunter Camp, rescued at the camp's prompt.
-- [ ] A defended night: everyone paid, the thank-you bus of rare guests.
-- [ ] Settings: music, effects and low graphics toggled by clicks.
+- [x] A resident in the Hunter Camp (dev `camp`) is away from the Wing; the
+  camp's prompt rescues it.
+- [x] A defended night (dev `defend`): +5 minutes of income, +10 Candy, the
+  thank-you bus called at once.
+- [x] Settings by their remote: low graphics turns shadows off; music off stops it.
 
 ## Phase 7 (social, GDD §7)
 
@@ -132,4 +135,5 @@ multiply a capture's x and y by viewport width / 1920 (3434 / 1920 on his screen
 - 2026-10-19 03:40 Phase 4 items 1–5 pass; the phone layout fixed.
 - 2026-10-19 03:45 Phase 5 items 1–3 pass; Gloom's disappearing bubble fixed.
 - 2026-10-19 03:50 Phase 6 items 1–2 pass.
+- 2026-10-19 04:05 Leftovers: announcement, Help, holiday, camp, defended night, settings pass.
 - 2026-10-19 03:24 Stairs: the first landing (2 studs) jammed a walker; widened to 4, both storeys walked up and down.
