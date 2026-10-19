@@ -734,7 +734,8 @@ Every number below is a **placeholder** (tagged `PLACEHOLDER` in
   hollow with eyes for Haunted Manor, snowy firs for Frostfang Lodge.
   **His ruling, 2026-10-19 evening** (seeing it in the game): "the forest
   should stretch out much longer, and be thicker near the actual playarea".
-  So (PLACEHOLDER all): a **thicket** 60 studs deep along the clearing, one
+  So (his yes to the look in the game, 2026-10-19 evening: "Skogen ser bra
+  ut nu"; the numbers stay starting values): a **thicket** 60 studs deep along the clearing, one
   tree to a 14-stud cell, 95 % of them; beyond it the forest runs on to
   **600 studs** from the clearing at the old density (22-stud cells, 75 %).
   A tree farther than 260 studs from the camera is only its `Root` and its
