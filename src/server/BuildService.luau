@@ -24,6 +24,7 @@ local PlayerData = require(ServerScriptService.Server.PlayerData)
 local PlotService = require(ServerScriptService.Server.PlotService)
 local HotelService = require(ServerScriptService.Server.HotelService)
 local StateService = require(ServerScriptService.Server.StateService)
+local DevGrant = require(ServerScriptService.Server.DevGrant)
 
 local BuildService = {}
 
@@ -312,6 +313,54 @@ function BuildService.Start()
 	end)
 	PlayerData.onLoaded(function(player)
 		BuildService.refreshUnlocks(player)
+	end)
+	DevGrant.register("fill", function(player, args)
+		-- A full hotel for the performance budget (§13.4): every floor packed
+		-- with `item` (default StandardRoom), each with three decor pieces.
+		local data = PlayerData.get(player)
+		if not data then
+			return "no data"
+		end
+		local item = args[1] or "StandardRoom"
+		local piece = assert(Pieces.get(item))
+		data.floors = BuildService.maxFloors(data)
+		local n = 0
+		for floor = 1, data.floors do
+			for z = 0, Constants.Grid.Cells - 1 do
+				for x = 0, Constants.Grid.Cells - 1 do
+					for r = 0, 3 do
+						local c: Grid.Placed = {
+							item = item,
+							floor = floor,
+							x = x,
+							z = z,
+							r = r,
+							w = piece.w,
+							d = piece.d,
+						}
+						if Grid.canPlace(PlotService.placed(data), data.floors, c) then
+							local id = tostring(data.nextId)
+							data.nextId += 1
+							data.layout[id] = {
+								item = item,
+								floor = floor,
+								x = x,
+								z = z,
+								r = r,
+								tier = 1,
+								decor = { "Candles", "Planter", "PuddleRug" },
+							}
+							n += 1
+							break
+						end
+					end
+				end
+			end
+		end
+		player:SetAttribute("Floors", data.floors)
+		PlotService.rebuild(player)
+		changed(player, "Floor")
+		return `{n} pieces on {data.floors} floors`
 	end)
 	BuildService.onChanged(function(player)
 		announceUnlocks(player)
