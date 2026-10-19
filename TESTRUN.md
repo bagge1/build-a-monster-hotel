@@ -165,6 +165,30 @@ multiply a capture's x and y by viewport width / 1920 (3434 / 1920 on his screen
 - [A] Liking another hotel, the friend bonus: need two players (**Test → Start
   Test Session → Server and Clients**, his).
 
+## Phase 9 (the real models, after the import)
+
+- [x] The 69 synced models match the Workspace imports part for part (628
+  parts: mesh ids, sizes, textures, collision, LOD_Proxy hidden, no empty
+  MeshPart); every script's size matches git.
+- [x] A hotel of all 13 Haunted Manor pieces on two floors (26 pieces) and three
+  floors of stairs build from the real kit: no piece falls back to a blockout.
+- [x] Rays down over every floor (650): no lid; every hit above the floor is the
+  room's own bed, furniture or centrepiece.
+- [!] Rays through every doorway (312): the lobby's `Desk` stands 1.8 studs and
+  the corner `Planter`s 1.5 studs in front of floor-1 doors in columns 0, 3, 4
+  and 11 (and the `Till` clips column 7 by half a stud). As in the blockout.
+  A layout choice: WAITING §2.10.
+- [x] A walker up both storeys of Haunted Manor's stairs and of Frostfang
+  Lodge's (built by `HotelKit.stairs(2, ...)` beside the street, their mesh ids
+  checked): every waypoint reached, no Climbing or Freefall.
+- [x] Guests off the Night Bus, a resident and a hunter are the real models
+  (Slime, Ghost, Mummy, Skeleton, Vampire Count, Pumpkin Head, Witch, Hunter;
+  no empty mesh); the bus is the real NightBus with its headlamp.
+- [x] No script error from the game. `rbxassetid://203785492` "does not match
+  requested type" is Roblox's own: no instance in the place holds that id.
+- Pictures: `archive/screens/2026-10-19_real_models_hotel.jpg`,
+  `archive/screens/2026-10-19_real_models_bus.jpg`.
+
 ## August keeps
 
 - How the street, the lobby and the rooms look (every look is a night draft).
@@ -182,3 +206,4 @@ multiply a capture's x and y by viewport width / 1920 (3434 / 1920 on his screen
 - 2026-10-19 04:04 Traps pass.
 - 2026-10-19 04:01 Leftovers: announcement, Help, holiday, camp, defended night, settings pass.
 - 2026-10-19 03:24 Stairs: the first landing (2 studs) jammed a walker; widened to 4, both storeys walked up and down.
+- 2026-10-19 15:33 Phase 9: the real models synced, built, rayed and walked; the lobby desk in front of floor-1 doors to WAITING §2.10.

@@ -48,6 +48,13 @@ Med Claudes skärmdump där det finns en. -->
    Claude kan inte se om knappen syns på skärmen så långt bort. När du spelar
    en Hunter Night: syns Boo! och fungerar den på ungefär 35 studs?
 
+6. **De riktiga modellerna i spelet** (2026-10-19): bilderna
+   `archive/screens/2026-10-19_real_models_hotel.jpg` (hotellet med alla
+   rum från kitet) och `archive/screens/2026-10-19_real_models_bus.jpg`
+   (Night Bus med gäster). Allt är byggt av de importerade modellerna nu;
+   strukturen är kontrollerad (trappor gångna, golv och dörrar med strålar).
+   Hur det ser ut är ditt.
+
 ## §2 Beslut
 
 <!-- En fråga i taget, med alternativen och Claudes rekommendation. -->
@@ -120,6 +127,20 @@ Med Claudes skärmdump där det finns en. -->
    skylt-kosmetika bärs; (c) dölj det bara för familjevapnen.
    **Rekommendation:** (c): ramarna (pumpa, istappar, lyktor) passar ihop med
    gaveln, vapnen gör det inte.
+
+10. **Lobbyns disk står framför rumsdörrar** (2026-10-19, hittat med strålar
+   i den första testkörningen med de riktiga modellerna). Ett rum på våning 1
+   längst fram öppnar sin dörr mot lobbyns bakre rad, men **Desk** (x −17…−7)
+   står bara 1,8 studs från väggen, och de två **Planter** i hörnen 1,5 studs.
+   Dörrar i fyra av tolv lägen (kolumn 0, 3, 4 och 11) går inte att gå
+   igenom, och **Till** nuddar en femte (kolumn 7) med en halv stud. Så var det
+   redan i blockouten; båda hotellens lobbyer är likadana.
+   **Alternativ:** (a) Grid förbjuder en dörr mot de lägena (bara kod, lobbyn
+   ser ut som nu, rummen kan fortfarande stå där vända åt ett annat håll);
+   (b) flytta disk, kassa och krukor framåt så att lobbyns bakre rad blir en
+   fri korridor längs rummen (båda lobbyerna byggs om och importeras, kön och
+   fällorna flyttas närmare entrén); (c) behåll. **Rekommendation:** (a): det
+   som syns är oförändrat och inget behöver importeras.
 
 ## §3 Creator Hub och publicering
 
