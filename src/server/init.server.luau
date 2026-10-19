@@ -36,6 +36,7 @@ local systems: { { Init: () -> (), Start: () -> () } } = {
 	require(Server.DailyService) :: any, -- dailies, login, codes; pays by StoreService's income rate
 	require(Server.HunterService) :: any, -- Hunter Night, over guests, residents and the bus
 	require(Server.SettingsService) :: any,
+	require(Server.SocialService) :: any, -- likes, friend bonus, pings, the street leaderboard
 	require(Server.Analytics) :: any, -- the funnel; its Start hooks the systems above
 	require(Server.TutorialService) :: any, -- Gloom, last: it reads what every system counts
 }

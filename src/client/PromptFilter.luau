@@ -21,6 +21,10 @@ local function watch(prompt: ProximityPrompt)
 		if owner ~= nil and owner ~= me.UserId and prompt.Enabled then
 			prompt.Enabled = false
 		end
+		-- A visitor's prompt (a hotel's Like) is hidden from the hotel's own owner.
+		if prompt:GetAttribute("VisitorOnly") == me.UserId and prompt.Enabled then
+			prompt.Enabled = false
+		end
 	end
 	apply()
 	prompt:GetPropertyChangedSignal("Enabled"):Connect(apply)

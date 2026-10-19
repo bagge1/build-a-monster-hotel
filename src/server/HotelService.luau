@@ -361,8 +361,11 @@ local function updateSign(player: Player, hotel: Hotel)
 		table.remove(featured)
 	end
 	local label = (gui :: SurfaceGui):FindFirstChild("Text") :: TextLabel
+	local badge = if plot.model:GetAttribute("StreetFavourite")
+		then "  ★ Street Favourite"
+		else ""
 	label.Text =
-		`{player.DisplayName}'s Hotel\n{Format.stars(hotel.rating)} · ♥ {data.likes}\n{table.concat(
+		`{player.DisplayName}'s Hotel{badge}\n{Format.stars(hotel.rating)} · ♥ {data.likes}\n{table.concat(
 			featured,
 			" · "
 		)}`

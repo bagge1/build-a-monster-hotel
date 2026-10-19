@@ -110,6 +110,15 @@ multiply a capture's x and y by viewport width / 1920 (3434 / 1920 on his screen
 - [ ] A defended night: everyone paid, the thank-you bus of rare guests.
 - [ ] Settings: music, effects and low graphics toggled by clicks.
 
+## Phase 7 (social, GDD §7)
+
+- [x] A ping shows over the player's head; the street leaderboard (Rating,
+  Likes) is in the player list; a hotel's own Like prompt is hidden from its owner.
+- [!] The Street Favourite badge reached the sign a step late and the Likes
+  column did not follow likes. Fixed (`SocialService.likesChanged`).
+- [A] Liking another hotel, the friend bonus: need two players (**Test → Start
+  Test Session → Server and Clients**, his).
+
 ## August keeps
 
 - How the street, the lobby and the rooms look (every look is a night draft).
