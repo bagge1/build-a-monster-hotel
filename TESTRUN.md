@@ -89,7 +89,11 @@ multiply a capture's x and y by viewport width / 1920 (3434 / 1920 on his screen
 - [x] The phone layout seen again (04:07): the left column, the right menu in
   two columns above the jump button, Gloom's text fitting, a window over Gloom
   that fills the screen and scrolls.
-- [ ] Rebirth through the panel's button when every requirement is met.
+- [x] Rebirth through the panel's button when every requirement is met
+  (2026-10-19 20:03, test profile `Test_Eve1019a`: 4★ reached by the game's own
+  sums, $5M run, a Vampire Count; the Moon button, then **Move now: +24 Moon
+  Shards** clicked: Frostfang Lodge, 24 shards, 1 move, $100, no pieces, all 6
+  residents kept).
 
 ## Phase 5 (M5, live systems)
 
@@ -186,7 +190,10 @@ multiply a capture's x and y by viewport width / 1920 (3434 / 1920 on his screen
   no empty mesh); the bus is the real NightBus with its headlamp.
 - [x] Frostfang Lodge's eight rooms and amenities, built by `HotelKit.piece(id, 2)`
   beside the street: rays down (200) find no lid, rays through each doorway
-  (96, at ±1.5 studs) pass, every Door faces −Z. Not yet in a plot (a rebirth).
+  (96, at ±1.5 studs) pass, every Door faces −Z. In a plot after the panel's rebirth (2026-10-19 evening):
+  `fill IglooRoom`, 43 pieces on 3 floors, 812 MeshParts all from Frostfang's
+  kit, none empty; Snowball Sprite and Ice Imp walked into Igloo Rooms on
+  floors 2 and 3 (the floor-3 walk took about 70 s).
 - [x] No script error from the game. `rbxassetid://203785492` "does not match
   requested type" is Roblox's own: no instance in the place holds that id.
 - Pictures: `archive/screens/2026-10-19_real_models_hotel.jpg`,
@@ -322,3 +329,4 @@ way from `GuestService.pathToDoor`.
 - 2026-10-19 17:55 Phase 10: the new lobby imported, rayed and walked; PrimaryPart lost by Rojo's live sync, fixed in HotelKit; the in-game review paused for his scale question.
 - 2026-10-19 night Phase 11: the doubled scale imported (27), walls meet the slab, walked up and down three floors, a guest up the stairs; a door onto the stair core's back and guests through the core on floor 2 (grid, follow-up); the in-game review's handrail, jambs and lamps fixed, 25 re-staged.
 - 2026-10-19 19:58 Staff at work: spec 7/7; Room Service out 1.0 s, at the door 2.1 s, done 13.3 s, back 14.3 s, walked on the client post → hall → door (facing it) → post; Housekeeping two rooms in turn with "✓"; turned back when the guest left; reassigned mid-errand stands at the new post; two Room Service (Slot 1, 2) take rooms 1 and 3 at once, the Mummy (efficiency 0.6) done at ~20 s. Floor 3 waits for free building's stairs.
+- 2026-10-19 20:03 Rebirth by the panel's button (Test_Eve1019a) and Frostfang's rooms in a plot pass.

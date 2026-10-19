@@ -2,10 +2,11 @@
 
 ## Sammanfattning (uppdateras varje varv)
 
-- **Klart:** staff ihopslagen i main (fast-forward).
-- **Provat:** staff-specen 7/7 i Studio; Room Service-ärendet på servern
-  (ut, vid dörren, klart efter 12 s, tillbaka).
-- **Pågår:** staffs TESTRUN-punkter i playtest.
+- **Klart:** staff ihopslagen i main och provkörd (`9ff2588`).
+- **Provat:** staff-specen 7/7; Room Service och Housekeeping går till rummet
+  och tillbaka med "✓"; omplacering mitt i ärendet; två på en gång. Rebirth
+  med panelens knapp; Frostfangs rum i en tomt.
+- **Pågår:** väntar på street och free-building (arbetar fortfarande).
 - **Väntar på August:** —
 
 Obevakad session (`/loop`, självstyrd) medan August är borta (från ca 20:00 i
@@ -56,3 +57,23 @@ Obevakad session (`/loop`, självstyrd) medan August är borta (från ca 20:00 i
 - **19:55** Synken i Studio: alla 66 skript lika många byte som på disk.
   Playtest: staff-specen **7 godkända, 0 fel**. Room Service på servern:
   request → Out 1,0 s → Work 2,1 s → Done 13,3 s → tillbaka 14,3 s.
+- **19:58** Staffs TESTRUN i playtest: Room Service går post → hall → dörr
+  (vänd mot dörren, knackar) → post på klienten; "✓ Room Service" stiger vid
+  dörren. Housekeeping städar två rum i tur och ordning med "✓". Gästen
+  checkar ut medan residenten går → vänder ("Back"), inget "✓". Omplacerad
+  till Front Desk mitt i ärendet → står vid nya posten direkt. Två Room
+  Service (Slot 1, 2) tar rum 1 och 3 samtidigt; Mummyn (effektivitet 0,6)
+  klar efter ~20 s = 12 ÷ 0,6. Ingen `[residents] tick failed`. Våning 3
+  provas när free-building är inne; två spelare är Augusts. Commit `9ff2588`.
+- **20:00** Street och free-building arbetar fortfarande. Beslut: a (ny
+  spelare), d (mätning) och f (prestanda) görs efter sammanslagningarna,
+  eftersom free-building skriver om byggandet och street lägger till skog och
+  bussar; till dess b och c.
+- **20:03** b: rebirth med panelens knapp (testprofil `Test_Eve1019a`; 4★
+  nått genom spelets egen räkning: 27 sviter i nivå 3, fem residenter i
+  tjänst, fyra incheckningar): Moon-knappen, sedan **Move now: +24 Moon
+  Shards** → Frostfang Lodge, 24 shards, 1 flytt, $100, inga rum, alla 6
+  residenter kvar. Frostfangs rum i tomten: `fill IglooRoom` 43 rum på 3
+  våningar, 812 meshdelar alla från Frostfangs kit, inga tomma; Snowball
+  Sprite och Ice Imp gick in i Igloo-rum på våning 2 och 3. Vägen till
+  våning 3 tog ungefär 70 s (till mätningen i d). Testprofilen avstängd igen.
