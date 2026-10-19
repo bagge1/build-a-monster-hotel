@@ -15,9 +15,9 @@ and writes its log as `archive/NATTLOGG-2026-10-19.md`.
 
 ## The brief, in order
 
-0. **Setup.** The session starts in `D:\Roblox`, not inside the project.
-   - Rename `D:\Roblox\tycoon-game` to `D:\Roblox\build-a-monster-hotel`, then
-     move the session there (`change_directory`).
+0. **Setup.** If the folder is still `D:\Roblox\tycoon-game`, rename it to
+   `D:\Roblox\build-a-monster-hotel` (only possible from a session started outside it), then
+   move the session there (`change_directory`). If August already renamed it, skip this.
    - Run `python tools/setup_machine.py`, which makes the memory junction for the new path.
    - GitHub is done: the private repo `bagge1/build-a-monster-hotel` exists, `origin` points
      at it and `main` is pushed (2026-10-19, before the night). Git pushes with the stored
