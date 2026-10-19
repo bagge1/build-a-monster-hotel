@@ -74,12 +74,24 @@ local function shell(name: string, size: Vector3, centre: Vector3): (Model, Part
 	return model, root
 end
 
+-- A delivered model's clone with `Root` as its PrimaryPart. Rojo's live sync of a
+-- changed .rbxm can drop the reference (DEVNOTES.md, "Rojo's live sync drops
+-- PrimaryPart"); `Root` is the contract's (MODELS.md), so it is set again here.
+local function rooted(found: Model): Model
+	local m = found:Clone()
+	local root = m:FindFirstChild("Root")
+	if not m.PrimaryPart and root and root:IsA("BasePart") then
+		m.PrimaryPart = root
+	end
+	return m
+end
+
 local function template(location: number, name: string): Model?
 	local kit = ServerStorage:FindFirstChild("HotelKit")
 	local folder = kit and kit:FindFirstChild((string.gsub(Locations.get(location).name, " ", "")))
 	local found = folder and folder:FindFirstChild(name)
 	if found and found:IsA("Model") then
-		return found:Clone()
+		return rooted(found)
 	end
 	return nil
 end
@@ -663,7 +675,7 @@ function HotelKit.cosmetic(c: Cosmetics.Cosmetic): Model
 	local kit = ServerStorage:FindFirstChild("Cosmetics")
 	local found = kit and kit:FindFirstChild(c.id)
 	if found and found:IsA("Model") then
-		local m = found:Clone()
+		local m = rooted(found)
 		for _, p in m:GetDescendants() do
 			if p:IsA("BasePart") then
 				p.Anchored = true

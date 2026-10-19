@@ -21,15 +21,8 @@ Connect: knappen under fliken Plugins i Studio. -->
 3. ~~**Starta om `rojo serve` en gång till**~~ (gjort 2026-10-19: alla 69
    modeller har kommit fram och stämmer del för del med importen; noterat i
    setens `README.md`).
-4. **Importera elva modeller** (2026-10-19): välj alla filer i mappen
-   `blender/_import/` i importdialogen (Studio, importera till **Workspace**)
-   och säg *importerat*. Det är båda hotellens nya **Lobby** (Frostfangs heter
-   `FrostfangLodge_Lobby`, layout A som du valde), båda hotellens rättade
-   **HotelSign** (`FrostfangLodge_HotelSign`) och de sju kosmetikorna
-   (Pumpkin sign, Icicle sign, Lantern sign, de två familjevapnen, Bat bunting,
-   Fairy lights). Resten gör Claude, och efter importen går Claude igenom
-   lobbyn i spelet: strålar genom varje dörr, en gångare till disken, en ny
-   blind granskning.
+4. ~~**Importera elva modeller**~~ (gjort 2026-10-19: alla elva inställda,
+   sparade och synkade; lobbyn är strålad och gången, `TESTRUN.md` fas 10).
 
 ## §1 Att titta på eller spela
 
@@ -166,6 +159,11 @@ Med Claudes skärmdump där det finns en. -->
    - "Nyckeltavlan hänger för högt" (runda 3), medan runda 1 sa att
      receptionistens huvud skymde den. Nycklarna hänger nu 5–7,3 studs upp.
      **Rekommendation:** behåll; titta i spelet.
+
+12. **Skalan: "dubbla allt, ungefär"** (2026-10-19, du i spelet: trångt, och
+   taket sitter ett par studs ovanför väggarna). Rummens väggar slutar 1 stud
+   under bjälklaget ovanför; lobbyns framvägg och fasaden når upp. Claude
+   frågar i sessionen vad som ska dubblas.
 
 ## §3 Creator Hub och publicering
 

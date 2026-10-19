@@ -73,6 +73,18 @@ place, so it lasts only once August publishes. **After anything that makes Rojo
 create templates again, count empty MeshParts before trusting a playtest**, and
 have the server warn at start for any template part with no mesh.
 
+### Rojo's live sync drops `PrimaryPart`
+
+2026-10-19, eleven imports saved over or beside their `.rbxm` while `rojo
+serve` ran: **six synced templates came out with `PrimaryPart` nil** (both
+kits' `Lobby` and `HotelSign`, two of seven cosmetics), the rest with it. The
+files are fine: the 69 models synced at Rojo's start all have it. Nothing
+errored at sync; the plot build failed later on `lobby.PrimaryPart`. →
+`HotelKit` sets `PrimaryPart` to `Root` on every clone it takes (`rooted`).
+**After an import, count templates with no `PrimaryPart`** with the sync check
+(skill `import`, step 5), and never let other code take a template's ref
+properties on trust.
+
 ### `rojo serve` dies when a temp file vanishes under it
 
 A tool that saves atomically (write `Foo.luau.tmp.<n>`, rename it over

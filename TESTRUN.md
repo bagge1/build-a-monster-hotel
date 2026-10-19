@@ -192,6 +192,27 @@ multiply a capture's x and y by viewport width / 1920 (3434 / 1920 on his screen
 - Pictures: `archive/screens/2026-10-19_real_models_hotel.jpg`,
   `archive/screens/2026-10-19_real_models_bus.jpg`.
 
+## Phase 10 (the lobby rework, layout A, after the import)
+
+- [x] The 11 imports (both `Lobby`, both `HotelSign`, seven cosmetics) set,
+  read back, saved and synced: every synced copy matches its import part for
+  part, no empty MeshPart. Six synced templates came without `PrimaryPart`
+  (Rojo's live sync, `DEVNOTES.md`): the plot failed to build until
+  `HotelKit` set `Root` itself (fixed, run again, the plot builds).
+- [x] Rays out through every floor-1 door that opens onto the lobby (doors at
+  x −33, −21, −9, 3, 15; 60 rays, 6.5 studs out at four heights): no hit. Rays
+  along the whole back row (z 7.5, 9.5, 11.5 at 1, 3, 5 studs): no hit.
+- [x] A walker (the player's avatar, 5 studs): street → threshold → inside →
+  `Queue_1` at the desk → the back row → the `Clerk` behind the counter, every
+  waypoint reached, no Climbing or Freefall.
+- [x] Guests queue along the carpet at the desk; the sign stands at the
+  forecourt's stair-side corner, its text drawn (seen from above).
+- [ ] The in-game blind review: paused. August, 2026-10-19, in the game: "its
+  a bit cramped. Could probably double everything just about. The roof is
+  also a couple studs above the walls, not connected." The rooms' walls stop
+  1 stud under the slab above (walls 10, clear height 11). Waits on his
+  answer on the scale (WAITING §2.12).
+
 ## August keeps
 
 - How the street, the lobby and the rooms look (every look is a night draft).
@@ -211,3 +232,4 @@ multiply a capture's x and y by viewport width / 1920 (3434 / 1920 on his screen
 - 2026-10-19 03:24 Stairs: the first landing (2 studs) jammed a walker; widened to 4, both storeys walked up and down.
 - 2026-10-19 15:33 Phase 9: the real models synced, built, rayed and walked; the lobby desk in front of floor-1 doors to WAITING §2.10.
 - 2026-10-19 15:34 Phase 9: Frostfang's rooms rayed beside the street, all clear.
+- 2026-10-19 17:55 Phase 10: the new lobby imported, rayed and walked; PrimaryPart lost by Rojo's live sync, fixed in HotelKit; the in-game review paused for his scale question.

@@ -81,7 +81,8 @@ in a playtest, whose changes are thrown away.
    under another name than the FBX gave it is renamed in Workspace first.
 5. **Claude reads the synced copies back once** under `ReplicatedStorage` (or
    `ServerStorage`): collision, mesh ids and sizes against the Workspace
-   import, and **no empty MeshPart**. Then deletes the Workspace copies and
+   import, **no empty MeshPart**, and a `PrimaryPart` on each (Rojo's live
+   sync can drop it, `DEVNOTES.md`). Then deletes the Workspace copies and
    `ServerStorage._ClaudeSerialize`, strikes the import in `WAITING.md` and
    updates the set's README.
 
