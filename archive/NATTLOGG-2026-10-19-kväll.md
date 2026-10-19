@@ -219,7 +219,7 @@ Obevakad session (`/loop`, självstyrd) medan August är borta (från ca 20:00 i
   startområdet bredvid två rum. Inga värden ändrade: WAITING §2.27 (tempot,
   med förslag och uppmätt effekt) och §2.28 (sviten). Rapport:
   `archive/BALANCE-2026-10-19-evening.md`.
-- **21:06** a: ny spelare, fortsättning på `Test_Tut1019c` (stod på Clean;
+- **21:01** a: ny spelare, fortsättning på `Test_Tut1019c` (stod på Clean;
   efter återinloggning inget smutsigt rum, så en gäst checkades in och ut).
   Städning med dörrens prompt (håll 2 s) → Staff; Slimen på Room Service →
   Preview; "Got it!" klickad med musen → **Done**. En buss, en strövande
