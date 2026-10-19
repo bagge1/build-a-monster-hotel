@@ -19,6 +19,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
 
 local Constants = require(ReplicatedStorage.Shared.Constants)
+local Layout = require(ReplicatedStorage.Shared.Layout)
 local Pieces = require(ReplicatedStorage.Shared.Pieces)
 local Rating = require(ReplicatedStorage.Shared.Rating)
 local Species = require(ReplicatedStorage.Shared.Species)
@@ -93,21 +94,22 @@ function HotelService.sync(player: Player)
 	HotelService.refreshPrompts(player)
 end
 
--- The tags a room has: its own decor and every amenity on its floor (Appendix A.2).
+local function world(data: PlayerData.Data)
+	return Layout.world(data.floors, data.areas, data.layout, data.decor)
+end
+
+-- A room's tier (§5.4: from the decor inside it, T1..T3).
+function HotelService.tier(data: PlayerData.Data, pieceId: string): number
+	return (Layout.roomTier(world(data), pieceId))
+end
+
+-- The tags a room has: the decor inside its walls (§5.4) and every amenity on its floor (Appendix A.2).
 function HotelService.roomTags(data: PlayerData.Data, pieceId: string): { [string]: boolean }
-	local tags: { [string]: boolean } = {}
 	local rec = data.layout[pieceId]
 	if not rec then
-		return tags
+		return {}
 	end
-	for _, decorId in rec.decor do
-		local d = Pieces.decor(decorId)
-		if d then
-			for _, t in d.tags do
-				tags[t] = true
-			end
-		end
-	end
+	local tags = Layout.roomTags(world(data), pieceId)
 	for _, other in data.layout do
 		local p = Pieces.get(other.item)
 		if p and p.kind == "Amenity" and other.floor == rec.floor and p.tags then
@@ -149,7 +151,10 @@ function HotelService.vacantFor(player: Player, speciesId: string): Offer?
 			if
 				not best
 				or matched > best.prefsMatched
-				or (matched == best.prefsMatched and rec.tier > data.layout[best.pieceId].tier)
+				or (
+					matched == best.prefsMatched
+					and HotelService.tier(data, id) > HotelService.tier(data, best.pieceId)
+				)
 			then
 				best = { pieceId = id, prefsMatched = matched, amenities = amen }
 			end
@@ -224,12 +229,13 @@ function HotelService.refreshPrompts(player: Player, only: string?)
 						else ""
 					-- The plaque has a line of its own for the state.
 					local status = label and label:FindFirstChild("Status")
+					local tier = HotelService.tier(data, id)
 					if status and status:IsA("TextLabel") then
-						text.Text = `{piece.name} · T{rec.tier}`
+						text.Text = `{piece.name} · T{tier}`
 						status.Text = state
 					else
 						text.Text =
-							`{piece.name} T{rec.tier}{if state ~= "" then " · " .. state else ""}`
+							`{piece.name} T{tier}{if state ~= "" then " · " .. state else ""}`
 					end
 				end
 			end
@@ -280,26 +286,24 @@ function HotelService.inputs(player: Player): Rating.Inputs?
 		return nil
 	end
 	local tiers, types, decor, amenities, rooms, dirty = {}, {}, 0, 0, 0, 0
+	local w = world(data)
 	for id, rec in data.layout do
 		local p = Pieces.get(rec.item)
-		if p then
-			if p.kind == "Room" then
-				rooms += 1
-				table.insert(tiers, rec.tier)
-				types[rec.item] = true
-				local room = hotel.rooms[id]
-				if room and room.state == "Dirty" then
-					dirty += 1
-				end
-			else
-				amenities += 1
+		if p and p.kind == "Room" then
+			rooms += 1
+			table.insert(tiers, (Layout.roomTier(w, id)))
+			types[rec.item] = true
+			local room = hotel.rooms[id]
+			if room and room.state == "Dirty" then
+				dirty += 1
 			end
-			for _, d in rec.decor do
-				if d ~= "" then
-					decor += 1
-				end
-			end
+		elseif p and p.kind == "Amenity" then
+			amenities += 1
 		end
+	end
+	-- Style counts every piece of decor, in rooms and on hallway floor (§5.4).
+	for _ in data.decor do
+		decor += 1
 	end
 	local nTypes = 0
 	for _ in types do

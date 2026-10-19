@@ -33,9 +33,20 @@ local DEFS: { [string]: Def } = {
 	Place = { dir = "C2S", args = { "string", "number", "number", "number", "number" }, rate = 0.2 }, -- item, floor, x, z, r
 	Move = { dir = "C2S", args = { "number", "number", "number", "number", "number" }, rate = 0.2 }, -- id, floor, x, z, r
 	Sell = { dir = "C2S", args = { "number" }, rate = 0.2 },
-	Upgrade = { dir = "C2S", args = { "number" }, rate = 0.2 },
-	Decorate = { dir = "C2S", args = { "number", "number", "string" }, rate = 0.2 }, -- room id, slot, decor id ("" clears)
 	BuyFloor = { dir = "C2S", rate = 0.5 },
+	BuyArea = { dir = "C2S", args = { "number" }, rate = 0.5 }, -- area index (§5.4)
+	PlaceDecor = {
+		dir = "C2S",
+		args = { "string", "number", "number", "number", "number" },
+		rate = 0.15,
+	}, -- decor id, floor, square x, z, r
+	MoveDecor = {
+		dir = "C2S",
+		args = { "number", "number", "number", "number", "number" },
+		rate = 0.15,
+	}, -- id, floor, square x, z, r
+	SellDecor = { dir = "C2S", args = { "number" }, rate = 0.15 },
+	Finish = { dir = "C2S", args = { "string", "string" }, rate = 0.2 }, -- a room id, "Lobby" or "Hallway"; a finish id ("" is the model's own)
 	Pitch = { dir = "C2S", args = { "number" }, rate = 0.25 }, -- guest id
 	Assign = { dir = "C2S", args = { "number", "string" }, rate = 0.25 }, -- resident id, role ("" = the Wing)
 	Release = { dir = "C2S", args = { "number" }, rate = 0.5 },

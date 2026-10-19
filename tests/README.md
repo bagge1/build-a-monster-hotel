@@ -23,6 +23,19 @@ Studio MCP. Claude does this; August does not need to.
    yesterday's modules (`DEVNOTES.md`).
 3. `python tools/test_bundle.py --clean`.
 
+### Outside Studio, with Lune
+
+The pure specs also run on the machine, in a second (2026-10-19, free
+building), against the same modules in `src/shared`:
+
+```bash
+lune run tools/run_specs.luau . grid furnish economy
+```
+
+Every spec but `data` runs this way (its `Net` needs the engine). Lune is a
+global tool (`rokit add --global lune-org/lune`); a run in Studio is still
+what proves the synced game.
+
 ## Writing one
 
 A spec is a chunk, not a module: it runs inside `do ... end` after the harness,
@@ -32,7 +45,8 @@ tests from `Shared`.
 
 | Spec | What it holds the module to |
 |---|---|
-| `grid` | Doors open beside their own footprint; the lobby and stair core are never built on; no placement cuts a door off; every door has a straight-legged path in |
+| `grid` | Doors open beside their own footprint; the areas split the plot behind the lobby and only a neighbour is bought; rooms only in owned areas, never in the lobby or on the entrance; a new hotel fits 2–4 Standard Rooms; one desk on floor 1; a floor above is reached only by a stair and its last stair stays; stairs stack only on the same cells; hallway decor in a corner leaves a cell walkable, in its middle takes it, and never cuts a door off; no accepted change cuts a door off, and every room has a route in over stairs |
+| `furnish` | Decor turned into a room's frame and back lands where it was, the door side turning with the room; decor keeps out of the doorway, off the room's furniture and off itself, rugs under; wall decor only against a wall; tiers never fall with more decor and bigger rooms need more; dearer decor is worth more; every decor has a footprint and a layer |
 | `economy` | Costs grow with count and tier; selling never refunds more than was spent; tier, milestones, mutations and bonuses never lower pay; rarer and later species pay more; bonuses add within and multiply across; offline is capped; shards are a square root |
 | `stay` | Satisfaction in 0–100; preferences, tiers, amenities and requests never lower it; waits and missed requests never raise it; reviews 1–5 and monotonic; tips never negative |
 | `scoring` | An ineligible hotel is never picked; pitches and better hotels never score lower; the newcomer boost is Common/Uncommon only; ties go to the nearest |

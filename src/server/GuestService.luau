@@ -28,6 +28,7 @@ local ServerScriptService = game:GetService("ServerScriptService")
 local Constants = require(ReplicatedStorage.Shared.Constants)
 local Economy = require(ReplicatedStorage.Shared.Economy)
 local Grid = require(ReplicatedStorage.Shared.Grid)
+local Layout = require(ReplicatedStorage.Shared.Layout)
 local Net = require(ReplicatedStorage.Shared.Net)
 local Pieces = require(ReplicatedStorage.Shared.Pieces)
 local Species = require(ReplicatedStorage.Shared.Species)
@@ -40,7 +41,6 @@ local HotelService = require(ServerScriptService.Server.HotelService)
 local Income = require(ServerScriptService.Server.Income)
 local DevGrant = require(ServerScriptService.Server.DevGrant)
 
-local G = Constants.Grid
 local S = Constants.Stay
 
 local GuestService = {}
@@ -200,66 +200,52 @@ local function toWorld(plot: PlotService.Plot, floor: number, c: Grid.Cell): Vec
 	return plot.frame:PointToWorldSpace(Grid.cellCentre(floor, c))
 end
 
-local function cellOf(plot: PlotService.Plot, world: Vector3): Grid.Cell
-	local localPos = plot.frame:PointToObjectSpace(world)
-	return {
-		x = math.clamp(math.floor(localPos.X / G.CellSize), 0, G.Cells - 1),
-		z = math.clamp(math.floor(localPos.Z / G.CellSize), 0, G.Cells - 1),
-	}
-end
-
--- The walk from the desk queue to a room's bed: through the lobby, up the stairs, to the door.
+--[[ The walk from the desk queue to a room's bed (§5.4): to the cell in
+	front of the desk, along the hallways and up or down the placed stairs
+	(Grid.route), to the door, in, to the bed. ]]
 local function roomPath(
 	plot: PlotService.Plot,
 	data: PlayerData.Data,
 	from: Vector3,
 	pieceId: string
 ): { Vector3 }?
-	local rec = data.layout[pieceId]
-	local piece = rec and Pieces.get(rec.item)
-	if not rec or not piece then
+	local world = PlotService.world(data)
+	local room = Layout.find(world, pieceId)
+	local desk: Grid.Placed? = nil
+	for _, p in world.pieces do
+		if p.kind == "Desk" then
+			desk = p
+		end
+	end
+	if not room or not desk then
 		return nil
 	end
-	local layout = PlotService.placed(data)
-	local doorCell = Grid.doorCell({ x = rec.x, z = rec.z, r = rec.r, w = piece.w, d = piece.d })
-	local sc = G.StairCore
-	local out: { Vector3 } = { from }
-	local start = cellOf(plot, from)
-	local function addCells(floor: number, cells: { Grid.Cell }?)
-		if not cells then
-			return false
-		end
-		for _, c in cells do
-			table.insert(out, toWorld(plot, floor, c))
-		end
-		return true
+	local door = Grid.doorCell(room)
+	local legs =
+		Grid.route(world, Grid.doors(desk)[1], { floor = room.floor, x = door.x, z = door.z })
+	if not legs then
+		return nil
 	end
-	if rec.floor == 1 then
-		if not addCells(1, Grid.path(layout, 1, start, doorCell)) then
-			return nil
-		end
-	else
-		if not addCells(1, Grid.path(layout, 1, start, { x = sc.x, z = sc.z - 1 })) then
-			return nil
-		end
-		for f = 1, rec.floor - 1 do
-			for _, p in PlotService.stairPath(plot, f) do
-				table.insert(out, p)
+	local out: { Vector3 } = { from }
+	for _, leg in legs do
+		if leg.stair then
+			local glide = PlotService.stairPath(plot, (leg.stair :: Grid.Placed).id :: string)
+			if #glide == 0 then
+				return nil
+			end
+			for i = 1, #glide do
+				table.insert(out, if leg.up then glide[i] else glide[#glide + 1 - i])
+			end
+		else
+			for _, c in leg.cells :: { Grid.Cell } do
+				table.insert(out, toWorld(plot, leg.floor :: number, c))
 			end
 		end
-		if
-			not addCells(
-				rec.floor,
-				Grid.path(layout, rec.floor, { x = sc.x + 1, z = sc.z - 1 }, doorCell)
-			)
-		then
-			return nil
-		end
 	end
-	local door = PlotService.piecePoint(plot, pieceId, "Door")
+	local doorPoint = PlotService.piecePoint(plot, pieceId, "Door")
 	local bed = PlotService.piecePoint(plot, pieceId, "Bed")
-	if door then
-		table.insert(out, door.Position)
+	if doorPoint then
+		table.insert(out, doorPoint.Position)
 	end
 	if bed then
 		table.insert(out, bed.Position)
@@ -299,7 +285,8 @@ local function queueSpot(plot: PlotService.Plot, k: number): Vector3?
 		return nil
 	end
 	if k > 4 then
-		return (at * CFrame.new(-(k - 4) * 3, 0, 0)).Position
+		-- On down the line, away from the desk (Queue_n look at it, MODELS.md "Front desk").
+		return (at * CFrame.new(0, 0, (k - 4) * 3)).Position
 	end
 	return at.Position
 end
@@ -491,7 +478,7 @@ function GuestService.checkIn(player: Player, byStaff: boolean?): Guest?
 	g.waited = os.clock() - (g.deskSince or os.clock())
 	HotelService.recordCheckIn(player, g.waited)
 	local sp = assert(Species.get(g.species))
-	g.tier = rec.tier
+	g.tier = HotelService.tier(data, g.room)
 	g.prefsMatched = Stay.matched(sp.prefs, HotelService.roomTags(data, g.room))
 	g.amenities = HotelService.amenitiesOn(data, rec.floor)
 	local typeCount = 0
@@ -501,7 +488,7 @@ function GuestService.checkIn(player: Player, byStaff: boolean?): Guest?
 		end
 	end
 	g.payRate =
-		Economy.guestPay(g.species, rec.tier, g.mutation, typeCount, Income.multiplier(player))
+		Economy.guestPay(g.species, g.tier, g.mutation, typeCount, Income.multiplier(player))
 	leaveQueue(player, g)
 	HotelService.setRoom(player, g.room, "Occupied", g.id)
 	g.state = "ToRoom"

@@ -24,22 +24,14 @@ function Economy.pieceCost(id: string, owned: number): number
 	return math.floor(piece.cost * E.RoomCostGrowth ^ owned + 0.5)
 end
 
--- From `tier` to `tier + 1`: base × 4^tier (§5.2), nil at the top tier.
-function Economy.tierCost(id: string, tier: number): number?
-	local piece = Pieces.get(id)
-	if not piece or tier >= E.MaxTier then
-		return nil
-	end
-	return math.floor(piece.cost * E.TierCostMultiplier ^ tier + 0.5)
+-- What selling gives back: half of what was paid for it (Appendix A.2, PLACEHOLDER).
+function Economy.refund(paid: number): number
+	return math.floor(math.max(0, paid) * E.SellRefund)
 end
 
--- What selling refunds: half of what this piece and its tiers cost (Appendix A.2).
-function Economy.sellValue(id: string, ownedBefore: number, tier: number): number
-	local spent = Economy.pieceCost(id, ownedBefore)
-	for t = 1, tier - 1 do
-		spent += Economy.tierCost(id, t) or 0
-	end
-	return math.floor(spent * E.SellRefund)
+-- The next area of the plot with `owned` owned already (§5.4, PLACEHOLDER); nil when none is left.
+function Economy.areaCost(owned: number): number?
+	return E.AreaCosts[owned + 1]
 end
 
 function Economy.floorCost(floor: number): number?

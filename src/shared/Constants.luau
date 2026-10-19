@@ -17,8 +17,14 @@ Constants.Grid = {
 	CellSize = 12, -- his ruling, 2026-10-19 evening (§3, §18): 2×2 room = 24 × 24 studs
 	Cells = 12, -- a 12 × 12 grid per floor (§3)
 	FloorHeight = 18, -- his ruling, 2026-10-19 evening: a 1-stud slab and 17 clear
-	LobbyRows = 2, -- PLACEHOLDER: floor 1's front rows z 0..1 are the lobby
-	StairCore = { x = 10, z = 2, w = 2, d = 2 }, -- PLACEHOLDER: cells on every floor
+	LobbyRows = 2, -- PLACEHOLDER: floor 1's front rows z 0..1 are the lobby (a gallery above it)
+	-- §5.4, his yes 2026-10-19: the plot behind the lobby is bought in areas of
+	-- 4 × 5 cells, three across and two deep, each for every floor at once.
+	AreaW = 4, -- PLACEHOLDER
+	AreaD = 5, -- PLACEHOLDER
+	StartArea = 2, -- the front middle one (areas count from the front left, row by row)
+	Squares = 4, -- decor squares along a cell: a grid of 3 studs (his yes, §5.4)
+	DeskStart = { x = 0, z = 0, r = 1 }, -- a new hotel's FrontDesk: the lobby's end, served toward the entrance (as the old desk)
 	SlabThickness = 1,
 	WallHeight = 17, -- walls reach the slab above (his ruling): FloorHeight − SlabThickness
 	WingDepth = 48, -- his pick, 2026-10-19 (doubled with the grid): the Resident Wing garden behind the hotel
@@ -97,10 +103,14 @@ Constants.Economy = {
 	BasePay = 1, -- $1/s for a Common at Location 1 (§4.2)
 	LocationPayMultiplier = 20, -- ×20 per later location (§4.2)
 	RoomCostGrowth = 1.15, -- base × 1.15^n (§6.2)
-	TierCostMultiplier = 4, -- ×4 per tier (§5.2, §6.2)
-	TierPayBonus = 0.5, -- +50 % pay per tier (§5.2)
-	TierComfort = 10, -- +10 comfort per tier (§5.2)
-	MaxTier = 5, -- T1..T5 (§5.1)
+	TierPayBonus = 0.5, -- +50 % pay per tier (§5.2; kept by his yes, §5.4)
+	MaxTier = 3, -- T1..T3, reached by furnishing (§5.4, his yes 2026-10-19)
+	-- §5.4: a room's decor points (each item's from its price) take a 2×2 room to
+	-- T2 at 100 and T3 at 300; a larger room needs more, in proportion to its cells.
+	TierPoints = { 100, 300 }, -- PLACEHOLDER (his yes to the proposal, numbers his to set)
+	TierPointsCells = 4, -- the room size TierPoints are for: 2×2
+	PointsPerCash = 1, -- PLACEHOLDER: a decor item's points per $ of its price
+	AreaCosts = { 0, 1000, 3000, 8000, 20000, 50000 }, -- PLACEHOLDER: the n-th area owned
 	Milestones = { 5, 10, 25 }, -- each doubles that type's pay (§6.2)
 	SellRefund = 0.5, -- PLACEHOLDER
 	FloorCosts = { 0, 500, 5000, 50000 }, -- PLACEHOLDER: floor 1 free; floor 4 needs the pass
@@ -176,7 +186,6 @@ Constants.Rating = {
 	FunPerEntertainer = 20,
 	StylePerDecor = 4,
 	StylePerRoomType = 10,
-	ComfortPerTier = 20,
 	ServiceWaitPerPoint = 1, -- −1 service per second of mean desk wait
 	ServiceSampleSize = 20, -- recent check-ins
 	CategoryCurve = 1.5, -- stars from categories: 1 + 4 × (mean/100)^1.5

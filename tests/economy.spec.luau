@@ -16,32 +16,24 @@ describe("Economy", function()
 		end
 	end)
 
-	it("each tier costs more than the last, and the top tier has no next", function()
-		for _, p in Pieces.List do
-			for t = 1, Constants.Economy.MaxTier - 2 do
-				expect.truthy(
-					(Economy.tierCost(p.id, t + 1) :: number) > Economy.tierCost(p.id, t) :: number,
-					p.id
-				)
-			end
-			expect.eq(
-				Economy.tierCost(p.id, Constants.Economy.MaxTier),
-				nil,
-				"no tier beyond the top"
-			)
+	it("selling never refunds more than was paid, nor less than nothing", function()
+		for _, paid in { 0, 1, 50, 999, 250000 } do
+			expect.atMost(Economy.refund(paid), paid, `paid {paid}`)
+			expect.atLeast(Economy.refund(paid), 0, `paid {paid}`)
 		end
 	end)
 
-	it("selling never refunds more than was spent", function()
-		for _, p in Pieces.List do
-			for tier = 1, Constants.Economy.MaxTier do
-				local spent = Economy.pieceCost(p.id, 3)
-				for t = 1, tier - 1 do
-					spent += Economy.tierCost(p.id, t) :: number
-				end
-				expect.atMost(Economy.sellValue(p.id, 3, tier), spent, p.id)
-			end
+	it("each area costs at least the one before, and the start area is free", function()
+		local costs = Constants.Economy.AreaCosts
+		expect.eq(Economy.areaCost(0), 0, "the first area")
+		for n = 1, #costs - 1 do
+			expect.atLeast(
+				Economy.areaCost(n) :: number,
+				Economy.areaCost(n - 1) :: number,
+				`area {n + 1}`
+			)
 		end
+		expect.eq(Economy.areaCost(#costs), nil, "none past the last")
 	end)
 
 	it("a higher tier, more rooms of a type, a mutation and a bonus never pay less", function()

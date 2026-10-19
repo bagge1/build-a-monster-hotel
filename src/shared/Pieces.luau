@@ -1,25 +1,33 @@
 --!strict
 --[[
-	What a hotel is built from (GDD §5.1, §5.2, Appendix A.2, A.6): rooms and
-	amenities, which take cells on a floor, and decor, which sits in a room's
-	decor slots. One row each; nothing else in the code names a piece except
-	the tutorial (`Locations`).
+	What a hotel is built from (GDD §5.1, §5.2, §5.4, Appendix A.2, A.6):
+	rooms, amenities, stairs and the front desk, which take cells on a floor,
+	and decor, which stands on a grid of 3-stud squares (`Constants.Grid.Squares`
+	to a cell) inside a room or on hallway and lobby floor. One row each;
+	nothing else in the code names a piece except the tutorial (`Locations`).
 
-	`cost` is the base cost: a new room costs base × 1.15^n (§6.2), a tier
-	×4 per tier. Every cost but the Standard Room's is a PLACEHOLDER
-	(Appendix A.2). `unlock` is what §5.2 asks before the piece can be built:
-	`rooms` owned, a `floor` reached, a `rating`, a Legendary resident.
+	`cost` is the base cost: a new room costs base × 1.15^n (§6.2). Every cost
+	but the Standard Room's is a PLACEHOLDER (Appendix A.2). `unlock` is what
+	§5.2 asks before the piece can be built: `rooms` owned, a `floor` reached,
+	a `rating`, a Legendary resident. `location` 0 is a piece of every
+	location (the stairs, the desk).
 
-	`colour` is the Luau blockout's (MODELS.md, "Hotel kit") until the kit's
-	models exist.
+	Decor (§5.4): `w` × `d` squares at rotation 0, a `layer` (MODELS.md,
+	"Decor": `Floor`, `Rug`, `Wall`), its tags (a room's preferences come from
+	the decor inside it) and its price, which also gives its decor points
+	(`Furnish`). `always` is decor every location has (the lobby's old
+	furnishings and the rugs, modelled in each kit).
+
+	`colour` is the Luau blockout's (MODELS.md, "Hotel kit") until a model exists.
 ]]
 
 export type Unlock =
 	{ rooms: number?, floor: number?, rating: number?, legendaryResident: boolean? }
+export type Kind = "Room" | "Amenity" | "Stairs" | "Desk"
 export type Piece = {
 	id: string,
 	name: string,
-	kind: "Room" | "Amenity",
+	kind: Kind,
 	w: number,
 	d: number,
 	cost: number,
@@ -28,18 +36,54 @@ export type Piece = {
 	tags: { string }?, -- an amenity's tags, given to every room on its floor
 	colour: Color3,
 }
+export type Layer = "Floor" | "Rug" | "Wall"
 export type Decor = {
 	id: string,
 	name: string,
 	tags: { string },
 	cost: number,
 	location: number,
+	w: number, -- squares along x at rotation 0
+	d: number, -- squares along z
+	layer: Layer,
+	height: number, -- the blockout's, studs
+	always: boolean?,
 	colour: Color3,
+}
+export type Finish = {
+	id: string,
+	name: string,
+	location: number,
+	material: Enum.Material,
+	colour: Color3,
+	cost: number,
 }
 
 local Pieces = {}
 
 local pieces: { Piece } = {
+	-- Every location (§5.4): a stair joins its floor to the one above on the same cells.
+	{
+		id = "Stairs",
+		name = "Stairs",
+		kind = "Stairs",
+		w = 2,
+		d = 2,
+		cost = 250, -- PLACEHOLDER; a new floor's first stair is free (§5.4)
+		location = 0,
+		colour = Color3.fromRGB(150, 130, 160),
+	},
+	-- The reception: exactly one, moved but never bought or sold (§5.4).
+	{
+		id = "FrontDesk",
+		name = "Front Desk",
+		kind = "Desk",
+		w = 2,
+		d = 1,
+		cost = 0,
+		location = 0,
+		colour = Color3.fromRGB(110, 70, 50),
+	},
 	-- Location 1 rooms (§5.2)
 	{
 		id = "StandardRoom",
@@ -287,6 +331,10 @@ local decor: { Decor } = {
 		tags = { "damp" },
 		cost = 30,
 		location = 1,
+		w = 2,
+		d = 2,
+		layer = "Floor",
+		height = 0.9,
 		colour = Color3.fromRGB(80, 160, 200),
 	},
 	{
@@ -295,6 +343,10 @@ local decor: { Decor } = {
 		tags = { "snacks" },
 		cost = 40,
 		location = 1,
+		w = 1,
+		d = 1,
+		layer = "Floor",
+		height = 1.9,
 		colour = Color3.fromRGB(230, 170, 70),
 	},
 	{
@@ -303,6 +355,10 @@ local decor: { Decor } = {
 		tags = { "music", "slow music" },
 		cost = 60,
 		location = 1,
+		w = 1,
+		d = 1,
+		layer = "Floor",
+		height = 4.2,
 		colour = Color3.fromRGB(60, 60, 70),
 	},
 	{
@@ -311,6 +367,10 @@ local decor: { Decor } = {
 		tags = { "candles", "darkness" },
 		cost = 40,
 		location = 1,
+		w = 1,
+		d = 1,
+		layer = "Floor",
+		height = 1.6,
 		colour = Color3.fromRGB(255, 220, 140),
 	},
 	{
@@ -319,6 +379,10 @@ local decor: { Decor } = {
 		tags = { "garden" },
 		cost = 50,
 		location = 1,
+		w = 1,
+		d = 1,
+		layer = "Floor",
+		height = 4.0,
 		colour = Color3.fromRGB(90, 160, 70),
 	},
 	{
@@ -327,6 +391,10 @@ local decor: { Decor } = {
 		tags = { "antique furniture" },
 		cost = 300,
 		location = 1,
+		w = 2,
+		d = 1,
+		layer = "Floor",
+		height = 6.9,
 		colour = Color3.fromRGB(120, 80, 50),
 	},
 	{
@@ -335,6 +403,10 @@ local decor: { Decor } = {
 		tags = { "dark", "darkness", "quiet" },
 		cost = 250,
 		location = 1,
+		w = 2,
+		d = 1,
+		layer = "Wall",
+		height = 6.7,
 		colour = Color3.fromRGB(40, 30, 50),
 	},
 	{
@@ -343,6 +415,10 @@ local decor: { Decor } = {
 		tags = { "dry" },
 		cost = 250,
 		location = 1,
+		w = 2,
+		d = 1,
+		layer = "Floor",
+		height = 1.5,
 		colour = Color3.fromRGB(220, 200, 140),
 	},
 	{
@@ -351,6 +427,10 @@ local decor: { Decor } = {
 		tags = { "cats" },
 		cost = 1200,
 		location = 1,
+		w = 1,
+		d = 1,
+		layer = "Floor",
+		height = 1.4,
 		colour = Color3.fromRGB(200, 120, 60),
 	},
 	{
@@ -359,6 +439,10 @@ local decor: { Decor } = {
 		tags = { "cauldron" },
 		cost = 1500,
 		location = 1,
+		w = 1,
+		d = 1,
+		layer = "Floor",
+		height = 2.1,
 		colour = Color3.fromRGB(50, 60, 50),
 	},
 	{
@@ -367,6 +451,10 @@ local decor: { Decor } = {
 		tags = { "steak" },
 		cost = 4000,
 		location = 1,
+		w = 1,
+		d = 1,
+		layer = "Floor",
+		height = 3.1,
 		colour = Color3.fromRGB(170, 60, 50),
 	},
 	{
@@ -375,6 +463,10 @@ local decor: { Decor } = {
 		tags = { "moonlight" },
 		cost = 5000,
 		location = 1,
+		w = 2,
+		d = 1,
+		layer = "Wall",
+		height = 6.6,
 		colour = Color3.fromRGB(200, 220, 255),
 	},
 	{
@@ -383,6 +475,10 @@ local decor: { Decor } = {
 		tags = { "organ music", "music" },
 		cost = 15000,
 		location = 1,
+		w = 2,
+		d = 2,
+		layer = "Wall",
+		height = 6.9,
 		colour = Color3.fromRGB(150, 120, 80),
 	},
 	{
@@ -391,6 +487,10 @@ local decor: { Decor } = {
 		tags = { "silence", "quiet" },
 		cost = 50000,
 		location = 1,
+		w = 2,
+		d = 1,
+		layer = "Wall",
+		height = 6.2,
 		colour = Color3.fromRGB(100, 90, 110),
 	},
 	{
@@ -399,6 +499,10 @@ local decor: { Decor } = {
 		tags = { "chandelier" },
 		cost = 60000,
 		location = 1,
+		w = 1,
+		d = 1,
+		layer = "Floor",
+		height = 6.4,
 		colour = Color3.fromRGB(255, 230, 150),
 	},
 	-- Event decor (location 0: any location once bought in a season's shop, Events.Shops)
@@ -408,6 +512,10 @@ local decor: { Decor } = {
 		tags = { "candles", "garden" },
 		cost = 0,
 		location = 0,
+		w = 1,
+		d = 1,
+		layer = "Floor",
+		height = 2.0,
 		colour = Color3.fromRGB(245, 140, 30),
 	},
 	{
@@ -416,6 +524,10 @@ local decor: { Decor } = {
 		tags = { "cold", "snow" },
 		cost = 0,
 		location = 0,
+		w = 1,
+		d = 1,
+		layer = "Floor",
+		height = 4.5,
 		colour = Color3.fromRGB(240, 248, 255),
 	},
 	-- Location 2 (night draft, Appendix A.6)
@@ -425,6 +537,10 @@ local decor: { Decor } = {
 		tags = { "cold" },
 		cost = 600,
 		location = 2,
+		w = 1,
+		d = 1,
+		layer = "Floor",
+		height = 2.5,
 		colour = Color3.fromRGB(180, 230, 255),
 	},
 	{
@@ -433,6 +549,10 @@ local decor: { Decor } = {
 		tags = { "cocoa" },
 		cost = 800,
 		location = 2,
+		w = 1,
+		d = 1,
+		layer = "Floor",
+		height = 3.1,
 		colour = Color3.fromRGB(130, 80, 50),
 	},
 	{
@@ -441,6 +561,10 @@ local decor: { Decor } = {
 		tags = { "mischief" },
 		cost = 1000,
 		location = 2,
+		w = 1,
+		d = 1,
+		layer = "Floor",
+		height = 4.8,
 		colour = Color3.fromRGB(230, 90, 160),
 	},
 	{
@@ -449,6 +573,10 @@ local decor: { Decor } = {
 		tags = { "stone" },
 		cost = 5000,
 		location = 2,
+		w = 2,
+		d = 2,
+		layer = "Floor",
+		height = 2.3,
 		colour = Color3.fromRGB(120, 120, 130),
 	},
 	{
@@ -457,6 +585,10 @@ local decor: { Decor } = {
 		tags = { "snow" },
 		cost = 30000,
 		location = 2,
+		w = 1,
+		d = 1,
+		layer = "Floor",
+		height = 2.5,
 		colour = Color3.fromRGB(230, 240, 255),
 	},
 	{
@@ -465,7 +597,199 @@ local decor: { Decor } = {
 		tags = { "northern lights" },
 		cost = 150000,
 		location = 2,
+		w = 1,
+		d = 1,
+		layer = "Floor",
+		height = 5.6,
 		colour = Color3.fromRGB(110, 255, 190),
+	},
+	-- The lobby's furnishings and the rugs (§5.4), in every location's kit. PLACEHOLDER prices.
+	{
+		id = "Bench",
+		name = "Bench",
+		tags = {},
+		cost = 50,
+		location = 0,
+		always = true,
+		w = 3,
+		d = 1,
+		layer = "Floor",
+		height = 2.6,
+		colour = Color3.fromRGB(90, 60, 45),
+	},
+	{
+		id = "UrnPlanter",
+		name = "Urn Planter",
+		tags = { "garden" },
+		cost = 50,
+		location = 0,
+		always = true,
+		w = 1,
+		d = 1,
+		layer = "Floor",
+		height = 2.9,
+		colour = Color3.fromRGB(120, 120, 130),
+	},
+	{
+		id = "RugRunner",
+		name = "Rug Runner",
+		tags = {},
+		cost = 40,
+		location = 0,
+		always = true,
+		w = 4,
+		d = 2,
+		layer = "Rug",
+		height = 0.1,
+		colour = Color3.fromRGB(190, 150, 60),
+	},
+	{
+		id = "RugCorner",
+		name = "Rug Corner",
+		tags = {},
+		cost = 20,
+		location = 0,
+		always = true,
+		w = 2,
+		d = 2,
+		layer = "Rug",
+		height = 0.1,
+		colour = Color3.fromRGB(190, 150, 60),
+	},
+	{
+		id = "RugSquare",
+		name = "Square Rug",
+		tags = {},
+		cost = 60,
+		location = 0,
+		always = true,
+		w = 4,
+		d = 4,
+		layer = "Rug",
+		height = 0.1,
+		colour = Color3.fromRGB(150, 50, 60),
+	},
+	-- Haunted Manor: what he named (§5.4, 2026-10-19: clocks, flowers, plants, furniture, a
+	-- piano). Grey silhouettes for his pick; tags and prices PLACEHOLDER (WAITING §2).
+	{
+		id = "GrandfatherClock",
+		name = "Grandfather Clock",
+		tags = { "antique furniture" },
+		cost = 400,
+		location = 1,
+		w = 1,
+		d = 1,
+		layer = "Floor",
+		height = 6.5,
+		colour = Color3.fromRGB(100, 65, 45),
+	},
+	{
+		id = "WallClock",
+		name = "Wall Clock",
+		tags = { "antique furniture" },
+		cost = 150,
+		location = 1,
+		w = 1,
+		d = 1,
+		layer = "Wall",
+		height = 5.5,
+		colour = Color3.fromRGB(150, 110, 60),
+	},
+	{
+		id = "BlackRoses",
+		name = "Black Roses",
+		tags = { "garden", "darkness" },
+		cost = 120,
+		location = 1,
+		w = 1,
+		d = 1,
+		layer = "Floor",
+		height = 3.6,
+		colour = Color3.fromRGB(60, 30, 50),
+	},
+	{
+		id = "CarnivorousPlant",
+		name = "Carnivorous Plant",
+		tags = { "garden" },
+		cost = 90,
+		location = 1,
+		w = 1,
+		d = 1,
+		layer = "Floor",
+		height = 3.8,
+		colour = Color3.fromRGB(90, 150, 70),
+	},
+	{
+		id = "GhostFern",
+		name = "Ghost Fern",
+		tags = { "garden", "damp" },
+		cost = 70,
+		location = 1,
+		w = 1,
+		d = 1,
+		layer = "Floor",
+		height = 3.2,
+		colour = Color3.fromRGB(160, 200, 180),
+	},
+	{
+		id = "Armchair",
+		name = "Armchair",
+		tags = { "antique furniture" },
+		cost = 200,
+		location = 1,
+		w = 1,
+		d = 1,
+		layer = "Floor",
+		height = 3.8,
+		colour = Color3.fromRGB(130, 40, 60),
+	},
+	{
+		id = "VelvetSofa",
+		name = "Velvet Sofa",
+		tags = { "quiet" },
+		cost = 350,
+		location = 1,
+		w = 2,
+		d = 1,
+		layer = "Floor",
+		height = 3.2,
+		colour = Color3.fromRGB(110, 50, 120),
+	},
+	{
+		id = "Bookshelf",
+		name = "Bookshelf",
+		tags = { "quiet", "antique furniture" },
+		cost = 500,
+		location = 1,
+		w = 2,
+		d = 1,
+		layer = "Wall",
+		height = 6.8,
+		colour = Color3.fromRGB(90, 60, 40),
+	},
+	{
+		id = "SideTable",
+		name = "Side Table",
+		tags = { "candles" },
+		cost = 60,
+		location = 1,
+		w = 1,
+		d = 1,
+		layer = "Floor",
+		height = 3.4,
+		colour = Color3.fromRGB(110, 75, 50),
+	},
+	{
+		id = "GrandPiano",
+		name = "Grand Piano",
+		tags = { "music", "slow music" },
+		cost = 2500,
+		location = 1,
+		w = 2,
+		d = 2,
+		layer = "Floor",
+		height = 4.2,
+		colour = Color3.fromRGB(35, 30, 40),
 	},
 }
 
@@ -481,8 +805,105 @@ for _, d in decor do
 	Pieces.DecorById[d.id] = d
 end
 
--- Decor slots per room (MODELS.md, "Hotel kit": `Decor_1`..`Decor_3`).
-Pieces.DecorSlots = 3
+--[[ Floor finishes (§5.4, MODELS.md "Floor finishes"): a material and a colour
+	per kit, chosen per room, for the lobby and for the hallways. Free while
+	their price is a PLACEHOLDER (WAITING §2). ]]
+local finishes: { Finish } = {
+	{
+		id = "OakBoards",
+		name = "Oak Boards",
+		location = 1,
+		material = Enum.Material.WoodPlanks,
+		colour = Color3.fromRGB(125, 85, 55),
+		cost = 0,
+	},
+	{
+		id = "DarkBoards",
+		name = "Dark Boards",
+		location = 1,
+		material = Enum.Material.WoodPlanks,
+		colour = Color3.fromRGB(70, 45, 40),
+		cost = 0,
+	},
+	{
+		id = "Flagstones",
+		name = "Flagstones",
+		location = 1,
+		material = Enum.Material.Slate,
+		colour = Color3.fromRGB(95, 92, 105),
+		cost = 0,
+	},
+	{
+		id = "PlumCarpet",
+		name = "Plum Carpet",
+		location = 1,
+		material = Enum.Material.Fabric,
+		colour = Color3.fromRGB(95, 50, 90),
+		cost = 0,
+	},
+	{
+		id = "BlackMarble",
+		name = "Black Marble",
+		location = 1,
+		material = Enum.Material.Marble,
+		colour = Color3.fromRGB(50, 45, 60),
+		cost = 0,
+	},
+	{
+		id = "Cobbles",
+		name = "Cobbles",
+		location = 1,
+		material = Enum.Material.Cobblestone,
+		colour = Color3.fromRGB(100, 95, 110),
+		cost = 0,
+	},
+	{
+		id = "PineBoards",
+		name = "Pine Boards",
+		location = 2,
+		material = Enum.Material.WoodPlanks,
+		colour = Color3.fromRGB(170, 130, 90),
+		cost = 0,
+	},
+	{
+		id = "Ice",
+		name = "Ice",
+		location = 2,
+		material = Enum.Material.Ice,
+		colour = Color3.fromRGB(180, 220, 240),
+		cost = 0,
+	},
+	{
+		id = "SnowCarpet",
+		name = "Snow Carpet",
+		location = 2,
+		material = Enum.Material.Fabric,
+		colour = Color3.fromRGB(230, 235, 245),
+		cost = 0,
+	},
+	{
+		id = "Granite",
+		name = "Granite",
+		location = 2,
+		material = Enum.Material.Granite,
+		colour = Color3.fromRGB(130, 135, 140),
+		cost = 0,
+	},
+}
+Pieces.Finishes = finishes
+Pieces.FinishById = {} :: { [string]: Finish }
+for _, f in finishes do
+	Pieces.FinishById[f.id] = f
+end
+
+function Pieces.finish(id: string): Finish?
+	return Pieces.FinishById[id]
+end
+
+-- Whether a player at `location` may place this decor (event decor once bought: `unlocked`).
+function Pieces.decorHere(d: Decor, location: number, unlocked: { [string]: boolean }): boolean
+	return d.always == true or d.location == location or unlocked[`Decor_{d.id}`] == true
+end
 
 function Pieces.get(id: string): Piece?
 	return Pieces.ById[id]
