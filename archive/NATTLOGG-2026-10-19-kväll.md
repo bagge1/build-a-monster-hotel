@@ -288,4 +288,10 @@ Obevakad session (`/loop`, självstyrd) medan August är borta (från ca 20:00 i
   disken en egen bit (disk, nyckeltavla, kassa), inga tomma meshdelar,
   strålar över lobbyn på en höjd, gångare gata → valv → kö → spawn utan
   klättring. WAITING §0.9 struken; §0.8 kvar som omstarten.
+- **22:39** August startade om rojo serve. `Scenery` synkad: fem träd med
+  Root som PrimaryPart och LOD_Proxy; kitens PrimaryPart tillbaka (0 utan,
+  0 tomma meshdelar). Skogen i playtest (`Test_Forest1019`): alla 677 träd
+  är modellerna, 2 279 meshdelar (blockouts var 3 385 delar), 692 ritade
+  varav 646 som proxy; en gångare in i en kal trädstam höll 2,41 studs från
+  dess mitt och gled runt. WAITING §0.8 struken. §0 är tom.
 

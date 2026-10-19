@@ -327,7 +327,7 @@ restart: every script synced (72/72); only the empty `Scenery` folder was
 missing, and the forest reads it by `FindFirstChild`, so the blockout trees
 drew as they would with it empty.
 
-- [x] (Scenery waits for the restart.) The sync landed (`tools/sync_sizes.py`), `ReplicatedStorage.Scenery`
+- [x] (After his restart, 2026-10-19 evening: `Scenery` holds the five trees, each with Root as PrimaryPart and a LOD_Proxy, no empty MeshPart.) The sync landed (`tools/sync_sizes.py`), `ReplicatedStorage.Scenery`
   exists; the spec bundle passes in a playtest, `street` and `data` included.
 - [x] (Rays every 2 studs over x −70..70, z −6..64 on plot 2: no miss; lane,
   pavement, yard 1.00, path 1.05, the kerb 1.30; a 0.5 edging along the
@@ -364,7 +364,11 @@ drew as they would with it empty.
   tutorial's Slime walks in from the pavement about 6 s after the first room,
   before the first bus; the Vampire Count rides the third bus after the goal
   card, booked, and walks straight to the hotel.
-- [ ] (677 blockout trees: 240 crooked, 241 bare, 26 hollow, 170 firs; none on
+- [ ] (After the import and his restart: all 677 are the models, 2,279
+  MeshParts (the blockouts were 3,385 parts), 692 drawn: 646 far trees as
+  their proxy, 46 near ones whole; a walker into a bare tree's trunk kept
+  2.41 studs from its centre and slid round it. Low graphics and a
+  Frostfang band not tried. Before: 677 blockout trees: 240 crooked, 241 bare, 26 hollow, 170 firs; none on
   a plot, yard, lane or pavement (the three nearest stand in the gap between
   plots 5 and 6 and past the lane's ends, only the Baseplate near). Models,
   proxies, low graphics and Frostfang's band wait for the import.) The forest: trees all round, none on a plot, its forecourt or Wing, the
@@ -574,3 +578,4 @@ August's, on a real controller.
 - 2026-10-19 21:06 Staff to floor 3 in a full hotel: up the placed stairs, but a 1,445-stud path outlasts the request (WAITING §2.29).
 - 2026-10-19 21:09 The piece menu by clicks: a room's menu opened by a click on it, Sell and Move done by clicks.
 - 2026-10-19 22:35 Free building after the import: 52 pieces saved and synced (agent, skill `import`); the lobby shell and the FrontDesk seen and walked. The trees wait for the Rojo restart.
+- 2026-10-19 22:39 The forest with the real trees after his Rojo restart: 677 models, 646 as proxies, a trunk stops a walker.

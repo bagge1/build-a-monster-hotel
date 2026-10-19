@@ -55,7 +55,7 @@ Connect: knappen under fliken Plugins i Studio. -->
    filerna** till **Workspace** i en dialog och skriv *importerat* (inte mitt
    i en playtest).
 
-8. **Starta om `rojo serve` och tryck Connect** (kvar av punkten; träden är
+8. ~~**Starta om `rojo serve` och tryck Connect**~~ (gjort 2026-10-19 kväll: `Scenery` synkad, de fem träden i spelet, `TESTRUN.md` fas 12) (träden är
    ~~importerade~~ 2026-10-19 22:34, sparade i `assets/Scenery/`, men syns i
    spelet först efter omstarten). Ursprungligen: **Importera fem träd** (2026-10-19, skogen runt gatan; grenen är
    **ihopslagen i main 2026-10-19 20:27**, så det kan göras nu): först **starta
