@@ -35,7 +35,21 @@ function Pings.Init()
 	)
 	menu.Visible = false
 	Ui.padding(menu, 8)
-	Ui.list(menu, Enum.FillDirection.Vertical, 6)
+	local grid = Instance.new("UIGridLayout")
+	grid.CellPadding = UDim2.fromOffset(6, 6)
+	grid.SortOrder = Enum.SortOrder.LayoutOrder
+	grid.Parent = menu
+	-- A short screen (a phone in landscape) takes the phrases in two columns,
+	-- so the menu stays above the bottom edge (TESTRUN, the phone).
+	local function fit()
+		local camera = workspace.CurrentCamera
+		local columns = if camera and camera.ViewportSize.Y < 500 then 2 else 1
+		local rows = math.ceil(#ORDER / columns)
+		grid.CellSize = UDim2.fromOffset(234, 44)
+		menu.Size = UDim2.fromOffset(columns * 240 + 10, rows * 50 + 16)
+	end
+	fit()
+	workspace.CurrentCamera:GetPropertyChangedSignal("ViewportSize"):Connect(fit)
 	for i, entry in ORDER do
 		local b = Ui.button(menu, entry[1], entry[2], UDim2.new(1, 0, 0, 44), function()
 			Net.send("Ping", entry[1])

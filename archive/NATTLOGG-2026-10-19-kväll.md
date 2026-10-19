@@ -5,7 +5,8 @@
 - **Klart:** staff ihopslagen i main och provkörd (`9ff2588`).
 - **Provat:** staff-specen 7/7; Room Service och Housekeeping går till rummet
   och tillbaka med "✓"; omplacering mitt i ärendet; två på en gång. Rebirth
-  med panelens knapp; Frostfangs rum i en tomt.
+  med panelens knapp; Frostfangs rum i en tomt; alla paneler på telefon
+  (två rättade: Residents-raden och Ping-menyn).
 - **Pågår:** väntar på street och free-building (arbetar fortfarande).
 - **Väntar på August:** —
 
@@ -78,3 +79,15 @@ Obevakad session (`/loop`, självstyrd) medan August är borta (från ca 20:00 i
   våningar, 812 meshdelar alla från Frostfangs kit, inga tomma; Snowball
   Sprite och Ice Imp gick in i Igloo-rum på våning 2 och 3. Vägen till
   våning 3 tog ungefär 70 s (till mätningen i d). Testprofilen avstängd igen.
+- **20:07** c: telefonen (iPhone 14 liggande, 749×388), alla nio paneler
+  öppnade en i taget. Sju ryms. Residents: rollknapparna Security och Holiday
+  gick utanför panelens högerkant (x 692–910 av 34–714). Ping-menyn: sex rader
+  (316 px) gick under skärmens nederkant. Rättat i `CollectionPanels` (de åtta
+  knapparna delar radens bredd, texten krymper till högst 14 och bryts aldrig
+  mitt i ord) och `Pings` (två kolumner på kort skärm, nederkant 280 av 388).
+  Sett i spelet efter synk, skärmdump `archive/screens/2026-10-19_phone_residents.jpg`.
+  Byggläget lämnas till efter free-building. Obs: klick via instance-sökväg i
+  telefonemuleringen träffade två knappar på en gång (vänster och höger
+  kolumn); MCP:ns fel, inte spelets. Obs 2: staff-testet 19:55 körde på
+  Augusts egen profil (testprofilen var av): en Mummy (resident 2) lades
+  till där och står på Room Service. Resten av kvällen kör på testprofiler.

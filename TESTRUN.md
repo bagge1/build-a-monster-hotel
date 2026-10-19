@@ -89,6 +89,13 @@ multiply a capture's x and y by viewport width / 1920 (3434 / 1920 on his screen
 - [x] The phone layout seen again (04:07): the left column, the right menu in
   two columns above the jump button, Gloom's text fitting, a window over Gloom
   that fills the screen and scrolls.
+- [!] The phone again (2026-10-19 evening, iPhone 14 landscape, 749×388, every
+  panel opened in turn): seven fit. The Residents rows' role buttons ran past
+  the panel's right edge (Security and Holiday at x 692–910 of 34–714), and the
+  Ping menu's six rows (316 px) ran below the screen. Fixed: the eight buttons
+  share the row's width with their text shrinking to fit (14 at most, never
+  broken mid-word), and the Ping menu takes two columns on a short screen
+  (bottom at 280 of 388). Picture: `archive/screens/2026-10-19_phone_residents.jpg`.
 - [x] Rebirth through the panel's button when every requirement is met
   (2026-10-19 20:03, test profile `Test_Eve1019a`: 4★ by the game's rating sums over
   inputs set by a Studio helper Script (27 suites put at tier 3, 30 five-star
@@ -331,3 +338,4 @@ way from `GuestService.pathToDoor`.
 - 2026-10-19 night Phase 11: the doubled scale imported (27), walls meet the slab, walked up and down three floors, a guest up the stairs; a door onto the stair core's back and guests through the core on floor 2 (grid, follow-up); the in-game review's handrail, jambs and lamps fixed, 25 re-staged.
 - 2026-10-19 19:58 Staff at work: spec 7/7; Room Service out 1.0 s, at the door 2.1 s, done 13.3 s, back 14.3 s, walked on the client post → hall → door (facing it) → post; Housekeeping two rooms in turn with "✓"; turned back when the guest left; reassigned mid-errand stands at the new post; two Room Service (Slot 1, 2) take rooms 1 and 3 at once, the Mummy (efficiency 0.6) done at ~20 s. Floor 3 waits for free building's stairs.
 - 2026-10-19 20:03 Rebirth by the panel's button (Test_Eve1019a) and Frostfang's rooms in a plot pass.
+- 2026-10-19 20:07 The phone: all panels opened; Residents' role row and the Ping menu fixed and seen fitting.

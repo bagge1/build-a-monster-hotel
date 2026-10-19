@@ -60,6 +60,14 @@ local function rarityColour(rarity: string): Color3
 	} :: any)[rarity] or Ui.Colour.Text
 end
 
+-- A role button's text at 14, smaller where the button is narrow (a phone), never broken mid-word.
+local function fitText(b: TextButton)
+	b.TextScaled = true
+	local cap = Instance.new("UITextSizeConstraint")
+	cap.MaxTextSize = 14
+	cap.Parent = b
+end
+
 local function drawResidents()
 	clear(residentsBody)
 	local c = State.data.collection
@@ -106,6 +114,9 @@ local function drawResidents()
 			local roles = Ui.frame(row, "Roles", UDim2.new(1, -20, 0, 56), UDim2.fromOffset(10, 34))
 			roles.BackgroundTransparency = 1
 			Ui.list(roles, Enum.FillDirection.Horizontal, 4)
+			-- Seven roles and Holiday share the row's width, so a phone's narrow
+			-- window keeps every button on it (TESTRUN, the phone).
+			local share = UDim2.new(1 / (#ROLE_ORDER + 1), -4, 0, 48)
 			for j, role in ROLE_ORDER do
 				local label = if role == ""
 					then `Wing {Format.perSecond(r.pay)}`
@@ -114,7 +125,7 @@ local function drawResidents()
 					roles,
 					role ~= "" and role or "Wing",
 					label,
-					UDim2.fromOffset(104, 48),
+					share,
 					function()
 						Net.send("Assign", r.id, role)
 					end,
@@ -124,20 +135,20 @@ local function drawResidents()
 						else Ui.Colour.Panel
 				)
 				b.LayoutOrder = j
-				b.TextSize = 14
+				fitText(b)
 			end
 			local holiday = Ui.button(
 				roles,
 				"Holiday",
 				`Holiday +{Constants.Rarity[sp.rarity].releaseShards}🌙`,
-				UDim2.fromOffset(110, 48),
+				share,
 				function()
 					Net.send("Release", r.id)
 				end,
 				Ui.Colour.Bad
 			)
 			holiday.LayoutOrder = 99
-			holiday.TextSize = 14
+			fitText(holiday)
 		end
 	end
 	if #c.residents == 0 then
