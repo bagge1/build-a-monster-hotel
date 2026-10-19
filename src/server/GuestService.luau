@@ -809,6 +809,17 @@ function GuestService.Start()
 		end
 		return table.concat(lines, " | ")
 	end)
+	DevGrant.register("request", function()
+		-- Opens a request in every occupied room now.
+		local n = 0
+		for _, g in guests do
+			if g.state == "InRoom" and not g.requestUntil then
+				g.requestAt = os.clock()
+				n += 1
+			end
+		end
+		return `{n} requests`
+	end)
 	DevGrant.register("finish", function()
 		-- Ends every stay and walk now (to see a check-out without waiting).
 		local now = os.clock()

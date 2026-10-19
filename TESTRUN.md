@@ -35,6 +35,19 @@ multiply a capture's x and y by viewport width / 1920 (3434 / 1920 on his screen
 - [ ] Upgrade, decorate, move and sell from the piece menu, by clicks.
 - [A] Save and load by rejoining: blocked on WAITING.md §3.1 (no DataStore access).
 
+## Phase 2 (M2, the street)
+
+- [x] The bus countdown shows under the HUD; `bus` (dev) brings it: guests step
+  off at the west stop, staggered, and browse east with their wish lists.
+- [x] A guest's **Pitch** prompt within reach toasts "+15% toward your hotel"
+  and turns to "Pitched!".
+- [x] At the lane's end each guest picks a hotel with a vacant room of its type
+  (Slime, two Pumpkin Heads to plot 2) or leaves (Mummies, Witch: no room).
+- [ ] A Legendary on the next bus is announced to the street a bus ahead.
+- [ ] A request appears over an occupied room; **Help** at the door fulfils it
+  and tips (dev `request` opens one now).
+- [ ] The rating panel (★ Rating) shows the five bars.
+
 ## August keeps
 
 - How the street, the lobby and the rooms look (every look is a night draft).
@@ -43,4 +56,5 @@ multiply a capture's x and y by viewport width / 1920 (3434 / 1920 on his screen
 ## Log
 
 - 2026-10-19 03:20 T0 and Phase 1 items 1–8 pass (the night's playtest), commit `daf7ffa`.
+- 2026-10-19 03:36 Phase 2 items 1–3 pass.
 - 2026-10-19 03:24 Stairs: the first landing (2 studs) jammed a walker; widened to 4, both storeys walked up and down.

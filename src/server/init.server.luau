@@ -28,6 +28,7 @@ local systems: { { Init: () -> (), Start: () -> () } } = {
 	require(Server.HotelService) :: any, -- each hotel's live state, after its plot
 	require(Server.BuildService) :: any, -- placement, after the hotel it checks
 	require(Server.GuestService) :: any, -- guests, after the hotels they stay in
+	require(Server.BusService) :: any, -- the Night Bus, which hands guests to GuestService
 }
 
 local function run(phase: string)

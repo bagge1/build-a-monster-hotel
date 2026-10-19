@@ -12,6 +12,8 @@ local systems: { { Init: () -> (), Start: () -> () } } = {
 	require(Client.PromptFilter) :: any,
 	require(Client.GuestRenderer) :: any,
 	require(Client.BuildController) :: any,
+	require(Client.BusRenderer) :: any,
+	require(Client.RatingPanel) :: any,
 }
 
 local function run(phase: string)
