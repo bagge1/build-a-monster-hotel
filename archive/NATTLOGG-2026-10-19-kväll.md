@@ -2,15 +2,17 @@
 
 ## Sammanfattning (uppdateras varje varv)
 
-- **Klart:** staff ihopslagen i main och provkörd (`9ff2588`).
+- **Klart:** staff (`9ff2588`) och street (`8ab6eb6`) ihopslagna i main och
+  provkörda.
 - **Provat:** staff-specen 7/7; Room Service och Housekeeping går till rummet
   och tillbaka med "✓"; omplacering mitt i ärendet; två på en gång. Rebirth
   med panelens knapp; Frostfangs rum i en tomt; alla paneler på telefon
   (två rättade: Residents-raden och Ping-menyn). Byggt ur GDD:n: CI-lint
   (§13.1), VIP Lobbys gyllene namnskylt (§10.2), Bellhop kortar
   incheckningen (§4.6).
-- **Pågår:** väntar på street och free-building (arbetar fortfarande).
-- **Väntar på August:** WAITING §2.22 (VIP-märkets utseende), §2.23
+- **Pågår:** free-building ska slås ihop.
+- **Väntar på August:** WAITING §0.8 (starta om rojo serve, importera fem
+  träd), §2.20–2.21 (streets frågor), §2.22 (VIP-märkets utseende), §2.23
   (Bellhops tal för incheckningen).
 
 Obevakad session (`/loop`, självstyrd) medan August är borta (från ca 20:00 i
@@ -120,3 +122,25 @@ Obevakad session (`/loop`, självstyrd) medan August är borta (från ca 20:00 i
   Bellhop 6,4 och 6,3 s från kön till incheckad; med Mummyn som Bellhop
   6,2 / 5,1 / 4,8 / 5,2 / 6,2 / 5,7 s (snitt 5,5; väntat 4,8 + upp till 1 s
   för sekundtakten; de långsamma stod bakom andra gäster i kön).
+- **20:26** Kvot: 5 timmar 45 %, veckan 26 %. Street och free-building klara.
+- **20:27** street: stylua ren, selene 0 fel och 0 varningar, rojo build OK.
+  Sammanslagen med `--no-ff` (`8ab6eb6`). Konflikter: GuestService-huvudet
+  (staffs `pathToDoor` bredvid streets nya krokar), TESTRUN (båda
+  avsnitten), WAITING §2 (streets 2.20–2.21 först, mina blev 2.22–2.23).
+  `default.project.json` fick mappningen `assets/Scenery`: WAITING §0.8
+  fanns redan (omstart och fem träd), nu märkt att grenen är inne.
+  **Antagande:** playtest före omstarten, eftersom alla 72 skript var synkade
+  (0 avvikelser) och skogen läser `Scenery` med `FindFirstChild` (en saknad
+  mapp ritar samma blockout-träd som en tom). Scenery-punkten lämnas öppen.
+- **20:33** Streets fas 12 i playtest (testprofil `Test_Street1019`): alla
+  13 specar **82/82**. Förgården: strålar var 2:a stud över tomt 2, inga
+  hål (körbana/trottoar/gård 1,00, gång 1,05, kantsten 1,30, en 0,5 hög
+  kant längs trottoaren som byggd); gångare körbana → valv utan klättring.
+  Bussen: in vid x −266 på z 15, stannar vid x −95 och 85, ut österut till
+  z −234; boxen rörde inget. Fyra gäster (två per hållplats) strövar ~1 min
+  och går till hotellet. Pumpkin Head och Witch utan passande rum: väntar på
+  norra trottoaren vid östra hållplatsen och kliver på nästa buss. En
+  fälla skrämde första jägaren, den andra kom fram. 677 blockout-träd, inga
+  på tomt, gård, körbana eller trottoar. Inga spelfel i konsolen. Kvar:
+  Scenery och trädimporten (August), tutorialens gäster (i ny-spelar-rundan),
+  telefonens bildtid, blind granskning.

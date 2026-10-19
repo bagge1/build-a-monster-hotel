@@ -55,8 +55,8 @@ Connect: knappen under fliken Plugins i Studio. -->
    filerna** till **Workspace** i en dialog och skriv *importerat* (inte mitt
    i en playtest).
 
-8. **Importera fem träd** (2026-10-19, skogen runt gatan; gör det **när
-   grenen `claude/street-bus-forest-253849` är ihopslagen**): först **starta
+8. **Importera fem träd** (2026-10-19, skogen runt gatan; grenen är
+   **ihopslagen i main 2026-10-19 20:27**, så det kan göras nu): först **starta
    om `rojo serve`** och tryck **Connect** (fliken **Plugins** i Studio):
    grenen lägger till mappen `assets/Scenery`, som Rojo bara ser efter en
    omstart. Sedan importerar du de fem `Tree_*.fbx` i `blender/_import/`

@@ -321,37 +321,53 @@ Built on `claude/street-bus-forest-253849` (GDD §3, §4.3, §5.4, A.1, A.3).
 Verified there by stylua, selene, `rojo build` and the specs under Lune
 (`bus`, `street` and the other pure specs; `data` needs Studio); **nothing of
 it has run in Studio.** Needs August's Rojo restart first (the
-`assets/Scenery` mapping, WAITING §0 punkt 8).
+`assets/Scenery` mapping, WAITING §0 punkt 8). Merged into main 2026-10-19
+20:27 and played 20:27–20:33 (test profile `Test_Street1019`) before the
+restart: every script synced (72/72); only the empty `Scenery` folder was
+missing, and the forest reads it by `FindFirstChild`, so the blockout trees
+drew as they would with it empty.
 
-- [ ] The sync landed (`tools/sync_sizes.py`), `ReplicatedStorage.Scenery`
+- [x] (Scenery waits for the restart.) The sync landed (`tools/sync_sizes.py`), `ReplicatedStorage.Scenery`
   exists; the spec bundle passes in a playtest, `street` and `data` included.
-- [ ] The forecourt: plot fronts at z = ±48; the pavements one strip along
+- [x] (Rays every 2 studs over x −70..70, z −6..64 on plot 2: no miss; lane,
+  pavement, yard 1.00, path 1.05, the kerb 1.30; a 0.5 edging along the
+  pavement either side of the path, as built. A walker lane → arch, no climb
+  or fall.) The forecourt: plot fronts at z = ±48; the pavements one strip along
   each lane edge; each plot's yard with the path to the arch; the sign at the
   stair-side corner (not in front of the entrance); a bought trap drawn
   beside the path. Rays down over the lane, pavement, yard and path find a
   floor at y = 1 everywhere, no gap and no step but the kerb; a walker goes
   lane → pavement → path → arch.
-- [ ] Hunter Night: a hunter walks up the path and a trap beside it scares it.
-- [ ] The bus comes out of the trees north-west of the street, round the
+- [x] (A Slime Puddle in Trap_1 at (−8, 36); the first hunter fled ~7 s before
+  it arrived, the second came on: one scare a night.) Hunter Night: a hunter walks up the path and a trap beside it scares it.
+- [x] (Sampled every 0.5 s: in at x −266 on z 15, stops at x −95 and 85, east
+  bend to z −234 at x 358; its box never touched anything but the road.) The bus comes out of the trees north-west of the street, round the
   west bend onto the lane's north half, stops with its door at x = −90, then
   at x = 90, and goes round the east bend into the trees; it never passes
   through the leaderboard, the Hunter Camp, a lamp or a shelter (sample its
   box along the drive). Call the Bus brings it in out of the forest.
-- [ ] Half the guests step off at each stop; each browses the pavements
+- [x] (Two at each stop; Browsing about a minute, then ToHotel and Queued.
+  Pitch not pressed.) Half the guests step off at each stop; each browses the pavements
   (north and south, east and west in turn), stepping toward each owned
   hotel's entrance and looking about 2 s; **Pitch** works the whole minute;
   then it walks across the lane if needed, along the pavement and up the path
   to its pick's desk queue.
-- [ ] A guest no hotel takes, one that gave up at the desk and one that
+- [x] (A Pumpkin Head and a Witch with only Standard Rooms on the street:
+  Leaving → Waiting at (87.6, 26.2) and (85.2, 26.2) on the north pavement
+  → Boarding the next bus and gone.) A guest no hotel takes, one that gave up at the desk and one that
   checked out all walk to the nearest stop and wait on the pavement; the next
   bus at that stop takes them. Nobody walks off the end of the lane.
-- [ ] The bus's size: `nextbus` before an arrival and the guests counted
+- [x] (`nextbus` said two, four came for one player.) The bus's size: `nextbus` before an arrival and the guests counted
   after it: 40 % of the street's Vacant rooms rounded up, 2–4 per player.
-- [ ] No walk-ins: with rooms vacant and no bus, no guest appears. The
+- [ ] (No walk-in seen in ~2 minutes with 43 vacant rooms; the tutorial's
+  Slime and Vampire Count wait for the new-player run.) No walk-ins: with rooms vacant and no bus, no guest appears. The
   tutorial's Slime walks in from the pavement about 6 s after the first room,
   before the first bus; the Vampire Count rides the third bus after the goal
   card, booked, and walks straight to the hotel.
-- [ ] The forest: trees all round, none on a plot, its forecourt or Wing, the
+- [ ] (677 blockout trees: 240 crooked, 241 bare, 26 hollow, 170 firs; none on
+  a plot, yard, lane or pavement (the three nearest stand in the gap between
+  plots 5 and 6 and past the lane's ends, only the Baseplate near). Models,
+  proxies, low graphics and Frostfang's band wait for the import.) The forest: trees all round, none on a plot, its forecourt or Wing, the
   lane, the pavements or the road; blockouts before the import, the models
   after (§0 punkt 8). A person walks into a bare tree's trunk and stops at a
   fir's lowest tier; trees beyond 260 studs are their proxies; low graphics
@@ -387,3 +403,4 @@ it has run in Studio.** Needs August's Rojo restart first (the
 - 2026-10-19 19:58 Staff at work: spec 7/7; Room Service out 1.0 s, at the door 2.1 s, done 13.3 s, back 14.3 s, walked on the client post → hall → door (facing it) → post; Housekeeping two rooms in turn with "✓"; turned back when the guest left; reassigned mid-errand stands at the new post; two Room Service (Slot 1, 2) take rooms 1 and 3 at once, the Mummy (efficiency 0.6) done at ~20 s. Floor 3 waits for free building's stairs.
 - 2026-10-19 20:03 Rebirth by the panel's button (Test_Eve1019a) and Frostfang's rooms in a plot pass.
 - 2026-10-19 20:07 The phone: all panels opened; Residents' role row and the Ping menu fixed and seen fitting.
+- 2026-10-19 20:33 Phase 12 (street) after the merge: specs 82/82 (13 files); forecourt rayed and walked; the bus's drive and stops, browsing, the stops' waiting and boarding, a trap's scare; the forest's placement (blockouts). Scenery, the tree import, the tutorial's guests, the phone's frame time and the in-game review open.
