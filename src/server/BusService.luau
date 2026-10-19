@@ -2,13 +2,17 @@
 --[[
 	The Night Bus (GDD §4.3): the shared arrivals six hotels compete for.
 
-	Every `Interval` seconds a bus stops at the west end of Creepy Lane with
-	6–10 guests (`Bus.size`), including its guarantees (an Epic every third
-	bus, a Legendary on the half hours, a Mythic on the Midnight Bus). Each
-	guest walks the lane east showing its wish list; players **pitch** guests
-	they want (+15 % toward their hotel, one pitch per player per guest). At the
-	lane's end each guest scores every hotel (`Scoring`) and walks to the best
-	one with a vacant room of its type, or leaves the street.
+	Every `Interval` seconds a bus drives out of the forest and stops twice on
+	Creepy Lane (x = −90 and 90, his ruling 2026-10-19), letting half its
+	guests off at each. It carries 40 % of the street's vacant rooms (`Bus.size`),
+	including its guarantees (an Epic every third bus, a Legendary on the half
+	hours, a Mythic on the Midnight Bus). Each guest browses the pavements for
+	about a minute, pausing at every hotel's entrance and showing its wish
+	list; players **pitch** guests they want (+15 % toward their hotel, one
+	pitch per player per guest). Then each guest scores every hotel
+	(`Scoring`) and walks to the best one with a vacant room of its type, or
+	back to a stop to leave on the next bus. At each stop the bus also takes
+	away the guests waiting there.
 
 	ONE BUS AHEAD, the rare guest is announced to the whole server (§4.3), so
 	players can build or free the room it wants. The next bus's passengers are
@@ -41,13 +45,16 @@ local B = Constants.Bus
 
 local BusService = {}
 
-type Passenger = { species: string, mutation: string? }
+-- `booked`: a guest coming to one hotel (the tutorial's Vampire Count, §11), which skips browsing.
+type Passenger = { species: string, mutation: string?, booked: Player?, happyFloor: number? }
 
 local rng = Random.new()
 local busIndex = 0
 local lastArrival = 0 -- server clock (os.time) of the previous bus
 local nextAt = 0 -- os.clock() of the next bus
 local nextList: { Passenger }? = nil
+local nextGuaranteed = 0 -- how many of nextList's first passengers are its guarantees
+local drive = Bus.drive()
 local busScoreProviders: { (Player) -> number } = {}
 local extraGuests: { Passenger } = {} -- added to the next bus (the tutorial, Hunter Night's thank-you)
 local arrivedHandlers: { (number) -> () } = {}
@@ -61,9 +68,18 @@ function BusService.onArrived(handler: (number) -> ())
 	table.insert(arrivedHandlers, handler)
 end
 
--- Adds guests to the next bus.
-function BusService.addToNext(speciesId: string, mutation: string?)
-	table.insert(extraGuests, { species = speciesId, mutation = mutation })
+-- Adds a guest to the next bus; `opts.booked` sends it straight to that player's hotel.
+function BusService.addToNext(
+	speciesId: string,
+	mutation: string?,
+	opts: { booked: Player?, happyFloor: number? }?
+)
+	table.insert(extraGuests, {
+		species = speciesId,
+		mutation = mutation,
+		booked = opts and opts.booked,
+		happyFloor = opts and opts.happyFloor,
+	})
 end
 
 local function locationsPresent(): { [number]: boolean }
@@ -77,20 +93,57 @@ local function locationsPresent(): { [number]: boolean }
 	return set
 end
 
-local function draw(index: number, previous: number, at: number): { Passenger }
-	local flags = Bus.flags(index, previous, at)
-	local ids = Bus.passengers(
-		flags,
-		Bus.size(#Players:GetPlayers()),
-		locationsPresent(),
-		function()
-			return rng:NextNumber()
-		end,
-		Events.weights(at)
-	)
+-- The rooms vacant on the whole street now (§4.3: the bus's size follows them).
+local function vacantRooms(): number
+	local n = 0
+	for _, plot in PlotService.all() do
+		local hotel = plot.owner and HotelService.get(plot.owner)
+		if hotel then
+			for _, room in hotel.rooms do
+				if room.state == "Vacant" then
+					n += 1
+				end
+			end
+		end
+	end
+	return n
+end
+
+local function size(): number
+	return Bus.size(vacantRooms(), #Players:GetPlayers())
+end
+
+local function drawIds(flags: Bus.Flags, n: number, at: number): { Passenger }
+	local ids = Bus.passengers(flags, n, locationsPresent(), function()
+		return rng:NextNumber()
+	end, Events.weights(at))
 	local list = {}
 	for _, id in ids do
 		table.insert(list, { species = id, mutation = Events.rollMutation(rng:NextNumber(), at) })
+	end
+	return list
+end
+
+-- A bus's passengers, drawn a bus ahead: its guarantees first, then as many as the street's vacancies ask for now.
+local function draw(index: number, previous: number, at: number): ({ Passenger }, number)
+	local flags = Bus.flags(index, previous, at)
+	local guaranteed = (if flags.mythic then 1 else 0)
+		+ (if flags.legendary then 1 else 0)
+		+ (if flags.epic then 1 else 0)
+	return drawIds(flags, size(), at), guaranteed
+end
+
+-- At the bus's arrival: as many as the street's vacancies ask for now, never dropping a guarantee.
+local function fit(list: { Passenger }, guaranteed: number, at: number): { Passenger }
+	local want = size()
+	while #list > math.max(want, guaranteed) do
+		table.remove(list)
+	end
+	if #list < want then
+		local none = { epic = false, legendary = false, mythic = false }
+		for _, p in drawIds(none, want - #list, at) do
+			table.insert(list, p)
+		end
 	end
 	return list
 end
@@ -131,7 +184,7 @@ local function announceNext(list: { Passenger })
 	end
 end
 
--- Where a guest goes at the lane's end: the best-scoring hotel with a vacant room of its type.
+-- Where a guest goes when its browse ends: the best-scoring hotel with a vacant room of its type.
 local function decide(g: GuestService.Guest)
 	local sp = Species.get(g.species)
 	if not sp then
@@ -160,7 +213,7 @@ local function decide(g: GuestService.Guest)
 				amenityBonus = if offer then offer.amenities else 0,
 				pitched = g.pitches[owner.UserId] ~= nil,
 				busBonus = bonus,
-				distance = (StreetLayout.laneFront(plot.index) - here).Magnitude,
+				distance = (StreetLayout.pavementFront(plot.index) - here).Magnitude,
 			})
 			table.insert(jitters, Scoring.jitter(rng:NextNumber()))
 		end
@@ -184,10 +237,37 @@ local function decide(g: GuestService.Guest)
 	PlayerData.stat(owner, "busGuests")
 end
 
+-- Guests step off at a stop, one after another; a booked one walks straight to its hotel.
+local function stepOff(stop: StreetLayout.Stop, list: { Passenger }, first: number)
+	for i, p in list do
+		task.delay((i - 1) * B.StepOff, function()
+			-- Every fourth guest the same way: north or south pavement, east or west.
+			local g = GuestService.spawnBrowsing(
+				p.species,
+				p.mutation,
+				stop,
+				(first + i) % 4,
+				wishText(p),
+				decide
+			)
+			local booked = p.booked
+			local offer = booked and booked.Parent and HotelService.vacantFor(booked, p.species)
+			if booked and offer then
+				g.config:SetAttribute("Wish", nil)
+				g.onDecide = nil
+				g.happyFloor = p.happyFloor
+				GuestService.assign(g, booked, offer.pieceId)
+			end
+		end)
+	end
+end
+
 local function arrive()
 	busIndex += 1
 	local now = os.time()
-	local list = nextList or draw(busIndex, lastArrival, now)
+	local list = if nextList
+		then fit(nextList, nextGuaranteed, now)
+		else (draw(busIndex, lastArrival, now))
 	for _, extra in extraGuests do
 		table.insert(list, extra)
 	end
@@ -196,14 +276,19 @@ local function arrive()
 	workspace:SetAttribute("BusArrivedAt", workspace:GetServerTimeNow())
 	workspace:SetAttribute("BusIndex", busIndex)
 	Net.fireAll("Announce", "The Night Bus has arrived!", "Bus")
+	-- Half off at each stop (his ruling), the first stop's half rounded up.
+	local west, east = StreetLayout.Stops[1], StreetLayout.Stops[2]
+	local half = math.ceil(#list / 2)
+	local first, second = {}, {}
 	for i, p in list do
-		local at = StreetLayout.BusStop
-			+ Vector3.new(-(i - 1) * B.GuestSpacing * 0.3, 0, ((i % 3) - 1) * 2)
-		task.delay((i - 1) * 0.6, function()
-			local g = GuestService.spawnBrowsing(p.species, p.mutation, at, wishText(p), decide)
-			local _ = g
-		end)
+		table.insert(if i <= half then first else second, p)
 	end
+	GuestService.board(west.name)
+	stepOff(west, first, 0)
+	task.delay(drive.eastAt, function()
+		GuestService.board(east.name)
+		stepOff(east, second, half)
+	end)
 	for _, h in arrivedHandlers do
 		task.spawn(h, busIndex)
 	end
@@ -212,16 +297,20 @@ local function arrive()
 	local interval = if Events.parade(now) then Events.ParadeInterval else B.Interval
 	nextAt = os.clock() + interval
 	workspace:SetAttribute("NextBusAt", workspace:GetServerTimeNow() + interval)
-	nextList = draw(busIndex + 1, now, now + interval)
+	nextList, nextGuaranteed = draw(busIndex + 1, now, now + interval)
 	announceNext(nextList :: { Passenger })
 end
 
--- Brings the next bus now (Call the Bus, §10.2: "for the whole server").
+-- Brings the next bus now (Call the Bus, §10.2: "for the whole server"): it drives in out of the forest.
 function BusService.callNow(byName: string?)
 	if byName then
 		Net.fireAll("Announce", `{byName} called the bus!`, "Bus")
 	end
-	nextAt = os.clock()
+	local soon = -drive.start
+	if nextAt - os.clock() > soon then
+		nextAt = os.clock() + soon
+		workspace:SetAttribute("NextBusAt", workspace:GetServerTimeNow() + soon)
+	end
 end
 
 -- A pitch (§4.3): toward the pitcher's hotel, once per player per guest, within reach.
@@ -272,7 +361,8 @@ function BusService.Start()
 			return "no Legendary at these locations"
 		end
 		nextList = nextList or {}
-		table.insert(nextList :: { Passenger }, { species = pool[1], mutation = nil })
+		table.insert(nextList :: { Passenger }, 1, { species = pool[1], mutation = nil })
+		nextGuaranteed += 1
 		announceNext(nextList :: { Passenger })
 		return `next bus: {pool[1]}`
 	end)
@@ -288,7 +378,7 @@ function BusService.Start()
 	lastArrival = os.time()
 	nextAt = os.clock() + B.FirstBusDelay
 	workspace:SetAttribute("NextBusAt", workspace:GetServerTimeNow() + B.FirstBusDelay)
-	nextList = draw(1, lastArrival, lastArrival + B.FirstBusDelay)
+	nextList, nextGuaranteed = draw(1, lastArrival, lastArrival + B.FirstBusDelay)
 	task.spawn(function()
 		while true do
 			task.wait(0.5)

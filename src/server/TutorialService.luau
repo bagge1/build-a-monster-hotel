@@ -10,10 +10,12 @@
 	locks movement. The step is the profile's `tutorial` (published as the
 	player's `Tutorial` attribute); the client draws Gloom's bubble for it.
 
-	What it arranges: walk-ins wait until the tutorial Slime has come (§11
-	0:30); that Slime's stay counts as happy and it needs 1 friendship (§6.3);
-	the goal card unlocks the Coffin Suite with one free build and sends a
-	Vampire Count once one stands (§11 "the tutorial schedules it").
+	What it arranges: the tutorial Slime, the only guest in the game that does
+	not come on the Night Bus (his ruling, 2026-10-19), walks in from the
+	pavement before the first bus (§11 0:30); its stay counts as happy and it
+	needs 1 friendship (§6.3); the goal card unlocks the Coffin Suite with one
+	free build, and a Vampire Count booked to this hotel rides the third bus
+	after it once one stands (§11 "the tutorial schedules it").
 ]]
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -25,6 +27,8 @@ local Pieces = require(ReplicatedStorage.Shared.Pieces)
 local PlayerData = require(ServerScriptService.Server.PlayerData)
 local BuildService = require(ServerScriptService.Server.BuildService)
 local GuestService = require(ServerScriptService.Server.GuestService)
+local HotelService = require(ServerScriptService.Server.HotelService)
+local BusService = require(ServerScriptService.Server.BusService)
 local StateService = require(ServerScriptService.Server.StateService)
 local Analytics = require(ServerScriptService.Server.Analytics)
 local DevGrant = require(ServerScriptService.Server.DevGrant)
@@ -105,9 +109,6 @@ local function setStep(player: Player, data: PlayerData.Data, s: string)
 	player:SetAttribute("Tutorial", s)
 	stepStarted[player] = os.clock()
 	nextPressed[player] = nil
-	if s ~= "Build" and s ~= "CheckIn" then
-		GuestService.setWalkIns(player, true)
-	end
 	if s == "Goal" then
 		BuildService.tutorialUnlock(player, "CoffinSuite")
 		data.stats.voucher_CoffinSuite = 1
@@ -123,42 +124,37 @@ end
 local function tick(player: Player, data: PlayerData.Data)
 	local s = step(data)
 	if s == "Done" then
-		-- The scheduled Vampire Count: three buses after the goal card ("A Vampire
-		-- Count arrives in 3 buses", §11), once a Coffin Suite stands.
+		-- The scheduled Vampire Count: on the third bus after the goal card ("A
+		-- Vampire Count arrives in 3 buses", §11), booked to this hotel once a
+		-- Coffin Suite stands vacant for it. Every guest comes by bus (§4.3).
 		local busesSince = (workspace:GetAttribute("BusIndex") :: number? or 0)
 			- stat(data, "tutorialGoalBus")
 		if
 			stat(data, "tutorialGoal") == 1
 			and stat(data, "tutorialVampire") == 0
-			and busesSince >= 3
+			and busesSince >= 2
+			and HotelService.vacantFor(player, "VampireCount")
 		then
-			for _, rec in data.layout do
-				if rec.item == "CoffinSuite" then
-					local g = GuestService.spawnWalkIn(
-						player,
-						"VampireCount",
-						{ source = "Tutorial", happyFloor = Constants.Stay.Happy }
-					)
-					if g then
-						data.stats.tutorialVampire = 1
-						Net.fireAll(
-							"Announce",
-							`A Legendary Vampire Count is arriving at {player.DisplayName}'s hotel!`,
-							"Rare"
-						)
-					end
-					break
-				end
-			end
+			BusService.addToNext(
+				"VampireCount",
+				nil,
+				{ booked = player, happyFloor = Constants.Stay.Happy }
+			)
+			data.stats.tutorialVampire = 1
+			Net.fireAll(
+				"Announce",
+				`A Legendary Vampire Count is on the next bus, booked at {player.DisplayName}'s hotel!`,
+				"Rare"
+			)
 		end
 		return
 	end
-	-- The tutorial Slime: walk-ins wait for it.
+	-- The tutorial Slime: the one guest that walks in instead of riding the bus.
 	if s == "CheckIn" and not slimeSent[player] then
 		slimeSent[player] = true
-		task.delay(Constants.WalkIn.TutorialDelay, function()
+		task.delay(Constants.Tutorial.FirstGuestDelay, function()
 			if PlayerData.get(player) then
-				GuestService.spawnWalkIn(player, "Slime", {
+				GuestService.spawnTutorial(player, "Slime", {
 					source = "Tutorial",
 					happyFloor = Constants.Stay.Happy,
 					tutorialFriend = true,
@@ -195,9 +191,6 @@ function TutorialService.Start()
 			data.tutorial = "Build"
 		end
 		stepStarted[player] = os.clock()
-		if step(data) == "Build" or step(data) == "CheckIn" then
-			GuestService.setWalkIns(player, false)
-		end
 		player:SetAttribute("Tutorial", step(data))
 	end)
 	DevGrant.register("tutorial", function(player, args)

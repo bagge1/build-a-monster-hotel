@@ -7,18 +7,24 @@
 	locally (`GuestRenderer`), so six hotels of guests cost a phone nothing in
 	physics.
 
-	States (§13.2): Browsing (a bus guest walking the lane) → ToHotel → Queued
-	(at the desk) → ToRoom → InRoom (paying per second into the till, with one
-	request) → Leaving. A guest that waits too long at the desk leaves
-	unhappy. Walk-ins (§4.3 "never starved") come straight to a hotel.
+	States (§13.2): Browsing (a bus guest walking the pavements, pausing at
+	each entrance) → ToHotel → Queued (at the desk) → ToRoom → InRoom (paying
+	per second into the till, with one request) → Leaving (walking back to a
+	bus stop) → Waiting (at the stop) → Boarding (onto the next bus). A guest
+	that waits too long at the desk leaves unhappy; a guest no hotel takes
+	walks back to a stop too. **Every guest comes and goes by the Night Bus**
+	(his ruling, 2026-10-19: no walk-ins, nobody walks off the map's edge),
+	but the tutorial's first, who walks in before the first bus.
 
 	Published per guest: `Species`, `Mutation`, `State`, `Plot`, `Path`
-	("x,y,z;..."), `T0` (server time the path starts), `Speed`, `Wish` (a bus
-	guest's wish list), `Request`, `Happy`.
+	(`Walk.encode`: points, and seconds standing at some), `T0` (server time
+	the path starts), `Speed`, `Wish` (a bus guest's wish list), `Request`,
+	`Happy`.
 
 	What other systems hook: `onCheckout(player, guest, satisfaction)` for
-	friendship (§4.6); `checkIn`, `clean`, `fulfil` for staff; `spawnWalkIn`
-	for the tutorial; `spawnBrowsing` and `assign` for the bus.
+	friendship (§4.6); `checkIn`, `clean`, `fulfil` for staff;
+	`spawnTutorial` for the tutorial's first guest; `spawnBrowsing`, `assign`,
+	`leaveStreet` and `board` for the bus.
 ]]
 
 local Players = game:GetService("Players")
@@ -33,6 +39,7 @@ local Pieces = require(ReplicatedStorage.Shared.Pieces)
 local Species = require(ReplicatedStorage.Shared.Species)
 local Stay = require(ReplicatedStorage.Shared.Stay)
 local StreetLayout = require(ReplicatedStorage.Shared.StreetLayout)
+local Walk = require(ReplicatedStorage.Shared.Walk)
 local Events = require(ReplicatedStorage.Shared.Events)
 local PlayerData = require(ServerScriptService.Server.PlayerData)
 local PlotService = require(ServerScriptService.Server.PlotService)
@@ -45,17 +52,29 @@ local S = Constants.Stay
 
 local GuestService = {}
 
-export type State = "Browsing" | "ToHotel" | "Queued" | "ToRoom" | "InRoom" | "Leaving"
+export type State =
+	"Browsing"
+	| "ToHotel"
+	| "Queued"
+	| "ToRoom"
+	| "InRoom"
+	| "Leaving"
+	| "Waiting"
+	| "Boarding"
 export type Guest = {
 	id: number,
 	species: string,
 	mutation: string?,
-	source: string, -- "WalkIn" | "Bus" | "Tutorial"
+	source: string, -- "Bus" | "Tutorial" | "Dev"
 	owner: Player?,
 	room: string?,
 	state: State,
 	arriveAt: number, -- os.clock() when the current path ends
+	startedAt: number, -- os.clock() when the current path began
 	path: { Vector3 },
+	waits: Walk.Waits, -- seconds standing at a point of the path
+	walkSpeed: number, -- the current path's speed (with any Bellhop bonus)
+	stop: string?, -- the bus stop a leaving guest walks to and waits at
 	speed: number,
 	deskSince: number?,
 	waited: number,
@@ -74,7 +93,7 @@ export type Guest = {
 	pitches: { [number]: number }, -- user id -> plot index (§4.3)
 	wish: string?,
 	config: Configuration,
-	onDecide: ((Guest) -> ())?, -- a bus guest at the lane's end
+	onDecide: ((Guest) -> ())?, -- a bus guest at the end of its browse
 }
 
 local guests: { [number]: Guest } = {}
@@ -83,25 +102,7 @@ local folder: Folder
 local rng = Random.new()
 local checkoutHandlers: { (Player, Guest, number) -> () } = {}
 local checkInHandlers: { (Player, Guest) -> () } = {}
-local nextWalkIn: { [Player]: number } = {}
-local walkInsOff: { [Player]: boolean } = {}
 local speedBonus: { [Player]: number } = {}
-
-local function encode(path: { Vector3 }): string
-	local parts = table.create(#path)
-	for i, p in path do
-		parts[i] = string.format("%.1f,%.1f,%.1f", p.X, p.Y, p.Z)
-	end
-	return table.concat(parts, ";")
-end
-
-local function length(path: { Vector3 }): number
-	local total = 0
-	for i = 2, #path do
-		total += (path[i] - path[i - 1]).Magnitude
-	end
-	return total
-end
 
 local function publish(g: Guest)
 	local c = g.config
@@ -113,37 +114,26 @@ local function publish(g: Guest)
 	)
 end
 
--- Sends the guest along `path` at its speed, from now.
-local function walk(g: Guest, path: { Vector3 })
+-- Sends the guest along `path` at its speed, from now, standing `waits` seconds at some points.
+local function walk(g: Guest, path: { Vector3 }, waits: Walk.Waits?)
 	g.path = path
+	g.waits = waits or {}
 	local speed = g.speed
 	if g.owner and speedBonus[g.owner] and g.state ~= "Browsing" then
 		speed *= 1 + speedBonus[g.owner]
 	end
-	g.arriveAt = os.clock() + length(path) / speed
+	g.walkSpeed = speed
+	g.startedAt = os.clock()
+	g.arriveAt = g.startedAt + Walk.duration(path, g.waits, speed)
 	g.config:SetAttribute("Speed", speed)
 	g.config:SetAttribute("T0", workspace:GetServerTimeNow())
-	g.config:SetAttribute("Path", encode(path))
+	g.config:SetAttribute("Path", Walk.encode(path, g.waits))
 end
 
 local function here(g: Guest): Vector3
 	-- Where the guest is now along its path (the same arithmetic the client draws with).
-	local path = g.path
-	if #path == 0 then
-		return Vector3.zero
-	end
-	local total = length(path)
-	local remaining = math.max(0, g.arriveAt - os.clock())
-		* (g.config:GetAttribute("Speed") :: number? or g.speed)
-	local travelled = math.max(0, total - remaining)
-	for i = 2, #path do
-		local seg = (path[i] - path[i - 1]).Magnitude
-		if travelled <= seg then
-			return path[i - 1]:Lerp(path[i], if seg > 0 then travelled / seg else 1)
-		end
-		travelled -= seg
-	end
-	return path[#path]
+	local p = Walk.sample(g.path, g.waits, g.walkSpeed, os.clock() - g.startedAt)
+	return p
 end
 GuestService.positionOf = function(g: Guest): Vector3
 	return here(g)
@@ -165,7 +155,11 @@ local function newGuest(speciesId: string, mutation: string?, source: string): G
 		room = nil,
 		state = "ToHotel",
 		arriveAt = os.clock(),
+		startedAt = os.clock(),
 		path = {},
+		waits = {},
+		walkSpeed = Constants.Stay.WalkSpeed,
+		stop = nil,
 		speed = Constants.Stay.WalkSpeed,
 		deskSince = nil,
 		waited = 0,
@@ -275,20 +269,61 @@ local function reversed(path: { Vector3 }): { Vector3 }
 	return out
 end
 
--- Out of the hotel and off the street, toward the nearer end of the lane.
-local function exitPath(plot: PlotService.Plot, from: { Vector3 }): { Vector3 }
+-- ===== The street (§4.3, §5.4) =====
+
+-- From the street to a hotel's entrance: onto its pavement, along to its path, up the path to the arch.
+local function toHotel(plot: PlotService.Plot, from: Vector3): { Vector3 }
+	local out = StreetLayout.ontoPavement(from, StreetLayout.side(plot.index))
+	table.insert(out, StreetLayout.pavementFront(plot.index))
+	local foot = PlotService.forecourtPoint(plot, "PathFoot")
+	if foot then
+		table.insert(out, foot.Position)
+	end
+	local entrance = PlotService.lobbyPoint(plot, "Entrance")
+	if entrance then
+		table.insert(out, entrance.Position)
+	end
+	return out
+end
+
+-- Where the next guest to wait at `stop` stands: a little crowd on the pavement by the shelter.
+local function waitSpot(stop: StreetLayout.Stop): Vector3
+	local k = 0
+	for _, g in guests do
+		if g.stop == stop.name then
+			k += 1
+		end
+	end
+	local col, row = k % 5, (k // 5) % 3
+	return stop.wait + Vector3.new((col - 2) * 2.4, 0, (row - 1) * 1.8)
+end
+
+--[[ On from the end of `out` to the nearest bus stop, to wait there for the
+	next bus (his ruling, 2026-10-19: a guest never walks off the map's edge). ]]
+local function toStop(g: Guest, out: { Vector3 }): { Vector3 }
+	local last = out[#out]
+	local stop = StreetLayout.nearestStop(last)
+	for _, p in StreetLayout.ontoPavement(last, 1) do
+		table.insert(out, p)
+	end
+	table.insert(out, waitSpot(stop))
+	g.stop = stop.name
+	return out
+end
+
+-- Out of the hotel: through the arch, down the path to the pavement, and on to a bus stop.
+local function exitPath(g: Guest, plot: PlotService.Plot, from: { Vector3 }): { Vector3 }
 	local out = from
 	local entrance = PlotService.lobbyPoint(plot, "Entrance")
 	if entrance then
 		table.insert(out, entrance.Position)
 	end
-	local front = StreetLayout.laneFront(plot.index)
-	table.insert(out, front)
-	local endX = if front.X < 0
-		then -Constants.Street.LaneHalfLength - 20
-		else Constants.Street.LaneHalfLength + 20
-	table.insert(out, Vector3.new(endX, front.Y, 0))
-	return out
+	local foot = PlotService.forecourtPoint(plot, "PathFoot")
+	if foot then
+		table.insert(out, foot.Position)
+	end
+	table.insert(out, StreetLayout.pavementFront(plot.index))
+	return toStop(g, out)
 end
 
 -- ===== The desk queue =====
@@ -341,18 +376,18 @@ local function sendHome(g: Guest, plot: PlotService.Plot?)
 	g.state = "Leaving"
 	g.room = nil
 	g.requestUntil = nil
+	g.speed = S.WalkSpeed
 	if plot then
-		walk(g, exitPath(plot, { here(g) }))
+		walk(g, exitPath(g, plot, { here(g) }))
 	else
-		local p = here(g)
-		walk(g, { p, Vector3.new(Constants.Street.LaneHalfLength + 20, p.Y, 0) })
+		walk(g, toStop(g, { here(g) }))
 	end
 	publish(g)
 end
 
 --[[ Points a guest at a hotel: reserves the room and walks it from where it
-	stands to the desk queue. `via` are points to pass first (the lane). ]]
-function GuestService.assign(g: Guest, player: Player, pieceId: string, via: { Vector3 }?)
+	stands on the street to the desk queue, by the pavement and the path. ]]
+function GuestService.assign(g: Guest, player: Player, pieceId: string)
 	local plot = PlotService.of(player)
 	local hotel = HotelService.get(player)
 	if not plot or not hotel then
@@ -361,17 +396,14 @@ function GuestService.assign(g: Guest, player: Player, pieceId: string, via: { V
 	end
 	g.owner = player
 	g.room = pieceId
+	g.speed = S.WalkSpeed
 	HotelService.setRoom(player, pieceId, "Reserved", g.id)
 	table.insert(hotel.queue, g.id)
 	local k = #hotel.queue
-	local path: { Vector3 } = { here(g) }
-	for _, p in via or {} do
+	local from = here(g)
+	local path: { Vector3 } = { from }
+	for _, p in toHotel(plot, from) do
 		table.insert(path, p)
-	end
-	table.insert(path, StreetLayout.laneFront(plot.index))
-	local entrance = PlotService.lobbyPoint(plot, "Entrance")
-	if entrance then
-		table.insert(path, entrance.Position)
 	end
 	local spot = queueSpot(plot, k)
 	if spot then
@@ -383,81 +415,116 @@ function GuestService.assign(g: Guest, player: Player, pieceId: string, via: { V
 	publish(g)
 end
 
--- A walk-in (§4.3): a Common or Uncommon of the hotel's family that it has a vacant room for.
-function GuestService.spawnWalkIn(
+--[[ The tutorial's first guest (§11), the only guest that does not come on the
+	bus (his ruling, 2026-10-19): it appears on the pavement a little along
+	from the hotel and walks in, before the first bus. Also the Studio-only
+	`guest` command. Nil if the hotel has no vacant room for it. ]]
+function GuestService.spawnTutorial(
 	player: Player,
-	speciesId: string?,
+	speciesId: string,
 	opts: {
 		happyFloor: number?,
 		source: string?,
 		tutorialFriend: boolean?,
 	}?
 ): Guest?
-	local data = PlayerData.get(player)
 	local plot = PlotService.of(player)
-	if not data or not plot then
-		return nil
-	end
-	local chosen: string? = speciesId
-	local offer: HotelService.Offer? = nil
-	if chosen then
-		offer = HotelService.vacantFor(player, chosen)
-	else
-		local options = {}
-		for _, sp in Species.ofLocation(data.location) do
-			if sp.rarity == "Common" or sp.rarity == "Uncommon" then
-				local o = HotelService.vacantFor(player, sp.id)
-				if o then
-					table.insert(options, { id = sp.id, offer = o })
-				end
-			end
-		end
-		if #options > 0 then
-			local pick = options[rng:NextInteger(1, #options)]
-			chosen, offer = pick.id, pick.offer
-		end
-	end
-	if not chosen or not offer then
+	local offer = HotelService.vacantFor(player, speciesId)
+	if not plot or not offer then
 		return nil
 	end
 	local mutation = Events.rollMutation(rng:NextNumber(), os.time())
-	local g = newGuest(chosen, mutation, if opts and opts.source then opts.source else "WalkIn")
+	local g =
+		newGuest(speciesId, mutation, if opts and opts.source then opts.source else "Tutorial")
 	g.happyFloor = opts and opts.happyFloor
 	g.tutorialFriend = opts ~= nil and opts.tutorialFriend == true
-	-- From the lane beside the plot.
-	local front = StreetLayout.laneFront(plot.index)
+	local front = StreetLayout.pavementFront(plot.index)
 	local side = if rng:NextNumber() < 0.5 then -1 else 1
 	g.path = { front + Vector3.new(side * 40, 0, 0) }
-	g.arriveAt = os.clock()
 	g.config.Parent = folder
 	GuestService.assign(g, player, offer.pieceId)
 	return g
 end
 
---[[ A bus guest (§4.3): on the lane at `at`, walking east to its end while it
-	browses; `onDecide` is called when it gets there. ]]
+--[[ A bus guest (§4.3) stepping off at `stop`: onto a pavement, then
+	browsing round the ring for `BrowseTime`, pausing at the entrance of every
+	hotel on the street it passes; `onDecide` is called when the browse ends.
+	`variant` 0–3 picks the pavement it starts on (the north, or straight
+	across the lane to the south) and the way it walks, so a bus's guests
+	between them pass every hotel. ]]
 function GuestService.spawnBrowsing(
 	speciesId: string,
 	mutation: string?,
-	at: Vector3,
+	stop: StreetLayout.Stop,
+	variant: number,
 	wish: string,
 	onDecide: (Guest) -> ()
 ): Guest
+	local B = Constants.Bus
 	local g = newGuest(speciesId, mutation, "Bus")
 	g.state = "Browsing"
-	g.speed = Constants.Bus.BrowseSpeed
+	g.speed = B.BrowseSpeed
 	g.wish = wish
 	g.onDecide = onDecide
 	g.config:SetAttribute("Wish", wish)
-	g.path = { at }
-	walk(g, { at, StreetLayout.LaneEnd + Vector3.new(0, 0, (rng:NextNumber() - 0.5) * 6) })
+	local looks: { StreetLayout.Look } = {}
+	for _, plot in PlotService.all() do
+		if plot.owner then
+			table.insert(looks, {
+				s = StreetLayout.ringParam(StreetLayout.pavementFront(plot.index)),
+				toward = Vector3.new(0, 0, StreetLayout.side(plot.index)),
+			})
+		end
+	end
+	local side = if variant % 4 < 2 then 1 else -1
+	local dir = if variant % 2 == 0 then 1 else -1
+	local kerb = stop.kerb + Vector3.new((rng:NextNumber() - 0.5) * 2, 0, 0)
+	local cross = StreetLayout.ontoPavement(kerb, side)
+	local start = cross[#cross] or kerb
+	local ring, ringWaits = StreetLayout.browse(
+		StreetLayout.ringParam(start),
+		dir,
+		looks,
+		B.BrowseTime,
+		g.speed,
+		B.EntrancePause * (0.8 + 0.4 * rng:NextNumber())
+	)
+	local path: { Vector3 } = { kerb }
+	local waits: Walk.Waits = {}
+	for i, p in ring do
+		table.insert(path, p)
+		waits[#path] = ringWaits[i]
+	end
+	walk(g, path, waits)
 	g.config.Parent = folder
 	publish(g)
 	return g
 end
 
+-- A guest no hotel took (or one the bus has no stop for) walks back to a stop and waits for the next bus.
 function GuestService.leaveStreet(g: Guest)
+	g.owner = nil
 	sendHome(g, nil)
+end
+
+-- The bus is at `stopName`: everyone waiting there walks to its door and is gone with it.
+function GuestService.board(stopName: string)
+	local stop: StreetLayout.Stop? = nil
+	for _, s in StreetLayout.Stops do
+		if s.name == stopName then
+			stop = s
+		end
+	end
+	if not stop then
+		return
+	end
+	for _, g in guests do
+		if g.state == "Waiting" and g.stop == stopName then
+			g.state = "Boarding"
+			walk(g, { here(g), stop.kerb })
+			publish(g)
+		end
+	end
 end
 
 -- Checks the first waiting guest in, from the desk (the player's tap, or Front Desk staff).
@@ -579,8 +646,9 @@ local function checkout(g: Guest)
 	g.state = "Leaving"
 	g.room = nil
 	g.requestUntil = nil
+	g.speed = S.WalkSpeed
 	if plot and inPath then
-		walk(g, exitPath(plot, reversed(inPath)))
+		walk(g, exitPath(g, plot, reversed(inPath)))
 	else
 		sendHome(g, plot)
 	end
@@ -665,16 +733,16 @@ end
 function GuestService.of(player: Player): { Guest }
 	local out = {}
 	for _, g in guests do
-		if g.owner == player and g.state ~= "Leaving" then
+		if
+			g.owner == player
+			and g.state ~= "Leaving"
+			and g.state ~= "Waiting"
+			and g.state ~= "Boarding"
+		then
 			table.insert(out, g)
 		end
 	end
 	return out
-end
-
--- Pauses walk-ins for a player (the tutorial times its first one itself).
-function GuestService.setWalkIns(player: Player, on: boolean)
-	walkInsOff[player] = if on then nil else true
 end
 
 -- Bellhop staff (§4.6): guests walk faster in this hotel.
@@ -692,23 +760,6 @@ function GuestService.remove(g: Guest)
 		end
 	end
 	destroy(g)
-end
-
-local function walkInInterval(player: Player): number
-	local data = PlayerData.get(player)
-	local rooms = 0
-	if data then
-		for _, rec in data.layout do
-			local p = Pieces.get(rec.item)
-			if p and p.kind == "Room" then
-				rooms += 1
-			end
-		end
-	end
-	local W = Constants.WalkIn
-	local rating = math.max(1, HotelService.rating(player))
-	local t = W.BaseInterval / (1 + W.PerRoom * rooms) * (W.RatingPivot / rating)
-	return math.clamp(t, W.MinInterval, W.MaxInterval)
 end
 
 local function tick()
@@ -773,26 +824,16 @@ local function tick()
 			end
 		elseif g.state == "Leaving" then
 			if now >= g.arriveAt then
+				-- At the stop: nobody's guest any more, waiting for the next bus.
+				g.state = "Waiting"
+				g.owner = nil
+				publish(g)
+			end
+		elseif g.state == "Boarding" then
+			if now >= g.arriveAt then
 				destroy(g)
 			end
 		end
-	end
-	-- Walk-ins.
-	for player, data in PlayerData.loaded() do
-		local hotel = HotelService.get(player)
-		if hotel and next(hotel.rooms) == nil then
-			-- No room yet: the clock starts with the first one, not at joining.
-			nextWalkIn[player] = nil
-		elseif not walkInsOff[player] and PlotService.of(player) then
-			local at = nextWalkIn[player]
-			if not at then
-				nextWalkIn[player] = now + walkInInterval(player)
-			elseif now >= at then
-				nextWalkIn[player] = now + walkInInterval(player)
-				GuestService.spawnWalkIn(player)
-			end
-		end
-		local _ = data
 	end
 end
 
@@ -825,8 +866,9 @@ function GuestService.Init()
 end
 
 function GuestService.Start()
-	DevGrant.register("walkin", function(player, args)
-		local g = GuestService.spawnWalkIn(player, args[1])
+	DevGrant.register("guest", function(player, args)
+		-- Studio only: a guest of `args[1]` (a Slime by default) walks in from the pavement, as the tutorial's does.
+		local g = GuestService.spawnTutorial(player, args[1] or "Slime", { source = "Dev" })
 		return if g then `guest {g.id} {g.species} -> room {g.room}` else "no vacant room for it"
 	end)
 	DevGrant.register("checkin", function(player)
@@ -885,8 +927,6 @@ function GuestService.Start()
 		end
 	end)
 	PlayerData.onDeparted(function(player)
-		nextWalkIn[player] = nil
-		walkInsOff[player] = nil
 		speedBonus[player] = nil
 		for _, g in guests do
 			if g.owner == player then

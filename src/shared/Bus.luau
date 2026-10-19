@@ -1,19 +1,26 @@
 --!strict
 --[[
-	The Night Bus's schedule and passenger list (GDD §4.3), pure:
+	The Night Bus's schedule, passenger list and drive (GDD §4.3), pure:
 
-	  - every `Interval` seconds, 6–10 guests scaled by player count;
+	  - every `Interval` seconds; its size is 40 % of the street's vacant
+	    rooms, rounded up, at least 2 and at most 4 per player on the server
+	    (his ruling, 2026-10-19; the bounds are PLACEHOLDER), so one bus
+	    never fills every room;
 	  - an Epic guaranteed every 3rd bus;
 	  - a Legendary on the :00 and :30 buses: the first bus at or after each
 	    half hour of the server clock (a bus called early, §10.2, keeps the
 	    rule, since it is about crossing the boundary, not about a slot);
 	  - a Mythic on the Midnight Bus, the first at or after each 2 hours;
 	  - the rest drawn by rarity weight, then uniformly within the rarity
-	    among the families present on the street (§3).
+	    among the families present on the street (§3);
+	  - the drive: out of the forest to the west stop, the east stop, and
+	    away into the forest (`Bus.drive`), the same on the server (when
+	    guests step off) and on every client (where the bus is drawn).
 ]]
 
 local Constants = require(script.Parent.Constants)
 local Species = require(script.Parent.Species)
+local StreetLayout = require(script.Parent.StreetLayout)
 
 local B = Constants.Bus
 
@@ -33,12 +40,10 @@ function Bus.flags(index: number, previous: number, now: number): Flags
 	}
 end
 
-function Bus.size(players: number): number
-	return math.clamp(
-		B.BaseSize + B.SizePerPlayer * math.max(0, players - 1),
-		B.BaseSize,
-		B.MaxSize
-	)
+-- How many ride (his ruling): 40 % of the street's vacant rooms rounded up, within 2–4 per player.
+function Bus.size(vacant: number, players: number): number
+	local p = math.max(1, players)
+	return math.clamp(math.ceil(B.VacantShare * vacant), B.MinPerPlayer * p, B.MaxPerPlayer * p)
 end
 
 -- A rarity by weight (the GDD's, or an event's: `Events.weights`), from a uniform `r` in [0, 1).
@@ -113,6 +118,92 @@ function Bus.passengers(
 		add(Bus.rollRarity(rand(), weights))
 	end
 	return out
+end
+
+-- ===== The drive =====
+
+--[[ One leg of the drive: `dist` studs, cruising at `Speed`, speeding up over
+	`Brake` studs from a stop if `fromStop`, slowing over `Brake` to a stop if
+	`toStop` (a short leg never reaches cruising). Returns its seconds and
+	where along it the bus is `t` seconds in. ]]
+local function leg(dist: number, fromStop: boolean, toStop: boolean): (number, (number) -> number)
+	local v, b = B.Speed, B.Brake
+	local ends = (if fromStop then 1 else 0) + (if toStop then 1 else 0)
+	if ends == 0 then
+		return dist / v, function(t)
+			return t * v
+		end
+	end
+	local a = v * v / (2 * b)
+	local ramp = math.min(b, dist / ends) -- each speeding-up or slowing-down stretch
+	local top = math.sqrt(2 * a * ramp)
+	local tRamp = top / a
+	local cruise = dist - ramp * ends
+	local tCruise = cruise / top
+	local total = tRamp * ends + tCruise
+	return total,
+		function(t)
+			t = math.clamp(t, 0, total)
+			local s = 0
+			if fromStop then
+				local u = math.min(t, tRamp)
+				s += 0.5 * a * u * u
+				t -= u
+				if t <= 0 then
+					return s
+				end
+			end
+			local u = math.min(t, tCruise)
+			s += top * u
+			t -= u
+			if t > 0 and toStop then
+				s += top * t - 0.5 * a * t * t
+			end
+			return s
+		end
+end
+
+export type Drive = {
+	start: number, -- seconds, from the west stop's arrival (negative: it leaves the forest before)
+	eastAt: number, -- when it reaches the east stop
+	finish: number, -- when it is gone into the forest
+	at: (t: number) -> number, -- how far along the road its door is, `t` seconds from the west stop
+	stops: { number }, -- seconds each stop is reached, West then East
+}
+
+--[[ The bus's drive, timed from its arrival at the west stop (t = 0, when
+	`BusArrivedAt` is published and the first guests step off). It moves the
+	bus's **door** from stop to stop, so a guest steps off where the door is;
+	the client draws the bus's centre behind it by the delivered model's
+	`Door` attachment (BusRenderer). ]]
+function Bus.drive(): Drive
+	local route = StreetLayout.RouteLength
+	local west = StreetLayout.routeDistanceAt(StreetLayout.Stops[1].x)
+	local east = StreetLayout.routeDistanceAt(StreetLayout.Stops[2].x)
+	local tIn, sIn = leg(west, false, true)
+	local tMid, sMid = leg(east - west, true, true)
+	local tOut, sOut = leg(route - east, true, false)
+	local dwell = B.StopTime
+	local eastAt = dwell + tMid
+	local finish = eastAt + dwell + tOut
+	return {
+		start = -tIn,
+		eastAt = eastAt,
+		finish = finish,
+		stops = { 0, eastAt },
+		at = function(t: number): number
+			if t < 0 then
+				return sIn(t + tIn)
+			elseif t < dwell then
+				return west
+			elseif t < eastAt then
+				return west + sMid(t - dwell)
+			elseif t < eastAt + dwell then
+				return east
+			end
+			return east + sOut(t - eastAt - dwell)
+		end,
+	}
 end
 
 return Bus

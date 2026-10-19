@@ -13,6 +13,7 @@ local systems: { { Init: () -> (), Start: () -> () } } = {
 	require(Client.GuestRenderer) :: any,
 	require(Client.BuildController) :: any,
 	require(Client.BusRenderer) :: any,
+	require(Client.ForestRenderer) :: any, -- the trees round the street, client-only
 	require(Client.RatingPanel) :: any,
 	require(Client.ResidentRenderer) :: any,
 	require(Client.CollectionPanels) :: any,

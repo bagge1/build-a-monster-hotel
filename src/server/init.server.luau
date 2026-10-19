@@ -24,7 +24,8 @@ local systems: { { Init: () -> (), Start: () -> () } } = {
 	require(Server.Income) :: any, -- before anything pays: providers register in Start
 	require(Server.DevGrant) :: any, -- Studio only; commands register in other systems' Start
 	require(Server.StateService) :: any, -- before the systems that provide sections
-	require(Server.PlotService) :: any, -- the street and plots, before anything is built on them
+	require(Server.StreetService) :: any, -- the lane, pavements, stops and road, before the plots beside them
+	require(Server.PlotService) :: any, -- the plots, before anything is built on them
 	require(Server.HotelService) :: any, -- each hotel's live state, after its plot
 	require(Server.BuildService) :: any, -- placement, after the hotel it checks
 	require(Server.GuestService) :: any, -- guests, after the hotels they stay in
@@ -38,7 +39,7 @@ local systems: { { Init: () -> (), Start: () -> () } } = {
 	require(Server.EventService) :: any, -- the calendar's events, over the bus, guests and hunters
 	require(Server.SettingsService) :: any,
 	require(Server.SocialService) :: any, -- likes, friend bonus, pings, the street leaderboard
-	require(Server.LeaderboardService) :: any, -- the global boards by the bus stop
+	require(Server.LeaderboardService) :: any, -- the global boards at the lane's west end
 	require(Server.Analytics) :: any, -- the funnel; its Start hooks the systems above
 	require(Server.TutorialService) :: any, -- Gloom, last: it reads what every system counts
 }

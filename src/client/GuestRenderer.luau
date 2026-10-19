@@ -19,6 +19,7 @@ local RunService = game:GetService("RunService")
 
 local Net = require(ReplicatedStorage.Shared.Net)
 local Species = require(ReplicatedStorage.Shared.Species)
+local Walk = require(ReplicatedStorage.Shared.Walk)
 local Mutations = require(ReplicatedStorage.Shared.Mutations)
 local MonsterKit = require(script.Parent.MonsterKit)
 local Ui = require(script.Parent.Ui)
@@ -32,8 +33,7 @@ type Drawn = {
 	config: Configuration,
 	model: Model?,
 	path: { Vector3 },
-	lengths: { number },
-	total: number,
+	waits: Walk.Waits,
 	t0: number,
 	speed: number,
 	label: TextLabel?,
@@ -45,54 +45,16 @@ local drawn: { [Configuration]: Drawn } = {}
 local me = Players.LocalPlayer
 local folder: Instance
 
-local function parse(s: string?): { Vector3 }
-	local out = {}
-	if not s or s == "" then
-		return out
-	end
-	for _, chunk in string.split(s, ";") do
-		local xyz = string.split(chunk, ",")
-		table.insert(
-			out,
-			Vector3.new(tonumber(xyz[1]) or 0, tonumber(xyz[2]) or 0, tonumber(xyz[3]) or 0)
-		)
-	end
-	return out
-end
-
 local function readPath(d: Drawn)
 	local c = d.config
-	d.path = parse(c:GetAttribute("Path") :: string?)
+	d.path, d.waits = Walk.decode(c:GetAttribute("Path") :: string?)
 	d.t0 = c:GetAttribute("T0") :: number? or 0
 	d.speed = c:GetAttribute("Speed") :: number? or 8
-	d.lengths = {}
-	d.total = 0
-	for i = 2, #d.path do
-		local l = (d.path[i] - d.path[i - 1]).Magnitude
-		d.lengths[i] = l
-		d.total += l
-	end
 end
 
-local function at(d: Drawn, now: number): (Vector3, Vector3)
-	local path = d.path
-	if #path == 0 then
-		return Vector3.zero, Vector3.new(0, 0, -1)
-	end
-	local travelled = math.clamp((now - d.t0) * d.speed, 0, d.total)
-	for i = 2, #path do
-		local l = d.lengths[i]
-		if travelled <= l then
-			local dir = path[i] - path[i - 1]
-			return path[i - 1]:Lerp(path[i], if l > 0 then travelled / l else 1),
-				if dir.Magnitude > 0.01 then dir.Unit else Vector3.new(0, 0, -1)
-		end
-		travelled -= l
-	end
-	local last = path[#path]
-	local prev = if #path > 1 then path[#path - 1] else last
-	local dir = last - prev
-	return last, if dir.Magnitude > 0.01 then dir.Unit else Vector3.new(0, 0, -1)
+-- Where the guest is, which way it faces, and whether it is walking (the server's arithmetic, `Walk`).
+local function at(d: Drawn, now: number): (Vector3, Vector3, boolean)
+	return Walk.sample(d.path, d.waits, d.speed, now - d.t0)
 end
 
 local function labelText(c: Configuration): (string, Color3)
@@ -192,8 +154,7 @@ local function add(c: Instance)
 		config = c,
 		model = nil,
 		path = {},
-		lengths = {},
-		total = 0,
+		waits = {},
 		t0 = 0,
 		speed = 8,
 		label = nil,
@@ -256,8 +217,7 @@ local function frame()
 			d.prompt = nil
 		end
 		if d.model then
-			local pos, dir = at(d, now)
-			local moving = (now - d.t0) * d.speed < d.total
+			local pos, dir, moving = at(d, now)
 			local bob = if moving
 				then math.abs(math.sin((now + d.phase) * 8)) * 0.25
 				else math.sin((now + d.phase) * 2) * 0.05

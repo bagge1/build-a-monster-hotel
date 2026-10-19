@@ -1,9 +1,11 @@
 --!strict
 --[[
 	The Night Bus as every client sees it (GDD §4.3, §13.2 "Bus model, arrival
-	VFX, announcements"): it drives in from the west when `workspace.BusArrivedAt`
-	changes, waits at the stop while its guests step off, and drives on east.
-	A countdown to `NextBusAt` sits under the HUD.
+	VFX, announcements"): out of the forest round the west bend, to the west
+	stop when `workspace.BusArrivedAt` is reached, on to the east stop, and
+	round the east bend back into the trees (his ruling, 2026-10-19), along
+	`StreetLayout.Route` by `Bus.drive`'s timing, which the server's guests
+	step off by. A countdown to `NextBusAt` sits under the HUD.
 
 	A delivered `ReplicatedStorage.Monsters.NightBus` wins (MODELS.md, "Hunters
 	and the bus"); until then a Luau blockout. Client-only and read by nothing.
@@ -12,14 +14,15 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 
+local Bus = require(ReplicatedStorage.Shared.Bus)
 local Format = require(ReplicatedStorage.Shared.Format)
 local StreetLayout = require(ReplicatedStorage.Shared.StreetLayout)
 local Ui = require(script.Parent.Ui)
 
 local BusRenderer = {}
 
-local IN_TIME, STOP_TIME, OUT_TIME = 3, 7, 6
-local LANE_Z = -15
+local drive = Bus.drive()
+local doorAhead = 0 -- how far ahead of the bus's centre its door is: the model's `Door` attachment
 
 local bus: Model?
 local countdown: TextLabel
@@ -50,10 +53,13 @@ local function build(): Model
 	local folder = ReplicatedStorage:FindFirstChild("Monsters")
 	local template = folder and folder:FindFirstChild("NightBus")
 	if template and template:IsA("Model") then
-		local bus = template:Clone()
+		local clone = template:Clone()
+		local root = clone.PrimaryPart
+		local door = root and root:FindFirstChild("Door")
+		doorAhead = if door and door:IsA("Attachment") then door.Position.X else 0
 		-- A delivered bus brings no lights (MODELS.md: lights are the code's):
 		-- its headlamp (`Glow_Warm_2`) gets the blockout's.
-		local lamp = bus:FindFirstChild("Glow_Warm_2", true)
+		local lamp = clone:FindFirstChild("Glow_Warm_2", true)
 		if lamp and lamp:IsA("BasePart") and not lamp:FindFirstChildOfClass("SpotLight") then
 			local light = Instance.new("SpotLight")
 			light.Range = 40
@@ -61,8 +67,9 @@ local function build(): Model
 			light.Face = Enum.NormalId.Right
 			light.Parent = lamp
 		end
-		return bus
+		return clone
 	end
+	doorAhead = 0
 	local m = Instance.new("Model")
 	m.Name = "NightBus"
 	local root = part(m, "Root", Vector3.new(24, 9, 8), Vector3.new(0, 4.5, 0), Color3.new(), nil)
@@ -107,37 +114,31 @@ local function build(): Model
 end
 
 local function busAt(t: number): CFrame?
-	-- t: seconds since the bus arrived at the stop.
-	local stop = StreetLayout.BusStop
-	local y = stop.Y
-	local function at(x: number): CFrame
-		return CFrame.new(x, y, LANE_Z) -- authored facing +X, the way it drives
-	end
-	if t < -IN_TIME then
+	-- t: seconds since the bus reached the west stop (negative while it drives in).
+	if t < drive.start or t > drive.finish then
 		return nil
-	elseif t < 0 then
-		local a = 1 + t / IN_TIME -- 0..1
-		local eased = 1 - (1 - a) ^ 2
-		return at(stop.X - 120 + 120 * eased)
-	elseif t < STOP_TIME then
-		return at(stop.X)
-	elseif t < STOP_TIME + OUT_TIME then
-		local a = (t - STOP_TIME) / OUT_TIME
-		return at(stop.X + 420 * a * a)
 	end
-	return nil
+	local s = drive.at(t) - doorAhead
+	local p = StreetLayout.routePoint(s)
+	-- Its heading from the road a little behind and ahead, so it swings round a bend, not by the segment.
+	local behind = StreetLayout.routePoint(s - 6)
+	local ahead = StreetLayout.routePoint(s + 6)
+	local d = ahead - behind
+	local forward = if d.Magnitude > 0.01 then Vector3.new(d.X, 0, d.Z).Unit else Vector3.xAxis
+	-- Authored facing +X (MODELS.md, "NightBus"): a quarter turn from lookAt's −Z.
+	return CFrame.lookAt(p, p + forward) * CFrame.Angles(0, math.pi / 2, 0)
 end
 
 local function frame()
 	local now = workspace:GetServerTimeNow()
 	local arrived = workspace:GetAttribute("BusArrivedAt") :: number?
 	local nextAt = workspace:GetAttribute("NextBusAt") :: number?
-	-- The bus is drawn arriving IN_TIME before its guests appear, so it is there when they step off.
+	-- The bus drives in before its guests appear, so it is at the stop when they step off.
 	local cf: CFrame? = nil
 	if arrived then
 		cf = busAt(now - arrived)
 	end
-	if not cf and nextAt and nextAt - now < IN_TIME then
+	if not cf and nextAt then
 		cf = busAt(now - nextAt)
 	end
 	if cf then

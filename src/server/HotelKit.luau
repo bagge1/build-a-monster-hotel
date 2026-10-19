@@ -24,6 +24,7 @@ local Constants = require(ReplicatedStorage.Shared.Constants)
 local Pieces = require(ReplicatedStorage.Shared.Pieces)
 local Locations = require(ReplicatedStorage.Shared.Locations)
 local Cosmetics = require(ReplicatedStorage.Shared.Cosmetics)
+local StreetLayout = require(ReplicatedStorage.Shared.StreetLayout)
 
 local G = Constants.Grid
 local CELL = G.CellSize
@@ -363,10 +364,6 @@ function HotelKit.lobby(location: number): Model
 	end
 	attach(root, "Till", Vector3.new(-60.8, 3.8, 9.4), Vector3.new(1, 0, 0))
 	attach(root, "Spawn", Vector3.new(8, 0, 18), Vector3.new(0, 0, -1))
-	attach(root, "SignBoard", Vector3.new(48, 0, -5), Vector3.new(0, 0, -1))
-	for i = 1, 3 do
-		attach(root, `Trap_{i}`, Vector3.new(-48 + 32 * i, 0, 6), Vector3.new(0, 0, -1))
-	end
 	return model
 end
 
@@ -661,8 +658,54 @@ function HotelKit.facade(
 	return folder
 end
 
---[[ The ground: the plot's base, its lobby floor and the Resident Wing's
-	garden behind (Appendix A.1). Plot-local, as a Folder. ]]
+--[[ The forecourt's yard (MODELS.md, "Forecourt"; his yes, 2026-10-19,
+	GDD §5.4): the 16 studs between the pavement and the front wall, with the
+	path to the arch, the sign's corner and the three trap squares. Origin at
+	the entrance, the street toward −Z. ]]
+function HotelKit.forecourt(location: number): Model
+	local found = template(location, "Forecourt")
+	if found then
+		return found
+	end
+	local loc = Locations.get(location)
+	local St = Constants.Street
+	local P = G.Cells * CELL
+	local depth = St.ForecourtDepth - St.PavementWidth -- 16: the pavement is the street's
+	local th = G.SlabThickness
+	local model, root =
+		shell("Forecourt", Vector3.new(P, 0.2, depth), Vector3.new(0, 0.1, -depth / 2))
+	part(model, "Yard", Vector3.new(P, th, depth), Vector3.new(0, -th / 2, -depth / 2), {
+		Color = darker(loc.ground, 0.9),
+		Material = Enum.Material.Grass,
+	})
+	-- The path to the arch, a hair proud of the yard (coplanar faces flicker).
+	local w = St.PathWidth
+	part(model, "Path", Vector3.new(w, 0.1, depth), Vector3.new(0, 0, -depth / 2), {
+		Color = darker(loc.trim, 0.55),
+		Material = Enum.Material.Cobblestone,
+	})
+	-- A low edging along the pavement either side of the path, never across it.
+	for _, s in { -1, 1 } do
+		local x0, x1 = w / 2 + 0.5, P / 2
+		part(
+			model,
+			if s < 0 then "Edge_Left" else "Edge_Right",
+			Vector3.new(x1 - x0, 0.5, 0.6),
+			Vector3.new(s * (x0 + x1) / 2, 0.25, -depth + 0.3),
+			{ Color = loc.trim }
+		)
+	end
+	attach(root, "PathFoot", Vector3.new(0, 0, -depth), Vector3.new(0, 0, 1))
+	attach(root, "SignBoard", Vector3.new(60, 0, -12), Vector3.new(0, 0, -1))
+	for i, at in { Vector3.new(-8, 0, -12), Vector3.new(8, 0, -12), Vector3.new(-8, 0, -4) } do
+		attach(root, `Trap_{i}`, at, Vector3.new(0, 0, -1))
+	end
+	return model
+end
+
+--[[ The ground: the plot's base, its lobby floor, the Resident Wing's garden
+	behind (Appendix A.1) and the forecourt's yard in front (§5.4). Plot-local,
+	as a Folder. ]]
 function HotelKit.base(location: number): Folder
 	local loc = Locations.get(location)
 	local folder = Instance.new("Folder")
@@ -709,6 +752,9 @@ function HotelKit.base(location: number): Folder
 		Vector3.new(P - 0.2, th + fh / 2, P + G.WingDepth / 2),
 		{ Color = loc.trim }
 	)
+	local forecourt = HotelKit.forecourt(location)
+	forecourt:PivotTo(CFrame.new(StreetLayout.EntranceLocal))
+	forecourt.Parent = folder
 	return folder
 end
 

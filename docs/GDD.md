@@ -114,7 +114,7 @@ Base pay at Location 1 is **$1/s for a Common**. Each later location multiplies 
 
 - **Every 3 minutes** a bus arrives (his ruling, 2026-10-19; it was 4). **How many ride it scales with the players on the server and the rooms vacant on the street, and one bus never fills every room** (his ruling): **40 % of the street's vacant rooms, rounded up** (his), at least 2 and at most 4 per player on the server (PLACEHOLDER bounds, Claude's). It stops at both stops (§3) and lets half its guests off at each.
 - **Scheduled rare arrivals** make appointments players can plan around:
-  - Epic guaranteed every 3rd bus (~12 min).
+  - Epic guaranteed every 3rd bus (~9 min at a bus every 3 minutes).
   - **Legendary on the :00 and :30 buses** (server clock).
   - **Mythic on the "Midnight Bus"** every 2 hours.
 - **One bus ahead, the rare guest is announced** to the whole server: *"A Legendary Vampire Count is on the next bus! Wants: Coffin Suite · darkness · organ music."* Players then rush to build or free up the right room.
@@ -689,12 +689,37 @@ Every number below is a **placeholder** (tagged `PLACEHOLDER` in
 
 ### A.1 The street and the plot (§3)
 
-- **Street:** one straight pedestrian lane along world X. Plots 1–3 on the north
-  side face south, plots 4–6 on the south side face north. Plot fronts are 24
-  studs from the centre line (the lane stays 48 wide); plots are 144 studs wide
-  with 36-stud gaps, so the lane runs to ±278 (26 past the last plot). The
-  **bus stop is at the west end**. Guests from a bus walk east down the centre
-  of the lane ("browsing"), then turn to the hotel they picked.
+- **Street:** one straight lane along world X, 48 wide. Plots 1–3 on the north
+  side face south, plots 4–6 on the south side face north; plots are 144
+  studs wide with 36-stud gaps, so the lane runs to ±278 (26 past the last
+  plot).
+- **The forecourt** (his yes, 2026-10-19, §5.4): plot fronts are **48 studs**
+  from the centre line, the lane's 24 and a 24-stud forecourt: an **8-stud
+  pavement** along each edge of the lane, the whole street long (the street's,
+  where the bus's guests walk), then the plot's 16-stud **yard** with a
+  **6-stud path** from the pavement to the entrance arch. The hotel sign
+  stands at the yard's stair-side corner, the three trap squares beside the
+  path (`MODELS.md`, "Forecourt"). The lamps stand in pairs on the pavement's
+  kerb side, flanking each entrance.
+- **The Night Bus's road** (his ruling, 2026-10-19): the bus drives east along
+  the lane's north half, its door toward the north pavement, and stops at
+  **x = −90 and x = 90** (his), in the gaps between plots 1 and 2 and plots
+  2 and 3, each stop a shelter behind the pavement. It comes out of the
+  forest north-west of the street, round a bend (radius 60, PLACEHOLDER) onto
+  the lane, and leaves round a bend into the forest south-east of it; the
+  road runs 300 studs on into the trees (PLACEHOLDER). It cruises at 50
+  studs/s, slows and speeds up over 50 studs and stands 7 s at each stop
+  (PLACEHOLDER all): it leaves the trees 14 s before it reaches the west stop,
+  reaches the east stop 13 s after it, and is gone 34 s after.
+- **The forest** (his idea, 2026-10-19, §5.4): a seeded scatter of trees in a
+  band 150 studs deep round the street, one to a jittered 22-stud cell, 75 %
+  of the cells, 14 studs clear of every plot (with its forecourt and Wing),
+  the lane, the pavements and the road, and a line down the middle of each
+  gap between plots (PLACEHOLDER all): about 650–700 trees, half of them on the
+  low graphics tier. Each client draws it itself, a tree beyond 260 studs
+  from the camera as its `LOD_Proxy`. The trees behind a plot are its
+  location's: bare and crooked ones, a few dark firs and now and then a
+  hollow with eyes for Haunted Manor, snowy firs for Frostfang Lodge.
 - **The plot frame:** cell (x, z), x 0–11 along the street, z 0–11 away from it;
   floor 1 at ground level, each floor 18 studs above the last (his ruling, 2026-10-19 evening).
 - **Reserved cells** (to be replaced by §5.4: areas, placed stairs, a movable desk): the **Lobby** is the front two rows of floor 1 (z 0–1):
@@ -784,10 +809,33 @@ Every number below is a **placeholder** (tagged `PLACEHOLDER` in
   decides at the east end.~~ Replaced by his ruling, 2026-10-19 (§4.3: two
   stops, guests browse round the lane for about a minute). A
   guest waits at most 60 s at the desk, then leaves unhappy (a 1★ review).
+- **Browsing, as built** (his yes, 2026-10-19: about a minute, a couple of
+  seconds at each entrance): half the bus's guests step off at each stop,
+  0.6 s apart. Each walks the **browse ring** (the north pavement, across the
+  lane 10 studs past the last plot, the south pavement, and back across) at
+  8 studs/s for 60 s, stepping 1.5 studs toward each owned hotel's entrance
+  it passes and looking at it for about 2 s (1.6–2.4, so two guests do not
+  stand as one). A bus's guests take four ways in turn: along the north
+  pavement east or west, or straight across the lane at the stop and along
+  the south pavement east or west, so between them they pass every hotel
+  (a minute reaches two or three entrances). Pitching works the whole time.
+  Then the guest scores the street (§4.3) and walks to its pick: straight
+  across the lane if its hotel is on the other side, along the pavement, up
+  the path. (Claude's draft of his yes; PLACEHOLDER all.)
+- **Leaving by bus** (his ruling, 2026-10-19: never off the map's edge): a
+  guest no hotel takes, one that gave up at the desk, and one that checked
+  out all walk to the nearest stop and wait on the pavement by its shelter;
+  the next bus to stop there takes them. (That checked-out guests leave by
+  bus too is Claude's reading of the ruling.)
+- **Bus size, as built:** 40 % of the street's Vacant rooms at the bus's
+  arrival, rounded up (his), at least 2 and at most 4 per player on the
+  server (PLACEHOLDER), its guarantees always aboard. Drawn a bus ahead (for
+  the announcement), and fitted to the street's vacancies when it arrives.
 - **Newcomer boost** (§4.3): +1.0 score for hotels rated 2★ or less, Common and
   Uncommon guests only.
 - ~~**Bus size:** 6 guests for one player, +1 per extra player, at most 10.~~
-  Replaced by his ruling, 2026-10-19 (§4.3: by players and vacant rooms).
+  Replaced by his ruling, 2026-10-19 (§4.3: by players and vacant rooms;
+  "Bus size, as built" above).
 
 ### A.4 Rating (§5.3)
 
@@ -853,10 +901,13 @@ first playtest, 2026-10-19.)
 ### A.7 First-time experience (§11)
 
 Gloom's steps, each seen happen on the server: Build a Standard Room → check in
-the walk-in Slime → collect the till → buy a second room → see a bus (pitch one)
+the tutorial Slime (the one guest in the game that walks in instead of riding
+the bus, his ruling 2026-10-19; it appears on the pavement 6 s after the first
+room, before the first bus) → collect the till → buy a second room → see a bus (pitch one)
 → the Slime moves in (the tutorial Slime's stay counts as happy and needs 1
-friendship) → the goal card (the tutorial unlocks the Coffin Suite and sends a
-Vampire Count once one is built) → clean a room → assign the Slime to staff →
+friendship) → the goal card (the tutorial unlocks the Coffin Suite, and a
+Vampire Count booked to this hotel rides the third bus after it once a Coffin
+Suite stands vacant; a booked guest skips browsing) → clean a room → assign the Slime to staff →
 the Frostfang preview. Skippable at any step, never locking movement.
 
 ### A.8 Hunter Night (§8.1)
@@ -864,7 +915,7 @@ the Frostfang preview. Skippable at any step, never locking movement.
 Hunters walk from the east end of the street, each toward one hotel, and take
 45 s to reach its entrance. A hunter at the door nets one guest (or, with none, a
 resident) and leaves. **Boo!** scares a hunter within 40 studs (a click or tap
-on it). **Traps** (the lobby's `Trap_1`–`Trap_3`): Slime Puddle $500, Creaky
+on it). **Traps** (the forecourt's `Trap_1`–`Trap_3`, beside the path, §5.4): Slime Puddle $500, Creaky
 Floorboards $2,000, Portrait with Eyes $8,000 (PLACEHOLDER; all three act
 alike for now); each scares the first hunter within 10 studs, once a night. A defended night (fewer than half the
 hunters reached a door) pays every player on the street 5 minutes of their
