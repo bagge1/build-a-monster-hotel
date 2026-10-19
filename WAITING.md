@@ -11,37 +11,22 @@ Designfrågor som inte brådskar står i `docs/GDD.md` (§17) tills de gör det.
 <!-- En import: vilken mapp i blender/_import/ du väljer i dialogen.
 Connect: knappen under fliken Plugins i Studio. -->
 
-1. **Starta om `rojo serve`** (2026-10-19): `default.project.json` har fått
-   två nya mappningar (`assets/Monsters` → `ReplicatedStorage.Monsters`,
-   `assets/HotelKit/HauntedManor` och `.../FrostfangLodge` → `ServerStorage.HotelKit`) och Rojo
-   läser projektfilen bara när den startar. Tryck sedan **Connect** under
-   fliken **Plugins** i Studio.
-2. **Importera monstren (Location 1, tio stycken).** I Studio: **File →
-   Import 3D**, öppna mappen
-   `D:\Roblox\build-a-monster-hotel\blender\_import\monsters_l1_2026-10-19\`,
-   markera alla tio filerna (håll Ctrl och tryck A), importera till
-   **Workspace** och skriv *importerat*. Inställningar, sparning och
-   kontroller gör Claude. Bilden på dem: `blender/monsters/haunted_manor/review/sheet.png`.
-3. **Importera hotellkitet (Haunted Manor, 32 modeller).** I Studio: **File →
-   Import 3D**, öppna mappen
-   `D:\Roblox\build-a-monster-hotel\blender\_import\hotel_haunted_manor_2026-10-19\`,
-   markera alla 32 filerna (håll Ctrl och tryck A), importera till
-   **Workspace** och skriv *importerat*. Fästpunkter, inställningar, sparning
-   och kontroller gör Claude. Bilden: `blender/hotel/haunted_manor/review/contact_sheet.png`.
-   Rummen, lobbyn, trappan, skylten och 15 dekorsaker; allt nattens utkast.
-4. **Importera hotellkitet (Frostfang Lodge, 18 modeller).** I Studio: **File →
-   Import 3D**, öppna mappen
-   `D:\Roblox\build-a-monster-hotel\blender\_import\hotel_frostfang_lodge_2026-10-19\`,
-   markera alla 18 filerna (håll Ctrl och tryck A), importera till
-   **Workspace** och skriv *importerat*. Bilden:
-   `blender/hotel/frostfang_lodge/review/contact_sheet.png`. Sex rum, två
-   Amenities, lobbyn, trappan, skylten och sex dekorsaker; allt nattens utkast.
-5. **Importera Frostfang-monstren, Hunter och Night Bus (nio stycken).** I Studio:
-   **File → Import 3D**, öppna mappen
-   `D:\Roblox\build-a-monster-hotel\blender\_import\frostfang_and_street_2026-10-19\`,
-   markera alla nio filerna (håll Ctrl och tryck A), importera till **Workspace**
-   och skriv *importerat*. Bilderna: `blender/monsters/frostfang_lodge/review/sheet.png`
-   och `blender/street/npcs/review/sheet.png`. Allt nattens utkast.
+1. ~~**Starta om `rojo serve`** och tryck **Connect**~~ (gjort 2026-10-19:
+   de nya mappningarna för `assets/Monsters`, `assets/HotelKit/HauntedManor`
+   och `assets/HotelKit/FrostfangLodge` är igång; noterat i
+   `archive/NATTLOGG-2026-10-19.md`).
+2. **Importera allt, 69 modeller i en import** (2026-10-19). I Studio: **File →
+   Import 3D**, öppna mappen `D:\Roblox\build-a-monster-hotel\blender\_import\`,
+   markera alla 69 filerna (håll Ctrl och tryck A), importera till
+   **Workspace** och skriv *importerat*. Det är de tio Haunted Manor-monstren,
+   de sju Frostfang-monstren, Hunter, Night Bus, Haunted Manor-kitet (32 delar)
+   och Frostfang Lodge-kitet (18 delar). Inställningar, namn, sparning och
+   kontroller gör Claude. Bilderna: `blender/monsters/haunted_manor/review/sheet.png`,
+   `blender/monsters/frostfang_lodge/review/sheet.png`,
+   `blender/street/npcs/review/sheet.png`,
+   `blender/hotel/haunted_manor/review/contact_sheet.png` och
+   `blender/hotel/frostfang_lodge/review/contact_sheet.png`. Allt nattens utkast.
+   *(Pågår: du importerar just nu.)*
 
 ## §1 Att titta på eller spela
 
@@ -112,11 +97,9 @@ Med Claudes skärmdump där det finns en. -->
 
 ## §3 Creator Hub och publicering
 
-1. **Slå på Studio Access to API Services** (2026-10-19). Playtesten visar
-   `DataStore state is NoAccess`: utan den sparas ingenting, ProfileStore kör
-   en mock och varje spelare börjar om. I Studio: **File → Experience
-   Settings → Security → Enable Studio Access to API Services**, sedan
-   **Save**. Det är det enda som hindrar att save och load kan provas.
+1. ~~**Slå på Studio Access to API Services**~~ (gjort 2026-10-19: på i
+   Experience Settings; save och load provas nu, resultatet i
+   `archive/NATTLOGG-2026-10-19.md` och memory `phase-status`).
 2. **Skapa passen och produkterna i Creator Hub** (2026-10-19). GDD §10.2:s
    fem pass (Auto-Collect Till 149, Night Manager 249, Resident Wing+ 249,
    Extra Floor 299, VIP Lobby 399) och nio produkter (Starter Pack 99, Call the

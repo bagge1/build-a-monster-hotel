@@ -83,6 +83,12 @@ Unattended night session (`/loop`, self-paced) while August sleeps. His brief, i
 
 ## Never wait
 
+- **A night ends only when usage or the GDD runs out.** Nothing else ends
+  the loop: not a finished brief, not a fork, not a step that waits on him.
+  Something that waits on August goes in `WAITING.md` and the loop goes on
+  with the next thing that does not need him; it never becomes a question
+  that ends the turn without a `ScheduleWakeup`. (2026-10-19: the session
+  stopped at 04:31 with work left in the GDD and sat idle for 10 hours.)
 - **No answer will come.** Take the reversible option, write the assumption in
   the log, keep going. A fork that is his (a design choice, a look, a value)
   goes into `WAITING.md` with the options and a recommendation, and the step
