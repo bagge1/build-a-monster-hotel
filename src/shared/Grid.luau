@@ -14,7 +14,11 @@
 
 	HALLWAYS ARE THE FREE CELLS. Floor 1's front `LobbyRows` rows are the
 	lobby: walkable, never built on. The stair core is reserved on every floor
-	and is the way in above floor 1. A placement is legal only if every door
+	and is no hallway: it is walled at the back and both sides (MODELS.md,
+	"Stair core") and entered only across its front edge, from the lobby's
+	back row on floor 1 and from its landing above, which is the way in to
+	every upper floor. So a door onto the core opens into a wall, and a path
+	goes round it, never through. A placement is legal only if every door
 	(the new one and all the old) still opens onto a free cell connected to
 	its floor's way in; the same graph is the path a guest walks (§13.6).
 ]]
@@ -127,19 +131,16 @@ local function occupied(layout: { Placed }, floor: number, skip: Placed?): { [nu
 	return taken
 end
 
+-- A hallway cell: on the plot, not under a piece, not inside the stair core.
 local function walkable(_floor: number, taken: { [number]: boolean }, x: number, z: number): boolean
-	return Grid.inBounds(x, z) and not taken[key(x, z)]
+	return Grid.inBounds(x, z) and not taken[key(x, z)] and not Grid.isStairCore(x, z)
 end
 
--- The cells a floor is entered from: the lobby on floor 1, the stair core and its landing.
+--[[ The cells a floor is entered from: the lobby on floor 1 (its back row
+	is the stair core's front), the landing in front of the core above. ]]
 function Grid.wayIn(floor: number): { Cell }
 	local out = {}
 	local s = G.StairCore
-	for x = s.x, s.x + s.w - 1 do
-		for z = s.z, s.z + s.d - 1 do
-			table.insert(out, { x = x, z = z })
-		end
-	end
 	if floor > 1 then
 		for x = s.x, s.x + s.w - 1 do
 			table.insert(out, { x = x, z = s.z - 1 })

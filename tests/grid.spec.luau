@@ -9,6 +9,26 @@ local function placed(id, floor, x, z, r)
 	return { item = id, floor = floor, x = x, z = z, r = r, w = p.w, d = p.d }
 end
 
+-- Whether a path (its turns) steps on a stair core cell anywhere along its legs.
+local function throughCore(path)
+	for i = 2, #path do
+		local a, b = path[i - 1], path[i]
+		local dx, dz = math.sign(b.x - a.x), math.sign(b.z - a.z)
+		local x, z = a.x, a.z
+		while true do
+			if Grid.isStairCore(x, z) then
+				return true
+			end
+			if x == b.x and z == b.z then
+				break
+			end
+			x += dx
+			z += dz
+		end
+	end
+	return #path == 1 and Grid.isStairCore(path[1].x, path[1].z)
+end
+
 describe("Grid", function()
 	it("a door opens next to its own footprint, for every size and rotation", function()
 		for _, size in { { 2, 2 }, { 2, 3 }, { 3, 3 } } do
@@ -58,6 +78,50 @@ describe("Grid", function()
 			not Grid.canPlace({}, 2, placed("StandardRoom", 2, s.x, s.z, 0)),
 			"stair core"
 		)
+	end)
+
+	it("a door onto the stair core's back or side opens into a wall", function()
+		-- The core (x 10–11, z 2–3) is walled at the back and sides; x 12 is off the plot.
+		for floor = 1, 2 do
+			for _, case in
+				{
+					{ "CoffinSuite", 9, 4, 0, "back" }, -- TESTRUN phase 11's suite
+					{ "StandardRoom", 10, 4, 0, "back" },
+					{ "StandardRoom", 8, 2, 1, "side" },
+				}
+			do
+				local ok, why =
+					Grid.canPlace({}, 2, placed(case[1], floor, case[2], case[3], case[4]))
+				expect.truthy(not ok, `{case[1]} onto the core's {case[5]}, floor {floor}`)
+				expect.eq(why, "DoorBlocked", `{case[1]} refused as a wall, floor {floor}`)
+			end
+			expect.truthy(
+				Grid.canPlace({}, 2, placed("StandardRoom", floor, 8, 2, 0)),
+				`beside the core, its door to the front, floor {floor}`
+			)
+		end
+	end)
+
+	it("a guest's path goes round the stair core, never through it", function()
+		local s = Constants.Grid.StairCore
+		local landing = { x = s.x + 1, z = s.z - 1 }
+		for floor = 1, 2 do
+			local behind = placed("StandardRoom", floor, s.x, s.z + s.d + 1, 0)
+			expect.truthy(Grid.canPlace({}, 2, behind), `a room behind the core, floor {floor}`)
+			local path = Grid.path({ behind }, floor, landing, Grid.doorCell(behind))
+			expect.truthy(path ~= nil, `a path behind the core, floor {floor}`)
+			expect.truthy(
+				path and not throughCore(path),
+				`the path behind the core goes round it, floor {floor}`
+			)
+			expect.truthy(
+				Grid.path({}, floor, landing, { x = s.x, z = s.z }) == nil,
+				`the core's cells are no hallway, floor {floor}`
+			)
+		end
+		for _, c in Grid.wayIn(2) do
+			expect.truthy(not Grid.isStairCore(c.x, c.z), "floor 2 is entered from the landing")
+		end
 	end)
 
 	it(
@@ -114,6 +178,10 @@ describe("Grid", function()
 			for _, p in layout do
 				local path = Grid.path(layout, floor, start, Grid.doorCell(p))
 				expect.truthy(path ~= nil, `a path to {p.item} at {p.x},{p.z} r{p.r}`)
+				expect.truthy(
+					path and not throughCore(path),
+					`the path to {p.item} at {p.x},{p.z} keeps out of the stair core`
+				)
 				for i = 2, #path do
 					local a, b = path[i - 1], path[i]
 					expect.truthy(a.x == b.x or a.z == b.z, "path legs are straight")

@@ -232,14 +232,22 @@ the slab (`CLAUDE.md`, "The scale of a person"; `MODELS.md`, "Hotel kit").
   cells x 9–11, z 4–6 on floor 1 opens straight onto the stair core's back
   wall: `Grid` counts the core's cells as walkable from every side, but the
   core is walled at the back and sides. Not the rescale's (the grid logic is
-  per cell); a follow-up. The back row: clear (only the avatar).
+  per cell). The back row: clear (only the avatar). **Fixed in `Grid`
+  (2026-10-19):** the core's cells are no hallway, entered only across its
+  front (the lobby's back row, the landing above); a door onto its back or
+  side is refused as `DoorBlocked`. Specs (`tests/grid.spec.luau`, two new
+  and the random layouts' paths kept out of the core): 9/0 in Studio's Edit
+  datamodel on cloned modules, 6/3 with the old rule. Not yet in a playtest:
+  the rays again, on a profile without that suite (a saved door onto the core
+  now refuses every placement on its floor as `CutsOff`).
 - [x] Walkers (the 5-stud avatar): street → threshold → `Queue_1` → the back
   row → `Clerk` → the core → up both storeys (15 steps each) → and back down:
   every waypoint reached, no Climbing or Freefall.
 - [x] A guest (Vampire Count) to a floor-2 room: its path runs `Bottom` →
   `Path_1` → `Path_2` → `Top` → its door. On floor 2 the path crosses the
   stair core's cells (the same grid gap as the door above): the guest glides
-  through the floor-2 flight. Follow-up with the door.
+  through the floor-2 flight. Fixed with the door: `Grid.path` goes round
+  the core (spec). Not yet seen: a guest to a floor-2 room behind the core.
 - [x] The build camera frames the 144-stud plot; a Standard Room's ghost is
   23.6 studs square on its four cells, its door marker over the cell in front.
 - [x] The in-game blind review (street, raised, lobby, a room, the stairs;
