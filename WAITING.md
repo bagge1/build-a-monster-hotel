@@ -309,6 +309,13 @@ Med Claudes skärmdump där det finns en. -->
    behåll ordet på skylten tills lounge-dekoren finns, och ta ikonen då
    tillsammans med den.
 
+21. **Bellhop kortar incheckningen** (GDD §4.6:s tabell säger "Guest walking
+   speed, check-in time"; bara gångfarten var byggd). Byggt 2026-10-19 kväll
+   med ett platshållartal: bästa Bellhop delar Front Desks väntan med
+   1 + 0,25 × dess effektivitet (6 s → 4,8 s med en Mummy), samma 25 % som
+   gångfarten. Provat i Studio. **Att bestämma:** talet (GDD Appendix A.5,
+   PLACEHOLDER). **Rekommendation:** behåll 25 %, samma som gångfarten.
+
 ## §3 Creator Hub och publicering
 
 1. ~~**Slå på Studio Access to API Services**~~ (gjort 2026-10-19: på i

@@ -75,6 +75,20 @@ describe("Staff", function()
 		expect.atMost(Staff.due(0, 12, 1, 3, 2), Staff.due(0, 12, 0.6, 3, 2), "efficiency")
 	end)
 
+	it("a Bellhop never slows check-in, and more desk staff never do", function()
+		for _, desk in { 0.6, 1, 1.6, 2 } do
+			local alone = Staff.deskDelay(6, desk, 0, 0.25)
+			expect.atMost(Staff.deskDelay(6, desk, 0.6, 0.25), alone, "a Bellhop at 60 %")
+			expect.atMost(
+				Staff.deskDelay(6, desk, 1, 0.25),
+				Staff.deskDelay(6, desk, 0.6, 0.25),
+				"a better Bellhop"
+			)
+			expect.atMost(Staff.deskDelay(6, desk + 1, 0, 0.25), alone, "more desk staff")
+			expect.atLeast(Staff.deskDelay(6, desk, 1, 0.25), 0, "never negative")
+		end
+	end)
+
 	it("every errand has its tick at the door, and the Wing has no post", function()
 		for role in Staff.Errands do
 			expect.truthy(Staff.DoneText[role], `{role}'s text`)

@@ -7,9 +7,11 @@
   och tillbaka med "✓"; omplacering mitt i ärendet; två på en gång. Rebirth
   med panelens knapp; Frostfangs rum i en tomt; alla paneler på telefon
   (två rättade: Residents-raden och Ping-menyn). Byggt ur GDD:n: CI-lint
-  (§13.1), VIP Lobbys gyllene namnskylt (§10.2).
+  (§13.1), VIP Lobbys gyllene namnskylt (§10.2), Bellhop kortar
+  incheckningen (§4.6).
 - **Pågår:** väntar på street och free-building (arbetar fortfarande).
-- **Väntar på August:** WAITING §2.20 (VIP-märkets utseende).
+- **Väntar på August:** WAITING §2.20 (VIP-märkets utseende), §2.21
+  (Bellhops tal för incheckningen).
 
 Obevakad session (`/loop`, självstyrd) medan August är borta (från ca 20:00 i
 2–3 timmar). Hans brief (andra versionen, 19:5x, ersätter den första):
@@ -92,17 +94,29 @@ Obevakad session (`/loop`, självstyrd) medan August är borta (från ca 20:00 i
   kolumn); MCP:ns fel, inte spelets. Obs 2: staff-testet 19:55 körde på
   Augusts egen profil (testprofilen var av): en Mummy (resident 2) lades
   till där och står på Room Service. Resten av kvällen kör på testprofiler.
-- **20:12** g: en bakgrundsagent gick igenom GDD:n. Åtta luckor; de som
+- **20:10** g: en bakgrundsagent gick igenom GDD:n. Åtta luckor; de som
   krockar med street eller free-building väntar (tutorialens Commons på
   första bussen §11, Service/Cleanliness av personaltäckning §5.3, pingen
   som nämner rummet §7, gamepad/Input Action System §11). Hunter Camps
   mini-uppdrag (§8.1) är inte beskrivet: hans.
-- **20:14** CI-lint (§13.1): `.github/workflows/lint.yml` (StyLua 2.5.2 och
+- **20:11** CI-lint (§13.1): `.github/workflows/lint.yml` (StyLua 2.5.2 och
   Selene 0.31.0 som i rokit.toml). Pushad `f7609e9`; körningen stod i kö,
   resultatet kollas nästa varv.
-- **20:20** VIP Lobby (§10.2): gyllene namnskylt "VIP  <namn>" över huvudet
+- **20:13** VIP Lobby (§10.2): gyllene namnskylt "VIP  <namn>" över huvudet
   och spelarens `VIP`-attribut, i takt med passet var 2 s (`SocialService`).
   Provat (testprofil `Test_Vip1019`): ingen skylt utan passet, skylt inom
   2 s med `pass VIPLobby`, tillbaka 3,6 s efter respawn, Roblox eget namn
   dolt, inga fel. BillboardGui syns inte i skärmdumpar, så utseendet är inte
   sett: WAITING §2.20.
+- **20:15** CI-lint föll på Selene: Selene avslutar med kod 1 även på
+  varningar, och main har varningen `BusRenderer` skuggar `bus`. Street-grenen
+  tar bort den (selene 0 varningar där), så CI blir grön när street är inne.
+  Inte rättad på main för att inte krocka med street.
+- **20:24** g: Bellhop kortar incheckningen (§4.6 "check-in time"):
+  `Staff.deskDelay` delar Front Desks väntan med 1 + 0,25 × bästa Bellhops
+  effektivitet; talet PLACEHOLDER i GDD A.5 och WAITING §2.21. Ny regel i
+  staff-specen (en Bellhop gör aldrig incheckningen långsammare): **8/8** i
+  Studio. Uppmätt (testprofil `Test_Bell1019`, Skeleton på Front Desk): utan
+  Bellhop 6,4 och 6,3 s från kön till incheckad; med Mummyn som Bellhop
+  6,2 / 5,1 / 4,8 / 5,2 / 6,2 / 5,7 s (snitt 5,5; väntat 4,8 + upp till 1 s
+  för sekundtakten; de långsamma stod bakom andra gäster i kön).

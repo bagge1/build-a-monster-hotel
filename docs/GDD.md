@@ -818,6 +818,10 @@ first playtest, 2026-10-19.)
   Housekeeping cleans after 20 s ÷ efficiency; Room Service fulfils after 12 s ÷
   efficiency (counting as staff); Bellhop makes guests walk 25 % faster;
   Entertainment adds 20 Fun; Security scares a hunter in reach every 8 s.
+- **Bellhop and check-in time** (§4.6's table; PLACEHOLDER): the best Bellhop
+  on staff also shortens Front Desk's check-in, dividing its delay by
+  1 + 0.25 × that Bellhop's efficiency (6 s → 4.8 s with a Mummy). It does not
+  touch a check-in the player taps.
 - **Staff errands** (§4.6 "Staff are seen working", §5.4; PLACEHOLDER, every
   part of it): a free Room Service or Housekeeping resident takes the oldest
   open job (a request, a dirty room) and sets off at once, at 10 studs/s (a

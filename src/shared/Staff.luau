@@ -130,4 +130,11 @@ function Staff.due(
 	return math.max(openedAt + delay / math.max(efficiency, 0.01), arriveAt + atDoor)
 end
 
+--[[ How long Front Desk takes to check the first waiting guest in (§4.6,
+	Appendix A.5): the role's delay divided by the desk's summed efficiency,
+	and shortened by the best Bellhop on staff ("check-in time"). ]]
+function Staff.deskDelay(delay: number, desk: number, bellhop: number, bonus: number): number
+	return delay / math.max(desk, 0.01) / (1 + math.max(bellhop, 0) * math.max(bonus, 0))
+end
+
 return Staff

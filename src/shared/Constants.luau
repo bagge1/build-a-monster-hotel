@@ -200,6 +200,7 @@ Constants.Staff = {
 	HousekeepingDelay = 20,
 	RoomServiceDelay = 12,
 	BellhopSpeedBonus = 0.25,
+	BellhopCheckInBonus = 0.25, -- PLACEHOLDER (A.5): a Bellhop also shortens Front Desk's check-in
 	SecurityInterval = 8,
 	WalkSpeed = 10, -- studs/s on an errand: a guest's pace (§4.6 "Staff are seen working")
 	AtDoor = 2, -- seconds at the door at least before the job is done

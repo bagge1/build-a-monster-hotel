@@ -554,7 +554,18 @@ local function staffTick()
 			if desk > 0 and #hotel.queue > 0 then
 				local first = GuestService.get(hotel.queue[1])
 				if first and first.state == "Queued" then
-					local due = (first.deskSince or now) + Constants.Staff.FrontDeskDelay / desk
+					-- The best Bellhop shortens it too (§4.6 "check-in time").
+					local bell = 0
+					for _, e in ResidentService.staff(data, "Bellhop") do
+						bell = math.max(bell, e)
+					end
+					local due = (first.deskSince or now)
+						+ Staff.deskDelay(
+							Constants.Staff.FrontDeskDelay,
+							desk,
+							bell,
+							Constants.Staff.BellhopCheckInBonus
+						)
 					if now >= due then
 						GuestService.checkIn(player, true)
 					end
