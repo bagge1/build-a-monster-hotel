@@ -178,6 +178,14 @@ Mutations are **material, colour and size variants**: cheap content that doesn't
 | Entertainment | Floor fun bonus | Pumpkin Head, Witch |
 | Security | Hunter Night defence | Werewolf |
 
+- **Staff are seen working** (his ruling, §5.4): Room Service walks from its
+  post to the room with the request, by the same hallways and stairs the
+  guests use, works at the door a moment, a "✓ Room Service" rises at the door
+  when it is done, and it walks back. Housekeeping does the same for a dirty
+  room ("✓ Housekeeping"). One resident runs one errand at a time. Front Desk
+  stays behind the desk; the other roles keep to their posts. The timing is
+  Appendix A.5's.
+
 - **Monster Book:** one page per species with all mutations. Rewards:
   - each species found: a cash bonus;
   - each family completed: a permanent +5% income and a cosmetic;
@@ -810,6 +818,20 @@ first playtest, 2026-10-19.)
   Housekeeping cleans after 20 s ÷ efficiency; Room Service fulfils after 12 s ÷
   efficiency (counting as staff); Bellhop makes guests walk 25 % faster;
   Entertainment adds 20 Fun; Security scares a hunter in reach every 8 s.
+- **Staff errands** (§4.6 "Staff are seen working", §5.4; PLACEHOLDER, every
+  part of it): a free Room Service or Housekeeping resident takes the oldest
+  open job (a request, a dirty room) and sets off at once, at 10 studs/s (a
+  guest's pace; Bellhop does not speed staff). The job is done at the same
+  delay as before, counted from when the request opened or the room got dirty
+  and divided by **that resident's** efficiency, **but never sooner than 2 s
+  after it reaches the door**: a far room takes as long as the walk. A
+  resident runs one errand at a time, so more staff serve more rooms at once
+  rather than one room faster (before, the delay was divided by the staff's
+  summed efficiency). A request that closes while the resident is on its way
+  (the player answered it, or its 30 s ran out) or a room cleaned by the
+  player sends it back with no "✓". It walks back to its post before taking
+  the next job. If no way to the room is found, the job is done at its post
+  at the same time, with the "✓" at the door.
 - **Book rewards:** a species found pays 60 s of that species' pay; a family
   completed is +5 % income; a mutation set completed gives a title.
 - **Releasing a resident** ("holiday") gives Moon Shards by rarity: 1 / 2 / 4 /
