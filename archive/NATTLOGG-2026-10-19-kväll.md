@@ -235,4 +235,14 @@ Obevakad session (`/loop`, självstyrd) medan August är borta (från ca 20:00 i
   rätt prioritet; B öppnar och stänger byggläget en gång per tryck, R öppnar
   Residents, musklick på Book öppnar den; inga fel. Handkontrollen själv är
   Augusts: WAITING §1.11.
+- **21:04** Mätagenten har uppdaterat `tools/balance_model.py` så att den går
+  på main igen (vakterna godkända; kvällens regler med). Körd: rebirth
+  3:38 / 5:24 h, $1M 2:29 / 4:25 h. Committad (`7bd235a`).
+- **21:06** Staff till våning 3 (`Test_Floor3_1019`, `fill StandardRoom`):
+  residenten gick mot rum 43 på våning 3 via de placerade trapporna (vägen
+  upp till y 37), men vägen var **1 445 studs**, så requesten gick ut först
+  och den vände efter 24 s. Gästerna till våning 3 gick 1 300–1 450 studs
+  (130–145 s), eftersom `fill` satte trappan i lobbyraden. Spelet tillåter
+  det (en trappa i lobbyraden vägras bara om den stänger en dörr). Inget
+  ändrat: WAITING §2.29.
 

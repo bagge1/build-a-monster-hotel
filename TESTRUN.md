@@ -298,7 +298,7 @@ way from `GuestService.pathToDoor`.
   knocks; "✓ Room Service" rises at the door when the request closes; it
   walks back to its post. The request closes no sooner than 12 s ÷ its
   efficiency after it opened (server log or a stopwatch).
-- [?] (No room above floor 1 in the test profile; play with free building's stairs.) The same for a room on floor 3: up both flights by the guests' stairs,
+- [!] (2026-10-19 21:06, `Test_Floor3_1019`, `fill StandardRoom`: the resident set off for room 43 on floor 3 by the placed stairs (its path up to y 37), but the path was 1,445 studs, so the request ran out first and it turned back after 24 s. Not fixed: the walk speed and the request's time are his, WAITING §2.29.) The same for a room on floor 3: up both flights by the guests' stairs,
   through no wall or slab (rays along `Path`); a long walk ends the job 2 s
   after it reaches the door, before the request's 30 s run out.
 - [x] Housekeeping: a checkout leaves a dirty room; the resident walks to it,
@@ -571,3 +571,4 @@ August's, on a real controller.
 - 2026-10-19 20:49 Rating's staff coverage after the merge: Front Desk +10 and Room Service +10 to Service, back when unassigned (a second Assign within 0.25 s is dropped by the rate limit, not a fault).
 - 2026-10-19 20:56 Tutorial Commons and the named ping after the merge: specs 97/97; the tutorial to Clean on a fresh profile; the first tutorial bus brought two Commons, one picked the hotel; the ping named the Coffin Suite. Fixed: the tutorial's guest gave up at the desk. The till's E prompt could not be triggered through the MCP beside the desk's (both E, OnePerButton, 3 studs apart): WAITING §1.10.
 - 2026-10-19 21:02 Gamepad navigation after the merge: the input contexts exist with their priorities; B, R and a mouse click act as before; no error. The gamepad's own items are August's (a real controller).
+- 2026-10-19 21:06 Staff to floor 3 in a full hotel: up the placed stairs, but a 1,445-stud path outlasts the request (WAITING §2.29).

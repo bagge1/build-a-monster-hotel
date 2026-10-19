@@ -513,6 +513,20 @@ Med Claudes skärmdump där det finns en. -->
    **Rekommendation:** (a), ett gratis område bredvid startområdet, eftersom
    det också lär ut att köpa områden.
 
+29. **Långa vägar uppåt i ett stort hotell** (2026-10-19 kväll, provat i
+   Studio). I ett fullt hotell (`fill`, 49 bitar på 3 våningar) där
+   trapporna står långt från disken går en gäst **1 300–1 450 studs** till
+   ett rum på våning 3, alltså 130–145 s i 10 studs/s, och Room Service hinner
+   aldrig fram innan requestens 30 s går ut (residenten vände efter 24 s).
+   Spelet tillåter en trappa i lobbyraden så länge den inte stänger någon
+   dörr, och då måste alla gå runt hela våningen. Mätningen i §2.27 räknade
+   med 70 s till våning 3. **Att bestämma:** (a) personal på ärende går
+   fortare (t.ex. 20 studs/s; talet är en platshållare i A.5), (b)
+   requestens tid växer med avståndet till rummet, (c) trappor får inte stå
+   i lobbyraden, (d) låt det vara: en dålig planlösning straffar sig själv.
+   **Rekommendation:** (a) och (c): personalen ska synas arbeta, inte gå
+   förgäves, och lobbyraden ska vara gästernas väg in.
+
 ## §3 Creator Hub och publicering
 
 1. ~~**Slå på Studio Access to API Services**~~ (gjort 2026-10-19: på i
