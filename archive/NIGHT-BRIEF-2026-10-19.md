@@ -19,13 +19,10 @@ and writes its log as `archive/NATTLOGG-2026-10-19.md`.
    - Rename `D:\Roblox\tycoon-game` to `D:\Roblox\build-a-monster-hotel`, then
      move the session there (`change_directory`).
    - Run `python tools/setup_machine.py`, which makes the memory junction for the new path.
-   - If GitHub is logged in (`gh auth status`):
-     - create the **private** repo `build-a-monster-hotel`;
-     - point `origin` at it;
-     - commit `research/`, `docs/GDD.md`, `CLAUDE.md`, this brief and the night log;
-     - push.
-
-   If GitHub isn't logged in, commit locally and put the GitHub login in `WAITING.md` §3.
+   - GitHub is done: the private repo `bagge1/build-a-monster-hotel` exists, `origin` points
+     at it and `main` is pushed (2026-10-19, before the night). Git pushes with the stored
+     credentials; the `gh` CLI is not logged in and is not needed.
+   - Commit the rename's follow-ups (the junction is outside git) and push.
 
    Then tell August, if he's still up: start `rojo serve` in the new folder and click **Connect**.
 
