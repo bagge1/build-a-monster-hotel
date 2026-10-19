@@ -681,6 +681,7 @@ After the soft launch we apply for Kids/Select eligibility:
 | 2026-10-19 | Night sessions may commit, push and run DataStore-writing playtests | His go (the game is not live) |
 | 2026-10-19 | The lobby is an indoor reception: a front wall with the entrance arch and windows; the desk across the end away from the stairs, served toward the entrance, a key rack behind the clerk; the back row clear for the floor-1 doors; the hotel sign on its posts at the stair-side corner of the forecourt, off the entrance (layout A and the corner sign of three grey drafts; `MODELS.md`, "Lobby") | His rulings: nothing in front of an entrance, a counter a person can stand at, a lobby that reads as a reception and not a patio (`modelling/taste.md`) |
 | 2026-10-19 | A forecourt in front of each hotel: a pavement the guests walk on, a path to the entrance, the traps placed there (§5.4) | His ask from playing |
+| 2026-10-19 | The forest stretches much farther and is thicker near the play area ("the forest should stretch out much longer, and be thicker near the actual playarea"; Appendix A, the forest) | His look at the trees in the game |
 | 2026-10-19 | A room's tier (up to T3) comes from the furniture, rugs and decor in it, not cash; a forest round the street, the Night Bus driving in out of it; room names on a wooden plaque over the door (§5.4, `MODELS.md`) | His asks from playing |
 | 2026-10-19 | The plot is bought in areas; stairs are bought and placed (one or several), not a fixed core; everything can be rebuilt, the reception too; the floor can be changed and rugs and decorations (clocks, flowers, plants, furniture, a piano) placed (§5.4) | His rulings from playing: the whole empty plot at the start looks empty, and a fixed stair and desk leave nothing to arrange |
 | 2026-10-19 | The bus every 3 minutes, 40 % of the street's vacant rooms per bus, guests browse past the entrances for about a minute, and the tutorial's first guest is the only walk-in (§4.3) | His answers to WAITING §2.14 |
@@ -731,6 +732,14 @@ Every number below is a **placeholder** (tagged `PLACEHOLDER` in
   from the camera as its `LOD_Proxy`. The trees behind a plot are its
   location's: bare and crooked ones, a few dark firs and now and then a
   hollow with eyes for Haunted Manor, snowy firs for Frostfang Lodge.
+  **His ruling, 2026-10-19 evening** (seeing it in the game): "the forest
+  should stretch out much longer, and be thicker near the actual playarea".
+  So (PLACEHOLDER all): a **thicket** 60 studs deep along the clearing, one
+  tree to a 14-stud cell, 95 % of them; beyond it the forest runs on to
+  **600 studs** from the clearing at the old density (22-stud cells, 75 %).
+  A tree farther than 260 studs from the camera is only its `Root` and its
+  `LOD_Proxy`; its whole model is built when the camera comes near (a few
+  dozen a pass), so thousands of trees cost a phone little.
 - **The plot frame:** cell (x, z), x 0–11 along the street, z 0–11 away from it;
   floor 1 at ground level, each floor 18 studs above the last (his ruling, 2026-10-19 evening).
 - **The lobby** is the front two rows of floor 1 (z 0–1), a shell with the

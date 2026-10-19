@@ -44,15 +44,20 @@ Constants.Street = {
 	ForestRoad = 360, -- PLACEHOLDER: how far from the lane the road runs on into the forest
 }
 
--- §5.4: the forest round the street (his idea, 2026-10-19). PLACEHOLDER all.
+-- §5.4: the forest round the street (his idea, 2026-10-19; longer and thicker
+-- near the play area, his ruling the same evening). PLACEHOLDER all.
 Constants.Forest = {
 	Seed = 1019, -- the same forest on every client and every server
-	Spacing = 22, -- studs: one tree to a jittered cell of this size
-	Fill = 0.75, -- the share of cells that get a tree
-	Depth = 150, -- studs from the street's clearing to the forest's outer edge
+	Spacing = 22, -- studs: one tree to a jittered cell of this size, beyond the thicket
+	Fill = 0.75, -- the share of those cells that get a tree
+	Depth = 600, -- studs from the street's clearing to the forest's outer edge
+	ThicketDepth = 60, -- studs of thicket along the clearing
+	ThicketSpacing = 14, -- studs: the thicket's cells
+	ThicketFill = 0.95, -- the share of the thicket's cells that get a tree
 	Clearing = 14, -- studs kept clear round the plots, the lane and the road
 	LowGraphics = 0.5, -- the share of trees the low graphics tier draws
-	ProxyDistance = 260, -- studs from the camera beyond which a tree is its LOD_Proxy
+	ProxyDistance = 260, -- studs from the camera beyond which a tree is its Root and LOD_Proxy only
+	SwapsPerPass = 40, -- trees built or stripped per LOD pass, so a camera jump never hitches
 }
 
 -- §4.2: rarity values (starting numbers).

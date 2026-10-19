@@ -5,8 +5,11 @@
 	client, which places the trees itself (`ForestRenderer`), so the server
 	holds none and nothing replicates.
 
-	One tree to a jittered cell of `Spacing` studs, `Fill` of the cells, in a
-	band `Depth` deep round the street's clearing: nothing on the lane, the
+	Two bands round the street's clearing (his ruling, 2026-10-19 evening: "the
+	forest should stretch out much longer, and be thicker near the actual
+	playarea"): a thicket `ThicketDepth` deep along it, one tree to a jittered
+	cell of `ThicketSpacing` studs, `ThicketFill` of the cells; and beyond it the
+	forest out to `Depth`, `Spacing` and `Fill`. Nothing on the lane, the
 	pavements, a plot, its forecourt or its Resident Wing, or the bus's road,
 	and `Clearing` studs kept free round each. The gaps between plots keep a
 	line of trees down their middle.
@@ -66,9 +69,10 @@ export type Tree = {
 	low: boolean, -- drawn by the low graphics tier too
 }
 
--- True where no tree may stand: the street's clearing and the road.
-function Forest.cleared(p: Vector3): boolean
-	local C = F.Clearing
+-- True where no tree may stand: the street's clearing and the road. With
+-- `margin`, the clearing widened by that many studs (the thicket's reach).
+function Forest.cleared(p: Vector3, margin: number?): boolean
+	local C = F.Clearing + (margin or 0)
 	local ax, az = math.abs(p.X), math.abs(p.Z)
 	local laneEnd = S.LaneHalfLength + 20
 	-- The lane and its pavements, end to end.
@@ -126,14 +130,19 @@ function Forest.pickId(location: number, pick: number): string
 	return set[#set].id
 end
 
--- Every tree, the same on every call and every machine.
-function Forest.layout(): { Tree }
-	local rng = Random.new(F.Seed)
-	local out: { Tree } = {}
-	local xMax = S.LaneHalfLength + 20 + F.Clearing + F.Depth
-	local zMax = StreetLayout.BackZ + F.Clearing + F.Depth
-	local step = F.Spacing
-	local y = 0
+-- One band's trees: a jittered grid of `step`-stud cells over the box out
+-- to `reach` from the clearing, `share` of the cells, where `keep` says.
+local function band(
+	out: { Tree },
+	seed: number,
+	step: number,
+	share: number,
+	reach: number,
+	keep: (Vector3) -> boolean
+)
+	local rng = Random.new(seed)
+	local xMax = S.LaneHalfLength + 20 + F.Clearing + reach
+	local zMax = StreetLayout.BackZ + F.Clearing + reach
 	local x = -xMax
 	while x < xMax do
 		local z = -zMax
@@ -147,8 +156,8 @@ function Forest.layout(): { Tree }
 				rng:NextNumber(),
 				rng:NextNumber()
 			-- Jittered within the middle half of its cell: neighbours never closer than half a cell.
-			local p = Vector3.new(x + (0.25 + 0.5 * jx) * step, y, z + (0.25 + 0.5 * jz) * step)
-			if fill < F.Fill and not Forest.cleared(p) then
+			local p = Vector3.new(x + (0.25 + 0.5 * jx) * step, 0, z + (0.25 + 0.5 * jz) * step)
+			if fill < share and keep(p) then
 				table.insert(out, {
 					position = p,
 					yaw = yaw * 2 * math.pi,
@@ -162,6 +171,17 @@ function Forest.layout(): { Tree }
 		end
 		x += step
 	end
+end
+
+-- Every tree, the same on every call and every machine: the thicket, then the forest beyond it.
+function Forest.layout(): { Tree }
+	local out: { Tree } = {}
+	band(out, F.Seed, F.ThicketSpacing, F.ThicketFill, F.ThicketDepth, function(p)
+		return not Forest.cleared(p) and Forest.cleared(p, F.ThicketDepth)
+	end)
+	band(out, F.Seed + 1, F.Spacing, F.Fill, F.Depth, function(p)
+		return not Forest.cleared(p, F.ThicketDepth)
+	end)
 	return out
 end
 

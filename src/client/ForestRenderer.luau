@@ -10,8 +10,11 @@
 	Its `Root` is its only collider, so a person walks into the trunk. A tree
 	behind a plot is drawn from that plot's location's set (`Forest.Sets`),
 	and redrawn when the plot changes hands or location. Beyond
-	`Forest.ProxyDistance` from the camera a tree shows its `LOD_Proxy`
-	instead; the low graphics tier draws `LowGraphics` of the trees.
+	`Forest.ProxyDistance` from the camera a tree is only its `Root` and its
+	`LOD_Proxy`: the rest of its model is built when the camera comes near and
+	taken away when it goes, `SwapsPerPass` trees a pass, so the long forest
+	(his ruling, 2026-10-19 evening) costs a phone little. The low graphics
+	tier draws `LowGraphics` of the trees.
 ]]
 
 local Players = game:GetService("Players")
@@ -27,9 +30,7 @@ local ForestRenderer = {}
 type Drawn = {
 	tree: Forest.Tree,
 	model: Model?,
-	proxy: BasePart?,
-	shown: { BasePart }, -- the parts drawn near (all but Root and LOD_Proxy)
-	far: boolean?,
+	far: boolean?, -- drawn as its Root and LOD_Proxy only
 }
 
 local me = Players.LocalPlayer
@@ -126,7 +127,17 @@ local function groundAt(p: Vector3): number
 	return if hit then hit.Position.Y else 0
 end
 
-local function place(d: Drawn)
+-- Whether a tree stands farther than `ProxyDistance` from the camera.
+local function farFrom(d: Drawn, eye: Vector3?): boolean
+	if not eye then
+		return true
+	end
+	local p = d.tree.position
+	return (Vector3.new(p.X, eye.Y, p.Z) - eye).Magnitude > F.ProxyDistance
+end
+
+-- Builds a tree: whole near the camera; far, its Root and LOD_Proxy (a tree with no proxy stays whole).
+local function place(d: Drawn, far: boolean)
 	if d.model then
 		d.model:Destroy()
 		d.model = nil
@@ -145,20 +156,20 @@ local function place(d: Drawn)
 		cf = CFrame.lookAt(at, Vector3.new(math.clamp(at.X, -lane, lane), at.Y, 0))
 	end
 	m:PivotTo(cf)
-	d.proxy = nil
-	d.shown = {}
-	d.far = nil
-	for _, p in m:GetDescendants() do
-		if p:IsA("BasePart") then
-			if p.Name == "LOD_Proxy" then
-				d.proxy = p
-			elseif p.Name ~= "Root" then
-				table.insert(d.shown, p)
+	local proxy = m:FindFirstChild("LOD_Proxy", true)
+	if proxy and proxy:IsA("BasePart") then
+		if far then
+			for _, p in m:GetDescendants() do
+				if p:IsA("BasePart") and p ~= proxy and p.Name ~= "Root" then
+					p:Destroy()
+				end
 			end
 		end
+		proxy.Transparency = if far then 0 else 1
 	end
 	m.Parent = folder
 	d.model = m
+	d.far = far
 end
 
 local function build()
@@ -169,11 +180,13 @@ local function build()
 	end
 	table.clear(drawn)
 	local low = me:GetAttribute("LowGraphics") == true
+	local camera = workspace.CurrentCamera
+	local eye = camera and camera.CFrame.Position
 	for i, tree in Forest.layout() do
 		if tree.low or not low then
-			local d: Drawn = { tree = tree, model = nil, proxy = nil, shown = {}, far = nil }
+			local d: Drawn = { tree = tree, model = nil, far = nil }
 			table.insert(drawn, d)
-			place(d)
+			place(d, farFrom(d, eye))
 			if i % 40 == 0 then
 				task.wait() -- spread over frames: hundreds of trees at once would hitch a phone
 			end
@@ -181,24 +194,21 @@ local function build()
 	end
 end
 
--- Near trees whole, far trees their proxy (a tree with no proxy stays whole).
+-- Near trees whole, far trees their proxy: at most `SwapsPerPass` rebuilt a pass.
 local function lod()
 	local camera = workspace.CurrentCamera
 	if not camera then
 		return
 	end
 	local eye = camera.CFrame.Position
+	local swaps = 0
 	for _, d in drawn do
-		local proxy = d.proxy
-		if proxy then
-			local p = d.tree.position
-			local far = (Vector3.new(p.X, eye.Y, p.Z) - eye).Magnitude > F.ProxyDistance
-			if far ~= d.far then
-				d.far = far
-				proxy.Transparency = if far then 0 else 1
-				for _, part in d.shown do
-					part.Transparency = if far then 1 else 0
-				end
+		local far = farFrom(d, eye)
+		if far ~= d.far then
+			place(d, far)
+			swaps += 1
+			if swaps >= F.SwapsPerPass then
+				return
 			end
 		end
 	end
@@ -217,7 +227,7 @@ local function watchPlot(plot: Instance)
 			zoneLocation[index] = loc
 			for _, d in drawn do
 				if d.tree.zone == index then
-					place(d)
+					place(d, d.far == true)
 				end
 			end
 		end
@@ -244,7 +254,7 @@ function ForestRenderer.Start()
 		build()
 		me:GetAttributeChangedSignal("LowGraphics"):Connect(build)
 		while true do
-			task.wait(2)
+			task.wait(0.5)
 			pcall(lod)
 		end
 	end)

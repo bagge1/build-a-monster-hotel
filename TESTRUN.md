@@ -579,3 +579,4 @@ August's, on a real controller.
 - 2026-10-19 21:09 The piece menu by clicks: a room's menu opened by a click on it, Sell and Move done by clicks.
 - 2026-10-19 22:35 Free building after the import: 52 pieces saved and synced (agent, skill `import`); the lobby shell and the FrontDesk seen and walked. The trees wait for the Rojo restart.
 - 2026-10-19 22:39 The forest with the real trees after his Rojo restart: 677 models, 646 as proxies, a trunk stops a walker.
+- 2026-10-19 22:47 The forest longer and thicker by the play area (his ruling): 4,723 trees (a 60-stud thicket of 735, 3,988 beyond, out to 600 studs), 9,604 parts with only the 120 near the camera whole; no error. Pictures: `archive/screens/2026-10-19_forest_thicket.jpg`, `archive/screens/2026-10-19_forest_long.jpg`.
