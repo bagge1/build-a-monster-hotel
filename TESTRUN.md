@@ -63,6 +63,8 @@ multiply a capture's x and y by viewport width / 1920 (3434 / 1920 on his screen
   its folder and the client kept the old one. Fixed (ResidentRenderer).
 - [!] The windows' close cross drew as an empty box (Fredoka One has no ✕): now "X".
 - [x] Holiday gives Moon Shards (+8 for an Epic Werewolf).
+- [x] Perks (04:14): a Grand Banshee resident makes income ×1.1; a Ghost adds 5
+  Cleanliness to the rating's categories; each resident's perk shows in Residents.
 - [A] Offline earnings on rejoin: needs DataStore access (WAITING §3.1).
 
 ## Phase 4 (M4, progression)

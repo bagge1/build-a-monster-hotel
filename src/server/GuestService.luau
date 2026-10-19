@@ -546,7 +546,9 @@ local function checkout(g: Guest)
 	end
 	local sp = assert(Species.get(g.species))
 	local stay = Constants.Rarity[sp.rarity].stay
-	local tip = Stay.tip(g.payRate, stay, satisfaction)
+	local tip = math.floor(
+		Stay.tip(g.payRate, stay, satisfaction) * (1 + GuestService.tipBonus(player, "Tips"))
+	)
 	PlayerData.addTill(player, tip)
 	local stars = Stay.review(satisfaction)
 	HotelService.addReview(player, stars)
@@ -592,7 +594,9 @@ function GuestService.fulfil(player: Player, pieceId: string, byStaff: boolean):
 		g.requestsStaff += 1
 	else
 		g.requestsPlayer += 1
-		local bonus = math.floor(g.payRate * S.RequestTipSeconds)
+		local bonus = math.floor(
+			g.payRate * S.RequestTipSeconds * (1 + GuestService.tipBonus(player, "RequestTips"))
+		)
 		PlayerData.addTill(player, bonus)
 		Net.fire(player, "Pop", bonus, here(g), "Tip")
 	end
@@ -628,6 +632,11 @@ function GuestService.collectTill(player: Player)
 	local at = plot and PlotService.lobbyPoint(plot, "Till")
 	Net.fire(player, "Pop", amount, if at then at.Position else nil, "Collect")
 	PlayerData.stat(player, "collects")
+end
+
+-- A tip's bonus fraction for `kind` ("Tips", "RequestTips"); residents' perks set it (ResidentService).
+function GuestService.tipBonus(_player: Player, _kind: string): number
+	return 0
 end
 
 function GuestService.onCheckout(handler: (Player, Guest, number) -> ())

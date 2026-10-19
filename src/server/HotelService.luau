@@ -309,6 +309,11 @@ function HotelService.inputs(player: Player): Rating.Inputs?
 		dirtyRooms = dirty,
 		amenities = amenities,
 		entertainers = hotel.staffBonus.Entertainment or 0,
+		perks = {
+			Service = hotel.staffBonus.PerkService or 0,
+			Fun = hotel.staffBonus.PerkFun or 0,
+			Cleanliness = hotel.staffBonus.PerkCleanliness or 0,
+		},
 		decor = decor,
 		roomTypes = nTypes,
 	}

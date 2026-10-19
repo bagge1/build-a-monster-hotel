@@ -22,6 +22,7 @@ export type Inputs = {
 	entertainers: number,
 	decor: number,
 	roomTypes: number,
+	perks: { [string]: number }?, -- residents' rating perks: Service, Fun, Cleanliness points (Perks)
 }
 
 export type Categories = {
@@ -50,11 +51,12 @@ function Rating.categories(i: Inputs): Categories
 	local cleanliness = if i.rooms > 0 then 100 * (1 - i.dirtyRooms / i.rooms) else 0
 	local fun = math.min(100, i.amenities * R.FunPerAmenity + i.entertainers * R.FunPerEntertainer)
 	local style = math.min(100, i.decor * R.StylePerDecor + i.roomTypes * R.StylePerRoomType)
+	local perks = i.perks or {}
 	return {
 		Comfort = math.clamp(comfort, 0, 100),
-		Service = math.clamp(service, 0, 100),
-		Cleanliness = math.clamp(cleanliness, 0, 100),
-		Fun = fun,
+		Service = math.clamp(service + (perks.Service or 0), 0, 100),
+		Cleanliness = math.clamp(cleanliness + (perks.Cleanliness or 0), 0, 100),
+		Fun = math.clamp(fun + (perks.Fun or 0), 0, 100),
 		Style = style,
 	}
 end

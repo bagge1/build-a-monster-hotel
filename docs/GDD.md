@@ -750,6 +750,15 @@ first playtest, 2026-10-19.)
   completed is +5 % income; a mutation set completed gives a title.
 - **Releasing a resident** ("holiday") gives Moon Shards by rarity: 1 / 2 / 4 /
   8 / 15 / 30.
+- **Perks** (§4.6 "one passive perk"; two are the GDD's own examples, the rest
+  night drafts): every resident gives its perk, in the Wing or on staff, and
+  perks of a kind add up. Slime +5 % tips; Skeleton +5 Service; Pumpkin Head +5
+  Fun; Ghost +5 Cleanliness (§4.6); Mummy +5 % guest walking speed; Zombie +5 %
+  resident income; Witch +5 % request tips; Werewolf +10 % income during Hunter
+  Night (§4.6); Vampire Count +5 % bus score; Grand Banshee +10 % income.
+  Frostfang: Snowball Sprite +5 % tips; Ice Imp +5 Fun; Frost Troll +5 Service;
+  Yeti +5 Cleanliness; Snow Witch +5 % request tips; Ice Wyrm +5 % bus score;
+  Aurora Spirit +10 % income.
 
 ### A.6 Progression (§6.4–§6.6)
 

@@ -39,6 +39,8 @@ local HotelService = require(ServerScriptService.Server.HotelService)
 local GuestService = require(ServerScriptService.Server.GuestService)
 local StateService = require(ServerScriptService.Server.StateService)
 local Income = require(ServerScriptService.Server.Income)
+local BusService = require(ServerScriptService.Server.BusService)
+local Perks = require(ReplicatedStorage.Shared.Perks)
 local DevGrant = require(ServerScriptService.Server.DevGrant)
 
 local ResidentService = {}
@@ -153,13 +155,19 @@ local function publish(player: Player)
 	local hotel = HotelService.get(player)
 	if hotel then
 		hotel.staffBonus.Entertainment = sum(ResidentService.staff(data, "Entertainment"))
+		hotel.staffBonus.PerkService = Perks.total(data.residents, "Service", os.time())
+		hotel.staffBonus.PerkFun = Perks.total(data.residents, "Fun", os.time())
+		hotel.staffBonus.PerkCleanliness = Perks.total(data.residents, "Cleanliness", os.time())
 	end
 	local bell = ResidentService.staff(data, "Bellhop")
 	local best = 0
 	for _, e in bell do
 		best = math.max(best, e)
 	end
-	GuestService.setSpeedBonus(player, best * Constants.Staff.BellhopSpeedBonus)
+	GuestService.setSpeedBonus(
+		player,
+		best * Constants.Staff.BellhopSpeedBonus + Perks.total(data.residents, "Speed", os.time())
+	)
 	StateService.mark(player)
 end
 ResidentService.publish = publish
@@ -258,6 +266,7 @@ end
 -- The Wing's residents' combined rate, before offline's 50 %.
 function ResidentService.rate(player: Player, data: PlayerData.Data): number
 	local m = Income.multiplier(player)
+		* (1 + Perks.total(data.residents, "ResidentIncome", os.time()))
 	local total = 0
 	for _, r in data.residents do
 		if r.role == "" and r.campUntil <= os.time() then
@@ -369,6 +378,21 @@ end
 
 function ResidentService.Start()
 	GuestService.onCheckout(onCheckout)
+	-- Perks (§4.6, Appendix A.5) through each system's own hook.
+	local function perk(player: Player, kind: string): number
+		local data = PlayerData.get(player)
+		return if data then Perks.total(data.residents, kind, os.time()) else 0
+	end
+	Income.addPermanent(function(player)
+		local hunting = workspace:GetAttribute("HunterNightUntil") ~= nil
+		return perk(player, "Income") + (if hunting then perk(player, "HunterIncome") else 0)
+	end)
+	BusService.addScoreBonus(function(player)
+		return perk(player, "Bus")
+	end)
+	GuestService.tipBonus = function(player, kind)
+		return perk(player, kind)
+	end
 	PlayerData.onLoaded(function(player, data)
 		task.defer(function()
 			publish(player)

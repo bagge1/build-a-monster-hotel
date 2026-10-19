@@ -15,6 +15,7 @@ local Locations = require(ReplicatedStorage.Shared.Locations)
 local Mutations = require(ReplicatedStorage.Shared.Mutations)
 local Net = require(ReplicatedStorage.Shared.Net)
 local Pieces = require(ReplicatedStorage.Shared.Pieces)
+local Perks = require(ReplicatedStorage.Shared.Perks)
 local Species = require(ReplicatedStorage.Shared.Species)
 local State = require(script.Parent.State)
 local Ui = require(script.Parent.Ui)
@@ -89,10 +90,12 @@ local function drawResidents()
 			Ui.corner(row, 12)
 			local mutation = if r.mutation ~= "" then Mutations.ById[r.mutation].name .. " " else ""
 			local best = ROLE_NAMES[sp.staff]
+			local perk = Perks.BySpecies[sp.id]
+			local perkText = if perk then `  ·  {perk.text}` else ""
 			local name = Ui.label(
 				row,
 				"Name",
-				`{mutation}{sp.name}  ·  {sp.rarity}  ·  best at {best}{if r.away
+				`{mutation}{sp.name}  ·  {sp.rarity}  ·  best at {best}{perkText}{if r.away
 					then "  ·  in the Hunter Camp!"
 					else ""}`,
 				UDim2.new(1, -20, 0, 26),
