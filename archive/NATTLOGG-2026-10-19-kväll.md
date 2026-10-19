@@ -227,4 +227,12 @@ Obevakad session (`/loop`, självstyrd) medan August är borta (från ca 20:00 i
   +15% toward your hotel". Hela tutorialen Build → Done är nu spelad med
   spelets egna prompter, knappar och remotes. Inte provat: byggmenyns klick
   (kortet, placera) och allt som kräver importen.
+- **21:02** Gamepad-agenten klar (`00ae1ab`, gren `claude/gamepad-navigation`):
+  `Controls.luau` med Input Action System (kontexter under PlayerScripts),
+  varje fönster som panel (markering, B stänger), HUD:ens B och R som
+  åtgärder, byggläget på handkontroll. Granskad, sammanslagen (`282bb31`,
+  bara TESTRUN-konflikt). Playtest (`Test_Pad1019`): kontexterna finns med
+  rätt prioritet; B öppnar och stänger byggläget en gång per tryck, R öppnar
+  Residents, musklick på Book öppnar den; inga fel. Handkontrollen själv är
+  Augusts: WAITING §1.11.
 

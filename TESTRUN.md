@@ -498,19 +498,24 @@ Built on branch `claude/gamepad-navigation` (2026-10-19): `Controls.luau`
 (input actions, panels, ButtonB and ButtonY), every `Ui.window` and the Ping
 menu as panels, the HUD's keys and build mode's keys as input actions, a
 cursor on the plot for build mode (UI.md "Gamepad"). Verified there only by
-stylua, selene, `rojo build` and the pure specs under Lune. **Nothing below
-has run in Studio.** The Studio MCP sends keys and clicks, not a gamepad:
+stylua, selene, `rojo build` and the pure specs under Lune. Merged
+2026-10-19 21:01 and the keyboard items played (test profile
+`Test_Pad1019`). The Studio MCP sends keys and clicks, not a gamepad:
 the keyboard items run that way; a gamepad item runs only where
 `execute_luau` can stand in (selecting with `GuiService.SelectedObject`,
 reading an `InputContext`), and the feel of the sticks and buttons is
 August's, on a real controller.
 
-- [ ] The contexts exist and work where they are: `PlayerScripts.GameInputContexts`
+- [x] (`UiKeys` 3000 sink [Back, Menu], `HudKeys` 1000 [BuildButton,
+  ResidentsButton], `BuildKeys` and `BuildPad` 2000 sink, off; B and R fired
+  from there.) The contexts exist and work where they are: `PlayerScripts.GameInputContexts`
   holds `UiKeys` (3000), `HudKeys` (1000), `BuildKeys` and `BuildPad`
   (2000, off until build mode opens). If no action fires, an `InputContext`
   may need another parent (DEVNOTES: the avatar's `CharacterContext` lives
   in `StarterPlayer.PlayerModule`).
-- [ ] Keyboard, unchanged: B opens and closes build mode (once per press, not
+- [ ] (B opened build mode, `BuildKeys` on and the HUD hidden; B again
+  closed it; R opened Residents; a mouse click on Book opened it. R inside
+  build mode, `,` `.` and the chat not tried.) Keyboard, unchanged: B opens and closes build mode (once per press, not
   open-and-shut), R opens Residents outside build mode and rotates the ghost
   inside it, `,` and `.` turn the build camera; none of them acts while
   typing in the chat.
@@ -565,3 +570,4 @@ August's, on a real controller.
 - 2026-10-19 20:42 Phase 13 (free building) after the merge, before the import: specs 90/90; refusals, areas, a free stair and a walker up it to floor 2, guests' paths to floor 2, the desk moved with its points, decor and its doorway refusal, finishes. The menu's clicks, floor 3 and everything after the import open.
 - 2026-10-19 20:49 Rating's staff coverage after the merge: Front Desk +10 and Room Service +10 to Service, back when unassigned (a second Assign within 0.25 s is dropped by the rate limit, not a fault).
 - 2026-10-19 20:56 Tutorial Commons and the named ping after the merge: specs 97/97; the tutorial to Clean on a fresh profile; the first tutorial bus brought two Commons, one picked the hotel; the ping named the Coffin Suite. Fixed: the tutorial's guest gave up at the desk. The till's E prompt could not be triggered through the MCP beside the desk's (both E, OnePerButton, 3 studs apart): WAITING §1.10.
+- 2026-10-19 21:02 Gamepad navigation after the merge: the input contexts exist with their priorities; B, R and a mouse click act as before; no error. The gamepad's own items are August's (a real controller).

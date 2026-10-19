@@ -140,6 +140,14 @@ Med Claudes skärmdump där det finns en. -->
    (inkasseringen gick via HUD:ens Collect). Prova i spelet: står du vid
    disken, går det lätt att välja kassan? Säg till om det är krångligt.
 
+11. **Spela med en handkontroll** (2026-10-19 kväll, GDD §11 "Gamepad
+   navigation for everything"). Byggt och ihopslaget: Y tar markeringen till
+   menyknapparna, A trycker, B stänger fönstret överst (och backar ur
+   byggläget), i byggläget flyttar vänster spak biten, RB vrider, D-pad byter
+   våning och vrider vyn. Studio kan inte trycka på en handkontroll, så det
+   är ditt att känna på (`TESTRUN.md`, "Gamepad navigation"). Tangentbordet
+   och musen fungerar som förut (provat).
+
 ## §2 Beslut
 
 <!-- En fråga i taget, med alternativen och Claudes rekommendation. -->
