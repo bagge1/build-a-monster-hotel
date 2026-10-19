@@ -541,6 +541,7 @@ local function checkout(g: Guest)
 	HotelService.addReview(player, stars)
 	HotelService.recordStay(player, g.prefsMatched / math.max(1, #sp.prefs))
 	PlayerData.stat(player, "stays")
+	PlayerData.stat(player, `served_{g.species}`)
 	if Stay.isHappy(satisfaction) then
 		PlayerData.stat(player, "happyStays")
 	end

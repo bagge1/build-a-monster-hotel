@@ -32,6 +32,8 @@ local systems: { { Init: () -> (), Start: () -> () } } = {
 	require(Server.ResidentService) :: any, -- friendship and residents, from guests' check-outs
 	require(Server.BookService) :: any, -- the Monster Book, from check-outs and move-ins
 	require(Server.ProgressionService) :: any, -- rebirth and the Moon Tree, over all of the above
+	require(Server.StoreService) :: any, -- receipts, passes, boosts; after the systems it grants into
+	require(Server.DailyService) :: any, -- dailies, login, codes; pays by StoreService's income rate
 	require(Server.Analytics) :: any, -- the funnel; its Start hooks the systems above
 	require(Server.TutorialService) :: any, -- Gloom, last: it reads what every system counts
 }

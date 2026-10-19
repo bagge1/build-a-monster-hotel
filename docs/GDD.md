@@ -793,3 +793,24 @@ hunters reached a door) pays every player on the street 5 minutes of their
 income and sends a bonus bus of Rare-or-better guests. A netted resident is in
 the Hunter Camp at the east end; a prompt there rescues it, or it comes back by
 itself after 24 h.
+
+### A.9 Live systems (§8.2, §9, §10)
+
+- **Daily requests:** three a day (UTC), drawn from: host 5 happy stays, check
+  in 10 guests, clean 5 rooms, pitch 3 bus guests, answer 4 requests, collect
+  the till 6 times, reach the next whole star, serve 3 of a Common/Uncommon
+  species. Each pays 8 minutes of current income; all three, +1 Moon Shard.
+  One free reroll a day, +1 per Moon Tree level, +1 with VIP Lobby.
+- **Login calendar:** days 1–7 pay 3/4/5/6/8/10/15 minutes of income; day 7
+  gives a cosmetic (a lantern for the sign). A missed day pauses the streak.
+- **Featured Monster of the Day:** one species of the hotel's family by UTC
+  day, the same on every server; its happy stays count double.
+- **Codes:** `WELCOME` ($500) and `SPOOKY` (3 Moon Shards) as placeholders.
+- **Cash packs** are 10 / 35 / 120 minutes of current income (§10.2), where
+  income is the guests in rooms plus the Wing, at least $10/s. The Starter
+  Pack gives 10 minutes of income (at least $500), the Slime facade and a
+  30-minute 2x Cash boost, once per player. Timed boosts count down in play
+  time.
+- **Notifications:** the opt-in is offered once, after the first move-in.
+  Sending them needs Open Cloud from outside the game (not built).
+

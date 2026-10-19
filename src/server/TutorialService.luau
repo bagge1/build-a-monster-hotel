@@ -180,6 +180,11 @@ end
 
 function TutorialService.Start()
 	PlayerData.onLoaded(function(player, data)
+		-- A new profile's "Start" is the first step, stored as such so every
+		-- publish of the profile shows the same step.
+		if data.tutorial == "Start" then
+			data.tutorial = "Build"
+		end
 		stepStarted[player] = os.clock()
 		if step(data) == "Build" or step(data) == "CheckIn" then
 			GuestService.setWalkIns(player, false)

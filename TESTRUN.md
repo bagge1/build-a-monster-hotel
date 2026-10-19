@@ -82,6 +82,21 @@ multiply a capture's x and y by viewport width / 1920 (3434 / 1920 on his screen
 - [ ] The phone layout seen again after the fix.
 - [ ] Rebirth through the panel's button when every requirement is met.
 
+## Phase 5 (M5, live systems)
+
+- [x] A product's grant through `grantOnce` (dev `receipt`): 2x Cash makes the
+  income multiplier 2 and counts down in play time; a cash pack pays 10 minutes
+  of income; **the same purchase id twice grants once**.
+- [x] Three daily requests are drawn; login day 1 pays once a day; a code works
+  once, a second try and an unknown code are refused.
+- [x] The Store lists every pass and product with its price, "Soon" until its
+  id exists, and the active boost's countdown.
+- [!] Gloom's bubble vanished after a purchase: `PlayerData.publish` wrote the
+  profile's "Start" over the tutorial's "Build". Fixed (the profile stores "Build").
+- [A] A real purchase and a real rewarded ad: the ids are August's to create
+  (WAITING §3), and Roblox's purchase prompt is CoreGui (his click).
+- [ ] The Daily panel by clicks: claim a finished request, reroll one.
+
 ## August keeps
 
 - How the street, the lobby and the rooms look (every look is a night draft).

@@ -60,3 +60,13 @@ Med Claudes skärmdump där det finns en. -->
    en mock och varje spelare börjar om. I Studio: **File → Experience
    Settings → Security → Enable Studio Access to API Services**, sedan
    **Save**. Det är det enda som hindrar att save och load kan provas.
+2. **Skapa passen och produkterna i Creator Hub** (2026-10-19). GDD §10.2:s
+   fem pass (Auto-Collect Till 149, Night Manager 249, Resident Wing+ 249,
+   Extra Floor 299, VIP Lobby 399) och nio produkter (Starter Pack 99, Call the
+   Bus 39, 2x Cash 49 och 149, 2x Friendship 79, Cash Pouch/Sack/Vault 49/149/449,
+   och en gratis "2x Cash (ad)" som rewarded ad-belöning). Ge Claude id:na så
+   skrivs de in i `src/shared/Store.luau`; tills dess står de som "Soon".
+   Ikoner till dem ritas i natt (`ui/`). Slå också på **Managed Pricing** (§10.1).
+3. **Notifikationer** (GDD §9): spelet ber om opt-in efter första move-in, men
+   att *skicka* dem kräver Open Cloud utifrån. Säg till när det är dags.
+

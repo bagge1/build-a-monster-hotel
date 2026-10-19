@@ -120,6 +120,9 @@ end
 
 local function refresh()
 	local step = me:GetAttribute("Tutorial") :: string?
+	if step == "Start" then
+		step = "Build"
+	end
 	local s = step and STEPS[step]
 	bubble.Visible = s ~= nil
 	arrow.Visible = false
