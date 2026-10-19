@@ -25,10 +25,9 @@ hotel less cramped). Built, imported and played (`TESTRUN.md` phase 11):
 walls meet the slab, three floors walked, a guest up the stairs, the build
 camera; the in-game blind review triaged in the Haunted Manor README, its
 fixes (the jambs, the stairs' handrail, the lamps) imported, synced and seen
-in a playtest. Phase 11 is closed but for his calls (WAITING §2.13). His calls in WAITING §2.13. **A grid gap
-found** (not the rescale's): `Grid` treats the stair core's cells as walkable
-from every side, so a door may open onto the core's back wall and guests on
-upper floors glide through the core; a follow-up. (2) Open TESTRUN
+in a playtest. Phase 11 is closed but for his calls (WAITING §2.13). The
+grid gap it found (doors onto the stair core's back, guests through the core)
+is fixed in `Grid` (commit ef0508f, its own session). (2) Open TESTRUN
 items: piece menu by clicks, rebirth by the panel's button, a two-player gift,
 pictures of the cosmetics after their import. Frostfang's rooms are not yet
 built in a plot (a rebirth). Economy pacing: `tools/balance_model.py`
