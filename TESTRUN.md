@@ -90,8 +90,9 @@ multiply a capture's x and y by viewport width / 1920 (3434 / 1920 on his screen
   two columns above the jump button, Gloom's text fitting, a window over Gloom
   that fills the screen and scrolls.
 - [x] Rebirth through the panel's button when every requirement is met
-  (2026-10-19 20:03, test profile `Test_Eve1019a`: 4★ reached by the game's own
-  sums, $5M run, a Vampire Count; the Moon button, then **Move now: +24 Moon
+  (2026-10-19 20:03, test profile `Test_Eve1019a`: 4★ by the game's rating sums over
+  inputs set by a Studio helper Script (27 suites put at tier 3, 30 five-star
+  reviews) plus four real check-ins, $5M run, a Vampire Count; the Moon button, then **Move now: +24 Moon
   Shards** clicked: Frostfang Lodge, 24 shards, 1 move, $100, no pieces, all 6
   residents kept).
 

@@ -70,8 +70,9 @@ Obevakad session (`/loop`, självstyrd) medan August är borta (från ca 20:00 i
   eftersom free-building skriver om byggandet och street lägger till skog och
   bussar; till dess b och c.
 - **20:03** b: rebirth med panelens knapp (testprofil `Test_Eve1019a`; 4★
-  nått genom spelets egen räkning: 27 sviter i nivå 3, fem residenter i
-  tjänst, fyra incheckningar): Moon-knappen, sedan **Move now: +24 Moon
+  räknat av spelet, men med indata satta av ett hjälpskript i Studio: 27
+  sviter satta till nivå 3 och 30 femstjärniga recensioner, plus fem
+  residenter i tjänst och fyra riktiga incheckningar): Moon-knappen, sedan **Move now: +24 Moon
   Shards** → Frostfang Lodge, 24 shards, 1 flytt, $100, inga rum, alla 6
   residenter kvar. Frostfangs rum i tomten: `fill IglooRoom` 43 rum på 3
   våningar, 812 meshdelar alla från Frostfangs kit, inga tomma; Snowball
