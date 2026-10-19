@@ -852,4 +852,13 @@ All by the UTC clock, the same on every server:
 - **Candy shop (Halloween):** Jack-o'-Lantern decor (30; candles, garden, any
   location), Pumpkin sign (60) and Bat bunting (90) cosmetics. The cosmetics
   are not drawn yet (no facade or sign models).
+- **Winter** (built 2026-10-19 as a night draft, every part his to change):
+  §8.2 names it "the Frostfang crossover". Winter has its own event currency,
+  **Snowflakes** ❄, earned exactly as Candy is and starting from zero each
+  Winter, and a **Winter shop** of Frostfang-flavoured things for any
+  location: Snowman decor (30; cold, snow, so a Frostfang hotel's guests like
+  it), an Icicle sign (60) and Fairy lights across the lobby (90), the same
+  costs as the Candy shop. Each season has its own shop (`Events.Shops`).
+  Not built: Frostfang guests on the Haunted Manor bus during Winter (a
+  bigger crossover; WAITING §2).
 

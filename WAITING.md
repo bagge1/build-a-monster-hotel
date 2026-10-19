@@ -97,6 +97,15 @@ Med Claudes skärmdump där det finns en. -->
    tutorialens Slime behöver 1 friendship (Vampire Count räknades också), och
    tutorialens Vampire kommer nu tre bussar efter målkortet (§11), inte direkt.
 
+8. **Winter-eventet** (GDD §8.2 "Frostfang crossover", byggt som nattutkast
+   2026-10-19, Appendix A.10): Winter har en egen valuta, **Snowflakes** ❄,
+   som tjänas som Candy, och en Winter shop (Snowman decor 30, Icicle sign
+   60, Fairy lights 90). **Att bestämma:** räcker det som crossover, eller ska
+   Frostfang-gäster också åka med Night Bus till Haunted Manor under Winter?
+   Då behöver de ett rum där (t.ex. vilket rum som helst av rätt storlek).
+   **Rekommendation:** ja, ett Frostfang-monster per buss ibland, i ett
+   Standard Room; det är det som gör det till en crossover.
+
 ## §3 Creator Hub och publicering
 
 1. ~~**Slå på Studio Access to API Services**~~ (gjort 2026-10-19: på i

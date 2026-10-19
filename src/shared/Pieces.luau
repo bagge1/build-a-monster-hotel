@@ -401,7 +401,7 @@ local decor: { Decor } = {
 		location = 1,
 		colour = Color3.fromRGB(255, 230, 150),
 	},
-	-- Event decor (location 0: any location once bought in the Candy shop, Events.CandyShop)
+	-- Event decor (location 0: any location once bought in a season's shop, Events.Shops)
 	{
 		id = "JackOLantern",
 		name = "Jack-o'-Lantern",
@@ -409,6 +409,14 @@ local decor: { Decor } = {
 		cost = 0,
 		location = 0,
 		colour = Color3.fromRGB(245, 140, 30),
+	},
+	{
+		id = "Snowman",
+		name = "Snowman",
+		tags = { "cold", "snow" },
+		cost = 0,
+		location = 0,
+		colour = Color3.fromRGB(240, 248, 255),
 	},
 	-- Location 2 (night draft, Appendix A.6)
 	{

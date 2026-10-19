@@ -1,6 +1,7 @@
 local Events = require(Shared.Events)
 local Constants = require(Shared.Constants)
 local Mutations = require(Shared.Mutations)
+local Pieces = require(Shared.Pieces)
 
 -- 2026-10-19 (a Monday in Halloween) and 2026-08-03 (a Monday in no season), noon UTC.
 local HALLOWEEN = 1792411200
@@ -64,4 +65,29 @@ describe("Events", function()
 		expect.eq(parades, 1, "parades a week")
 		expect.eq(hunts, 1, "hunts a week")
 	end)
+
+	it(
+		"a season with a currency has a shop, and every shop decor is a decor for any location",
+		function()
+			for id, shop in Events.Shops do
+				expect.truthy(#shop > 0, `{id} shop has items`)
+				for _, item in shop do
+					local decorId = string.match(item.key, "^Decor_(.+)$")
+					if decorId then
+						local d = Pieces.decor(decorId)
+						expect.truthy(d, `{item.key} is a decor`)
+						expect.eq(d.location, 0, `{item.key} location`)
+					else
+						expect.truthy(
+							string.match(item.key, "^Cosmetic_"),
+							`{item.key} is decor or cosmetic`
+						)
+					end
+				end
+			end
+			local winter = Events.season(HALLOWEEN + 60 * 86400) -- 18 December
+			expect.truthy(winter and winter.currency, "Winter has a currency")
+			expect.truthy(#Events.shop(winter and winter.id) > 0, "Winter has a shop")
+		end
+	)
 end)

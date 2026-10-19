@@ -62,7 +62,7 @@ local function buy(player: Player, key: string)
 	end
 	local s = seasonFor(data)
 	local item
-	for _, i in Events.CandyShop do
+	for _, i in Events.shop(s and s.id) do
 		if i.key == key then
 			item = i
 		end
@@ -72,11 +72,11 @@ local function buy(player: Player, key: string)
 	end
 	local owned = data.unlocked[key] or data.cosmetics[key]
 	if owned then
-		Net.fire(player, "Refused", "CandyShop", "You already have it")
+		Net.fire(player, "Refused", "EventShop", "You already have it")
 		return
 	end
 	if data.candy < item.cost then
-		Net.fire(player, "Refused", "CandyShop", "Not enough Candy")
+		Net.fire(player, "Refused", "EventShop", `Not enough {s.currencyName}`)
 		return
 	end
 	data.candy -= item.cost
@@ -135,7 +135,7 @@ local function tick()
 end
 
 function EventService.Init()
-	Net.on("CandyShop", buy)
+	Net.on("EventShop", buy)
 end
 
 function EventService.Start()
@@ -158,7 +158,7 @@ function EventService.Start()
 		local t = EventService.now()
 		local s = seasonFor(data)
 		local shop = {}
-		for _, i in Events.CandyShop do
+		for _, i in Events.shop(s and s.id) do
 			table.insert(shop, {
 				key = i.key,
 				name = i.name,
@@ -172,6 +172,8 @@ function EventService.Start()
 			season = if s then s.name else nil,
 			mutation = if s then s.mutation else nil,
 			currency = s ~= nil and s.currency,
+			currencyName = if s then s.currencyName else nil,
+			icon = if s then s.icon else nil,
 			candy = data.candy,
 			shop = shop,
 			fullMoon = Events.fullMoonWeekend(t),

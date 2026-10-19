@@ -2,7 +2,8 @@
 --[[
 	The events panel (GDD §8.2): what is on now (the season and its mutation,
 	a Full Moon weekend, the Monster Parade and when it starts) and the
-	season's Candy shop. Its HUD button shows only while something is on.
+	season's shop (Candy at Halloween, Snowflakes in Winter). Its HUD button
+	shows only while something is on, with the season's glyph.
 	Drawn from the `event` state section; the server checks every purchase.
 ]]
 
@@ -49,7 +50,7 @@ local function draw()
 	end
 	if e.currency then
 		line(
-			`🍬 Candy: {e.candy}  ·  from happy stays and defended Hunter Nights`,
+			`{e.icon} {e.currencyName}: {e.candy}  ·  from happy stays and defended Hunter Nights`,
 			4,
 			Ui.Colour.Text
 		)
@@ -66,11 +67,11 @@ local function draw()
 			local b = Ui.button(
 				row,
 				"Buy",
-				if item.owned then "Owned" else `🍬 {item.cost}`,
+				if item.owned then "Owned" else `{e.icon} {item.cost}`,
 				UDim2.fromOffset(120, 44),
 				function()
 					if not item.owned then
-						Net.send("CandyShop", item.key)
+						Net.send("EventShop", item.key)
 					end
 				end,
 				if item.owned
@@ -86,6 +87,7 @@ end
 local function refreshButton()
 	local e = State.data.event
 	button.Visible = e ~= nil and (e.season ~= nil or e.fullMoon or e.parade or e.paradeIn ~= nil)
+	button.Text = `{if e and e.icon then e.icon else "🎃"} Events`
 end
 
 function EventPanel.Init()

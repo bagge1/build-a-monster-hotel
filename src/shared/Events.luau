@@ -10,7 +10,10 @@
 	    every minute, weighted to the rare.
 	  - THE SEASON: Halloween (1 October – 3 November), our biggest event (§8.2):
 	    Candy from every happy stay, the Pumpkin mutation, the Candy shop.
-	    Winter (10 December – 5 January) rolls Frosted.
+	    Winter (10 December – 5 January), the Frostfang crossover: Snowflakes,
+	    the Frosted mutation, the Winter shop.
+	  Each season with a currency has its own shop (`Events.Shops`); the
+	  currency is one profile field for whichever season is on.
 
 	Every time and weight here is a night draft (GDD Appendix A.10).
 ]]
@@ -56,8 +59,15 @@ function Events.parade(t: number): boolean
 	return s ~= nil and t >= s and t < s + Events.ParadeLength
 end
 
-export type Season =
-	{ id: string, name: string, mutation: string, chance: number, currency: boolean }
+export type Season = {
+	id: string,
+	name: string,
+	mutation: string,
+	chance: number,
+	currency: boolean,
+	currencyName: string, -- what the season's currency is called
+	icon: string, -- the currency's and the Events button's glyph
+}
 
 local SEASONS: { { from: { number }, to: { number }, season: Season } } = {
 	{
@@ -69,6 +79,8 @@ local SEASONS: { { from: { number }, to: { number }, season: Season } } = {
 			mutation = "Pumpkin",
 			chance = 0.03,
 			currency = true,
+			currencyName = "Candy",
+			icon = "🍬",
 		},
 	},
 	{
@@ -79,7 +91,9 @@ local SEASONS: { { from: { number }, to: { number }, season: Season } } = {
 			name = "Winter",
 			mutation = "Frosted",
 			chance = 0.03,
-			currency = false,
+			currency = true, -- night draft (Appendix A.10)
+			currencyName = "Snowflakes",
+			icon = "❄",
 		},
 	},
 }
@@ -133,8 +147,12 @@ function Events.rollMutation(r: number, t: number): string?
 	return Mutations.roll(r)
 end
 
--- The Candy shop (§8.2): event cosmetics and decor, bought with Candy.
-Events.CandyShop = {
+export type ShopItem = { key: string, name: string, cost: number, text: string }
+
+-- Each season's shop (§8.2): event cosmetics and decor, bought with its currency.
+Events.Shops = {} :: { [string]: { ShopItem } }
+
+Events.Shops.Halloween = {
 	{
 		key = "Decor_JackOLantern",
 		name = "Jack-o'-Lantern decor",
@@ -154,5 +172,32 @@ Events.CandyShop = {
 		text = "Paper bats strung across your lobby.",
 	},
 }
+
+-- Winter, the Frostfang crossover (night draft, Appendix A.10).
+Events.Shops.Winter = {
+	{
+		key = "Decor_Snowman",
+		name = "Snowman decor",
+		cost = 30,
+		text = "A decor piece for any room: cold, snow.",
+	},
+	{
+		key = "Cosmetic_IcicleSign",
+		name = "Icicle sign",
+		cost = 60,
+		text = "Your hotel sign, hung with icicles.",
+	},
+	{
+		key = "Cosmetic_FairyLights",
+		name = "Fairy lights",
+		cost = 90,
+		text = "Warm little lights strung across your lobby.",
+	},
+}
+
+-- The shop of the season `id` (empty when it has none).
+function Events.shop(id: string?): { ShopItem }
+	return if id then Events.Shops[id] or {} else {}
+end
 
 return Events
