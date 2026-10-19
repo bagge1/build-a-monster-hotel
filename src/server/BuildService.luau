@@ -196,10 +196,8 @@ local function place(player: Player, item: string, floor: number, x: number, z: 
 		refuse(player, "Place", why or "Locked")
 		return
 	end
-	local candidate = Layout.piece(
-		"",
-		{ item = item, floor = floor, x = x, z = z, r = r }
-	) :: Grid.Placed
+	local candidate =
+		Layout.piece("", { item = item, floor = floor, x = x, z = z, r = r }) :: Grid.Placed
 	candidate.id = nil
 	local legal, reason = Grid.canPlace(PlotService.world(data), candidate)
 	if not legal then

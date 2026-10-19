@@ -434,9 +434,9 @@ local function flood(
 				end
 			end
 		end
-		local from = hops[k]
-		if from then
-			for _, hop in from do
+		local out = hops[k]
+		if out then
+			for _, hop in out do
 				if parent[hop.to] == nil then
 					parent[hop.to] = k
 					via[hop.to] = hop
