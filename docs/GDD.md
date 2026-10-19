@@ -74,7 +74,7 @@ All numbers in this doc are **starting values for tuning**, not final balance. F
 
 - **Server:** 6 players, 6 plots on one street ("Creepy Lane"). Friends can join friends; private servers are cheap (§10.3).
 - **Plot claim:** on joining, the player gets the nearest free plot automatically. Their saved hotel is rebuilt there (the layout is saved relative to the plot, so any plot works).
-- **Plot size:** a 12 × 12 cell grid (1 cell = 6 studs, so a 2×2 room is 12 × 12 studs; a floor is about 12 studs tall; players are the standard ~5-stud avatar) per floor. Floors 1–3 at start; more through progression (and a capacity pass).
+- **Plot size:** a 12 × 12 cell grid (1 cell = 12 studs, so a 2×2 room is 24 × 24 studs; a floor is 18 studs tall, walls up to the slab above; players are the standard ~5-stud avatar, and furniture, doors and steps are sized for them, not scaled with the grid) per floor. Floors 1–3 at start; more through progression (and a capacity pass).
 - **The bus stop** is at one end of the street. Monsters walk down the pavement and "browse" each hotel. Each hotel sign shows its **star rating, its featured room types and its like count**.
 - **Mixed locations on one street:** each plot renders its owner's current location (Haunted Manor, Frostfang Lodge…) as a themed facade and ground tile. The bus carries families for every location present on the server. Players who have rebirthed have neighbours who can see what's coming, which builds aspiration.
 
@@ -613,6 +613,7 @@ After the soft launch we apply for Kids/Select eligibility:
 | 2026-10-19 | No paid random items and no 2x Cash pass at launch | Policy simplicity, fairness in the contested bus |
 | 2026-10-19 | Iron Frontier (C+D) stashed as the next game | `D:\Roblox\iron-frontier\CONCEPT.md` |
 | 2026-10-19 | Standard ~5-stud avatar, 6-stud grid cells | His ruling on the scale of a person (CLAUDE.md) |
+| 2026-10-19 | **The grid doubles: 12-stud cells, 18-stud floors**, walls up to the slab; furniture, doors and steps stay person-sized | His ruling after walking the new lobby in the game: "its a bit cramped. Could probably double everything just about. The roof is also a couple studs above the walls, not connected." Picked over "only the lobby" and 1.5×, and 18 over 12 or 24 studs a floor |
 | 2026-10-19 | GitHub repo `build-a-monster-hotel`, private; folder renamed to match | His ruling |
 | 2026-10-19 | Night sessions may commit, push and run DataStore-writing playtests | His go (the game is not live) |
 | 2026-10-19 | The lobby is an indoor reception: a front wall with the entrance arch and windows; the desk across the end away from the stairs, served toward the entrance, a key rack behind the clerk; the back row clear for the floor-1 doors; the hotel sign on its posts at the stair-side corner of the forecourt, off the entrance (layout A and the corner sign of three grey drafts; `MODELS.md`, "Lobby") | His rulings: nothing in front of an entrance, a counter a person can stand at, a lobby that reads as a reception and not a patio (`modelling/taste.md`) |
@@ -637,7 +638,7 @@ Every number below is a **placeholder** (tagged `PLACEHOLDER` in
   **bus stop is at the west end**. Guests from a bus walk east down the centre
   of the lane ("browsing"), then turn to the hotel they picked.
 - **The plot frame:** cell (x, z), x 0–11 along the street, z 0–11 away from it;
-  floor 1 at ground level, each floor 12 studs above the last.
+  floor 1 at ground level, each floor 18 studs above the last (his ruling, 2026-10-19 evening).
 - **Reserved cells:** the **Lobby** is the front two rows of floor 1 (z 0–1):
   entrance in the middle, front desk, till, waiting spots. The **stair core** is
   cells x 10–11, z 2–3 on every floor (stairs for players; guests glide up it).

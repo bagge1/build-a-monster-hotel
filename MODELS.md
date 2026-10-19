@@ -117,6 +117,12 @@ allow.
 
 ## Hotel kit
 
+> **Being rescaled** (his ruling, 2026-10-19 evening, `CLAUDE.md` "The scale
+> of a person"): the cell becomes 12 studs and a floor 18, with walls up to
+> the slab; furniture, doors, counters and steps stay person-sized. The
+> numbers below are still the 6-stud contract until the rescale rewrites them,
+> and this section is rewritten first.
+
 Everything a hotel is built from (GDD §5, Appendix A.1–A.2). One set per
 location (`blender/hotel/<location>/`); one `.rbxm` per piece in
 `assets/HotelKit/<Location>/`, which `default.project.json` maps to

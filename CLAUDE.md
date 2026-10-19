@@ -47,9 +47,13 @@ cannot wait, and only if:
 ## The scale of a person
 
 **His ruling, 2026-10-19:** players keep the **standard Roblox avatar (about
-5 studs tall, not scaled)**, and the plot grid cell is **6 studs** (it was 4 in
-the first GDD draft). A 2×2 room is 12 × 12 studs; a floor is about 12 studs
-tall (GDD §3, §5). Monsters are measured against the same 5-stud person.
+5 studs tall, not scaled)**. **The plot grid cell is 12 studs and a floor is 18
+studs** (his ruling the same evening, after walking the lobby: "its a bit
+cramped. Could probably double everything just about"; the cell was 6 and the
+floor 12 before, 4 in the first GDD draft). A 2×2 room is 24 × 24 studs; walls
+reach the slab above (17 clear). The spaces doubled, not the things in them:
+furniture, doors, counters and steps stay built for the 5-stud person (GDD §3,
+§5). Monsters are measured against the same 5-stud person.
 
 Everything a person uses (seats, doors, stairs, counters, railings, walkways)
 is built for that height, and a clearance is measured against it, never against

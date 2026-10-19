@@ -160,10 +160,11 @@ Med Claudes skärmdump där det finns en. -->
      receptionistens huvud skymde den. Nycklarna hänger nu 5–7,3 studs upp.
      **Rekommendation:** behåll; titta i spelet.
 
-12. **Skalan: "dubbla allt, ungefär"** (2026-10-19, du i spelet: trångt, och
-   taket sitter ett par studs ovanför väggarna). Rummens väggar slutar 1 stud
-   under bjälklaget ovanför; lobbyns framvägg och fasaden når upp. Claude
-   frågar i sessionen vad som ska dubblas.
+12. ~~**Skalan: "dubbla allt, ungefär"**~~ (besvarat 2026-10-19: hela
+   rutnätet dubblas, en cell 12 studs, en våning 18 studs, väggarna upp till
+   bjälklaget; möbler, dörrar och trappsteg behåller personens storlek. Står i
+   `CLAUDE.md`, "The scale of a person", och GDD §3 och §18. Byggs i en egen
+   session.)
 
 ## §3 Creator Hub och publicering
 
