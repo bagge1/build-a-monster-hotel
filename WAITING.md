@@ -280,7 +280,7 @@ Med Claudes skärmdump där det finns en. -->
    arbeta, inte stå vid disken; GDD §5.4). Byggs i en egen session: Room
    Service går till rummet och tillbaka, Housekeeping till rummet som ska
    städas, och en "✓" vid dörren när det är klart.
-   **Byggt (gren `claude/staff-walk-b4aa0b`, inte provkört i Studio):**
+   **Byggt, ihopslaget i main och provkört i Studio 2026-10-19 kväll** (Room Service och Housekeeping går till rummet och tillbaka, "✓" vid dörren; våning 3 provas när fri byggnad är inne):
    tiden är som förut, men aldrig kortare än att den hinner gå dit och stå
    2 s vid dörren, och en anställd tar ett jobb i taget (fler anställda tar
    fler rum samtidigt i stället för ett rum snabbare). Platshållare i GDD

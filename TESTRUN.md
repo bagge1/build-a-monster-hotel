@@ -270,35 +270,35 @@ the slab (`CLAUDE.md`, "The scale of a person"; `MODELS.md`, "Hotel kit").
 
 ## Staff at work (GDD §4.6 "Staff are seen working", Appendix A.5; after the merge)
 
-Built on branch `claude/staff-walk-b4aa0b`, not yet run in Studio. Play once
-it is merged and synced, with free building's placed stairs and movable desk
+Merged into main 2026-10-19 19:52 and played 19:55–19:58 (the evening's loop,
+`archive/NATTLOGG-2026-10-19-kväll.md`). Played again once free building is in, with free building's placed stairs and movable desk
 in too, since the errand reads the posts from the lobby's attachments and the
 way from `GuestService.pathToDoor`.
 
-- [ ] The staff spec: `python tools/test_bundle.py staff`, then the bundle in
+- [x] The staff spec: `python tools/test_bundle.py staff`, then the bundle in
   the Server datamodel: all pass.
-- [ ] A Room Service resident (`DevCommand` `resident Slime`, assigned in the
+- [x] A Room Service resident (`DevCommand` `resident Slime`, assigned in the
   panel), a guest on floor 1 and `request`: the resident leaves its post at
   once, walks the hallway to the door, stands outside it facing in and
   knocks; "✓ Room Service" rises at the door when the request closes; it
   walks back to its post. The request closes no sooner than 12 s ÷ its
   efficiency after it opened (server log or a stopwatch).
-- [ ] The same for a room on floor 3: up both flights by the guests' stairs,
+- [?] (No room above floor 1 in the test profile; play with free building's stairs.) The same for a room on floor 3: up both flights by the guests' stairs,
   through no wall or slab (rays along `Path`); a long walk ends the job 2 s
   after it reaches the door, before the request's 30 s run out.
-- [ ] Housekeeping: a checkout leaves a dirty room; the resident walks to it,
+- [x] Housekeeping: a checkout leaves a dirty room; the resident walks to it,
   "✓ Housekeeping" rises when the room turns clean, and it walks back.
-- [ ] Answered first: answer the request (or clean the room) yourself while
+- [x] (Closed by the guest's checkout, not by the player.) Answered first: answer the request (or clean the room) yourself while
   the resident is on its way: it turns round where it stands, no "✓".
-- [ ] Two requests and one Room Service: it serves the older first, walks
+- [x] Two requests and one Room Service: it serves the older first, walks
   back, then takes the other. Two Room Service residents serve both at once,
   each from its own post (`Slot` 1 and 2 side by side).
-- [ ] Reassigned mid-errand (to Front Desk, or back to the Wing): it is at
+- [x] Reassigned mid-errand (to Front Desk, or back to the Wing): it is at
   its new post at once, nothing left walking.
-- [ ] Front Desk stays behind the desk and checks guests in; Bellhop,
+- [x] (At its post at once; check-in by Front Desk not watched.) Front Desk stays behind the desk and checks guests in; Bellhop,
   Entertainment and Security stay at their posts.
-- [ ] A second player visiting sees the walk and the "✓" too.
-- [ ] Studio's output: no `[residents] tick failed`.
+- [A] (Two players need his Test → Start Test Session.) A second player visiting sees the walk and the "✓" too.
+- [x] Studio's output: no `[residents] tick failed`.
 
 ## August keeps
 
@@ -321,3 +321,4 @@ way from `GuestService.pathToDoor`.
 - 2026-10-19 15:34 Phase 9: Frostfang's rooms rayed beside the street, all clear.
 - 2026-10-19 17:55 Phase 10: the new lobby imported, rayed and walked; PrimaryPart lost by Rojo's live sync, fixed in HotelKit; the in-game review paused for his scale question.
 - 2026-10-19 night Phase 11: the doubled scale imported (27), walls meet the slab, walked up and down three floors, a guest up the stairs; a door onto the stair core's back and guests through the core on floor 2 (grid, follow-up); the in-game review's handrail, jambs and lamps fixed, 25 re-staged.
+- 2026-10-19 19:58 Staff at work: spec 7/7; Room Service out 1.0 s, at the door 2.1 s, done 13.3 s, back 14.3 s, walked on the client post → hall → door (facing it) → post; Housekeeping two rooms in turn with "✓"; turned back when the guest left; reassigned mid-errand stands at the new post; two Room Service (Slot 1, 2) take rooms 1 and 3 at once, the Mummy (efficiency 0.6) done at ~20 s. Floor 3 waits for free building's stairs.
