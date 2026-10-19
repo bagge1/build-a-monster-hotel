@@ -2,7 +2,9 @@
 --[[
 	Quick pings (GDD §7: co-play without chat): a few set phrases a player can
 	show over their head with one tap. The server shows them to everyone
-	(`SocialService`); this is the menu.
+	(`SocialService`); this is the menu. The server words "Need a room": it
+	names the room the rarest guest on the street wants ("Need a Coffin
+	Suite!"), so the button only asks for it.
 ]]
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")

@@ -988,6 +988,23 @@ Vampire Count booked to this hotel rides the third bus after it once a Coffin
 Suite stands vacant; a booked guest skips browsing) → clean a room → assign the Slime to staff →
 the Frostfang preview. Skippable at any step, never locking movement.
 
+- **The tutorial's Commons** (§11 1:45, "The tutorial weights Commons toward
+  your hotel"; built 2026-10-19, Claude's reading, WAITING §2.25): once the
+  tutorial Slime has its room (past the check-in step), the first **2** buses
+  (PLACEHOLDER) that come while the player is in the tutorial bring that
+  hotel up to **2** Commons each (PLACEHOLDER), one per vacant room a Common
+  of its location takes, round its room types in turn. They ride **in place
+  of** the bus's drawn guests, never its guarantees or an announced guest, so
+  the bus keeps its size (his 40 %). They browse like any guest, so the player
+  can Pitch one, and score **+10** (PLACEHOLDER, `Scoring.TutorialBoost`)
+  toward that hotel only, added before the pitch. At +10 a new 1★ hotel beats
+  a 4★ hotel without a pitch and is even with a 5★ hotel that matches both
+  preferences; the new player's pitch tips that back.
+- **"Need a Coffin Suite!"** (§7 quick pings, built 2026-10-19): the "Need a
+  room" ping names the room the rarest guest on the street wants, among the
+  guests browsing and the next bus's announced guest (Legendary and up); with
+  none, it says "Need a room for that guest!". The server words it.
+
 ### A.8 Hunter Night (§8.1)
 
 Hunters walk from the east end of the street, each toward one hotel, and take

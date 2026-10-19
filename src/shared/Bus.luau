@@ -13,6 +13,8 @@
 	  - a Mythic on the Midnight Bus, the first at or after each 2 hours;
 	  - the rest drawn by rarity weight, then uniformly within the rarity
 	    among the families present on the street (§3);
+	  - during a new player's tutorial, Commons for that hotel's vacant rooms
+	    in place of some of the rest (`Bus.commonsFor`, §11 1:45);
 	  - the drive: out of the forest to the west stop, the east stop, and
 	    away into the forest (`Bus.drive`), the same on the server (when
 	    guests step off) and on every client (where the bus is drawn).
@@ -116,6 +118,65 @@ function Bus.passengers(
 	end
 	while #out < size do
 		add(Bus.rollRarity(rand(), weights))
+	end
+	return out
+end
+
+--[[ The rarest of `ids` (species ids), the first of them on a tie, or nil
+	for none: the guest a bus announces (§4.3) and the room a "Need a ...!"
+	ping names (§7). ]]
+function Bus.rarest(ids: { string }): string?
+	local best, bestRank = nil, 0
+	for _, id in ids do
+		local sp = Species.get(id)
+		local rank = sp and table.find(Constants.RarityOrder, sp.rarity) or 0
+		if rank > bestRank then
+			best, bestRank = id, rank
+		end
+	end
+	return best
+end
+
+--[[ The Commons the tutorial brings a new hotel (§11 1:45: "The tutorial
+	weights Commons toward your hotel"): at most `n`, never more for a room
+	type than `vacant` (room id → rooms of it standing vacant) has, each a
+	Common of `locations` that takes that room, drawn uniformly by `rand()` in
+	[0, 1). Round the room types in turn (sorted, so it is the same every
+	time), so two vacant types both get a guest before either gets two. A room
+	no Common takes gets none. ]]
+function Bus.commonsFor(
+	vacant: { [string]: number },
+	n: number,
+	locations: { [number]: boolean },
+	rand: () -> number
+): { string }
+	local takers: { [string]: { string } } = {}
+	for _, id in Bus.pool("Common", locations) do
+		local room = (Species.get(id) :: Species.Species).room
+		takers[room] = takers[room] or {}
+		table.insert(takers[room], id)
+	end
+	local rooms: { string } = {}
+	local left: { [string]: number } = {}
+	for room, count in vacant do
+		if takers[room] and count > 0 then
+			table.insert(rooms, room)
+			left[room] = count
+		end
+	end
+	table.sort(rooms)
+	local out: { string } = {}
+	local any = true
+	while #out < n and any do
+		any = false
+		for _, room in rooms do
+			if #out < n and left[room] > 0 then
+				local pool = takers[room]
+				table.insert(out, pool[1 + math.floor(rand() * #pool)])
+				left[room] -= 1
+				any = true
+			end
+		end
 	end
 	return out
 end

@@ -437,6 +437,29 @@ WAITING §0.9): what needs the new models or the build menu's clicks stays open.
   floor" brings the model's back.
 - [ ] Rays and walkers as in phase 11 over a hotel of placed stairs (`fill`).
 
+## Tutorial Commons and the named ping (GDD §11 1:45, §7; after the merge)
+
+Built on `worktree-agent-af840fbd28a857dd3` (GDD Appendix A.7, WAITING
+§2.25). Verified there by stylua, selene, `rojo build` and the pure specs
+under Lune (`bus`, `scoring` and the rest, 86/86); **nothing of it has run in
+Studio.** No Rojo restart needed (no project file changed).
+
+- [ ] The spec bundle passes in a playtest, `bus` and `scoring` included.
+- [ ] A fresh profile (`DevCommand tutorial Build`): build two Standard
+  Rooms, check the Slime in; the next bus (`bus`) carries up to 2 Commons
+  that take a Standard Room (`nextbus` before it shows the drawn list; the
+  Commons replace its tail at arrival), the bus's size unchanged, its Epic or
+  Legendary still aboard. They browse, can be pitched, and pick the new hotel
+  (with a second player's 4★ hotel vacant beside it, most of the time).
+- [ ] The weighting stops after 2 such buses (`data`: `tutorialCommonBuses`
+  2) and on Skip; it never starts while the step is Build or CheckIn (the
+  Slime keeps its room); a hotel with only a Coffin Suite vacant gets none.
+- [ ] The ping menu's "Need a room": with a Vampire Count announced
+  (`legendary`), it reads "Need a Coffin Suite!" over the head; with Commons
+  browsing and nothing announced, the room the rarest of them wants ("Need an
+  Attic Room!" for a Ghost); with the street empty, "Need a room for that
+  guest!".
+
 ## August keeps
 
 - How the street, the lobby and the rooms look (every look is a night draft).

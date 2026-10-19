@@ -49,6 +49,13 @@ and luau-lsp installed globally by rokit). After the merge: TESTRUN phase 12.
 `tools/balance_model.py` stops on the changed tier formula until it models
 furnishing.
 
+**The tutorial's Commons and the named ping** (§11 1:45, §7) are built on
+branch `worktree-agent-af840fbd28a857dd3` (2026-10-19, not merged, **not run
+in Studio**): the first 2 tutorial buses bring Commons for the new hotel's
+vacant rooms, +10 toward it (PLACEHOLDER all, WAITING §2.25); "Need a room"
+names the rarest street guest's room. After the merge: TESTRUN "Tutorial
+Commons and the named ping".
+
 **Earlier next steps:** (1) **The doubled scale** (his ruling 2026-10-19
 evening, `CLAUDE.md` "The scale of a person": double only what makes the
 hotel less cramped). Built, imported and played (`TESTRUN.md` phase 11):

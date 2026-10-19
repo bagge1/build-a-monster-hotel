@@ -13,9 +13,12 @@
 	What it arranges: the tutorial Slime, the only guest in the game that does
 	not come on the Night Bus (his ruling, 2026-10-19), walks in from the
 	pavement before the first bus (§11 0:30); its stay counts as happy and it
-	needs 1 friendship (§6.3); the goal card unlocks the Coffin Suite with one
-	free build, and a Vampire Count booked to this hotel rides the third bus
-	after it once one stands (§11 "the tutorial schedules it").
+	needs 1 friendship (§6.3); the first `Tutorial.CommonBuses` buses once
+	the Slime is in bring Commons for the hotel's vacant rooms, weighted toward
+	it ("The tutorial weights Commons toward your hotel", §11 1:45; BusService);
+	the goal card unlocks the Coffin Suite with one free build, and a Vampire
+	Count booked to this hotel rides the third bus after it once one stands
+	(§11 "the tutorial schedules it").
 ]]
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -183,7 +186,28 @@ function TutorialService.Init()
 	end)
 end
 
+--[[ The hotels the next bus brings Commons (§11 1:45): those in their
+	tutorial once the Slime has its room (past CheckIn, so a Common never
+	takes the room the Slime walks in to), until `CommonBuses` buses have
+	brought them some (BusService counts `tutorialCommonBuses`). ]]
+local function commonsWanted(): { Player }
+	local out = {}
+	for player, data in PlayerData.loaded() do
+		local s = step(data)
+		if
+			s ~= "Build"
+			and s ~= "CheckIn"
+			and s ~= "Done"
+			and stat(data, "tutorialCommonBuses") < Constants.Tutorial.CommonBuses
+		then
+			table.insert(out, player)
+		end
+	end
+	return out
+end
+
 function TutorialService.Start()
+	BusService.setTutorialHotels(commonsWanted)
 	PlayerData.onLoaded(function(player, data)
 		-- A new profile's "Start" is the first step, stored as such so every
 		-- publish of the profile shows the same step.

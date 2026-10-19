@@ -98,6 +98,81 @@ describe("Bus", function()
 		end
 	end)
 
+	it("the rarest guest is never outranked by another aboard, and none means nil", function()
+		local order = Constants.RarityOrder
+		local function rank(id)
+			return table.find(order, (Species.get(id) :: any).rarity)
+		end
+		local ids = {}
+		for _, sp in Species.List do
+			table.insert(ids, sp.id)
+		end
+		local rng = Random.new(7)
+		for _ = 1, 50 do
+			local some = {}
+			for _ = 1, 1 + math.floor(rng:NextNumber() * 6) do
+				table.insert(some, ids[1 + math.floor(rng:NextNumber() * #ids)])
+			end
+			local best = Bus.rarest(some)
+			expect.truthy(best ~= nil and table.find(some, best) ~= nil, "one of them")
+			for _, id in some do
+				expect.atMost(rank(id), rank(best), `{id} outranks {best}`)
+			end
+		end
+		expect.eq(Bus.rarest({}), nil, "nobody on the street")
+	end)
+
+	it("the tutorial's Commons are Commons the hotel's vacant rooms take, never more", function()
+		local locs = { [1] = true }
+		local rng = Random.new(11)
+		local rand = function()
+			return rng:NextNumber()
+		end
+		local rooms = {}
+		for _, sp in Species.List do
+			if sp.location == 1 then
+				rooms[sp.room] = true
+			end
+		end
+		local roomIds = {}
+		for room in rooms do
+			table.insert(roomIds, room)
+		end
+		for _ = 1, 100 do
+			local vacant = {}
+			for _, room in roomIds do
+				if rng:NextNumber() < 0.5 then
+					vacant[room] = math.floor(rng:NextNumber() * 3)
+				end
+			end
+			local n = math.floor(rng:NextNumber() * 5)
+			local got = Bus.commonsFor(vacant, n, locs, rand)
+			expect.atMost(#got, n, "never more than asked")
+			local per = {}
+			for _, id in got do
+				local sp = Species.get(id) :: any
+				expect.eq(sp.rarity, "Common", id)
+				expect.truthy(locs[sp.location], `{id} of the street's locations`)
+				per[sp.room] = (per[sp.room] or 0) + 1
+			end
+			local roomsTaken = 0
+			for room, k in per do
+				expect.atMost(k, vacant[room] or 0, `no more for {room} than stand vacant`)
+				roomsTaken += 1
+			end
+			-- Every vacant type a Common takes gets one before any gets two.
+			local takeable = 0
+			for room, k in vacant do
+				if k > 0 and #Bus.commonsFor({ [room] = 1 }, 1, locs, rand) == 1 then
+					takeable += 1
+				end
+			end
+			expect.eq(roomsTaken, math.min(takeable, #got), "round the room types in turn")
+		end
+		expect.eq(#Bus.commonsFor({ CoffinSuite = 3 }, 2, locs, rand), 0, "no Common takes it")
+		expect.eq(#Bus.commonsFor({}, 2, locs, rand), 0, "no vacant room")
+	end)
+
 	it("weights are drawn from the whole of [0, 1)", function()
 		expect.eq(Bus.rollRarity(0), "Common")
 		expect.truthy(Bus.rollRarity(0.99999) ~= "Mythic", "Mythic is scheduled only")

@@ -12,7 +12,10 @@
 		→ the highest-scoring eligible hotel; ties go to the nearest
 
 	Pitching is "+15 % score toward their hotel": `pitchBonus` is 15 % of the
-	score before it. The Moon Tree's "+5 % bus score" (§6.5) multiplies the
+	score before it. "The tutorial weights Commons toward your hotel" (§11
+	1:45): a Common the tutorial brought for a hotel (`tutorial`) adds
+	`TutorialBoost` there, before the pitch, so the new player's pitch still
+	counts. The Moon Tree's "+5 % bus score" (§6.5) multiplies the
 	hotel's score. Pure; the random draws are passed in.
 ]]
 
@@ -29,6 +32,7 @@ export type Candidate = {
 	pitched: boolean,
 	busBonus: number?, -- the Moon Tree's, as a fraction
 	distance: number,
+	tutorial: boolean?, -- a Common the tutorial brought for this hotel (§11 1:45)
 }
 
 local Scoring = {}
@@ -39,6 +43,9 @@ function Scoring.score(c: Candidate, rarity: string, jitter: number): number
 		+ C.AmenityWeight * c.amenityBonus
 	if (rarity == "Common" or rarity == "Uncommon") and c.rating <= C.NewcomerMaxRating then
 		s += C.NewcomerBoost
+	end
+	if c.tutorial and rarity == "Common" then
+		s += C.TutorialBoost
 	end
 	if c.pitched then
 		s += s * C.PitchBonus

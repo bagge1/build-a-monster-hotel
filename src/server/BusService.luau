@@ -18,6 +18,15 @@
 	players can build or free the room it wants. The next bus's passengers are
 	drawn when the previous bus arrives, which is what makes that possible.
 
+	THE TUTORIAL'S COMMONS (§11 1:45, "The tutorial weights Commons toward
+	your hotel"): on the first `Tutorial.CommonBuses` buses of a new player's
+	tutorial (the hotels `setTutorialHotels` names), Commons their vacant
+	rooms can take ride in place of the bus's drawn guests, never its
+	guarantees and never more than the bus's size (his 40 %). They browse like
+	any guest, so the player can pitch one, and score `TutorialBoost` toward
+	that hotel (`Scoring`). Each bus that brought a hotel some counts in its
+	`tutorialCommonBuses` stat.
+
 	Published on `workspace`: `NextBusAt` and `BusArrivedAt` (server time), so
 	every client draws the bus and the countdown.
 ]]
@@ -46,7 +55,14 @@ local B = Constants.Bus
 local BusService = {}
 
 -- `booked`: a guest coming to one hotel (the tutorial's Vampire Count, §11), which skips browsing.
-type Passenger = { species: string, mutation: string?, booked: Player?, happyFloor: number? }
+-- `tutorialFor`: a Common the tutorial brought for that hotel (§11 1:45), which browses and scores toward it.
+type Passenger = {
+	species: string,
+	mutation: string?,
+	booked: Player?,
+	happyFloor: number?,
+	tutorialFor: Player?,
+}
 
 local rng = Random.new()
 local busIndex = 0
@@ -58,10 +74,20 @@ local drive = Bus.drive()
 local busScoreProviders: { (Player) -> number } = {}
 local extraGuests: { Passenger } = {} -- added to the next bus (the tutorial, Hunter Night's thank-you)
 local arrivedHandlers: { (number) -> () } = {}
+local tutorialHotels: () -> { Player } = function()
+	return {}
+end
+local tutorialGuests: { [number]: Player } = {} -- guest id → the hotel the tutorial brought it for
+local announced: string? = nil -- the species announced for the next bus, Legendary and up (§4.3)
 
 -- A provider of a hotel's bus-score bonus as a fraction (the Moon Tree's +5 %, §6.5).
 function BusService.addScoreBonus(provider: (Player) -> number)
 	table.insert(busScoreProviders, provider)
+end
+
+-- The hotels whose tutorial brings them Commons on the next bus (§11 1:45): TutorialService's.
+function BusService.setTutorialHotels(provider: () -> { Player })
+	tutorialHotels = provider
 end
 
 function BusService.onArrived(handler: (number) -> ())
@@ -155,19 +181,17 @@ local function wishText(p: Passenger): string
 end
 
 local function rarest(list: { Passenger }): Passenger?
-	local best, bestRank = nil, 0
+	local ids = {}
 	for _, p in list do
-		local sp = Species.get(p.species)
-		local rank = sp and table.find(Constants.RarityOrder, sp.rarity) or 0
-		if rank > bestRank then
-			best, bestRank = p, rank
-		end
+		table.insert(ids, p.species)
 	end
-	return best
+	local id = Bus.rarest(ids)
+	return if id then list[table.find(ids, id) :: number] else nil
 end
 
 -- Tells the street about the next bus's rare guest (§4.3), Legendary and up.
 local function announceNext(list: { Passenger })
+	announced = nil
 	local p = rarest(list)
 	local sp = p and Species.get(p.species)
 	if not p or not sp then
@@ -175,6 +199,7 @@ local function announceNext(list: { Passenger })
 	end
 	local rank = table.find(Constants.RarityOrder, sp.rarity) or 0
 	if rank >= (table.find(Constants.RarityOrder, "Legendary") :: number) then
+		announced = p.species
 		local mutation = if p.mutation then Mutations.ById[p.mutation].name .. " " else ""
 		Net.fireAll(
 			"Announce",
@@ -214,10 +239,12 @@ local function decide(g: GuestService.Guest)
 				pitched = g.pitches[owner.UserId] ~= nil,
 				busBonus = bonus,
 				distance = (StreetLayout.pavementFront(plot.index) - here).Magnitude,
+				tutorial = tutorialGuests[g.id] == owner,
 			})
 			table.insert(jitters, Scoring.jitter(rng:NextNumber()))
 		end
 	end
+	tutorialGuests[g.id] = nil
 	local best = Scoring.pick(candidates, sp.rarity, jitters)
 	if not best then
 		GuestService.leaveStreet(g)
@@ -250,6 +277,9 @@ local function stepOff(stop: StreetLayout.Stop, list: { Passenger }, first: numb
 				wishText(p),
 				decide
 			)
+			if p.tutorialFor then
+				tutorialGuests[g.id] = p.tutorialFor
+			end
 			local booked = p.booked
 			local offer = booked and booked.Parent and HotelService.vacantFor(booked, p.species)
 			if booked and offer then
@@ -262,12 +292,78 @@ local function stepOff(stop: StreetLayout.Stop, list: { Passenger }, first: numb
 	end
 end
 
+-- A hotel's vacant rooms by room type (piece id → how many).
+local function vacantByRoom(player: Player): { [string]: number }
+	local out = {}
+	local hotel = HotelService.get(player)
+	local data = PlayerData.get(player)
+	if hotel and data then
+		for id, room in hotel.rooms do
+			local rec = data.layout[id]
+			if room.state == "Vacant" and rec then
+				out[rec.item] = (out[rec.item] or 0) + 1
+			end
+		end
+	end
+	return out
+end
+
+--[[ The tutorial's Commons (§11 1:45): for each hotel in its tutorial, Commons
+	its vacant rooms can take, in place of the bus's drawn guests from the end
+	of the list (its guarantees are first and stay, and so does a guest the
+	street was told is coming), so the bus keeps its size. ]]
+local function weightCommons(list: { Passenger }, guaranteed: number)
+	for id in tutorialGuests do
+		if not GuestService.get(id) then
+			tutorialGuests[id] = nil
+		end
+	end
+	local slot = #list
+	for _, player in tutorialHotels() do
+		local data = PlayerData.get(player)
+		if data and player.Parent and slot > guaranteed then
+			local n = math.min(Constants.Tutorial.CommonsPerBus, slot - guaranteed)
+			local ids = Bus.commonsFor(
+				vacantByRoom(player),
+				n,
+				{ [data.location] = true },
+				function()
+					return rng:NextNumber()
+				end
+			)
+			local placed = 0
+			for _, id in ids do
+				while slot > guaranteed and list[slot].species == announced do
+					slot -= 1
+				end
+				if slot <= guaranteed then
+					break
+				end
+				list[slot] = { species = id, mutation = nil, tutorialFor = player }
+				slot -= 1
+				placed += 1
+			end
+			if placed > 0 then
+				PlayerData.stat(player, "tutorialCommonBuses")
+			end
+		end
+	end
+end
+
 local function arrive()
 	busIndex += 1
 	local now = os.time()
-	local list = if nextList
-		then fit(nextList, nextGuaranteed, now)
-		else (draw(busIndex, lastArrival, now))
+	local guaranteed = nextGuaranteed
+	local list: { Passenger }
+	if nextList then
+		list = fit(nextList, nextGuaranteed, now)
+	else
+		list, guaranteed = draw(busIndex, lastArrival, now)
+	end
+	local ok, err = pcall(weightCommons, list, guaranteed)
+	if not ok then
+		warn(`[bus] tutorial Commons: {err}`)
+	end
 	for _, extra in extraGuests do
 		table.insert(list, extra)
 	end
@@ -332,6 +428,22 @@ local function pitch(player: Player, guestId: number)
 	g.pitches[player.UserId] = plot.index
 	PlayerData.stat(player, "pitches")
 	Net.fire(player, "Toast", "Pitched! +15% toward your hotel", "Good")
+end
+
+--[[ The species on the street a room could be wanted for (§7, "Need a
+	Coffin Suite!"): every guest browsing now, and the next bus's announced
+	guest. ]]
+function BusService.wanted(): { string }
+	local out = {}
+	for _, g in GuestService.all() do
+		if g.state == "Browsing" then
+			table.insert(out, g.species)
+		end
+	end
+	if announced then
+		table.insert(out, announced)
+	end
+	return out
 end
 
 function BusService.nextIn(): number

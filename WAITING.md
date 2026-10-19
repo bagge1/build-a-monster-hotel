@@ -423,6 +423,23 @@ Med Claudes skärmdump där det finns en. -->
    - **Comfort i betyget** räknar nu rummens tier mot högsta tier (T3 av T3
      ger fullt, som T5 av T5 gjorde); förr gav T1 20 av 100, nu 33.
 
+25. **Tutorialens Commons på första bussarna** (GDD §11 1:45 "The tutorial
+   weights Commons toward your hotel", byggt 2026-10-19 på en egen gren, inte
+   spelat i Studio, `TESTRUN.md` fasen "tutorial Commons and the named ping").
+   När Slimen har sitt rum tar de **2** första bussarna under tutorialen med
+   upp till **2** Commons var för den nya spelarens lediga rum (Slime,
+   Skeleton eller Pumpkin Head, efter vilka rum som står lediga), i stället
+   för andra dragna gäster, så bussen behåller sin storlek (dina 40 %). De
+   strövar som alla gäster, så man kan Pitcha dem, och får **+10** i poäng
+   mot den nya spelarens hotell. Med +10 slår ett nytt 1★-hotell ett 4★-hotell
+   utan pitch, och står jämnt mot ett 5★-hotell som uppfyller båda
+   önskemålen; en pitch avgör då. Alla tre talen är PLACEHOLDER (GDD
+   Appendix A.7). **Alternativet:** boka dem direkt till hotellet (säkert,
+   men då går de inte att pitcha, och §11 säger "Pitch one").
+   **Rekommendation:** behåll 2 bussar, 2 per buss och +10: de nya rummen
+   fylls nästan alltid, och pitchen lär ut att det lönar sig att springa ut
+   till gästerna.
+
 ## §3 Creator Hub och publicering
 
 1. ~~**Slå på Studio Access to API Services**~~ (gjort 2026-10-19: på i
