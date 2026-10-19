@@ -26,7 +26,7 @@ names:
 | Job | Sections |
 |---|---|
 | Any model | The rules; What a model costs to draw; Checklist before handing a set over |
-| A room, an amenity, the lobby, the stairs, a facade, decor | Hotel kit |
+| A room, an amenity, the lobby, the front desk, the stairs, a facade, decor, a rug | Hotel kit |
 | A monster, a hunter, the bus | Monsters and street NPCs |
 | Code that reads a model | the section for the name the code looks up: grep the name |
 
@@ -96,6 +96,7 @@ allow.
   |---|---|
   | A room or amenity | 6,000 (a 3×3 suite with its decor slots empty) |
   | The lobby | 10,000 (144 × 24 studs since the doubled scale: four times the first draft's floor, one per hotel) |
+| The front desk | 3,000 |
   | Stairs | 8,000 |
   | A facade | 10,000 |
   | A decor piece | 1,500 |
@@ -155,7 +156,7 @@ delivered model needs no runtime set-up.
 
 **Part names a set may use** besides those below: `Floor`, `Bed` (the bed
 part), `Centrepiece`, `Furniture`, `Dressing`, `Rug`, `ArchLeft`,
-`ArchRight`, `ArchTop`, `Planter_<n>`, `Bench_<n>`, `KeyRack`, `Crest`, `Step_Up_<n>`,
+`ArchRight`, `ArchTop`, `Counter`, `Till`, `KeyRack`, `Crest`, `Step_Up_<n>`,
 `Step_Down_<n>`, `Landing`, `Divider`, `Rail_Top`; a decor piece's mesh is
 `Body`. Room walls are named as the blockout names them: `Wall_Back`,
 `Wall_Left`, `Wall_Right`, `Wall_FrontLeft`, `Wall_FrontRight`, `Wall_Lintel`.
@@ -173,7 +174,8 @@ pieces round the door, and `Wall_Lintel` over the door from 7 to 17.
 | `Root` | The part above | Placement; every attachment |
 | `Door` (attachment) | The middle of the door's threshold, on the floor, **its LookVector pointing out** of the room | Cleaning and request prompts; the guest's last waypoint before the bed. Must sit over the cell `Grid.doorInside` names: at rotation 0 on the −Z wall, at x = (floor((w−1)/2) + 0.5) × 12 − w × 6 (−6 for a 2-wide piece, 0 for a 3-wide) |
 | `Bed` (attachment) | Where a guest rests, facing the way it lies: a room's 7 studs in from the back wall (z = D/2 − 7, facing −Z), an amenity's at z = −D/6 facing +Z (the centrepiece) | The guest's destination |
-| `Decor_1`–`Decor_3` (attachments) | Where a decor piece stands, its LookVector the way the piece faces: the two back corners, 2 studs in from both walls, and the left wall's middle | Decor placement (`Pieces.DecorSlots`) |
+| `Floor` (part) | The room's floor, **one part**, its top the room's walking surface | Placed decor stands on its top; a floor finish is laid on it |
+| `Bed`, `Furniture`, `Centrepiece` (parts) | The room's own furniture | Placed decor is kept off the 3-stud squares their boxes cover |
 | `Sign` (attachment) | Outside, above the door: (door x, 8.2, −D/2 − 0.3) | The room's name and its state (vacant, dirty, a request) |
 | `DoorLeaf` (part) | The door that swings, hinged at its own `Hinge` attachment | Opened when a guest passes (rule 2) |
 | `Glow_<Colour>_<n>` | Lamps | Lit by the code (rule 1) |
@@ -181,62 +183,104 @@ pieces round the door, and `Wall_Lintel` over the door from 7 to 17.
 
 The door opening is at least **4 studs wide and 7 tall** (a 5-stud person).
 
-### Lobby (`Lobby`)
+### Lobby (`Lobby`): the shell
 
 The front two rows of floor 1 (12 × 2 cells: **144 × 24 studs**), authored
 with its origin at the **middle of its front edge** on the walking surface;
 the street is toward −Z. The front row is z 0–12, the back row z 12–24.
 
-**An indoor reception** (his ruling and pick, 2026-10-19, layout A of the grey
-silhouettes, at the scale of the same evening; `modelling/taste.md`, "A hotel
-works as a hotel"):
+**A shell, nothing more** (his ruling, 2026-10-19, GDD §5.4: everything can
+be rebuilt, the reception too). The desk, the till, the key rack, the benches,
+the planters and the carpet are **pieces the player places** (`FrontDesk`
+below, and decor: `Decor_Bench`, `Decor_UrnPlanter`, the rugs). The shell is:
 
 - **A front wall** on the street edge (z 0–0.8, **17 tall**, up to the slab),
   with the entrance arch in the middle (opening 9 wide, 9 tall: a door, so
-  not scaled) and tall windows (6 wide, y 3–12) at x −50, ±36, ±22 and 64
-  (none behind the desk, none behind the sign). Two pieces apart round the
-  arch, `Wall_FrontLeft` (x −72 to −5.5) and `Wall_FrontRight` (x 5.5 to 72),
-  each exactly the blockout's box.
-- **The desk across the end away from the stair core** (−X; on the right as
-  seen from the street): the counter x −63 to −61.2, z 1.5 to 10.5, its top at
-  3.8, its served side toward +X (the entrance). Behind it the clerk's space,
-  x −71.15 to −63, with the `KeyRack` against the end (x −72 to −71.15). The
-  `Till` stands on the counter's far end.
-- **The back row is clear**: nothing that collides stands in z 12 to 24 (y
-  0.3 to 7), the whole length. Every floor-1 room door opens onto it, and so
-  does the stair core. The clerk reaches the desk through it.
-- **The waiting area** (`Bench_<n>`, `Planter_<n>`) is in the front row on the
-  stair side (+X), clear of the entrance and of the trap squares (3 × 3 round
-  each `Trap_n`).
+  not scaled) and tall windows (6 wide, y 3–12) at x −50, ±36, ±22 and 64.
+  Two pieces apart round the arch, `Wall_FrontLeft` (x −72 to −5.5) and
+  `Wall_FrontRight` (x 5.5 to 72), each exactly the blockout's box; the arch
+  (`ArchLeft`, `ArchRight`, `ArchTop`), its lantern and the wall's sconces.
+- **`Floor`**: the lobby's own floor over the whole 144 × 24, **one part, its
+  top at most 0.1** above the walking surface (a hallway meets it with no
+  step). A floor finish the player picks is laid on this part (below, "Floor
+  finishes").
+- **Nothing else.** Behind the front wall (z 0.8 to 24) nothing collides
+  between y 0.15 and 17: the whole floor is the player's to build on.
 
-`finish()` refuses a lobby that breaks these: the walls' boxes, the back row,
-the entrance (4 × 7), and a 5-stud person's walk from the entrance to every
-queue spot, trap, the spawn and, through the back row, the clerk.
+`finish()` refuses a lobby that breaks these: the walls' boxes, the clear
+floor, the entrance (4 × 7), and the floor's top.
 
 | Name | What | The code |
 |---|---|---|
 | `Root` | 144 × 0.2 × 24, centred (0, 0.1, 12) | Placement |
 | `Entrance` (attachment) | (0, 0, 0): the front door's threshold, LookVector toward the street | Where guests walk in |
-| `Desk` (attachment) | (−60.8, 3.8, 5): the counter's served edge, LookVector +X, toward the guests | Check-in prompt |
-| `Clerk` (attachment) | (−66, 0, 6): where the front-desk resident stands, behind the counter, LookVector +X | The Front Desk staff's post |
-| `Queue_1`–`Queue_4` (attachments) | x −58, −54.5, −51, −47.5 at z 5, LookVector −X (at the desk); 1 nearest the desk | The desk queue |
-| `Till` (attachment) | (−60.8, 3.8, 9.4): the till on the counter, LookVector +X | Collect prompt |
 | `Spawn` (attachment) | (8, 0, 18), in the back row | The plot's spawn |
-| `SignBoard` (attachment) | (48, 0, −5): out front at the stair-side corner of the forecourt, 48 studs off the entrance, the sign's base, LookVector toward the street | The hotel sign (§3) |
-| `Trap_1`–`Trap_3` (attachments) | x −16, 16, 48 at z 6 | Hunter Night's traps (§8.1) |
+| `SignBoard`, `Trap_1`–`Trap_3` (attachments) | As before, until the forecourt takes them (the street session's `Forecourt`) | The sign; Hunter Night's traps |
 
-### Stair core (`StairCore`)
+**The desk's points are mirrored onto the lobby.** Wherever the player puts
+the `FrontDesk`, the code copies its `Desk`, `Clerk`, `Till` and `Queue_n`
+onto the lobby's `Root` under the same names (`PlotService`), so whatever
+finds the desk through the lobby keeps finding it. A lobby model never
+carries those names itself.
 
-Cells x 10–11, z 2–3 of every floor: **24 × 24 studs**, one floor high (18
-studs), origin at its footprint's centre on the lower floor's walking surface.
+### Front desk (`FrontDesk`)
+
+The reception desk as a piece (GDD §5.4): **2 × 1 cells, 24 × 12 studs**,
+exactly one per hotel, placed on floor 1 wherever guests reach it from the
+entrance. Authored like every piece: rotation 0, **served side toward −Z**,
+origin at the footprint's centre on the walking surface (x −12..12,
+z −6..6). Built for the 5-stud person, at the old lobby desk's sizes:
+
+- The counter x −4.5 to 4.5, z −4.0 to −2.2, its top (−4.7..4.7 by
+  −4.2..−1.9) at **3.8**; the till on its +X end, a bell at the check-in
+  spot, a lamp on its −X end.
+- The clerk's space behind it (z −1.9 to 5.15), reached from both sides:
+  **nothing collides** in x −12..−5 or 5..12 (y 0.15 to 7), so the clerk
+  walks in round the counter's ends.
+- The `KeyRack` against the back edge, x −2.6..2.6, z 5.15..6.0, at most 9.6
+  tall, with its clock.
+- Nothing outside the footprint; the queue stands in the hallway in front.
+
+| Name | What | The code |
+|---|---|---|
+| `Root` | 24 × 0.2 × 12, centred (0, 0.1, 0) | Placement |
+| `Counter` (part) | The counter and its top | Collides |
+| `Till` (part) | The till | — |
+| `KeyRack` (part) | The rack and its clock | Collides |
+| `Desk` (attachment) | (0, 3.8, −4.2): the counter's served edge, LookVector −Z, toward the guests | Check-in prompt |
+| `Till` (attachment) | (3.4, 3.8, −4.2), LookVector −Z | Collect prompt |
+| `Clerk` (attachment) | (0, 0, 1.5), LookVector −Z | The Front Desk resident's post |
+| `Queue_1`–`Queue_4` (attachments) | (0, 0, −8), (0, 0, −11), (0, 0, −14), (0, 0, −17), LookVector +Z (at the desk); 1 nearest. Guests beyond the fourth stand on, 3 studs further back each | The desk queue |
+| `Glow_Warm_1` | The lamp's shade | Lit |
+
+`Grid` keeps the two cells in front of the desk walkable and reached from the
+entrance (the queue stands there).
+
+### Stairs (`StairCore`, `StairCoreTop`): a piece
+
+A stair is a **2 × 2 piece the player places** (GDD §5.4), one floor high:
+it stands on floor f and joins it to floor f + 1 **on the same cells**.
+Several may stand anywhere on the plot; one placed on the same cells and
+rotation directly above another continues it (the old core's stack). The
+models are the stair core's, unchanged: 24 × 24 studs, origin at the
+footprint's centre on the lower floor's walking surface, **its open side
+toward −Z** (the piece's front).
+
 **15 steps a storey**, each 1.2 rise and 1.5 tread, as a switchback: the
 flight up (`Step_Up_1`–`8`, x −12 to 0) climbs +Z from z −11.5 to the
 `Landing` at 9.6 (z 0.5 to 12, 11.5 deep); the flight down (`Step_Down_1`–`7`,
 x 0 to 12) comes back −Z to the upper floor at 18, its last step reaching the
-core's front edge under the upper slab's 1-stud lip. Flights 12 wide; the
-landing at least 4 deep (a 2-stud landing jammed a walker against the divider,
-2026-10-19); walls on the outer sides and the back and a `Divider` between the
-flights, 18 tall (21.5 on `StairCoreTop`, which adds `Rail_Top`).
+front edge under the upper slab's 1-stud lip. Flights 12 wide; the landing at
+least 4 deep; walls on the outer sides and the back and a `Divider` between
+the flights, 18 tall. **`StairCoreTop`** is used where no stair continues
+above: its walls rise 3.5 over the upper floor (21.5) and `Rail_Top` rails the
+hole's front over the flight up.
+
+**What the code builds round it:** the upper floor's slab gets a hole over
+the stair's cells, but for a **1-stud lip along its front edge**; a slab rail
+stops where a hole meets the plot's edge. `Grid` keeps the cell in front of
+the flight up (the foot, front-left) walkable on floor f, and the cell in
+front of the flight down (the head, front-right) walkable on floor f + 1.
 
 | Name | What | The code |
 |---|---|---|
@@ -297,9 +341,43 @@ collision and rays off).
 
 ### Decor (`Decor_<DecorId>`, e.g. `Decor_Candles`)
 
-Origin at the **centre of its base**, front toward −Z. At most 4 × 4 studs of
-footprint and 7 studs tall, so three fit a 2×2 room. Glows are their own parts
-(`Glow_Warm_1` for the candles' flames).
+Placed by the player **on a grid of 3 studs** (a quarter cell), turned in
+90° steps, in rooms, the lobby and the hallways (GDD §5.4). Origin at the
+**centre of its footprint's base**, front toward −Z.
+
+- **Footprint**: `fw × fd` squares of 3 studs (`Pieces` gives them), so the
+  Root is `3fw × 0.2 × 3fd`. **The body stays 0.4 inside the footprint's edge
+  on every side** (a piece at a room's edge then clears the 0.4 wall), at
+  most **7 tall**. The footprint of a model already built is the smallest
+  that holds its body by that rule: `ceil((size + 0.8) / 3)` squares.
+- **Layer** (`Pieces`'s `layer`):
+  - `Floor`: furniture and things standing on the floor; two never overlap.
+  - `Rug`: flat, **at most 0.15 tall**, nothing above it; it may lie under
+    `Floor` decor and under a room's own furniture, never over another rug.
+    A rug runs to its footprint's edge (the 0.4 inset is not a rug's), so
+    rugs meet edge to edge: a runner and a corner join into one carpet.
+  - `Wall`: hung on or stood against a room's wall, **its back (+Z) face at
+    z = 3fd/2 − 0.4** (on the wall's inner face); placed only with its back
+    against a wall, never across the doorway.
+- Glows are their own parts (`Glow_Warm_1` for flames). `Body` does not
+  collide (a placed piece never traps a player).
+
+**Where the code lets it stand** (`Grid`, `Furnish`): inside one room's walls
+(never across a wall, never in the 6 × 6 just inside the door, never on the
+room's own `Bed`, `Furniture` or `Centrepiece` boxes, which the code reads
+from the model), or on hallway and lobby floor. In a hallway a `Floor` piece
+that reaches into the middle of a cell (where guests walk) makes that cell no
+hallway, and is refused if it cuts a door off; one in a cell's corner leaves
+it walkable. A room's preference tags are the tags of the decor inside its
+walls; its decor points (from the price) set its tier.
+
+### Floor finishes (code only)
+
+A floor finish is a `Material` and a colour per kit (`Pieces.Finishes`),
+chosen per room, for the lobby and for the hallways. The code lays it on the
+piece's `Floor` part (it removes the part's texture and sets the material and
+colour) and on the hallways' slabs; no model is needed. A model's `Floor` is
+therefore **one part**, the walking surface, with nothing else merged into it.
 
 ---
 
