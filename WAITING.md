@@ -15,18 +15,15 @@ Connect: knappen under fliken Plugins i Studio. -->
    de nya mappningarna för `assets/Monsters`, `assets/HotelKit/HauntedManor`
    och `assets/HotelKit/FrostfangLodge` är igång; noterat i
    `archive/NATTLOGG-2026-10-19.md`).
-2. **Importera allt, 69 modeller i en import** (2026-10-19). I Studio: **File →
-   Import 3D**, öppna mappen `D:\Roblox\build-a-monster-hotel\blender\_import\`,
-   markera alla 69 filerna (håll Ctrl och tryck A), importera till
-   **Workspace** och skriv *importerat*. Det är de tio Haunted Manor-monstren,
-   de sju Frostfang-monstren, Hunter, Night Bus, Haunted Manor-kitet (32 delar)
-   och Frostfang Lodge-kitet (18 delar). Inställningar, namn, sparning och
-   kontroller gör Claude. Bilderna: `blender/monsters/haunted_manor/review/sheet.png`,
-   `blender/monsters/frostfang_lodge/review/sheet.png`,
-   `blender/street/npcs/review/sheet.png`,
-   `blender/hotel/haunted_manor/review/contact_sheet.png` och
-   `blender/hotel/frostfang_lodge/review/contact_sheet.png`. Allt nattens utkast.
-   *(Pågår: du importerar just nu.)*
+2. ~~**Importera allt, 69 modeller i en import**~~ (gjort 2026-10-19:
+   alla 69 inställda, kontrollerade och sparade i `assets/Monsters/`,
+   `assets/HotelKit/HauntedManor/` och `assets/HotelKit/FrostfangLodge/`).
+3. **Starta om `rojo serve` en gång till** (2026-10-19) och tryck **Connect**
+   under fliken **Plugins** i Studio. Mapparna `assets/Monsters` och
+   `assets/HotelKit/...` fanns inte när Rojo startade i morse, och Rojo läser
+   bara in sådana mappar när det startar (`DEVNOTES.md`). Tills dess syns inga
+   av de nya modellerna i spelet. Säg till när det är gjort; modellerna i
+   Workspace ligger kvar tills Claude har sett att de kommit fram.
 
 ## §1 Att titta på eller spela
 

@@ -51,6 +51,18 @@ in a playtest, whose changes are thrown away.
    return "set"
    ```
 
+   **A set's script too long to paste** (a hotel kit's `import_fixup.luau` is
+   30–40 KB): write it to `src/server/_ImportFixup<Set>.luau` wrapped as
+   `return function(only) ... end` (its `local ONLY = {}` becomes
+   `local ONLY = only or {}`), let Rojo sync it, and call
+   `require(game.ServerScriptService.Server._ImportFixup<Set>)({ names })` in
+   groups of about ten. The server's init requires a fixed list, so the game
+   never runs it. Delete the file when the set is saved; never commit it.
+   **Two sets that share names** (`Lobby`, `StairCore`... in every kit): fix up,
+   save and write the first set, rename its Workspace copies (`HM_Lobby`), then
+   rename the second set's prefixed imports (`FrostfangLodge_Lobby` → `Lobby`)
+   and fix it up. `save_imports.py write` keeps a name's latest print in the log.
+
    A large batch times the call out and drops the MCP for ~5 minutes, **but the
    values land**: set a group, wait for `list_roblox_studios` to show Studio
    again, set the next.
@@ -74,6 +86,11 @@ in a playtest, whose changes are thrown away.
    updates the set's README.
 
 ## Before and after
+
+- **A new mapped folder must exist before Rojo starts.** An `optional`
+  `$path` created after `rojo serve` started is never synced (`DEVNOTES.md`):
+  when a set adds a mapping, create its folder with a `.gitkeep` before
+  August restarts Rojo.
 
 - **Before moving or renaming anything under `assets/`**, look in Studio for
   imports that exist only there and save them first: Rojo deletes them.

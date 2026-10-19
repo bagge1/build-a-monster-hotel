@@ -20,6 +20,16 @@ Scripts hot-reload; the project file does not. A change to `$properties` or to
 the tree appears to do nothing. → It needs a restart, and **August runs Rojo**:
 tell him, never restart it yourself.
 
+### An `optional` path that did not exist at startup is never synced
+
+`"$path": { "optional": "assets/Monsters" }` lets the project build before
+the folder exists, but `rojo serve` resolves it once, at startup: a folder
+created later (the first save of an import) is not watched, and nothing
+appears in Studio while every other change syncs (2026-10-19: 69 models saved,
+`ReplicatedStorage.Monsters` absent, deleted modules removed fine). →
+Create a mapped folder (with a `.gitkeep`) **before** August restarts
+`rojo serve` for a new mapping, or ask for one more restart.
+
 ### Rojo names a file's root instance after the file
 
 A `.rbxm` whose MeshPart was saved as `Asteroid_01_Boulder_LOD0` and filed as
