@@ -51,6 +51,13 @@ parts until the tree models arrive. PlayerData schema 2 rebuilds every hotel
 from the start area. Pure specs run outside Studio: `lune run
 tools/run_specs.luau .`.
 
+**Rating: staff coverage and cleaning on time** (GDD §5.3, A.4
+PLACEHOLDER) built on branch `worktree-agent-ab7f9c16cd8daf5cb` (2026-10-19
+night): Front Desk/Room Service coverage add to Service, Housekeeping
+coverage and cleanings within 40 s to Cleanliness, on top of the old
+formulas; specs pass under Lune, **not run in Studio** (TESTRUN "Rating:
+staff coverage…", after the merge); his call WAITING §2.26.
+
 **Earlier next steps:** (1) **The doubled scale** (his ruling 2026-10-19
 evening, `CLAUDE.md` "The scale of a person": double only what makes the
 hotel less cramped). Built, imported and played (`TESTRUN.md` phase 11):

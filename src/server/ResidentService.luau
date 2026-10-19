@@ -219,6 +219,10 @@ local function publish(player: Player)
 	local hotel = HotelService.get(player)
 	if hotel then
 		hotel.staffBonus.Entertainment = sum(ResidentService.staff(data, "Entertainment"))
+		-- The rating's staff coverage (§5.3, Appendix A.4).
+		hotel.staffBonus.FrontDesk = sum(ResidentService.staff(data, "FrontDesk"))
+		hotel.staffBonus.RoomService = sum(ResidentService.staff(data, "RoomService"))
+		hotel.staffBonus.Housekeeping = sum(ResidentService.staff(data, "Housekeeping"))
 		hotel.staffBonus.PerkService = Perks.total(data.residents, "Service", os.time())
 		hotel.staffBonus.PerkFun = Perks.total(data.residents, "Fun", os.time())
 		hotel.staffBonus.PerkCleanliness = Perks.total(data.residents, "Cleanliness", os.time())

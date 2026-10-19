@@ -437,6 +437,28 @@ WAITING §0.9): what needs the new models or the build menu's clicks stays open.
   floor" brings the model's back.
 - [ ] Rays and walkers as in phase 11 over a hotel of placed stairs (`fill`).
 
+## Rating: staff coverage and cleaning on time (GDD §5.3, Appendix A.4; after the merge)
+
+Built on its own branch, specs only (`lune run tools/run_specs.luau . rating
+stay economy`); not run in Studio. Read the categories from the plot's
+`Categories` attribute (recomputed every 5 s) or the rating panel.
+
+- [ ] A hotel with rooms and stays but no staff: Service and Cleanliness the
+  same as before the merge (nothing added without staff or cleanings).
+- [ ] Assign a Front Desk resident: Service rises by up to 10 (6 for a
+  resident at 60 %) within 5 s; unassign it and it falls back.
+- [ ] Room Service in a hotel of 4 rooms: up to +10 Service; with 8 rooms the
+  same resident gives half of that.
+- [ ] Housekeeping in a hotel of 4 rooms: up to +10 Cleanliness; Service and
+  the other categories unchanged by it.
+- [ ] Clean a dirty room by hand within 40 s, several times: Cleanliness
+  rises toward +10 (on-time share). Leave a room dirty past 40 s: the share
+  drops at once (an overdue room counts late before it is cleaned).
+- [ ] Nobody stayed yet (a fresh hotel) with staff assigned: Service stays 0;
+  no rooms: Cleanliness 0 but for perks.
+- [ ] Every category stays within 0–100 with many staff (`DevGrant resident`)
+  and perks; the stars move by at most the categories' share.
+
 ## August keeps
 
 - How the street, the lobby and the rooms look (every look is a night draft).

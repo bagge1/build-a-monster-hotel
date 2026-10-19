@@ -430,6 +430,29 @@ Med Claudes skärmdump där det finns en. -->
    - **Comfort i betyget** räknar nu rummens tier mot högsta tier (T3 av T3
      ger fullt, som T5 av T5 gjorde); förr gav T1 20 av 100, nu 33.
 
+26. **Personal och städning i tid i betyget** (GDD §5.3 och Appendix A.4,
+   byggt 2026-10-19 natt på en egen gren, inte spelat i Studio än,
+   `TESTRUN.md` "Rating: staff coverage and cleaning on time"). §5.3 säger att
+   Service kommer delvis från personalens täckning och Cleanliness från rum
+   städade i tid och Housekeepings täckning; byggt var bara väntan vid disken,
+   besvarade önskemål och andelen smutsiga rum. Nu, med platshållartal:
+   **Service** + 10 vid full Front Desk-täckning och + 10 vid full Room
+   Service-täckning; **Cleanliness** + 10 vid full Housekeeping-täckning och
+   + 10 när alla av de senaste 20 städningarna skedde inom 40 s (ett rum som
+   är smutsigt längre än så räknas som sent redan nu). Täckning: personalens
+   summerade effektivitet mot behovet (en disk; ett Room Service- eller
+   Housekeeping-djur per 4 rum). Poängen läggs ovanpå och kategorierna
+   stannar inom 0–100, så ett hotell utan personal får samma betyg som förut
+   och mer personal sänker aldrig något. **Att bestämma:** (A) behålla det
+   så, tillägg ovanpå, eller (B) väga om kategorierna, till exempel
+   Cleanliness = 60 % rena rum + 20 % i tid + 20 % täckning och Service på
+   samma sätt, vilket sänker betyget för ett hotell utan personal (och kan
+   skjuta upp 2★-rummen, §5.2). Talen (10, 10, 10, 10, 4 rum, 40 s) är dina
+   i båda fallen. **Rekommendation:** (A) tills `tools/balance_model.py`
+   räknar med personal: i (A) ger städning i tid inget när alla rum redan är
+   rena, men ingenting du redan balanserat flyttas; (B) är tydligare men bör
+   prövas i modellen först.
+
 ## §3 Creator Hub och publicering
 
 1. ~~**Slå på Studio Access to API Services**~~ (gjort 2026-10-19: på i

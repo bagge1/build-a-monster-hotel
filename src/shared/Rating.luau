@@ -23,6 +23,11 @@ export type Inputs = {
 	decor: number,
 	roomTypes: number,
 	perks: { [string]: number }?, -- residents' rating perks: Service, Fun, Cleanliness points (Perks)
+	-- Staff coverage (§5.3): each role's summed efficiency on duty (Appendix A.5).
+	frontDesk: number?,
+	roomService: number?,
+	housekeeping: number?,
+	onTimeShare: number?, -- 0..1: recent cleanings within CleanOnTime, rooms overdue now counting late
 }
 
 export type Categories = {
@@ -36,6 +41,12 @@ export type Categories = {
 local Rating = {}
 
 Rating.Order = { "Comfort", "Service", "Cleanliness", "Fun", "Style" }
+
+-- A role's coverage (§5.3 "staff coverage"), 0..1: its staff's summed
+-- efficiency over what the hotel needs, full at or above the need.
+function Rating.coverage(efficiency: number, need: number): number
+	return if need > 0 then math.clamp(efficiency / need, 0, 1) else 0
+end
 
 function Rating.categories(i: Inputs): Categories
 	local tierMean = 0
@@ -51,6 +62,21 @@ function Rating.categories(i: Inputs): Categories
 		then math.clamp(100 - i.meanWait * R.ServiceWaitPerPoint, 0, 100) * 0.6 + 40 * i.requestShare
 		else 0
 	local cleanliness = if i.rooms > 0 then 100 * (1 - i.dirtyRooms / i.rooms) else 0
+	-- Staff coverage and cleaning on time (§5.3, Appendix A.4): points on top,
+	-- never taken away, so more staff or quicker cleaning never lowers a category.
+	local roomsNeed = math.max(1, i.rooms / R.RoomsPerStaff)
+	if i.checkIns > 0 then
+		service += R.ServicePerDeskCoverage * Rating.coverage(i.frontDesk or 0, R.DesksCovered) + R.ServicePerRoomServiceCoverage * Rating.coverage(
+			i.roomService or 0,
+			roomsNeed
+		)
+	end
+	if i.rooms > 0 then
+		cleanliness += R.CleanPerHousekeepingCoverage * Rating.coverage(
+			i.housekeeping or 0,
+			roomsNeed
+		) + R.CleanPerOnTime * math.clamp(i.onTimeShare or 0, 0, 1)
+	end
 	local fun = math.min(100, i.amenities * R.FunPerAmenity + i.entertainers * R.FunPerEntertainer)
 	local style = math.min(100, i.decor * R.StylePerDecor + i.roomTypes * R.StylePerRoomType)
 	local perks = i.perks or {}

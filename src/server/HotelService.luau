@@ -47,6 +47,7 @@ export type Hotel = {
 	prefsShares: { number },
 	requestsAsked: number,
 	requestsDone: number,
+	cleanTimes: { number }, -- seconds each recent cleaning's room stood dirty (§5.3)
 	staffBonus: { [string]: number }, -- set by the staff system: Entertainment count etc.
 }
 
@@ -169,6 +170,11 @@ function HotelService.setRoom(player: Player, pieceId: string, state: RoomState,
 	if not room then
 		return
 	end
+	-- A room leaving Dirty was cleaned: how long it stood dirty feeds
+	-- Cleanliness's "rooms cleaned on time" (§5.3, Appendix A.4).
+	if room.state == "Dirty" and state ~= "Dirty" and room.dirtySince and hotel then
+		push(hotel.cleanTimes, os.clock() - room.dirtySince, Constants.Rating.CleanSampleSize)
+	end
 	room.state = state
 	room.guest = guest
 	room.dirtySince = if state == "Dirty" then os.clock() else nil
@@ -286,6 +292,7 @@ function HotelService.inputs(player: Player): Rating.Inputs?
 		return nil
 	end
 	local tiers, types, decor, amenities, rooms, dirty = {}, {}, 0, 0, 0, 0
+	local overdue, now = 0, os.clock()
 	local w = world(data)
 	for id, rec in data.layout do
 		local p = Pieces.get(rec.item)
@@ -296,6 +303,10 @@ function HotelService.inputs(player: Player): Rating.Inputs?
 			local room = hotel.rooms[id]
 			if room and room.state == "Dirty" then
 				dirty += 1
+				-- Dirty past the limit now: late already, before anyone cleans it.
+				if room.dirtySince and now - room.dirtySince > Constants.Rating.CleanOnTime then
+					overdue += 1
+				end
 			end
 		elseif p and p.kind == "Amenity" then
 			amenities += 1
@@ -309,6 +320,15 @@ function HotelService.inputs(player: Player): Rating.Inputs?
 	for _ in types do
 		nTypes += 1
 	end
+	-- Rooms cleaned on time (§5.3): the share of recent cleanings within the
+	-- limit, every room overdue now counted as a late one.
+	local onTime = 0
+	for _, t in hotel.cleanTimes do
+		if t <= Constants.Rating.CleanOnTime then
+			onTime += 1
+		end
+	end
+	local judged = #hotel.cleanTimes + overdue
 	return {
 		roomTiers = tiers,
 		prefsShare = mean(hotel.prefsShares),
@@ -321,6 +341,11 @@ function HotelService.inputs(player: Player): Rating.Inputs?
 		dirtyRooms = dirty,
 		amenities = amenities,
 		entertainers = hotel.staffBonus.Entertainment or 0,
+		-- Staff coverage (§5.3): each role's summed efficiency, set by ResidentService.
+		frontDesk = hotel.staffBonus.FrontDesk or 0,
+		roomService = hotel.staffBonus.RoomService or 0,
+		housekeeping = hotel.staffBonus.Housekeeping or 0,
+		onTimeShare = if judged > 0 then onTime / judged else 0,
 		perks = {
 			Service = hotel.staffBonus.PerkService or 0,
 			Fun = hotel.staffBonus.PerkFun or 0,
@@ -436,6 +461,7 @@ function HotelService.Start()
 			prefsShares = {},
 			requestsAsked = 0,
 			requestsDone = 0,
+			cleanTimes = {},
 			staffBonus = {},
 		}
 		HotelService.sync(player)
