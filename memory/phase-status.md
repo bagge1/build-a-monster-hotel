@@ -17,13 +17,13 @@ residents, the bus and a hunter seen as their models. The Studio copies and
 stand in front of floor-1 doors (WAITING §2.10, his choice; recommendation (a),
 a Grid rule).
 
-**Next, in order:** (1) WAITING §2.10 once he has chosen. (2) Stage the next
-import: both kits' `HotelSign` (posts fixed, `1de1317`; Frostfang's as
-`FrostfangLodge_HotelSign`) and the seven cosmetics
-(`blender/cosmetics/hotel/`); `blender/_import/` is empty. (3) Open TESTRUN
+**Next, in order:** (1) WAITING §2.10 once he has chosen. (2) The next import is
+staged (WAITING §0.4): both kits' fixed `HotelSign` and the seven cosmetics in
+`blender/_import/`; on *importerat*, skill `import` with each set's
+`import_fixup.luau`. (3) Open TESTRUN
 items: piece menu by clicks, rebirth by the panel's button, a two-player gift,
 pictures of the cosmetics after their import. Frostfang's rooms and amenities
-are synced but not yet built in a plot (needs a rebirth on the test profile).
+are rayed clean beside the street, not yet built in a plot (a rebirth).
 Economy pacing: `tools/balance_model.py` (archive/BALANCE-2026-10-19.md).
 
 | Phase | Built | Run in Studio | Next |
