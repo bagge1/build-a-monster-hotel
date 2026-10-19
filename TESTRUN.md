@@ -440,14 +440,15 @@ WAITING §0.9): what needs the new models or the build menu's clicks stays open.
 ## Rating: staff coverage and cleaning on time (GDD §5.3, Appendix A.4; after the merge)
 
 Built on its own branch, specs only (`lune run tools/run_specs.luau . rating
-stay economy`); not run in Studio. Read the categories from the plot's
+stay economy`). Merged 2026-10-19 20:50 and played (test profile
+`Test_Rate1019`, two Standard Rooms, two check-ins). Read the categories from the plot's
 `Categories` attribute (recomputed every 5 s) or the rating panel.
 
-- [ ] A hotel with rooms and stays but no staff: Service and Cleanliness the
+- [x] (Service 64.4, Cleanliness 100.) A hotel with rooms and stays but no staff: Service and Cleanliness the
   same as before the merge (nothing added without staff or cleanings).
-- [ ] Assign a Front Desk resident: Service rises by up to 10 (6 for a
+- [x] (Skeleton at 100 %: 64.4 → 74.4; back to the Wing: 64.4.) Assign a Front Desk resident: Service rises by up to 10 (6 for a
   resident at 60 %) within 5 s; unassign it and it falls back.
-- [ ] Room Service in a hotel of 4 rooms: up to +10 Service; with 8 rooms the
+- [ ] (Two rooms: a Slime added +10, 74.4 → 84.4; the 8-room half not tried.) Room Service in a hotel of 4 rooms: up to +10 Service; with 8 rooms the
   same resident gives half of that.
 - [ ] Housekeeping in a hotel of 4 rooms: up to +10 Cleanliness; Service and
   the other categories unchanged by it.
@@ -485,3 +486,4 @@ stay economy`); not run in Studio. Read the categories from the plot's
 - 2026-10-19 20:07 The phone: all panels opened; Residents' role row and the Ping menu fixed and seen fitting.
 - 2026-10-19 20:33 Phase 12 (street) after the merge: specs 82/82 (13 files); forecourt rayed and walked; the bus's drive and stops, browsing, the stops' waiting and boarding, a trap's scare; the forest's placement (blockouts). Scenery, the tree import, the tutorial's guests, the phone's frame time and the in-game review open.
 - 2026-10-19 20:42 Phase 13 (free building) after the merge, before the import: specs 90/90; refusals, areas, a free stair and a walker up it to floor 2, guests' paths to floor 2, the desk moved with its points, decor and its doorway refusal, finishes. The menu's clicks, floor 3 and everything after the import open.
+- 2026-10-19 20:52 Rating's staff coverage after the merge: Front Desk +10 and Room Service +10 to Service, back when unassigned (a second Assign within 0.25 s is dropped by the rate limit, not a fault).
