@@ -187,6 +187,13 @@ The door opening is at least **4 studs wide and 7 tall** (a 5-stud person).
 
 ### Lobby (`Lobby`): the shell
 
+**Retiring (his ruling, 2026-10-20):** there is no lobby strip any more; the
+lobby is wherever the player puts the desk(s) (GDD §5.4, A.1). The front
+wall and the arch become facade pieces (`Facade_Wall`, `Facade_Entrance`,
+above "Facade"), and the floor is the owned tiles' slab. The `Lobby` model
+below stays in the game only until `Facade_Entrance` exists; the code reads
+`Entrance` from `Facade_Entrance` then.
+
 The front two rows of floor 1 (12 × 2 cells: **144 × 24 studs**), authored
 with its origin at the **middle of its front edge** on the walking surface;
 the street is toward −Z. The front row is z 0–12, the back row z 12–24.
@@ -293,11 +300,46 @@ front of the flight down (the head, front-right) walkable on floor f + 1.
 | `Bottom`, `Top` (attachments) | (−6, 0, −11.75) and (6, 18, −11.75): the foot and head of the storey's stairs, on the walking surface | Where a guest's walk up starts and ends |
 | `Path_1`, `Path_2` (attachments) | (−6, 9.6, 6.25) and (6, 9.6, 6.25): the landing's two ends | A guest walks Bottom → Path_n → Top |
 
-### Facade (`Facade`) and sign (`HotelSign`)
+### Facade (`Facade_*`) and sign (`HotelSign`)
 
-The exterior shell round a hotel of `Floors` floors is built by the code from
-pieces per floor: `Facade_Wall` (one cell wide, one floor high: 12 × 18) and
-`Facade_Corner`, each origin at its base centre, outside face toward −Z.
+**Walls only round what is owned** (his ruling, 2026-10-20; GDD §5.4, A.1).
+The code walks the outline of the owned tiles on every floor and puts a piece
+on each outline edge and at each of its corners; buying a tile moves the
+outline out. Nothing here is a whole facade: every piece is **one cell edge**
+(or two, for the entrance), so the same pieces wrap any shape the player buys.
+
+**The frame of a piece:** origin at the **middle of the cell edge, on the
+walking surface** of its floor (the slab's top). The owned cell is toward
+**+Z**, the outside toward **−Z**. The wall stands **outside the edge**: its
+inner face at z = −0.02 (never on the cell, so it never meets a room's own
+wall face), its outer face at z = −0.62 (0.6 thick). It reaches from y = 0
+to **17**, the slab above (`WallHeight`); the slab's edge is the slab's.
+
+| Piece | Size (x × y, along × up) | What |
+|---|---|---|
+| `Facade_Wall` | 12 × 17, x −6..6 | A wall with **two windows**, each 4 wide and 9 tall (y 3–12, a person's sill), centred at x ±3, with a sill proud of both faces |
+| `Facade_Entrance` | 24 × 17, x −12..12 | Floor 1's front edge at x 5–6 only: the entrance arch in the middle (opening at least 9 wide and 9 tall, the approved arch's), solid to either side of it; the old `Lobby` front wall's arch and lantern move here |
+| `Facade_Corner` | 0.64 × 0.64 × 17 | A post at an outline corner, filling the square at the vertex in the quadrant **−X, −Z** of its origin (the code turns it to the right quadrant); 0.02 proud of the walls' faces both ways, so it hides a convex corner's gap and a concave corner's overlap |
+
+Window and sill details sit 0.01–0.03 proud (rule: coplanar faces flicker).
+Nothing of a facade piece collides with a person **inside** the edge
+(z > −0.02), and nothing reaches past x ±6 (±12 for the entrance), so two
+pieces in a row meet end to end.
+
+| Name | What | The code |
+|---|---|---|
+| `Root` | 12 × 0.2 × 0.6 (24 for the entrance), centred (0, 0.1, −0.32) | Placement |
+| `Entrance` (attachment, `Facade_Entrance` only) | (0, 0, 0): the threshold, LookVector −Z | Where guests walk in; the lobby cosmetics hang from it |
+
+**Above floor 1 the street-facing edge of the plot is left open** (his ruling,
+2026-10-19); every other outline edge is walled. The first draft's Wing
+doorway is gone: residents never walk through it.
+
+**One set of pieces per hotel kit** (`ServerStorage.HotelKit.<Location>`,
+`assets/HotelKit/<Location>/Facade_Wall.rbxm` …) and **one per facade
+cosmetic** (below, "Cosmetics"). Until a kit's pieces exist, `HotelKit.facade`
+draws the same outline as a Luau blockout.
+
 `HotelSign` carries `Board`, a part whose front face (−Z) takes the sign's
 SurfaceGui (a Decal or SurfaceGui on a part's `Front` face is the plain case).
 The sign is not scaled: posts and a 16 × 6 board at (0, 8, 0).
@@ -338,7 +380,7 @@ collision off. Each slot has its own origin:
 |---|---|---|
 | `Sign` | The centre of the hotel sign's `Board` front face | −Z, toward the street |
 | `Lobby` | The lobby's `Entrance` attachment (the threshold, on the floor) | −Z, toward the street |
-| `Facade` | None: a facade cosmetic is a colour scheme (`facade`, `trim`) applied to the facade until the kit has `Facade_Wall` styles | — |
+| `Facade` | The facade's own frames: a facade cosmetic is a **Folder** `ServerStorage.Cosmetics.<Id>` (`assets/Cosmetics/<Id>/`) holding its own `Facade_Wall`, `Facade_Entrance` and `Facade_Corner`, each to the "Facade" contract above, worn on any location in place of the kit's. Until its pieces exist, a colour scheme (`colour`, `trim`) on the blockout | −Z, toward the outside |
 
 A sign cosmetic dresses the sign (it never covers the Board's text); a lobby
 cosmetic hangs above the entrance and stays clear of a 5-stud person walking

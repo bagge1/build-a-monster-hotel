@@ -273,6 +273,28 @@ the game** (his words, 2026-10-19: "det ska vara mycket customizable, detta
 - **A forest round the street**, so the plot is not a bare lawn, and the
   Night Bus drives in round a bend out of the forest instead of appearing.
 
+**His rulings of 2026-10-20 replace the lobby strip and the areas** (from
+looking at the game: "When I said you can unlock tiles, the whole hotel
+shouldnt be build. It should only have walls where you have unlocked. I also
+think the reception should be infront of the entrance. and it doesnt have to
+be so wide in the beginning, you can build it out and make it bigger if you
+want. Customizability is KEY!"):
+
+- **The plot is bought one tile at a time, a tile being one cell** (12 × 12
+  studs), cheaply. A room (2 × 2) is four tiles.
+- **A new hotel starts with one square of 4 × 4 cells**, centred on the
+  entrance: the reception in the middle and one room to its right.
+- **No lobby strip and no predetermined spaces.** The lobby is wherever the
+  player puts the reception: "you simply fit things where you think is best.
+  no predetirmened spaces. if you later want the receptionm desk(s) on each
+  side of the entrance, or two in the middle, you can." So there can be
+  more than one desk.
+- **The reception starts across from the entrance arch**, facing it.
+- **Walls only round what is owned:** the facade follows the outline of the
+  owned tiles, on every floor, and moves out as tiles are bought.
+
+The rest of the paragraph below stands where these do not replace it.
+
 **His yes to Claude's proposals (2026-10-19), every number a PLACEHOLDER:**
 areas of 4 × 5 cells behind the lobby, six to a floor, bought for every floor
 at once, the front middle one owned at the start; a stair is a 2×2 piece
@@ -694,6 +716,7 @@ After the soft launch we apply for Kids/Select eligibility:
 | 2026-10-20 | Pacing: the bus brings 3–8 guests per player (was 2–4), every stay doubled, Legendary friendship 10 → 5 (§4.2, §4.3); the goal card also gives a free front area beside the start area (§11, A.7) | His go on WAITING §2.27 and §2.28 ("also fix 2 and 3"); rebirth measured 3.5–5.4 h against 60–90 min, now 1:50 / 2:41 h (`archive/BALANCE-2026-10-20.md`) |
 | 2026-10-20 | Notifications: "Your residents' till is full" (when the offline cap runs out) and "Full Moon tonight" (Saturday, to players seen in the last 7 days), sent by the game's servers through Open Cloud (§9, A.9) | His picks of four; "ready to move in" cannot happen offline |
 | 2026-10-20 | Facades: the Manor's and the Lodge's own facade pieces are modelled first, then the Gothic, Neon, Candy and Pirate packs and the Slime facade as styles that replace them on any location; the packs cost **149 each** (§10.2, A.10; Claude's one-line looks, his "yes, as drafts") | His picks: kits first, then packs; one price, no style worth more than another |
+| 2026-10-20 | **Tiles, not areas:** the plot is bought a cell at a time, cheaply; a hotel starts as a 4 × 4 square centred on the entrance, the reception across from the arch and one room beside it; no lobby strip and no fixed spaces; one or more desks anywhere; the facade only round what is owned (§5.4, A.1) | His rulings from looking at the game ("Customizability is KEY!"), his picks of a 1-cell tile and the 4 × 4 start; it replaces the six areas, the 2-row lobby and its gallery, and "room for 2–4 Standard Rooms" at the start |
 
 ---
 
@@ -749,36 +772,42 @@ Every number below is a **placeholder** (tagged `PLACEHOLDER` in
   dozen a pass), so thousands of trees cost a phone little.
 - **The plot frame:** cell (x, z), x 0–11 along the street, z 0–11 away from it;
   floor 1 at ground level, each floor 18 studs above the last (his ruling, 2026-10-19 evening).
-- **The lobby** is the front two rows of floor 1 (z 0–1), a shell with the
-  entrance in the middle; above floor 1 the same rows are a gallery. The two
-  front-row cells either side of the entrance (x 5–6, z 0) are never built on.
-- **Areas** (§5.4, his yes 2026-10-19): behind the lobby the plot is cut into
-  six areas of 4 × 5 cells, three across (x 0–3, 4–7, 8–11) and two deep
-  (z 2–6, 7–11), numbered 1–6 from the front left. An area is bought for
-  every floor at once, next to the lobby or to an owned one; the front middle
-  one (area 2) is owned at the start. Rooms and amenities stand only in owned
-  areas; stairs and the desk may stand in the lobby rows too. Areas not owned
-  are not walked on and carry a dark plate. Prices: the n-th area owned costs
-  $0, $1,000, $3,000, $8,000, $20,000, $50,000 (PLACEHOLDER).
+- **The entrance** is in the middle of the plot's front edge (between cells
+  x 5 and 6, z 0). The two cells inside it (x 5–6, z 0) are its mouth and
+  are never built on; a desk's queue may stand there.
+- **Tiles** (§5.4, his rulings 2026-10-20): the plot is bought one cell at a
+  time, and a cell owned is owned on every floor (Claude's reading, as the
+  areas were; WAITING §2). A tile can be bought when it shares an edge with
+  an owned one. **The start is the 4 × 4 square x 4–7, z 0–3.** Anything may
+  stand on any owned cell (rooms, amenities, stairs, desks, decor): there is
+  no lobby strip and no gallery. Cells not owned are not walked on and carry
+  a dark plate on floor 1. The n-th tile bought costs **$50 × 1.03^n**
+  (PLACEHOLDER: "cheap"; the whole plot then costs about what the six areas
+  did, ~$72,000).
 - **Stairs** (§5.4): a 2 × 2 piece on floor f joining it to f + 1 on the same
   cells (its well on f + 1). Its foot (the cell before the flight up,
   front-left) and its head (front-right, on f + 1) stay walkable. A stair on
   the same cells and turn above another continues it. $250 × 1.15^n
   (PLACEHOLDER); a new floor's first stair is free. A stair whose going would
   cut a door off (the last to a floor with rooms) cannot be sold.
-- **The front desk** (§5.4): a 2 × 1 piece with its till and key rack,
-  exactly one, on floor 1, its two front cells (where the queue stands)
-  reached from the entrance. A new hotel's stands at the lobby's −X end,
-  served toward +X. Never bought or sold, only moved.
+- **The front desk** (§5.4): a 2 × 1 piece with its till and key rack, on
+  floor 1, its two front cells (where the queue stands) reached from the
+  entrance. **One or more** (his ruling, 2026-10-20): a guest queues at the
+  desk with the shortest queue; the last desk cannot be sold. A new hotel's
+  stands across from the entrance (x 5–6, z 1), served toward the street,
+  its queue in the entrance's mouth. The first is free; another costs $500
+  (PLACEHOLDER).
 - **The Resident Wing** is a garden behind the hotel (48 studs deep), where
   residents wander.
-- **The facade:** walls with window openings along the left, right and back
-  edges of every floor, just outside the grid (never on a cell); floor 1's
-  back wall has an 8-stud doorway to the Wing, and its sides are solid along
-  the lobby. The street side is the lobby's front wall on floor 1 (his ruling,
-  2026-10-19, below) and stays open above it.
-- **Hallways are the free cells** of the lobby, the gallery and the owned
-  areas: not under a piece, not a stairwell, not furnished down the middle.
+- **The facade** (his ruling, 2026-10-20: "It should only have walls where
+  you have unlocked"): a wall with two windows on **every edge between an
+  owned cell and one not owned** (or the plot's edge), on every floor, with a
+  post at each corner of the outline; the entrance arch on floor 1's front
+  edge at x 5–6. Above floor 1, the street-facing edges of the plot stay
+  open (his ruling of 2026-10-19); edges facing a cell not owned are walled.
+  The pieces are `MODELS.md`, "Facade". The Wing doorway of the first
+  draft is gone: residents never walk through it.
+- **Hallways are the free owned cells**: not under a piece, not a stairwell, not furnished down the middle.
   A room's door opens onto the cell in front of its front edge. A placement
   is refused if any piece's doors (a room's door cell, the desk's queue
   cells, a stair's foot and head) would not be free and reached from the
