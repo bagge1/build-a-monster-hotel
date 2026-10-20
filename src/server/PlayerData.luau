@@ -65,6 +65,7 @@ export type PieceRecord = {
 	x: number,
 	z: number,
 	r: number,
+	m: boolean?, -- mirrored left to right (Flip, A.1), a room or amenity only
 	paid: number, -- what it cost, for the refund
 	finish: string?, -- a room's floor finish (Pieces.Finishes), "" or nil for the model's own
 }

@@ -12,7 +12,9 @@
 	sold anywhere on owned tiles (the first desk is free, the last cannot be
 	sold); decor stands on 3-stud squares in rooms and on hallway floor
 	(`PlaceDecor`, `MoveDecor`, `SellDecor`) and moves and goes with its room;
-	a floor finish is chosen per room and for the hallways (`Finish`). A new
+	a floor finish is chosen per room and for the hallways (`Finish`); a room
+	or amenity may be placed or moved mirrored (Flip, A.1: `m`, free) when its
+	kit has `<PieceId>_Mirror` or it is still a blockout. A new
 	floor's first stair is free. A room's tier is its decor's (`Layout`), not
 	bought.
 
@@ -36,6 +38,7 @@ local Species = require(ReplicatedStorage.Shared.Species)
 local Unlocks = require(ReplicatedStorage.Shared.Unlocks)
 local PlayerData = require(ServerScriptService.Server.PlayerData)
 local PlotService = require(ServerScriptService.Server.PlotService)
+local HotelKit = require(ServerScriptService.Server.HotelKit)
 local HotelService = require(ServerScriptService.Server.HotelService)
 local StateService = require(ServerScriptService.Server.StateService)
 local DevGrant = require(ServerScriptService.Server.DevGrant)
@@ -149,7 +152,7 @@ function BuildService.tutorialTiles(player: Player)
 	for _, k in chosen do
 		data.tiles[k] = true
 	end
-	PlotService.rebuild(player)
+	PlotService.refreshTiles(player)
 	changed(player, "Tile")
 end
 
@@ -233,10 +236,22 @@ end
 
 -- ===== Pieces =====
 
-local function place(player: Player, item: string, floor: number, x: number, z: number, r: number)
+local function place(
+	player: Player,
+	item: string,
+	floor: number,
+	x: number,
+	z: number,
+	r: number,
+	mirrored: boolean
+)
 	local data = PlayerData.get(player)
 	local piece = Pieces.get(item)
 	if not data or not piece then
+		return
+	end
+	if mirrored and not HotelKit.mirrorable(item, data.location) then
+		refuse(player, "Place", "NoMirror")
 		return
 	end
 	local ok, why = Unlocks.buildable(item, BuildService.context(player, data))
@@ -244,8 +259,10 @@ local function place(player: Player, item: string, floor: number, x: number, z: 
 		refuse(player, "Place", why or "Locked")
 		return
 	end
-	local candidate =
-		Layout.piece("", { item = item, floor = floor, x = x, z = z, r = r }) :: Grid.Placed
+	local candidate = Layout.piece(
+		"",
+		{ item = item, floor = floor, x = x, z = z, r = r, m = mirrored }
+	) :: Grid.Placed
 	candidate.id = nil
 	local legal, reason = Grid.canPlace(PlotService.world(data), candidate)
 	if not legal then
@@ -264,7 +281,16 @@ local function place(player: Player, item: string, floor: number, x: number, z: 
 		data.stats[`voucher_{item}`] -= 1
 	end
 	local id = newId(data)
-	data.layout[id] = { item = item, floor = floor, x = x, z = z, r = r, paid = cost, finish = "" }
+	data.layout[id] = {
+		item = item,
+		floor = floor,
+		x = x,
+		z = z,
+		r = r,
+		m = if candidate.m then true else nil,
+		paid = cost,
+		finish = "",
+	}
 	redraw(player, item, id)
 	changed(player, "Place")
 end
@@ -286,7 +312,8 @@ local function move(
 	floor: number,
 	x: number,
 	z: number,
-	r: number
+	r: number,
+	mirrored: boolean
 )
 	local data = PlayerData.get(player)
 	local id = tostring(idNumber)
@@ -298,25 +325,37 @@ local function move(
 		refuse(player, "Move", "Busy")
 		return
 	end
+	if mirrored ~= (rec.m == true) and not HotelKit.mirrorable(rec.item, data.location) then
+		refuse(player, "Move", "NoMirror")
+		return
+	end
 	local world = PlotService.world(data)
 	local skip = Layout.find(world, id)
-	local candidate =
-		Layout.piece(id, { item = rec.item, floor = floor, x = x, z = z, r = r }) :: Grid.Placed
+	local candidate = Layout.piece(
+		id,
+		{ item = rec.item, floor = floor, x = x, z = z, r = r, m = mirrored }
+	) :: Grid.Placed
 	local legal, reason = Grid.canPlace(world, candidate, skip)
 	if not legal then
 		refuse(player, "Move", reason or "Blocked")
 		return
 	end
-	-- Its decor goes with it, in the same place in the room (Furnish's frame).
+	-- Its decor goes with it, in the same place in the room (Furnish's frame),
+	-- mirrored with it when it is flipped.
 	local old = Layout.find(world, id) :: Grid.Placed
+	local flipped = (old.m == true) ~= (candidate.m == true)
 	for did, d in decorIn(data, id) do
 		local item = assert(Pieces.decor(d.item))
 		local l = Furnish.toRoom(old, { x = d.x, z = d.z, r = d.r, w = item.w, d = item.d })
+		if flipped then
+			l = Furnish.mirror(candidate, l, item.w, item.d)
+		end
 		local now = Furnish.fromRoom(candidate, l, item.w, item.d)
 		d.floor, d.x, d.z, d.r = floor, now.x, now.z, now.r
 		data.decor[did] = d
 	end
 	rec.floor, rec.x, rec.z, rec.r = floor, x, z, r
+	rec.m = if candidate.m then true else nil
 	local piece = assert(Pieces.get(rec.item))
 	if piece.kind == "Stairs" or piece.kind == "Desk" then
 		PlotService.rebuild(player)
@@ -403,7 +442,7 @@ local function buyTile(player: Player, x: number, z: number)
 	end
 	data.tiles[tostring(Grid.tileKey(x, z))] = true
 	data.tilesBought += 1
-	PlotService.rebuild(player)
+	PlotService.refreshTiles(player)
 	changed(player, "Tile")
 end
 
@@ -730,6 +769,7 @@ function BuildService.Start()
 				x = rec.x,
 				z = rec.z,
 				r = rec.r,
+				m = rec.m == true,
 				paid = rec.paid or 0,
 				finish = rec.finish or "",
 			}
@@ -759,11 +799,12 @@ function BuildService.Start()
 				paid = rec.paid or 0,
 			})
 		end
-		local buildable, costs = {}, {}
+		local buildable, costs, mirrorable = {}, {}, {}
 		for _, p in Pieces.List do
 			local ok, why = Unlocks.buildable(p.id, ctx)
 			buildable[p.id] = if ok then true else (why or "Locked")
 			costs[p.id] = BuildService.price(data, p.id)
+			mirrorable[p.id] = HotelKit.mirrorable(p.id, data.location)
 		end
 		local unlockedDecor = {}
 		for _, d in Pieces.DecorList do
@@ -804,6 +845,7 @@ function BuildService.Start()
 			floorCost = Economy.floorCost(data.floors + 1),
 			buildable = buildable,
 			costs = costs,
+			mirrorable = mirrorable,
 			location = data.location,
 		}
 	end)

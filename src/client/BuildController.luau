@@ -1,14 +1,16 @@
 --!strict
 --[[
 	Build mode (GDD §5, §5.4, §13.2 "Building": the client draws the ghost,
-	snaps and rotates; the server validates). The client sends only an intent
+	snaps, rotates and flips; the server validates). The client sends only an intent
 	(`{item, floor, cell, rotation}`, or squares for decor); `Grid`, `Furnish`
 	and `Layout` run here too, on the state's copy of the hotel, so the ghost
 	turns red before the server would refuse.
 
 	One thumb (§11): tap a card, tap the grid to put the ghost there, press
 	Place. With a mouse, the ghost follows the cursor and a click places; R
-	rotates. With nothing chosen, tapping a built piece or a piece of decor
+	rotates, and F flips a room or amenity left to right, moving its door to
+	its other front cell (A.1, his ask 2026-10-20; ⇋ Flip on touch, L1 on a
+	gamepad). With nothing chosen, tapping a built piece or a piece of decor
 	opens its menu (move, sell; a room's tier, its decor points and its
 	floor), and tapping a gold tile beside the hotel buys it (§5.4, A.1, his
 	rulings 2026-10-20: the plot is bought a cell at a time, cheaply).
@@ -61,6 +63,7 @@ local camera = workspace.CurrentCamera
 local active = false
 local floor = 1
 local rotation = 0
+local mirror = false -- the piece being placed or moved is flipped (Flip, A.1)
 local selected: string? = nil -- a piece id to place
 local selectedDecor: string? = nil -- a decor id to place
 local selectedFinish: string? = nil -- a finish to lay ("" the model's own)
@@ -98,6 +101,7 @@ local function moveHint(): string
 end
 local hover: Highlight? = nil
 local stopPlacing: () -> ()
+local flip: () -> ()
 local rightDownAt: Vector2? = nil
 local redrawCards: () -> ()
 local ghost: Model? = nil
@@ -433,7 +437,7 @@ local function drawGhost()
 	if piece then
 		local candidate = Layout.piece(
 			"",
-			{ item = piece.id, floor = floor, x = here.x, z = here.z, r = rotation }
+			{ item = piece.id, floor = floor, x = here.x, z = here.z, r = rotation, m = mirror }
 		) :: Grid.Placed
 		candidate.id = nil
 		local skip = if moving then Layout.find(w, tostring(moving)) else nil
@@ -485,7 +489,10 @@ local function drawGhost()
 	info.Text = if ok
 		then `{name}{if cost
 			then " · " .. (if cost == 0 then "free" else Format.cash(cost))
-			else " (move)"}  ·  {Controls.hint("R / ⟳ to rotate", "RB / ⟳ to rotate")}`
+			else " (move)"}  ·  {Controls.hint("R / ⟳ to rotate", "RB / ⟳ to rotate")}{if piece
+				and (piece.kind == "Room" or piece.kind == "Amenity")
+			then "  ·  " .. Controls.hint("F / ⇋ to flip", "LB / ⇋ to flip")
+			else ""}`
 		else `{name}: {Hud.refusal(why or "")}`
 	placeButton.Visible = ok == true
 end
@@ -536,13 +543,13 @@ local function place()
 		return
 	end
 	if moving and piece then
-		Net.send("Move", moving, floor, cell.x, cell.z, rotation)
+		Net.send("Move", moving, floor, cell.x, cell.z, rotation, mirror)
 		stopPlacing()
 	elseif movingDecor and d then
 		Net.send("MoveDecor", movingDecor, floor, cell.x, cell.z, rotation)
 		stopPlacing()
 	elseif piece then
-		Net.send("Place", piece.id, floor, cell.x, cell.z, rotation)
+		Net.send("Place", piece.id, floor, cell.x, cell.z, rotation, mirror)
 	elseif d then
 		Net.send("PlaceDecor", d.id, floor, cell.x, cell.z, rotation)
 	end
@@ -761,6 +768,7 @@ local function startMoving(id: number, rec: any)
 	movingDecor = nil
 	selected, selectedDecor, selectedFinish = nil, nil, nil
 	rotation = rec.r
+	mirror = rec.m == true
 	floor = rec.floor
 	menu.Visible = false
 	floorLabel.Text = `Floor {floor}`
@@ -973,6 +981,23 @@ end
 -- ===== The strip of cards =====
 
 -- Stops placing or moving: the ghost goes, and a tap opens a piece's menu again.
+--[[ F, L1 or ⇋ Flip (A.1): the room or amenity being placed or moved,
+	mirrored left to right. Only where its kit has the mirror image, or it is
+	still a blockout (`mirrorable` from the server); Roblox cannot mirror a
+	mesh. ]]
+function flip()
+	local piece = pieceBeingPlaced()
+	if not piece or (piece.kind ~= "Room" and piece.kind ~= "Amenity") then
+		return
+	end
+	if not (build().mirrorable or {})[piece.id] then
+		info.Text = `{piece.name}: {Hud.refusal("NoMirror")}`
+		return
+	end
+	mirror = not mirror
+	drawGhost()
+end
+
 function stopPlacing()
 	selected, selectedDecor, selectedFinish = nil, nil, nil
 	moving, movingDecor = nil, nil
@@ -1106,6 +1131,7 @@ function redrawCards()
 					end
 					stopPlacing()
 					selected = p.id
+					mirror = false
 					showHover(nil)
 					info.Text = `{p.name}: {Controls.hint(
 						"tap the grid · tap the card again to stop",
@@ -1348,6 +1374,7 @@ function BuildController.Init()
 		rotation = (rotation + 1) % 4
 		drawGhost()
 	end)
+	tool(placingRow, "Flip", "⇋ Flip", 114, flip)
 	-- A quarter turn (`dir` 1 or -1), to the next side square on.
 	function turnQuarter(dir: number)
 		yaw = (math.floor(yaw / (math.pi / 2) + 0.5) + dir) * math.pi / 2
@@ -1382,6 +1409,7 @@ function BuildController.Init()
 		rotation = (rotation + 1) % 4
 		drawGhost()
 	end)
+	Controls.press(buildKeys, "Flip", { Enum.KeyCode.F, Enum.KeyCode.ButtonL1 }, flip)
 	-- B opens build mode from the HUD (Hud's KEYS) and closes it here.
 	Controls.press(buildKeys, "Leave", { Enum.KeyCode.B }, function()
 		setActive(false)

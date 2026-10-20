@@ -240,7 +240,7 @@ local function buildPiece(
 	end
 	local model = if piece.kind == "Stairs"
 		then HotelKit.stairs(plot.location, not continued(data, rec))
-		else HotelKit.piece(rec.item, plot.location)
+		else HotelKit.piece(rec.item, plot.location, rec.m)
 	model.Name = `P_{id}`
 	model:SetAttribute("PieceId", id)
 	model:SetAttribute("Item", rec.item)
@@ -364,6 +364,40 @@ local function buildDecor(
 	plot.decor[id] = model
 end
 
+-- Each floor above the first over the owned tiles, with a hole over every stair coming up to it.
+local function buildSlabs(plot: Plot, data: PlayerData.Data)
+	for _, child in plot.model:GetChildren() do
+		if string.match(child.Name, "^Slab_%d+$") then
+			child:Destroy()
+		end
+	end
+	local C = G.CellSize
+	for floor = 2, data.floors do
+		local holes = {}
+		for _, rec in data.layout do
+			if rec.item == "Stairs" and rec.floor == floor - 1 then
+				local ex, ez = Grid.extent(2, 2, rec.r)
+				local h =
+					{ x0 = rec.x * C, z0 = rec.z * C, x1 = (rec.x + ex) * C, z1 = (rec.z + ez) * C }
+				-- The 1-stud lip along its front (MODELS.md, "Stairs").
+				if rec.r == 0 then
+					h.z0 += 1
+				elseif rec.r == 1 then
+					h.x1 -= 1
+				elseif rec.r == 2 then
+					h.z1 -= 1
+				else
+					h.x0 += 1
+				end
+				table.insert(holes, h)
+			end
+		end
+		local slab = HotelKit.slab(plot.location, floor, holes, PlotService.world(data).tiles)
+		placeLocal(slab, plot.frame)
+		slab.Parent = plot.model
+	end
+end
+
 --[[ The plates over the cells not owned, on floor 1 (§5.4, A.1): one plate
 	to each run of them along a row, the rows of equal runs merged. ]]
 local function buildTiles(plot: Plot, data: PlayerData.Data)
@@ -464,32 +498,7 @@ local function buildHotel(plot: Plot, data: PlayerData.Data?)
 
 	drawCosmetics(plot, data)
 
-	-- Each floor above the first, with a hole over every stair coming up to it.
-	local C = G.CellSize
-	for floor = 2, data.floors do
-		local holes = {}
-		for _, rec in data.layout do
-			if rec.item == "Stairs" and rec.floor == floor - 1 then
-				local ex, ez = Grid.extent(2, 2, rec.r)
-				local h =
-					{ x0 = rec.x * C, z0 = rec.z * C, x1 = (rec.x + ex) * C, z1 = (rec.z + ez) * C }
-				-- The 1-stud lip along its front (MODELS.md, "Stairs").
-				if rec.r == 0 then
-					h.z0 += 1
-				elseif rec.r == 1 then
-					h.x1 -= 1
-				elseif rec.r == 2 then
-					h.z1 -= 1
-				else
-					h.x0 += 1
-				end
-				table.insert(holes, h)
-			end
-		end
-		local slab = HotelKit.slab(plot.location, floor, holes, PlotService.world(data).tiles)
-		placeLocal(slab, plot.frame)
-		slab.Parent = plot.model
-	end
+	buildSlabs(plot, data)
 	buildTiles(plot, data)
 
 	for id, rec in data.layout do
@@ -606,6 +615,21 @@ function PlotService.rebuild(player: Player)
 	if plot then
 		buildHotel(plot, PlayerData.get(player))
 	end
+end
+
+--[[ After a tile is bought (§5.4, A.1): what the tiles decide is drawn
+	again (the slabs, the plates, the facade and its cosmetics), the pieces
+	stay as they are. ]]
+function PlotService.refreshTiles(player: Player)
+	local plot = byPlayer[player]
+	local data = PlayerData.get(player)
+	if not plot or not data then
+		return
+	end
+	buildSlabs(plot, data)
+	buildTiles(plot, data)
+	drawCosmetics(plot, data)
+	layHallways(plot, data)
 end
 
 function PlotService.addPiece(player: Player, id: string)

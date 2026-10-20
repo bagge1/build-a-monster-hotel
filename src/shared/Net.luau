@@ -30,8 +30,16 @@ type Def = { dir: "C2S" | "S2C", args: { ArgType }?, rate: number? }
 
 local DEFS: { [string]: Def } = {
 	-- Client to server: intents.
-	Place = { dir = "C2S", args = { "string", "number", "number", "number", "number" }, rate = 0.2 }, -- item, floor, x, z, r
-	Move = { dir = "C2S", args = { "number", "number", "number", "number", "number" }, rate = 0.2 }, -- id, floor, x, z, r
+	Place = {
+		dir = "C2S",
+		args = { "string", "number", "number", "number", "number", "boolean" },
+		rate = 0.2,
+	}, -- item, floor, x, z, r, mirrored
+	Move = {
+		dir = "C2S",
+		args = { "number", "number", "number", "number", "number", "boolean" },
+		rate = 0.2,
+	}, -- id, floor, x, z, r, mirrored
 	Sell = { dir = "C2S", args = { "number" }, rate = 0.2 },
 	BuyFloor = { dir = "C2S", rate = 0.5 },
 	BuyTile = { dir = "C2S", args = { "number", "number" }, rate = 0.15 }, -- a cell x, z (§5.4, A.1)

@@ -598,6 +598,27 @@ profile `Test_Tiles1020a`.
   (8, 1) take the step on to Bus.
 - [A] How the small start, the gold tiles and the facade look (his).
 
+## Flip (GDD A.1, his ask 2026-10-20)
+
+Built 2026-10-20: F (L1, ⇋ Flip) mirrors a room or amenity being placed or
+moved; saved as `m`; the door on its other front cell; the server places
+`<PieceId>_Mirror`, or a blockout that mirrors itself; refused (`NoMirror`)
+for a kit piece with no mirror yet. Played on `Test_Tiles1020a`.
+
+- [x] A flipped Standard Room with the kit's model and no mirror: refused,
+  `NoMirror`.
+- [x] With the kit's Standard Room hidden in that play session only (the
+  blockout path): placed flipped at x 10–11, z 1–2; its `Door` at local x +6,
+  onto cell (11, 0); a guest checked in walked queue → hallway → (11, 0) →
+  the door → the bed, and was InRoom.
+- [x] Build mode's `Flip` action (F, ButtonL1) and the ⇋ Flip button exist;
+  build mode opened by firing the HUD's own action.
+- [ ] By real input (night or his yes): choose a room card, press F, the ghost's
+  door marker moves to the other front cell, Place builds it flipped; Move a
+  placed room, F, its decor mirrors with it.
+- [A] Every kit room and amenity needs its `_Mirror` from the kit's
+  `finish()` (MODELS.md) before F works on the imported models.
+
 ## August keeps
 
 - How the street, the lobby and the rooms look (every look is a night draft).
@@ -634,3 +655,4 @@ profile `Test_Tiles1020a`.
 - 2026-10-19 22:42 The forest longer and thicker by the play area (his ruling): 4,723 trees (a 60-stud thicket of 735, 3,988 beyond, out to 600 studs), 9,604 parts with only the 120 near the camera whole; no error. Pictures: `archive/screens/2026-10-19_forest_thicket.jpg`, `archive/screens/2026-10-19_forest_long.jpg`.
 - 2026-10-20 21:39 Pacing and the tutorial's free area (test profile Test_Rel1020a; steps to SecondRoom, Goal and Done jumped by `tutorial`, buses called by `bus`): two Standard Rooms in the start area; at the goal card area 1 owned beside area 2 and the card reads "in your new area"; the Coffin Suite placed free at (0, 2) in it (paid 0, voucher spent); the first bus drew 3 guests for a one-player hotel with 3 vacant rooms; the Vampire Count booked after bus 2 and on bus 3, checked in to the suite; stays by the server's timers: Slime 180 s, Vampire Count 600 s. The server-size warning fires (60). The new bus horn (9114660894, 2.8 s) loads and plays when a bus arrives.
 - 2026-10-20 22:42 Tiles, desks and the facade (Test_Tiles1020a): the start square, tiles bought by remote and by a click, the outline walled on two floors (rays, a walker), two desks with a guest at each, a desk sold with a guest waiting, the goal card's block and the free Coffin Suite, rejoin; fixed: the tile plates redrawn every second. No errors of the game's own.
+- 2026-10-20 22:56 Flip (Test_Tiles1020a): refused without a mirror model; on the blockout path a flipped Standard Room's door on its other cell and a guest walked in through it; build mode's Flip action and button present. Also: a tile purchase now redraws only the slabs, plates and facade (a quick run of purchases lost one to the rate limit while each rebuilt the whole hotel). No errors of the game's own.

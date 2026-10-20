@@ -88,14 +88,17 @@ local function rooted(found: Model): Model
 	return m
 end
 
-local function template(location: number, name: string): Model?
+-- The kit's delivered model `name` for a location, uncloned, or nil.
+local function delivered(location: number, name: string): Model?
 	local kit = ServerStorage:FindFirstChild("HotelKit")
 	local folder = kit and kit:FindFirstChild((string.gsub(Locations.get(location).name, " ", "")))
 	local found = folder and folder:FindFirstChild(name)
-	if found and found:IsA("Model") then
-		return rooted(found)
-	end
-	return nil
+	return if found and found:IsA("Model") then found else nil
+end
+
+local function template(location: number, name: string): Model?
+	local found = delivered(location, name)
+	return if found then rooted(found) else nil
 end
 
 local function darker(c: Color3, f: number): Color3
@@ -120,8 +123,9 @@ local function lamp(model: Model, n: number, at: Vector3, colour: Color3)
 end
 
 --[[ A room or an amenity (MODELS.md, "Rooms and amenities"). Walls in
-	pieces apart round the door; the door opening 4 wide and 7 tall. ]]
-local function blockoutPiece(id: string): Model
+	pieces apart round the door; the door opening 4 wide and 7 tall, on its
+	other front cell when `mirrored` (Flip, A.1). ]]
+local function blockoutPiece(id: string, mirrored: boolean?): Model
 	local piece = assert(Pieces.get(id), id)
 	assert(piece.kind == "Room" or piece.kind == "Amenity", `{id} has no room blockout`)
 	local W, D = piece.w * CELL, piece.d * CELL
@@ -160,7 +164,7 @@ local function blockoutPiece(id: string): Model
 	)
 
 	-- The front wall, round the door.
-	local doorX = (math.floor((piece.w - 1) / 2) + 0.5) * CELL - W / 2
+	local doorX = (Grid.doorAlong(piece.w, mirrored) + 0.5) * CELL - W / 2
 	local doorW, doorH = 4, 7
 	local leftEnd, rightStart = doorX - doorW / 2, doorX + doorW / 2
 	local z = -D / 2 + t / 2
@@ -270,8 +274,24 @@ local function blockoutDesk(location: number): Model
 	return model
 end
 
--- A piece of the layout (Pieces): a room, an amenity or the front desk. Stairs are `HotelKit.stairs`.
-function HotelKit.piece(id: string, location: number): Model
+--[[ Whether a room or an amenity can be placed mirrored (Flip, A.1;
+	MODELS.md: `<PieceId>_Mirror`): its kit has the mirror, or it is still a
+	blockout, which mirrors itself. Roblox cannot mirror a mesh. ]]
+function HotelKit.mirrorable(id: string, location: number): boolean
+	local piece = Pieces.get(id)
+	if not piece or (piece.kind ~= "Room" and piece.kind ~= "Amenity") then
+		return false
+	end
+	return delivered(location, `{id}_Mirror`) ~= nil or delivered(location, id) == nil
+end
+
+--[[ A piece of the layout (Pieces): a room, an amenity or the front desk,
+	mirrored (`<PieceId>_Mirror`) when `mirrored` and `mirrorable`. Stairs are
+	`HotelKit.stairs`. ]]
+function HotelKit.piece(id: string, location: number, mirrored: boolean?): Model
+	if mirrored and HotelKit.mirrorable(id, location) then
+		return template(location, `{id}_Mirror`) or blockoutPiece(id, true)
+	end
 	local found = template(location, id)
 	if found then
 		return found

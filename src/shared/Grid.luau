@@ -60,6 +60,7 @@ export type Placed = {
 	r: number,
 	w: number,
 	d: number,
+	m: boolean?, -- mirrored left to right (Flip, A.1): a room or amenity's door on its other front cell
 	id: string?,
 }
 export type DecorPlaced = {
@@ -212,14 +213,26 @@ function Grid.edgeCell(
 	return { x = p.x - 1, z = p.z + ez - 1 - along }
 end
 
---[[ The cell a room's door opens onto, just outside the middle of its front
-	edge (the left of the two middles on an even edge). ]]
-function Grid.doorCell(p: { x: number, z: number, r: number, w: number, d: number }): Cell
-	return Grid.edgeCell(p, math.floor((p.w - 1) / 2))
+--[[ Which cell along its front edge, from its own left, a piece's door is
+	on: the middle (the left of the two middles on an even edge), or the
+	right of them when it is mirrored (Flip, A.1: a 3-wide door stays put). ]]
+function Grid.doorAlong(w: number, m: boolean?): number
+	local along = math.floor((w - 1) / 2)
+	return if m then w - 1 - along else along
+end
+
+--[[ The cell a room's door opens onto, just outside its front edge at
+	`doorAlong`. ]]
+function Grid.doorCell(
+	p: { x: number, z: number, r: number, w: number, d: number, m: boolean? }
+): Cell
+	return Grid.edgeCell(p, Grid.doorAlong(p.w, p.m))
 end
 
 -- The cell inside the piece that the door belongs to (its threshold's inner side).
-function Grid.doorInside(p: { x: number, z: number, r: number, w: number, d: number }): Cell
+function Grid.doorInside(
+	p: { x: number, z: number, r: number, w: number, d: number, m: boolean? }
+): Cell
 	local c = Grid.doorCell(p)
 	if p.r == 0 then
 		return { x = c.x, z = c.z + 1 }
@@ -888,9 +901,15 @@ function Grid.decorCentre(d: {
 end
 
 -- The middle of the door's threshold, plot-local: between doorInside and doorCell.
-function Grid.doorPoint(
-	p: { floor: number, x: number, z: number, r: number, w: number, d: number }
-): Vector3
+function Grid.doorPoint(p: {
+	floor: number,
+	x: number,
+	z: number,
+	r: number,
+	w: number,
+	d: number,
+	m: boolean?,
+}): Vector3
 	local a = Grid.cellCentre(p.floor, Grid.doorInside(p))
 	local b = Grid.cellCentre(p.floor, Grid.doorCell(p))
 	return (a + b) / 2
