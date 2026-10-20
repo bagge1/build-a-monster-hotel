@@ -421,14 +421,14 @@
      "centre": [
       0.0,
       7.6,
-      -0.27
+      -0.36
      ],
      "size": [
       6.84,
       6.84,
-      0.9
+      0.72
      ],
-     "triangles": 480,
+     "triangles": 468,
      "collide": false
     },
     "LOD_Proxy": {
@@ -447,7 +447,7 @@
     }
    },
    "attachments": {},
-   "triangles": 1116,
+   "triangles": 1104,
    "budget": 2500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
@@ -652,12 +652,12 @@
     "Glass": {
      "centre": [
       0.0,
-      14.9,
+      14.85,
       -0.6425
      ],
      "size": [
-      2.4021,
-      2.4021,
+      2.2173,
+      2.2173,
       0.075
      ],
      "triangles": 124,
@@ -666,12 +666,12 @@
     "Dressing": {
      "centre": [
       0.0,
-      8.5101,
+      8.4361,
       -0.5
      ],
      "size": [
       11.0,
-      15.8202,
+      15.6721,
       1.08
      ],
      "triangles": 320,

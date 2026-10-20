@@ -758,8 +758,8 @@ def window_piece(st, wtype):
         sx0, sx1 = min(s['bbox'][0] for s in shapes) - 0.15, max(s['bbox'][1] for s in shapes) + 0.15
     foot = min(s['bbox'][2] for s in shapes)
     sy = foot - st.get('sill_drop', 0.0)
-    outer = st['sill'][0] if (wtype != 'Round' or st.get('round_sill')) else None
-    sill_under(sx0, sx1, sy, foot, outer, st['sill'][1])
+    if wtype != 'Round' or st.get('round_sill'):    # a ledge under a circle floats, outside and in
+        sill_under(sx0, sx1, sy, foot, st['sill'][0], st['sill'][1])
     if callable(st.get('bars')):
         st['bars'](wtype, shapes)
     elif st.get('bars'):
@@ -926,7 +926,7 @@ def gothic_entrance():
     prism('ArchTop', outer + [(5.5, 16.4), (-5.5, 16.4)], OUT_Z, IN_Z, {'front': 'slate', 'back': 'wine', 'rest': 'slate'})
     span('ArchTop', (-PIER, 16.4, OUT_Z), (PIER, WALL, IN_Z), 'stone')
     # A red rose window over the arch: eight ruby panes round an amber eye, in a stone ring.
-    c, r0, r1 = (0, 14.9), 0.45, 1.3
+    c, r0, r1 = (0, 14.85), 0.45, 1.2      # clear of the arch's crown (13.3) and the coping (16.4)
     for k in range(8):
         a0, a1 = math.radians(k * 45 + 22.5), math.radians(k * 45 + 67.5)
         quad = [(c[0] + r0 * math.cos(a0), c[1] + r0 * math.sin(a0)), (c[0] + r1 * math.cos(a0), c[1] + r1 * math.sin(a0)),
@@ -1098,9 +1098,9 @@ def candy_entrance():
         a = math.pi * (1 - t)
         x, y = 4.5 * math.cos(a), ARCH_Y + 4.5 * math.sin(a)
         drip('Dressing', x, y + 0.1, length, w, 'icing', z_face=zm(0), depth=0.1)
-    sphere('Dressing', (0, 14.75, zm(0) - 0.3), (0.5, 0.48, 0.45), 'cherry', n=10, rings=5)
-    cyl('Dressing', (0, 0, 0), 0.05, 0.6, 'stem', n=5, m=at((0.05, 15.15, zm(0) - 0.3), rz=-20))
-    drip_row(12.0, 16.25, 'icing', clear=(-1.6, 1.6))
+    sphere('Dressing', (0, 14.95, zm(0) - 0.4), (0.7, 0.66, 0.6), 'cherry', n=10, rings=5)
+    cyl('Dressing', (0, 0, 0), 0.07, 0.75, 'stem', n=5, m=at((0.08, 15.5, zm(0) - 0.4), rz=-20))
+    drip_row(12.0, 16.25, 'icing', clear=(-2.0, 2.0))
     for s in (-1, 1):
         lo, hi = sorted((s * 5.45, s * PIER))
         span('Dressing', (lo, 0.6, OUT_Z + 0.03), (hi, 8.4, IN_Z - 0.03), 'wafer')

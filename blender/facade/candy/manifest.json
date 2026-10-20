@@ -415,14 +415,14 @@
      "centre": [
       -0.5343,
       9.965,
-      -0.2892
+      -0.3792
      ],
      "size": [
       8.7592,
       12.57,
-      0.9383
+      0.7583
      ],
-     "triangles": 884,
+     "triangles": 872,
      "collide": false
     },
     "LOD_Proxy": {
@@ -441,7 +441,7 @@
     }
    },
    "attachments": {},
-   "triangles": 1496,
+   "triangles": 1484,
    "budget": 2500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
@@ -647,14 +647,14 @@
      "centre": [
       -0.1732,
       8.425,
-      -0.754
+      -0.8753
      ],
      "size": [
       21.4813,
       15.65,
-      1.588
+      1.8306
      ],
-     "triangles": 1348,
+     "triangles": 1304,
      "collide": false
     },
     "Glow_Warm_1": {
@@ -700,7 +700,7 @@
      ]
     }
    },
-   "triangles": 2568,
+   "triangles": 2524,
    "budget": 3000,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",

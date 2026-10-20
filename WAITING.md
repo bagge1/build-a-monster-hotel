@@ -677,6 +677,15 @@ Med Claudes skärmdump där det finns en. -->
      sedan.
    - **Väggarnas insidor** är släta färgband, som lobbyns framvägg var.
      **Rekommendation:** behåll; rummen har egna väggar.
+   - **Ovanför fönstren** är 5–6 studs slät vägg upp till taklisten, och
+     Haunted Manor, Gothic och Neon är lika mörka lådor uppifrån.
+     **Rekommendation:** behåll tills du sett dem i spelet; en list eller ett
+     mönster högt upp kan läggas till per stil.
+   - **Pirates hörnlyktor** sitter högt (13–16 studs). Lägre går, men då
+     måste hörnets regel om att hålla sig undan fönstren ändras.
+     **Rekommendation:** behåll.
+   - **Neons vinkel** över dörren svävar fritt. *Behåll*, *ta bort* eller
+     *gör den till en skylt med ram*. **Rekommendation:** ta bort den.
 
 ## §3 Creator Hub och publicering
 

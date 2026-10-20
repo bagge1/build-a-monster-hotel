@@ -428,14 +428,14 @@
      "centre": [
       0.0,
       7.4,
-      -0.17
+      -0.26
      ],
      "size": [
       7.44,
       7.44,
-      0.7
+      0.52
      ],
-     "triangles": 252,
+     "triangles": 240,
      "collide": false
     },
     "Glow_Magenta_1": {
@@ -468,7 +468,7 @@
     }
    },
    "attachments": {},
-   "triangles": 924,
+   "triangles": 912,
    "budget": 2500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",

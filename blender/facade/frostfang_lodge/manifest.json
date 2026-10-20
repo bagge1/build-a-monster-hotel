@@ -576,14 +576,14 @@
      "centre": [
       0.0,
       7.4,
-      -0.235
+      -0.325
      ],
      "size": [
       7.44,
       7.44,
-      0.83
+      0.65
      ],
-     "triangles": 444,
+     "triangles": 432,
      "collide": false
     },
     "LOD_Proxy": {
@@ -602,7 +602,7 @@
     }
    },
    "attachments": {},
-   "triangles": 1032,
+   "triangles": 1020,
    "budget": 2500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",

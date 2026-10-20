@@ -67,7 +67,7 @@ local SET = {
 			Root = { c = Vector3.new(0, 0.1, -0.32), s = Vector3.new(12, 0.2, 0.6), collide = false },
 			Wall = { c = Vector3.new(0, 8.5, -0.32), s = Vector3.new(12, 17, 0.6), collide = true },
 			Glass = { c = Vector3.new(0, 7.4, -0.32), s = Vector3.new(6.9, 6.9, 0.06), collide = false },
-			Dressing = { c = Vector3.new(0, 7.4, -0.17), s = Vector3.new(7.44, 7.44, 0.7), collide = false },
+			Dressing = { c = Vector3.new(0, 7.4, -0.26), s = Vector3.new(7.44, 7.44, 0.52), collide = false },
 			Glow_Magenta_1 = { c = Vector3.new(0, 7.4, -0.69), s = Vector3.new(7.3012, 7.3012, 0.14), collide = false },
 			LOD_Proxy = { c = Vector3.new(0, 8.5, -0.32), s = Vector3.new(12, 17, 0.6), collide = false },
 		},

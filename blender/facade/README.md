@@ -115,6 +115,16 @@ breaking the courses at 12; the Gothic entrance rose unlike the window rose
 (traced the same now); the inside corner showing no post (the bead); the
 icing drips crowding the cherry.
 
+**Round three** (all seven sheets): fixed: a ledge inside every round window
+(no sill under a circle now, but for Slime's slime), Gothic's entrance rose
+touching the coping (smaller, between the crown and the coping), Candy's cherry
+lost among the drips (bigger, the drips kept off it). False: "the transom over
+the arch is not glass" is the far wall seen through the arch's head; the twin
+sash's pier inside is covered by its two inner frames. His call: the band of
+plain wall over every window, Haunted Manor, Gothic and Neon reading alike
+from above, Pirate's corner lanterns high on the corner, Neon's chevron, the
+flower box's height.
+
 **False**: views through an opening show the far wall of the layout (a
 "filled tympanum", "two portholes in the lunette", "a black void in the
 arch"); the inside corner's post is buried by contract (it was the bead that

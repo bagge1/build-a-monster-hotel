@@ -65,7 +65,7 @@ local SET = {
 			Root = { c = Vector3.new(0, 0.1, -0.32), s = Vector3.new(12, 0.2, 0.6), collide = false },
 			Wall = { c = Vector3.new(0, 8.5, -0.32), s = Vector3.new(12, 17, 0.6), collide = true },
 			Glass = { c = Vector3.new(0, 7.4, -0.32), s = Vector3.new(6.9, 6.9, 0.06), collide = false },
-			Dressing = { c = Vector3.new(-0.5343, 9.965, -0.2892), s = Vector3.new(8.7592, 12.57, 0.9383), collide = false },
+			Dressing = { c = Vector3.new(-0.5343, 9.965, -0.3792), s = Vector3.new(8.7592, 12.57, 0.7583), collide = false },
 			LOD_Proxy = { c = Vector3.new(0, 8.5, -0.32), s = Vector3.new(12, 17, 0.6), collide = false },
 		},
 		att = {
@@ -98,7 +98,7 @@ local SET = {
 			ArchLeft = { c = Vector3.new(-5, 4.5, -0.42), s = Vector3.new(1, 9, 0.8), collide = true },
 			ArchRight = { c = Vector3.new(5, 4.5, -0.42), s = Vector3.new(1, 9, 0.8), collide = true },
 			ArchTop = { c = Vector3.new(0, 13, -0.42), s = Vector3.new(11, 8, 0.8), collide = true },
-			Dressing = { c = Vector3.new(-0.1732, 8.425, -0.754), s = Vector3.new(21.4813, 15.65, 1.588), collide = false },
+			Dressing = { c = Vector3.new(-0.1732, 8.425, -0.8753), s = Vector3.new(21.4813, 15.65, 1.8306), collide = false },
 			Glow_Warm_1 = { c = Vector3.new(0, 11.64, -0.5), s = Vector3.new(0.5987, 1.08, 0.5987), collide = false },
 			LOD_Proxy = { c = Vector3.new(0, 8.5, -0.42), s = Vector3.new(24, 17, 0.8), collide = false },
 		},

@@ -57,7 +57,7 @@
     "the piece's own checks re-run on the re-imported triangles",
     "the contract re-checked on the re-imported boxes (Root, footprint, kind rules, budgets)"
    ],
-   "triangles": 840,
+   "triangles": 828,
    "budget": 2500,
    "collision_precise": [],
    "attachments": []

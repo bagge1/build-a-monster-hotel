@@ -10,7 +10,7 @@ reviews are in `blender/facade/README.md`. Goes to `assets/HotelKit/HauntedManor
 | `Facade_Wall` | 156 / 1,500 | Wall, LOD_Proxy | passed | a plain wall: the Lobby front wall's bands (stone plinth, plum, gold courses; lilac and plum inside) |
 | `Facade_Window_TwinSash` | 468 / 2,500 | Wall, Glass, Dressing, LOD_Proxy | passed | the Lobby front wall's bands (stone plinth, plum, gold courses; lilac and plum inside); a TwinSash window: dark wood frames and bars, a gold sill |
 | `Facade_Window_Arched` | 584 / 2,500 | Wall, Glass, Dressing, LOD_Proxy | passed | the Lobby front wall's bands (stone plinth, plum, gold courses; lilac and plum inside); a Arched window: dark wood frames and bars, a gold sill |
-| `Facade_Window_Round` | 840 / 2,500 | Wall, Glass, Dressing, LOD_Proxy | passed | the Lobby front wall's bands (stone plinth, plum, gold courses; lilac and plum inside); a Round window: dark wood frames and bars, a gold sill |
+| `Facade_Window_Round` | 828 / 2,500 | Wall, Glass, Dressing, LOD_Proxy | passed | the Lobby front wall's bands (stone plinth, plum, gold courses; lilac and plum inside); a Round window: dark wood frames and bars, a gold sill |
 | `Facade_Window_Wide` | 924 / 2,500 | Wall, Glass, Dressing, LOD_Proxy | passed | the Lobby front wall's bands (stone plinth, plum, gold courses; lilac and plum inside); a Wide window: dark wood frames and bars, a gold sill |
 | `Facade_Entrance` | 852 / 3,000 | Wall_Left, Wall_Right, ArchLeft, ArchRight, ArchTop, Dressing, Glow_Warm_1, LOD_Proxy | passed | the Lobby's pointed arch: stone pillars, gold capitals, the plum gable and its pumpkin, the iron lantern hung in the arch |
 | `Facade_Corner` | 100 / 800 | Post, Dressing | passed | a dark plum post with the wall's stone plinth and gold courses |
