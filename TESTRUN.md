@@ -652,6 +652,23 @@ facade cosmetic, a blockout opening until then. Played on `Test_Tiles1020a`.
   without a drag still stops placing. The drag no longer depends on Roblox's
   `processed` flag.
 
+## Tiles per floor, every floor walled (GDD A.1, his rulings 2026-10-20)
+
+Built 2026-10-20: tiles bought on each floor apart (a tile upstairs over an
+owned one below, adjacency per floor, a floor's first anywhere over the one
+below), floor f's ladder ×2^(f−1) (PLACEHOLDER), a stair needs the tiles
+above its well; every outline edge of every floor walled, the street side
+too; profile schema 4 (tiles and purchases per floor) rebuilt every hotel
+from the start square. Specs only so far.
+
+- [ ] On a fresh profile: floor 2 bought has no tiles, no walls, no slab; its
+  first tile anywhere over floor 1's, $100; the next only beside it; one over
+  no tile refused (`NoTileBelow`); its walls round its own outline, the street
+  side included; a stair refused until the tiles above it are bought
+  (`TileAbove`).
+- [ ] The goal card's free tiles (`tutorial Goal`): fixed here, the windows
+  commit had called `windowsOut` before it was defined (selene caught it).
+
 ## August keeps
 
 - How the street, the lobby and the rooms look (every look is a night draft).

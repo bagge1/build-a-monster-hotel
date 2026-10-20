@@ -26,14 +26,28 @@ describe("Economy", function()
 	it(
 		"each tile costs at least the one before, and the whole plot about the six areas' $72,000",
 		function()
-			expect.eq(Economy.tileCost(0), Constants.Economy.TileCost, "the first tile")
+			expect.eq(Economy.tileCost(1, 0), Constants.Economy.TileCost, "the first tile")
+			for n = 0, 20 do
+				expect.eq(
+					Economy.tileCost(2, n),
+					math.floor(
+						Constants.Economy.TileCost * 2 * Constants.Economy.TileGrowth ^ n + 0.5
+					),
+					"floor 2 twice floor 1's ladder"
+				)
+				expect.atLeast(Economy.tileCost(3, n), Economy.tileCost(2, n), "dearer a floor up")
+			end
 			local G = Constants.Grid
 			local total = 0
 			for n = 0, G.Cells * G.Cells - G.StartTiles.w * G.StartTiles.d - 1 do
 				if n > 0 then
-					expect.atLeast(Economy.tileCost(n), Economy.tileCost(n - 1), `tile {n + 1}`)
+					expect.atLeast(
+						Economy.tileCost(1, n),
+						Economy.tileCost(1, n - 1),
+						`tile {n + 1}`
+					)
 				end
-				total += Economy.tileCost(n)
+				total += Economy.tileCost(1, n)
 			end
 			expect.atLeast(total, 60000, "the whole plot")
 			expect.atMost(total, 85000, "the whole plot")

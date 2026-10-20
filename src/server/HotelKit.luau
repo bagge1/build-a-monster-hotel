@@ -482,12 +482,11 @@ end
 
 export type Hole = { x0: number, z0: number, x1: number, z1: number }
 
---[[ A floor above the first: a slab over the owned tiles (`tiles`, by
-	Grid.tileKey) but its stairwells (`holes`, plot-local studs: each stair's
-	footprint less the 1-stud lip at its front, MODELS.md "Stairs"), and a
-	railing along its street edge, which the facade leaves open above floor 1
-	(his ruling, 2026-10-19). Every other edge of it has a facade wall.
-	Plot-local, as a Folder. ]]
+--[[ A floor above the first: a slab over that floor's owned tiles (`tiles`,
+	by Grid.tileKey) but its stairwells (`holes`, plot-local studs: each
+	stair's footprint less the 1-stud lip at its front, MODELS.md "Stairs").
+	Every edge of it has a facade wall (his ruling, 2026-10-20), so it needs
+	no railing. Plot-local, as a Folder. ]]
 function HotelKit.slab(
 	location: number,
 	floor: number,
@@ -516,7 +515,7 @@ function HotelKit.slab(
 	table.sort(xs)
 	table.sort(zs)
 	local function solid(x: number, z: number): boolean
-		if not tiles[Grid.tileKey(x // CELL, z // CELL)] then
+		if not tiles[Grid.tileKey(floor, x // CELL, z // CELL)] then
 			return false
 		end
 		for _, h in holes do
@@ -554,47 +553,6 @@ function HotelKit.slab(
 			if runStart ~= nil then
 				lay(runStart :: number, P, z0, z1)
 			end
-		end
-	end
-	-- The railing along the open street edge, 3.5 studs (against the 5-stud
-	-- person), over the owned front cells. Where a stairwell meets the edge
-	-- it stops: the stair's own walls rise there, and a rail in the same plane
-	-- flickered against them (his report, 2026-10-19).
-	local rh, rt = 3.5, 0.4
-	local top = y + th
-	local gaps = {}
-	for _, h in holes do
-		if math.floor(h.z0 / CELL) <= 0 then
-			table.insert(gaps, { math.floor(h.x0 / CELL) * CELL, math.ceil(h.x1 / CELL) * CELL })
-		end
-	end
-	local function railed(x: number): boolean
-		if not tiles[Grid.tileKey(x // CELL, 0)] then
-			return false
-		end
-		for _, g in gaps do
-			if x > g[1] and x < g[2] then
-				return false
-			end
-		end
-		return true
-	end
-	local runStart: number? = nil
-	for i = 0, G.Cells do
-		local x = i * CELL
-		local here = i < G.Cells and railed(x + CELL / 2)
-		if here and runStart == nil then
-			runStart = x
-		elseif not here and runStart ~= nil then
-			local a = runStart :: number
-			part(
-				folder,
-				"Rail_Front",
-				Vector3.new(x - a, rh, rt),
-				Vector3.new((a + x) / 2, top + rh / 2, rt / 2),
-				{ Color = loc.trim }
-			)
-			runStart = nil
 		end
 	end
 	return folder

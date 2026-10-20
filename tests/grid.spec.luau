@@ -16,11 +16,14 @@ local function decor(id, floor, x, z, r)
 	return { item = id, layer = d.layer, floor = floor, x = x, z = z, r = r, w = d.w, d = d.d }
 end
 
--- A hotel as it starts (§5.4, A.1): the start square's tiles, the desk across from the arch.
+-- A hotel as it starts (§5.4, A.1): the start square's tiles (`tiles` on every
+-- floor up to `floors`), the desk across from the arch.
 local function world(floors, tiles, pieces)
 	local owned = {}
-	for _, c in tiles or Grid.startTiles() do
-		owned[Grid.tileKey(c.x, c.z)] = true
+	for f = 1, floors or 1 do
+		for _, c in tiles or Grid.startTiles() do
+			owned[Grid.tileKey(f, c.x, c.z)] = true
+		end
 	end
 	local d = G.DeskStart
 	return {
@@ -146,7 +149,7 @@ describe("Grid", function()
 			for z = 0, N - 1 do
 				for x = 0, N - 1 do
 					local inSquare = x >= S.x and x < S.x + S.w and z >= S.z and z < S.z + S.d
-					expect.eq(Grid.isOpen(w, x, z), inSquare, `start tile {x},{z}`)
+					expect.eq(Grid.isOpen(w, 1, x, z), inSquare, `start tile {x},{z}`)
 					if inSquare then
 						owned += 1
 					end
@@ -154,36 +157,72 @@ describe("Grid", function()
 			end
 			expect.eq(owned, 16, "the start square's tiles")
 			for _, c in Grid.entrance() do
-				expect.truthy(Grid.isOpen(w, c.x, c.z), "the mouth is owned")
+				expect.truthy(Grid.isOpen(w, 1, c.x, c.z), "the mouth is owned")
 			end
 			for z = -1, N do
 				for x = -1, N do
-					local ok, why = Grid.canBuyTile(w.tiles, x, z)
+					local ok, why = Grid.canBuyTile(w.tiles, 1, 1, x, z)
 					local beside = Grid.inBounds(x, z)
-						and not Grid.isOpen(w, x, z)
+						and not Grid.isOpen(w, 1, x, z)
 						and (
-							Grid.isOpen(w, x - 1, z)
-							or Grid.isOpen(w, x + 1, z)
-							or Grid.isOpen(w, x, z - 1)
-							or Grid.isOpen(w, x, z + 1)
+							Grid.isOpen(w, 1, x - 1, z)
+							or Grid.isOpen(w, 1, x + 1, z)
+							or Grid.isOpen(w, 1, x, z - 1)
+							or Grid.isOpen(w, 1, x, z + 1)
 						)
 					expect.eq(ok, beside, `tile {x},{z} buyable`)
 					if not Grid.inBounds(x, z) then
 						expect.eq(why, "Unknown", "off the plot")
-					elseif Grid.isOpen(w, x, z) then
+					elseif Grid.isOpen(w, 1, x, z) then
 						expect.eq(why, "Owned", "owned")
 					end
 				end
 			end
 			expect.eq(
-				#Grid.buyable(w.tiles),
+				#Grid.buyable(w.tiles, 1, 1),
 				12,
 				"the square's neighbours: 4 a side, none in front"
 			)
-			local _, why = Grid.canBuyTile(w.tiles, 0, 11)
+			local _, why = Grid.canBuyTile(w.tiles, 1, 1, 0, 11)
 			expect.eq(why, "NotNext", "a tile far from the hotel")
 		end
 	)
+
+	it("tiles are bought on each floor apart, upstairs over owned tiles below", function()
+		-- Floor 2 built, no tiles on it yet: no walls there either.
+		local w = world(1)
+		w.floors = 2
+		local t = w.tiles
+		for _, f in Grid.facade(t, 2) do
+			expect.eq(f.floor, 1, "nothing drawn on a floor with no tiles")
+		end
+		local ok, why = Grid.canBuyTile(t, 2, 2, 4, 2)
+		expect.truthy(ok, "a floor's first tile anywhere over an owned one")
+		_, why = Grid.canBuyTile(t, 2, 2, 8, 2)
+		expect.eq(why, "NoTileBelow", "not over a tile not owned")
+		_, why = Grid.canBuyTile(t, 2, 3, 4, 2)
+		expect.eq(why, "NoFloor", "not on a floor not built")
+		expect.eq(#Grid.buyable(t, 2, 2), 16, "any of the 16 below")
+		t[Grid.tileKey(2, 4, 2)] = true
+		_, why = Grid.canBuyTile(t, 2, 2, 7, 3)
+		expect.eq(why, "NotNext", "then only next to its floor's own")
+		expect.truthy(Grid.canBuyTile(t, 2, 2, 5, 2), "beside it")
+		expect.eq(#Grid.buyable(t, 2, 2), 3, "the three over owned tiles beside it")
+		expect.truthy(Grid.canBuyTile(t, 2, 1, 8, 2), "floor 1 still buys on its own")
+		-- A stair needs the tiles above its well.
+		local open = world(1)
+		open.floors = 2
+		open.pieces = {}
+		_, why = Grid.canPlace(open, placed("Stairs", 1, 6, 2, 0))
+		expect.eq(why, "TileAbove", "no tiles above it")
+		local free = world(1)
+		free.floors = 2
+		free.pieces = {}
+		for _, c in Grid.startTiles() do
+			free.tiles[Grid.tileKey(2, c.x, c.z)] = true
+		end
+		expect.truthy(Grid.canPlace(free, placed("Stairs", 1, 6, 2, 0)), "with the tiles above it")
+	end)
 
 	it(
 		"anything stands on any owned tile, never on a tile not owned or the entrance's mouth",
@@ -263,14 +302,12 @@ describe("Grid", function()
 	it(
 		"windows go on outer walls only, and move out along their line when a tile is bought",
 		function()
-			local w = world()
+			local w = world(2)
 			local t = w.tiles
 			expect.truthy(Grid.isWall(t, 2, 1, 4, 0, 0), "the front wall beside the arch")
 			expect.truthy(not Grid.isWall(t, 2, 1, 5, 0, 0), "not the arch")
-			expect.truthy(
-				not Grid.isWall(t, 2, 2, 4, 0, 0),
-				"not the open street side above floor 1"
-			)
+			expect.truthy(Grid.isWall(t, 2, 2, 4, 0, 0), "the street side upstairs is walled too")
+			expect.truthy(Grid.isWall(t, 2, 2, 5, 0, 0), "and over the arch")
 			expect.truthy(Grid.isWall(t, 2, 2, 4, 1, 1), "a side wall upstairs")
 			expect.truthy(not Grid.isWall(t, 2, 1, 5, 1, 1), "not between two owned tiles")
 			expect.truthy(not Grid.isWall(t, 2, 3, 4, 1, 1), "not on a floor not built")
@@ -325,15 +362,17 @@ describe("Grid", function()
 	)
 
 	it(
-		"the facade walls exactly the outline of the owned tiles, open above floor 1 on the street",
+		"the facade walls exactly each floor's outline of owned tiles, the street side too",
 		function()
 			local function check(tiles, floors)
 				local owned = {}
-				for _, c in tiles do
-					owned[Grid.tileKey(c.x, c.z)] = true
+				for f = 1, floors do
+					for _, c in tiles do
+						owned[Grid.tileKey(f, c.x, c.z)] = true
+					end
 				end
 				local function isOwned(x, z)
-					return Grid.inBounds(x, z) and owned[Grid.tileKey(x, z)] == true
+					return Grid.inBounds(x, z) and owned[Grid.tileKey(1, x, z)] == true
 				end
 				local walls, corners, entrances = {}, {}, 0
 				for _, f in Grid.facade(owned, floors) do
@@ -360,9 +399,8 @@ describe("Grid", function()
 							local key =
 								`{floor}:{(c.x + 0.5 + side[1] / 2) * C},{(c.z + 0.5 + side[2] / 2) * C}`
 							local edge = not isOwned(nx, nz)
-							local open = floor > 1 and nz < 0
 							local arch = floor == 1 and nz < 0 and (c.x == 5 or c.x == 6)
-							if edge and not open and not arch then
+							if edge and not arch then
 								wanted += 1
 								local w = walls[key]
 								expect.truthy(w ~= nil, `a wall at {key}`)
@@ -383,8 +421,8 @@ describe("Grid", function()
 			local count, corners = check(Grid.startTiles(), 2)
 			expect.eq(
 				count,
-				14 + 12,
-				"the start square: 14 walls and the arch on floor 1, 12 above"
+				14 + 16,
+				"the start square: 14 walls and the arch on floor 1, 16 above (the street side walled)"
 			)
 			local posts = 0
 			for _, n in corners do

@@ -49,6 +49,8 @@ local REFUSALS: { [string]: string } = {
 	FloorCap = "No more floors for now",
 	-- Free building (§5.4)
 	Tile = "Buy that tile of the plot first",
+	TileAbove = "Buy the tiles above it on the next floor first",
+	NoTileBelow = "A tile upstairs stands on one below: buy that first",
 	Entrance = "Keep the entrance clear",
 	Decor = "Move the decor out of the way first",
 	NoFloorAbove = "A stair needs a floor above it",

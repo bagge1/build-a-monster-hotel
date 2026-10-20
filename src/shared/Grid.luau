@@ -13,18 +13,20 @@
 	other way round.
 
 	WHAT IS THE HOTEL'S (§5.4, A.1, his rulings 2026-10-20). The plot is
-	bought one cell at a time, a TILE, and a tile owned is owned on every
-	floor; one can be bought when it shares an edge with an owned one. A new
-	hotel owns the square `StartTiles`. Anything may stand on any owned cell:
+	bought one cell at a time, a TILE, on each floor apart. A tile on floor
+	f > 1 stands on an owned tile of the floor below, and can be bought when
+	it shares an edge with an owned tile of its floor (a floor's first: over
+	any owned tile below). A new floor has no tiles. A new hotel owns the
+	square `StartTiles` on floor 1. Anything may stand on any owned cell:
 	there is no lobby strip, no gallery and no area. The entrance's mouth,
 	the two cells inside the arch (x 5–6, z 0), is never built on; a desk's
 	queue may stand there. There may be several desks; the last cannot go.
 
-	THE FACADE follows the outline of the owned tiles on every floor
+	THE FACADE follows each floor's own outline of owned tiles
 	(`Grid.facade`): a wall on each edge between an owned cell and one not
-	owned (or the plot's edge), a corner post where the outline turns, the
-	entrance arch on floor 1's front edge at the mouth, and the street-facing
-	edges of the plot left open above floor 1. A wall section may carry one
+	owned (or the plot's edge), the street side included on every floor, a
+	corner post where the outline turns, and the entrance arch on floor 1's
+	front edge at the mouth. A wall section may carry one
 	window the player placed (A.1), keyed by `edgeKey`; when a tile bought
 	makes a windowed wall an inside one, the window moves out along its line
 	(`moveWindows`).
@@ -80,7 +82,7 @@ export type DecorPlaced = {
 }
 export type World = {
 	floors: number,
-	tiles: { [number]: boolean }, -- owned cells, by `Grid.tileKey`
+	tiles: { [number]: boolean }, -- owned cells per floor, by `Grid.tileKey`
 	pieces: { Placed },
 	decor: { DecorPlaced },
 }
@@ -91,6 +93,7 @@ export type Refusal =
 	"OutOfBounds"
 	| "Overlap"
 	| "Tile"
+	| "TileAbove"
 	| "Entrance"
 	| "Decor"
 	| "DoorBlocked"
@@ -133,16 +136,16 @@ end
 
 -- ===== Tiles (§5.4, A.1) =====
 
--- A cell as one number: the key of `World.tiles` (and of the profile's, as a string).
-function Grid.tileKey(x: number, z: number): number
-	return key(x, z)
+-- A floor's cell as one number: the key of `World.tiles` (and of the profile's, as a string).
+function Grid.tileKey(floor: number, x: number, z: number): number
+	return fkey(floor, x, z)
 end
 
-function Grid.tileOf(k: number): Cell
-	return { x = k % N, z = k // N }
+function Grid.tileOf(k: number): Spot
+	return unkey(k)
 end
 
--- A new hotel's tiles: the square `StartTiles` (his pick, 2026-10-20).
+-- A new hotel's tiles: the square `StartTiles` on floor 1 (his pick, 2026-10-20).
 function Grid.startTiles(): { Cell }
 	local s = G.StartTiles
 	local out = {}
@@ -154,28 +157,54 @@ function Grid.startTiles(): { Cell }
 	return out
 end
 
--- Whether a tile can be bought: on the plot, not owned, and sharing an edge with an owned one.
-function Grid.canBuyTile(tiles: { [number]: boolean }, x: number, z: number): (boolean, string?)
-	if x % 1 ~= 0 or z % 1 ~= 0 or not Grid.inBounds(x, z) then
+local function ownedTile(tiles: { [number]: boolean }, floor: number, x: number, z: number): boolean
+	return Grid.inBounds(x, z) and tiles[fkey(floor, x, z)] == true
+end
+
+--[[ Whether a tile can be bought on `floor` (of `floors` built): on the plot,
+	not owned, over an owned tile below (floor > 1), and sharing an edge with
+	an owned tile of its floor unless it is the floor's first. ]]
+function Grid.canBuyTile(
+	tiles: { [number]: boolean },
+	floors: number,
+	floor: number,
+	x: number,
+	z: number
+): (boolean, string?)
+	if x % 1 ~= 0 or z % 1 ~= 0 or floor % 1 ~= 0 or not Grid.inBounds(x, z) then
 		return false, "Unknown"
 	end
-	if tiles[key(x, z)] then
+	if floor < 1 or floor > floors then
+		return false, "NoFloor"
+	end
+	if tiles[fkey(floor, x, z)] then
 		return false, "Owned"
 	end
+	if floor > 1 and not tiles[fkey(floor - 1, x, z)] then
+		return false, "NoTileBelow"
+	end
 	for _, n in { { x - 1, z }, { x + 1, z }, { x, z - 1 }, { x, z + 1 } } do
-		if Grid.inBounds(n[1], n[2]) and tiles[key(n[1], n[2])] then
+		if ownedTile(tiles, floor, n[1], n[2]) then
 			return true, nil
 		end
 	end
-	return false, "NotNext"
+	-- A floor's first tile stands anywhere over the floor below.
+	for cz = 0, N - 1 do
+		for cx = 0, N - 1 do
+			if tiles[fkey(floor, cx, cz)] then
+				return false, "NotNext"
+			end
+		end
+	end
+	return floor > 1, if floor > 1 then nil else "NotNext"
 end
 
--- Every tile that can be bought now.
-function Grid.buyable(tiles: { [number]: boolean }): { Cell }
+-- Every tile that can be bought now on `floor`.
+function Grid.buyable(tiles: { [number]: boolean }, floors: number, floor: number): { Cell }
 	local out = {}
 	for z = 0, N - 1 do
 		for x = 0, N - 1 do
-			if Grid.canBuyTile(tiles, x, z) then
+			if Grid.canBuyTile(tiles, floors, floor, x, z) then
 				table.insert(out, { x = x, z = z })
 			end
 		end
@@ -183,9 +212,9 @@ function Grid.buyable(tiles: { [number]: boolean }): { Cell }
 	return out
 end
 
--- Whether the cell is the hotel's: an owned tile.
-function Grid.isOpen(world: World, x: number, z: number): boolean
-	return Grid.inBounds(x, z) and world.tiles[key(x, z)] == true
+-- Whether the cell is the hotel's on `floor`: an owned tile there.
+function Grid.isOpen(world: World, floor: number, x: number, z: number): boolean
+	return ownedTile(world.tiles, floor, x, z)
 end
 
 -- The entrance's mouth (floor 1), the two cells inside the arch: guests come in here.
@@ -389,7 +418,7 @@ local function occupy(
 end
 
 local function walkable(world: World, occ: Occupancy, floor: number, x: number, z: number): boolean
-	if floor < 1 or floor > world.floors or not Grid.isOpen(world, x, z) then
+	if floor < 1 or floor > world.floors or not Grid.isOpen(world, floor, x, z) then
 		return false
 	end
 	local k = fkey(floor, x, z)
@@ -549,8 +578,12 @@ function Grid.canPlace(world: World, piece: Placed, skip: Placed?): (boolean, Re
 		if isEntrance(floor, c.x, c.z) then
 			return false, "Entrance"
 		end
-		if not Grid.isOpen(world, c.x, c.z) then
+		if not Grid.isOpen(world, floor, c.x, c.z) then
 			return false, "Tile"
+		end
+		-- A stair rises into the floor above: its well needs that floor's tiles too.
+		if piece.kind == "Stairs" and not Grid.isOpen(world, floor + 1, c.x, c.z) then
+			return false, "TileAbove"
 		end
 		local k = fkey(floor, c.x, c.z)
 		if occ.piece[k] then
@@ -635,7 +668,7 @@ function Grid.canPlaceDecor(world: World, d: DecorPlaced, skip: DecorPlaced?): (
 			return false, "OutOfBounds"
 		end
 		local cx, cz = s.x // Q, s.z // Q
-		if not Grid.isOpen(world, cx, cz) then
+		if not Grid.isOpen(world, d.floor, cx, cz) then
 			return false, "Tile"
 		end
 		local k = fkey(d.floor, cx, cz)
@@ -801,8 +834,8 @@ function Grid.edgeOf(edge: string): (number, number, number, number)
 end
 
 --[[ Whether the edge on `side` of cell (x, z) on `floor` is a facade wall
-	section, which can carry a window: the cell owned, the one beyond not,
-	not the entrance's arch, not the street side above floor 1. ]]
+	section, which can carry a window: the cell owned on that floor, the one
+	beyond not, not the entrance's arch. ]]
 function Grid.isWall(
 	tiles: { [number]: boolean },
 	floors: number,
@@ -815,14 +848,11 @@ function Grid.isWall(
 	if not s or floor < 1 or floor > floors or floor % 1 ~= 0 then
 		return false
 	end
-	local function owned(cx: number, cz: number): boolean
-		return Grid.inBounds(cx, cz) and tiles[key(cx, cz)] == true
-	end
 	local nx, nz = x + s.dx, z + s.dz
-	if not owned(x, z) or owned(nx, nz) then
+	if not ownedTile(tiles, floor, x, z) or ownedTile(tiles, floor, nx, nz) then
 		return false
 	end
-	if nz < 0 and (floor > 1 or isEntrance(1, x, z)) then
+	if nz < 0 and isEntrance(floor, x, z) then
 		return false
 	end
 	return true
@@ -857,7 +887,7 @@ function Grid.moveWindows<T>(
 		local floor, x, z, side = Grid.edgeOf(m.key)
 		local s = SIDES[side + 1]
 		local landed = false
-		while s and Grid.inBounds(x, z) and tiles[key(x, z)] do
+		while s and ownedTile(tiles, floor, x, z) do
 			if Grid.isWall(tiles, floors, floor, x, z, side) then
 				local k = Grid.edgeKey(floor, x, z, side)
 				if out[k] == nil then
@@ -880,8 +910,8 @@ end
 	`Wall` on each edge between an owned cell and one not owned or off the
 	plot, the `Entrance` (one piece over both cells) on floor 1's front edge
 	at the mouth, and a `Corner` at each vertex where the outline turns,
-	filling the empty cell's quadrant there. Above floor 1 the plot's
-	street-facing edge is left open (his ruling, 2026-10-19). A wall whose
+	filling the empty cell's quadrant there. Each floor has its own outline,
+	and its street side is walled too (his ruling, 2026-10-20). A wall whose
 	`edgeKey` is in `windows` carries that window type. ]]
 function Grid.facade(
 	tiles: { [number]: boolean },
@@ -889,20 +919,19 @@ function Grid.facade(
 	windows: { [string]: string }?
 ): { FacadePiece }
 	local C = G.CellSize
-	local function owned(x: number, z: number): boolean
-		return Grid.inBounds(x, z) and tiles[key(x, z)] == true
-	end
 	local out: { FacadePiece } = {}
 	local mouth = Grid.entrance()
 	for floor = 1, floors do
 		local y = Grid.floorY(floor)
+		local function owned(x: number, z: number): boolean
+			return ownedTile(tiles, floor, x, z)
+		end
 		for z = 0, N - 1 do
 			for x = 0, N - 1 do
 				if owned(x, z) then
 					for sideIndex, side in SIDES do
 						local nx, nz = x + side.dx, z + side.dz
-						local open = floor > 1 and nz < 0
-						if not owned(nx, nz) and not open then
+						if not owned(nx, nz) then
 							if floor == 1 and nz < 0 and isEntrance(1, x, z) then
 								-- One arch over the mouth's two cells, drawn once at its middle.
 								if x == mouth[1].x and owned(mouth[2].x, mouth[2].z) then

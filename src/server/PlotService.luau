@@ -364,7 +364,7 @@ local function buildDecor(
 	plot.decor[id] = model
 end
 
--- Each floor above the first over the owned tiles, with a hole over every stair coming up to it.
+-- Each floor above the first over its own owned tiles, with a hole over every stair coming up to it.
 local function buildSlabs(plot: Plot, data: PlayerData.Data)
 	for _, child in plot.model:GetChildren() do
 		if string.match(child.Name, "^Slab_%d+$") then
@@ -414,11 +414,11 @@ local function buildTiles(plot: Plot, data: PlayerData.Data)
 	for z = 0, N - 1 do
 		local x = 0
 		while x < N do
-			if tiles[Grid.tileKey(x, z)] then
+			if tiles[Grid.tileKey(1, x, z)] then
 				x += 1
 			else
 				local x0 = x
-				while x < N and not tiles[Grid.tileKey(x, z)] do
+				while x < N and not tiles[Grid.tileKey(1, x, z)] do
 					x += 1
 				end
 				local k = `{x0}:{x}`

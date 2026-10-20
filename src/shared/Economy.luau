@@ -29,9 +29,10 @@ function Economy.refund(paid: number): number
 	return math.floor(math.max(0, paid) * E.SellRefund)
 end
 
--- The next tile of the plot with `bought` bought already (§5.4, A.1, PLACEHOLDER).
-function Economy.tileCost(bought: number): number
-	return math.floor(E.TileCost * E.TileGrowth ^ bought + 0.5)
+--[[ The next tile on `floor` with `bought` bought there already (§5.4, A.1,
+	PLACEHOLDER): each floor its own ladder, dearer by TileFloorFactor a floor up. ]]
+function Economy.tileCost(floor: number, bought: number): number
+	return math.floor(E.TileCost * E.TileFloorFactor ^ (floor - 1) * E.TileGrowth ^ bought + 0.5)
 end
 
 function Economy.floorCost(floor: number): number?

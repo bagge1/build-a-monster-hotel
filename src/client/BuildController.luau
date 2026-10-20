@@ -167,7 +167,7 @@ local function world(): Grid.World
 	end
 	if next(tiles) == nil then
 		for _, c in Grid.startTiles() do
-			tiles[Grid.tileKey(c.x, c.z)] = true
+			tiles[Grid.tileKey(1, c.x, c.z)] = true
 		end
 	end
 	return Layout.world(b.floors, tiles, b.layout, b.decor or {})
@@ -277,9 +277,9 @@ end
 
 local TILE_DIM, TILE_LIT = 0.6, 0.25
 
---[[ A gold plate with its price over each tile that can be bought now (one
-	sharing an edge with an owned one), on the floor in view: a tap buys it,
-	for every floor at once. Drawn locally, only while building, and again
+--[[ A gold plate with its price over each tile that can be bought now on the
+	floor in view (one sharing an edge with an owned one there; upstairs, over
+	an owned tile below): a tap buys it for that floor (A.1). Drawn locally, only while building, and again
 	only when the floor, the price or the tiles change (the state changes
 	every second). ]]
 local function drawTiles()
@@ -291,7 +291,8 @@ local function drawTiles()
 	local b = build()
 	local keys = table.clone(b.tiles or {})
 	table.sort(keys)
-	local drawn = `{floor}|{b.tileCost}|{table.concat(keys, ",")}`
+	local cost = (b.tileCosts or {})[floor]
+	local drawn = `{floor}|{cost}|{table.concat(keys, ",")}`
 	if drawn == tileDrawn and tileFolder then
 		return
 	end
@@ -299,8 +300,8 @@ local function drawTiles()
 	tileDrawn = drawn
 	local folder = Instance.new("Folder")
 	folder.Name = "BuildTiles"
-	local price = if b.tileCost then Format.cash(b.tileCost) else ""
-	for _, c in Grid.buyable(world().tiles) do
+	local price = if cost then Format.cash(cost) else ""
+	for _, c in Grid.buyable(world().tiles, b.floors, floor) do
 		local plate = Instance.new("Part")
 		plate.Name = "TileForSale"
 		plate.Anchored = true
@@ -323,7 +324,7 @@ local function drawTiles()
 		text.TextStrokeTransparency = 0.3
 		face.Parent = plate
 		plate.Parent = folder
-		tilePlates[Grid.tileKey(c.x, c.z)] = plate
+		tilePlates[Grid.tileKey(floor, c.x, c.z)] = plate
 	end
 	folder.Parent = workspace
 	tileFolder = folder
@@ -343,7 +344,7 @@ end
 -- Lights the tile for sale under the pointer, if any.
 local function lightTile(x: number, y: number)
 	local c = cellUnder(x, y)
-	local k = if c then Grid.tileKey(c.x, c.z) else nil
+	local k = if c then Grid.tileKey(floor, c.x, c.z) else nil
 	if k == litTile then
 		return
 	end
@@ -1393,10 +1394,10 @@ local function tapPlot(x: number, y: number)
 	-- A tile not owned: bought at once if it is next to the hotel (they are cheap, §5.4).
 	local c = cellUnder(x, y)
 	if c then
-		local can, why = Grid.canBuyTile(world().tiles, c.x, c.z)
+		local can, why = Grid.canBuyTile(world().tiles, build().floors, floor, c.x, c.z)
 		if can then
-			Net.send("BuyTile", c.x, c.z)
-		elseif why == "NotNext" then
+			Net.send("BuyTile", floor, c.x, c.z)
+		elseif why == "NotNext" or why == "NoTileBelow" then
 			info.Text = Hud.refusal(why)
 		end
 	end

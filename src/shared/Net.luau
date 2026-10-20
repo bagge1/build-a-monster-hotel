@@ -42,7 +42,7 @@ local DEFS: { [string]: Def } = {
 	}, -- id, floor, x, z, r, mirrored
 	Sell = { dir = "C2S", args = { "number" }, rate = 0.2 },
 	BuyFloor = { dir = "C2S", rate = 0.5 },
-	BuyTile = { dir = "C2S", args = { "number", "number" }, rate = 0.15 }, -- a cell x, z (§5.4, A.1)
+	BuyTile = { dir = "C2S", args = { "number", "number", "number" }, rate = 0.15 }, -- floor, cell x, z (§5.4, A.1)
 	PlaceWindow = { dir = "C2S", args = { "string", "string" }, rate = 0.15 }, -- a window type, a wall's edge key (A.1)
 	MoveWindow = { dir = "C2S", args = { "string", "string" }, rate = 0.15 }, -- from edge key, to edge key
 	SellWindow = { dir = "C2S", args = { "string" }, rate = 0.15 }, -- an edge key

@@ -30,7 +30,7 @@ Constants.Grid = {
 	Cells = 12, -- a 12 × 12 grid per floor (§3)
 	FloorHeight = 18, -- his ruling, 2026-10-19 evening: a 1-stud slab and 17 clear
 	-- §5.4, A.1, his rulings 2026-10-20: the plot is bought a cell (a tile) at a
-	-- time, a tile owned on every floor; no lobby strip, no areas.
+	-- time, on each floor apart; no lobby strip, no areas.
 	StartTiles = { x = 4, z = 0, w = 4, d = 4 }, -- his pick: a new hotel's 4 × 4 square, centred on the entrance
 	TutorialTiles = { w = 3, d = 4 }, -- PLACEHOLDER: the goal card's free block beside the start square, so the 3×3 Coffin Suite fits
 	Squares = 4, -- decor squares along a cell: a grid of 3 studs (his yes, §5.4)
@@ -142,7 +142,8 @@ Constants.Economy = {
 	TierPointsCells = 4, -- the room size TierPoints are for: 2×2
 	PointsPerCash = 1, -- PLACEHOLDER: a decor item's points per $ of its price
 	TileCost = 50, -- PLACEHOLDER (his "cheap", §5.4, A.1): the n-th tile bought costs TileCost × TileGrowth^n
-	TileGrowth = 1.03, -- PLACEHOLDER: the whole plot then costs about what the six areas did (~$72,000)
+	TileGrowth = 1.03, -- PLACEHOLDER: the whole ground floor then costs about what the six areas did (~$72,000)
+	TileFloorFactor = 2, -- PLACEHOLDER (his "more expensive" upstairs): floor f's ladder × TileFloorFactor^(f−1)
 	DeskCost = 500, -- PLACEHOLDER: a second or later FrontDesk (the first is free, §5.4)
 	WindowCost = 100, -- PLACEHOLDER: a window on a facade wall (A.1); selling refunds what was paid
 	Milestones = { 5, 10, 25 }, -- each doubles that type's pay (§6.2)

@@ -7,8 +7,8 @@
 	guest in it (`HotelService`).
 
 	FREE BUILDING (§5.4, A.1, his rulings of 2026-10-19 and 2026-10-20): the
-	plot is bought one tile (cell) at a time (`BuyTile`), each owned on every
-	floor; rooms, amenities, stairs and front desks are placed, moved and
+	plot is bought one tile (cell) at a time on each floor apart (`BuyTile`),
+	dearer a floor up, a tile upstairs over an owned one below; rooms, amenities, stairs and front desks are placed, moved and
 	sold anywhere on owned tiles (the first desk is free, the last cannot be
 	sold); decor stands on 3-stud squares in rooms and on hallway floor
 	(`PlaceDecor`, `MoveDecor`, `SellDecor`) and moves and goes with its room;
@@ -97,6 +97,7 @@ function BuildService.rooms(data: PlayerData.Data): number
 end
 
 local tutorialUnlocks: { [Player]: { [string]: boolean } } = {}
+local windowsOut: (Player, PlayerData.Data) -> ()
 
 -- The tutorial unlocks a piece early (Appendix A.7).
 function BuildService.tutorialUnlock(player: Player, item: string)
@@ -122,7 +123,7 @@ function BuildService.tutorialTiles(player: Player)
 		for z = S.z, S.z + T.d - 1 do
 			for x = x0, x0 + T.w - 1 do
 				if Grid.inBounds(x, z) then
-					table.insert(out, tostring(Grid.tileKey(x, z)))
+					table.insert(out, tostring(Grid.tileKey(1, x, z)))
 				end
 			end
 		end
@@ -426,14 +427,19 @@ local function buyFloor(player: Player)
 	data.freeStairs += 1 -- its first stair is free to place (§5.4)
 	player:SetAttribute("Floors", next)
 	PlotService.rebuild(player)
-	Net.fire(player, "Toast", `Floor {next}! Place its stairs: the first is free.`, "Unlock")
+	Net.fire(
+		player,
+		"Toast",
+		`Floor {next}! Buy its tiles over the floor below, then place its stairs: the first is free.`,
+		"Unlock"
+	)
 	changed(player, "Floor")
 end
 
 --[[ After tiles are bought: each window whose wall became an inside one
 	moves out along its line (Grid.moveWindows); one with nowhere to go is
 	refunded. ]]
-local function windowsOut(player: Player, data: PlayerData.Data)
+function windowsOut(player: Player, data: PlayerData.Data)
 	local moved, refunded =
 		Grid.moveWindows(PlotService.world(data).tiles, data.floors, data.windows)
 	data.windows = moved
@@ -447,22 +453,27 @@ local function windowsOut(player: Player, data: PlayerData.Data)
 	end
 end
 
-local function buyTile(player: Player, x: number, z: number)
+-- What the next tile on `floor` costs (§5.4, A.1, PLACEHOLDER).
+function BuildService.tileCost(data: PlayerData.Data, floor: number): number
+	return Economy.tileCost(floor, data.tilesBought[tostring(floor)] or 0)
+end
+
+local function buyTile(player: Player, floor: number, x: number, z: number)
 	local data = PlayerData.get(player)
 	if not data then
 		return
 	end
-	local ok, why = Grid.canBuyTile(PlotService.world(data).tiles, x, z)
+	local ok, why = Grid.canBuyTile(PlotService.world(data).tiles, data.floors, floor, x, z)
 	if not ok then
 		refuse(player, "BuyTile", why or "Blocked")
 		return
 	end
-	if not PlayerData.spend(player, Economy.tileCost(data.tilesBought)) then
+	if not PlayerData.spend(player, BuildService.tileCost(data, floor)) then
 		refuse(player, "BuyTile", "Cash")
 		return
 	end
-	data.tiles[tostring(Grid.tileKey(x, z))] = true
-	data.tilesBought += 1
+	data.tiles[tostring(Grid.tileKey(floor, x, z))] = true
+	data.tilesBought[tostring(floor)] = (data.tilesBought[tostring(floor)] or 0) + 1
 	windowsOut(player, data)
 	PlotService.refreshTiles(player)
 	changed(player, "Tile")
@@ -740,12 +751,14 @@ local function fill(player: Player, args: { string }): string
 		return `no piece {item}`
 	end
 	local N = Constants.Grid.Cells
-	for z = 0, N - 1 do
-		for x = 0, N - 1 do
-			data.tiles[tostring(Grid.tileKey(x, z))] = true
+	data.floors = BuildService.maxFloors(data)
+	for f = 1, data.floors do
+		for z = 0, N - 1 do
+			for x = 0, N - 1 do
+				data.tiles[tostring(Grid.tileKey(f, x, z))] = true
+			end
 		end
 	end
-	data.floors = BuildService.maxFloors(data)
 	local function try(id: string, floor: number): boolean
 		for z = 0, N - 1 do
 			for x = 0, N - 1 do
@@ -917,6 +930,10 @@ function BuildService.Start()
 				table.insert(tiles, tonumber(k))
 			end
 		end
+		local tileCosts = {}
+		for f = 1, data.floors do
+			tileCosts[f] = BuildService.tileCost(data, f)
+		end
 		local windows = {}
 		for edge, w in data.windows do
 			table.insert(windows, { edge = edge, type = w.type, paid = w.paid })
@@ -940,7 +957,7 @@ function BuildService.Start()
 			decor = decor,
 			blocked = blocked,
 			tiles = tiles,
-			tileCost = Economy.tileCost(data.tilesBought),
+			tileCosts = tileCosts,
 			windows = windows,
 			windowCost = Constants.Economy.WindowCost,
 			finishes = data.finishes,

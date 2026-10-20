@@ -63,7 +63,7 @@ function Layout.decor(id: string, rec: Record & { room: string? }): Grid.DecorPl
 	}
 end
 
---[[ The world: `tiles` keyed by `Grid.tileKey` as a string (the profile's) or
+--[[ The world: `tiles` keyed by `Grid.tileKey` (floor and cell) as a string (the profile's) or
 	a number; `pieces` and `decor` maps or lists of records. ]]
 function Layout.world(
 	floors: number,

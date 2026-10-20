@@ -48,7 +48,7 @@ local PlayerData = {}
 --[[ Bump only when the shape changes in a way old data cannot satisfy, and add
 	the step to `migrate` in the same commit. The game is not live (CLAUDE.md),
 	so until it is, a shape change may simply start everyone over. ]]
-local SCHEMA_VERSION = 3
+local SCHEMA_VERSION = 4
 
 -- A new hotel's windows (A.1, his ruling): a Twin sash on each front wall beside the entrance, free.
 local function startWindows(): { [string]: WindowRecord }
@@ -63,7 +63,7 @@ end
 local function startTiles(): { [string]: boolean }
 	local out = {}
 	for _, c in Grid.startTiles() do
-		out[tostring(Grid.tileKey(c.x, c.z))] = true
+		out[tostring(Grid.tileKey(1, c.x, c.z))] = true
 	end
 	return out
 end
@@ -106,8 +106,8 @@ export type Data = {
 	floors: number,
 	layout: { [string]: PieceRecord },
 	decor: { [string]: DecorRecord },
-	tiles: { [string]: boolean }, -- owned cells of the plot, by Grid.tileKey (§5.4, A.1), on every floor
-	tilesBought: number, -- tiles bought with cash, for the next one's price (the start's and gifts are free)
+	tiles: { [string]: boolean }, -- owned cells per floor, by Grid.tileKey(floor, x, z) (§5.4, A.1)
+	tilesBought: { [string]: number }, -- per floor, tiles bought with cash, for the next one's price (the start's and gifts are free)
 	windows: { [string]: WindowRecord }, -- by Grid.edgeKey: the windows placed on facade walls (A.1)
 	finishes: { [string]: string }, -- "Hallway" -> a finish id ("" the model's own)
 	freeStairs: number, -- stairs owed for floors bought (§5.4: a new floor's first stair is free)
@@ -156,7 +156,7 @@ local TEMPLATE: Data = {
 	layout = {},
 	decor = {},
 	tiles = startTiles(),
-	tilesBought = 0,
+	tilesBought = {},
 	windows = startWindows(),
 	finishes = { Hallway = "" },
 	freeStairs = 0,
@@ -223,7 +223,7 @@ function PlayerData.resetHotel(data: Data)
 	data.layout = {}
 	data.decor = {}
 	data.tiles = startTiles()
-	data.tilesBought = 0
+	data.tilesBought = {}
 	data.windows = startWindows()
 	data.finishes = { Hallway = "" }
 	data.floors = 1
@@ -235,10 +235,10 @@ local function migrate(data: Data)
 	if typeof(data.version) ~= "number" then
 		data.version = SCHEMA_VERSION
 	end
-	if data.version < 3 then
-		-- Tiles, not areas (§5.4, A.1, his rulings 2026-10-20): the hotel is
-		-- built again from the start square; the rest of the save stays. The
-		-- game is not live (CLAUDE.md): no migration of the old layout.
+	if data.version < 4 then
+		-- Tiles, not areas, and bought per floor (§5.4, A.1, his rulings
+		-- 2026-10-20): the hotel is built again from the start square; the rest
+		-- of the save stays. The game is not live (CLAUDE.md): no migration.
 		PlayerData.resetHotel(data)
 		local old = data :: any
 		old.areas = nil
