@@ -604,6 +604,18 @@ Med Claudes skärmdump där det finns en. -->
    finns. Att välja kort, trycka F och trycka på en vägg med riktig mus provas
    i en nattkörning.
 
+33. **Mer dekor och fler sätt att inreda** (din fråga 2026-10-20): en lista i
+   `docs/DECOR_IDEAS.md`: nya dekorbitar per önskemål, för Frostfang och för
+   de kommande platserna, och nya sätt att inreda (tapeter, mattor, ett
+   taklager för ljuskronor och lampor, ljusets färg, dörr- och sängstilar,
+   dekor som rör sig, set, förgården, porträtt av residenter). **Två fynd:**
+   de sällsynta gästernas önskemål har bara en sak var (Mumien, Häxan,
+   Varulven, Vampyren, Banshee), och i Frostfang finns ingen dekor och
+   ingen bekvämlighet alls för Yetins *quiet* och Aurora Spirits *silence*.
+   **Välj** vad som ska byggas. **Rekommendation:** först två eller tre saker
+   per tunt önskemål (Frostfangs *quiet* och *silence* först), sedan
+   tapeter, sedan taklagret.
+
 ## §3 Creator Hub och publicering
 
 1. ~~**Slå på Studio Access to API Services**~~ (gjort 2026-10-19: på i
