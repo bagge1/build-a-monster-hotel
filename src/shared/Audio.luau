@@ -15,7 +15,7 @@ local Audio = {}
 Audio.Music = "rbxassetid://9042223208" -- APM "Chaconne pour les Ombres", harpsichord and strings, 61.5 s loop
 Audio.Cash = "rbxassetid://5995351511" -- "coin ding (uncopyrighted)", self-made by its uploader, 0.6 s
 Audio.Fanfare = "rbxassetid://1844584698" -- APM "Winner", 4.6 s: rare check-ins and move-ins
-Audio.BusHorn = "rbxassetid://125488657993933" -- a bus horn, 1.8 s
+Audio.BusHorn = "rbxassetid://9114660894" -- "Greyhound Bus Double Horn Honks 2", 2.8 s (his pick, 2026-10-20)
 Audio.Bell = "rbxassetid://115073483242365" -- a bell, 2.5 s: the front desk
 
 return Audio

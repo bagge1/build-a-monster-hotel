@@ -552,14 +552,15 @@ Built 2026-10-20: the bus 3–8 per player, every stay doubled, Legendary
 friendship 5, and `BuildService.tutorialArea` at the goal card. Verified only
 by stylua, selene, the pure specs under Lune and `tools/balance_model.py`.
 
-- [ ] A fresh test profile through the tutorial: at the goal card a front
+- [x] A fresh test profile through the tutorial: at the goal card a front
   area beside the start area is owned (area 1 or 3, its plate gone in build
   mode), the next area's price is the third ($3,000), and the free Coffin
   Suite is placed in it with its door onto the lobby.
-- [ ] The Vampire Count arrives about three buses later and checks in.
-- [ ] A bus on a one-player server brings 3 or more guests; a Common's stay
+- [x] The Vampire Count arrives about three buses later and checks in.
+- [x] A bus on a one-player server brings 3 or more guests; a Common's stay
   lasts 3 minutes.
-- [ ] Output on Play: no "server size" warning once Server Size is 6.
+- [A] Output on Play: no "server size" warning once Server Size is 6. The
+  warning fires today (the place's server size is 60): his setting, WAITING §4.2.
 
 ## August keeps
 
@@ -595,3 +596,4 @@ by stylua, selene, the pure specs under Lune and `tools/balance_model.py`.
 - 2026-10-19 22:35 Free building after the import: 52 pieces saved and synced (agent, skill `import`); the lobby shell and the FrontDesk seen and walked. The trees wait for the Rojo restart.
 - 2026-10-19 22:39 The forest with the real trees after his Rojo restart: 677 models, 646 as proxies, a trunk stops a walker.
 - 2026-10-19 22:42 The forest longer and thicker by the play area (his ruling): 4,723 trees (a 60-stud thicket of 735, 3,988 beyond, out to 600 studs), 9,604 parts with only the 120 near the camera whole; no error. Pictures: `archive/screens/2026-10-19_forest_thicket.jpg`, `archive/screens/2026-10-19_forest_long.jpg`.
+- 2026-10-20 21:39 Pacing and the tutorial's free area (test profile Test_Rel1020a; steps to SecondRoom, Goal and Done jumped by `tutorial`, buses called by `bus`): two Standard Rooms in the start area; at the goal card area 1 owned beside area 2 and the card reads "in your new area"; the Coffin Suite placed free at (0, 2) in it (paid 0, voucher spent); the first bus drew 3 guests for a one-player hotel with 3 vacant rooms; the Vampire Count booked after bus 2 and on bus 3, checked in to the suite; stays by the server's timers: Slime 180 s, Vampire Count 600 s. The server-size warning fires (60). The new bus horn (9114660894, 2.8 s) loads and plays when a bus arrives.

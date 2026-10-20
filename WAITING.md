@@ -568,11 +568,10 @@ den publika. Claude bockar av sitt; det som är ditt står med menyn. -->
    server än.
 2. **Serverstorlek 6.** Gatan har sex tomter, och den sjunde spelaren får
    inget hotell. Ställ in **Server Size** till 6 i platsens inställningar
-   (Creator Hub, **Places**). Servern varnar i Output om den är större;
-   Claude läser av det när hotellets place är öppen i Studio.
-3. **Tempot och tutorialens svit** (§2.27, §2.28): byggt 2026-10-20. Claude
-   spelar tutorialen i Studio när hotellets place är öppen i Studio (just nu är bara
-   Sector Omega öppen).
+   (Creator Hub, **Places**). I dag är den **60** (servern varnar om det i
+   Output, sett 2026-10-20).
+3. ~~**Tempot och tutorialens svit**~~ (§2.27, §2.28): byggt och spelat i
+   Studio 2026-10-20 (`TESTRUN.md`, "Pacing and the tutorial's free area").
 4. **Spela på en riktig telefon** (§1.9) och **spela första kvarten** (§1.1).
 5. **Publicera** (File → Publish to Roblox), så kommer ändringarna och
    den borttagna `SpawnLocation` (§2.13) med.
