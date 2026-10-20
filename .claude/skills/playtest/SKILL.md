@@ -66,6 +66,18 @@ Studio MCP".
 
 ## Input
 
+- **Never take the focus from August** (his ask, 2026-10-20: "can you stop
+  forcing me to alt-tab"). He works on the same computer while sessions run,
+  and bringing Studio forward pulls him out of what he is doing. So while he
+  is at the computer: **no `SetForegroundWindow`, no simulated keys or mouse,
+  no `character_navigation`**. Test through `execute_luau` instead: the
+  game's remotes from a Client, the function a key or button calls, the
+  `Controls` action's handler, `prompt:InputHoldBegin()`, a camera set from
+  the Client, `screen_capture` for pictures. Only an item that is *about* the
+  input itself (does a right-drag turn the camera?) needs real input: put it
+  in `WAITING.md` for a night run, or ask him in chat first ("Studio comes to
+  the front for about 30 s, ok?") and do every such item in one batch on his
+  yes. In a night sprint he is away, and the rules below apply as they are.
 - **Studio must have the focus**, or every key returns *Success* and nothing
   reaches the game. Bring it forward from PowerShell with
   `SetForegroundWindow` on `RobloxStudioBeta`'s `MainWindowHandle` (a tap of
