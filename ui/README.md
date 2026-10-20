@@ -4,7 +4,9 @@ Every file here is drawn by `tools/draw_ui.py` (Python, PIL + numpy; run
 `python tools/draw_ui.py`). Nothing is downloaded or hand-edited: change the
 script and re-run it. It is deterministic (the same script writes the same
 pixels). **All of it is a first draft for August's review** (2026-10-19 night);
-none of it is uploaded yet, so `src/client/UiImages.luau` has no ids for it.
+The pass and product icons went up with the passes and products in Creator Hub
+(2026-10-20); their image ids are in `src/client/UiImages.luau`. A redrawn icon
+is changed on its pass or product in Creator Hub, and its new id written there.
 
 Rules (UI.md "Images"): a **tintable** image is white on transparent with its
 glow baked into alpha, and the code colours it (`ImageColor3` or a
@@ -87,6 +89,8 @@ Same badge, filling the square (no transparent corners).
 | `product/Product_CashSmall.png` | Cash pack small (49) | a short stack and a coin |
 | `product/Product_CashMedium.png` | Cash pack medium (149) | two stacks and loose coins |
 | `product/Product_CashLarge.png` | Cash pack large (449) | a money sack, stacks and coins |
+| `product/Product_AdCash2x15.png` | 2x Cash (ad), the rewarded ad's reward | the 15-min boost with a teal play button |
+| `product/Product_Gift_<pass>.png` | Gift: <pass>, one per pass (§10.1 point 4) | the pass's own picture in a pink ring, a bow on the ring and a little present |
 
 Text used: "$" and "2x" only, in Arial Black (`C:\Windows\Fonts\ariblk.ttf`).
 

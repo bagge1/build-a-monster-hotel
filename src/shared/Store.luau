@@ -5,10 +5,12 @@
 	capacity, cosmetics and gifts, never winning; no paid random items; no
 	countdown offers; never monetize loss.
 
-	THE IDS ARE PLACEHOLDERS (0) until August creates each one in Creator Hub
-	(WAITING.md §3) and its id is written here. An entry with id 0 is shown as
-	"coming soon" and cannot be bought; the grant behind it is still tested
-	(DevGrant `receipt`).
+	The ids are the experience's own, created in Creator Hub on 2026-10-20 at
+	the GDD's default prices (WAITING §3.2); a price changed there must be
+	changed here too, since the Store shows this one. An entry with id 0 (the
+	facade packs, not created until the facades exist) is shown as "coming
+	soon" and cannot be bought; the grant behind it is still tested (DevGrant
+	`receipt`). `image` names its icon in `UiImages`.
 
 	Facade packs (§10.2, 99–249 each) are passes; what each one wears is a
 	Facade-slot cosmetic in `Cosmetics.luau` naming the pass. Their prices
@@ -27,7 +29,7 @@ export type Entry = {
 	id: number,
 	price: number,
 	text: string,
-	image: string?, -- a ui/ file name, uploaded later (UiImages)
+	image: string?, -- its icon's name in UiImages (a ui/ file name)
 	gift: string?, -- a gift product: the key of the pass it gives
 }
 
@@ -39,7 +41,8 @@ Store.Entries = {
 		key = "AutoCollect",
 		name = "Auto-Collect Till",
 		kind = "Pass",
-		id = 0,
+		id = 2040496945,
+		image = "Pass_AutoCollectTill",
 		price = 149,
 		text = "Till cash goes straight to your wallet.",
 	},
@@ -47,7 +50,8 @@ Store.Entries = {
 		key = "NightManager",
 		name = "Night Manager",
 		kind = "Pass",
-		id = 0,
+		id = 2040125090,
+		image = "Pass_NightManager",
 		price = 249,
 		text = "Residents earn offline for 8 hours instead of 2.",
 	},
@@ -55,7 +59,8 @@ Store.Entries = {
 		key = "ResidentWingPlus",
 		name = "Resident Wing+",
 		kind = "Pass",
-		id = 0,
+		id = 2039699307,
+		image = "Pass_ResidentWingPlus",
 		price = 249,
 		text = "+6 Resident Wing slots.",
 	},
@@ -63,7 +68,8 @@ Store.Entries = {
 		key = "ExtraFloor",
 		name = "Extra Floor",
 		kind = "Pass",
-		id = 0,
+		id = 2037929410,
+		image = "Pass_ExtraFloor",
 		price = 299,
 		text = "+1 floor beyond the cap.",
 	},
@@ -71,7 +77,8 @@ Store.Entries = {
 		key = "VIPLobby",
 		name = "VIP Lobby",
 		kind = "Pass",
-		id = 0,
+		id = 2042360787,
+		image = "Pass_VipLobby",
 		price = 399,
 		text = "VIP badge, gold name tag, a VIP lounge decor set, +1 daily reroll.",
 	},
@@ -113,7 +120,8 @@ Store.Entries = {
 		key = "StarterPack",
 		name = "Starter Pack",
 		kind = "Product",
-		id = 0,
+		id = 3720401936,
+		image = "Product_StarterPack",
 		price = 99,
 		text = "Cash, an exclusive Slime facade and a 30-minute 2x Cash boost. Once per player.",
 	},
@@ -121,7 +129,8 @@ Store.Entries = {
 		key = "CallBus",
 		name = "Call the Bus",
 		kind = "Product",
-		id = 0,
+		id = 3720401997,
+		image = "Product_CallTheBus",
 		price = 39,
 		text = "Brings the next Night Bus now, for the whole street.",
 	},
@@ -129,7 +138,8 @@ Store.Entries = {
 		key = "Cash2x15",
 		name = "2x Cash (15 min)",
 		kind = "Product",
-		id = 0,
+		id = 3720402003,
+		image = "Product_2xCash15m",
 		price = 49,
 		text = "Double cash for 15 minutes of play.",
 	},
@@ -137,7 +147,8 @@ Store.Entries = {
 		key = "Cash2x60",
 		name = "2x Cash (1 hour)",
 		kind = "Product",
-		id = 0,
+		id = 3720402012,
+		image = "Product_2xCash1h",
 		price = 149,
 		text = "Double cash for an hour of play.",
 	},
@@ -145,7 +156,8 @@ Store.Entries = {
 		key = "Friendship2x",
 		name = "2x Friendship (30 min)",
 		kind = "Product",
-		id = 0,
+		id = 3720402025,
+		image = "Product_2xFriendship",
 		price = 79,
 		text = "Happy stays count double for 30 minutes. Never changes odds.",
 	},
@@ -153,7 +165,8 @@ Store.Entries = {
 		key = "CashSmall",
 		name = "Cash Pouch",
 		kind = "Product",
-		id = 0,
+		id = 3720402037,
+		image = "Product_CashSmall",
 		price = 49,
 		text = "10 minutes of your income.",
 	},
@@ -161,7 +174,8 @@ Store.Entries = {
 		key = "CashMedium",
 		name = "Cash Sack",
 		kind = "Product",
-		id = 0,
+		id = 3720402053,
+		image = "Product_CashMedium",
 		price = 149,
 		text = "35 minutes of your income.",
 	},
@@ -169,7 +183,8 @@ Store.Entries = {
 		key = "CashLarge",
 		name = "Cash Vault",
 		kind = "Product",
-		id = 0,
+		id = 3720402063,
+		image = "Product_CashLarge",
 		price = 449,
 		text = "120 minutes of your income.",
 	},
@@ -178,20 +193,29 @@ Store.Entries = {
 		key = "AdCash2x15",
 		name = "2x Cash (ad)",
 		kind = "Product",
-		id = 0,
-		price = 0,
+		id = 3720402161,
+		image = "Product_AdCash2x15",
+		price = 1, -- Roblox's lowest product price; the ad grants it, nobody pays it
 		text = "Watch an ad: double cash for 15 minutes.",
 	},
 } :: { Entry }
 
--- A gift product per pass (§10.1 point 4). Their ids are placeholders like the rest.
+-- A gift product per pass (§10.1 point 4), by the pass's key: its product id and icon.
+local GiftIds = {
+	AutoCollect = { 3720402071, "Product_Gift_AutoCollectTill" },
+	NightManager = { 3720402085, "Product_Gift_NightManager" },
+	ResidentWingPlus = { 3720402090, "Product_Gift_ResidentWingPlus" },
+	ExtraFloor = { 3720402097, "Product_Gift_ExtraFloor" },
+	VIPLobby = { 3720402114, "Product_Gift_VipLobby" },
+}
 for _, e in table.clone(Store.Entries) do
 	if e.kind == "Pass" then
 		table.insert(Store.Entries, {
 			key = `Gift_{e.key}`,
 			name = `Gift: {e.name}`,
 			kind = "Product",
-			id = 0,
+			id = if GiftIds[e.key] then GiftIds[e.key][1] else 0,
+			image = if GiftIds[e.key] then GiftIds[e.key][2] else nil,
 			price = e.price, -- PLACEHOLDER: the pass's own price
 			text = `Give {e.name} to a player on your street.`,
 			gift = e.key,

@@ -22,6 +22,7 @@ local Net = require(ReplicatedStorage.Shared.Net)
 local State = require(script.Parent.State)
 local Ui = require(script.Parent.Ui)
 local Hud = require(script.Parent.Hud)
+local UiImages = require(script.Parent.UiImages)
 
 local LivePanels = {}
 
@@ -137,24 +138,38 @@ local function drawStore()
 			row.LayoutOrder = i
 			Ui.corner(row, 10)
 			local extra = if s.cash[e.key] then ` (now {s.cash[e.key]})` else ""
+			-- Its icon (ui/pass, ui/product) cropped round as Roblox shows a pass; text-only without one.
+			local icon = e.image and UiImages[e.image]
+			local inset = 0
+			if icon then
+				inset = 54
+				local img = Instance.new("ImageLabel")
+				img.Name = "Icon"
+				img.BackgroundTransparency = 1
+				img.Image = icon
+				img.Size = UDim2.fromOffset(50, 50)
+				img.Position = UDim2.fromOffset(4, 4)
+				img.Parent = row
+				Ui.corner(img, 25)
+			end
 			local name = Ui.label(
 				row,
 				"Name",
 				`{e.name}{if e.kind == "Pass" then "  ·  pass" else ""}`,
-				UDim2.new(1, -150, 0, 24),
+				UDim2.new(1, -150 - inset, 0, 24),
 				18,
 				Ui.Colour.Gold
 			)
-			name.Position = UDim2.fromOffset(10, 4)
+			name.Position = UDim2.fromOffset(10 + inset, 4)
 			local text = Ui.label(
 				row,
 				"Text",
 				e.text .. extra,
-				UDim2.new(1, -150, 0, 26),
+				UDim2.new(1, -150 - inset, 0, 26),
 				14,
 				Ui.Colour.Muted
 			)
-			text.Position = UDim2.fromOffset(10, 28)
+			text.Position = UDim2.fromOffset(10 + inset, 28)
 			local label = if e.owned then "Owned" elseif not e.onSale then "Soon" else `R$ {e.price}`
 			local b = Ui.button(
 				row,
@@ -173,8 +188,8 @@ local function drawStore()
 			)
 			b.Position = UDim2.new(1, -128, 0, 7)
 			if e.giftable then
-				name.Size = UDim2.new(1, -250, 0, 24)
-				text.Size = UDim2.new(1, -250, 0, 26)
+				name.Size = UDim2.new(1, -250 - inset, 0, 24)
+				text.Size = UDim2.new(1, -250 - inset, 0, 26)
 				local g = Ui.button(row, "Gift", "🎁 Gift", UDim2.fromOffset(92, 44), function()
 					giftFor = e.key
 					drawStore()

@@ -338,6 +338,7 @@ function StoreService.Start()
 				kind = e.kind,
 				price = e.price,
 				text = e.text,
+				image = e.image,
 				onSale = e.id ~= 0,
 				owned = (e.kind == "Pass" and data.passes[e.key] == true)
 					or (e.key == "StarterPack" and data.cosmetics.StarterPack == true),

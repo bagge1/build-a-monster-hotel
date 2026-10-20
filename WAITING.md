@@ -536,17 +536,19 @@ Med Claudes skärmdump där det finns en. -->
 1. ~~**Slå på Studio Access to API Services**~~ (gjort 2026-10-19: på i
    Experience Settings; save och load provas nu, resultatet i
    `archive/NATTLOGG-2026-10-19.md` och memory `phase-status`).
-2. **Skapa passen och produkterna i Creator Hub** (2026-10-19). GDD §10.2:s
-   fem pass (Auto-Collect Till 149, Night Manager 249, Resident Wing+ 249,
-   Extra Floor 299, VIP Lobby 399) och nio produkter (Starter Pack 99, Call the
-   Bus 39, 2x Cash 49 och 149, 2x Friendship 79, Cash Pouch/Sack/Vault 49/149/449,
-   och en gratis "2x Cash (ad)" som rewarded ad-belöning), plus fyra
-   facade packs som pass (Gothic 99, Neon 149, Candy 199, Pirate 249: GDD:ns
-   spann 99–249, priserna är platshållare att bestämma) och nio
-   presentprodukter, en per pass ("Gift: Auto-Collect Till" osv., samma pris
-   som passet, §2.6). Ge Claude id:na så
-   skrivs de in i `src/shared/Store.luau`; tills dess står de som "Soon".
-   Ikoner till dem ritas i natt (`ui/`). Slå också på **Managed Pricing** (§10.1).
+2. ~~**Skapa passen och produkterna i Creator Hub**~~ (gjort 2026-10-20 av
+   Claude i din Creator Hub, på ditt ord: de fem passen, de åtta produkterna,
+   ad-belöningen och fem presentprodukter, med GDD §10.2:s priser och
+   ikonerna från `ui/`; id:na står i `src/shared/Store.luau`). Kvar:
+   - **Ad-belöningen "2x Cash (ad)" kostar 1 Robux**: Roblox tillåter inte en
+     gratis produkt. Ingen betalar den (annonsen ger den, och Store visar den
+     inte), men priset syns i Creator Hub.
+   - **Facade packs** (fyra pass och deras presenter) skapas när fasaderna är
+     modellerade och har bilder; tills dess står de som "Soon".
+   - **Managed Pricing** (§10.1) är inte påslaget: Creator Hub →
+     experiencen → **Monetization** → **Passes**, knappen **Get started**
+     under "Earn more with Managed Pricing". Ditt val; Claude kan göra det
+     om du säger till.
 3. **Notifikationer** (GDD §9): spelet ber om opt-in efter första move-in, men
    att *skicka* dem kräver Open Cloud utifrån. Säg till när det är dags.
 4. **Översättning** (GDD §9: engelska, spanska, portugisiska, japanska): slå på
@@ -581,7 +583,8 @@ den publika. Claude bockar av sitt; det som är ditt står med menyn. -->
 
 **Den publika releasen, därtill:**
 
-7. **Passen och produkterna** (§3.2): din session.
+7. ~~**Passen och produkterna**~~ (§3.2, skapade 2026-10-20); kvar där:
+   facade packs och Managed Pricing.
 8. **Frågeformuläret om innehåll** (Creator Hub, experiencens
    **Maturity & Compliance**). Claudes genomgång av koden (2026-10-20), att
    svara ärligt efter:

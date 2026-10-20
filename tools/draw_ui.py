@@ -993,6 +993,48 @@ def d_cash_l(c):
         sparkle(c, x, y, r, GOLD_HI)
 
 
+def bow(c, x, y, s, deg=0.0, col=(PINK, PINK_LO)):
+    """A ribbon bow: two loops, two tails and a knot."""
+    with c.at(x, y, s, deg):
+        tails = union(
+            c.shape([(-0.12, -0.05), (0.02, -0.12), (-0.3, -0.9), (-0.42, -0.62)]),
+            c.shape([(0.12, -0.05), (-0.02, -0.12), (0.3, -0.9), (0.42, -0.62)]),
+        )
+        sticker(c, rounded(tails, c.L(0.03)), col, bevel=0.03)
+        loops = union(c.ell(-0.48, 0.12, 0.5, 0.3, 25), c.ell(0.48, 0.12, 0.5, 0.3, -25))
+        sticker(c, loops, col, bevel=0.05)
+        for sx in (-1, 1):
+            paint(c, c.ell(sx * 0.5, 0.12, 0.24, 0.1, -sx * 25), PINK_LO, 0.75)
+        sticker(c, c.disk(0, 0.04, 0.22), (PINK, PINK_LO), bevel=0.04)
+        gloss(c, -0.06, 0.12, 0.08, 0.05, -20, 0.6)
+
+
+def gift_of(pass_fn):
+    """A gift product (§10.1 point 4, GDD A.9): the pass's own picture in a pink
+    ring, a bow on the ring and a little present, so it reads as that pass,
+    given."""
+
+    def draw(c):
+        pass_fn(c)
+        ringm = cut(c.disk(0, 0, 0.955), c.disk(0, 0, 0.905))
+        paint(c, dilate(ringm, c.L0(0.012)), INK)
+        paint(c, ringm, (PINK, PINK_LO))
+        bow(c, -0.6, 0.62, 0.32, 45)
+        gift(c, 0.56, -0.5, 0.34)
+        bow(c, 0.56, -0.33, 0.17)  # on the box's lid
+        sparkle(c, 0.24, -0.74, 0.05, PINK)
+
+    return draw
+
+
+def d_adcash(c):
+    """The rewarded ad's reward (§10.2): the 15-minute boost with a play button."""
+    boost(c, 0.25, 1)
+    with c.at(-0.56, -0.5, 0.2):
+        sticker(c, c.disk(0, 0, 1), (TEAL_HI, TEAL_LO), ow=0.03, bevel=0.04)
+        paint(c, rounded(c.shape([(-0.3, 0.5), (-0.3, -0.5), (0.55, 0)]), c.L(0.06)), WHITE)
+
+
 PRODUCTS = [
     ("Product_StarterPack", d_starter, "Starter Pack (99)"),
     ("Product_CallTheBus", d_callbus, "Call the Bus (39)"),
@@ -1002,6 +1044,10 @@ PRODUCTS = [
     ("Product_CashSmall", d_cash_s, "Cash pack small (49)"),
     ("Product_CashMedium", d_cash_m, "Cash pack medium (149)"),
     ("Product_CashLarge", d_cash_l, "Cash pack large (449)"),
+    ("Product_AdCash2x15", d_adcash, "2x Cash (ad reward)"),
+] + [
+    (f"Product_Gift_{name.removeprefix('Pass_')}", gift_of(fn), f"Gift: {label_}")
+    for name, fn, label_ in PASSES
 ]
 
 
@@ -1037,7 +1083,7 @@ def sheet(hud, panels, portrait, passes, products):
     W = 1600
     font = ImageFont.truetype(FONT_LABEL, 15)
     head = ImageFont.truetype(FONT_LABEL, 22)
-    H = 1470
+    H = 918 + math.ceil(len(products) / 4) * 272 + 10
     img = Image.new("RGBA", (W, H), INK + (255,))
     d = ImageDraw.Draw(img)
 
