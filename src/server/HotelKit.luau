@@ -600,11 +600,74 @@ function HotelKit.slab(
 	return folder
 end
 
+--[[ The window openings of each type (MODELS.md, `Facade_Window_<Type>`): its
+	rough shape as rectangles (x0, x1, y0, y1) within x −4..4, y 3..13, and
+	its trim. A blockout until the kit's windows exist. ]]
+local WINDOW_HOLES: { [string]: { { number } } } = {
+	TwinSash = { { -3.75, -0.25, 3, 12 }, { 0.25, 3.75, 3, 12 } },
+	Arched = { { -2.5, 2.5, 3, 10 }, { -1.5, 1.5, 10, 12 }, { -0.5, 0.5, 12, 13 } },
+	Round = { { -1.5, 1.5, 5.5, 11.5 }, { -2.5, 2.5, 6.5, 10.5 }, { -3, 3, 7.5, 9.5 } },
+	Wide = { { -4, 4, 4, 10 } },
+}
+
+--[[ A wall section with rectangular `holes` cut out of it, as strips: the
+	wall cut at every hole's edges, each band's solid runs laid as parts. ]]
+local function holedWall(model: Model, holes: { { number } }, colour: Color3, t: number, zc: number)
+	local xs, ys = { -6, 6 }, { 0, WALL }
+	for _, h in holes do
+		table.insert(xs, h[1])
+		table.insert(xs, h[2])
+		table.insert(ys, h[3])
+		table.insert(ys, h[4])
+	end
+	table.sort(xs)
+	table.sort(ys)
+	local function open(x: number, y: number): boolean
+		for _, h in holes do
+			if x > h[1] and x < h[2] and y > h[3] and y < h[4] then
+				return true
+			end
+		end
+		return false
+	end
+	for j = 1, #ys - 1 do
+		local y0, y1 = ys[j], ys[j + 1]
+		if y1 - y0 > 0.01 then
+			local function lay(a: number, b: number)
+				part(
+					model,
+					"Wall",
+					Vector3.new(b - a, y1 - y0, t),
+					Vector3.new((a + b) / 2, (y0 + y1) / 2, zc),
+					{ Color = colour }
+				)
+			end
+			local runStart: number? = nil
+			for i = 1, #xs - 1 do
+				local x0, x1 = xs[i], xs[i + 1]
+				if x1 - x0 > 0.01 then
+					local solid = not open((x0 + x1) / 2, (y0 + y1) / 2)
+					if solid and runStart == nil then
+						runStart = x0
+					elseif not solid and runStart ~= nil then
+						lay(runStart :: number, x0)
+						runStart = nil
+					end
+				end
+			end
+			if runStart ~= nil then
+				lay(runStart :: number, 6)
+			end
+		end
+	end
+end
+
 --[[ The facade's pieces (MODELS.md, "Facade"): each is one cell edge (two
 	for the entrance), origin at the middle of the edge on the walking
 	surface, the owned cell toward +Z and the wall just outside it (z −0.02 to
-	−0.62), up to the slab above. Blockouts until the kit's or a cosmetic's
-	pieces exist; `scheme` is a facade cosmetic's colours. ]]
+	−0.62), up to the slab above. A plain `Wall`, or `Window_<Type>` with one
+	window (A.1). Blockouts until the kit's or a cosmetic's pieces exist;
+	`scheme` is a facade cosmetic's colours. ]]
 local function blockoutFacade(
 	kind: string,
 	location: number,
@@ -665,29 +728,70 @@ local function blockoutFacade(
 		attach(root, "Entrance", Vector3.new(0, 0, 0), Vector3.new(0, 0, -1))
 		return model
 	end
-	local model, _ = shell("Facade_Wall", Vector3.new(12, 0.2, t), Vector3.new(0, 0.1, zc))
-	-- Two windows 4 wide and 9 tall (y 3..12) over a person's sill, centred at x ±3.
-	local low, high = 3, 12
-	part(model, "Wall_Low", Vector3.new(12, low, t), Vector3.new(0, low / 2, zc), { Color = wall })
-	part(
-		model,
-		"Wall_High",
-		Vector3.new(12, WALL - high, t),
-		Vector3.new(0, (high + WALL) / 2, zc),
-		{ Color = wall }
-	)
-	for i, span in { { -6, -5 }, { -1, 1 }, { 5, 6 } } do
+	local windowType = string.match(kind, "^Window_(%a+)$")
+	local holes = windowType and WINDOW_HOLES[windowType]
+	if not holes then
+		-- A plain wall section (his ruling, 2026-10-20: windows are placed).
+		local model, _ = shell("Facade_Wall", Vector3.new(12, 0.2, t), Vector3.new(0, 0.1, zc))
 		part(
 			model,
-			`Wall_Post_{i}`,
-			Vector3.new(span[2] - span[1], high - low, t),
-			Vector3.new((span[1] + span[2]) / 2, (low + high) / 2, zc),
+			"Wall",
+			Vector3.new(12, WALL, t),
+			Vector3.new(0, WALL / 2, zc),
 			{ Color = wall }
 		)
+		return model
 	end
-	-- The sill stands 0.06 proud of both faces: flush with the wall it
-	-- flickered against it (his report, 2026-10-19).
-	part(model, "Sill", Vector3.new(12, 0.4, t + 0.12), Vector3.new(0, low, zc), { Color = trim })
+	local model, _ = shell(`Facade_{kind}`, Vector3.new(12, 0.2, t), Vector3.new(0, 0.1, zc))
+	holedWall(model, holes, wall, t, zc)
+	-- The sill under the lowest opening, 0.06 proud of both faces (coplanar faces flicker).
+	local x0, x1, y0 = math.huge, -math.huge, math.huge
+	for _, h in holes do
+		x0, x1, y0 = math.min(x0, h[1]), math.max(x1, h[2]), math.min(y0, h[3])
+	end
+	part(
+		model,
+		"Sill",
+		Vector3.new(x1 - x0 + 0.6, 0.4, t + 0.12),
+		Vector3.new(0, y0 - 0.2, zc),
+		{ Color = trim }
+	)
+	if windowType == "Wide" then
+		-- Three panes, and a flower box under them outside.
+		for _, x in { -4 / 3, 4 / 3 } do
+			part(
+				model,
+				"Mullion",
+				Vector3.new(0.3, 6, 0.3),
+				Vector3.new(x, 7, zc),
+				{ Color = trim }
+			)
+		end
+		part(
+			model,
+			"FlowerBox",
+			Vector3.new(8.4, 0.9, 1),
+			Vector3.new(0, 3.35, -1.12),
+			{ Color = trim }
+		)
+		part(
+			model,
+			"Flowers",
+			Vector3.new(8, 0.5, 0.7),
+			Vector3.new(0, 4.05, -1.12),
+			{ Color = Color3.fromRGB(150, 60, 120), CanCollide = false }
+		)
+	elseif windowType == "TwinSash" then
+		for _, x in { -2, 2 } do
+			part(
+				model,
+				"SashBar",
+				Vector3.new(3.5, 0.25, 0.3),
+				Vector3.new(x, 7.5, zc),
+				{ Color = trim }
+			)
+		end
+	end
 	return model
 end
 
@@ -702,7 +806,8 @@ end
 --[[ The facade (MODELS.md, "Facade"; his ruling, 2026-10-20: "It should only
 	have walls where you have unlocked"): a piece on every edge and corner of
 	the owned tiles' outline on every floor (`Grid.facade`), the entrance arch
-	on floor 1's front edge, the street side open above floor 1. Each piece
+	on floor 1's front edge, the street side open above floor 1, and on a wall
+	section in `windows` (its edge key → type) that window (A.1). Each piece
 	is a worn facade cosmetic's (`cosmetic`), else the kit's
 	(`ServerStorage.HotelKit.<Location>`), else a blockout, in the
 	cosmetic's colours when it has no pieces of its own. Plot-local, as a
@@ -711,7 +816,8 @@ function HotelKit.facade(
 	location: number,
 	floors: number,
 	tiles: { [number]: boolean },
-	cosmetic: Cosmetics.Cosmetic?
+	cosmetic: Cosmetics.Cosmetic?,
+	windows: { [string]: string }?
 ): Folder
 	local folder = Instance.new("Folder")
 	folder.Name = "Facade"
@@ -736,11 +842,19 @@ function HotelKit.facade(
 		sources[kind] = m
 		return m
 	end
-	for _, f in Grid.facade(tiles, floors) do
-		local m = source(f.kind):Clone()
+	for _, f in Grid.facade(tiles, floors, windows) do
+		local m = source(if f.window then `Window_{f.window}` else f.kind):Clone()
 		m.PrimaryPart = m:FindFirstChild("Root") :: BasePart?
 		m:PivotTo(CFrame.new(f.at) * CFrame.Angles(0, f.turn * math.pi / 2, 0))
 		m:SetAttribute("Floor", f.floor)
+		if f.kind == "Wall" then
+			-- The build mode taps a wall section by it (A.1: windows).
+			m:SetAttribute(
+				"Edge",
+				Grid.edgeKey(f.floor, f.x :: number, f.z :: number, f.side :: number)
+			)
+			m:SetAttribute("Window", f.window)
+		end
 		m.Parent = folder
 	end
 	for _, m in sources do

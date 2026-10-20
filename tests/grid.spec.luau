@@ -261,6 +261,70 @@ describe("Grid", function()
 	end)
 
 	it(
+		"windows go on outer walls only, and move out along their line when a tile is bought",
+		function()
+			local w = world()
+			local t = w.tiles
+			expect.truthy(Grid.isWall(t, 2, 1, 4, 0, 0), "the front wall beside the arch")
+			expect.truthy(not Grid.isWall(t, 2, 1, 5, 0, 0), "not the arch")
+			expect.truthy(
+				not Grid.isWall(t, 2, 2, 4, 0, 0),
+				"not the open street side above floor 1"
+			)
+			expect.truthy(Grid.isWall(t, 2, 2, 4, 1, 1), "a side wall upstairs")
+			expect.truthy(not Grid.isWall(t, 2, 1, 5, 1, 1), "not between two owned tiles")
+			expect.truthy(not Grid.isWall(t, 2, 3, 4, 1, 1), "not on a floor not built")
+			for _, s in Constants.Windows.Start do
+				expect.truthy(
+					Grid.isWall(t, 1, s.floor, s.x, s.z, s.side),
+					"a start window on a wall"
+				)
+			end
+			local windows = {
+				[Grid.edgeKey(1, 7, 1, 3)] = "Round",
+				[Grid.edgeKey(2, 7, 1, 3)] = "Wide",
+				[Grid.edgeKey(1, 7, 2, 3)] = "Arched",
+				[Grid.edgeKey(1, 6, 3, 2)] = "TwinSash",
+				[Grid.edgeKey(1, 4, 0, 0)] = "TwinSash",
+			}
+			local owned = world(2, startPlus({ { x = 8, z = 1 }, { x = 6, z = 4 } })).tiles
+			local moved, refunded = Grid.moveWindows(owned, 2, windows)
+			expect.eq(#refunded, 0, "nothing refunded")
+			expect.eq(moved[Grid.edgeKey(1, 8, 1, 3)], "Round", "out along its line, floor 1")
+			expect.eq(moved[Grid.edgeKey(2, 8, 1, 3)], "Wide", "out along its line, floor 2")
+			expect.eq(moved[Grid.edgeKey(1, 6, 4, 2)], "TwinSash", "the back one moved back")
+			expect.eq(
+				moved[Grid.edgeKey(1, 7, 2, 3)],
+				"Arched",
+				"a wall still a wall keeps its window"
+			)
+			expect.eq(moved[Grid.edgeKey(1, 4, 0, 0)], "TwinSash", "the front one stays")
+			expect.eq(moved[Grid.edgeKey(1, 7, 1, 3)], nil, "nothing left inside")
+			-- Onto a wall that has a window already: refunded.
+			local crowded =
+				{ [Grid.edgeKey(1, 7, 1, 3)] = "Round", [Grid.edgeKey(1, 8, 1, 3)] = "Wide" }
+			moved, refunded = Grid.moveWindows(owned, 2, crowded)
+			expect.eq(#refunded, 1, "one refunded")
+			expect.eq(refunded[1].window, "Round", "the one that moved")
+			expect.eq(moved[Grid.edgeKey(1, 8, 1, 3)], "Wide", "the outer one kept")
+			-- The facade draws a window where one is placed.
+			local found = 0
+			for _, f in Grid.facade(owned, 2, moved) do
+				if f.window then
+					found += 1
+					expect.eq(f.kind, "Wall", "a window is on a wall")
+					expect.eq(
+						moved[Grid.edgeKey(f.floor, f.x, f.z, f.side)],
+						f.window,
+						"its own window"
+					)
+				end
+			end
+			expect.eq(found, 1, "one window drawn")
+		end
+	)
+
+	it(
 		"the facade walls exactly the outline of the owned tiles, open above floor 1 on the street",
 		function()
 			local function check(tiles, floors)

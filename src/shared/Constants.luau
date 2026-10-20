@@ -12,6 +12,18 @@
 
 local Constants = {}
 
+-- A.1, his rulings 2026-10-20: windows are bought and placed, one per facade
+-- wall section, from four types (MODELS.md `Facade_Window_<Type>`).
+Constants.Windows = {
+	Types = { "TwinSash", "Arched", "Round", "Wide" }, -- his picks
+	Names = { TwinSash = "Twin sash", Arched = "Arched", Round = "Round", Wide = "Wide" },
+	-- A new hotel's: a Twin sash on each front wall beside the entrance (his ruling).
+	Start = {
+		{ floor = 1, x = 4, z = 0, side = 0, type = "TwinSash" },
+		{ floor = 1, x = 7, z = 0, side = 0, type = "TwinSash" },
+	},
+}
+
 -- §3, Appendix A.1: the street, the plot and the grid.
 Constants.Grid = {
 	CellSize = 12, -- his ruling, 2026-10-19 evening (§3, §18): 2×2 room = 24 × 24 studs
@@ -132,6 +144,7 @@ Constants.Economy = {
 	TileCost = 50, -- PLACEHOLDER (his "cheap", §5.4, A.1): the n-th tile bought costs TileCost × TileGrowth^n
 	TileGrowth = 1.03, -- PLACEHOLDER: the whole plot then costs about what the six areas did (~$72,000)
 	DeskCost = 500, -- PLACEHOLDER: a second or later FrontDesk (the first is free, §5.4)
+	WindowCost = 100, -- PLACEHOLDER: a window on a facade wall (A.1); selling refunds what was paid
 	Milestones = { 5, 10, 25 }, -- each doubles that type's pay (§6.2)
 	SellRefund = 0.5, -- PLACEHOLDER
 	FloorCosts = { 0, 500, 5000, 50000 }, -- PLACEHOLDER: floor 1 free; floor 4 needs the pass

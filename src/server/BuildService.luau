@@ -14,12 +14,15 @@
 	(`PlaceDecor`, `MoveDecor`, `SellDecor`) and moves and goes with its room;
 	a floor finish is chosen per room and for the hallways (`Finish`); a room
 	or amenity may be placed or moved mirrored (Flip, A.1: `m`, free) when its
-	kit has `<PieceId>_Mirror` or it is still a blockout. A new
+	kit has `<PieceId>_Mirror` or it is still a blockout; a window is placed,
+	moved, swapped or sold on any outer wall section (`PlaceWindow`,
+	`MoveWindow`, `SellWindow`, A.1), and moves out along its line when a tile
+	bought makes its wall an inside one. A new
 	floor's first stair is free. A room's tier is its decor's (`Layout`), not
 	bought.
 
-	Remotes: Place, Move, Sell, BuyFloor, BuyTile, PlaceDecor, MoveDecor,
-	SellDecor, Finish, Equip. A refusal says why (`Refused`), so the client
+	Remotes: Place, Move, Sell, BuyFloor, BuyTile, PlaceWindow, MoveWindow,
+	SellWindow, PlaceDecor, MoveDecor, SellDecor, Finish, Equip. A refusal says why (`Refused`), so the client
 	can show it.
 ]]
 
@@ -152,6 +155,7 @@ function BuildService.tutorialTiles(player: Player)
 	for _, k in chosen do
 		data.tiles[k] = true
 	end
+	windowsOut(player, data)
 	PlotService.refreshTiles(player)
 	changed(player, "Tile")
 end
@@ -426,6 +430,23 @@ local function buyFloor(player: Player)
 	changed(player, "Floor")
 end
 
+--[[ After tiles are bought: each window whose wall became an inside one
+	moves out along its line (Grid.moveWindows); one with nowhere to go is
+	refunded. ]]
+local function windowsOut(player: Player, data: PlayerData.Data)
+	local moved, refunded =
+		Grid.moveWindows(PlotService.world(data).tiles, data.floors, data.windows)
+	data.windows = moved
+	local back = 0
+	for _, r in refunded do
+		back += r.window.paid
+	end
+	if #refunded > 0 then
+		PlayerData.refund(player, back)
+		Net.fire(player, "Toast", `A window had nowhere to go: refunded ${back}`, "Info")
+	end
+end
+
 local function buyTile(player: Player, x: number, z: number)
 	local data = PlayerData.get(player)
 	if not data then
@@ -442,8 +463,83 @@ local function buyTile(player: Player, x: number, z: number)
 	end
 	data.tiles[tostring(Grid.tileKey(x, z))] = true
 	data.tilesBought += 1
+	windowsOut(player, data)
 	PlotService.refreshTiles(player)
 	changed(player, "Tile")
+end
+
+-- ===== Windows (A.1, his rulings 2026-10-20) =====
+
+-- Whether `edge` (Grid.edgeKey) is one of the hotel's outer wall sections now.
+local function wallAt(data: PlayerData.Data, edge: string): boolean
+	local floor, x, z, side = Grid.edgeOf(edge)
+	return Grid.isWall(PlotService.world(data).tiles, data.floors, floor, x, z, side)
+end
+
+local function windowsChanged(player: Player)
+	PlotService.refreshCosmetics(player)
+	StateService.mark(player)
+end
+
+-- A window of `kind` on wall section `edge`: bought, or swapped for the one there (that one refunded).
+local function placeWindow(player: Player, kind: string, edge: string)
+	local data = PlayerData.get(player)
+	if not data then
+		return
+	end
+	if not table.find(Constants.Windows.Types, kind) then
+		refuse(player, "PlaceWindow", "Unknown")
+		return
+	end
+	if not wallAt(data, edge) then
+		refuse(player, "PlaceWindow", "NotWall")
+		return
+	end
+	local old = data.windows[edge]
+	if old and old.type == kind then
+		return
+	end
+	local cost = Constants.Economy.WindowCost
+	if not PlayerData.spend(player, cost) then
+		refuse(player, "PlaceWindow", "Cash")
+		return
+	end
+	if old then
+		PlayerData.refund(player, old.paid)
+	end
+	data.windows[edge] = { type = kind, paid = cost }
+	windowsChanged(player)
+end
+
+local function moveWindow(player: Player, from: string, to: string)
+	local data = PlayerData.get(player)
+	local w = data and data.windows[from]
+	if not data or not w or from == to then
+		return
+	end
+	if not wallAt(data, to) then
+		refuse(player, "MoveWindow", "NotWall")
+		return
+	end
+	if data.windows[to] then
+		refuse(player, "MoveWindow", "Overlap")
+		return
+	end
+	data.windows[from] = nil
+	data.windows[to] = w
+	windowsChanged(player)
+end
+
+-- Sold: what it cost comes back whole (A.1).
+local function sellWindow(player: Player, edge: string)
+	local data = PlayerData.get(player)
+	local w = data and data.windows[edge]
+	if not data or not w then
+		return
+	end
+	data.windows[edge] = nil
+	PlayerData.refund(player, w.paid)
+	windowsChanged(player)
 end
 
 -- ===== Decor (§5.4) =====
@@ -611,6 +707,9 @@ function BuildService.Init()
 	Net.on("Sell", sell)
 	Net.on("BuyFloor", buyFloor)
 	Net.on("BuyTile", buyTile)
+	Net.on("PlaceWindow", placeWindow)
+	Net.on("MoveWindow", moveWindow)
+	Net.on("SellWindow", sellWindow)
 	Net.on("PlaceDecor", placeDecor)
 	Net.on("MoveDecor", moveDecor)
 	Net.on("SellDecor", sellDecor)
@@ -818,6 +917,10 @@ function BuildService.Start()
 				table.insert(tiles, tonumber(k))
 			end
 		end
+		local windows = {}
+		for edge, w in data.windows do
+			table.insert(windows, { edge = edge, type = w.type, paid = w.paid })
+		end
 		local cosmetics = {}
 		for _, c in Cosmetics.List do
 			table.insert(cosmetics, {
@@ -838,6 +941,8 @@ function BuildService.Start()
 			blocked = blocked,
 			tiles = tiles,
 			tileCost = Economy.tileCost(data.tilesBought),
+			windows = windows,
+			windowCost = Constants.Economy.WindowCost,
 			finishes = data.finishes,
 			freeStairs = data.freeStairs,
 			floors = data.floors,

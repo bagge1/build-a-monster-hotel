@@ -619,6 +619,29 @@ for a kit piece with no mirror yet. Played on `Test_Tiles1020a`.
 - [A] Every kit room and amenity needs its `_Mirror` from the kit's
   `finish()` (MODELS.md) before F works on the imported models.
 
+## Windows (GDD A.1, his rulings 2026-10-20)
+
+Built 2026-10-20: plain facade walls; a window bought ($100 PLACEHOLDER) and
+placed on any outer wall section from four types, moved, swapped and sold
+(full refund); a Twin sash on each front wall beside the arch at the start;
+a window moved out along its line when a tile makes its wall an inside one,
+refunded when it has nowhere to go; `Facade_Window_<Type>` from the kit or a
+facade cosmetic, a blockout opening until then. Played on `Test_Tiles1020a`.
+
+- [x] The start's two Twin sash windows on floor 1's front walls (x 4, x 7).
+- [x] Placed a Round (−$100), swapped it for an Arched (the Round refunded),
+  moved it, sold it (+$100); refused on the arch, on floor 2's open street
+  side and on an inside edge (`NotWall`).
+- [x] A window on a back wall moved out to the new back wall when the tile
+  behind it was bought.
+- [x] All four blockout shapes drawn on one wall (picture seen by Claude, not
+  yet by August).
+- [ ] By real input (night or his yes): the Windows tab, a card, a tap on a
+  wall places it, a hovered wall lights, a tap on a window opens Move, Sell
+  and the other kinds.
+- [A] How the four kinds look: the kit's models (MODELS.md) replace the
+  blockout shapes.
+
 ## August keeps
 
 - How the street, the lobby and the rooms look (every look is a night draft).
@@ -656,3 +679,4 @@ for a kit piece with no mirror yet. Played on `Test_Tiles1020a`.
 - 2026-10-20 21:39 Pacing and the tutorial's free area (test profile Test_Rel1020a; steps to SecondRoom, Goal and Done jumped by `tutorial`, buses called by `bus`): two Standard Rooms in the start area; at the goal card area 1 owned beside area 2 and the card reads "in your new area"; the Coffin Suite placed free at (0, 2) in it (paid 0, voucher spent); the first bus drew 3 guests for a one-player hotel with 3 vacant rooms; the Vampire Count booked after bus 2 and on bus 3, checked in to the suite; stays by the server's timers: Slime 180 s, Vampire Count 600 s. The server-size warning fires (60). The new bus horn (9114660894, 2.8 s) loads and plays when a bus arrives.
 - 2026-10-20 22:42 Tiles, desks and the facade (Test_Tiles1020a): the start square, tiles bought by remote and by a click, the outline walled on two floors (rays, a walker), two desks with a guest at each, a desk sold with a guest waiting, the goal card's block and the free Coffin Suite, rejoin; fixed: the tile plates redrawn every second. No errors of the game's own.
 - 2026-10-20 22:56 Flip (Test_Tiles1020a): refused without a mirror model; on the blockout path a flipped Standard Room's door on its other cell and a guest walked in through it; build mode's Flip action and button present. Also: a tile purchase now redraws only the slabs, plates and facade (a quick run of purchases lost one to the rate limit while each rebuilt the whole hotel). No errors of the game's own.
+- 2026-10-20 23:03 Windows (Test_Tiles1020a): the start's two Twin sash, place, swap, move, sell and the refusals by remote; a window moved out by a tile purchase; the four blockout shapes. No errors of the game's own.

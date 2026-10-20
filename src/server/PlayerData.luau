@@ -50,6 +50,15 @@ local PlayerData = {}
 	so until it is, a shape change may simply start everyone over. ]]
 local SCHEMA_VERSION = 3
 
+-- A new hotel's windows (A.1, his ruling): a Twin sash on each front wall beside the entrance, free.
+local function startWindows(): { [string]: WindowRecord }
+	local out = {}
+	for _, w in Constants.Windows.Start do
+		out[Grid.edgeKey(w.floor, w.x, w.z, w.side)] = { type = w.type, paid = 0 }
+	end
+	return out
+end
+
 -- A new hotel's tiles (§5.4, A.1): the start square, keyed as the profile keeps them.
 local function startTiles(): { [string]: boolean }
 	local out = {}
@@ -69,6 +78,8 @@ export type PieceRecord = {
 	paid: number, -- what it cost, for the refund
 	finish: string?, -- a room's floor finish (Pieces.Finishes), "" or nil for the model's own
 }
+-- A window on a facade wall (A.1): its type (Constants.Windows.Types) and what it cost, for the refund.
+export type WindowRecord = { type: string, paid: number }
 -- Decor (§5.4): squares of 3 studs on the plot, and the room it stands in ("" on hallway floor).
 export type DecorRecord = {
 	item: string,
@@ -97,6 +108,7 @@ export type Data = {
 	decor: { [string]: DecorRecord },
 	tiles: { [string]: boolean }, -- owned cells of the plot, by Grid.tileKey (§5.4, A.1), on every floor
 	tilesBought: number, -- tiles bought with cash, for the next one's price (the start's and gifts are free)
+	windows: { [string]: WindowRecord }, -- by Grid.edgeKey: the windows placed on facade walls (A.1)
 	finishes: { [string]: string }, -- "Hallway" -> a finish id ("" the model's own)
 	freeStairs: number, -- stairs owed for floors bought (§5.4: a new floor's first stair is free)
 	nextId: number, -- pieces and decor share it
@@ -145,6 +157,7 @@ local TEMPLATE: Data = {
 	decor = {},
 	tiles = startTiles(),
 	tilesBought = 0,
+	windows = startWindows(),
 	finishes = { Hallway = "" },
 	freeStairs = 0,
 	nextId = 1,
@@ -211,6 +224,7 @@ function PlayerData.resetHotel(data: Data)
 	data.decor = {}
 	data.tiles = startTiles()
 	data.tilesBought = 0
+	data.windows = startWindows()
 	data.finishes = { Hallway = "" }
 	data.floors = 1
 	data.freeStairs = 0

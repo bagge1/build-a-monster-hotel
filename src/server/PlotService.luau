@@ -537,11 +537,16 @@ function drawCosmetics(plot: Plot, data: PlayerData.Data)
 			old:Destroy()
 		end
 	end
+	local windows = {}
+	for k, w in data.windows do
+		windows[k] = w.type
+	end
 	local facade = HotelKit.facade(
 		plot.location,
 		data.floors,
 		PlotService.world(data).tiles,
-		worn(data, "Facade")
+		worn(data, "Facade"),
+		windows
 	)
 	placeLocal(facade, plot.frame)
 	facade.Parent = plot.model

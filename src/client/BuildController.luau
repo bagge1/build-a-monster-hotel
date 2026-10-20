@@ -18,8 +18,10 @@
 	Tabs (§5.4, free building): Rooms, Amenities, Stairs and desks (a stair is
 	a 2×2 piece joining a floor to the one above, a new floor's first free;
 	a front desk the first free, another $500), Decor (on a grid
-	of 3-stud squares, in rooms and on hallway floor) and Floors (a finish:
-	choose one, then tap a room or a hallway).
+	of 3-stud squares, in rooms and on hallway floor), Floors (a finish:
+	choose one, then tap a room or a hallway) and Windows (A.1: one of four
+	types, then tap an outer wall; a placed window is tapped to move, swap or
+	sell it).
 
 	The camera looks down on the plot while building, and floors above the
 	one being built on are hidden locally (`LocalTransparencyModifier`).
@@ -67,6 +69,8 @@ local mirror = false -- the piece being placed or moved is flipped (Flip, A.1)
 local selected: string? = nil -- a piece id to place
 local selectedDecor: string? = nil -- a decor id to place
 local selectedFinish: string? = nil -- a finish to lay ("" the model's own)
+local selectedWindow: string? = nil -- a window type to put on a wall (A.1)
+local movingWindow: string? = nil -- a placed window being moved, by its wall's edge key
 local moving: number? = nil -- a built piece being moved
 local movingDecor: number? = nil -- a piece of decor being moved
 local cell: Grid.Cell? = nil -- where the ghost's anchor is: a cell, or a square for decor
@@ -100,6 +104,7 @@ local function moveHint(): string
 	)
 end
 local hover: Highlight? = nil
+local outline: (Instance?) -> ()
 local stopPlacing: () -> ()
 local flip: () -> ()
 local rightDownAt: Vector2? = nil
@@ -228,14 +233,6 @@ local function setHidden()
 	local function hide(p: BasePart)
 		p.LocalTransparencyModifier = 1
 		hidden[p] = true
-	end
-	-- The facade's parts carry their floor in their names (`Left_2_Post`).
-	local facade = m:FindFirstChild("Facade")
-	for _, p in (if facade then facade:GetChildren() else {}) do
-		local f = tonumber(string.match(p.Name, "^%a+_(%d+)_"))
-		if p:IsA("BasePart") and f and f > floor then
-			hide(p)
-		end
 	end
 	for _, child in m:GetDescendants() do
 		local f = child:GetAttribute("Floor") :: number?
@@ -591,6 +588,49 @@ local function underPointer(x: number, y: number): (number?, string?)
 	return nil, nil
 end
 
+--[[ The facade wall section (a `Facade` model with `Edge`) on the floor in
+	view under the pointer, or nil; with `piecesFirst` a piece or decor in
+	front of it wins (nil). `windowsOnly` takes only walls with a window. ]]
+local function wallUnder(x: number, y: number, piecesFirst: boolean, windowsOnly: boolean?): Model?
+	local m = plotModel()
+	local facade = m and m:FindFirstChild("Facade")
+	if not m or not facade then
+		return nil
+	end
+	local include: { Instance } = {}
+	for _, w in facade:GetChildren() do
+		if
+			w:IsA("Model")
+			and w:GetAttribute("Edge")
+			and w:GetAttribute("Floor") == floor
+			and (not windowsOnly or w:GetAttribute("Window"))
+		then
+			table.insert(include, w)
+		end
+	end
+	if piecesFirst then
+		for _, name in { "Pieces", "Decor" } do
+			local f = m:FindFirstChild(name)
+			if f then
+				table.insert(include, f)
+			end
+		end
+	end
+	local ray = camera:ScreenPointToRay(x, y)
+	local params = RaycastParams.new()
+	params.FilterType = Enum.RaycastFilterType.Include
+	params.FilterDescendantsInstances = include
+	local hit = workspace:Raycast(ray.Origin, ray.Direction * 400, params)
+	local inst = hit and hit.Instance
+	while inst and inst ~= facade and inst ~= m do
+		if inst:IsA("Model") and inst:GetAttribute("Edge") then
+			return inst
+		end
+		inst = inst.Parent
+	end
+	return nil
+end
+
 -- Whether the pointer is over the build mode's own buttons and strip: a
 -- tap there is for them, never for the grid under them (a tap on a card
 -- placed a room under it, 2026-10-19).
@@ -617,6 +657,11 @@ local function showHover(id: number?, kind: string?)
 			end
 		end
 	end
+	outline(target)
+end
+
+-- Outlines a model (nil: none) in gold.
+function outline(target: Instance?)
 	if not target then
 		if hover then
 			hover.Adornee = nil
@@ -766,7 +811,7 @@ end
 local function startMoving(id: number, rec: any)
 	moving = id
 	movingDecor = nil
-	selected, selectedDecor, selectedFinish = nil, nil, nil
+	selected, selectedDecor, selectedFinish, selectedWindow, movingWindow = nil, nil, nil, nil, nil
 	rotation = rec.r
 	mirror = rec.m == true
 	floor = rec.floor
@@ -848,6 +893,47 @@ local function openMenu(id: number)
 	menu.Visible = true
 end
 
+-- A placed window (A.1): move it, swap it for another type, or sell it.
+local function openWindowMenu(edge: string)
+	local w = nil
+	for _, rec in build().windows or {} do
+		if rec.edge == edge then
+			w = rec
+		end
+	end
+	if not w then
+		return
+	end
+	local W = Constants.Windows
+	clearMenu(`{W.Names[w.type] or w.type} window`)
+	local row = actionRow()
+	Ui.button(row, "Move", "Move", UDim2.fromOffset(110, 46), function()
+		stopPlacing()
+		movingWindow = edge
+		menu.Visible = false
+		info.Text = Controls.hint(
+			"Tap the wall it should go on",
+			"A on the wall it should go on · B to stop"
+		)
+		toPlot()
+	end, Ui.Colour.Teal)
+	Ui.button(row, "Sell", `Sell +{Format.cash(w.paid or 0)}`, UDim2.fromOffset(160, 46), function()
+		Net.send("SellWindow", edge)
+		menu.Visible = false
+	end, Ui.Colour.Bad)
+	Ui.label(menuBody, "SwapTitle", "Another kind", UDim2.new(1, 0, 0, 24), 18, Ui.Colour.Muted)
+	local swaps = actionRow()
+	for _, kind in W.Types do
+		if kind ~= w.type then
+			Ui.button(swaps, kind, W.Names[kind], UDim2.fromOffset(120, 44), function()
+				Net.send("PlaceWindow", kind, edge)
+				menu.Visible = false
+			end)
+		end
+	end
+	menu.Visible = true
+end
+
 local function openDecorMenu(id: number)
 	local rec = decorRecord(id)
 	local d = rec and Pieces.decor(rec.item)
@@ -864,7 +950,8 @@ local function openDecorMenu(id: number)
 	Ui.button(row, "Move", "Move", UDim2.fromOffset(110, 46), function()
 		movingDecor = id
 		moving = nil
-		selected, selectedDecor, selectedFinish = nil, nil, nil
+		selected, selectedDecor, selectedFinish, selectedWindow, movingWindow =
+			nil, nil, nil, nil, nil
 		rotation = rec.r
 		floor = rec.floor
 		menu.Visible = false
@@ -999,9 +1086,10 @@ function flip()
 end
 
 function stopPlacing()
-	selected, selectedDecor, selectedFinish = nil, nil, nil
+	selected, selectedDecor, selectedFinish, selectedWindow, movingWindow = nil, nil, nil, nil, nil
 	moving, movingDecor = nil, nil
 	clearGhost()
+	outline(nil)
 	placeButton.Visible = false
 	info.Text = idleHint()
 	redrawCards()
@@ -1079,6 +1167,32 @@ function redrawCards()
 				end)
 			end
 		end
+	elseif tab == "Window" then
+		local W = Constants.Windows
+		for i, kind in W.Types do
+			local name = W.Names[kind]
+			card(
+				`Window_{kind}`,
+				`{name}\n{Format.cash(b.windowCost or 0)}`,
+				i,
+				selectedWindow == kind,
+				true,
+				function()
+					if selectedWindow == kind then
+						stopPlacing()
+						return
+					end
+					stopPlacing()
+					selectedWindow = kind
+					info.Text = `{name} window: {Controls.hint(
+						"tap an outer wall · a wall with a window swaps it",
+						"A on an outer wall · B to stop"
+					)}`
+					redrawCards()
+					toPlot()
+				end
+			)
+		end
 	elseif tab == "Floor" then
 		local function finishCard(id: string, name: string, order: number)
 			card(`Finish_{id}`, name, order, selectedFinish == id, true, function()
@@ -1089,8 +1203,8 @@ function redrawCards()
 				stopPlacing()
 				selectedFinish = id
 				info.Text = `{name}: {Controls.hint(
-					"tap a room, the lobby or a hallway to lay it",
-					"A on a room, the lobby or a hallway to lay it"
+					"tap a room or a hallway to lay it",
+					"A on a room or a hallway to lay it"
 				)}`
 				redrawCards()
 				toPlot()
@@ -1186,7 +1300,7 @@ local function setActive(on: boolean)
 		tutorial.Enabled = not on
 	end
 	menu.Visible = false
-	selected, selectedDecor, selectedFinish = nil, nil, nil
+	selected, selectedDecor, selectedFinish, selectedWindow, movingWindow = nil, nil, nil, nil, nil
 	moving, movingDecor, cell = nil, nil, nil
 	clearGhost()
 	showHover(nil)
@@ -1235,6 +1349,24 @@ end
 
 -- A tap on the plot with no card chosen, or with a floor finish chosen.
 local function tapPlot(x: number, y: number)
+	if selectedWindow or movingWindow then
+		local wall = wallUnder(x, y, false)
+		local edge = wall and wall:GetAttribute("Edge") :: string?
+		if not edge then
+			info.Text = Hud.refusal("NotWall")
+		elseif movingWindow then
+			Net.send("MoveWindow", movingWindow, edge)
+			stopPlacing()
+		else
+			Net.send("PlaceWindow", selectedWindow :: string, edge)
+		end
+		return
+	end
+	local windowed = wallUnder(x, y, true, true)
+	if windowed and not selectedFinish then
+		openWindowMenu(windowed:GetAttribute("Edge") :: string)
+		return
+	end
 	local id, kind = underPointer(x, y)
 	if selectedFinish then
 		local f = selectedFinish :: string
@@ -1343,6 +1475,7 @@ function BuildController.Init()
 	local what2 = row()
 	tabButton(what2, "Decor", "Decor", 114)
 	tabButton(what2, "Floor", "Floors", 114)
+	tabButton(what2, "Window", "Windows", 114)
 	paintTabs()
 
 	-- Which floor: down, the floor, up, and buying the next.
@@ -1539,7 +1672,15 @@ function BuildController.Start()
 		if not active then
 			return false
 		end
-		if selected or selectedDecor or selectedFinish or moving or movingDecor then
+		if
+			selected
+			or selectedDecor
+			or selectedFinish
+			or selectedWindow
+			or movingWindow
+			or moving
+			or movingDecor
+		then
 			stopPlacing()
 			padRefresh()
 		elseif Controls.selectedRecently() then
@@ -1569,6 +1710,14 @@ function BuildController.Start()
 			and UserInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton2)
 		then
 			turnBy(-input.Delta.X * 0.008)
+		end
+		-- A window being placed or moved lights the wall it would go on.
+		if
+			input.UserInputType == Enum.UserInputType.MouseMovement
+			and (selectedWindow or movingWindow)
+		then
+			outline(wallUnder(input.Position.X, input.Position.Y, false))
+			return
 		end
 		-- With nothing being placed, what is under the mouse lights up: it can be tapped.
 		if input.UserInputType == Enum.UserInputType.MouseMovement and not placing() then
@@ -1625,7 +1774,15 @@ function BuildController.Start()
 		if
 			down
 			and (at - down).Magnitude < 6
-			and (selected or selectedDecor or selectedFinish or moving or movingDecor)
+			and (
+				selected
+				or selectedDecor
+				or selectedFinish
+				or selectedWindow
+				or movingWindow
+				or moving
+				or movingDecor
+			)
 		then
 			stopPlacing()
 		end

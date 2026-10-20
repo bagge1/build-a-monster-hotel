@@ -24,7 +24,10 @@
 	(`Grid.facade`): a wall on each edge between an owned cell and one not
 	owned (or the plot's edge), a corner post where the outline turns, the
 	entrance arch on floor 1's front edge at the mouth, and the street-facing
-	edges of the plot left open above floor 1.
+	edges of the plot left open above floor 1. A wall section may carry one
+	window the player placed (A.1), keyed by `edgeKey`; when a tile bought
+	makes a windowed wall an inside one, the window moves out along its line
+	(`moveWindows`).
 
 	HALLWAYS ARE THE FREE CELLS of the hotel: not under a piece, not a
 	stairwell, not furnished down the middle (decor in a cell's middle takes
@@ -764,12 +767,16 @@ end
 
 export type FacadePiece = {
 	kind: "Wall" | "Entrance" | "Corner",
+	window: string?, -- a wall's window type (A.1), nil for a plain wall
+	x: number?, -- a wall's cell and side, for its `edgeKey`
+	z: number?,
+	side: number?,
 	floor: number,
 	at: Vector3, -- plot-local: the middle of the cell edge (a corner's vertex), on the floor's walking surface
 	turn: number, -- quarter turns about +Y (CFrame.Angles(0, turn * π/2, 0)) from the piece's authored frame
 }
 
--- The four sides of a cell: the step to the cell beyond it, and the turn that faces a piece's −Z out of it.
+-- The four sides of a cell (`side` 0..3): the step to the cell beyond it, and the turn that faces a piece's −Z out of it.
 local SIDES = {
 	{ dx = 0, dz = -1, turn = 0 }, -- the front, toward the street
 	{ dx = -1, dz = 0, turn = 1 },
@@ -780,13 +787,107 @@ local SIDES = {
 -- The quadrants round a vertex (x and z signs) and the turn that puts a corner post's −X −Z quadrant there.
 local QUADRANTS = { { -1, -1, 0 }, { -1, 1, 1 }, { 1, 1, 2 }, { 1, -1, 3 } }
 
+-- A wall section's key in the profile's `windows`: floor, cell and side (0 front, 1 −x, 2 back, 3 +x).
+function Grid.edgeKey(floor: number, x: number, z: number, side: number): string
+	return `{floor}:{x}:{z}:{side}`
+end
+
+function Grid.edgeOf(edge: string): (number, number, number, number)
+	local parts = string.split(edge, ":")
+	return tonumber(parts[1]) or 0,
+		tonumber(parts[2]) or 0,
+		tonumber(parts[3]) or 0,
+		tonumber(parts[4]) or 0
+end
+
+--[[ Whether the edge on `side` of cell (x, z) on `floor` is a facade wall
+	section, which can carry a window: the cell owned, the one beyond not,
+	not the entrance's arch, not the street side above floor 1. ]]
+function Grid.isWall(
+	tiles: { [number]: boolean },
+	floors: number,
+	floor: number,
+	x: number,
+	z: number,
+	side: number
+): boolean
+	local s = SIDES[side + 1]
+	if not s or floor < 1 or floor > floors or floor % 1 ~= 0 then
+		return false
+	end
+	local function owned(cx: number, cz: number): boolean
+		return Grid.inBounds(cx, cz) and tiles[key(cx, cz)] == true
+	end
+	local nx, nz = x + s.dx, z + s.dz
+	if not owned(x, z) or owned(nx, nz) then
+		return false
+	end
+	if nz < 0 and (floor > 1 or isEntrance(1, x, z)) then
+		return false
+	end
+	return true
+end
+
+--[[ The windows after tiles are bought (A.1, his pick): a window whose wall is
+	no longer a wall moves out along its line, on its floor and side, to the
+	first wall it meets; one that meets none, or a wall that has a window
+	already, comes back as `refunded` (its key and record). ]]
+function Grid.moveWindows<T>(
+	tiles: { [number]: boolean },
+	floors: number,
+	windows: { [string]: T }
+): ({ [string]: T }, { { key: string, window: T } })
+	local out: { [string]: T } = {}
+	local moving: { { key: string, window: T } } = {}
+	local keys = {}
+	for k in windows do
+		table.insert(keys, k)
+	end
+	table.sort(keys)
+	for _, k in keys do
+		local floor, x, z, side = Grid.edgeOf(k)
+		if Grid.isWall(tiles, floors, floor, x, z, side) then
+			out[k] = windows[k]
+		else
+			table.insert(moving, { key = k, window = windows[k] })
+		end
+	end
+	local refunded = {}
+	for _, m in moving do
+		local floor, x, z, side = Grid.edgeOf(m.key)
+		local s = SIDES[side + 1]
+		local landed = false
+		while s and Grid.inBounds(x, z) and tiles[key(x, z)] do
+			if Grid.isWall(tiles, floors, floor, x, z, side) then
+				local k = Grid.edgeKey(floor, x, z, side)
+				if out[k] == nil then
+					out[k] = m.window
+					landed = true
+				end
+				break
+			end
+			x += s.dx
+			z += s.dz
+		end
+		if not landed then
+			table.insert(refunded, m)
+		end
+	end
+	return out, refunded
+end
+
 --[[ Every facade piece round the owned tiles on floors 1..`floors`: a
 	`Wall` on each edge between an owned cell and one not owned or off the
 	plot, the `Entrance` (one piece over both cells) on floor 1's front edge
 	at the mouth, and a `Corner` at each vertex where the outline turns,
 	filling the empty cell's quadrant there. Above floor 1 the plot's
-	street-facing edge is left open (his ruling, 2026-10-19). ]]
-function Grid.facade(tiles: { [number]: boolean }, floors: number): { FacadePiece }
+	street-facing edge is left open (his ruling, 2026-10-19). A wall whose
+	`edgeKey` is in `windows` carries that window type. ]]
+function Grid.facade(
+	tiles: { [number]: boolean },
+	floors: number,
+	windows: { [string]: string }?
+): { FacadePiece }
 	local C = G.CellSize
 	local function owned(x: number, z: number): boolean
 		return Grid.inBounds(x, z) and tiles[key(x, z)] == true
@@ -798,7 +899,7 @@ function Grid.facade(tiles: { [number]: boolean }, floors: number): { FacadePiec
 		for z = 0, N - 1 do
 			for x = 0, N - 1 do
 				if owned(x, z) then
-					for _, side in SIDES do
+					for sideIndex, side in SIDES do
 						local nx, nz = x + side.dx, z + side.dz
 						local open = floor > 1 and nz < 0
 						if not owned(nx, nz) and not open then
@@ -815,6 +916,12 @@ function Grid.facade(tiles: { [number]: boolean }, floors: number): { FacadePiec
 							else
 								table.insert(out, {
 									kind = "Wall",
+									window = if windows
+										then windows[Grid.edgeKey(floor, x, z, sideIndex - 1)]
+										else nil,
+									x = x,
+									z = z,
+									side = sideIndex - 1,
 									floor = floor,
 									at = Vector3.new(
 										(x + 0.5 + side.dx / 2) * C,
