@@ -12,9 +12,9 @@
 	soon" and cannot be bought; the grant behind it is still tested (DevGrant
 	`receipt`). `image` names its icon in `UiImages`.
 
-	Facade packs (§10.2, 99–249 each) are passes; what each one wears is a
-	Facade-slot cosmetic in `Cosmetics.luau` naming the pass. Their prices
-	within the GDD's range are PLACEHOLDERS.
+	Facade packs (§10.2) are passes at 149 each (his price, 2026-10-20); what
+	each one wears is a Facade-slot cosmetic in `Cosmetics.luau` naming the
+	pass.
 
 	GIFTS (§10.1 point 4, GDD Appendix A.9): every pass has a developer
 	product "Gift: <pass>" at the pass's price (a PLACEHOLDER: the GDD gives no
@@ -88,7 +88,7 @@ Store.Entries = {
 		name = "Gothic facade pack",
 		kind = "Pass",
 		id = 0,
-		price = 99, -- PLACEHOLDER within §10.2's 99–249
+		price = 149, -- his price, 2026-10-20 (§10.2)
 		text = "A Gothic exterior for your hotel. Cosmetic only.",
 	},
 	{
@@ -96,7 +96,7 @@ Store.Entries = {
 		name = "Neon facade pack",
 		kind = "Pass",
 		id = 0,
-		price = 149, -- PLACEHOLDER
+		price = 149, -- his price, 2026-10-20 (§10.2)
 		text = "A Neon exterior for your hotel. Cosmetic only.",
 	},
 	{
@@ -104,7 +104,7 @@ Store.Entries = {
 		name = "Candy facade pack",
 		kind = "Pass",
 		id = 0,
-		price = 199, -- PLACEHOLDER
+		price = 149, -- his price, 2026-10-20 (§10.2)
 		text = "A Candy exterior for your hotel. Cosmetic only.",
 	},
 	{
@@ -112,7 +112,7 @@ Store.Entries = {
 		name = "Pirate facade pack",
 		kind = "Pass",
 		id = 0,
-		price = 249, -- PLACEHOLDER
+		price = 149, -- his price, 2026-10-20 (§10.2)
 		text = "A Pirate exterior for your hotel. Cosmetic only.",
 	},
 	-- Developer products (§10.2)
