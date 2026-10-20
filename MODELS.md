@@ -342,8 +342,10 @@ pieces in a row meet end to end.
 | `Root` | 12 × 0.2 × 0.6 (24 for the entrance), centred (0, 0.1, −0.32) | Placement |
 | `Entrance` (attachment, `Facade_Entrance` only) | (0, 0, 0): the threshold, LookVector −Z | Where guests walk in; the lobby cosmetics hang from it |
 
-**Above floor 1 the street-facing edge of the plot is left open** (his ruling,
-2026-10-19); every other outline edge is walled. The first draft's Wing
+**Every outline edge of every floor is walled**, the street side included
+(his ruling, 2026-10-20, replacing the open street side above floor 1). Each
+floor has its own outline: tiles are bought per floor, and a floor with no
+tiles has no walls. The first draft's Wing
 doorway is gone: residents never walk through it.
 
 **One set of pieces per hotel kit** (`ServerStorage.HotelKit.<Location>`,

@@ -719,6 +719,8 @@ After the soft launch we apply for Kids/Select eligibility:
 | 2026-10-20 | **Tiles, not areas:** the plot is bought a cell at a time, cheaply; a hotel starts as a 4 × 4 square centred on the entrance, the reception across from the arch and one room beside it; no lobby strip and no fixed spaces; one or more desks anywhere; the facade only round what is owned (§5.4, A.1) | His rulings from looking at the game ("Customizability is KEY!"), his picks of a 1-cell tile and the 4 × 4 start; it replaces the six areas, the 2-row lobby and its gallery, and "room for 2–4 Standard Rooms" at the start |
 | 2026-10-20 | **Flip:** F mirrors a room or amenity left to right, moving its door (A.1) | His ask |
 | 2026-10-20 | **Windows are pieces:** walls are plain; one window per wall section, bought and placed from four types (Twin sash, Arched, Round, Wide), two on the front at the start, moved out when a tile is bought, restyled by a facade pack (A.1) | His rulings and picks ("CUSTOMIZATION IS KEY!!") |
+| 2026-10-20 | Every floor is walled toward the street, not only floor 1 (A.1) | His ruling from the game; replaces the open street side above floor 1 (2026-10-19) |
+| 2026-10-20 | Tiles are bought on each floor apart, dearer on higher floors; a new floor has no tiles and no walls until bought (A.1) | His ruling; replaces Claude's reading that a tile counts on every floor |
 
 ---
 
@@ -778,14 +780,20 @@ Every number below is a **placeholder** (tagged `PLACEHOLDER` in
   x 5 and 6, z 0). The two cells inside it (x 5–6, z 0) are its mouth and
   are never built on; a desk's queue may stand there.
 - **Tiles** (§5.4, his rulings 2026-10-20): the plot is bought one cell at a
-  time, and a cell owned is owned on every floor (Claude's reading, as the
-  areas were; WAITING §2). A tile can be bought when it shares an edge with
-  an owned one. **The start is the 4 × 4 square x 4–7, z 0–3.** Anything may
+  time, **on each floor apart** (his ruling: "there shouldnt be any walls
+  before you purchase the second floor, then you need to buy walls (aka
+  tiles) on the second floor, that is mroe expensive than on the bottom
+  floor"). A new floor starts with no tiles and no walls; a tile on floor
+  f > 1 stands on an owned tile of the floor below. A tile can be bought when
+  it shares an edge with an owned one on its floor (the first of a floor:
+  any over an owned tile below). **The start is the 4 × 4 square x 4–7, z 0–3.** Anything may
   stand on any owned cell (rooms, amenities, stairs, desks, decor): there is
   no lobby strip and no gallery. Cells not owned are not walked on and carry
-  a dark plate on floor 1. The n-th tile bought costs **$50 × 1.03^n**
-  (PLACEHOLDER: "cheap"; the whole plot then costs about what the six areas
-  did, ~$72,000).
+  a dark plate on floor 1. On floor 1 the n-th tile bought costs
+  **$50 × 1.03^n** (PLACEHOLDER: "cheap"; the whole ground floor then costs
+  about what the six areas did, ~$72,000); **on floor f a tile costs 2^(f−1)
+  times that floor's own ladder** (PLACEHOLDER: "more expensive than on the
+  bottom floor").
 - **Stairs** (§5.4): a 2 × 2 piece on floor f joining it to f + 1 on the same
   cells (its well on f + 1). Its foot (the cell before the flight up,
   front-left) and its head (front-right, on f + 1) stay walkable. A stair on
@@ -805,8 +813,10 @@ Every number below is a **placeholder** (tagged `PLACEHOLDER` in
   you have unlocked"): a plain wall on **every edge between an
   owned cell and one not owned** (or the plot's edge), on every floor, with a
   post at each corner of the outline; the entrance arch on floor 1's front
-  edge at x 5–6. Above floor 1, the street-facing edges of the plot stay
-  open (his ruling of 2026-10-19); edges facing a cell not owned are walled.
+  edge at x 5–6. **Every floor is walled toward the street too** (his
+  ruling, 2026-10-20, from the game: "not sure why there are no walls on the
+  top floors front. make sure that gets fixed"; it replaces the open street
+  side above floor 1 of 2026-10-19).
   The pieces are `MODELS.md`, "Facade". The Wing doorway of the first
   draft is gone: residents never walk through it.
 - **Windows are bought and placed** (his ruling, 2026-10-20: "windows should

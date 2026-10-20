@@ -536,11 +536,13 @@ Med Claudes skärmdump där det finns en. -->
    desks and the facade"): startkvadraten 4 × 4, disken mitt emot valvet,
    rutor köpta en i taget, väggar bara runt det du äger på varje våning, flera
    diskar. Det som är Claudes läsning eller platshållare, att säga till om:
-   - En köpt ruta gäller **alla våningar** på en gång, som områdena gjorde.
+   - ~~En köpt ruta gäller alla våningar~~ (ditt svar 2026-10-20: rutor köps
+     per våning, dyrare högre upp; en ny våning har inga väggar förrän du köper
+     rutor). Platshållare: en ruta på våning f kostar 2^(f−1) gånger.
    - Priset: ruta nummer n kostar **$50 × 1,03^n** (hela tomten ungefär som
      de sex områdena, ~$72 000). Ett skrivbord till kostar **$500**.
-   - Ovanför våning 1 står **gatsidan öppen** (ditt beslut 2026-10-19); alla
-     andra kanter mot något du inte äger får vägg.
+   - ~~Ovanför våning 1 står gatsidan öppen~~ (ditt svar 2026-10-20: väggar
+     mot gatan på alla våningar; GDD A.1).
    - Bakdörren till Resident Wing försvinner (ingen går igenom den).
    - Tutorialens gratis område för Coffin Suite blir gratis rutor (en 3 × 4
      bit bredvid startkvadraten: till höger om sviten får plats där, annars
