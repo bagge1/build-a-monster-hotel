@@ -734,7 +734,7 @@ local function openMenu(id: number)
 		local l = Ui.label(
 			menuBody,
 			"Tier",
-			`Decor points {rec.points or 0} · {nextText}. Place decor inside it to raise its tier (+50 % pay a tier).`,
+			`Decor points {rec.points or 0} · {nextText}. Place decor inside it to raise its tier (+50 % pay per tier).`,
 			UDim2.new(1, 0, 0, 44),
 			17,
 			Ui.Colour.Muted
