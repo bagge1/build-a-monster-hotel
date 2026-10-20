@@ -89,6 +89,25 @@ Unattended night session (`/loop`, self-paced) while August sleeps. His brief, i
   with the next thing that does not need him; it never becomes a question
   that ends the turn without a `ScheduleWakeup`. (2026-10-19: the session
   stopped at 04:31 with work left in the GDD and sat idle for 10 hours.)
+- **Every turn of the night ends with a `ScheduleWakeup` call**, the last
+  tool call of the turn, with no closing text after it that reads as a
+  finish. A turn that would end any other way (a step done, a fork, a
+  block, a summary) schedules a wakeup instead, at most 60–300 s when there
+  is work left. Only weekly ≥ 90 % (or his explicit stop) ends the loop, with
+  `ScheduleWakeup` `stop: true` after the morning section.
+- **A watchdog, set at the night's first turn** (his demand, 2026-10-20:
+  "make SURE the loop doesnt stop itself"): a recurring `CronCreate` at an
+  off-minute every hour (e.g. `17 * * * *`) whose prompt says: "Night
+  watchdog: if the night is mid-sleep, end this turn by calling
+  `ScheduleWakeup` for the same target time; otherwise read the night's log
+  and continue the brief; never end the turn without `ScheduleWakeup`." A
+  cron fires only while the session is idle, so it revives a loop that ended
+  itself or was cut off by a full 5-hour window. Check it with `CronList` at
+  each wake-up; delete it (`CronDelete`) only when the night ends.
+- **Never let the 5-hour window reach 100 %.** Extra usage is off, so a full
+  window kills the turn mid-edit. Read usage before every step and before
+  every background agent, and inside a long step every ~20 minutes; from
+  85 % start nothing new (no agent, no build), from 90 % commit and sleep.
 - **No answer will come.** Take the reversible option, write the assumption in
   the log, keep going. A fork that is his (a design choice, a look, a value)
   goes into `WAITING.md` with the options and a recommendation, and the step
