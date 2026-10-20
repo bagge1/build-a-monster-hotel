@@ -86,6 +86,15 @@ Connect: knappen under fliken Plugins i Studio. -->
    `archive/screens/2026-10-19_lobby_shell_desk.jpg` (lobbyn uppifrån med
    disken, bänken, krukorna och mattorna).
 
+10. **Importera 15 modeller: den nya dekoren** (2026-10-20, ditt ja till
+   bilderna): de tio nya dekorbitarna för Haunted Manor (Grandfather Clock,
+   Wall Clock, Black Roses, Carnivorous Plant, Ghost Fern, Armchair, Velvet
+   Sofa, Bookshelf, Side Table, Grand Piano) och fem som redan finns i spelet
+   men flimrade på några ställen (Sand Tray, Cauldron, Moon Window,
+   Chandelier och Frostfangs Cocoa Mug; samma utseende). Importera **alla
+   filer i `blender/_import/`** till **Workspace** i en dialog och skriv
+   *importerat*. Bilderna: `blender/hotel/haunted_manor/review/decor/`.
+
 ## §1 Att titta på eller spela
 
 <!-- Det bara en människa kan bedöma: hur det känns, hur det ser ut.
@@ -415,10 +424,10 @@ Med Claudes skärmdump där det finns en. -->
    lobby och korridor, och tier från inredning. Fem saker är dina:
    - ~~**De nya dekorbitarna för Haunted Manor**~~ (dina val 2026-10-20: golvuret
      A, flygeln A, Armchair kvar på 1 × 1, taggar och priser som GDD A.2
-     föreslog; de förs in i GDD §18 när du sagt ja till bilderna). **Modellerade**
+     föreslog; ditt ja till bilderna samma dag, båda i GDD §18). **Modellerade**
      (`blender/hotel/haunted_manor/README.md`, "2026-10-20"), granskade blint i
-     fyra rundor. **Titta på bilderna** i `blender/hotel/haunted_manor/review/decor/`
-     och säg ja eller vad som ska ändras. Tre små saker är dina:
+     fyra rundor, köade för import (§0 punkt 10).
+     Små saker som är dina:
      - **Sittplatserna** är 2 studs breda per person (avatarens kropp); med armarna
        är avataren 4, så armarna går genom armstöden och två på soffan överlappar
        med armarna. **Alternativet:** 4 per person (soffan rymmer då en, Armchair

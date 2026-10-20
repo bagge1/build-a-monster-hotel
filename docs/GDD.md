@@ -721,6 +721,7 @@ After the soft launch we apply for Kids/Select eligibility:
 | 2026-10-20 | **Windows are pieces:** walls are plain; one window per wall section, bought and placed from four types (Twin sash, Arched, Round, Wide), two on the front at the start, moved out when a tile is bought, restyled by a facade pack (A.1) | His rulings and picks ("CUSTOMIZATION IS KEY!!") |
 | 2026-10-20 | Every floor is walled toward the street, not only floor 1 (A.1) | His ruling from the game; replaces the open street side above floor 1 (2026-10-19) |
 | 2026-10-20 | Tiles are bought on each floor apart, dearer on higher floors; a new floor has no tiles and no walls until bought (A.1) | His ruling; replaces Claude's reading that a tile counts on every floor |
+| 2026-10-20 | **Haunted Manor's ten new decor** (§5.4, A.2): the Grandfather Clock a longcase (silhouette A), the Grand Piano a grand (A), the Armchair kept at 1 × 1, the tags and prices A.2 proposed; the ten models as rendered (`blender/hotel/haunted_manor/README.md`, 2026-10-20) | His picks from the grey silhouettes, then his yes to the renders after four blind reviews |
 
 ---
 
@@ -899,8 +900,8 @@ Every number below is a **placeholder** (tagged `PLACEHOLDER` in
 
   The lobby's old furnishings and the rugs, in every kit (§5.4): Bench (3×1
   squares, $50), Urn Planter (garden, $50), Rug Runner (4×2, $40), Rug Corner
-  (2×2, $20), Square Rug (4×4, $60). What he named for Haunted Manor (grey
-  silhouettes for his pick; tags and prices PLACEHOLDER): Grandfather Clock
+  (2×2, $20), Square Rug (4×4, $60). What he named for Haunted Manor (his picks
+  and his yes to the models, 2026-10-20, §18): Grandfather Clock
   (antique furniture, $400), Wall Clock (antique furniture, $150), Black Roses
   (garden, darkness, $120), Carnivorous Plant (garden, $90), Ghost Fern
   (garden, damp, $70), Armchair (antique furniture, $200), Velvet Sofa (quiet,

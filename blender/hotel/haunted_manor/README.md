@@ -682,3 +682,8 @@ colliding, the `Pieces.luau` agreement, every seat, no coplanar faces, the
 round trip. Both kits rebuilt in full with the new checks (49/49 and 25/25).
 **Not validated:** anything in Studio. Not imported, not placed, not seen lit.
 
+
+**His yes to the ten, 2026-10-20** (GDD §18). **Staged** in `blender/_import/`
+with the four refitted pieces (`Decor_SandTray`, `Decor_Cauldron`,
+`Decor_MoonWindow`, `Decor_Chandelier`) and Frostfang's `Decor_CocoaMug`:
+15 FBX, WAITING §0 punkt 10. Not yet imported.

@@ -670,7 +670,7 @@ local decor: { Decor } = {
 		colour = Color3.fromRGB(150, 50, 60),
 	},
 	-- Haunted Manor: what he named (§5.4, 2026-10-19: clocks, flowers, plants, furniture, a
-	-- piano). Grey silhouettes for his pick; tags and prices PLACEHOLDER (WAITING §2).
+	-- piano). His picks, tags and prices, and his yes to the models: 2026-10-20 (GDD §18).
 	{
 		id = "GrandfatherClock",
 		name = "Grandfather Clock",
