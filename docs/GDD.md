@@ -717,6 +717,7 @@ After the soft launch we apply for Kids/Select eligibility:
 | 2026-10-20 | Notifications: "Your residents' till is full" (when the offline cap runs out) and "Full Moon tonight" (Saturday, to players seen in the last 7 days), sent by the game's servers through Open Cloud (§9, A.9) | His picks of four; "ready to move in" cannot happen offline |
 | 2026-10-20 | Facades: the Manor's and the Lodge's own facade pieces are modelled first, then the Gothic, Neon, Candy and Pirate packs and the Slime facade as styles that replace them on any location; the packs cost **149 each** (§10.2, A.10; Claude's one-line looks, his "yes, as drafts") | His picks: kits first, then packs; one price, no style worth more than another |
 | 2026-10-20 | **Tiles, not areas:** the plot is bought a cell at a time, cheaply; a hotel starts as a 4 × 4 square centred on the entrance, the reception across from the arch and one room beside it; no lobby strip and no fixed spaces; one or more desks anywhere; the facade only round what is owned (§5.4, A.1) | His rulings from looking at the game ("Customizability is KEY!"), his picks of a 1-cell tile and the 4 × 4 start; it replaces the six areas, the 2-row lobby and its gallery, and "room for 2–4 Standard Rooms" at the start |
+| 2026-10-20 | **Flip:** F mirrors a room or amenity left to right, moving its door (A.1) | His ask |
 
 ---
 
@@ -807,6 +808,14 @@ Every number below is a **placeholder** (tagged `PLACEHOLDER` in
   open (his ruling of 2026-10-19); edges facing a cell not owned are walled.
   The pieces are `MODELS.md`, "Facade". The Wing doorway of the first
   draft is gone: residents never walk through it.
+- **Flip** (his ask, 2026-10-20: "you should be able to flip with F that
+  mirrors the room (so you can change the door placement)"): in build mode,
+  **F** (gamepad L1, a **⇋ Flip** button beside Rotate on touch) mirrors the
+  piece being placed, or a placed one picked to move, left to right: a 2-wide
+  room's door moves to its other front cell, and the furniture inside
+  mirrors with it. Rooms and amenities; a 3-wide piece's door stays in the
+  middle and only its inside mirrors. Saved per piece as `m`; doors, paths
+  and the furnishing grid follow the mirrored piece. Free, like turning it.
 - **Hallways are the free owned cells**: not under a piece, not a stairwell, not furnished down the middle.
   A room's door opens onto the cell in front of its front edge. A placement
   is refused if any piece's doors (a room's door cell, the desk's queue

@@ -185,6 +185,16 @@ pieces round the door, and `Wall_Lintel` over the door from 7 to 17.
 
 The door opening is at least **4 studs wide and 7 tall** (a 5-stud person).
 
+**Every room and amenity also has its mirror image, `<PieceId>_Mirror`** (his
+ask, 2026-10-20: F flips a room to move its door, GDD A.1). Roblox has no
+negative scale, so a mirror is a second mesh (`DEVNOTES.md`, "The importer
+bakes each part's rotation"): the kit's `finish()` writes it from the same
+geometry mirrored across x = 0 (faces turned the right way out), with every
+attachment's x negated and its LookVector mirrored (`Door` at x = +6 for a
+2-wide piece, `Hinge` on the other jamb), the same part names, and the same
+checks. Nobody models it by hand. The code places `<PieceId>_Mirror` for a
+piece saved with `m`; until it exists, F does nothing for that piece.
+
 ### Lobby (`Lobby`): the shell
 
 **Retiring (his ruling, 2026-10-20):** there is no lobby strip any more; the
