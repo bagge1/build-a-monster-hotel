@@ -119,5 +119,7 @@ friend, rebirth, runcash, receipt, pass, hunters, fill, data ...), and
 in the background); mouse coordinates are viewport pixels (3434 wide), captures
 1920 wide. `tools/sync_sizes.py` for the sync check.
 
+**Haunted Manor's ten new decor (2026-10-20)**: his picks and yes in GDD §18; modelled to MODELS.md "Decor"'s new rules (Pieces agreement, seats, no coplanar faces, enforced by `hotel_kit`), imported, saved and seen placed in a playtest (TESTRUN 23:19). His small calls WAITING §2.24; his decor/customization picks from `docs/DECOR_IDEAS.md` WAITING §2.33 (Frostfang has no decor for *quiet* or *silence*).
+
 **His rulings for the work in hand:** none yet; every night draft is in GDD
 Appendix A and WAITING §2.
