@@ -687,3 +687,23 @@ round trip. Both kits rebuilt in full with the new checks (49/49 and 25/25).
 with the four refitted pieces (`Decor_SandTray`, `Decor_Cauldron`,
 `Decor_MoonWindow`, `Decor_Chandelier`) and Frostfang's `Decor_CocoaMug`:
 15 FBX, WAITING §0 punkt 10. Not yet imported.
+
+### Imported and in the game (2026-10-20)
+
+August imported the 15. Fixed up from each set's `import_fixup.luau` (its
+`SET` cut to the 15 and pasted; every part where the manifest says, none
+stopped), read back in a separate call: Box on every mesh, nothing colliding,
+the glows Neon with a light on each `_1` (Cauldron, Moon Window, Chandelier,
+Side Table), Root hidden, the pivot on the floor origin. Saved with
+`tools/save_imports.py` to `assets/HotelKit/HauntedManor/` (14) and
+`assets/HotelKit/FrostfangLodge/Decor_CocoaMug.rbxm`; the synced copies match
+the imports part for part, no empty MeshPart; `PrimaryPart` dropped by the
+live sync on 13 (the files have it; `HotelKit` sets it on every clone).
+Workspace copies, `_ClaudeSerialize` and `blender/_import/` cleared.
+
+**Seen in a playtest** (`TESTRUN.md`, 2026-10-20 23:19): all ten placed by
+remote, on the floor, nothing colliding, the wall pieces on a room's wall;
+pictures `archive/screens/2026-10-20_decor_ingame_*.jpg`. Not looked at by a
+blind reviewer in the game; not lit at night against the other kits' pieces
+beyond those pictures.
+
