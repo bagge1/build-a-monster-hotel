@@ -5,7 +5,7 @@ metadata:
   type: project
 ---
 
-**Next (2026-10-20):** his rulings replace the areas and the lobby strip with 1-cell tiles, a 4×4 start, desks anywhere and walls only round what is owned (GDD §5.4, A.1; MODELS.md "Facade"). Not built yet: two sessions proposed, the tiles code and the facade models (kits and five styles).
+**Tiles, desks and the facade round what is owned (2026-10-20, built and played in Studio, TESTRUN "Tiles, desks and the facade"):** his rulings of 2026-10-20 (GDD §5.4, A.1). The profile keeps `tiles` (Grid.tileKey as strings) and `tilesBought` (schema 3 rebuilt every hotel from the start square); `BuyTile` x, z; `Grid.facade` is the outline (walls, the arch, corner posts) that `HotelKit.facade` draws as a blockout or clones `Facade_Wall`/`Facade_Entrance`/`Facade_Corner` from the kit or a worn facade cosmetic's Folder; slabs over owned tiles only; plates over the rest of floor 1. No lobby model: `HotelPoints` (shared) finds `Entrance` on the facade, `Spawn` at the forecourt's `PathFoot`, desk points on the lowest-id desk. Several desks: each guest queues at the shortest line (`GuestService` `g.desk`), the desk's prompt checks in its own line, a sold desk's line moves. The goal card's free block: `BuildService.tutorialTiles`. PLACEHOLDERs and findings in WAITING §2.30 (only one room fits in the start square, so the tutorial's second room needs ~4 tiles). Next: the facade models (kits, then the five styles), another session's work.
 
 **State (2026-10-19, night):** M0–M6 built in code and played in
 Studio, plus §7 social, §8.2 events (now with Winter), gift passes and worn
@@ -55,13 +55,13 @@ keyboard and mouse played, a real controller is his, WAITING §1.11). The
 tutorial's guest no longer gives up at the desk. The new player's tutorial
 is played Build → Done. **Pacing, his go 2026-10-20** (WAITING §2.27–2.28,
 GDD §18): bus 3–8 per player, stays doubled, Legendary friendship 5, and the
-goal card gives a free front area for the Coffin Suite
-(`BuildService.tutorialArea`). Modelled: rebirth 1:50 / 2:41 h, still over
+goal card gives free tiles for the Coffin Suite
+(`BuildService.tutorialTiles`). Modelled: rebirth 1:50 / 2:41 h, still over
 60–90 min (`archive/BALANCE-2026-10-20.md`); **not run in Studio**. A full
 hotel's walks up can outlast a request (§2.29). A full hotel measured 1,642 parts and
 110 point lights (budget ~3,000 parts); the forest's blockouts are 3,385
-parts until the tree models arrive. PlayerData schema 2 rebuilds every hotel
-from the start area. Pure specs run outside Studio: `lune run
+parts until the tree models arrive. PlayerData schema 3 rebuilds every hotel
+from the start square. Pure specs run outside Studio: `lune run
 tools/run_specs.luau . <spec ...>`, every spec but `data` (it needs the
 engine; with no names the run stops on it). **Release:** checklist in
 WAITING §4; August's session takes the store ids (§3.2).

@@ -2,8 +2,8 @@
 --[[
 	Every hotel's residents, as every client sees them (GDD §4.6, §7 "Visit
 	and like: see its residents"): the Wing's residents wander its garden;
-	staff stand at their posts (`Staff.post`, found by the lobby's
-	attachments, MODELS.md "Lobby"), in the order the server's `Slot` gives.
+	staff stand at their posts (`Staff.post`, found by the hotel's shared
+	points, `HotelPoints`), in the order the server's `Slot` gives.
 
 	STAFF ARE SEEN WORKING (§4.6, §5.4, Appendix A.5): a resident on an
 	errand carries `Path`, `T0` and `Speed`, and this walks it along them by
@@ -18,6 +18,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 
 local Constants = require(ReplicatedStorage.Shared.Constants)
+local HotelPoints = require(ReplicatedStorage.Shared.HotelPoints)
 local Staff = require(ReplicatedStorage.Shared.Staff)
 local MonsterKit = require(script.Parent.MonsterKit)
 local Hud = require(script.Parent.Hud)
@@ -49,13 +50,6 @@ local function plotModel(index: number): Model?
 	local plots = workspace:FindFirstChild("Plots")
 	local m = plots and plots:FindFirstChild(`Plot_{index}`)
 	return if m and m:IsA("Model") then m else nil
-end
-
-local function lobbyPoint(plot: Model, name: string): CFrame?
-	local lobby = plot:FindFirstChild("Lobby")
-	local root = lobby and lobby:FindFirstChild("Root")
-	local a = root and root:FindFirstChild(name)
-	return if a and a:IsA("Attachment") then a.WorldCFrame else nil
 end
 
 local function wingPoint(plot: Model): Vector3?
@@ -208,7 +202,7 @@ local function frame(dt: number)
 			else
 				local goal = if role ~= ""
 					then Staff.post(role, slot, function(name)
-						return lobbyPoint(plot, name)
+						return HotelPoints.find(plot, name)
 					end)
 					else nil
 				if goal then

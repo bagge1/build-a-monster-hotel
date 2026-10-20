@@ -21,6 +21,7 @@ local ServerStorage = game:GetService("ServerStorage")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Constants = require(ReplicatedStorage.Shared.Constants)
+local Grid = require(ReplicatedStorage.Shared.Grid)
 local Pieces = require(ReplicatedStorage.Shared.Pieces)
 local Locations = require(ReplicatedStorage.Shared.Locations)
 local Cosmetics = require(ReplicatedStorage.Shared.Cosmetics)
@@ -336,61 +337,13 @@ function HotelKit.decor(id: string, location: number): Model
 	return model
 end
 
---[[ The lobby (MODELS.md, "Lobby: the shell"): the front two rows of floor
-	1, 144 × 24 studs, origin at the middle of its front edge, the street
-	toward −Z. A shell (his ruling, 2026-10-19, GDD §5.4): its floor, the
-	front wall up to the slab round the entrance arch, and lamps. The desk,
-	the benches, the planters and the carpet are pieces the player places. ]]
-function HotelKit.lobby(location: number): Model
-	local found = template(location, "Lobby")
-	if found then
-		return found
-	end
-	local loc = Locations.get(location)
-	local L, Dp = G.Cells * CELL, G.LobbyRows * CELL
-	local model, root = shell("Lobby", Vector3.new(L, 0.2, Dp), Vector3.new(0, 0.1, Dp / 2))
-	part(
-		model,
-		"Floor",
-		Vector3.new(L, 0.1, Dp - 0.8),
-		Vector3.new(0, 0, (Dp + 0.8) / 2),
-		{ Color = darker(loc.facade, 0.8) }
-	)
-	-- The front wall up to the slab, two pieces apart round the arch (each exactly the kit's box).
-	local wallColour = darker(loc.facade, 0.85)
-	local half, arch, top, t = L / 2, 5.5, WALL, 0.8
-	for _, side in { -1, 1 } do
-		part(
-			model,
-			if side < 0 then "Wall_FrontLeft" else "Wall_FrontRight",
-			Vector3.new(half - arch, top, t),
-			Vector3.new(side * (half + arch) / 2, top / 2, t / 2),
-			{ Color = wallColour }
-		)
-	end
-	part(model, "ArchLeft", Vector3.new(1, 9, 1), Vector3.new(-5, 4.5, 0.5), { Color = loc.trim })
-	part(model, "ArchRight", Vector3.new(1, 9, 1), Vector3.new(5, 4.5, 0.5), { Color = loc.trim })
-	-- Over the arch (a door's height) the wall goes on up to the slab.
-	part(
-		model,
-		"ArchTop",
-		Vector3.new(11, top - 9, 1),
-		Vector3.new(0, (9 + top) / 2, 0.5),
-		{ Color = loc.trim }
-	)
-	lamp(model, 1, Vector3.new(0, 8.5, 1.5), Color3.fromRGB(255, 190, 120))
-	attach(root, "Entrance", Vector3.new(0, 0, 0), Vector3.new(0, 0, -1))
-	attach(root, "Spawn", Vector3.new(8, 0, 18), Vector3.new(0, 0, -1))
-	return model
-end
-
---[[ A plate over an area of the plot not yet bought (§5.4), w × d studs,
-	its top a hair over the floor: the hotel's but closed. Centred at its
-	origin. ]]
-function HotelKit.areaPlate(location: number, w: number, d: number): Part
+--[[ A plate over the plot's cells not owned (§5.4, A.1: "cells not owned
+	are not walked on and carry a dark plate on floor 1"), w × d studs, its
+	top a hair over the ground. Centred at its origin. ]]
+function HotelKit.tilePlate(location: number, w: number, d: number): Part
 	local loc = Locations.get(location)
 	local p = Instance.new("Part")
-	p.Name = "AreaPlate"
+	p.Name = "TilePlate"
 	p.Anchored = true
 	p.CanCollide = false
 	p.CanQuery = false
@@ -509,11 +462,18 @@ end
 
 export type Hole = { x0: number, z0: number, x1: number, z1: number }
 
---[[ A floor above the first: a slab over the whole grid but its stairwells
-	(`holes`, plot-local studs: each stair's footprint less the 1-stud lip at
-	its front, MODELS.md "Stairs"), railings round its edge, and corner posts.
+--[[ A floor above the first: a slab over the owned tiles (`tiles`, by
+	Grid.tileKey) but its stairwells (`holes`, plot-local studs: each stair's
+	footprint less the 1-stud lip at its front, MODELS.md "Stairs"), and a
+	railing along its street edge, which the facade leaves open above floor 1
+	(his ruling, 2026-10-19). Every other edge of it has a facade wall.
 	Plot-local, as a Folder. ]]
-function HotelKit.slab(location: number, floor: number, holes: { Hole }): Folder
+function HotelKit.slab(
+	location: number,
+	floor: number,
+	holes: { Hole },
+	tiles: { [number]: boolean }
+): Folder
 	local loc = Locations.get(location)
 	local folder = Instance.new("Folder")
 	folder.Name = `Slab_{floor}`
@@ -521,8 +481,12 @@ function HotelKit.slab(location: number, floor: number, holes: { Hole }): Folder
 	local y = (floor - 1) * FLOOR
 	local th = G.SlabThickness
 	local colour = darker(loc.facade, 0.9)
-	-- The slab as strips: cut the plot at every hole's edges and lay each row's runs.
-	local xs, zs = { 0, P }, { 0, P }
+	-- The slab as strips: cut the plot at every cell edge and every hole's edges, and lay each row's runs.
+	local xs, zs = {}, {}
+	for i = 0, G.Cells do
+		table.insert(xs, i * CELL)
+		table.insert(zs, i * CELL)
+	end
 	for _, h in holes do
 		table.insert(xs, h.x0)
 		table.insert(xs, h.x1)
@@ -531,13 +495,25 @@ function HotelKit.slab(location: number, floor: number, holes: { Hole }): Folder
 	end
 	table.sort(xs)
 	table.sort(zs)
-	local function inHole(x: number, z: number): boolean
+	local function solid(x: number, z: number): boolean
+		if not tiles[Grid.tileKey(x // CELL, z // CELL)] then
+			return false
+		end
 		for _, h in holes do
 			if x > h.x0 and x < h.x1 and z > h.z0 and z < h.z1 then
-				return true
+				return false
 			end
 		end
-		return false
+		return true
+	end
+	local function lay(a: number, b: number, z0: number, z1: number)
+		part(
+			folder,
+			"Slab",
+			Vector3.new(b - a, th, z1 - z0),
+			Vector3.new((a + b) / 2, y + th / 2, (z0 + z1) / 2),
+			{ Color = colour }
+		)
 	end
 	for j = 1, #zs - 1 do
 		local z0, z1 = zs[j], zs[j + 1]
@@ -546,213 +522,209 @@ function HotelKit.slab(location: number, floor: number, holes: { Hole }): Folder
 			for i = 1, #xs - 1 do
 				local x0, x1 = xs[i], xs[i + 1]
 				if x1 - x0 > 0.01 then
-					local solid = not inHole((x0 + x1) / 2, (z0 + z1) / 2)
-					if solid and runStart == nil then
+					local here = solid((x0 + x1) / 2, (z0 + z1) / 2)
+					if here and runStart == nil then
 						runStart = x0
-					elseif not solid and runStart ~= nil then
-						local a = runStart :: number
-						part(
-							folder,
-							"Slab",
-							Vector3.new(x0 - a, th, z1 - z0),
-							Vector3.new((a + x0) / 2, y + th / 2, (z0 + z1) / 2),
-							{ Color = colour }
-						)
+					elseif not here and runStart ~= nil then
+						lay(runStart :: number, x0, z0, z1)
 						runStart = nil
 					end
 				end
 			end
 			if runStart ~= nil then
-				local a = runStart :: number
-				part(
-					folder,
-					"Slab",
-					Vector3.new(P - a, th, z1 - z0),
-					Vector3.new((a + P) / 2, y + th / 2, (z0 + z1) / 2),
-					{ Color = colour }
-				)
+				lay(runStart :: number, P, z0, z1)
 			end
 		end
 	end
-	-- Railings round the edge, 3.5 studs (against the 5-stud person). Where a
-	-- stairwell meets the edge the rail stops: the stair's own walls rise
-	-- there, and a rail in the same plane flickered against them (his report,
-	-- 2026-10-19).
+	-- The railing along the open street edge, 3.5 studs (against the 5-stud
+	-- person), over the owned front cells. Where a stairwell meets the edge
+	-- it stops: the stair's own walls rise there, and a rail in the same plane
+	-- flickered against them (his report, 2026-10-19).
 	local rh, rt = 3.5, 0.4
 	local top = y + th
-	local function rail(name: string, alongX: boolean, fixed: number, gaps: { { number } })
-		table.sort(gaps, function(a, b)
-			return a[1] < b[1]
-		end)
-		local at = 0
-		local runs = {}
-		for _, g in gaps do
-			table.insert(runs, { at, g[1] })
-			at = math.max(at, g[2])
+	local gaps = {}
+	for _, h in holes do
+		if math.floor(h.z0 / CELL) <= 0 then
+			table.insert(gaps, { math.floor(h.x0 / CELL) * CELL, math.ceil(h.x1 / CELL) * CELL })
 		end
-		table.insert(runs, { at, P })
-		for _, r in runs do
-			local a0, a1 = r[1], r[2]
-			if a1 - a0 > 0.05 then
-				local mid = (a0 + a1) / 2
-				part(
-					folder,
-					name,
-					if alongX then Vector3.new(a1 - a0, rh, rt) else Vector3.new(rt, rh, a1 - a0),
-					if alongX
-						then Vector3.new(mid, top + rh / 2, fixed)
-						else Vector3.new(fixed, top + rh / 2, mid),
-					{ Color = loc.trim }
-				)
+	end
+	local function railed(x: number): boolean
+		if not tiles[Grid.tileKey(x // CELL, 0)] then
+			return false
+		end
+		for _, g in gaps do
+			if x > g[1] and x < g[2] then
+				return false
 			end
 		end
+		return true
 	end
-	local front, back, left, right = {}, {}, {}, {}
-	for _, h in holes do
-		-- A hole's full cells (its lip included) decide whether it meets an edge.
-		local cx0, cz0 = math.floor(h.x0 / CELL) * CELL, math.floor(h.z0 / CELL) * CELL
-		local cx1, cz1 = math.ceil(h.x1 / CELL) * CELL, math.ceil(h.z1 / CELL) * CELL
-		if cz0 <= 0 then
-			table.insert(front, { cx0, cx1 })
+	local runStart: number? = nil
+	for i = 0, G.Cells do
+		local x = i * CELL
+		local here = i < G.Cells and railed(x + CELL / 2)
+		if here and runStart == nil then
+			runStart = x
+		elseif not here and runStart ~= nil then
+			local a = runStart :: number
+			part(
+				folder,
+				"Rail_Front",
+				Vector3.new(x - a, rh, rt),
+				Vector3.new((a + x) / 2, top + rh / 2, rt / 2),
+				{ Color = loc.trim }
+			)
+			runStart = nil
 		end
-		if cz1 >= P then
-			table.insert(back, { cx0, cx1 })
-		end
-		if cx0 <= 0 then
-			table.insert(left, { cz0, cz1 })
-		end
-		if cx1 >= P then
-			table.insert(right, { cz0, cz1 })
-		end
-	end
-	rail("Rail_Front", true, rt / 2, front)
-	rail("Rail_Back", true, P - rt / 2, back)
-	rail("Rail_Left", false, rt / 2, left)
-	rail("Rail_Right", false, P - rt / 2, right)
-	for _, c in
-		{
-			Vector2.new(0.5, 0.5),
-			Vector2.new(P - 0.5, 0.5),
-			Vector2.new(0.5, P - 0.5),
-			Vector2.new(P - 0.5, P - 0.5),
-		}
-	do
-		part(
-			folder,
-			"Post",
-			Vector3.new(1, FLOOR - th, 1),
-			Vector3.new(c.X, y - (FLOOR - th) / 2, c.Y),
-			{ Color = darker(loc.facade, 0.6) }
-		)
 	end
 	return folder
 end
 
---[[ The facade (MODELS.md, "Facade and sign"; GDD §5.1): walls on the left,
-	right and back edges of every floor, just outside the grid so they never
-	take a cell or block a door, with window openings, and on floor 1 a
-	doorway at the back to the Resident Wing, and solid along the lobby. The
-	street side is the lobby's own front wall on floor 1 and stays open above. Plot-local, as a Folder (a blockout until the kit has
-	`Facade_Wall` pieces). A facade cosmetic (MODELS.md, "Cosmetics") gives
-	its own colours as `scheme`. ]]
+--[[ The facade's pieces (MODELS.md, "Facade"): each is one cell edge (two
+	for the entrance), origin at the middle of the edge on the walking
+	surface, the owned cell toward +Z and the wall just outside it (z −0.02 to
+	−0.62), up to the slab above. Blockouts until the kit's or a cosmetic's
+	pieces exist; `scheme` is a facade cosmetic's colours. ]]
+local function blockoutFacade(
+	kind: string,
+	location: number,
+	scheme: { facade: Color3, trim: Color3 }?
+): Model
+	local loc = Locations.get(location)
+	local wall = darker(if scheme then scheme.facade else loc.facade, 0.85)
+	local trim = if scheme then scheme.trim else loc.trim
+	local t, zc = 0.6, -0.32
+	if kind == "Corner" then
+		local model, _ =
+			shell("Facade_Corner", Vector3.new(0.64, 0.2, 0.64), Vector3.new(-0.32, 0.1, -0.32))
+		part(
+			model,
+			"Post",
+			Vector3.new(0.64, WALL, 0.64),
+			Vector3.new(-0.32, WALL / 2, -0.32),
+			{ Color = darker(wall, 0.8) }
+		)
+		return model
+	elseif kind == "Entrance" then
+		local model, root =
+			shell("Facade_Entrance", Vector3.new(24, 0.2, t), Vector3.new(0, 0.1, zc))
+		-- Solid to either side of the arch; over it (a door's height) the wall goes on up to the slab.
+		local arch, top = 5.5, 9
+		for _, side in { -1, 1 } do
+			part(
+				model,
+				if side < 0 then "Wall_Left" else "Wall_Right",
+				Vector3.new(12 - arch, WALL, t),
+				Vector3.new(side * (12 + arch) / 2, WALL / 2, zc),
+				{ Color = wall }
+			)
+		end
+		part(
+			model,
+			"ArchTop",
+			Vector3.new(2 * arch, WALL - top, t),
+			Vector3.new(0, (top + WALL) / 2, zc),
+			{ Color = trim }
+		)
+		-- The arch's jambs: the opening between them is 9 wide.
+		part(
+			model,
+			"ArchLeft",
+			Vector3.new(1, top, 0.8),
+			Vector3.new(-5, top / 2, -0.42),
+			{ Color = trim }
+		)
+		part(
+			model,
+			"ArchRight",
+			Vector3.new(1, top, 0.8),
+			Vector3.new(5, top / 2, -0.42),
+			{ Color = trim }
+		)
+		lamp(model, 1, Vector3.new(0, top + 1.5, -1.4), Color3.fromRGB(255, 190, 120))
+		attach(root, "Entrance", Vector3.new(0, 0, 0), Vector3.new(0, 0, -1))
+		return model
+	end
+	local model, _ = shell("Facade_Wall", Vector3.new(12, 0.2, t), Vector3.new(0, 0.1, zc))
+	-- Two windows 4 wide and 9 tall (y 3..12) over a person's sill, centred at x ±3.
+	local low, high = 3, 12
+	part(model, "Wall_Low", Vector3.new(12, low, t), Vector3.new(0, low / 2, zc), { Color = wall })
+	part(
+		model,
+		"Wall_High",
+		Vector3.new(12, WALL - high, t),
+		Vector3.new(0, (high + WALL) / 2, zc),
+		{ Color = wall }
+	)
+	for i, span in { { -6, -5 }, { -1, 1 }, { 5, 6 } } do
+		part(
+			model,
+			`Wall_Post_{i}`,
+			Vector3.new(span[2] - span[1], high - low, t),
+			Vector3.new((span[1] + span[2]) / 2, (low + high) / 2, zc),
+			{ Color = wall }
+		)
+	end
+	-- The sill stands 0.06 proud of both faces: flush with the wall it
+	-- flickered against it (his report, 2026-10-19).
+	part(model, "Sill", Vector3.new(12, 0.4, t + 0.12), Vector3.new(0, low, zc), { Color = trim })
+	return model
+end
+
+-- A worn facade cosmetic's own piece (MODELS.md, "Cosmetics": a Folder of facade pieces), or nil.
+local function cosmeticFacade(id: string, name: string): Model?
+	local kit = ServerStorage:FindFirstChild("Cosmetics")
+	local folder = kit and kit:FindFirstChild(id)
+	local found = if folder and folder:IsA("Folder") then folder:FindFirstChild(name) else nil
+	return if found and found:IsA("Model") then rooted(found) else nil
+end
+
+--[[ The facade (MODELS.md, "Facade"; his ruling, 2026-10-20: "It should only
+	have walls where you have unlocked"): a piece on every edge and corner of
+	the owned tiles' outline on every floor (`Grid.facade`), the entrance arch
+	on floor 1's front edge, the street side open above floor 1. Each piece
+	is a worn facade cosmetic's (`cosmetic`), else the kit's
+	(`ServerStorage.HotelKit.<Location>`), else a blockout, in the
+	cosmetic's colours when it has no pieces of its own. Plot-local, as a
+	Folder. ]]
 function HotelKit.facade(
 	location: number,
 	floors: number,
-	scheme: { facade: Color3, trim: Color3 }?
+	tiles: { [number]: boolean },
+	cosmetic: Cosmetics.Cosmetic?
 ): Folder
-	local loc = Locations.get(location)
 	local folder = Instance.new("Folder")
 	folder.Name = "Facade"
-	local P = G.Cells * CELL
-	local t = 0.6
-	local wall = darker(if scheme then scheme.facade else loc.facade, 0.85)
-	local trim = if scheme then scheme.trim else loc.trim
-	-- One side: a run of `length` studs along `axis`, outside the grid at `offset`.
-	local function side(
-		name: string,
-		floor: number,
-		axis: "X" | "Z",
-		fixed: number,
-		gapFrom: number?,
-		gapTo: number?
-	)
-		local y0 = (floor - 1) * FLOOR + G.SlabThickness
-		local function at(
-			along: number,
-			height: number,
-			centreY: number,
-			length: number,
-			thick: number
-		): (Vector3, Vector3)
-			if axis == "X" then
-				return Vector3.new(length, height, thick), Vector3.new(along, centreY, fixed)
-			end
-			return Vector3.new(thick, height, length), Vector3.new(fixed, centreY, along)
+	local scheme = if cosmetic
+		then { facade = cosmetic.colour, trim = cosmetic.trim or cosmetic.colour }
+		else nil
+	local sources: { [string]: Model } = {}
+	local function source(kind: string): Model
+		local found = sources[kind]
+		if found then
+			return found
 		end
-		local function piece(
-			partName: string,
-			a0: number,
-			a1: number,
-			h0: number,
-			h1: number,
-			colour: Color3,
-			thick: number?
-		)
-			if a1 - a0 < 0.05 then
-				return
-			end
-			local size, centre = at((a0 + a1) / 2, h1 - h0, y0 + (h0 + h1) / 2, a1 - a0, thick or t)
-			part(folder, partName, size, centre, { Color = colour })
-		end
-		local top = FLOOR - G.SlabThickness
-		local function band(
-			partName: string,
-			h0: number,
-			h1: number,
-			colour: Color3,
-			thick: number?
-		)
-			if gapFrom and gapTo then
-				piece(partName, 0, gapFrom, h0, h1, colour, thick)
-				piece(partName, gapTo, P, h0, h1, colour, thick)
-			else
-				piece(partName, 0, P, h0, h1, colour, thick)
+		local name = `Facade_{kind}`
+		local m = (cosmetic and cosmeticFacade(cosmetic.id, name))
+			or template(location, name)
+			or blockoutFacade(kind, location, scheme)
+		for _, d in m:GetDescendants() do
+			if d:IsA("BasePart") then
+				d.Anchored = true
 			end
 		end
-		-- Windows 4 wide and 9 tall (y 3..12) over a person's sill, two to a cell.
-		local winLow, winHigh = 3, 12
-		band(`{name}_Low`, 0, winLow, wall)
-		piece(`{name}_High`, 0, P, winHigh, top, wall)
-		-- Floor 1's sides are solid along the lobby: its end walls, the key rack's back.
-		local solid = if axis == "Z" and floor == 1 then G.LobbyRows * CELL else 0
-		if solid > 0 then
-			piece(`{name}_Lobby`, 0, solid, winLow, winHigh, wall)
-		end
-		-- Posts between the window openings, every half cell, 2 wide.
-		for c = 0, 2 * G.Cells do
-			local x = c * CELL / 2
-			local a0, a1 = math.max(solid, x - 1), math.min(P, x + 1)
-			if a1 > a0 and not (gapFrom and gapTo and a1 > gapFrom and a0 < gapTo) then
-				piece(`{name}_Post`, a0, a1, winLow, winHigh, wall)
-			end
-		end
-		-- A doorway is a door's height (9), not the window band's: a lintel over the gap.
-		if gapFrom and gapTo then
-			piece(`{name}_Lintel`, gapFrom, gapTo, 9, winHigh, wall)
-		end
-		-- The sill stands 0.06 proud of both faces: flush with the wall it
-		-- flickered against it (his report, 2026-10-19, the lobby's end wall),
-		-- and it stops at a doorway instead of barring it.
-		band(`{name}_Sill`, winLow - 0.2, winLow + 0.2, trim, t + 0.12)
+		sources[kind] = m
+		return m
 	end
-	for floor = 1, floors do
-		side(`Left_{floor}`, floor, "Z", -t / 2)
-		side(`Right_{floor}`, floor, "Z", P + t / 2)
-		if floor == 1 then
-			side(`Back_{floor}`, floor, "X", P + t / 2, P / 2 - 4, P / 2 + 4)
-		else
-			side(`Back_{floor}`, floor, "X", P + t / 2)
-		end
+	for _, f in Grid.facade(tiles, floors) do
+		local m = source(f.kind):Clone()
+		m.PrimaryPart = m:FindFirstChild("Root") :: BasePart?
+		m:PivotTo(CFrame.new(f.at) * CFrame.Angles(0, f.turn * math.pi / 2, 0))
+		m:SetAttribute("Floor", f.floor)
+		m.Parent = folder
+	end
+	for _, m in sources do
+		m:Destroy()
 	end
 	return folder
 end
@@ -802,7 +774,7 @@ function HotelKit.forecourt(location: number): Model
 	return model
 end
 
---[[ The ground: the plot's base, its lobby floor, the Resident Wing's garden
+--[[ The ground: the plot's base, the Resident Wing's garden
 	behind (Appendix A.1) and the forecourt's yard in front (§5.4). Plot-local,
 	as a Folder. ]]
 function HotelKit.base(location: number): Folder

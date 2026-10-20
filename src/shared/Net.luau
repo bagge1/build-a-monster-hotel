@@ -34,7 +34,7 @@ local DEFS: { [string]: Def } = {
 	Move = { dir = "C2S", args = { "number", "number", "number", "number", "number" }, rate = 0.2 }, -- id, floor, x, z, r
 	Sell = { dir = "C2S", args = { "number" }, rate = 0.2 },
 	BuyFloor = { dir = "C2S", rate = 0.5 },
-	BuyArea = { dir = "C2S", args = { "number" }, rate = 0.5 }, -- area index (§5.4)
+	BuyTile = { dir = "C2S", args = { "number", "number" }, rate = 0.15 }, -- a cell x, z (§5.4, A.1)
 	PlaceDecor = {
 		dir = "C2S",
 		args = { "string", "number", "number", "number", "number" },
@@ -46,7 +46,7 @@ local DEFS: { [string]: Def } = {
 		rate = 0.15,
 	}, -- id, floor, square x, z, r
 	SellDecor = { dir = "C2S", args = { "number" }, rate = 0.15 },
-	Finish = { dir = "C2S", args = { "string", "string" }, rate = 0.2 }, -- a room id, "Lobby" or "Hallway"; a finish id ("" is the model's own)
+	Finish = { dir = "C2S", args = { "string", "string" }, rate = 0.2 }, -- a room id or "Hallway"; a finish id ("" is the model's own)
 	Pitch = { dir = "C2S", args = { "number" }, rate = 0.25 }, -- guest id
 	Assign = { dir = "C2S", args = { "number", "string" }, rate = 0.25 }, -- resident id, role ("" = the Wing)
 	Release = { dir = "C2S", args = { "number" }, rate = 0.5 },

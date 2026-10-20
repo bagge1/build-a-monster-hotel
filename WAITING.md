@@ -532,8 +532,10 @@ Med Claudes skärmdump där det finns en. -->
    förgäves, och lobbyraden ska vara gästernas väg in.
 
 30. **Rutor i stället för områden** (dina beslut 2026-10-20, GDD §5.4 och
-   A.1; byggs nu). Det som är Claudes läsning eller platshållare, att säga
-   till om:
+   A.1). **Byggt och spelat i Studio 2026-10-20** (`TESTRUN.md`, "Tiles,
+   desks and the facade"): startkvadraten 4 × 4, disken mitt emot valvet,
+   rutor köpta en i taget, väggar bara runt det du äger på varje våning, flera
+   diskar. Det som är Claudes läsning eller platshållare, att säga till om:
    - En köpt ruta gäller **alla våningar** på en gång, som områdena gjorde.
    - Priset: ruta nummer n kostar **$50 × 1,03^n** (hela tomten ungefär som
      de sex områdena, ~$72 000). Ett skrivbord till kostar **$500**.
@@ -541,13 +543,29 @@ Med Claudes skärmdump där det finns en. -->
      andra kanter mot något du inte äger får vägg.
    - Bakdörren till Resident Wing försvinner (ingen går igenom den).
    - Tutorialens gratis område för Coffin Suite blir gratis rutor (en 3 × 4
-     bit bredvid startkvadraten).
+     bit bredvid startkvadraten: till höger om sviten får plats där, annars
+     till vänster).
+   - **Bara ett Standard Room får plats i startkvadraten** bredvid disken (ditt
+     "ett rum till höger om den"). Tutorialens steg "bygg ett andra rum" kräver
+     därför att spelaren först köper fyra rutor (ungefär $210) och sedan rummet
+     ($57); Gloom säger nu det ("tap the gold tiles beside your hotel"). Spelat:
+     det går med de pengar en ny spelare har efter första gästen plus lite
+     till. **Säg till** om startkvadraten ska rymma två rum (till exempel 4 × 5)
+     eller om de första rutorna ska vara billigare.
+   - **Diskarna** ligger under fliken "Stairs, desks" i Build. Gästerna ställer
+     sig vid disken med kortast kö; du checkar in vid den disk du står vid,
+     Front Desk-personalen vid alla.
+   - Utan lobbymodell **startar du på gångens fot** framför valvet (forecourtens
+     `PathFoot`), och golvvalet "Lobby" finns inte längre (bara korridoren och
+     rummen). Entertainment-personalen står precis innanför valvet.
+   - Köpbara rutor visas i Build som **guldplattor med pris**; ett tryck köper.
+     Hur de ser ut är ditt.
+   - Ett fönster kostar **$100** (platshållare), och att sälja det ger allt tillbaka.
 
 ## §3 Creator Hub och publicering
 
 1. ~~**Slå på Studio Access to API Services**~~ (gjort 2026-10-19: på i
    Experience Settings; save och load provas nu, resultatet i
-   - Ett fönster kostar **$100** (platshållare), och att sälja det ger allt tillbaka.
    `archive/NATTLOGG-2026-10-19.md` och memory `phase-status`).
 2. ~~**Skapa passen och produkterna i Creator Hub**~~ (gjort 2026-10-20 av
    Claude i din Creator Hub, på ditt ord: de fem passen, de åtta produkterna,

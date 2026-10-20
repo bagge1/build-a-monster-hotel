@@ -16,24 +16,36 @@ local function decor(id, floor, x, z, r)
 	return { item = id, layer = d.layer, floor = floor, x = x, z = z, r = r, w = d.w, d = d.d }
 end
 
--- A hotel as it starts (§5.4): the start area owned, the desk at the lobby's end.
-local function world(floors, areas, pieces)
+-- A hotel as it starts (§5.4, A.1): the start square's tiles, the desk across from the arch.
+local function world(floors, tiles, pieces)
 	local owned = {}
-	for _, a in areas or { G.StartArea } do
-		owned[a] = true
+	for _, c in tiles or Grid.startTiles() do
+		owned[Grid.tileKey(c.x, c.z)] = true
 	end
+	local d = G.DeskStart
 	return {
 		floors = floors or 1,
-		areas = owned,
-		pieces = pieces or { placed("FrontDesk", 1, 0, 0, 1) },
+		tiles = owned,
+		pieces = pieces or { placed("FrontDesk", 1, d.x, d.z, d.r) },
 		decor = {},
 	}
 end
 
-local function allAreas()
+local function allTiles()
 	local out = {}
-	for i = 1, Grid.areaCount() do
-		table.insert(out, i)
+	for z = 0, N - 1 do
+		for x = 0, N - 1 do
+			table.insert(out, { x = x, z = z })
+		end
+	end
+	return out
+end
+
+-- The start square and `extra` cells.
+local function startPlus(extra)
+	local out = Grid.startTiles()
+	for _, c in extra do
+		table.insert(out, c)
 	end
 	return out
 end
@@ -91,63 +103,94 @@ describe("Grid", function()
 		end
 	end)
 
-	it("the areas split everything behind the lobby, and only a neighbour can be bought", function()
-		local seen = {}
-		for z = 0, N - 1 do
-			for x = 0, N - 1 do
-				local a = Grid.areaOf(x, z)
-				if Grid.isLobbyRow(z) then
-					expect.eq(a, nil, `lobby row {x},{z} is no area`)
-				else
-					expect.truthy(a ~= nil, `cell {x},{z} has an area`)
-					seen[a] = (seen[a] or 0) + 1
+	it(
+		"a new hotel owns the 4 × 4 square on the entrance, and only a neighbour tile can be bought",
+		function()
+			local w = world()
+			local S = G.StartTiles
+			local owned = 0
+			for z = 0, N - 1 do
+				for x = 0, N - 1 do
+					local inSquare = x >= S.x and x < S.x + S.w and z >= S.z and z < S.z + S.d
+					expect.eq(Grid.isOpen(w, x, z), inSquare, `start tile {x},{z}`)
+					if inSquare then
+						owned += 1
+					end
 				end
 			end
-		end
-		for i = 1, Grid.areaCount() do
-			expect.eq(seen[i], G.AreaW * G.AreaD, `area {i}'s cells`)
-			local x0, z0 = Grid.areaRect(i)
-			expect.eq(Grid.areaOf(x0, z0), i, `area {i}'s corner`)
-		end
-		local start = { [G.StartArea] = true }
-		expect.truthy(not Grid.canBuyArea(start, G.StartArea), "the start area is owned")
-		for i = 1, Grid.areaCount() do
-			local ok = Grid.canBuyArea(start, i)
-			local _, z0 = Grid.areaRect(i)
-			local x0 = Grid.areaRect(i)
-			local sx0 = Grid.areaRect(G.StartArea)
-			local besideStart = z0 > G.LobbyRows and x0 == sx0
-			if i ~= G.StartArea then
-				expect.eq(ok, z0 == G.LobbyRows or besideStart, `area {i} buyable from the start`)
+			expect.eq(owned, 16, "the start square's tiles")
+			for _, c in Grid.entrance() do
+				expect.truthy(Grid.isOpen(w, c.x, c.z), "the mouth is owned")
 			end
+			for z = -1, N do
+				for x = -1, N do
+					local ok, why = Grid.canBuyTile(w.tiles, x, z)
+					local beside = Grid.inBounds(x, z)
+						and not Grid.isOpen(w, x, z)
+						and (
+							Grid.isOpen(w, x - 1, z)
+							or Grid.isOpen(w, x + 1, z)
+							or Grid.isOpen(w, x, z - 1)
+							or Grid.isOpen(w, x, z + 1)
+						)
+					expect.eq(ok, beside, `tile {x},{z} buyable`)
+					if not Grid.inBounds(x, z) then
+						expect.eq(why, "Unknown", "off the plot")
+					elseif Grid.isOpen(w, x, z) then
+						expect.eq(why, "Owned", "owned")
+					end
+				end
+			end
+			expect.eq(
+				#Grid.buyable(w.tiles),
+				12,
+				"the square's neighbours: 4 a side, none in front"
+			)
+			local _, why = Grid.canBuyTile(w.tiles, 0, 11)
+			expect.eq(why, "NotNext", "a tile far from the hotel")
 		end
-	end)
+	)
 
-	it("rooms stand only in owned areas, never in the lobby or on the entrance", function()
-		local w = world()
-		local x0, z0 = Grid.areaRect(G.StartArea)
-		expect.truthy(
-			Grid.canPlace(w, placed("StandardRoom", 1, x0, z0, 0)),
-			"a room in the start area"
-		)
-		local _, why = Grid.canPlace(w, placed("StandardRoom", 1, 0, z0, 0))
-		expect.eq(why, "Area", "a room in an area not owned")
-		_, why = Grid.canPlace(w, placed("StandardRoom", 1, x0, 0, 2))
-		expect.eq(why, "Lobby", "a room in the lobby")
-		local e = Grid.entrance()[1]
-		_, why = Grid.canPlace(w, placed("Stairs", 1, e.x, e.z, 2), nil)
-		expect.truthy(why == "Entrance" or why == "NoFloorAbove", "nothing on the entrance")
-		_, why = Grid.canPlace(world(2), placed("Stairs", 1, e.x, e.z, 2))
-		expect.eq(why, "Entrance", "a stair on the entrance")
-	end)
+	it(
+		"anything stands on any owned tile, never on a tile not owned or the entrance's mouth",
+		function()
+			local w = world(
+				1,
+				startPlus({ { x = 8, z = 0 }, { x = 9, z = 0 }, { x = 8, z = 1 }, { x = 9, z = 1 } })
+			)
+			expect.truthy(
+				Grid.canPlace(w, placed("StandardRoom", 1, 4, 2, 0)),
+				"a room in the start square"
+			)
+			expect.truthy(
+				Grid.canPlace(w, placed("StandardRoom", 1, 8, 0, 3)),
+				"a room on the front row, where the lobby strip was"
+			)
+			local _, why = Grid.canPlace(w, placed("StandardRoom", 1, 0, 5, 0))
+			expect.eq(why, "Tile", "a room on tiles not owned")
+			_, why = Grid.canPlace(w, placed("StandardRoom", 1, 9, 0, 3))
+			expect.eq(why, "Tile", "a room half on a tile not owned")
+			local e = Grid.entrance()[1]
+			_, why = Grid.canPlace(world(2), placed("Stairs", 1, e.x, e.z, 2))
+			expect.eq(why, "Entrance", "a stair on the entrance's mouth")
+			_, why = Grid.canPlace(w, placed("StandardRoom", 1, e.x, e.z, 2))
+			expect.eq(why, "Entrance", "a room on the entrance's mouth")
+		end
+	)
 
-	it("a new hotel has room for two to four Standard Rooms", function()
-		-- Greedy fill of the start area: every cell, every rotation.
+	it("a new hotel fits the desk across from the arch and a Standard Room", function()
+		-- Greedy fill of the start square: every cell, every rotation.
 		local w = world()
+		local desk = w.pieces[1]
+		for _, s in Grid.doors(desk) do
+			expect.eq(s.z, 0, "the desk's queue stands in the entrance's mouth")
+			expect.truthy(s.x == 5 or s.x == 6, "the desk's queue stands in the entrance's mouth")
+		end
+		expect.eq(Grid.doorFacing(desk.r).Z, -1, "the desk is served toward the street")
 		local n = 0
-		local x0, z0 = Grid.areaRect(G.StartArea)
-		for z = z0, z0 + G.AreaD - 1 do
-			for x = x0, x0 + G.AreaW - 1 do
+		local S = G.StartTiles
+		for z = S.z, S.z + S.d - 1 do
+			for x = S.x, S.x + S.w - 1 do
 				for r = 0, 3 do
 					local p = placed("StandardRoom", 1, x, z, r)
 					if Grid.canPlace(w, p) then
@@ -158,30 +201,116 @@ describe("Grid", function()
 				end
 			end
 		end
-		expect.atLeast(n, 2, "rooms in the start area")
-		expect.atMost(n, 4, "rooms in the start area")
+		expect.atLeast(n, 1, "rooms in the start square")
 		expect.truthy(Grid.allServed(w), "every door served")
 	end)
 
-	it("there is exactly one desk, on floor 1, its queue reached from the entrance", function()
+	it("one or more desks on floor 1, each queue reached; the last cannot go", function()
 		local w = world(2)
 		local desk = w.pieces[1]
 		expect.truthy(Grid.allServed(w), "the start desk is served")
-		local _, why = Grid.canPlace(w, placed("FrontDesk", 1, 9, 0, 3))
-		expect.eq(why, "OneDesk", "a second desk")
-		expect.truthy(Grid.canPlace(w, placed("FrontDesk", 1, 9, 0, 3), desk), "the desk moved")
-		_, why = Grid.canPlace(w, placed("FrontDesk", 2, 9, 0, 3), desk)
-		expect.eq(why, "DeskFloor", "the desk upstairs")
-		_, why = Grid.canRemove(w, desk)
-		expect.eq(why, "OneDesk", "the desk sold")
-		-- Its queue cells against the front wall's edge: nowhere to stand.
-		_, why = Grid.canPlace(w, placed("FrontDesk", 1, 2, 0, 0), desk)
-		expect.eq(why, "DoorBlocked", "the desk served from outside the plot")
+		local second = placed("FrontDesk", 1, 4, 2, 1)
+		expect.truthy(Grid.canPlace(w, second), "a second desk")
+		table.insert(w.pieces, second)
+		expect.truthy(Grid.allServed(w), "both desks served")
+		expect.truthy(Grid.canRemove(w, desk), "one of two desks sold")
+		table.remove(w.pieces, 1)
+		local _, why = Grid.canRemove(w, second)
+		expect.eq(why, "LastDesk", "the last desk sold")
+		expect.truthy(Grid.canPlace(w, placed("FrontDesk", 1, 6, 2, 3), second), "the desk moved")
+		_, why = Grid.canPlace(w, placed("FrontDesk", 2, 4, 2, 1), second)
+		expect.eq(why, "DeskFloor", "a desk upstairs")
+		-- Its queue cells off the plot's front edge: nowhere to stand.
+		local all = world(1, allTiles())
+		_, why = Grid.canPlace(all, placed("FrontDesk", 1, 2, 0, 0))
+		expect.eq(why, "DoorBlocked", "a desk served from outside the plot")
 	end)
 
+	it(
+		"the facade walls exactly the outline of the owned tiles, open above floor 1 on the street",
+		function()
+			local function check(tiles, floors)
+				local owned = {}
+				for _, c in tiles do
+					owned[Grid.tileKey(c.x, c.z)] = true
+				end
+				local function isOwned(x, z)
+					return Grid.inBounds(x, z) and owned[Grid.tileKey(x, z)] == true
+				end
+				local walls, corners, entrances = {}, {}, 0
+				for _, f in Grid.facade(owned, floors) do
+					local key = `{f.floor}:{f.at.X},{f.at.Z}`
+					if f.kind == "Wall" then
+						expect.eq(walls[key], nil, `one wall at {key}`)
+						walls[key] = f
+					elseif f.kind == "Corner" then
+						corners[key] = (corners[key] or 0) + 1
+					else
+						entrances += 1
+						expect.eq(f.floor, 1, "the arch on floor 1")
+						expect.eq(f.at.X, 6 * G.CellSize, "the arch over the mouth")
+						expect.eq(f.at.Z, 0, "the arch on the front edge")
+					end
+				end
+				expect.eq(entrances, 1, "one arch")
+				local C = G.CellSize
+				local wanted = 0
+				for floor = 1, floors do
+					for _, c in tiles do
+						for _, side in { { 0, -1, 0 }, { -1, 0, 1 }, { 0, 1, 2 }, { 1, 0, 3 } } do
+							local nx, nz = c.x + side[1], c.z + side[2]
+							local key =
+								`{floor}:{(c.x + 0.5 + side[1] / 2) * C},{(c.z + 0.5 + side[2] / 2) * C}`
+							local edge = not isOwned(nx, nz)
+							local open = floor > 1 and nz < 0
+							local arch = floor == 1 and nz < 0 and (c.x == 5 or c.x == 6)
+							if edge and not open and not arch then
+								wanted += 1
+								local w = walls[key]
+								expect.truthy(w ~= nil, `a wall at {key}`)
+								expect.eq(w and w.turn, side[3], `the wall at {key} faces out`)
+							else
+								expect.eq(walls[key], nil, `no wall at {key}`)
+							end
+						end
+					end
+				end
+				local count = 0
+				for _ in walls do
+					count += 1
+				end
+				expect.eq(count, wanted, "walls")
+				return count, corners
+			end
+			local count, corners = check(Grid.startTiles(), 2)
+			expect.eq(
+				count,
+				14 + 12,
+				"the start square: 14 walls and the arch on floor 1, 12 above"
+			)
+			local posts = 0
+			for _, n in corners do
+				posts += n
+			end
+			expect.eq(posts, 8, "a post at each of the square's corners on both floors")
+			-- A tile bought beside the square: two concave corners and two convex ones more.
+			count, corners = check(startPlus({ { x = 8, z = 1 } }), 1)
+			expect.eq(count, 16, "the outline moved out")
+			posts = 0
+			for _, n in corners do
+				posts += n
+			end
+			expect.eq(
+				posts,
+				8,
+				"four corners of the square, two concave and two convex at the new tile"
+			)
+		end
+	)
+
 	it("a floor above is reached only by a stair, and its last stair cannot go", function()
-		local w = world(2)
-		local x0, z0 = Grid.areaRect(G.StartArea)
+		local w = world(2, allTiles())
+		local x0, z0 = 4, 2
 		local up = placed("StandardRoom", 2, x0, z0 + 1, 0)
 		local _, why = Grid.canPlace(w, up)
 		expect.eq(why, "DoorUnreachable", "a room upstairs with no stair")
@@ -200,9 +329,9 @@ describe("Grid", function()
 		table.insert(w.pieces, up)
 		_, why = Grid.canRemove(w, stair)
 		expect.eq(why, "CutsOff", "the last stair to a floor with rooms")
-		-- In the lobby beyond the entrance, coming up into the gallery above it.
+		-- On the front row beside the entrance.
 		local second = placed("Stairs", 1, x0 + 4, 0, 3)
-		expect.truthy(Grid.canPlace(w, second), "a second stair in the lobby")
+		expect.truthy(Grid.canPlace(w, second), "a second stair on the front row")
 		table.insert(w.pieces, second)
 		expect.truthy(Grid.canRemove(w, stair), "the first stair, once a second serves the floor")
 		_, why = Grid.canPlace(w, placed("Stairs", 2, x0, z0, 0))
@@ -210,7 +339,7 @@ describe("Grid", function()
 	end)
 
 	it("a stair continues another only on the same cells and turn", function()
-		local w = world(3, allAreas())
+		local w = world(3, allTiles())
 		local s1 = placed("Stairs", 1, 4, 4, 0)
 		expect.truthy(Grid.canPlace(w, s1), "the first storey")
 		table.insert(w.pieces, s1)
@@ -222,8 +351,8 @@ describe("Grid", function()
 	end)
 
 	it("hallway decor in a cell's corner leaves it walkable; in its middle it takes it", function()
-		local w = world(1, allAreas())
-		local x0, z0 = Grid.areaRect(G.StartArea)
+		local w = world(1, allTiles())
+		local x0, z0 = 4, 4
 		local corner = decor("Candles", 1, x0 * Q, z0 * Q, 0)
 		expect.truthy(Grid.canPlaceDecor(w, corner), "candles in a corner")
 		table.insert(w.decor, corner)
@@ -249,6 +378,8 @@ describe("Grid", function()
 		local mid = (N // 2) * Q
 		_, why = Grid.canPlaceDecor(w, decor("Candles", 1, mid - 1, 0, 0))
 		expect.eq(why, "Entrance", "nothing in the entrance's mouth")
+		_, why = Grid.canPlaceDecor(w, decor("Candles", 1, mid + Q - 1, Q - 1, 0))
+		expect.eq(why, "Entrance", "nothing anywhere in the mouth's two cells")
 		expect.truthy(
 			Grid.canPlaceDecor(w, decor("RugRunner", 1, mid - 2, 0, 1)),
 			"a rug in the mouth"
@@ -257,11 +388,9 @@ describe("Grid", function()
 
 	it("hallway decor that would cut a door off is refused", function()
 		local w = world()
-		local x0, z0 = Grid.areaRect(G.StartArea)
-		-- A room at the back of the start area, its door down a one-cell hallway.
-		local room = placed("StandardRoom", 1, x0, z0 + 3, 0)
-		table.insert(w.pieces, placed("StandardRoom", 1, x0 + 1, z0, 1))
-		expect.truthy(Grid.canPlace(w, room), "the back room")
+		-- A room in the start square, its door onto the cell beside the mouth.
+		local room = placed("StandardRoom", 1, 4, 2, 0)
+		expect.truthy(Grid.canPlace(w, room), "the room")
 		table.insert(w.pieces, room)
 		local door = Grid.doorCell(room)
 		local _, why = Grid.canPlaceDecor(w, decor("Candles", 1, door.x * Q + 1, door.z * Q + 1, 0))
@@ -272,7 +401,7 @@ describe("Grid", function()
 		local rng = Random.new(7)
 		local ids =
 			{ "StandardRoom", "SarcophagusSuite", "DenRoom", "SnackBar", "Stairs", "Stairs" }
-		local w = world(3, allAreas())
+		local w = world(3, allTiles())
 		local desk = w.pieces[1]
 		for _ = 1, 900 do
 			local p = placed(

@@ -414,7 +414,7 @@ local function setOff(
 	local c = configOf(player, id)
 	local slot = if c then c:GetAttribute("Slot") :: number? or 1 else 1
 	local post = Staff.post(role, slot, function(name)
-		return PlotService.lobbyPoint(plot, name)
+		return PlotService.point(plot, name)
 	end)
 	local door = PlotService.piecePoint(plot, pieceId, "Door")
 	local path = if post then GuestService.pathToDoor(player, post, pieceId) else nil

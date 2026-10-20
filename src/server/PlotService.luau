@@ -18,12 +18,14 @@
 	`Floor`, `Tier`; each decor model (in `Decor`) `DecorId`, `Item`, `Floor`,
 	`Room`. The client's build mode reads those.
 
-	FREE BUILDING (§5.4): the lobby is a shell, the front desk and the stairs
-	are pieces of the layout, decor stands on its squares, areas not yet
-	bought carry a plate, and floor finishes are laid on the `Floor` parts and
-	the hallways' slabs (MODELS.md, "Floor finishes"). The desk's points are
-	mirrored onto the lobby's `Root` (MODELS.md, "Lobby: the shell"), so
-	everything that finds the desk through the lobby keeps finding it.
+	FREE BUILDING (§5.4, A.1, his rulings 2026-10-20): the plot is owned a
+	tile at a time; the desks and the stairs are pieces of the layout, decor
+	stands on its squares, cells not owned carry a plate on floor 1, the
+	slabs above lie over the owned tiles only, the facade follows their
+	outline on every floor (`HotelKit.facade`), and floor finishes are laid on
+	the `Floor` parts and the hallways' slabs (MODELS.md, "Floor finishes").
+	There is no lobby model: the entrance, the spawn and the desk points are
+	found on the facade, the forecourt and the desks (`HotelPoints`).
 ]]
 
 local Players = game:GetService("Players")
@@ -37,6 +39,7 @@ local Layout = require(ReplicatedStorage.Shared.Layout)
 local Pieces = require(ReplicatedStorage.Shared.Pieces)
 local Locations = require(ReplicatedStorage.Shared.Locations)
 local Cosmetics = require(ReplicatedStorage.Shared.Cosmetics)
+local HotelPoints = require(ReplicatedStorage.Shared.HotelPoints)
 local StreetLayout = require(ReplicatedStorage.Shared.StreetLayout)
 local HotelKit = require(ServerScriptService.Server.HotelKit)
 local PlayerData = require(ServerScriptService.Server.PlayerData)
@@ -51,7 +54,6 @@ export type Plot = {
 	model: Model,
 	frame: CFrame,
 	location: number,
-	lobby: Model?,
 	sign: Model?,
 	pieces: { [string]: Model }, -- by piece id (rooms, amenities, stairs, the desk)
 	decor: { [string]: Model }, -- by decor id
@@ -77,7 +79,7 @@ end
 
 -- The layout as the pure rules see it (Grid, Layout).
 function PlotService.world(data: PlayerData.Data): Grid.World
-	return Layout.world(data.floors, data.areas, data.layout, data.decor)
+	return Layout.world(data.floors, data.tiles, data.layout, data.decor)
 end
 
 -- A piece's pivot in the plot's frame: its footprint's centre, turned so its door faces the right way.
@@ -210,29 +212,6 @@ local function layOn(model: Instance, finishId: string?)
 	end
 end
 
--- The front desk's points, copied onto the lobby's Root under the same names (MODELS.md).
-local DESK_POINTS = { "Desk", "Clerk", "Till", "Queue_1", "Queue_2", "Queue_3", "Queue_4" }
-local function mirrorDesk(plot: Plot, desk: Model)
-	local lobbyRoot = plot.lobby and plot.lobby.PrimaryPart
-	local root = desk.PrimaryPart
-	if not lobbyRoot or not root then
-		return
-	end
-	for _, name in DESK_POINTS do
-		local old = lobbyRoot:FindFirstChild(name)
-		if old then
-			old:Destroy()
-		end
-		local a = root:FindFirstChild(name)
-		if a and a:IsA("Attachment") then
-			local m = Instance.new("Attachment")
-			m.Name = name
-			m.Parent = lobbyRoot
-			m.WorldCFrame = a.WorldCFrame
-		end
-	end
-end
-
 -- Whether a stair on the floor above continues this one (same cells and turn).
 local function continued(data: PlayerData.Data, rec: PlayerData.PieceRecord): boolean
 	for _, other in data.layout do
@@ -329,20 +308,11 @@ local function buildPiece(
 		local desk = root:FindFirstChild("Desk")
 		local till = root:FindFirstChild("Till")
 		if desk then
-			makePrompt(
-				desk,
-				"Check in",
-				"Front Desk",
-				Constants.Stay.CheckInHold,
-				plot,
-				"Desk",
-				nil
-			)
+			makePrompt(desk, "Check in", "Front Desk", Constants.Stay.CheckInHold, plot, "Desk", id)
 		end
 		if till then
 			makePrompt(till, "Collect", "Till", 0, plot, "Till", nil)
 		end
-		mirrorDesk(plot, model)
 	end
 	plot.pieces[id] = model
 	return model
@@ -359,14 +329,6 @@ local function decorFrame(plot: Plot, data: PlayerData.Data, rec: PlayerData.Dec
 	local room = if rec.room ~= "" then data.layout[rec.room] else nil
 	if room then
 		lift += PlotService.roomInfo(room.item, plot.location).floorTop
-	elseif rec.floor == 1 and Grid.isLobbyRow(rec.z // Grid.Squares) and plot.lobby then
-		for _, part in plot.lobby:GetDescendants() do
-			if part:IsA("BasePart") and part.Name == "Floor" then
-				local top = plot.lobby:GetPivot():ToObjectSpace(part.CFrame).Position.Y
-					+ part.Size.Y / 2
-				lift = math.max(lift, top + 0.02)
-			end
-		end
 	end
 	return plot.frame
 		* CFrame.new(Grid.decorCentre(placed) + Vector3.new(0, lift, 0))
@@ -402,35 +364,51 @@ local function buildDecor(
 	plot.decor[id] = model
 end
 
--- The plates over the areas not yet bought, on every floor (§5.4).
-local function buildAreas(plot: Plot, data: PlayerData.Data)
-	local old = plot.model:FindFirstChild("Areas")
+--[[ The plates over the cells not owned, on floor 1 (§5.4, A.1): one plate
+	to each run of them along a row, the rows of equal runs merged. ]]
+local function buildTiles(plot: Plot, data: PlayerData.Data)
+	local old = plot.model:FindFirstChild("Tiles")
 	if old then
 		old:Destroy()
 	end
 	local folder = Instance.new("Folder")
-	folder.Name = "Areas"
-	for i = 1, Grid.areaCount() do
-		if not data.areas[tostring(i)] then
-			local x0, z0, w, d = Grid.areaRect(i)
-			for floor = 1, data.floors do
-				local plate = HotelKit.areaPlate(plot.location, w * G.CellSize, d * G.CellSize)
-				plate.CFrame = plot.frame
-					* CFrame.new(
-						(x0 + w / 2) * G.CellSize,
-						Grid.floorY(floor) + 0.05,
-						(z0 + d / 2) * G.CellSize
-					)
-				plate:SetAttribute("Area", i)
-				plate:SetAttribute("Floor", floor)
-				plate.Parent = folder
+	folder.Name = "Tiles"
+	local tiles = PlotService.world(data).tiles
+	local N, C = G.Cells, G.CellSize
+	local runs: { [string]: { x0: number, x1: number, z0: number, z1: number } } = {}
+	local order = {}
+	for z = 0, N - 1 do
+		local x = 0
+		while x < N do
+			if tiles[Grid.tileKey(x, z)] then
+				x += 1
+			else
+				local x0 = x
+				while x < N and not tiles[Grid.tileKey(x, z)] do
+					x += 1
+				end
+				local k = `{x0}:{x}`
+				local run = runs[k]
+				if run and run.z1 == z then
+					run.z1 = z + 1
+				else
+					runs[k] = { x0 = x0, x1 = x, z0 = z, z1 = z + 1 }
+					table.insert(order, runs[k])
+				end
 			end
 		end
+	end
+	for _, r in order do
+		local w, d = (r.x1 - r.x0) * C, (r.z1 - r.z0) * C
+		local plate = HotelKit.tilePlate(plot.location, w, d)
+		plate.CFrame = plot.frame
+			* CFrame.new((r.x0 + r.x1) / 2 * C, Grid.floorY(1) + 0.05, (r.z0 + r.z1) / 2 * C)
+		plate.Parent = folder
 	end
 	folder.Parent = plot.model
 end
 
--- The hallways' and the lobby's floor finishes (§5.4).
+-- The hallways' floor finish (§5.4).
 local function layHallways(plot: Plot, data: PlayerData.Data)
 	local hall = data.finishes.Hallway
 	local base = plot.model:FindFirstChild("Base")
@@ -448,9 +426,6 @@ local function layHallways(plot: Plot, data: PlayerData.Data)
 			end
 		end
 	end
-	if plot.lobby then
-		layOn(plot.lobby, data.finishes.Lobby)
-	end
 end
 
 -- Builds everything of a plot from its owner's data, from scratch.
@@ -462,7 +437,6 @@ local function buildHotel(plot: Plot, data: PlayerData.Data?)
 	end
 	plot.pieces = {}
 	plot.decor = {}
-	plot.lobby = nil
 	plot.sign = nil
 	plot.location = if data then data.location else 1
 	plot.floors = if data then data.floors else 1
@@ -479,11 +453,6 @@ local function buildHotel(plot: Plot, data: PlayerData.Data?)
 	if not data then
 		return
 	end
-
-	local lobby = HotelKit.lobby(plot.location)
-	lobby:PivotTo(plot.frame * CFrame.new(StreetLayout.EntranceLocal))
-	lobby.Parent = plot.model
-	plot.lobby = lobby
 
 	local sign = HotelKit.sign(plot.location)
 	local board = PlotService.forecourtPoint(plot, "SignBoard")
@@ -517,11 +486,11 @@ local function buildHotel(plot: Plot, data: PlayerData.Data?)
 				table.insert(holes, h)
 			end
 		end
-		local slab = HotelKit.slab(plot.location, floor, holes)
+		local slab = HotelKit.slab(plot.location, floor, holes, PlotService.world(data).tiles)
 		placeLocal(slab, plot.frame)
 		slab.Parent = plot.model
 	end
-	buildAreas(plot, data)
+	buildTiles(plot, data)
 
 	for id, rec in data.layout do
 		buildPiece(plot, id, rec, data)
@@ -548,9 +517,10 @@ local function worn(data: PlayerData.Data, slot: string): Cosmetics.Cosmetic?
 	return if c and c.slot == slot and Cosmetics.owns(data, id) then c else nil
 end
 
---[[ The facade, in its cosmetic's colours, and the sign and lobby cosmetics at
-	their origins (MODELS.md, "Cosmetics"): the sign's Board front face and the
-	lobby's Entrance. Drawn again whole on every change. ]]
+--[[ The facade round the owned tiles, as its cosmetic's pieces or in its
+	colours, and the sign and lobby cosmetics at their origins (MODELS.md,
+	"Cosmetics"): the sign's Board front face and the facade's Entrance.
+	Drawn again whole on every change. ]]
 function drawCosmetics(plot: Plot, data: PlayerData.Data)
 	for _, name in { "Facade", "Cosmetics" } do
 		local old = plot.model:FindFirstChild(name)
@@ -558,11 +528,11 @@ function drawCosmetics(plot: Plot, data: PlayerData.Data)
 			old:Destroy()
 		end
 	end
-	local f = worn(data, "Facade")
 	local facade = HotelKit.facade(
 		plot.location,
 		data.floors,
-		if f then { facade = f.colour, trim = f.trim or f.colour } else nil
+		PlotService.world(data).tiles,
+		worn(data, "Facade")
 	)
 	placeLocal(facade, plot.frame)
 	facade.Parent = plot.model
@@ -577,11 +547,10 @@ function drawCosmetics(plot: Plot, data: PlayerData.Data)
 		m.Parent = folder
 	end
 	local lobby = worn(data, "Lobby")
-	local root = plot.lobby and plot.lobby.PrimaryPart
-	local entrance = root and root:FindFirstChild("Entrance") :: Attachment?
+	local entrance = PlotService.point(plot, "Entrance")
 	if lobby and entrance then
 		local m = HotelKit.cosmetic(lobby)
-		m:PivotTo(entrance.WorldCFrame)
+		m:PivotTo(entrance)
 		m.Parent = folder
 	end
 	folder.Parent = plot.model
@@ -590,7 +559,7 @@ end
 function PlotService.refreshCosmetics(player: Player)
 	local plot = byPlayer[player]
 	local data = PlayerData.get(player)
-	if plot and data and plot.lobby then
+	if plot and data then
 		drawCosmetics(plot, data)
 	end
 end
@@ -694,11 +663,11 @@ function PlotService.onBuilt(handler: (Plot) -> ())
 	table.insert(builtHandlers, handler)
 end
 
--- The world frame of an attachment on a plot's lobby, or nil.
-function PlotService.lobbyPoint(plot: Plot, name: string): CFrame?
-	local root = plot.lobby and plot.lobby.PrimaryPart
-	local a = root and root:FindFirstChild(name)
-	return if a and a:IsA("Attachment") then a.WorldCFrame else nil
+--[[ The world frame of one of the hotel's shared points (`HotelPoints`):
+	`Entrance`, `Spawn`, or the first desk's `Desk`, `Clerk`, `Till`,
+	`Queue_n`; nil until it is built. ]]
+function PlotService.point(plot: Plot, name: string): CFrame?
+	return HotelPoints.find(plot.model, name)
 end
 
 -- The world frame of an attachment on a plot's forecourt (MODELS.md, "Forecourt"), or nil.
@@ -754,7 +723,7 @@ end
 local function spawnAt(player: Player)
 	local plot = byPlayer[player]
 	local character = player.Character
-	local at = plot and PlotService.lobbyPoint(plot, "Spawn")
+	local at = plot and PlotService.point(plot, "Spawn")
 	if character and at then
 		character:PivotTo(at + Vector3.new(0, 3, 0))
 	end
@@ -816,7 +785,6 @@ function PlotService.Init()
 			model = model,
 			frame = frame,
 			location = 1,
-			lobby = nil,
 			sign = nil,
 			pieces = {},
 			decor = {},

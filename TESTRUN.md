@@ -562,6 +562,42 @@ by stylua, selene, the pure specs under Lune and `tools/balance_model.py`.
 - [A] Output on Play: no "server size" warning once Server Size is 6. The
   warning fires today (the place's server size is 60): his setting, WAITING §4.2.
 
+## Tiles, desks and the facade round what is owned (GDD §5.4, A.1, his rulings 2026-10-20)
+
+Built 2026-10-20: the plot bought a tile at a time ($50 × 1.03^n), a new
+hotel's 4 × 4 square x 4–7, z 0–3, one or more `FrontDesk`s (a second $500),
+the facade drawn along the owned tiles' outline on every floor, no lobby
+model (`HotelPoints`), the goal card's free 3 × 4 block. Played on test
+profile `Test_Tiles1020a`.
+
+- [x] A fresh profile: 16 tiles owned, the desk at x 5–6, z 1 facing the
+  street with its queue in the entrance's mouth, 14 walls, the arch and 4
+  corner posts round the square; plates over the rest of floor 1.
+- [x] Buying a tile moves the walls out: one tile, 16 walls and 8 posts; floor
+  2 bought and a 2 × 2 block beside the square, 18 walls and the arch on floor
+  1, 16 on floor 2 (its street side open, railed), slab 2 over the owned tiles
+  only; prices $50, $52, $53, $55.
+- [x] A second desk ($500): two guests queue one at each desk (each at its
+  own `Queue_1`); desk 2's prompt checks in its own guest only; selling desk 1
+  sends its waiting guest to desk 2's line; the last desk cannot be sold.
+- [x] A walker from the path's foot through the arch into both rooms; rays
+  across every outline edge on both floors hit a wall (34) or the front rail
+  (4), and none of the 122 inner edges is blocked.
+- [x] The goal card (`tutorial Goal`) gives the left 3 × 4 block when a room
+  stands in the right one, and the free Coffin Suite is placed on it.
+- [!] A click on a gold tile in build mode buys it (bought tile 8, 0). Found:
+  the plates were rebuilt on every state change (the till ticks each second),
+  dropping the lit one; fixed, the hover now stays lit.
+- [x] Rejoined on the same profile: the tiles, the desk and the rooms come back.
+- [x] A fresh profile (`Test_Tiles1020b`) by remotes and the desk's prompt:
+  a room, the tutorial Slime queued and checked in at the desk, Gloom's arrow
+  on the desk (`HotelPoints` on the client). Collect could not finish: the
+  test account owns AutoCollect, so pay skips the till (an older fault, not
+  the tiles'); jumped to SecondRoom. There Gloom's new line shows, no second
+  room fits in the start square, four tiles bought (~$210) and the room at
+  (8, 1) take the step on to Bus.
+- [A] How the small start, the gold tiles and the facade look (his).
+
 ## August keeps
 
 - How the street, the lobby and the rooms look (every look is a night draft).
@@ -597,3 +633,4 @@ by stylua, selene, the pure specs under Lune and `tools/balance_model.py`.
 - 2026-10-19 22:39 The forest with the real trees after his Rojo restart: 677 models, 646 as proxies, a trunk stops a walker.
 - 2026-10-19 22:42 The forest longer and thicker by the play area (his ruling): 4,723 trees (a 60-stud thicket of 735, 3,988 beyond, out to 600 studs), 9,604 parts with only the 120 near the camera whole; no error. Pictures: `archive/screens/2026-10-19_forest_thicket.jpg`, `archive/screens/2026-10-19_forest_long.jpg`.
 - 2026-10-20 21:39 Pacing and the tutorial's free area (test profile Test_Rel1020a; steps to SecondRoom, Goal and Done jumped by `tutorial`, buses called by `bus`): two Standard Rooms in the start area; at the goal card area 1 owned beside area 2 and the card reads "in your new area"; the Coffin Suite placed free at (0, 2) in it (paid 0, voucher spent); the first bus drew 3 guests for a one-player hotel with 3 vacant rooms; the Vampire Count booked after bus 2 and on bus 3, checked in to the suite; stays by the server's timers: Slime 180 s, Vampire Count 600 s. The server-size warning fires (60). The new bus horn (9114660894, 2.8 s) loads and plays when a bus arrives.
+- 2026-10-20 22:42 Tiles, desks and the facade (Test_Tiles1020a): the start square, tiles bought by remote and by a click, the outline walled on two floors (rays, a walker), two desks with a guest at each, a desk sold with a guest waiting, the goal card's block and the free Coffin Suite, rejoin; fixed: the tile plates redrawn every second. No errors of the game's own.

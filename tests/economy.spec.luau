@@ -23,18 +23,22 @@ describe("Economy", function()
 		end
 	end)
 
-	it("each area costs at least the one before, and the start area is free", function()
-		local costs = Constants.Economy.AreaCosts
-		expect.eq(Economy.areaCost(0), 0, "the first area")
-		for n = 1, #costs - 1 do
-			expect.atLeast(
-				Economy.areaCost(n) :: number,
-				Economy.areaCost(n - 1) :: number,
-				`area {n + 1}`
-			)
+	it(
+		"each tile costs at least the one before, and the whole plot about the six areas' $72,000",
+		function()
+			expect.eq(Economy.tileCost(0), Constants.Economy.TileCost, "the first tile")
+			local G = Constants.Grid
+			local total = 0
+			for n = 0, G.Cells * G.Cells - G.StartTiles.w * G.StartTiles.d - 1 do
+				if n > 0 then
+					expect.atLeast(Economy.tileCost(n), Economy.tileCost(n - 1), `tile {n + 1}`)
+				end
+				total += Economy.tileCost(n)
+			end
+			expect.atLeast(total, 60000, "the whole plot")
+			expect.atMost(total, 85000, "the whole plot")
 		end
-		expect.eq(Economy.areaCost(#costs), nil, "none past the last")
-	end)
+	)
 
 	it("a higher tier, more rooms of a type, a mutation and a bonus never pay less", function()
 		for _, sp in Species.List do

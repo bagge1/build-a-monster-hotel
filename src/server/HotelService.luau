@@ -96,7 +96,7 @@ function HotelService.sync(player: Player)
 end
 
 local function world(data: PlayerData.Data)
-	return Layout.world(data.floors, data.areas, data.layout, data.decor)
+	return Layout.world(data.floors, data.tiles, data.layout, data.decor)
 end
 
 -- A room's tier (§5.4: from the decor inside it, T1..T3).

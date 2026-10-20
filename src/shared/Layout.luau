@@ -62,21 +62,21 @@ function Layout.decor(id: string, rec: Record & { room: string? }): Grid.DecorPl
 	}
 end
 
---[[ The world: `areas` keyed by the index as a string (the profile's) or a
-	number; `pieces` and `decor` maps or lists of records. ]]
+--[[ The world: `tiles` keyed by `Grid.tileKey` as a string (the profile's) or
+	a number; `pieces` and `decor` maps or lists of records. ]]
 function Layout.world(
 	floors: number,
-	areas: { [any]: boolean },
+	tiles: { [any]: boolean },
 	pieces: { [any]: any },
 	decor: { [any]: any }
 ): Grid.World
 	local owned = {}
-	for k, v in areas do
+	for k, v in tiles do
 		if v then
 			owned[tonumber(k) :: number] = true
 		end
 	end
-	local world: Grid.World = { floors = floors, areas = owned, pieces = {}, decor = {} }
+	local world: Grid.World = { floors = floors, tiles = owned, pieces = {}, decor = {} }
 	each(pieces, function(id, rec)
 		local p = Layout.piece(id, rec)
 		if p then

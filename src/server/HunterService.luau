@@ -125,7 +125,7 @@ local function spawnHunter(plot: PlotService.Plot, delay: number)
 		}
 		local start = StreetLayout.HunterCamp + Vector3.new(30, 0, (math.random() - 0.5) * 10)
 		local front = StreetLayout.laneFront(plot.index)
-		local entrance = PlotService.lobbyPoint(plot, "Entrance")
+		local entrance = PlotService.point(plot, "Entrance")
 		local path = { start, front }
 		if entrance then
 			table.insert(path, entrance.Position)
@@ -362,7 +362,7 @@ local function tick()
 			end
 			local plot = PlotService.of(player)
 			if power > 0 and plot and now >= (securityAt[player] or 0) then
-				local entrance = PlotService.lobbyPoint(plot, "Entrance")
+				local entrance = PlotService.point(plot, "Entrance")
 				for _, h in hunters do
 					if
 						h.state == "Approach"

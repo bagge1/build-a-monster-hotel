@@ -10,12 +10,14 @@
 	Place. With a mouse, the ghost follows the cursor and a click places; R
 	rotates. With nothing chosen, tapping a built piece or a piece of decor
 	opens its menu (move, sell; a room's tier, its decor points and its
-	floor), and tapping an area of the plot not yet bought offers it (§5.4).
+	floor), and tapping a gold tile beside the hotel buys it (§5.4, A.1, his
+	rulings 2026-10-20: the plot is bought a cell at a time, cheaply).
 
-	Tabs (§5.4, free building): Rooms, Amenities, Stairs (a 2×2 piece joining
-	a floor to the one above; a new floor's first is free), Decor (on a grid
+	Tabs (§5.4, free building): Rooms, Amenities, Stairs and desks (a stair is
+	a 2×2 piece joining a floor to the one above, a new floor's first free;
+	a front desk the first free, another $500), Decor (on a grid
 	of 3-stud squares, in rooms and on hallway floor) and Floors (a finish:
-	choose one, then tap a room, the lobby or a hallway).
+	choose one, then tap a room or a hallway).
 
 	The camera looks down on the plot while building, and floors above the
 	one being built on are hidden locally (`LocalTransparencyModifier`).
@@ -83,8 +85,8 @@ local paintTabs: () -> ()
 -- tapped to change it (his report, 2026-10-19: no way to remove or replace a room).
 local function idleHint(): string
 	return Controls.hint(
-		"Choose something to build, or tap a room, decor or a closed area",
-		"Y for the cards, or A on a room, decor or a closed area"
+		"Choose something to build, tap a room or decor, or a gold tile to buy it",
+		"Y for the cards, or A on a room, decor or a gold tile"
 	)
 end
 -- What the strip says while a placed piece or decor is being moved.
@@ -100,7 +102,10 @@ local rightDownAt: Vector2? = nil
 local redrawCards: () -> ()
 local ghost: Model? = nil
 local hidden: { [BasePart]: boolean } = {}
-local areaLabels: { BillboardGui } = {}
+local tilePlates: { [number]: BasePart } = {} -- the buyable tiles' plates, by Grid.tileKey
+local tileFolder: Folder? = nil
+local tileDrawn: string? = nil -- what the plates were drawn for: the floor, the price, the tiles
+local litTile: number? = nil
 
 -- The gamepad (§11): a cursor on the plot in place of the pointer.
 local pad: Vector3? = nil -- plot-local, on the floor in view
@@ -132,7 +137,7 @@ local function build(): any
 		or {
 			layout = {},
 			decor = {},
-			areas = { G.StartArea },
+			tiles = {},
 			floors = 1,
 			buildable = {},
 			costs = {},
@@ -147,11 +152,16 @@ end
 -- The hotel as the pure rules see it, from the state's copy.
 local function world(): Grid.World
 	local b = build()
-	local areas = {}
-	for _, i in b.areas or {} do
-		areas[i] = true
+	local tiles = {}
+	for _, k in b.tiles or {} do
+		tiles[k] = true
 	end
-	return Layout.world(b.floors, areas, b.layout, b.decor or {})
+	if next(tiles) == nil then
+		for _, c in Grid.startTiles() do
+			tiles[Grid.tileKey(c.x, c.z)] = true
+		end
+	end
+	return Layout.world(b.floors, tiles, b.layout, b.decor or {})
 end
 
 local function blockedFn(item: string): { [number]: boolean }
@@ -252,54 +262,98 @@ local function scheduleHide()
 	end)
 end
 
--- ===== The areas not yet bought (§5.4) =====
+-- ===== The tiles for sale (§5.4, A.1) =====
 
-local function clearAreaLabels()
-	for _, l in areaLabels do
-		l:Destroy()
+local function clearTiles()
+	if tileFolder then
+		tileFolder:Destroy()
+		tileFolder = nil
 	end
-	table.clear(areaLabels)
+	table.clear(tilePlates)
+	tileDrawn = nil
+	litTile = nil
 end
 
--- A label over each closed area of the floor in view: its price, or why it can't be bought yet.
-local function drawAreaLabels()
-	clearAreaLabels()
-	local m = plotModel()
-	local folder = m and m:FindFirstChild("Areas")
-	if not active or not folder then
+local TILE_DIM, TILE_LIT = 0.6, 0.25
+
+--[[ A gold plate with its price over each tile that can be bought now (one
+	sharing an edge with an owned one), on the floor in view: a tap buys it,
+	for every floor at once. Drawn locally, only while building, and again
+	only when the floor, the price or the tiles change (the state changes
+	every second). ]]
+local function drawTiles()
+	local frame = plotFrame()
+	if not active or not frame then
+		clearTiles()
 		return
 	end
 	local b = build()
-	local owned = {}
-	for _, i in b.areas or {} do
-		owned[i] = true
+	local keys = table.clone(b.tiles or {})
+	table.sort(keys)
+	local drawn = `{floor}|{b.tileCost}|{table.concat(keys, ",")}`
+	if drawn == tileDrawn and tileFolder then
+		return
 	end
-	for _, plate in folder:GetChildren() do
-		if plate:IsA("BasePart") and plate:GetAttribute("Floor") == floor then
-			local index = plate:GetAttribute("Area") :: number
-			local can = Grid.canBuyArea(owned, index)
-			local tag = Instance.new("BillboardGui")
-			tag.Name = "AreaLabel"
-			tag.Adornee = plate
-			tag.Size = UDim2.fromOffset(150, 46)
-			tag.StudsOffsetWorldSpace = Vector3.new(0, 2, 0)
-			tag.AlwaysOnTop = true
-			tag.LightInfluence = 0
-			local text = Ui.label(
-				tag,
-				"Text",
-				if can and b.areaCost
-					then `Area for sale\n{Format.cash(b.areaCost)}`
-					else "Closed area\nbuy one next to it",
-				UDim2.fromScale(1, 1),
-				16,
-				if can then Ui.Colour.Gold else Ui.Colour.Muted
-			)
-			text.TextXAlignment = Enum.TextXAlignment.Center
-			text.TextStrokeTransparency = 0.3
-			tag.Parent = me.PlayerGui -- a billboard inside a ScreenGui is never drawn
-			table.insert(areaLabels, tag)
-		end
+	clearTiles()
+	tileDrawn = drawn
+	local folder = Instance.new("Folder")
+	folder.Name = "BuildTiles"
+	local price = if b.tileCost then Format.cash(b.tileCost) else ""
+	for _, c in Grid.buyable(world().tiles) do
+		local plate = Instance.new("Part")
+		plate.Name = "TileForSale"
+		plate.Anchored = true
+		plate.CanCollide = false
+		plate.CanQuery = false
+		plate.CanTouch = false
+		plate.CastShadow = false
+		plate.Material = Enum.Material.SmoothPlastic
+		plate.Color = Ui.Colour.Gold
+		plate.Transparency = TILE_DIM
+		plate.Size = Vector3.new(G.CellSize - 1, 0.2, G.CellSize - 1)
+		plate.CFrame = frame * CFrame.new(Grid.cellCentre(floor, c) + Vector3.new(0, 0.15, 0))
+		local face = Instance.new("SurfaceGui")
+		face.Face = Enum.NormalId.Top
+		face.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
+		face.PixelsPerStud = 20
+		face.LightInfluence = 0
+		local text = Ui.label(face, "Price", `+ {price}`, UDim2.fromScale(1, 1), 40, Ui.Colour.Text)
+		text.TextXAlignment = Enum.TextXAlignment.Center
+		text.TextStrokeTransparency = 0.3
+		face.Parent = plate
+		plate.Parent = folder
+		tilePlates[Grid.tileKey(c.x, c.z)] = plate
+	end
+	folder.Parent = workspace
+	tileFolder = folder
+end
+
+-- The cell under the pointer on the floor in view, or nil off the plot.
+local pointerLocal: (number, number) -> Vector3?
+local function cellUnder(x: number, y: number): Grid.Cell?
+	local l = pointerLocal(x, y)
+	if not l then
+		return nil
+	end
+	local c = { x = math.floor(l.X / G.CellSize), z = math.floor(l.Z / G.CellSize) }
+	return if Grid.inBounds(c.x, c.z) then c else nil
+end
+
+-- Lights the tile for sale under the pointer, if any.
+local function lightTile(x: number, y: number)
+	local c = cellUnder(x, y)
+	local k = if c then Grid.tileKey(c.x, c.z) else nil
+	if k == litTile then
+		return
+	end
+	local old = litTile and tilePlates[litTile]
+	if old then
+		old.Transparency = TILE_DIM
+	end
+	litTile = if k and tilePlates[k] then k else nil
+	local now = litTile and tilePlates[litTile]
+	if now then
+		now.Transparency = TILE_LIT
 	end
 end
 
@@ -437,7 +491,7 @@ local function drawGhost()
 end
 
 -- The plot-local point under the pointer on the floor in view, or nil.
-local function pointerLocal(x: number, y: number): Vector3?
+function pointerLocal(x: number, y: number): Vector3?
 	local frame = plotFrame()
 	if not frame then
 		return nil
@@ -616,6 +670,7 @@ local function padRefresh(force: boolean?)
 		return
 	end
 	showHover(underPointer(s.X, s.Y))
+	lightTile(s.X, s.Y)
 	if not padMarker then
 		-- The door marker's look: where the cursor stands while nothing is placed.
 		local m = Instance.new("Part")
@@ -711,7 +766,7 @@ local function startMoving(id: number, rec: any)
 	floorLabel.Text = `Floor {floor}`
 	setHidden()
 	updateCamera()
-	drawAreaLabels()
+	drawTiles()
 	info.Text = moveHint()
 	toPlot()
 end
@@ -753,7 +808,7 @@ local function openMenu(id: number)
 		Ui.label(
 			menuBody,
 			"About",
-			"Guests queue in front of it. Move it anywhere on floor 1 they can reach from the entrance.",
+			"Guests queue in front of it, at the desk with the shortest line. Put desks anywhere on floor 1 the guests can reach.",
 			UDim2.new(1, 0, 0, 44),
 			17,
 			Ui.Colour.Muted
@@ -763,7 +818,7 @@ local function openMenu(id: number)
 	Ui.button(row, "Move", "Move", UDim2.fromOffset(110, 46), function()
 		startMoving(id, rec)
 	end, Ui.Colour.Teal)
-	if piece.kind ~= "Desk" then
+	do
 		local refund = Economy.refund(rec.paid or 0)
 		for _, d in build().decor or {} do
 			if tostring(d.room) == tostring(id) then
@@ -822,41 +877,6 @@ local function openDecorMenu(id: number)
 		end,
 		Ui.Colour.Bad
 	)
-	menu.Visible = true
-end
-
-local function openAreaMenu(index: number)
-	local b = build()
-	local owned = {}
-	for _, i in b.areas or {} do
-		owned[i] = true
-	end
-	local can, why = Grid.canBuyArea(owned, index)
-	clearMenu("An area of the plot")
-	Ui.label(
-		menuBody,
-		"About",
-		"Buy it to build rooms on it, on every floor at once.",
-		UDim2.new(1, 0, 0, 44),
-		17,
-		Ui.Colour.Muted
-	)
-	local row = actionRow()
-	if can and b.areaCost then
-		Ui.button(row, "Buy", `Buy {Format.cash(b.areaCost)}`, UDim2.fromOffset(180, 46), function()
-			Net.send("BuyArea", index)
-			menu.Visible = false
-		end, Ui.Colour.Good)
-	else
-		Ui.label(
-			row,
-			"Why",
-			Hud.refusal(why or "NotNext"),
-			UDim2.fromOffset(320, 46),
-			18,
-			Ui.Colour.Bad
-		)
-	end
 	menu.Visible = true
 end
 
@@ -1059,9 +1079,13 @@ function redrawCards()
 		end
 	else
 		for i, p in Pieces.List do
-			local shown = if tab == "Stairs" then p.kind == "Stairs" else p.kind == tab
+			-- The Stairs tab holds the desks too (§5.4, A.1: one or more, anywhere on floor 1).
+			local shown = if tab == "Stairs"
+				then p.kind == "Stairs" or p.kind == "Desk"
+				else p.kind == tab
 			if
-				shown and (p.location == b.location or p.location == 0 or b.buildable[p.id] == true)
+				shown
+				and (p.location == b.location or p.location == 0 or b.buildable[p.id] == true)
 			then
 				local can = b.buildable[p.id] == true
 				local cost = b.costs[p.id] or p.cost
@@ -1103,8 +1127,8 @@ function redrawCards()
 	local stairsTab = tools:FindFirstChild("Stairs", true) :: TextButton?
 	if stairsTab then
 		stairsTab.Text = if (b.freeStairs or 0) > 0
-			then `Stairs ({b.freeStairs} free)`
-			else "Stairs"
+			then `Stairs, desks ({b.freeStairs} free)`
+			else "Stairs, desks"
 	end
 	-- The gamepad (§11): down from the tools' last row is the cards, far below them.
 	local first = firstCard()
@@ -1172,7 +1196,7 @@ local function setActive(on: boolean)
 		end
 	end
 	setHidden()
-	drawAreaLabels()
+	drawTiles()
 end
 
 function BuildController.isActive(): boolean
@@ -1196,10 +1220,8 @@ local function tapPlot(x: number, y: number)
 				return
 			end
 		end
-		local l = pointerLocal(x, y)
-		if l then
-			local z = math.floor(l.Z / G.CellSize)
-			Net.send("Finish", if floor == 1 and Grid.isLobbyRow(z) then "Lobby" else "Hallway", f)
+		if pointerLocal(x, y) then
+			Net.send("Finish", "Hallway", f)
 		end
 		return
 	end
@@ -1210,17 +1232,14 @@ local function tapPlot(x: number, y: number)
 		openMenu(id)
 		return
 	end
-	local l = pointerLocal(x, y)
-	if l then
-		local area = Grid.areaOf(math.floor(l.X / G.CellSize), math.floor(l.Z / G.CellSize))
-		local owned = false
-		for _, i in build().areas or {} do
-			if i == area then
-				owned = true
-			end
-		end
-		if area and not owned then
-			openAreaMenu(area)
+	-- A tile not owned: bought at once if it is next to the hotel (they are cheap, §5.4).
+	local c = cellUnder(x, y)
+	if c then
+		local can, why = Grid.canBuyTile(world().tiles, c.x, c.z)
+		if can then
+			Net.send("BuyTile", c.x, c.z)
+		elseif why == "NotNext" then
+			info.Text = Hud.refusal(why)
 		end
 	end
 end
@@ -1294,7 +1313,7 @@ function BuildController.Init()
 	local what = row()
 	tabButton(what, "Room", "Rooms", 114)
 	tabButton(what, "Amenity", "Amenities", 114)
-	tabButton(what, "Stairs", "Stairs", 140)
+	tabButton(what, "Stairs", "Stairs, desks", 140)
 	local what2 = row()
 	tabButton(what2, "Decor", "Decor", 114)
 	tabButton(what2, "Floor", "Floors", 114)
@@ -1308,7 +1327,7 @@ function BuildController.Init()
 		setHidden()
 		updateCamera()
 		drawGhost()
-		drawAreaLabels()
+		drawTiles()
 	end
 	tool(floors, "Down", "▼", 50, function()
 		toFloor(floor - 1)
@@ -1419,7 +1438,7 @@ function BuildController.Start()
 			redrawCards()
 			drawGhost()
 			scheduleHide()
-			drawAreaLabels()
+			drawTiles()
 		end
 	end)
 	-- Looking round the plot (his ask, 2026-10-19): the mouse wheel or a pinch
@@ -1526,6 +1545,7 @@ function BuildController.Start()
 		-- With nothing being placed, what is under the mouse lights up: it can be tapped.
 		if input.UserInputType == Enum.UserInputType.MouseMovement and not placing() then
 			showHover(underPointer(input.Position.X, input.Position.Y))
+			lightTile(input.Position.X, input.Position.Y)
 		end
 		if input.UserInputType == Enum.UserInputType.MouseMovement and placing() then
 			local c = screenToAnchor(input.Position.X, input.Position.Y)
@@ -1587,7 +1607,7 @@ function BuildController.Start()
 			updateCamera()
 		end
 	end)
-	-- A rebuilt hotel (a new floor, an area, a stair) makes new parts: hide them again.
+	-- A rebuilt hotel (a new floor, a tile, a stair) makes new parts: hide them again.
 	local function watchPlot()
 		local m = plotModel()
 		if m then

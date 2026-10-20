@@ -13,6 +13,7 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 
+local HotelPoints = require(ReplicatedStorage.Shared.HotelPoints)
 local Net = require(ReplicatedStorage.Shared.Net)
 local Ui = require(script.Parent.Ui)
 local UiImages = require(script.Parent.UiImages)
@@ -35,7 +36,10 @@ local STEPS: { [string]: Step } = {
 		text = "Guests pay into your till every second. Collect it at the till!",
 		world = "Till",
 	},
-	SecondRoom = { text = "Business is booming. Build a second room!", ui = "Hud.Left.BuildButton" },
+	SecondRoom = {
+		text = "Business is booming! In Build, tap the gold tiles beside your hotel to buy room for a second room, then build it.",
+		ui = "Hud.Left.BuildButton",
+	},
 	Bus = {
 		text = "The Night Bus brings guests for every hotel on the street. Walk up to one and Pitch it!",
 		ui = "Hud.BusCountdown",
@@ -45,7 +49,7 @@ local STEPS: { [string]: Step } = {
 		ui = "Hud.Left.BookButton",
 	},
 	Goal = {
-		text = "Big news: a Vampire Count arrives in 3 buses! Build a Coffin Suite in your new area. The area and the first suite are on me.",
+		text = "Big news: a Vampire Count arrives in 3 buses! Build a Coffin Suite on your new tiles. The tiles and the first suite are on me.",
 		ui = "Hud.Left.BuildButton",
 	},
 	Clean = {
@@ -100,10 +104,8 @@ local function setWorldArrow(name: string?)
 		worldArrow = nil
 	end
 	local plot = plotModel()
-	local lobby = plot and plot:FindFirstChild("Lobby")
-	local root = lobby and lobby:FindFirstChild("Root")
-	local a = name and root and root:FindFirstChild(name)
-	if not a or not a:IsA("Attachment") then
+	local a = if name and plot then HotelPoints.attachment(plot, name) else nil
+	if not a then
 		return
 	end
 	local bb = Instance.new("BillboardGui")

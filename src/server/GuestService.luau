@@ -36,6 +36,7 @@ local Economy = require(ReplicatedStorage.Shared.Economy)
 local Grid = require(ReplicatedStorage.Shared.Grid)
 local Layout = require(ReplicatedStorage.Shared.Layout)
 local Net = require(ReplicatedStorage.Shared.Net)
+local Pieces = require(ReplicatedStorage.Shared.Pieces)
 local Species = require(ReplicatedStorage.Shared.Species)
 local Stay = require(ReplicatedStorage.Shared.Stay)
 local StreetLayout = require(ReplicatedStorage.Shared.StreetLayout)
@@ -75,6 +76,7 @@ export type Guest = {
 	walkSpeed: number, -- the current path's speed (with any Bellhop bonus)
 	stop: string?, -- the bus stop a leaving guest walks to and waits at
 	speed: number,
+	desk: string?, -- the desk (a piece id) it queues at: the shortest line when it came (§5.4, A.1)
 	deskSince: number?,
 	waited: number,
 	payRate: number,
@@ -160,6 +162,7 @@ local function newGuest(speciesId: string, mutation: string?, source: string): G
 		walkSpeed = Constants.Stay.WalkSpeed,
 		stop = nil,
 		speed = Constants.Stay.WalkSpeed,
+		desk = nil,
 		deskSince = nil,
 		waited = 0,
 		payRate = 0,
@@ -193,25 +196,36 @@ local function toWorld(plot: PlotService.Plot, floor: number, c: Grid.Cell): Vec
 	return plot.frame:PointToWorldSpace(Grid.cellCentre(floor, c))
 end
 
---[[ The walk from the desk queue to a room's bed (§5.4): to the cell in
-	front of the desk, along the hallways and up or down the placed stairs
-	(Grid.route), to the door, in, to the bed (only to the door with `toDoor`:
-	staff on an errand, §4.6). ]]
+-- The hotel's desks (piece ids), lowest first: the first is the one staff work at (HotelPoints).
+local function desks(data: PlayerData.Data): { string }
+	local out = {}
+	for id, rec in data.layout do
+		local piece = Pieces.get(rec.item)
+		if piece and piece.kind == "Desk" then
+			table.insert(out, id)
+		end
+	end
+	table.sort(out, function(a, b)
+		return (tonumber(a) or 0) < (tonumber(b) or 0)
+	end)
+	return out
+end
+
+--[[ The walk from a desk's queue (`deskId`, else the first desk) to a room's
+	bed (§5.4): to the cell in front of the desk, along the hallways and up or
+	down the placed stairs (Grid.route), to the door, in, to the bed (only to
+	the door with `toDoor`: staff on an errand, §4.6). ]]
 local function roomPath(
 	plot: PlotService.Plot,
 	data: PlayerData.Data,
 	from: Vector3,
 	pieceId: string,
-	toDoor: boolean?
+	toDoor: boolean?,
+	deskId: string?
 ): { Vector3 }?
 	local world = PlotService.world(data)
 	local room = Layout.find(world, pieceId)
-	local desk: Grid.Placed? = nil
-	for _, p in world.pieces do
-		if p.kind == "Desk" then
-			desk = p
-		end
-	end
+	local desk = (deskId and Layout.find(world, deskId)) or Layout.find(world, desks(data)[1] or "")
 	if not room or not desk then
 		return nil
 	end
@@ -275,7 +289,7 @@ local function toHotel(plot: PlotService.Plot, from: Vector3): { Vector3 }
 	if foot then
 		table.insert(out, foot.Position)
 	end
-	local entrance = PlotService.lobbyPoint(plot, "Entrance")
+	local entrance = PlotService.point(plot, "Entrance")
 	if entrance then
 		table.insert(out, entrance.Position)
 	end
@@ -310,7 +324,7 @@ end
 -- Out of the hotel: through the arch, down the path to the pavement, and on to a bus stop.
 local function exitPath(g: Guest, plot: PlotService.Plot, from: { Vector3 }): { Vector3 }
 	local out = from
-	local entrance = PlotService.lobbyPoint(plot, "Entrance")
+	local entrance = PlotService.point(plot, "Entrance")
 	if entrance then
 		table.insert(out, entrance.Position)
 	end
@@ -322,10 +336,11 @@ local function exitPath(g: Guest, plot: PlotService.Plot, from: { Vector3 }): { 
 	return toStop(g, out)
 end
 
--- ===== The desk queue =====
+-- ===== The desk queues (§5.4, A.1: one or more desks) =====
 
-local function queueSpot(plot: PlotService.Plot, k: number): Vector3?
-	local at = PlotService.lobbyPoint(plot, `Queue_{math.min(k, 4)}`)
+-- Where the k-th guest in a desk's line stands.
+local function queueSpot(plot: PlotService.Plot, deskId: string?, k: number): Vector3?
+	local at = deskId and PlotService.piecePoint(plot, deskId, `Queue_{math.min(k, 4)}`)
 	if not at then
 		return nil
 	end
@@ -336,21 +351,61 @@ local function queueSpot(plot: PlotService.Plot, k: number): Vector3?
 	return at.Position
 end
 
+-- How many guests in the hotel's queue are bound for each desk.
+local function deskLines(hotel: HotelService.Hotel): { [string]: number }
+	local out = {}
+	for _, id in hotel.queue do
+		local g = guests[id]
+		if g and g.desk then
+			out[g.desk] = (out[g.desk] or 0) + 1
+		end
+	end
+	return out
+end
+
+-- The desk with the shortest line (the first of equals), or nil without a desk.
+local function shortestDesk(data: PlayerData.Data, hotel: HotelService.Hotel): string?
+	local counts = deskLines(hotel)
+	local best, bestCount = nil, math.huge
+	for _, id in desks(data) do
+		local n = counts[id] or 0
+		if n < bestCount then
+			best, bestCount = id, n
+		end
+	end
+	return best
+end
+
+--[[ Stands every waiting guest in its desk's line again: a guest whose desk
+	is gone (sold) goes to the shortest line, and each walks to its place
+	when it is not there (a desk moved, someone ahead checked in). ]]
 local function requeue(player: Player)
 	local hotel = HotelService.get(player)
 	local plot = PlotService.of(player)
-	if not hotel or not plot then
+	local data = PlayerData.get(player)
+	if not hotel or not plot or not data then
 		return
 	end
-	for k, id in hotel.queue do
+	for _, id in hotel.queue do
 		local g = guests[id]
-		local spot = queueSpot(plot, k)
-		if g and spot and g.state == "Queued" then
-			local now = here(g)
-			if (now - spot).Magnitude > 0.5 then
-				walk(g, { now, spot })
+		if g and not (g.desk and data.layout[g.desk]) then
+			g.desk = nil
+			g.desk = shortestDesk(data, hotel)
+		end
+	end
+	local k: { [string]: number } = {}
+	for _, id in hotel.queue do
+		local g = guests[id]
+		if g and g.desk then
+			k[g.desk] = (k[g.desk] or 0) + 1
+			local spot = queueSpot(plot, g.desk, k[g.desk])
+			if spot and g.state == "Queued" then
+				local now = here(g)
+				if (now - spot).Magnitude > 0.5 then
+					walk(g, { now, spot })
+				end
 			end
-			g.config:SetAttribute("Queue", k)
+			g.config:SetAttribute("Queue", k[g.desk])
 		end
 	end
 end
@@ -395,14 +450,16 @@ function GuestService.assign(g: Guest, player: Player, pieceId: string)
 	g.room = pieceId
 	g.speed = S.WalkSpeed
 	HotelService.setRoom(player, pieceId, "Reserved", g.id)
+	local data = PlayerData.get(player)
+	g.desk = if data then shortestDesk(data, hotel) else nil
 	table.insert(hotel.queue, g.id)
-	local k = #hotel.queue
+	local k = deskLines(hotel)[g.desk or ""] or 1
 	local from = here(g)
 	local path: { Vector3 } = { from }
 	for _, p in toHotel(plot, from) do
 		table.insert(path, p)
 	end
-	local spot = queueSpot(plot, k)
+	local spot = queueSpot(plot, g.desk, k)
 	if spot then
 		table.insert(path, spot)
 	end
@@ -524,8 +581,9 @@ function GuestService.board(stopName: string)
 	end
 end
 
--- Checks the first waiting guest in, from the desk (the player's tap, or Front Desk staff).
-function GuestService.checkIn(player: Player, byStaff: boolean?): Guest?
+--[[ Checks the first waiting guest in: at desk `deskId` (the player's tap
+	there), or at any desk (Front Desk staff, the Studio command). ]]
+function GuestService.checkIn(player: Player, byStaff: boolean?, deskId: string?): Guest?
 	local hotel = HotelService.get(player)
 	local plot = PlotService.of(player)
 	local data = PlayerData.get(player)
@@ -535,7 +593,11 @@ function GuestService.checkIn(player: Player, byStaff: boolean?): Guest?
 	local g: Guest? = nil
 	for _, id in hotel.queue do
 		local candidate = guests[id]
-		if candidate and candidate.state == "Queued" then
+		if
+			candidate
+			and candidate.state == "Queued"
+			and (deskId == nil or candidate.desk == deskId)
+		then
 			g = candidate
 			break
 		end
@@ -544,7 +606,7 @@ function GuestService.checkIn(player: Player, byStaff: boolean?): Guest?
 		return nil
 	end
 	local rec = data.layout[g.room]
-	local path = roomPath(plot, data, here(g), g.room)
+	local path = roomPath(plot, data, here(g), g.room, false, g.desk)
 	if not rec or not path then
 		-- The room went missing or cannot be reached: the guest goes home.
 		leaveQueue(player, g)
@@ -638,8 +700,18 @@ local function checkout(g: Guest)
 	end
 	-- Walk back out the way it came in: the desk-to-bed path, reversed.
 	local data = PlayerData.get(player)
-	local desk = plot and queueSpot(plot, 1)
-	local inPath = if plot and data and desk then roomPath(plot, data, desk, room) else nil
+	local deskId = if data
+			and g.desk
+			and data.layout[g.desk]
+		then g.desk
+		elseif data then desks(data)[1]
+		else nil
+	local desk = plot and queueSpot(plot, deskId, 1)
+	local inPath = if plot
+			and data
+			and desk
+		then roomPath(plot, data, desk, room, false, deskId)
+		else nil
 	g.state = "Leaving"
 	g.room = nil
 	g.requestUntil = nil
@@ -700,7 +772,7 @@ function GuestService.collectTill(player: Player)
 	player:SetAttribute("Till", 0)
 	PlayerData.earn(player, amount)
 	local plot = PlotService.of(player)
-	local at = plot and PlotService.lobbyPoint(plot, "Till")
+	local at = plot and PlotService.point(plot, "Till")
 	Net.fire(player, "Pop", amount, if at then at.Position else nil, "Collect")
 	PlayerData.stat(player, "collects")
 end
@@ -777,6 +849,10 @@ local function tick()
 				g.state = "Queued"
 				g.deskSince = now
 				publish(g)
+				if g.owner then
+					-- Its line may have moved on while it walked (a desk moved or sold).
+					requeue(g.owner)
+				end
 			end
 		elseif g.state == "Queued" then
 			-- The tutorial's guest waits as long as the new player needs (§11: the
@@ -870,8 +946,9 @@ function GuestService.Start()
 		local g = GuestService.spawnTutorial(player, args[1] or "Slime", { source = "Dev" })
 		return if g then `guest {g.id} {g.species} -> room {g.room}` else "no vacant room for it"
 	end)
-	DevGrant.register("checkin", function(player)
-		local g = GuestService.checkIn(player, false)
+	DevGrant.register("checkin", function(player, args)
+		-- At any desk, or at desk `args[1]` (a piece id).
+		local g = GuestService.checkIn(player, false, args[1])
 		return if g then `checked in {g.id}` else "nobody waiting"
 	end)
 	DevGrant.register("guests", function()
@@ -906,7 +983,7 @@ function GuestService.Start()
 	end)
 	PlotService.onPrompt(function(player, plot, kind, pieceId)
 		if kind == "Desk" then
-			GuestService.checkIn(player, false)
+			GuestService.checkIn(player, false, pieceId)
 		elseif kind == "Till" then
 			GuestService.collectTill(player)
 		elseif kind == "Clean" and pieceId then
@@ -917,12 +994,25 @@ function GuestService.Start()
 		local _ = plot
 	end)
 	Net.on("Collect", function(player)
-		-- From the HUD: only within reach of the till, as the prompt would be.
+		-- From the HUD: only within reach of a desk's till, as the prompt would be.
 		local plot = PlotService.of(player)
-		local at = plot and PlotService.lobbyPoint(plot, "Till")
+		local data = PlayerData.get(player)
 		local character = player.Character
-		if at and character and (character:GetPivot().Position - at.Position).Magnitude <= 14 then
-			GuestService.collectTill(player)
+		if not plot or not data or not character then
+			return
+		end
+		for _, id in desks(data) do
+			local at = PlotService.piecePoint(plot, id, "Till")
+			if at and (character:GetPivot().Position - at.Position).Magnitude <= 14 then
+				GuestService.collectTill(player)
+				return
+			end
+		end
+	end)
+	-- A desk moved or sold rebuilds the hotel: its line walks to its new place or another desk.
+	PlotService.onBuilt(function(plot)
+		if plot.owner then
+			requeue(plot.owner)
 		end
 	end)
 	PlayerData.onDeparted(function(player)

@@ -17,14 +17,12 @@ Constants.Grid = {
 	CellSize = 12, -- his ruling, 2026-10-19 evening (§3, §18): 2×2 room = 24 × 24 studs
 	Cells = 12, -- a 12 × 12 grid per floor (§3)
 	FloorHeight = 18, -- his ruling, 2026-10-19 evening: a 1-stud slab and 17 clear
-	LobbyRows = 2, -- PLACEHOLDER: floor 1's front rows z 0..1 are the lobby (a gallery above it)
-	-- §5.4, his yes 2026-10-19: the plot behind the lobby is bought in areas of
-	-- 4 × 5 cells, three across and two deep, each for every floor at once.
-	AreaW = 4, -- PLACEHOLDER
-	AreaD = 5, -- PLACEHOLDER
-	StartArea = 2, -- the front middle one (areas count from the front left, row by row)
+	-- §5.4, A.1, his rulings 2026-10-20: the plot is bought a cell (a tile) at a
+	-- time, a tile owned on every floor; no lobby strip, no areas.
+	StartTiles = { x = 4, z = 0, w = 4, d = 4 }, -- his pick: a new hotel's 4 × 4 square, centred on the entrance
+	TutorialTiles = { w = 3, d = 4 }, -- PLACEHOLDER: the goal card's free block beside the start square, so the 3×3 Coffin Suite fits
 	Squares = 4, -- decor squares along a cell: a grid of 3 studs (his yes, §5.4)
-	DeskStart = { x = 0, z = 0, r = 1 }, -- a new hotel's FrontDesk: the lobby's end, served toward the entrance (as the old desk)
+	DeskStart = { x = 5, z = 1, r = 0 }, -- his ruling 2026-10-20: across from the arch, served toward the street
 	SlabThickness = 1,
 	WallHeight = 17, -- walls reach the slab above (his ruling): FloorHeight − SlabThickness
 	WingDepth = 48, -- his pick, 2026-10-19 (doubled with the grid): the Resident Wing garden behind the hotel
@@ -131,7 +129,9 @@ Constants.Economy = {
 	TierPoints = { 100, 300 }, -- PLACEHOLDER (his yes to the proposal, numbers his to set)
 	TierPointsCells = 4, -- the room size TierPoints are for: 2×2
 	PointsPerCash = 1, -- PLACEHOLDER: a decor item's points per $ of its price
-	AreaCosts = { 0, 1000, 3000, 8000, 20000, 50000 }, -- PLACEHOLDER: the n-th area owned
+	TileCost = 50, -- PLACEHOLDER (his "cheap", §5.4, A.1): the n-th tile bought costs TileCost × TileGrowth^n
+	TileGrowth = 1.03, -- PLACEHOLDER: the whole plot then costs about what the six areas did (~$72,000)
+	DeskCost = 500, -- PLACEHOLDER: a second or later FrontDesk (the first is free, §5.4)
 	Milestones = { 5, 10, 25 }, -- each doubles that type's pay (§6.2)
 	SellRefund = 0.5, -- PLACEHOLDER
 	FloorCosts = { 0, 500, 5000, 50000 }, -- PLACEHOLDER: floor 1 free; floor 4 needs the pass

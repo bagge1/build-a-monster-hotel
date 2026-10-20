@@ -114,7 +114,7 @@ local function setStep(player: Player, data: PlayerData.Data, s: string)
 	nextPressed[player] = nil
 	if s == "Goal" then
 		BuildService.tutorialUnlock(player, "CoffinSuite")
-		BuildService.tutorialArea(player)
+		BuildService.tutorialTiles(player)
 		data.stats.voucher_CoffinSuite = 1
 		data.stats.tutorialGoal = 1
 		data.stats.tutorialGoalBus = workspace:GetAttribute("BusIndex") :: number? or 0

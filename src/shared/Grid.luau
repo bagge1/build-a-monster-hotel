@@ -12,13 +12,19 @@
 	w × d at r 0 or 2 covers w cells along x and d along z; at r 1 or 3 the
 	other way round.
 
-	WHAT IS THE HOTEL'S (§5.4, his yes 2026-10-19). Floor 1's front
-	`LobbyRows` rows are the lobby; above it they are a gallery. Behind them
-	the plot is cut into areas of `AreaW` × `AreaD` cells, bought for every
-	floor at once; a cell is the hotel's when it is in the lobby rows or in an
-	owned area. Rooms and amenities stand only in owned areas; stairs and the
-	desk may stand in the lobby rows too. The two cells of the lobby's front
-	row either side of the entrance are never built on.
+	WHAT IS THE HOTEL'S (§5.4, A.1, his rulings 2026-10-20). The plot is
+	bought one cell at a time, a TILE, and a tile owned is owned on every
+	floor; one can be bought when it shares an edge with an owned one. A new
+	hotel owns the square `StartTiles`. Anything may stand on any owned cell:
+	there is no lobby strip, no gallery and no area. The entrance's mouth,
+	the two cells inside the arch (x 5–6, z 0), is never built on; a desk's
+	queue may stand there. There may be several desks; the last cannot go.
+
+	THE FACADE follows the outline of the owned tiles on every floor
+	(`Grid.facade`): a wall on each edge between an owned cell and one not
+	owned (or the plot's edge), a corner post where the outline turns, the
+	entrance arch on floor 1's front edge at the mouth, and the street-facing
+	edges of the plot left open above floor 1.
 
 	HALLWAYS ARE THE FREE CELLS of the hotel: not under a piece, not a
 	stairwell, not furnished down the middle (decor in a cell's middle takes
@@ -70,7 +76,7 @@ export type DecorPlaced = {
 }
 export type World = {
 	floors: number,
-	areas: { [number]: boolean },
+	tiles: { [number]: boolean }, -- owned cells, by `Grid.tileKey`
 	pieces: { Placed },
 	decor: { DecorPlaced },
 }
@@ -80,8 +86,7 @@ export type Leg = { floor: number?, cells: { Cell }?, stair: Placed?, up: boolea
 export type Refusal =
 	"OutOfBounds"
 	| "Overlap"
-	| "Area"
-	| "Lobby"
+	| "Tile"
 	| "Entrance"
 	| "Decor"
 	| "DoorBlocked"
@@ -90,7 +95,7 @@ export type Refusal =
 	| "NoFloor"
 	| "NoFloorAbove"
 	| "DeskFloor"
-	| "OneDesk"
+	| "LastDesk"
 	| "Wall"
 
 local Grid = {}
@@ -122,72 +127,64 @@ function Grid.inBounds(x: number, z: number): boolean
 	return x >= 0 and z >= 0 and x < N and z < N
 end
 
--- ===== Areas (§5.4) =====
+-- ===== Tiles (§5.4, A.1) =====
 
-local COLUMNS = N // G.AreaW
-local ROWS = (N - G.LobbyRows) // G.AreaD
-
-function Grid.isLobbyRow(z: number): boolean
-	return z >= 0 and z < G.LobbyRows
+-- A cell as one number: the key of `World.tiles` (and of the profile's, as a string).
+function Grid.tileKey(x: number, z: number): number
+	return key(x, z)
 end
 
--- The area a cell is in (1 at the front left, row by row), nil in the lobby rows.
-function Grid.areaOf(x: number, z: number): number?
-	if not Grid.inBounds(x, z) or Grid.isLobbyRow(z) then
-		return nil
+function Grid.tileOf(k: number): Cell
+	return { x = k % N, z = k // N }
+end
+
+-- A new hotel's tiles: the square `StartTiles` (his pick, 2026-10-20).
+function Grid.startTiles(): { Cell }
+	local s = G.StartTiles
+	local out = {}
+	for z = s.z, s.z + s.d - 1 do
+		for x = s.x, s.x + s.w - 1 do
+			table.insert(out, { x = x, z = z })
+		end
 	end
-	local col, row = x // G.AreaW, (z - G.LobbyRows) // G.AreaD
-	if col >= COLUMNS or row >= ROWS then
-		return nil
-	end
-	return row * COLUMNS + col + 1
+	return out
 end
 
-function Grid.areaCount(): number
-	return COLUMNS * ROWS
-end
-
--- An area's cells: its lowest corner and size.
-function Grid.areaRect(index: number): (number, number, number, number)
-	local col, row = (index - 1) % COLUMNS, (index - 1) // COLUMNS
-	return col * G.AreaW, G.LobbyRows + row * G.AreaD, G.AreaW, G.AreaD
-end
-
--- Whether an area can be bought: it exists, is not owned, and touches the lobby or an owned area.
-function Grid.canBuyArea(areas: { [number]: boolean }, index: number): (boolean, string?)
-	if index % 1 ~= 0 or index < 1 or index > Grid.areaCount() then
+-- Whether a tile can be bought: on the plot, not owned, and sharing an edge with an owned one.
+function Grid.canBuyTile(tiles: { [number]: boolean }, x: number, z: number): (boolean, string?)
+	if x % 1 ~= 0 or z % 1 ~= 0 or not Grid.inBounds(x, z) then
 		return false, "Unknown"
 	end
-	if areas[index] then
+	if tiles[key(x, z)] then
 		return false, "Owned"
 	end
-	local col, row = (index - 1) % COLUMNS, (index - 1) // COLUMNS
-	if row == 0 then
-		return true, nil
-	end
-	for _, n in { { col - 1, row }, { col + 1, row }, { col, row - 1 }, { col, row + 1 } } do
-		if n[1] >= 0 and n[1] < COLUMNS and n[2] >= 0 and n[2] < ROWS then
-			if areas[n[2] * COLUMNS + n[1] + 1] then
-				return true, nil
-			end
+	for _, n in { { x - 1, z }, { x + 1, z }, { x, z - 1 }, { x, z + 1 } } do
+		if Grid.inBounds(n[1], n[2]) and tiles[key(n[1], n[2])] then
+			return true, nil
 		end
 	end
 	return false, "NotNext"
 end
 
--- Whether the cell is the hotel's: the lobby rows (a gallery above floor 1) or an owned area.
-function Grid.isOpen(world: World, x: number, z: number): boolean
-	if not Grid.inBounds(x, z) then
-		return false
+-- Every tile that can be bought now.
+function Grid.buyable(tiles: { [number]: boolean }): { Cell }
+	local out = {}
+	for z = 0, N - 1 do
+		for x = 0, N - 1 do
+			if Grid.canBuyTile(tiles, x, z) then
+				table.insert(out, { x = x, z = z })
+			end
+		end
 	end
-	if Grid.isLobbyRow(z) then
-		return true
-	end
-	local a = Grid.areaOf(x, z)
-	return a ~= nil and world.areas[a] == true
+	return out
 end
 
--- The lobby's front-row cells either side of the entrance (floor 1): guests come in here.
+-- Whether the cell is the hotel's: an owned tile.
+function Grid.isOpen(world: World, x: number, z: number): boolean
+	return Grid.inBounds(x, z) and world.tiles[key(x, z)] == true
+end
+
+-- The entrance's mouth (floor 1), the two cells inside the arch: guests come in here.
 function Grid.entrance(): { Cell }
 	return { { x = N // 2 - 1, z = 0 }, { x = N // 2, z = 0 } }
 end
@@ -516,15 +513,8 @@ function Grid.canPlace(world: World, piece: Placed, skip: Placed?): (boolean, Re
 	if piece.r < 0 or piece.r > 3 or piece.r % 1 ~= 0 then
 		return false, "OutOfBounds"
 	end
-	if piece.kind == "Desk" then
-		if floor ~= 1 then
-			return false, "DeskFloor"
-		end
-		for _, p in world.pieces do
-			if p.kind == "Desk" and not same(p, skip) then
-				return false, "OneDesk"
-			end
-		end
+	if piece.kind == "Desk" and floor ~= 1 then
+		return false, "DeskFloor"
 	end
 	local before = occupy(world, nil, nil)
 	local occ = occupy(world, skip, nil)
@@ -544,10 +534,7 @@ function Grid.canPlace(world: World, piece: Placed, skip: Placed?): (boolean, Re
 			return false, "Entrance"
 		end
 		if not Grid.isOpen(world, c.x, c.z) then
-			return false, "Area"
-		end
-		if (piece.kind == "Room" or piece.kind == "Amenity") and Grid.isLobbyRow(c.z) then
-			return false, if floor == 1 then "Lobby" else "Area"
+			return false, "Tile"
 		end
 		local k = fkey(floor, c.x, c.z)
 		if occ.piece[k] then
@@ -589,12 +576,20 @@ function Grid.canPlace(world: World, piece: Placed, skip: Placed?): (boolean, Re
 	return true, nil
 end
 
---[[ Whether `piece` may be taken away (sold): never the desk; never a stair
-	(or anything) whose going would cut a door off, such as the last stair to
-	a floor with rooms (§5.4). ]]
+--[[ Whether `piece` may be taken away (sold): never the last desk; never a
+	stair (or anything) whose going would cut a door off, such as the last
+	stair to a floor with rooms (§5.4). ]]
 function Grid.canRemove(world: World, piece: Placed): (boolean, Refusal?)
 	if piece.kind == "Desk" then
-		return false, "OneDesk"
+		local others = 0
+		for _, p in world.pieces do
+			if p.kind == "Desk" and not same(p, piece) then
+				others += 1
+			end
+		end
+		if others == 0 then
+			return false, "LastDesk"
+		end
 	end
 	local before = occupy(world, nil, nil)
 	local after = occupy(world, piece, nil)
@@ -606,8 +601,8 @@ end
 
 -- ===== Hallway decor =====
 
---[[ Whether hallway decor `d` (on lobby, gallery or hallway floor, in no
-	room) may stand there. `skip` is decor being moved. ]]
+--[[ Whether hallway decor `d` (on hallway floor, in no room) may stand
+	there. `skip` is decor being moved. ]]
 function Grid.canPlaceDecor(world: World, d: DecorPlaced, skip: DecorPlaced?): (boolean, Refusal?)
 	if d.floor < 1 or d.floor > world.floors then
 		return false, "NoFloor"
@@ -625,20 +620,14 @@ function Grid.canPlaceDecor(world: World, d: DecorPlaced, skip: DecorPlaced?): (
 		end
 		local cx, cz = s.x // Q, s.z // Q
 		if not Grid.isOpen(world, cx, cz) then
-			return false, "Area"
+			return false, "Tile"
 		end
 		local k = fkey(d.floor, cx, cz)
 		if occ.piece[k] or occ.well[k] then
 			return false, "Overlap"
 		end
-		-- The entrance's mouth: the arch's 2 squares either side of the middle, 2 deep.
-		if
-			d.layer ~= "Rug"
-			and d.floor == 1
-			and s.z < 2
-			and s.x >= (N // 2) * Q - 2
-			and s.x < (N // 2) * Q + 2
-		then
+		-- Nothing but a rug in the entrance's mouth (A.1).
+		if d.layer ~= "Rug" and isEntrance(d.floor, cx, cz) then
 			return false, "Entrance"
 		end
 	end
@@ -756,6 +745,103 @@ function Grid.allServed(world: World): boolean
 		end
 	end
 	return true
+end
+
+-- ===== The facade's outline (§5.4, A.1; MODELS.md "Facade") =====
+
+export type FacadePiece = {
+	kind: "Wall" | "Entrance" | "Corner",
+	floor: number,
+	at: Vector3, -- plot-local: the middle of the cell edge (a corner's vertex), on the floor's walking surface
+	turn: number, -- quarter turns about +Y (CFrame.Angles(0, turn * π/2, 0)) from the piece's authored frame
+}
+
+-- The four sides of a cell: the step to the cell beyond it, and the turn that faces a piece's −Z out of it.
+local SIDES = {
+	{ dx = 0, dz = -1, turn = 0 }, -- the front, toward the street
+	{ dx = -1, dz = 0, turn = 1 },
+	{ dx = 0, dz = 1, turn = 2 },
+	{ dx = 1, dz = 0, turn = 3 },
+}
+
+-- The quadrants round a vertex (x and z signs) and the turn that puts a corner post's −X −Z quadrant there.
+local QUADRANTS = { { -1, -1, 0 }, { -1, 1, 1 }, { 1, 1, 2 }, { 1, -1, 3 } }
+
+--[[ Every facade piece round the owned tiles on floors 1..`floors`: a
+	`Wall` on each edge between an owned cell and one not owned or off the
+	plot, the `Entrance` (one piece over both cells) on floor 1's front edge
+	at the mouth, and a `Corner` at each vertex where the outline turns,
+	filling the empty cell's quadrant there. Above floor 1 the plot's
+	street-facing edge is left open (his ruling, 2026-10-19). ]]
+function Grid.facade(tiles: { [number]: boolean }, floors: number): { FacadePiece }
+	local C = G.CellSize
+	local function owned(x: number, z: number): boolean
+		return Grid.inBounds(x, z) and tiles[key(x, z)] == true
+	end
+	local out: { FacadePiece } = {}
+	local mouth = Grid.entrance()
+	for floor = 1, floors do
+		local y = Grid.floorY(floor)
+		for z = 0, N - 1 do
+			for x = 0, N - 1 do
+				if owned(x, z) then
+					for _, side in SIDES do
+						local nx, nz = x + side.dx, z + side.dz
+						local open = floor > 1 and nz < 0
+						if not owned(nx, nz) and not open then
+							if floor == 1 and nz < 0 and isEntrance(1, x, z) then
+								-- One arch over the mouth's two cells, drawn once at its middle.
+								if x == mouth[1].x and owned(mouth[2].x, mouth[2].z) then
+									table.insert(out, {
+										kind = "Entrance",
+										floor = floor,
+										at = Vector3.new((x + 1) * C, y, 0),
+										turn = 0,
+									})
+								end
+							else
+								table.insert(out, {
+									kind = "Wall",
+									floor = floor,
+									at = Vector3.new(
+										(x + 0.5 + side.dx / 2) * C,
+										y,
+										(z + 0.5 + side.dz / 2) * C
+									),
+									turn = side.turn,
+								})
+							end
+						end
+					end
+				end
+			end
+		end
+		-- A vertex has four cells round it. A post fills an empty one when both
+		-- its edge neighbours are owned (a concave corner), or when both are
+		-- empty and the cell across the vertex is owned (a convex one).
+		for vz = 0, N do
+			for vx = 0, N do
+				local function at(sx: number, sz: number): boolean
+					return owned(vx + (if sx < 0 then -1 else 0), vz + (if sz < 0 then -1 else 0))
+				end
+				for _, q in QUADRANTS do
+					local sx, sz = q[1], q[2]
+					if not at(sx, sz) then
+						local a, b = at(-sx, sz), at(sx, -sz)
+						if (a and b) or (not a and not b and at(-sx, -sz)) then
+							table.insert(out, {
+								kind = "Corner",
+								floor = floor,
+								at = Vector3.new(vx * C, y, vz * C),
+								turn = q[3],
+							})
+						end
+					end
+				end
+			end
+		end
+	end
+	return out
 end
 
 -- ===== Frames =====

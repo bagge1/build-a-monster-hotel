@@ -5,9 +5,10 @@
 	server times the errand with it, the client draws the walk with the same
 	numbers, and the `staff` spec holds it to its rules.
 
-	A POST is found by the lobby's attachments (MODELS.md, "Lobby"), through
-	`point`, which the server answers from `PlotService.lobbyPoint` and the
-	client from the lobby model it sees. `slot` is the resident's place among
+	A POST is found by the hotel's shared points (`HotelPoints`: the facade's
+	`Entrance`, the first desk's `Clerk`, `Till`, `Queue_n`), through `point`,
+	which the server answers from `PlotService.point` and the client from the
+	plot it sees. `slot` is the resident's place among
 	its role's staff (1, 2, ...), which the server publishes so every client
 	stands them in the same order.
 
@@ -27,7 +28,7 @@ Staff.DoneText = {
 	Housekeeping = "✓ Housekeeping",
 } :: { [string]: string }
 
--- Where a resident in `role` stands, or nil (the Wing, or a lobby without the attachment).
+-- Where a resident in `role` stands, or nil (the Wing, or a hotel without the point).
 function Staff.post(role: string, slot: number, point: (name: string) -> CFrame?): Vector3?
 	local function near(name: string, offset: Vector3): Vector3?
 		local cf = point(name)
@@ -35,7 +36,7 @@ function Staff.post(role: string, slot: number, point: (name: string) -> CFrame?
 	end
 	local spread = (slot - 1) * 3
 	if role == "FrontDesk" then
-		-- Behind the counter, side by side along it (MODELS.md, "Lobby": `Clerk`).
+		-- Behind the first desk's counter, side by side along it (MODELS.md, "Front desk": `Clerk`).
 		return near("Clerk", Vector3.new(spread, 0, 0))
 	elseif role == "Bellhop" then
 		return near("Entrance", Vector3.new(4 + spread, 0, -1.5))
@@ -43,7 +44,8 @@ function Staff.post(role: string, slot: number, point: (name: string) -> CFrame?
 		-- Inside the entrance, across from the Bellhop (the sign left the lobby for the forecourt).
 		return near("Entrance", Vector3.new(-4 - spread, 0, -1.5))
 	elseif role == "Entertainment" then
-		return near("Spawn", Vector3.new(-4 - spread, 0, -1))
+		-- Just inside the arch, off to the side of the queue (the lobby's spawn went with the lobby).
+		return near("Entrance", Vector3.new(-8 - spread, 0, 4))
 	elseif role == "RoomService" then
 		return near("Till", Vector3.new(4 + spread, -3.8, 2))
 	elseif role == "Housekeeping" then

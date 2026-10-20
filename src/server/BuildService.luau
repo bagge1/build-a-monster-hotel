@@ -6,16 +6,17 @@
 	wallet holds the price (`Economy`), and a room being sold or moved has no
 	guest in it (`HotelService`).
 
-	FREE BUILDING (§5.4, his rulings and his yes of 2026-10-19): the plot is
-	bought in areas (`BuyArea`); rooms, amenities and stairs are placed, moved
-	and sold; the one front desk is moved, never bought or sold; decor stands
-	on 3-stud squares in rooms and on hallway floor (`PlaceDecor`,
-	`MoveDecor`, `SellDecor`) and moves and goes with its room; a floor finish
-	is chosen per room, for the lobby and for the hallways (`Finish`). A new
+	FREE BUILDING (§5.4, A.1, his rulings of 2026-10-19 and 2026-10-20): the
+	plot is bought one tile (cell) at a time (`BuyTile`), each owned on every
+	floor; rooms, amenities, stairs and front desks are placed, moved and
+	sold anywhere on owned tiles (the first desk is free, the last cannot be
+	sold); decor stands on 3-stud squares in rooms and on hallway floor
+	(`PlaceDecor`, `MoveDecor`, `SellDecor`) and moves and goes with its room;
+	a floor finish is chosen per room and for the hallways (`Finish`). A new
 	floor's first stair is free. A room's tier is its decor's (`Layout`), not
 	bought.
 
-	Remotes: Place, Move, Sell, BuyFloor, BuyArea, PlaceDecor, MoveDecor,
+	Remotes: Place, Move, Sell, BuyFloor, BuyTile, PlaceDecor, MoveDecor,
 	SellDecor, Finish, Equip. A refusal says why (`Refused`), so the client
 	can show it.
 ]]
@@ -44,7 +45,7 @@ local BuildService = {}
 local changedHandlers: { (Player, string) -> () } = {}
 
 --[[ Called after the layout changes (what changed: "Place", "Sell", "Move",
-	"Floor", "Area", "Decor", "Finish"). ]]
+	"Floor", "Tile", "Decor", "Finish"). ]]
 function BuildService.onChanged(handler: (Player, string) -> ())
 	table.insert(changedHandlers, handler)
 end
@@ -89,16 +90,6 @@ function BuildService.rooms(data: PlayerData.Data): number
 	return n
 end
 
-function BuildService.areasOwned(data: PlayerData.Data): number
-	local n = 0
-	for _, v in data.areas do
-		if v then
-			n += 1
-		end
-	end
-	return n
-end
-
 local tutorialUnlocks: { [Player]: { [string]: boolean } } = {}
 
 -- The tutorial unlocks a piece early (Appendix A.7).
@@ -107,26 +98,59 @@ function BuildService.tutorialUnlock(player: Player, item: string)
 	tutorialUnlocks[player][item] = true
 end
 
---[[ The goal card's free area (§11, his ruling 2026-10-20): a front area beside
-	the start area, so the free Coffin Suite (3×3) fits beside the two Standard
-	Rooms and opens onto the lobby. It counts as an owned area for the next one's
-	price. Nothing when both front neighbours are owned already. ]]
-function BuildService.tutorialArea(player: Player)
+--[[ The goal card's free tiles (§11, A.7, his go 2026-10-20; PLACEHOLDER
+	block): a `TutorialTiles` block (3 × 4) beside the start square, so the
+	free Coffin Suite (3×3) fits. The block on the right of the start square
+	is given if a suite fits with it, else the one on the left, else the
+	right; tiles owned already stay owned. Free: the next tile's price is not
+	raised. ]]
+function BuildService.tutorialTiles(player: Player)
 	local data = PlayerData.get(player)
 	if not data then
 		return
 	end
 	local G = Constants.Grid
-	local sx, sz = Grid.areaRect(G.StartArea)
-	for i = 1, Grid.areaCount() do
-		local x, z = Grid.areaRect(i)
-		if z == sz and math.abs(x - sx) == G.AreaW and not data.areas[tostring(i)] then
-			data.areas[tostring(i)] = true
-			PlotService.rebuild(player)
-			changed(player, "Area")
-			return
+	local S, T = G.StartTiles, G.TutorialTiles
+	local function block(x0: number): { string }
+		local out = {}
+		for z = S.z, S.z + T.d - 1 do
+			for x = x0, x0 + T.w - 1 do
+				if Grid.inBounds(x, z) then
+					table.insert(out, tostring(Grid.tileKey(x, z)))
+				end
+			end
 		end
+		return out
 	end
+	local function suiteFits(keys: { string }): boolean
+		local tiles = table.clone(data.tiles)
+		for _, k in keys do
+			tiles[k] = true
+		end
+		local world = Layout.world(data.floors, tiles, data.layout, data.decor)
+		for z = 0, G.Cells - 1 do
+			for x = 0, G.Cells - 1 do
+				for r = 0, 3 do
+					local p =
+						Layout.piece("", { item = "CoffinSuite", floor = 1, x = x, z = z, r = r })
+					if p then
+						p.id = nil
+						if Grid.canPlace(world, p) then
+							return true
+						end
+					end
+				end
+			end
+		end
+		return false
+	end
+	local right, left = block(S.x + S.w), block(S.x - T.w)
+	local chosen = if suiteFits(right) then right elseif suiteFits(left) then left else right
+	for _, k in chosen do
+		data.tiles[k] = true
+	end
+	PlotService.rebuild(player)
+	changed(player, "Tile")
 end
 
 function BuildService.context(player: Player, data: PlayerData.Data): Unlocks.Context
@@ -178,6 +202,10 @@ function BuildService.price(data: PlayerData.Data, item: string): number
 	if piece.kind == "Stairs" and data.freeStairs > 0 then
 		return 0
 	end
+	if piece.kind == "Desk" then
+		-- The first desk is free, every other one costs the same (§5.4, A.1, PLACEHOLDER).
+		return if BuildService.owned(data, item) == 0 then 0 else Constants.Economy.DeskCost
+	end
 	if (data.stats[`voucher_{item}`] or 0) > 0 then
 		return 0
 	end
@@ -191,10 +219,12 @@ local function blockedFor(data: PlayerData.Data): (string) -> { [number]: boolea
 	end
 end
 
--- Stairs change the slabs over them and the model of the stair below: the hotel is built again.
+--[[ Stairs change the slabs over them and the model of the stair below, and a
+	desk the guests' queues (GuestService, on PlotService.onBuilt): the hotel
+	is built again. ]]
 local function redraw(player: Player, item: string, id: string)
 	local piece = Pieces.get(item)
-	if piece and piece.kind == "Stairs" then
+	if piece and (piece.kind == "Stairs" or piece.kind == "Desk") then
 		PlotService.rebuild(player)
 	else
 		PlotService.addPiece(player, id)
@@ -207,10 +237,6 @@ local function place(player: Player, item: string, floor: number, x: number, z: 
 	local data = PlayerData.get(player)
 	local piece = Pieces.get(item)
 	if not data or not piece then
-		return
-	end
-	if piece.kind == "Desk" then
-		refuse(player, "Place", "OneDesk")
 		return
 	end
 	local ok, why = Unlocks.buildable(item, BuildService.context(player, data))
@@ -328,7 +354,8 @@ local function sell(player: Player, idNumber: number)
 		PlotService.drawDecor(player, did)
 	end
 	data.layout[id] = nil
-	if rec.item == "Stairs" then
+	local piece = Pieces.get(rec.item)
+	if piece and (piece.kind == "Stairs" or piece.kind == "Desk") then
 		PlotService.rebuild(player)
 	else
 		PlotService.removePiece(player, id)
@@ -360,28 +387,24 @@ local function buyFloor(player: Player)
 	changed(player, "Floor")
 end
 
-local function buyArea(player: Player, index: number)
+local function buyTile(player: Player, x: number, z: number)
 	local data = PlayerData.get(player)
 	if not data then
 		return
 	end
-	local owned = {}
-	for k, v in data.areas do
-		owned[tonumber(k) :: number] = v
-	end
-	local ok, why = Grid.canBuyArea(owned, index)
+	local ok, why = Grid.canBuyTile(PlotService.world(data).tiles, x, z)
 	if not ok then
-		refuse(player, "BuyArea", why or "Blocked")
+		refuse(player, "BuyTile", why or "Blocked")
 		return
 	end
-	local cost = Economy.areaCost(BuildService.areasOwned(data))
-	if not cost or not PlayerData.spend(player, cost) then
-		refuse(player, "BuyArea", "Cash")
+	if not PlayerData.spend(player, Economy.tileCost(data.tilesBought)) then
+		refuse(player, "BuyTile", "Cash")
 		return
 	end
-	data.areas[tostring(index)] = true
+	data.tiles[tostring(Grid.tileKey(x, z))] = true
+	data.tilesBought += 1
 	PlotService.rebuild(player)
-	changed(player, "Area")
+	changed(player, "Tile")
 end
 
 -- ===== Decor (§5.4) =====
@@ -492,7 +515,7 @@ local function sellDecor(player: Player, idNumber: number)
 	changed(player, "Decor")
 end
 
--- A floor finish: `target` a room's id, "Lobby" or "Hallway"; "" is the model's own floor.
+-- A floor finish: `target` a room's id or "Hallway"; "" is the model's own floor.
 local function finish(player: Player, target: string, finishId: string)
 	local data = PlayerData.get(player)
 	if not data then
@@ -509,7 +532,7 @@ local function finish(player: Player, target: string, finishId: string)
 			return
 		end
 	end
-	if target == "Lobby" or target == "Hallway" then
+	if target == "Hallway" then
 		data.finishes[target] = finishId
 		PlotService.rebuild(player)
 	else
@@ -548,7 +571,7 @@ function BuildService.Init()
 	Net.on("Move", move)
 	Net.on("Sell", sell)
 	Net.on("BuyFloor", buyFloor)
-	Net.on("BuyArea", buyArea)
+	Net.on("BuyTile", buyTile)
 	Net.on("PlaceDecor", placeDecor)
 	Net.on("MoveDecor", moveDecor)
 	Net.on("SellDecor", sellDecor)
@@ -565,7 +588,7 @@ local function announceUnlocks(player: Player)
 	StateService.mark(player)
 end
 
---[[ DEV: a full hotel for the performance budget (§13.4): every area and
+--[[ DEV: a full hotel for the performance budget (§13.4): every tile and
 	floor, a stair to each floor, every floor packed with `item` (default
 	StandardRoom), each room with what decor fits of Candles, Planter and
 	PuddleRug. ]]
@@ -578,11 +601,13 @@ local function fill(player: Player, args: { string }): string
 	if not Pieces.get(item) then
 		return `no piece {item}`
 	end
-	for i = 1, Grid.areaCount() do
-		data.areas[tostring(i)] = true
+	local N = Constants.Grid.Cells
+	for z = 0, N - 1 do
+		for x = 0, N - 1 do
+			data.tiles[tostring(Grid.tileKey(x, z))] = true
+		end
 	end
 	data.floors = BuildService.maxFloors(data)
-	local N = Constants.Grid.Cells
 	local function try(id: string, floor: number): boolean
 		for z = 0, N - 1 do
 			for x = 0, N - 1 do
@@ -690,7 +715,7 @@ function BuildService.Start()
 	HotelService.onRating(function(player)
 		announceUnlocks(player)
 	end)
-	-- What the build mode draws: the layout, the decor, the areas, each piece's price and whether it can be built.
+	-- What the build mode draws: the layout, the decor, the tiles, each piece's price and whether it can be built.
 	StateService.provide("build", function(player, data)
 		local ctx = BuildService.context(player, data)
 		local world = PlotService.world(data)
@@ -746,10 +771,10 @@ function BuildService.Start()
 				unlockedDecor[d.id] = true
 			end
 		end
-		local areas = {}
-		for k, v in data.areas do
+		local tiles = {}
+		for k, v in data.tiles do
 			if v then
-				table.insert(areas, tonumber(k))
+				table.insert(tiles, tonumber(k))
 			end
 		end
 		local cosmetics = {}
@@ -770,8 +795,8 @@ function BuildService.Start()
 			layout = layout,
 			decor = decor,
 			blocked = blocked,
-			areas = areas,
-			areaCost = Economy.areaCost(BuildService.areasOwned(data)),
+			tiles = tiles,
+			tileCost = Economy.tileCost(data.tilesBought),
 			finishes = data.finishes,
 			freeStairs = data.freeStairs,
 			floors = data.floors,

@@ -9,7 +9,7 @@
 
 	WHAT IT HOLDS (§13.3): currencies; the layout (piece ids, plot-relative
 	cells, rotations, what each cost, floor finishes), the decor on its
-	squares, the areas owned; residents (species, mutation, role);
+	squares, the tiles owned; residents (species, mutation, role);
 	friendship; the Monster Book; the Moon Tree; reviews; the tutorial; daily
 	and login state; codes; passes; boosts; settings; and the processed
 	PurchaseIds, so a receipt is never granted twice.
@@ -31,6 +31,7 @@ local ServerStorage = game:GetService("ServerStorage")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Constants = require(ReplicatedStorage.Shared.Constants)
+local Grid = require(ReplicatedStorage.Shared.Grid)
 
 local packages = ServerScriptService:FindFirstChild("ServerPackages")
 if not packages or not packages:FindFirstChild("ProfileStore") then
@@ -47,7 +48,16 @@ local PlayerData = {}
 --[[ Bump only when the shape changes in a way old data cannot satisfy, and add
 	the step to `migrate` in the same commit. The game is not live (CLAUDE.md),
 	so until it is, a shape change may simply start everyone over. ]]
-local SCHEMA_VERSION = 2
+local SCHEMA_VERSION = 3
+
+-- A new hotel's tiles (§5.4, A.1): the start square, keyed as the profile keeps them.
+local function startTiles(): { [string]: boolean }
+	local out = {}
+	for _, c in Grid.startTiles() do
+		out[tostring(Grid.tileKey(c.x, c.z))] = true
+	end
+	return out
+end
 
 export type PieceRecord = {
 	item: string,
@@ -84,8 +94,9 @@ export type Data = {
 	floors: number,
 	layout: { [string]: PieceRecord },
 	decor: { [string]: DecorRecord },
-	areas: { [string]: boolean }, -- owned areas of the plot, by index (§5.4)
-	finishes: { [string]: string }, -- "Lobby", "Hallway" -> a finish id ("" the model's own)
+	tiles: { [string]: boolean }, -- owned cells of the plot, by Grid.tileKey (§5.4, A.1), on every floor
+	tilesBought: number, -- tiles bought with cash, for the next one's price (the start's and gifts are free)
+	finishes: { [string]: string }, -- "Hallway" -> a finish id ("" the model's own)
 	freeStairs: number, -- stairs owed for floors bought (§5.4: a new floor's first stair is free)
 	nextId: number, -- pieces and decor share it
 	unlocked: { [string]: boolean }, -- room types unlocked, kept through rebirth (§6.4)
@@ -131,8 +142,9 @@ local TEMPLATE: Data = {
 	floors = 1,
 	layout = {},
 	decor = {},
-	areas = { [tostring(Constants.Grid.StartArea)] = true },
-	finishes = { Lobby = "", Hallway = "" },
+	tiles = startTiles(),
+	tilesBought = 0,
+	finishes = { Hallway = "" },
 	freeStairs = 0,
 	nextId = 1,
 	unlocked = {},
@@ -174,7 +186,7 @@ local statCallbacks: { (Player, string) -> () } = {}
 local keys: { [Player]: string } = {}
 local settled: { [Player]: boolean } = {}
 
--- Exactly one front desk (§5.4): a hotel without one gets it at the lobby's end.
+-- At least one front desk (§5.4): a hotel without one gets it across from the arch.
 local function ensureDesk(data: Data)
 	local hasDesk = false
 	for _, rec in data.layout do
@@ -190,14 +202,15 @@ local function ensureDesk(data: Data)
 	end
 end
 
---[[ A new hotel (§5.4): the start area, one floor, the desk at the lobby's
-	end and nothing else. A rebirth (§6.4) and the free-building schema step
-	start from here. ]]
+--[[ A new hotel (§5.4, A.1): the start square's tiles, one floor, the desk
+	across from the arch and nothing else. A rebirth (§6.4) and the tiles'
+	schema step start from here. ]]
 function PlayerData.resetHotel(data: Data)
 	data.layout = {}
 	data.decor = {}
-	data.areas = { [tostring(Constants.Grid.StartArea)] = true }
-	data.finishes = { Lobby = "", Hallway = "" }
+	data.tiles = startTiles()
+	data.tilesBought = 0
+	data.finishes = { Hallway = "" }
 	data.floors = 1
 	data.freeStairs = 0
 	ensureDesk(data)
@@ -207,10 +220,13 @@ local function migrate(data: Data)
 	if typeof(data.version) ~= "number" then
 		data.version = SCHEMA_VERSION
 	end
-	if data.version < 2 then
-		-- Free building (§5.4): the hotel is built again from the start area;
-		-- the rest of the save stays. The game is not live (CLAUDE.md).
+	if data.version < 3 then
+		-- Tiles, not areas (§5.4, A.1, his rulings 2026-10-20): the hotel is
+		-- built again from the start square; the rest of the save stays. The
+		-- game is not live (CLAUDE.md): no migration of the old layout.
 		PlayerData.resetHotel(data)
+		local old = data :: any
+		old.areas = nil
 	end
 	ensureDesk(data)
 	data.version = SCHEMA_VERSION

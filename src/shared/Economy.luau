@@ -29,9 +29,9 @@ function Economy.refund(paid: number): number
 	return math.floor(math.max(0, paid) * E.SellRefund)
 end
 
--- The next area of the plot with `owned` owned already (§5.4, PLACEHOLDER); nil when none is left.
-function Economy.areaCost(owned: number): number?
-	return E.AreaCosts[owned + 1]
+-- The next tile of the plot with `bought` bought already (§5.4, A.1, PLACEHOLDER).
+function Economy.tileCost(bought: number): number
+	return math.floor(E.TileCost * E.TileGrowth ^ bought + 0.5)
 end
 
 function Economy.floorCost(floor: number): number?
