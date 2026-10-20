@@ -346,6 +346,7 @@ FORMULA_GUARDS = [
     ("src/server/ResidentService.luau", "then Constants.Residents.TutorialFriendship"),
     ("src/server/ResidentService.luau", "local early = rng:NextNumber() < Constants.Rarity[sp.rarity].moveInChance"),
     ("src/server/TutorialService.luau", "data.stats.voucher_CoffinSuite = 1"),
+    ("src/server/TutorialService.luau", "BuildService.tutorialArea(player)"),
     ("src/server/TutorialService.luau", "{ booked = player, happyFloor = Constants.Stay.Happy }"),
     ("src/server/TutorialService.luau", "and busesSince >= 2"),
     ("src/server/ResidentService.luau", "local threshold = if g.tutorialFriend"),
@@ -1238,6 +1239,7 @@ class Sim:
                 self.tut_goal_bus = self.bus_index
                 self.tut_unlocked.add("CoffinSuite")
                 self.vouchers["CoffinSuite"] = 1
+                self.areas += 1  # BuildService.tutorialArea: a free front area beside the start area
                 self.tut_goal = True
             if nxt == "Done":
                 self.mark("tutorial_done", t)

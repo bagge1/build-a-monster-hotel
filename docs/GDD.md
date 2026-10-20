@@ -101,18 +101,21 @@ All numbers in this doc are **starting values for tuning**, not final balance. F
 
 | Rarity | Pay multiplier | Stay | Friendship to move in | Bus slot weight |
 |---|---|---|---|---|
-| Common | 1× | 90 s | 2 | 60 |
-| Uncommon | 3× | 2 min | 3 | 25 |
-| Rare | 8× | 3 min | 5 | 10 |
-| Epic | 20× | 4 min | 7 | 4 |
-| Legendary | 60× | 5 min | 10 | 1 + scheduled |
-| Mythic | 200× | 6 min | 15 | scheduled only |
+| Common | 1× | 3 min | 2 | 60 |
+| Uncommon | 3× | 4 min | 3 | 25 |
+| Rare | 8× | 6 min | 5 | 10 |
+| Epic | 20× | 8 min | 7 | 4 |
+| Legendary | 60× | 10 min | 5 | 1 + scheduled |
+| Mythic | 200× | 12 min | 15 | scheduled only |
+
+Every stay doubled and Legendary friendship 10 → 5 (his go, 2026-10-20, from
+the pacing measured after the buses, `archive/BALANCE-2026-10-20.md`).
 
 Base pay at Location 1 is **$1/s for a Common**. Each later location multiplies base pay by ×20 (tune).
 
 ### 4.3 The Night Bus (shared arrivals)
 
-- **Every 3 minutes** a bus arrives (his ruling, 2026-10-19; it was 4). **How many ride it scales with the players on the server and the rooms vacant on the street, and one bus never fills every room** (his ruling): **40 % of the street's vacant rooms, rounded up** (his), at least 2 and at most 4 per player on the server (PLACEHOLDER bounds, Claude's). It stops at both stops (§3) and lets half its guests off at each.
+- **Every 3 minutes** a bus arrives (his ruling, 2026-10-19; it was 4). **How many ride it scales with the players on the server and the rooms vacant on the street, and one bus never fills every room** (his ruling): **40 % of the street's vacant rooms, rounded up** (his), at least 3 and at most 8 per player on the server (his go, 2026-10-20; Claude's 2–4 before). It stops at both stops (§3) and lets half its guests off at each.
 - **Scheduled rare arrivals** make appointments players can plan around:
   - Epic guaranteed every 3rd bus (~9 min at a bus every 3 minutes).
   - **Legendary on the :00 and :30 buses** (server clock).
@@ -688,6 +691,7 @@ After the soft launch we apply for Kids/Select eligibility:
 | 2026-10-19 | The Night Bus stops twice (between the first two plots and between the last two); its guests browse round the lane and pick a hotel by preference, Pitchable the whole time, instead of walking off the end; no walk-ins; the bus's size scales with the players and the street's vacant rooms and never fills every room with one bus (§3, §4.3, A.3) | His rulings from playing: guests vanishing at the map's edge, and walk-ins that make the bus pointless |
 | 2026-10-19 | *Night draft:* remote layer is a thin typed wrapper over RemoteEvents (`src/shared/Net.luau`), not Blink/Zap (§13.6) | Reversible: every remote is declared in one file, so swapping the transport touches one module |
 | 2026-10-19 | *Night draft:* guest paths are a grid graph over free cells (§13.6) | Cheaper and deterministic, as the section leaned; Appendix A.1 |
+| 2026-10-20 | Pacing: the bus brings 3–8 guests per player (was 2–4), every stay doubled, Legendary friendship 10 → 5 (§4.2, §4.3); the goal card also gives a free front area beside the start area (§11, A.7) | His go on WAITING §2.27 and §2.28 ("also fix 2 and 3"); rebirth measured 3.5–5.4 h against 60–90 min, now 1:50 / 2:41 h (`archive/BALANCE-2026-10-20.md`) |
 
 ---
 
@@ -897,8 +901,8 @@ Every number below is a **placeholder** (tagged `PLACEHOLDER` in
   the next bus to stop there takes them. (That checked-out guests leave by
   bus too is Claude's reading of the ruling.)
 - **Bus size, as built:** 40 % of the street's Vacant rooms at the bus's
-  arrival, rounded up (his), at least 2 and at most 4 per player on the
-  server (PLACEHOLDER), its guarantees always aboard. Drawn a bus ahead (for
+  arrival, rounded up (his), at least 3 and at most 8 per player on the
+  server (his go, 2026-10-20), its guarantees always aboard. Drawn a bus ahead (for
   the announcement), and fitted to the street's vacancies when it arrives.
 - **Newcomer boost** (§4.3): +1.0 score for hotels rated 2★ or less, Common and
   Uncommon guests only.
@@ -1007,7 +1011,10 @@ the tutorial Slime (the one guest in the game that walks in instead of riding
 the bus, his ruling 2026-10-19; it appears on the pavement 6 s after the first
 room, before the first bus) → collect the till → buy a second room → see a bus (pitch one)
 → the Slime moves in (the tutorial Slime's stay counts as happy and needs 1
-friendship) → the goal card (the tutorial unlocks the Coffin Suite, and a
+friendship) → the goal card (the tutorial unlocks the Coffin Suite, gives
+the first one free and a free front area beside the start area for it, his
+go 2026-10-20, since the 3×3 suite does not fit beside two Standard Rooms in
+the start area; and a
 Vampire Count booked to this hotel rides the third bus after it once a Coffin
 Suite stands vacant; a booked guest skips browsing) → clean a room → assign the Slime to staff →
 the Frostfang preview. Skippable at any step, never locking movement.

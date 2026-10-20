@@ -51,14 +51,18 @@ Commons on its first buses and a ping naming the wanted room (§11, §7,
 WAITING §2.25), gamepad navigation by the Input Action System (`Controls`;
 keyboard and mouse played, a real controller is his, WAITING §1.11). The
 tutorial's guest no longer gives up at the desk. The new player's tutorial
-is played Build → Done. **Pacing finding:** rebirth now takes 3.5–5.4 h
-against 60–90 min (WAITING §2.27; `tools/balance_model.py` runs again);
-the tutorial's free Coffin Suite does not fit the start area (§2.28); a
-full hotel's walks up can outlast a request (§2.29). A full hotel measured 1,642 parts and
+is played Build → Done. **Pacing, his go 2026-10-20** (WAITING §2.27–2.28,
+GDD §18): bus 3–8 per player, stays doubled, Legendary friendship 5, and the
+goal card gives a free front area for the Coffin Suite
+(`BuildService.tutorialArea`). Modelled: rebirth 1:50 / 2:41 h, still over
+60–90 min (`archive/BALANCE-2026-10-20.md`); **not run in Studio**. A full
+hotel's walks up can outlast a request (§2.29). A full hotel measured 1,642 parts and
 110 point lights (budget ~3,000 parts); the forest's blockouts are 3,385
 parts until the tree models arrive. PlayerData schema 2 rebuilds every hotel
 from the start area. Pure specs run outside Studio: `lune run
-tools/run_specs.luau .`.
+tools/run_specs.luau . <spec ...>`, every spec but `data` (it needs the
+engine; with no names the run stops on it). **Release:** checklist in
+WAITING §4; August's session takes the store ids (§3.2).
 
 **Rating: staff coverage and cleaning on time** (GDD §5.3, A.4
 PLACEHOLDER) built on branch `worktree-agent-ab7f9c16cd8daf5cb` (2026-10-19
@@ -104,7 +108,7 @@ and ~70 s down the lane: watch the stay timings in phase 11.
 | §8.2 events | Full Moon weekend, Full Moon Hunt, Monster Parade, Halloween, Candy shop, Winter (Snowflakes, shop) | Yes (specs, purchases) | Crossover guests (WAITING §2.8) |
 | §10 gifts, cosmetics | Gift products per pass (profile messages), facade packs, Sign/Lobby/Facade slots, Style tool | Yes (remotes, a click); two-player gift not yet | Cosmetic models in Blender |
 
-**Dev tools (Studio only, remove before release):** `workspace.DevCommand`
+**Dev tools (Studio only; on a published server none is registered or listened for, 2026-10-20):** `workspace.DevCommand`
 (DevGrant: cash, walkin, checkin, finish, request, bus, decide, resident,
 friend, rebirth, runcash, receipt, pass, hunters, fill, data ...), and
 `ServerStorage.StudioProfile`.

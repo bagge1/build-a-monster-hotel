@@ -6,8 +6,8 @@
 
 	Set `workspace.DevCommand` to a command line from the MCP's Server
 	execute_luau; the answer appears in `workspace.DevResult`. A client cannot
-	set a server attribute, and nothing here runs outside Studio. Comes out
-	before release (memory `phase-status`).
+	set a server attribute, and nothing here runs outside Studio: on a
+	published server no command is even registered, and nothing listens.
 
 	Commands are registered by the systems they test: `DevGrant.register`.
 ]]
@@ -24,6 +24,9 @@ type Command = (player: Player, args: { string }) -> string
 local commands: { [string]: Command } = {}
 
 function DevGrant.register(name: string, fn: Command)
+	if not RunService:IsStudio() then
+		return
+	end
 	commands[name] = fn
 end
 

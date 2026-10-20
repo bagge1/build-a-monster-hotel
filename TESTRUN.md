@@ -546,6 +546,21 @@ August's, on a real controller.
 - [A] (A real controller.) The strip's lines name the gamepad's buttons
   (RB, A, B, Y) after a gamepad press and the keys after a key or a click.
 
+## Pacing and the tutorial's free area (GDD §4.2, §11, his go 2026-10-20)
+
+Built 2026-10-20: the bus 3–8 per player, every stay doubled, Legendary
+friendship 5, and `BuildService.tutorialArea` at the goal card. Verified only
+by stylua, selene, the pure specs under Lune and `tools/balance_model.py`.
+
+- [ ] A fresh test profile through the tutorial: at the goal card a front
+  area beside the start area is owned (area 1 or 3, its plate gone in build
+  mode), the next area's price is the third ($3,000), and the free Coffin
+  Suite is placed in it with its door onto the lobby.
+- [ ] The Vampire Count arrives about three buses later and checks in.
+- [ ] A bus on a one-player server brings 3 or more guests; a Common's stay
+  lasts 3 minutes.
+- [ ] Output on Play: no "server size" warning once Server Size is 6.
+
 ## August keeps
 
 - How the street, the lobby and the rooms look (every look is a night draft).

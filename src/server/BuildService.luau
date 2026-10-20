@@ -107,6 +107,28 @@ function BuildService.tutorialUnlock(player: Player, item: string)
 	tutorialUnlocks[player][item] = true
 end
 
+--[[ The goal card's free area (§11, his ruling 2026-10-20): a front area beside
+	the start area, so the free Coffin Suite (3×3) fits beside the two Standard
+	Rooms and opens onto the lobby. It counts as an owned area for the next one's
+	price. Nothing when both front neighbours are owned already. ]]
+function BuildService.tutorialArea(player: Player)
+	local data = PlayerData.get(player)
+	if not data then
+		return
+	end
+	local G = Constants.Grid
+	local sx, sz = Grid.areaRect(G.StartArea)
+	for i = 1, Grid.areaCount() do
+		local x, z = Grid.areaRect(i)
+		if z == sz and math.abs(x - sx) == G.AreaW and not data.areas[tostring(i)] then
+			data.areas[tostring(i)] = true
+			PlotService.rebuild(player)
+			changed(player, "Area")
+			return
+		end
+	end
+end
+
 function BuildService.context(player: Player, data: PlayerData.Data): Unlocks.Context
 	local legendary = false
 	for _, r in data.residents do

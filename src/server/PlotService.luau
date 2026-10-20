@@ -828,6 +828,12 @@ function PlotService.Init()
 end
 
 function PlotService.Start()
+	-- One player per plot (§3): the place's server size (Experience Settings → Places) must not exceed it.
+	if Players.MaxPlayers > Constants.Street.Plots then
+		warn(
+			`[plot] server size is {Players.MaxPlayers} but the street has {Constants.Street.Plots} plots: players past the sixth get no hotel`
+		)
+	end
 	PlayerData.onLoaded(function(player, data)
 		claim(player, data)
 		player.CharacterAdded:Connect(function()

@@ -488,7 +488,7 @@ Med Claudes skärmdump där det finns en. -->
    rena, men ingenting du redan balanserat flyttas; (B) är tydligare men bör
    prövas i modellen först.
 
-27. **Tempot efter bussarna: rebirth tar 3,5–5,4 timmar** (2026-10-19 kväll,
+27. ~~**Tempot efter bussarna: rebirth tar 3,5–5,4 timmar**~~ (besvarat 2026-10-20: "fix 2 and 3", rekommendationen byggd: bussen 3–8 per spelare, vistelserna dubblade, Legendarys vänskap 5; GDD §4.2, §4.3, §18. Mätt efteråt: rebirth 1:50 med tutorial och 2:41 utan, fortfarande över 60–90 min, och Vampire Count som resident är det som väntas på; `archive/BALANCE-2026-10-20.md`. Inga fler värden ändrade.) (2026-10-19 kväll,
    mätt med en uppdaterad kopia av `tools/balance_model.py`, median av 8
    körningar; rapporten `archive/BALANCE-2026-10-19-evening.md`). Utan
    walk-ins kommer högst 4 gäster var 3:e minut för en ensam spelare (80 i
@@ -506,7 +506,7 @@ Med Claudes skärmdump där det finns en. -->
    **Rekommendation:** båda och vänskapen 5, sedan spela och känna efter.
    (Mätt före tutorialens Commons, som bara rör de första två bussarna.)
 
-28. **Tutorialens gratis Coffin Suite får inte plats** (2026-10-19 kväll,
+28. ~~**Tutorialens gratis Coffin Suite får inte plats**~~ (besvarat 2026-10-20: (a) byggt, goal-kortet ger också ett gratis främre område bredvid startområdet, och Gloom säger det; GDD §11, A.7. I modellen står sviten klar 4:00 och Vampire Count checkar in 11:19. Inte spelat i Studio än.) (2026-10-19 kväll,
    samma mätning). Goal-kortet ger en gratis Coffin Suite (3×3), men
    startområdet (4×5 celler) rymmer den inte bredvid tutorialens två
    Standard Rooms med gång till dörrarna, och en våning för $500 har en ny
@@ -555,3 +555,50 @@ Med Claudes skärmdump där det finns en. -->
 5. **Grupp-belöningen** (GDD §9: gratis decor och +5 % cash för den som går med
    i gruppen): vilken grupp? Säg dess id så byggs belöningen.
 
+## §4 Före release
+
+<!-- Checklistan till en release. Först ett test med vänner (privat), sedan
+den publika. Claude bockar av sitt; det som är ditt står med menyn. -->
+
+**Testet med vänner (privat):**
+
+1. **Låst till Studio:** fusk-kommandona (`DevCommand`) och testprofilen
+   (`StudioProfile`) fungerar bara i Studio; på en publicerad server finns
+   inga kommandon alls (2026-10-20). Claudes; inte provat på en riktig
+   server än.
+2. **Serverstorlek 6.** Gatan har sex tomter, och den sjunde spelaren får
+   inget hotell. Ställ in **Server Size** till 6 i platsens inställningar
+   (Creator Hub, **Places**). Servern varnar i Output om den är större;
+   Claude läser av det när hotellets place är öppen i Studio.
+3. **Tempot och tutorialens svit** (§2.27, §2.28): byggt 2026-10-20. Claude
+   spelar tutorialen i Studio när hotellets place är öppen i Studio (just nu är bara
+   Sector Omega öppen).
+4. **Spela på en riktig telefon** (§1.9) och **spela första kvarten** (§1.1).
+5. **Publicera** (File → Publish to Roblox), så kommer ändringarna och
+   den borttagna `SpawnLocation` (§2.13) med.
+6. **Vem som får spela:** i Creator Hub ersätter publiken **Playtest** de
+   gamla Private och Limited; där bjuder du in testarna. Claude kollar de
+   exakta stegen i Roblox dokumentation när du är där.
+
+**Den publika releasen, därtill:**
+
+7. **Passen och produkterna** (§3.2): din session.
+8. **Frågeformuläret om innehåll** (Creator Hub, experiencens
+   **Maturity & Compliance**). Claudes genomgång av koden (2026-10-20), att
+   svara ärligt efter:
+   - Våld: inget. Hunter Night skrämmer bort jägare med Boo! och fällor;
+     ingen skada, ingen död (`HunterService`).
+   - Rädsla: tecknat läskigt, "cozy creepy". Inget blod, ingen alkohol,
+     inget grovt, ingen romantik.
+   - Slump: mutationer slumpas gratis i spelet; inget betalt slumpköp (§10.1).
+   - Spelarnas eget: man ställer ut färdiga bitar på ett rutnät; ingen fri
+     text, ingen ritning. Pings är färdiga fraser; den enda textrutan är
+     koder, och den syns bara för en själv.
+   - Chatten är Robloxs egen.
+   Det bör ge **Minimal** eller **Mild**, vilket Kids/Select kräver (§14.3).
+9. **Koderna** `WELCOME` ($500) och `SPOOKY` (3 Moon Shards) är
+   platshållare: vilka ska finnas (§9)?
+10. **Ikon och miniatyrbilder:** Claude ritar utkast när du vill;
+    utseendet är ditt.
+11. Rewarded ads, översättning, notifikationer och gruppen: §3.3–3.5 och
+    ad-produkten i §3.2.
