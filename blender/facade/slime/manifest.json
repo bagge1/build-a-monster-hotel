@@ -1,0 +1,758 @@
+{
+ "set": "facade/slime",
+ "title": "Cosmetic_SlimeFacade: the facade pieces (green walls with slime dripping off the sills)",
+ "frame": "Roblox studs, piece frame: X right, Y up, door/front toward -Z, origin per MODELS.md; Blender holds them as (-x, z, y)",
+ "atlas": "textures/HotelAtlas.png (embedded in every FBX)",
+ "palette": {
+  "grey": [
+   110,
+   110,
+   120
+  ],
+  "slime_wall": [
+   88,
+   164,
+   96
+  ],
+  "slime_wall_dark": [
+   56,
+   116,
+   70
+  ],
+  "slime_wall_light": [
+   126,
+   192,
+   120
+  ],
+  "slime": [
+   170,
+   240,
+   92
+  ],
+  "slime_dark": [
+   122,
+   206,
+   70
+  ],
+  "sill": [
+   164,
+   172,
+   156
+  ],
+  "sill_dark": [
+   118,
+   126,
+   112
+  ],
+  "night": [
+   24,
+   40,
+   40
+  ],
+  "moss": [
+   85,
+   120,
+   70
+  ],
+  "mint": [
+   186,
+   224,
+   196
+  ],
+  "iron": [
+   58,
+   60,
+   64
+  ],
+  "flame": [
+   255,
+   205,
+   120
+  ],
+  "lamp": [
+   255,
+   185,
+   110
+  ]
+ },
+ "pieces": {
+  "Facade_Wall": {
+   "name": "Facade_Wall",
+   "kind": "Facade",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     -0.32
+    ],
+    "size": [
+     12.0,
+     0.2,
+     0.6
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      0.2,
+      0.6
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Wall": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 120,
+     "collide": true
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 132,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a plain wall: green walls with a pale course over the windows"
+  },
+  "Facade_Window_TwinSash": {
+   "name": "Facade_Window_TwinSash",
+   "kind": "Facade",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     -0.32
+    ],
+    "size": [
+     12.0,
+     0.2,
+     0.6
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      0.2,
+      0.6
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Wall": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 144,
+     "collide": true
+    },
+    "Glass": {
+     "centre": [
+      0.0,
+      7.5,
+      -0.32
+     ],
+     "size": [
+      7.3,
+      9.1,
+      0.06
+     ],
+     "triangles": 24,
+     "collide": false
+    },
+    "Dressing": {
+     "centre": [
+      0.0,
+      6.4398,
+      -0.3966
+     ],
+     "size": [
+      7.84,
+      11.7604,
+      1.1532
+     ],
+     "triangles": 556,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 60,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 736,
+   "budget": 2500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "green walls with a pale course over the windows; a TwinSash window: stone frames and sills, slime pooled on the sill and dripping off it"
+  },
+  "Facade_Window_Arched": {
+   "name": "Facade_Window_Arched",
+   "kind": "Facade",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     -0.32
+    ],
+    "size": [
+     12.0,
+     0.2,
+     0.6
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      0.2,
+      0.6
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Wall": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 172,
+     "collide": true
+    },
+    "Glass": {
+     "centre": [
+      0.0,
+      7.5,
+      -0.32
+     ],
+     "size": [
+      5.1,
+      9.1,
+      0.06
+     ],
+     "triangles": 40,
+     "collide": false
+    },
+    "Dressing": {
+     "centre": [
+      0.0,
+      6.4398,
+      -0.3966
+     ],
+     "size": [
+      5.64,
+      11.7604,
+      1.1532
+     ],
+     "triangles": 628,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 48,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 852,
+   "budget": 2500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "green walls with a pale course over the windows; a Arched window: stone frames and sills, slime pooled on the sill and dripping off it"
+  },
+  "Facade_Window_Round": {
+   "name": "Facade_Window_Round",
+   "kind": "Facade",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     -0.32
+    ],
+    "size": [
+     12.0,
+     0.2,
+     0.6
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      0.2,
+      0.6
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Wall": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 268,
+     "collide": true
+    },
+    "Glass": {
+     "centre": [
+      0.0,
+      7.4,
+      -0.32
+     ],
+     "size": [
+      6.9,
+      6.9,
+      0.06
+     ],
+     "triangles": 92,
+     "collide": false
+    },
+    "Dressing": {
+     "centre": [
+      0.0,
+      6.3398,
+      -0.3966
+     ],
+     "size": [
+      7.44,
+      9.5604,
+      1.1532
+     ],
+     "triangles": 748,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 48,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 1120,
+   "budget": 2500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "green walls with a pale course over the windows; a Round window: stone frames and sills, slime pooled on the sill and dripping off it"
+  },
+  "Facade_Window_Wide": {
+   "name": "Facade_Window_Wide",
+   "kind": "Facade",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     -0.32
+    ],
+    "size": [
+     12.0,
+     0.2,
+     0.6
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      0.2,
+      0.6
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Wall": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 156,
+     "collide": true
+    },
+    "Glass": {
+     "centre": [
+      0.0,
+      6.75,
+      -0.32
+     ],
+     "size": [
+      8.1,
+      6.6,
+      0.06
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Dressing": {
+     "centre": [
+      0.0,
+      5.825,
+      -0.57
+     ],
+     "size": [
+      8.64,
+      8.99,
+      1.5
+     ],
+     "triangles": 792,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 48,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 972,
+   "budget": 2500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "green walls with a pale course over the windows; a Wide window: stone frames and sills, slime pooled on the sill and dripping off it"
+  },
+  "Facade_Entrance": {
+   "name": "Facade_Entrance",
+   "kind": "Facade",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     -0.32
+    ],
+    "size": [
+     24.0,
+     0.2,
+     0.6
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      -0.32
+     ],
+     "size": [
+      24.0,
+      0.2,
+      0.6
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Wall_Left": {
+     "centre": [
+      -8.75,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      6.5,
+      17.0,
+      0.6
+     ],
+     "triangles": 96,
+     "collide": true
+    },
+    "Wall_Right": {
+     "centre": [
+      8.75,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      6.5,
+      17.0,
+      0.6
+     ],
+     "triangles": 96,
+     "collide": true
+    },
+    "ArchLeft": {
+     "centre": [
+      -5.0,
+      4.5,
+      -0.42
+     ],
+     "size": [
+      1.0,
+      9.0,
+      0.8
+     ],
+     "triangles": 132,
+     "collide": true
+    },
+    "ArchRight": {
+     "centre": [
+      5.0,
+      4.5,
+      -0.42
+     ],
+     "size": [
+      1.0,
+      9.0,
+      0.8
+     ],
+     "triangles": 132,
+     "collide": true
+    },
+    "ArchTop": {
+     "centre": [
+      0.0,
+      13.0,
+      -0.42
+     ],
+     "size": [
+      11.0,
+      8.0,
+      0.8
+     ],
+     "triangles": 148,
+     "collide": true
+    },
+    "Dressing": {
+     "centre": [
+      0.0,
+      7.225,
+      -0.5927
+     ],
+     "size": [
+      11.0,
+      13.25,
+      1.2653
+     ],
+     "triangles": 656,
+     "collide": false
+    },
+    "Glow_Warm_1": {
+     "centre": [
+      0.0,
+      10.74,
+      -0.5
+     ],
+     "size": [
+      0.5987,
+      1.08,
+      0.5987
+     ],
+     "triangles": 48,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.42
+     ],
+     "size": [
+      24.0,
+      17.0,
+      0.8
+     ],
+     "triangles": 60,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Entrance": {
+     "pos": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    }
+   },
+   "triangles": 1320,
+   "budget": 3000,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a round stone arch with slime heaped on its crown and dripping off its rim, an iron lantern"
+  },
+  "Facade_Corner": {
+   "name": "Facade_Corner",
+   "kind": "Facade",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     -0.32,
+     0.1,
+     -0.32
+    ],
+    "size": [
+     0.64,
+     0.2,
+     0.64
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      -0.32,
+      0.1,
+      -0.32
+     ],
+     "size": [
+      0.64,
+      0.2,
+      0.64
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Post": {
+     "centre": [
+      -0.32,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      0.64,
+      17.0,
+      0.64
+     ],
+     "triangles": 48,
+     "collide": true
+    },
+    "Dressing": {
+     "centre": [
+      -0.4361,
+      8.765,
+      -0.4342
+     ],
+     "size": [
+      0.6556,
+      16.29,
+      0.6518
+     ],
+     "triangles": 260,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 320,
+   "budget": 800,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a dark green post with slime oozing over its top and down its faces"
+  }
+ }
+}

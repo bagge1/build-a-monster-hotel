@@ -1,0 +1,777 @@
+{
+ "set": "facade/candy",
+ "title": "Cosmetic_CandyFacade: the facade pieces (pink wafer walls, white icing dripping from the top, striped posts)",
+ "frame": "Roblox studs, piece frame: X right, Y up, door/front toward -Z, origin per MODELS.md; Blender holds them as (-x, z, y)",
+ "atlas": "textures/HotelAtlas.png (embedded in every FBX)",
+ "palette": {
+  "grey": [
+   110,
+   110,
+   120
+  ],
+  "wafer": [
+   244,
+   168,
+   196
+  ],
+  "wafer_dark": [
+   222,
+   128,
+   166
+  ],
+  "cream": [
+   252,
+   236,
+   222
+  ],
+  "icing": [
+   252,
+   252,
+   250
+  ],
+  "icing_shade": [
+   232,
+   228,
+   238
+  ],
+  "cherry": [
+   224,
+   38,
+   68
+  ],
+  "cherry_dark": [
+   160,
+   24,
+   48
+  ],
+  "choc": [
+   112,
+   66,
+   46
+  ],
+  "choc_dark": [
+   78,
+   44,
+   32
+  ],
+  "mint": [
+   150,
+   228,
+   200
+  ],
+  "night": [
+   40,
+   30,
+   56
+  ],
+  "stem": [
+   90,
+   150,
+   70
+  ],
+  "flame": [
+   255,
+   205,
+   120
+  ],
+  "lamp": [
+   255,
+   185,
+   110
+  ]
+ },
+ "pieces": {
+  "Facade_Wall": {
+   "name": "Facade_Wall",
+   "kind": "Facade",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     -0.32
+    ],
+    "size": [
+     12.0,
+     0.2,
+     0.6
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      0.2,
+      0.6
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Wall": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 276,
+     "collide": true
+    },
+    "Dressing": {
+     "centre": [
+      -0.5343,
+      15.095,
+      -0.6292
+     ],
+     "size": [
+      8.7592,
+      2.31,
+      0.2583
+     ],
+     "triangles": 440,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 728,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a plain wall: pink wafer layers with cream between, a chocolate plinth, white icing along the top with drips"
+  },
+  "Facade_Window_TwinSash": {
+   "name": "Facade_Window_TwinSash",
+   "kind": "Facade",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     -0.32
+    ],
+    "size": [
+     12.0,
+     0.2,
+     0.6
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      0.2,
+      0.6
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Wall": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 564,
+     "collide": true
+    },
+    "Glass": {
+     "centre": [
+      0.0,
+      7.5,
+      -0.32
+     ],
+     "size": [
+      7.3,
+      9.1,
+      0.06
+     ],
+     "triangles": 24,
+     "collide": false
+    },
+    "Dressing": {
+     "centre": [
+      -0.4969,
+      9.465,
+      -0.305
+     ],
+     "size": [
+      8.8339,
+      13.57,
+      0.97
+     ],
+     "triangles": 704,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 60,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 1304,
+   "budget": 2500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "pink wafer layers with cream between, a chocolate plinth, white icing along the top with drips; a TwinSash window: white piped frames and bars, a chocolate sill; the arched one round-headed, gumdrops in the box"
+  },
+  "Facade_Window_Arched": {
+   "name": "Facade_Window_Arched",
+   "kind": "Facade",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     -0.32
+    ],
+    "size": [
+     12.0,
+     0.2,
+     0.6
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      0.2,
+      0.6
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Wall": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 472,
+     "collide": true
+    },
+    "Glass": {
+     "centre": [
+      0.0,
+      7.5,
+      -0.32
+     ],
+     "size": [
+      5.1,
+      9.1,
+      0.06
+     ],
+     "triangles": 40,
+     "collide": false
+    },
+    "Dressing": {
+     "centre": [
+      -0.5343,
+      9.465,
+      -0.305
+     ],
+     "size": [
+      8.7592,
+      13.57,
+      0.97
+     ],
+     "triangles": 776,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 48,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 1300,
+   "budget": 2500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "pink wafer layers with cream between, a chocolate plinth, white icing along the top with drips; a Arched window: white piped frames and bars, a chocolate sill; the arched one round-headed, gumdrops in the box"
+  },
+  "Facade_Window_Round": {
+   "name": "Facade_Window_Round",
+   "kind": "Facade",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     -0.32
+    ],
+    "size": [
+     12.0,
+     0.2,
+     0.6
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      0.2,
+      0.6
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Wall": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 508,
+     "collide": true
+    },
+    "Glass": {
+     "centre": [
+      0.0,
+      7.4,
+      -0.32
+     ],
+     "size": [
+      6.9,
+      6.9,
+      0.06
+     ],
+     "triangles": 92,
+     "collide": false
+    },
+    "Dressing": {
+     "centre": [
+      -0.5343,
+      9.965,
+      -0.2892
+     ],
+     "size": [
+      8.7592,
+      12.57,
+      0.9383
+     ],
+     "triangles": 884,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 48,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 1496,
+   "budget": 2500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "pink wafer layers with cream between, a chocolate plinth, white icing along the top with drips; a Round window: white piped frames and bars, a chocolate sill; the arched one round-headed, gumdrops in the box"
+  },
+  "Facade_Window_Wide": {
+   "name": "Facade_Window_Wide",
+   "kind": "Facade",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     -0.32
+    ],
+    "size": [
+     12.0,
+     0.2,
+     0.6
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      0.2,
+      0.6
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Wall": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 408,
+     "collide": true
+    },
+    "Glass": {
+     "centre": [
+      0.0,
+      6.75,
+      -0.32
+     ],
+     "size": [
+      8.1,
+      6.6,
+      0.06
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Dressing": {
+     "centre": [
+      -0.2969,
+      8.79,
+      -0.57
+     ],
+     "size": [
+      9.2339,
+      14.92,
+      1.5
+     ],
+     "triangles": 1160,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 48,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 1592,
+   "budget": 2500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "pink wafer layers with cream between, a chocolate plinth, white icing along the top with drips; a Wide window: white piped frames and bars, a chocolate sill; the arched one round-headed, gumdrops in the box"
+  },
+  "Facade_Entrance": {
+   "name": "Facade_Entrance",
+   "kind": "Facade",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     -0.32
+    ],
+    "size": [
+     24.0,
+     0.2,
+     0.6
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      -0.32
+     ],
+     "size": [
+      24.0,
+      0.2,
+      0.6
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Wall_Left": {
+     "centre": [
+      -8.75,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      6.5,
+      17.0,
+      0.6
+     ],
+     "triangles": 252,
+     "collide": true
+    },
+    "Wall_Right": {
+     "centre": [
+      8.75,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      6.5,
+      17.0,
+      0.6
+     ],
+     "triangles": 252,
+     "collide": true
+    },
+    "ArchLeft": {
+     "centre": [
+      -5.0,
+      4.5,
+      -0.42
+     ],
+     "size": [
+      1.0,
+      9.0,
+      0.8
+     ],
+     "triangles": 160,
+     "collide": true
+    },
+    "ArchRight": {
+     "centre": [
+      5.0,
+      4.5,
+      -0.42
+     ],
+     "size": [
+      1.0,
+      9.0,
+      0.8
+     ],
+     "triangles": 160,
+     "collide": true
+    },
+    "ArchTop": {
+     "centre": [
+      0.0,
+      13.0,
+      -0.42
+     ],
+     "size": [
+      11.0,
+      8.0,
+      0.8
+     ],
+     "triangles": 336,
+     "collide": true
+    },
+    "Dressing": {
+     "centre": [
+      -0.1732,
+      8.425,
+      -0.754
+     ],
+     "size": [
+      21.4813,
+      15.65,
+      1.588
+     ],
+     "triangles": 1348,
+     "collide": false
+    },
+    "Glow_Warm_1": {
+     "centre": [
+      0.0,
+      11.64,
+      -0.5
+     ],
+     "size": [
+      0.5987,
+      1.08,
+      0.5987
+     ],
+     "triangles": 48,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.42
+     ],
+     "size": [
+      24.0,
+      17.0,
+      0.8
+     ],
+     "triangles": 60,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Entrance": {
+     "pos": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    }
+   },
+   "triangles": 2568,
+   "budget": 3000,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "striped candy-cane pillars, a round icing arch with drips, a cherry on top, a pink lantern hung in the arch"
+  },
+  "Facade_Corner": {
+   "name": "Facade_Corner",
+   "kind": "Facade",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     -0.32,
+     0.1,
+     -0.32
+    ],
+    "size": [
+     0.64,
+     0.2,
+     0.64
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      -0.32,
+      0.1,
+      -0.32
+     ],
+     "size": [
+      0.64,
+      0.2,
+      0.64
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Post": {
+     "centre": [
+      -0.32,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      0.64,
+      17.0,
+      0.64
+     ],
+     "triangles": 24,
+     "collide": true
+    },
+    "Dressing": {
+     "centre": [
+      -0.66,
+      8.5,
+      -0.66
+     ],
+     "size": [
+      0.4435,
+      15.76,
+      0.4435
+     ],
+     "triangles": 644,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 680,
+   "budget": 800,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a white post with a round red-and-white candy cane up its corner, a chocolate foot"
+  }
+ }
+}

@@ -1,0 +1,144 @@
+{
+ "set": "facade/pirate",
+ "checked": "each fbx/<Name>.fbx re-imported into Blender; nothing here ran in Studio",
+ "pieces": {
+  "Facade_Wall": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "4 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the piece's own checks re-run on the re-imported triangles",
+    "the contract re-checked on the re-imported boxes (Root, footprint, kind rules, budgets)"
+   ],
+   "triangles": 804,
+   "budget": 1500,
+   "collision_precise": [],
+   "attachments": []
+  },
+  "Facade_Window_TwinSash": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "5 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the piece's own checks re-run on the re-imported triangles",
+    "the contract re-checked on the re-imported boxes (Root, footprint, kind rules, budgets)"
+   ],
+   "triangles": 2304,
+   "budget": 2500,
+   "collision_precise": [],
+   "attachments": []
+  },
+  "Facade_Window_Arched": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "5 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the piece's own checks re-run on the re-imported triangles",
+    "the contract re-checked on the re-imported boxes (Root, footprint, kind rules, budgets)"
+   ],
+   "triangles": 1304,
+   "budget": 2500,
+   "collision_precise": [],
+   "attachments": []
+  },
+  "Facade_Window_Round": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "5 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the piece's own checks re-run on the re-imported triangles",
+    "the contract re-checked on the re-imported boxes (Root, footprint, kind rules, budgets)"
+   ],
+   "triangles": 1608,
+   "budget": 2500,
+   "collision_precise": [],
+   "attachments": []
+  },
+  "Facade_Window_Wide": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "5 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the piece's own checks re-run on the re-imported triangles",
+    "the contract re-checked on the re-imported boxes (Root, footprint, kind rules, budgets)"
+   ],
+   "triangles": 1476,
+   "budget": 2500,
+   "collision_precise": [],
+   "attachments": []
+  },
+  "Facade_Entrance": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "9 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the piece's own checks re-run on the re-imported triangles",
+    "the contract re-checked on the re-imported boxes (Root, footprint, kind rules, budgets)"
+   ],
+   "triangles": 1776,
+   "budget": 3000,
+   "collision_precise": [],
+   "attachments": [
+    "Entrance"
+   ]
+  },
+  "Facade_Corner": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "4 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the piece's own checks re-run on the re-imported triangles",
+    "the contract re-checked on the re-imported boxes (Root, footprint, kind rules, budgets)"
+   ],
+   "triangles": 302,
+   "budget": 800,
+   "collision_precise": [],
+   "attachments": []
+  }
+ },
+ "collision_precise": {
+  "Facade_Wall": [],
+  "Facade_Window_TwinSash": [],
+  "Facade_Window_Arched": [],
+  "Facade_Window_Round": [],
+  "Facade_Window_Wide": [],
+  "Facade_Entrance": [],
+  "Facade_Corner": []
+ },
+ "not_validated": [
+  "anything in Studio: the import, the axis conversion on Roblox's side (import_fixup.luau checks it first), the atlas upload, how it looks lit",
+  "the attachments exist only in manifest.json until import_fixup.luau makes them",
+  "how it looks lit in Studio, and the code placing it (HotelKit.facade)"
+ ],
+ "assembly": {
+  "checked": "the FBXs laid out as the code would round an L of owned cells (a front row of 3 with the entrance, a second row of 5, every window type at a corner): every pair of pieces that meet, re-imported",
+  "pairs": 25,
+  "convex": 10,
+  "concave": 2,
+  "joints": 13,
+  "pieces": [
+   "Facade_Corner",
+   "Facade_Entrance",
+   "Facade_Wall",
+   "Facade_Window_Arched",
+   "Facade_Window_Round",
+   "Facade_Window_TwinSash",
+   "Facade_Window_Wide"
+  ],
+  "faults": []
+ }
+}

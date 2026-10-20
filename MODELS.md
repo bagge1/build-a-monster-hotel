@@ -39,7 +39,8 @@ names:
 `Material` do nothing (`DEVNOTES.md`). The code strips the appearance from
 emissive parts before lighting them, and it can only do that per part. Glow
 parts are named `Glow_<Colour>_<n>` (`Glow_Warm_1`, `Glow_Eyes_1`); the colour
-word is the code's palette key (`Warm`, `Cold`, `Eyes`, `Magic`).
+word is the code's palette key (`Warm`, `Cold`, `Eyes`, `Magic`, and the
+Neon facade's `Cyan` and `Magenta`).
 
 **2. If it moves, it is its own part.** A door that opens, a lift that rises,
 a lid, a wheel: each is a separate part so a constraint or a weld can drive it.
@@ -99,7 +100,7 @@ allow.
   | The lobby | 10,000 (144 × 24 studs since the doubled scale: four times the first draft's floor, one per hotel) |
 | The front desk | 3,000 |
   | Stairs | 8,000 |
-  | A facade | 10,000 |
+  | A facade piece | 1,500 a plain wall, 2,500 a window, 3,000 the entrance, 800 a corner (draft, 2026-10-20: one stands on every outline edge of every floor) |
   | A decor piece | 1,500 |
   | The hotel sign | 3,000 (draft) |
   | A sign or lobby cosmetic | 2,000 (draft) |
@@ -328,7 +329,7 @@ to **17**, the slab above (`WallHeight`); the slab's edge is the slab's.
 | Piece | Size (x × y, along × up) | What |
 |---|---|---|
 | `Facade_Wall` | 12 × 17, x −6..6 | A **plain wall**, no window (his ruling, 2026-10-20: windows are bought and placed) |
-| `Facade_Window_<Type>` | 12 × 17, x −6..6 | The same wall section **with one window**, `<Type>` one of `TwinSash` (two tall narrow panes, the old wall's two 4 × 9 windows), `Arched` (one tall pointed arch), `Round` (a round moon window), `Wide` (a broad three-pane window with a flower box). The opening stays within x −4..4 and y 3..13 (a person's sill, under the slab), the rest of the section is wall; same frame, Root and collision rules as `Facade_Wall`, the wall round the hole in pieces |
+| `Facade_Window_<Type>` | 12 × 17, x −6..6 | The same wall section **with one window**, `<Type>` one of `TwinSash` (two tall narrow panes, 3.2 × 9 each: the old wall's two 4 × 9 windows, narrowed to fit x −4..4), `Arched` (one tall pointed arch), `Round` (a round moon window), `Wide` (a broad three-pane window with a flower box). The opening stays within x −4..4 and y 3..13 (a person's sill, under the slab), the rest of the section is wall; same frame, Root and collision rules as `Facade_Wall`, the wall round the hole in pieces |
 | `Facade_Entrance` | 24 × 17, x −12..12 | Floor 1's front edge at x 5–6 only: the entrance arch in the middle (opening at least 9 wide and 9 tall, the approved arch's), solid to either side of it; the old `Lobby` front wall's arch and lantern move here |
 | `Facade_Corner` | 0.64 × 0.64 × 17 | A post at an outline corner, filling the square at the vertex in the quadrant **−X, −Z** of its origin (the code turns it to the right quadrant); 0.02 proud of the walls' faces both ways, so it hides a convex corner's gap and a concave corner's overlap |
 
@@ -337,9 +338,38 @@ Nothing of a facade piece collides with a person **inside** the edge
 (z > −0.02), and nothing reaches past x ±6 (±12 for the entrance), so two
 pieces in a row meet end to end.
 
+**Where pieces meet** (2026-10-20, so any outline the player buys is clean;
+`tools/build_facades.py` refuses a piece that breaks it and lays every set out
+round a convex and a concave corner to prove it):
+
+- Only the colliding parts (below) collide, each a `Box`; nothing inside the
+  edge collides, and a non-colliding detail reaches at most **0.2** inside
+  it (a sill).
+- A detail proud of the outer face by p stays **0.62 + p + 0.02** from the
+  piece's ends (and an inside detail 0.65): at a concave corner the other
+  wall's end and its details are there.
+- A wall's **end face takes the corner post's colour** at its height, and its
+  top and bottom **slope 0.02 over its last 0.64** at each end, under the
+  post's top: at a concave corner the post's inner face lies on the wall's
+  end, and two walls and the post would otherwise share faces in two colours
+  (they flicker). Two pieces in a row meet face to face (a slanted end left a
+  crack of light at every joint).
+- The corner's details beyond its post stand only in the outward quadrant
+  (never past x or z −0.1, through a wall), and only below 2.5 or above
+  12.5, clear of the walls' windows and sills, but for a bead up its outer
+  edge (within x, z −0.9), the one part of a corner that shows at a concave
+  one (its post is buried in the two walls there).
+- The windows are holes in the wall: seen through the wall (along Z),
+  everything but `Glass` leaves each opening open across its whole width and
+  height, within x −4..4 and y 3..13, and covers the rest of the face; a
+  plain `Facade_Wall` covers all of it.
+
 | Name | What | The code |
 |---|---|---|
-| `Root` | 12 × 0.2 × 0.6 (24 for the entrance), centred (0, 0.1, −0.32) | Placement |
+| `Root` | 12 × 0.2 × 0.6 (24 for the entrance), centred (0, 0.1, −0.32); the corner's 0.64 × 0.2 × 0.64 at (−0.32, 0.1, −0.32) | Placement |
+| `Wall` (`Facade_Wall`, `Facade_Window_<Type>`); `Wall_Left`, `Wall_Right`, `ArchLeft`, `ArchRight`, `ArchTop` (`Facade_Entrance`); `Post` (`Facade_Corner`) | The colliding parts: `Wall` exactly x −6..6, y 0..17, z −0.62..−0.02; `Wall_Left` x −12..−5.5 and `Wall_Right` 5.5..12 the same; the arch's pillars x ±4.5..±5.5 up to 9 and `ArchTop` over 9, so the opening is 9 × 9 clear; `Post` exactly x −0.64..0, z −0.64..0, 17 tall | `Box` collision each |
+| `Glass` (part) | The window panes, one part | Not colliding; the code may make it glass |
+| `Dressing`, `Glow_<Colour>_<n>`, `LOD_Proxy` | Frames, sills, trim; lamps and tubes (rule 1; no light but the entrance's); the wall with its holes, flat | — |
 | `Entrance` (attachment, `Facade_Entrance` only) | (0, 0, 0): the threshold, LookVector −Z | Where guests walk in; the lobby cosmetics hang from it |
 
 **Every outline edge of every floor is walled**, the street side included

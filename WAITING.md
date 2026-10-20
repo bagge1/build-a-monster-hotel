@@ -95,6 +95,16 @@ Connect: knappen under fliken Plugins i Studio. -->
    filer i `blender/_import/`** till **Workspace** i en dialog och skriv
    *importerat*. Bilderna: `blender/hotel/haunted_manor/review/decor/`.
 
+11. **Importera 49 modeller: fasaderna** (2026-10-20). Väggarna runt det du
+   äger, i sju stilar: hotellkitens egna (Haunted Manor, Frostfang Lodge) och
+   de fem fasadpaketen (Gothic, Neon, Candy, Pirate, Slime). Varje stil har
+   sju bitar: en slät vägg, fyra väggar med fönster (Twin sash, Arched,
+   Round, Wide), entrén och hörnstolpen. Importera **alla filer i
+   `blender/_import/`** till **Workspace** i en dialog och skriv *importerat*
+   (inte mitt i en playtest). Filerna heter `<Stil>_Facade_...`; Claude döper
+   om dem. Titta gärna först på bilderna i §1 punkt 12: säger du nej till en
+   stil behöver den inte importeras än.
+
 ## §1 Att titta på eller spela
 
 <!-- Det bara en människa kan bedöma: hur det känns, hur det ser ut.
@@ -160,6 +170,36 @@ Med Claudes skärmdump där det finns en. -->
    våning och vrider vyn. Studio kan inte trycka på en handkontroll, så det
    är ditt att känna på (`TESTRUN.md`, "Gamepad navigation"). Tangentbordet
    och musen fungerar som förut (provat).
+
+12. **Fasaderna: titta och säg ja eller vad som ska ändras** (2026-10-20,
+   utkast från dina ja till en rad per stil; granskade blint i tre rundor).
+   Alla sju från gatan: `blender/facade/review/overview.png` (överst Haunted
+   Manor, Frostfang, Gothic, Neon; nederst Candy, Pirate, Slime). Varje stil
+   närmare: `blender/facade/<stil>/review/sheet.png` (hela hotellet, entrén med
+   en person, ett yttre och ett inre hörn, och de fem väggbitarna utifrån och
+   inifrån). En rad per bit, i varje stil:
+   - **`Facade_Wall`**: slät vägg, 12 studs, stilens band (sockel, lister).
+   - **`Facade_Window_TwinSash`**: två höga smala rutor, 3,2 × 9 (Gothic: två
+     spetsbågar; Pirate: två ventiler).
+   - **`Facade_Window_Arched`**: ett högt bågfönster under listen vid 12
+     (Frostfang, Candy och Pirate: rundbågat; Gothic: spetsbåge till 13).
+   - **`Facade_Window_Round`**: ett runt fönster, 6,8 över (Gothic: en ros;
+     Pirate: en stor ventil med mässingsring och rep).
+   - **`Facade_Window_Wide`**: tre rutor över en blomlåda på konsoler (Gothic:
+     tre spetsbågar; Pirate: en låda med örter; Neon: lysande blommor).
+   - **`Facade_Entrance`**: valvet, 9 × 9 fritt, och lyktan som hänger i det
+     (kitens valv är lobbyns godkända, flyttade ut framför väggen).
+   - **`Facade_Corner`**: stolpen i varje hörn med en list längs ytterkanten
+     (Candy: en rund polkagris; Pirate: ett rep och en lykta; Gothic: en
+     gargoyle).
+   Stilarna: Haunted Manor och Frostfang som lobbyns framvägg; Gothic mörk
+   skiffer, spetsiga fönster, röd blyinfattning, gargoyler; Neon mörka paneler
+   med cyan och magenta rör runt fönstren (de lyser i spelet, inte i bilden);
+   Candy rosa rån i lager med grädde emellan (inget rutnät, `taste.md`),
+   glasyr som droppar, polkagrishörn, ett körsbär på valvet; Pirate smala
+   väderbitna plankor med förskjutna skarvar, mässingsventiler, rep runt
+   fönstren, lyktor på hörnen; Slime gröna väggar, slem som samlas på
+   fönsterbrädorna och droppar.
 
 ## §2 Beslut
 
@@ -616,6 +656,27 @@ Med Claudes skärmdump där det finns en. -->
    **Välj** vad som ska byggas. **Rekommendation:** först två eller tre saker
    per tunt önskemål (Frostfangs *quiet* och *silence* först), sedan
    tapeter, sedan taklagret.
+
+34. **Fasaderna: det granskarna såg som är ditt** (2026-10-20, tre blinda
+   rundor; resten är rättat, `blender/facade/README.md`, "Blind reviews"):
+   - **Frostfangs gavel** syns som ett tunt streck uppifrån, och **Haunted
+     Manors spetsgavel** som en tråd: det är lobbyns godkända valv. *Ändra
+     inget* eller *ge gaveln tak och tjocklek*. **Rekommendation:** ge
+     Frostfangs gavel ett snötäckt tak som syns uppifrån; behåll Haunted
+     Manors.
+   - **Fönstrens storlek**: rutorna är 9 studs höga på en våning på 17, och
+     Round och Wide sitter högre (botten vid 4 och 3,5) än Twin sash och
+     Arched (3). Granskarna läste dem som kyrka eller kontor, inte mysigt.
+     **Rekommendation:** behåll; de passar våningens höjd.
+   - **Glaset är mörkt**, utifrån och inifrån (`Glass` är en egen del).
+     *Mörkt*, *genomskinligt* (koden gör det; man ser då rummets egen vägg
+     bakom) eller *upplyst på natten*. **Rekommendation:** mörkt nu, upplyst
+     varmt på natten senare.
+   - **Neons entré** läses som en lastport: en kvadratisk öppning med rör.
+     **Rekommendation:** behåll som utkast; ett tak över dörren kan komma
+     sedan.
+   - **Väggarnas insidor** är släta färgband, som lobbyns framvägg var.
+     **Rekommendation:** behåll; rummen har egna väggar.
 
 ## §3 Creator Hub och publicering
 

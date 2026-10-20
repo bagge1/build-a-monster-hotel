@@ -1,0 +1,846 @@
+{
+ "set": "facade/neon",
+ "title": "Cosmetic_NeonFacade: the facade pieces (dark panels with glowing cyan and magenta tubes round the windows)",
+ "frame": "Roblox studs, piece frame: X right, Y up, door/front toward -Z, origin per MODELS.md; Blender holds them as (-x, z, y)",
+ "atlas": "textures/HotelAtlas.png (embedded in every FBX)",
+ "palette": {
+  "grey": [
+   110,
+   110,
+   120
+  ],
+  "panel": [
+   30,
+   28,
+   52
+  ],
+  "panel_dark": [
+   18,
+   17,
+   34
+  ],
+  "panel_edge": [
+   56,
+   52,
+   90
+  ],
+  "steel": [
+   92,
+   96,
+   114
+  ],
+  "steel_dark": [
+   60,
+   62,
+   76
+  ],
+  "glass": [
+   16,
+   18,
+   40
+  ],
+  "ink": [
+   40,
+   36,
+   66
+  ],
+  "ink_dark": [
+   28,
+   26,
+   48
+  ],
+  "cyan": [
+   70,
+   245,
+   255
+  ],
+  "magenta": [
+   255,
+   60,
+   200
+  ],
+  "lamp": [
+   255,
+   185,
+   110
+  ]
+ },
+ "pieces": {
+  "Facade_Wall": {
+   "name": "Facade_Wall",
+   "kind": "Facade",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     -0.32
+    ],
+    "size": [
+     12.0,
+     0.2,
+     0.6
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      0.2,
+      0.6
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Wall": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 132,
+     "collide": true
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 144,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a plain wall: dark indigo panels with lighter seams at the sill line, the heads and the top"
+  },
+  "Facade_Window_TwinSash": {
+   "name": "Facade_Window_TwinSash",
+   "kind": "Facade",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     -0.32
+    ],
+    "size": [
+     12.0,
+     0.2,
+     0.6
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      0.2,
+      0.6
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Wall": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 156,
+     "collide": true
+    },
+    "Glass": {
+     "centre": [
+      0.0,
+      7.5,
+      -0.32
+     ],
+     "size": [
+      7.3,
+      9.1,
+      0.06
+     ],
+     "triangles": 24,
+     "collide": false
+    },
+    "Dressing": {
+     "centre": [
+      0.0,
+      7.335,
+      -0.305
+     ],
+     "size": [
+      7.84,
+      9.97,
+      0.97
+     ],
+     "triangles": 168,
+     "collide": false
+    },
+    "Glow_Cyan_1": {
+     "centre": [
+      -2.0,
+      7.5,
+      -0.69
+     ],
+     "size": [
+      3.6933,
+      9.4232,
+      0.14
+     ],
+     "triangles": 48,
+     "collide": false
+    },
+    "Glow_Magenta_1": {
+     "centre": [
+      2.0,
+      7.5,
+      -0.69
+     ],
+     "size": [
+      3.6933,
+      9.4232,
+      0.14
+     ],
+     "triangles": 48,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 60,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 456,
+   "budget": 2500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "dark indigo panels with lighter seams at the sill line, the heads and the top; a TwinSash window: a glowing tube round each opening (a twin sash cyan and magenta), a steel ledge under it"
+  },
+  "Facade_Window_Arched": {
+   "name": "Facade_Window_Arched",
+   "kind": "Facade",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     -0.32
+    ],
+    "size": [
+     12.0,
+     0.2,
+     0.6
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      0.2,
+      0.6
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Wall": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 184,
+     "collide": true
+    },
+    "Glass": {
+     "centre": [
+      0.0,
+      7.5,
+      -0.32
+     ],
+     "size": [
+      5.1,
+      9.1,
+      0.06
+     ],
+     "triangles": 40,
+     "collide": false
+    },
+    "Dressing": {
+     "centre": [
+      0.0,
+      7.335,
+      -0.305
+     ],
+     "size": [
+      5.64,
+      9.97,
+      0.97
+     ],
+     "triangles": 204,
+     "collide": false
+    },
+    "Glow_Cyan_1": {
+     "centre": [
+      0.0,
+      7.5115,
+      -0.69
+     ],
+     "size": [
+      5.5008,
+      9.4783,
+      0.14
+     ],
+     "triangles": 132,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 48,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 572,
+   "budget": 2500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "dark indigo panels with lighter seams at the sill line, the heads and the top; a Arched window: a glowing tube round each opening (a twin sash cyan and magenta), a steel ledge under it"
+  },
+  "Facade_Window_Round": {
+   "name": "Facade_Window_Round",
+   "kind": "Facade",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     -0.32
+    ],
+    "size": [
+     12.0,
+     0.2,
+     0.6
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      0.2,
+      0.6
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Wall": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 280,
+     "collide": true
+    },
+    "Glass": {
+     "centre": [
+      0.0,
+      7.4,
+      -0.32
+     ],
+     "size": [
+      6.9,
+      6.9,
+      0.06
+     ],
+     "triangles": 92,
+     "collide": false
+    },
+    "Dressing": {
+     "centre": [
+      0.0,
+      7.4,
+      -0.17
+     ],
+     "size": [
+      7.44,
+      7.44,
+      0.7
+     ],
+     "triangles": 252,
+     "collide": false
+    },
+    "Glow_Magenta_1": {
+     "centre": [
+      0.0,
+      7.4,
+      -0.69
+     ],
+     "size": [
+      7.3012,
+      7.3012,
+      0.14
+     ],
+     "triangles": 288,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 48,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 924,
+   "budget": 2500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "dark indigo panels with lighter seams at the sill line, the heads and the top; a Round window: a glowing tube round each opening (a twin sash cyan and magenta), a steel ledge under it"
+  },
+  "Facade_Window_Wide": {
+   "name": "Facade_Window_Wide",
+   "kind": "Facade",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     -0.32
+    ],
+    "size": [
+     12.0,
+     0.2,
+     0.6
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      0.2,
+      0.6
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Wall": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 168,
+     "collide": true
+    },
+    "Glass": {
+     "centre": [
+      0.0,
+      6.75,
+      -0.32
+     ],
+     "size": [
+      8.1,
+      6.6,
+      0.06
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Dressing": {
+     "centre": [
+      0.0,
+      5.65,
+      -0.57
+     ],
+     "size": [
+      8.64,
+      9.34,
+      1.5
+     ],
+     "triangles": 432,
+     "collide": false
+    },
+    "Glow_Magenta_1": {
+     "centre": [
+      0.0,
+      3.31,
+      -0.96
+     ],
+     "size": [
+      7.47,
+      0.52,
+      0.4264
+     ],
+     "triangles": 240,
+     "collide": false
+    },
+    "Glow_Cyan_1": {
+     "centre": [
+      0.0,
+      6.75,
+      -0.69
+     ],
+     "size": [
+      8.4569,
+      6.9737,
+      0.14
+     ],
+     "triangles": 48,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 48,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 912,
+   "budget": 2500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "dark indigo panels with lighter seams at the sill line, the heads and the top; a Wide window: a glowing tube round each opening (a twin sash cyan and magenta), a steel ledge under it"
+  },
+  "Facade_Entrance": {
+   "name": "Facade_Entrance",
+   "kind": "Facade",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     -0.32
+    ],
+    "size": [
+     24.0,
+     0.2,
+     0.6
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      -0.32
+     ],
+     "size": [
+      24.0,
+      0.2,
+      0.6
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Wall_Left": {
+     "centre": [
+      -8.75,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      6.5,
+      17.0,
+      0.6
+     ],
+     "triangles": 108,
+     "collide": true
+    },
+    "Wall_Right": {
+     "centre": [
+      8.75,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      6.5,
+      17.0,
+      0.6
+     ],
+     "triangles": 108,
+     "collide": true
+    },
+    "ArchLeft": {
+     "centre": [
+      -5.0,
+      4.5,
+      -0.42
+     ],
+     "size": [
+      1.0,
+      9.0,
+      0.8
+     ],
+     "triangles": 44,
+     "collide": true
+    },
+    "ArchRight": {
+     "centre": [
+      5.0,
+      4.5,
+      -0.42
+     ],
+     "size": [
+      1.0,
+      9.0,
+      0.8
+     ],
+     "triangles": 44,
+     "collide": true
+    },
+    "ArchTop": {
+     "centre": [
+      0.0,
+      13.0,
+      -0.42
+     ],
+     "size": [
+      11.0,
+      8.0,
+      0.8
+     ],
+     "triangles": 92,
+     "collide": true
+    },
+    "Glow_Cyan_1": {
+     "centre": [
+      0.0,
+      6.8303,
+      -0.79
+     ],
+     "size": [
+      9.5612,
+      13.0606,
+      0.34
+     ],
+     "triangles": 100,
+     "collide": false
+    },
+    "Glow_Magenta_1": {
+     "centre": [
+      0.0,
+      6.4803,
+      -0.79
+     ],
+     "size": [
+      10.6212,
+      12.3606,
+      0.34
+     ],
+     "triangles": 100,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.42
+     ],
+     "size": [
+      24.0,
+      17.0,
+      0.8
+     ],
+     "triangles": 60,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Entrance": {
+     "pos": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    }
+   },
+   "triangles": 608,
+   "budget": 3000,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "steel pillars and lintel, a cyan and a magenta tube round the doorway and a chevron of both over it"
+  },
+  "Facade_Corner": {
+   "name": "Facade_Corner",
+   "kind": "Facade",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     -0.32,
+     0.1,
+     -0.32
+    ],
+    "size": [
+     0.64,
+     0.2,
+     0.64
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      -0.32,
+      0.1,
+      -0.32
+     ],
+     "size": [
+      0.64,
+      0.2,
+      0.64
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Post": {
+     "centre": [
+      -0.32,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      0.64,
+      17.0,
+      0.64
+     ],
+     "triangles": 24,
+     "collide": true
+    },
+    "Glow_Cyan_1": {
+     "centre": [
+      -0.32,
+      8.6,
+      -0.645
+     ],
+     "size": [
+      0.2,
+      15.6,
+      0.03
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Glow_Magenta_1": {
+     "centre": [
+      -0.645,
+      8.6,
+      -0.32
+     ],
+     "size": [
+      0.03,
+      15.6,
+      0.2
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 60,
+   "budget": 800,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a dark post with a cyan strip down one face and a magenta strip down the other"
+  }
+ }
+}

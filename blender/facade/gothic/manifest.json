@@ -1,0 +1,797 @@
+{
+ "set": "facade/gothic",
+ "title": "Cosmetic_GothicFacade: the facade pieces (dark slate, pointed windows, red stained-glass trim, small gargoyles on the corners)",
+ "frame": "Roblox studs, piece frame: X right, Y up, door/front toward -Z, origin per MODELS.md; Blender holds them as (-x, z, y)",
+ "atlas": "textures/HotelAtlas.png (embedded in every FBX)",
+ "palette": {
+  "grey": [
+   110,
+   110,
+   120
+  ],
+  "slate": [
+   64,
+   66,
+   80
+  ],
+  "slate_dark": [
+   42,
+   43,
+   54
+  ],
+  "slate_light": [
+   92,
+   94,
+   112
+  ],
+  "stone": [
+   150,
+   146,
+   152
+  ],
+  "stone_light": [
+   186,
+   182,
+   186
+  ],
+  "stone_dark": [
+   105,
+   102,
+   110
+  ],
+  "ruby": [
+   196,
+   32,
+   52
+  ],
+  "ruby_light": [
+   226,
+   78,
+   88
+  ],
+  "amber": [
+   232,
+   160,
+   64
+  ],
+  "night": [
+   24,
+   26,
+   48
+  ],
+  "wine": [
+   96,
+   34,
+   52
+  ],
+  "wine_dark": [
+   66,
+   24,
+   38
+  ],
+  "iron": [
+   52,
+   54,
+   62
+  ],
+  "ivy": [
+   62,
+   92,
+   64
+  ],
+  "gargoyle": [
+   122,
+   120,
+   128
+  ],
+  "gargoyle_dark": [
+   86,
+   84,
+   94
+  ],
+  "flame": [
+   255,
+   205,
+   120
+  ],
+  "lamp": [
+   255,
+   185,
+   110
+  ]
+ },
+ "pieces": {
+  "Facade_Wall": {
+   "name": "Facade_Wall",
+   "kind": "Facade",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     -0.32
+    ],
+    "size": [
+     12.0,
+     0.2,
+     0.6
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      0.2,
+      0.6
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Wall": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 96,
+     "collide": true
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 108,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a plain wall: dark slate with a stone coping, wine inside"
+  },
+  "Facade_Window_TwinSash": {
+   "name": "Facade_Window_TwinSash",
+   "kind": "Facade",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     -0.32
+    ],
+    "size": [
+     12.0,
+     0.2,
+     0.6
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      0.2,
+      0.6
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Wall": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 212,
+     "collide": true
+    },
+    "Glass": {
+     "centre": [
+      0.0,
+      7.8,
+      -0.33
+     ],
+     "size": [
+      6.9,
+      9.7,
+      0.08
+     ],
+     "triangles": 680,
+     "collide": false
+    },
+    "Dressing": {
+     "centre": [
+      0.0,
+      7.76,
+      -0.305
+     ],
+     "size": [
+      7.24,
+      10.12,
+      0.97
+     ],
+     "triangles": 552,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 60,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 1456,
+   "budget": 2500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "dark slate with a stone coping, wine inside; a TwinSash window: a stone surround, a red stained-glass trim, stone tracery; the twin a pair of lancets, the round a rose"
+  },
+  "Facade_Window_Arched": {
+   "name": "Facade_Window_Arched",
+   "kind": "Facade",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     -0.32
+    ],
+    "size": [
+     12.0,
+     0.2,
+     0.6
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      0.2,
+      0.6
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Wall": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 160,
+     "collide": true
+    },
+    "Glass": {
+     "centre": [
+      0.0,
+      8.0,
+      -0.33
+     ],
+     "size": [
+      5.3,
+      10.1,
+      0.08
+     ],
+     "triangles": 340,
+     "collide": false
+    },
+    "Dressing": {
+     "centre": [
+      0.0,
+      7.96,
+      -0.305
+     ],
+     "size": [
+      5.64,
+      10.52,
+      0.97
+     ],
+     "triangles": 312,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 48,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 824,
+   "budget": 2500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "dark slate with a stone coping, wine inside; a Arched window: a stone surround, a red stained-glass trim, stone tracery; the twin a pair of lancets, the round a rose"
+  },
+  "Facade_Window_Round": {
+   "name": "Facade_Window_Round",
+   "kind": "Facade",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     -0.32
+    ],
+    "size": [
+     12.0,
+     0.2,
+     0.6
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      0.2,
+      0.6
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Wall": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 244,
+     "collide": true
+    },
+    "Glass": {
+     "centre": [
+      0.0,
+      7.6,
+      -0.33
+     ],
+     "size": [
+      6.5,
+      6.5,
+      0.08
+     ],
+     "triangles": 380,
+     "collide": false
+    },
+    "Dressing": {
+     "centre": [
+      0.0,
+      7.6,
+      -0.27
+     ],
+     "size": [
+      6.84,
+      6.84,
+      0.9
+     ],
+     "triangles": 480,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 48,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 1116,
+   "budget": 2500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "dark slate with a stone coping, wine inside; a Round window: a stone surround, a red stained-glass trim, stone tracery; the twin a pair of lancets, the round a rose"
+  },
+  "Facade_Window_Wide": {
+   "name": "Facade_Window_Wide",
+   "kind": "Facade",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     -0.32
+    ],
+    "size": [
+     12.0,
+     0.2,
+     0.6
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      0.2,
+      0.6
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Wall": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 276,
+     "collide": true
+    },
+    "Glass": {
+     "centre": [
+      0.0,
+      6.85,
+      -0.33
+     ],
+     "size": [
+      7.7,
+      6.8,
+      0.08
+     ],
+     "triangles": 768,
+     "collide": false
+    },
+    "Dressing": {
+     "centre": [
+      0.0,
+      5.875,
+      -0.57
+     ],
+     "size": [
+      8.2,
+      9.09,
+      1.5
+     ],
+     "triangles": 1368,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 72,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 2424,
+   "budget": 2500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "dark slate with a stone coping, wine inside; a Wide window: a stone surround, a red stained-glass trim, stone tracery; the twin a pair of lancets, the round a rose"
+  },
+  "Facade_Entrance": {
+   "name": "Facade_Entrance",
+   "kind": "Facade",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     -0.32
+    ],
+    "size": [
+     24.0,
+     0.2,
+     0.6
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      -0.32
+     ],
+     "size": [
+      24.0,
+      0.2,
+      0.6
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Wall_Left": {
+     "centre": [
+      -8.75,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      6.5,
+      17.0,
+      0.6
+     ],
+     "triangles": 72,
+     "collide": true
+    },
+    "Wall_Right": {
+     "centre": [
+      8.75,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      6.5,
+      17.0,
+      0.6
+     ],
+     "triangles": 72,
+     "collide": true
+    },
+    "ArchLeft": {
+     "centre": [
+      -5.0,
+      4.5,
+      -0.42
+     ],
+     "size": [
+      1.0,
+      9.0,
+      0.8
+     ],
+     "triangles": 132,
+     "collide": true
+    },
+    "ArchRight": {
+     "centre": [
+      5.0,
+      4.5,
+      -0.42
+     ],
+     "size": [
+      1.0,
+      9.0,
+      0.8
+     ],
+     "triangles": 132,
+     "collide": true
+    },
+    "ArchTop": {
+     "centre": [
+      0.0,
+      13.0,
+      -0.42
+     ],
+     "size": [
+      11.0,
+      8.0,
+      0.8
+     ],
+     "triangles": 212,
+     "collide": true
+    },
+    "Glass": {
+     "centre": [
+      0.0,
+      14.9,
+      -0.6425
+     ],
+     "size": [
+      2.4021,
+      2.4021,
+      0.075
+     ],
+     "triangles": 124,
+     "collide": false
+    },
+    "Dressing": {
+     "centre": [
+      0.0,
+      8.5101,
+      -0.5
+     ],
+     "size": [
+      11.0,
+      15.8202,
+      1.08
+     ],
+     "triangles": 320,
+     "collide": false
+    },
+    "Glow_Warm_1": {
+     "centre": [
+      0.0,
+      10.24,
+      -0.5
+     ],
+     "size": [
+      0.5987,
+      1.08,
+      0.5987
+     ],
+     "triangles": 48,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.42
+     ],
+     "size": [
+      24.0,
+      17.0,
+      0.8
+     ],
+     "triangles": 60,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Entrance": {
+     "pos": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    }
+   },
+   "triangles": 1124,
+   "budget": 3000,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a pointed arch of alternating stone voussoirs, a red rose window over it, an iron lantern"
+  },
+  "Facade_Corner": {
+   "name": "Facade_Corner",
+   "kind": "Facade",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     -0.32,
+     0.1,
+     -0.32
+    ],
+    "size": [
+     0.64,
+     0.2,
+     0.64
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      -0.32,
+      0.1,
+      -0.32
+     ],
+     "size": [
+      0.64,
+      0.2,
+      0.64
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Post": {
+     "centre": [
+      -0.32,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      0.64,
+      17.0,
+      0.64
+     ],
+     "triangles": 36,
+     "collide": true
+    },
+    "Dressing": {
+     "centre": [
+      -1.1774,
+      8.4164,
+      -1.1774
+     ],
+     "size": [
+      1.9346,
+      15.5928,
+      1.9346
+     ],
+     "triangles": 376,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 424,
+   "budget": 800,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a dark slate post with a stone gargoyle on a corbel at the top"
+  }
+ }
+}

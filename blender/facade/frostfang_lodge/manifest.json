@@ -1,0 +1,938 @@
+{
+ "set": "facade/frostfang_lodge",
+ "title": "Frostfang Lodge facade (the kit's own): the facade pieces (the Lobby front wall's, carried over)",
+ "frame": "Roblox studs, piece frame: X right, Y up, door/front toward -Z, origin per MODELS.md; Blender holds them as (-x, z, y)",
+ "atlas": "textures/HotelAtlas.png (embedded in every FBX)",
+ "palette": {
+  "snow": [
+   245,
+   250,
+   255
+  ],
+  "snow_shade": [
+   214,
+   228,
+   242
+  ],
+  "frost": [
+   196,
+   222,
+   244
+  ],
+  "ice": [
+   165,
+   212,
+   240
+  ],
+  "ice_deep": [
+   115,
+   175,
+   220
+  ],
+  "ice_dark": [
+   70,
+   120,
+   170
+  ],
+  "glacier": [
+   100,
+   170,
+   220
+  ],
+  "facade": [
+   120,
+   160,
+   200
+  ],
+  "facade_dark": [
+   85,
+   120,
+   160
+  ],
+  "ground": [
+   200,
+   215,
+   230
+  ],
+  "trim": [
+   240,
+   250,
+   255
+  ],
+  "night": [
+   30,
+   40,
+   78
+  ],
+  "navy": [
+   48,
+   62,
+   110
+  ],
+  "sky": [
+   90,
+   140,
+   220
+  ],
+  "log": [
+   158,
+   104,
+   64
+  ],
+  "log_dark": [
+   118,
+   76,
+   48
+  ],
+  "wood": [
+   140,
+   92,
+   58
+  ],
+  "wood_dark": [
+   90,
+   58,
+   40
+  ],
+  "wood_light": [
+   192,
+   140,
+   92
+  ],
+  "pine": [
+   58,
+   112,
+   92
+  ],
+  "pine_dark": [
+   38,
+   80,
+   70
+  ],
+  "cocoa": [
+   122,
+   78,
+   52
+  ],
+  "cocoa_dark": [
+   82,
+   52,
+   36
+  ],
+  "cocoa_light": [
+   178,
+   128,
+   92
+  ],
+  "cream": [
+   250,
+   240,
+   225
+  ],
+  "red": [
+   205,
+   62,
+   62
+  ],
+  "red_dark": [
+   140,
+   40,
+   48
+  ],
+  "orange": [
+   240,
+   140,
+   50
+  ],
+  "yellow": [
+   250,
+   212,
+   92
+  ],
+  "gold": [
+   226,
+   186,
+   96
+  ],
+  "iron": [
+   64,
+   70,
+   86
+  ],
+  "grey": [
+   120,
+   122,
+   132
+  ],
+  "stone": [
+   138,
+   140,
+   152
+  ],
+  "stone_dark": [
+   94,
+   96,
+   110
+  ],
+  "stone_light": [
+   178,
+   180,
+   192
+  ],
+  "fur": [
+   228,
+   228,
+   234
+  ],
+  "fur_shade": [
+   190,
+   196,
+   208
+  ],
+  "mint": [
+   150,
+   226,
+   200
+  ],
+  "teal": [
+   60,
+   190,
+   185
+  ],
+  "violet": [
+   150,
+   112,
+   220
+  ],
+  "lilac": [
+   186,
+   166,
+   232
+  ],
+  "pink": [
+   230,
+   90,
+   160
+  ],
+  "pink_light": [
+   246,
+   164,
+   204
+  ],
+  "black": [
+   32,
+   34,
+   44
+  ],
+  "white": [
+   246,
+   246,
+   250
+  ],
+  "ink": [
+   40,
+   46,
+   72
+  ],
+  "flame": [
+   255,
+   205,
+   120
+  ],
+  "lamp": [
+   255,
+   185,
+   110
+  ],
+  "frostglow": [
+   205,
+   230,
+   255
+  ],
+  "aurora": [
+   130,
+   255,
+   190
+  ]
+ },
+ "pieces": {
+  "Facade_Wall": {
+   "name": "Facade_Wall",
+   "kind": "Facade",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     -0.32
+    ],
+    "size": [
+     12.0,
+     0.2,
+     0.6
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      0.2,
+      0.6
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Wall": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 276,
+     "collide": true
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 288,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a plain wall: the Lobby front wall's lodge blue with snow courses, logs inside"
+  },
+  "Facade_Window_TwinSash": {
+   "name": "Facade_Window_TwinSash",
+   "kind": "Facade",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     -0.32
+    ],
+    "size": [
+     12.0,
+     0.2,
+     0.6
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      0.2,
+      0.6
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Wall": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 492,
+     "collide": true
+    },
+    "Glass": {
+     "centre": [
+      0.0,
+      7.5,
+      -0.32
+     ],
+     "size": [
+      7.3,
+      9.1,
+      0.06
+     ],
+     "triangles": 24,
+     "collide": false
+    },
+    "Dressing": {
+     "centre": [
+      0.0,
+      7.5,
+      -0.305
+     ],
+     "size": [
+      7.84,
+      9.64,
+      0.97
+     ],
+     "triangles": 264,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 60,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 792,
+   "budget": 2500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "the Lobby front wall's lodge blue with snow courses, logs inside; a TwinSash window: dark log frames and bars, a snowy sill; the arched one round-headed"
+  },
+  "Facade_Window_Arched": {
+   "name": "Facade_Window_Arched",
+   "kind": "Facade",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     -0.32
+    ],
+    "size": [
+     12.0,
+     0.2,
+     0.6
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      0.2,
+      0.6
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Wall": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 424,
+     "collide": true
+    },
+    "Glass": {
+     "centre": [
+      0.0,
+      7.5,
+      -0.32
+     ],
+     "size": [
+      5.1,
+      9.1,
+      0.06
+     ],
+     "triangles": 40,
+     "collide": false
+    },
+    "Dressing": {
+     "centre": [
+      0.0,
+      7.5,
+      -0.305
+     ],
+     "size": [
+      5.64,
+      9.64,
+      0.97
+     ],
+     "triangles": 336,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 48,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 812,
+   "budget": 2500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "the Lobby front wall's lodge blue with snow courses, logs inside; a Arched window: dark log frames and bars, a snowy sill; the arched one round-headed"
+  },
+  "Facade_Window_Round": {
+   "name": "Facade_Window_Round",
+   "kind": "Facade",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     -0.32
+    ],
+    "size": [
+     12.0,
+     0.2,
+     0.6
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      0.2,
+      0.6
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Wall": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 484,
+     "collide": true
+    },
+    "Glass": {
+     "centre": [
+      0.0,
+      7.4,
+      -0.32
+     ],
+     "size": [
+      6.9,
+      6.9,
+      0.06
+     ],
+     "triangles": 92,
+     "collide": false
+    },
+    "Dressing": {
+     "centre": [
+      0.0,
+      7.4,
+      -0.235
+     ],
+     "size": [
+      7.44,
+      7.44,
+      0.83
+     ],
+     "triangles": 444,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 48,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 1032,
+   "budget": 2500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "the Lobby front wall's lodge blue with snow courses, logs inside; a Round window: dark log frames and bars, a snowy sill; the arched one round-headed"
+  },
+  "Facade_Window_Wide": {
+   "name": "Facade_Window_Wide",
+   "kind": "Facade",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     -0.32
+    ],
+    "size": [
+     12.0,
+     0.2,
+     0.6
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      0.2,
+      0.6
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Wall": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 372,
+     "collide": true
+    },
+    "Glass": {
+     "centre": [
+      0.0,
+      6.75,
+      -0.32
+     ],
+     "size": [
+      8.1,
+      6.6,
+      0.06
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Dressing": {
+     "centre": [
+      0.0,
+      5.825,
+      -0.57
+     ],
+     "size": [
+      8.64,
+      8.99,
+      1.5
+     ],
+     "triangles": 720,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 48,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 1116,
+   "budget": 2500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "the Lobby front wall's lodge blue with snow courses, logs inside; a Wide window: dark log frames and bars, a snowy sill; the arched one round-headed"
+  },
+  "Facade_Entrance": {
+   "name": "Facade_Entrance",
+   "kind": "Facade",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     -0.32
+    ],
+    "size": [
+     24.0,
+     0.2,
+     0.6
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      -0.32
+     ],
+     "size": [
+      24.0,
+      0.2,
+      0.6
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Wall_Left": {
+     "centre": [
+      -8.75,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      6.5,
+      17.0,
+      0.6
+     ],
+     "triangles": 252,
+     "collide": true
+    },
+    "Wall_Right": {
+     "centre": [
+      8.75,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      6.5,
+      17.0,
+      0.6
+     ],
+     "triangles": 252,
+     "collide": true
+    },
+    "ArchLeft": {
+     "centre": [
+      -5.0,
+      4.5,
+      -0.42
+     ],
+     "size": [
+      1.0,
+      9.0,
+      0.8
+     ],
+     "triangles": 116,
+     "collide": true
+    },
+    "ArchRight": {
+     "centre": [
+      5.0,
+      4.5,
+      -0.42
+     ],
+     "size": [
+      1.0,
+      9.0,
+      0.8
+     ],
+     "triangles": 116,
+     "collide": true
+    },
+    "ArchTop": {
+     "centre": [
+      0.0,
+      13.0,
+      -0.46
+     ],
+     "size": [
+      11.8,
+      8.0,
+      0.88
+     ],
+     "triangles": 240,
+     "collide": true
+    },
+    "Dressing": {
+     "centre": [
+      0.0,
+      4.8,
+      -0.425
+     ],
+     "size": [
+      11.0,
+      8.4,
+      0.75
+     ],
+     "triangles": 140,
+     "collide": false
+    },
+    "Glow_Warm_1": {
+     "centre": [
+      0.0,
+      8.25,
+      -0.5
+     ],
+     "size": [
+      0.3326,
+      0.6,
+      0.3326
+     ],
+     "triangles": 48,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.42
+     ],
+     "size": [
+      24.0,
+      17.0,
+      0.8
+     ],
+     "triangles": 60,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Entrance": {
+     "pos": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    }
+   },
+   "triangles": 1176,
+   "budget": 3000,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "the Lobby's log pillars and snowy timber gable with its flake and icicles, the iron lantern hung from the lintel"
+  },
+  "Facade_Corner": {
+   "name": "Facade_Corner",
+   "kind": "Facade",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     -0.32,
+     0.1,
+     -0.32
+    ],
+    "size": [
+     0.64,
+     0.2,
+     0.64
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      -0.32,
+      0.1,
+      -0.32
+     ],
+     "size": [
+      0.64,
+      0.2,
+      0.64
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Post": {
+     "centre": [
+      -0.32,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      0.64,
+      17.0,
+      0.64
+     ],
+     "triangles": 60,
+     "collide": true
+    },
+    "Dressing": {
+     "centre": [
+      -0.66,
+      8.5,
+      -0.66
+     ],
+     "size": [
+      0.1848,
+      15.76,
+      0.1848
+     ],
+     "triangles": 28,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 100,
+   "budget": 800,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a dark log post with the wall's stone plinth and snow courses"
+  }
+ }
+}

@@ -212,6 +212,50 @@ tube), `ring`, `swag`/`string` (a hung string), `shield_pts`, `bat_pts`,
 `flake`, `icicle`. Review renders (Workbench): each cosmetic on both kits.
 `-- only A,B`, `-- nopreview`.
 
+## build_facades.py
+
+The facade pieces (MODELS.md, "Facade" and its "Where pieces meet"): seven
+per style, `Facade_Wall` (plain), `Facade_Window_<Type>` (`TwinSash`,
+`Arched`, `Round`, `Wide`), `Facade_Entrance`, `Facade_Corner`, in seven
+styles, each its own set `blender/facade/<style>/` (the names repeat):
+`haunted_manor`, `frostfang_lodge` (the Lobby front wall and arch carried
+over) and the five facade cosmetics `gothic`, `neon`, `candy`, `pirate`,
+`slime`. On hotel_kit, extended from the script, not in the kit: kind
+`Facade` through a wrapped `check_piece` (the kit's generic rules via kind
+Cosmetic, then `facade_boxes`), `Piece.checks` += `facade_tris`, glow keys
+`Cyan` and `Magenta`, `_fixup_lights` (no light but the entrance's). Runs
+one style at a time with `-- styles a,b`; `-- nopreview`.
+
+- The contract: the frame (`OUT_Z`, `IN_Z`, `POST`), `WINDOW_TYPES`,
+  `WIN_BOUNDS` (an opening within x -4..4, y 3..13), the entrance's opening
+  (`ARCH_X`, `ARCH_Y`, `PIER`), the join rules (`INNER_MAX`, `WEDGE`,
+  `INNER_END`, `END_ZONE`, `END_DIP`, `WIN_ZONE`), `BODY` (the colliding
+  parts), `BUDGETS`
+- Checks: `facade_boxes` (boxes, the opening, `Entrance`), `facade_tris`
+  (height, ends and wedge, inside, each window's openings seen along Z with
+  `coverage`, the entrance's opening, the corner's quadrant, `zfights`:
+  coplanar same-facing overlaps); `assembly()`: the FBXs laid out round an L
+  (`LAYOUT`, `WINDOW_AT`, `outline_pieces()`: convex and concave corners,
+  joints, every window type at a corner), details running into each other
+  (BVH) and faces of two colours lying on each other, into validation.json's
+  `assembly`
+- Shapes: `wall_body` (bands, holes, the end faces in the post's colour via
+  `_END`, the dip), `post`; openings `rect`, `lancet`, `disc` with
+  `outline(s, o)` (offset, same points for any o), `infill` (an arch's
+  spandrels, a disc's corners), `frame`, `inner_frame`, `glass`, `stained`,
+  `sill_under`, `bars`, `flower_box`; `window_piece(st, type)` and
+  `plain_wall(st)` dress any style from its `STYLES` entry (bands, post,
+  shapes per type, colours, `extra`, `wall_extra`); `tube`, `drip`,
+  `drip_row`, `hanging_lantern`, `zm` (the old Lobby arch's z in the facade
+  frame), `DIAG` (the corner's outward diagonal), `arch_band`; an entrance
+  and a corner function per style
+- Lifted without running them (`_lift`, by ast): the Haunted Manor's
+  `pumpkin`, the Frostfang `PALETTE`, `icicle`; the cosmetics' review helpers
+  `_block`, `_person`, `_render`
+- Review: `review()` renders the layout, the entrance with a 5-stud person,
+  both corners, and the plain wall and four windows from outside and inside
+  into `review/sheet.png`; `blender/facade/review/overview.png`
+
 ## run_specs.luau
 
 The pure specs (`tests/*.spec.luau`) under Lune, outside Studio:
