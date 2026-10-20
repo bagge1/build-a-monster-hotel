@@ -549,8 +549,26 @@ Med Claudes skärmdump där det finns en. -->
      experiencen → **Monetization** → **Passes**, knappen **Get started**
      under "Earn more with Managed Pricing". Ditt val; Claude kan göra det
      om du säger till.
-3. **Notifikationer** (GDD §9): spelet ber om opt-in efter första move-in, men
-   att *skicka* dem kräver Open Cloud utifrån. Säg till när det är dags.
+3. **Notifikationer** (GDD §9, A.9; dina val 2026-10-20: "till is full" och
+   "Full Moon tonight"). **Byggt** (`src/server/NotifyService.luau`): spelets
+   egna servrar skickar via Open Cloud, ingen server utanför behövs. Provat i
+   Studio 2026-10-20: kön, att en server tar en notis åt gången, lördagens
+   utskick och att den som redan spelar hoppas över; själva sändningen bara
+   loggad ("would send"), eftersom nyckeln saknas. Kvar, i ordning:
+   1. **API-nyckeln (din; Claude får inte hantera nycklar):** Creator Hub →
+      **Open Cloud** → **API Keys** → **Create API Key**. Lägg till API-systemet
+      för **user notifications** med skrivrätt, begränsat till den här
+      experiencen. Kopiera nyckeln.
+   2. **Hemligheten (din):** Creator Hub → experiencen → **Secrets** → skapa
+      en som heter exakt `OpenCloudKey`, klistra in nyckeln, domän
+      `apis.roblox.com`.
+   3. **HTTP:** Studio → File → **Experience Settings** → **Security** →
+      **Allow HTTP Requests** på. Sedan Publish.
+   4. **De två texterna** skapas i Creator Hub (experiencen → **Engagement** →
+      **Notifications**): "Your residents' till is full" och "Full Moon
+      tonight". Claude kan göra det om du säger till; deras id skrivs sedan in
+      i `NotifyService.Messages`.
+   Claude kollar de exakta menynamnen i Robloxs dokumentation när du är där.
 4. **Översättning** (GDD §9: engelska, spanska, portugisiska, japanska): slå på
    **Automatic translation** för experiencen i Creator Hub (Localization).
    Spelets texter är engelska och kan översättas automatiskt.

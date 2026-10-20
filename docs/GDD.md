@@ -464,7 +464,7 @@ Source of the signal list: Roblox Creator Docs on discovery (summarised in the r
 | Resident Wing+ | 249 | +6 resident slots |
 | Extra Floor | 299 | +1 floor beyond the progression cap |
 | VIP Lobby | 399 | VIP badge, gold name tag, VIP lounge decor set, +1 daily request reroll |
-| Facade packs (Gothic, Neon, Candy, Pirate…) | 99–249 each | Exterior styles (cosmetic only) |
+| Facade packs (Gothic, Neon, Candy, Pirate) | 149 each (his price, 2026-10-20) | Exterior styles (cosmetic only) |
 
 **Developer products (repeatable)**
 
@@ -692,6 +692,8 @@ After the soft launch we apply for Kids/Select eligibility:
 | 2026-10-19 | *Night draft:* remote layer is a thin typed wrapper over RemoteEvents (`src/shared/Net.luau`), not Blink/Zap (§13.6) | Reversible: every remote is declared in one file, so swapping the transport touches one module |
 | 2026-10-19 | *Night draft:* guest paths are a grid graph over free cells (§13.6) | Cheaper and deterministic, as the section leaned; Appendix A.1 |
 | 2026-10-20 | Pacing: the bus brings 3–8 guests per player (was 2–4), every stay doubled, Legendary friendship 10 → 5 (§4.2, §4.3); the goal card also gives a free front area beside the start area (§11, A.7) | His go on WAITING §2.27 and §2.28 ("also fix 2 and 3"); rebirth measured 3.5–5.4 h against 60–90 min, now 1:50 / 2:41 h (`archive/BALANCE-2026-10-20.md`) |
+| 2026-10-20 | Notifications: "Your residents' till is full" (when the offline cap runs out) and "Full Moon tonight" (Saturday, to players seen in the last 7 days), sent by the game's servers through Open Cloud (§9, A.9) | His picks of four; "ready to move in" cannot happen offline |
+| 2026-10-20 | Facades: the Manor's and the Lodge's own facade pieces are modelled first, then the Gothic, Neon, Candy and Pirate packs and the Slime facade as styles that replace them on any location; the packs cost **149 each** (§10.2, A.10; Claude's one-line looks, his "yes, as drafts") | His picks: kits first, then packs; one price, no style worth more than another |
 
 ---
 
@@ -1066,8 +1068,20 @@ itself after 24 h.
   Pack gives 10 minutes of income (at least $500), the Slime facade and a
   30-minute 2x Cash boost, once per player. Timed boosts count down in play
   time.
-- **Notifications:** the opt-in is offered once, after the first move-in.
-  Sending them needs Open Cloud from outside the game (not built).
+- **Notifications** (his picks, 2026-10-20): the opt-in is offered once,
+  after the first move-in. Two are sent, through Open Cloud's
+  CreateUserNotification called by the game's own servers (HttpService with
+  the key in the experience's Secrets, no outside server):
+  - **"Your residents' till is full"**: when the offline cap (2 h, 8 h with
+    Night Manager, plus the Moon Tree's) has run out since the player left,
+    if their residents earn offline at all. Cancelled when they come back.
+  - **"Full Moon tonight"**: Saturday 16:00 UTC (a night draft), to every
+    player seen in the last 7 days, four hours before the Full Moon Hunt.
+  Both wait in a MemoryStore queue that any running server of the game sends
+  from, so one due while no server runs goes out when the next one starts.
+  Roblox delivers at most one a day per player, only to opted-in players of
+  13 and over. "Ready to move in" is not sent: a move-in happens during a
+  stay, never offline.
 - **Gift passes** (§10.1 point 4; built 2026-10-19 as WAITING §2.6's
   recommended option, reversible): one developer product per pass, "Gift:
   <pass>", at the pass's own price. The giver picks a player **on the same

@@ -346,17 +346,22 @@ function ResidentService.rate(player: Player, data: PlayerData.Data): number
 	return total
 end
 
+-- How long residents earn offline (§4.6): 2 h, 8 h with Night Manager, plus the Moon Tree's.
+function ResidentService.offlineCap(player: Player, data: PlayerData.Data): number
+	local cap = if data.passes.NightManager
+		then Constants.Residents.NightManagerCap
+		else Constants.Residents.OfflineCap
+	-- The Moon Tree's offline nodes (§6.5) publish their seconds on the player.
+	return cap + (player:GetAttribute("OfflineBonus") :: number? or 0)
+end
+
 -- Offline earnings (§4.6), into the till on joining.
 local function welcomeBack(player: Player, data: PlayerData.Data)
 	if data.lastSeen <= 0 then
 		return
 	end
 	local away = os.time() - data.lastSeen
-	local cap = if data.passes.NightManager
-		then Constants.Residents.NightManagerCap
-		else Constants.Residents.OfflineCap
-	-- The Moon Tree's offline nodes (§6.5) publish their seconds on the player.
-	cap += (player:GetAttribute("OfflineBonus") :: number? or 0)
+	local cap = ResidentService.offlineCap(player, data)
 	local earned = Economy.offline(ResidentService.rate(player, data), away, cap)
 	if earned > 0 then
 		PlayerData.addTill(player, earned)

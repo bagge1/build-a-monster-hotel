@@ -37,6 +37,7 @@ local systems: { { Init: () -> (), Start: () -> () } } = {
 	require(Server.DailyService) :: any, -- dailies, login, codes; pays by StoreService's income rate
 	require(Server.HunterService) :: any, -- Hunter Night, over guests, residents and the bus
 	require(Server.EventService) :: any, -- the calendar's events, over the bus, guests and hunters
+	require(Server.NotifyService) :: any, -- notifications, from residents' offline cap and the calendar
 	require(Server.SettingsService) :: any,
 	require(Server.SocialService) :: any, -- likes, friend bonus, pings, the street leaderboard
 	require(Server.LeaderboardService) :: any, -- the global boards at the lane's west end
