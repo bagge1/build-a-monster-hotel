@@ -327,7 +327,8 @@ to **17**, the slab above (`WallHeight`); the slab's edge is the slab's.
 
 | Piece | Size (x × y, along × up) | What |
 |---|---|---|
-| `Facade_Wall` | 12 × 17, x −6..6 | A wall with **two windows**, each 4 wide and 9 tall (y 3–12, a person's sill), centred at x ±3, with a sill proud of both faces |
+| `Facade_Wall` | 12 × 17, x −6..6 | A **plain wall**, no window (his ruling, 2026-10-20: windows are bought and placed) |
+| `Facade_Window_<Type>` | 12 × 17, x −6..6 | The same wall section **with one window**, `<Type>` one of `TwinSash` (two tall narrow panes, the old wall's two 4 × 9 windows), `Arched` (one tall pointed arch), `Round` (a round moon window), `Wide` (a broad three-pane window with a flower box). The opening stays within x −4..4 and y 3..13 (a person's sill, under the slab), the rest of the section is wall; same frame, Root and collision rules as `Facade_Wall`, the wall round the hole in pieces |
 | `Facade_Entrance` | 24 × 17, x −12..12 | Floor 1's front edge at x 5–6 only: the entrance arch in the middle (opening at least 9 wide and 9 tall, the approved arch's), solid to either side of it; the old `Lobby` front wall's arch and lantern move here |
 | `Facade_Corner` | 0.64 × 0.64 × 17 | A post at an outline corner, filling the square at the vertex in the quadrant **−X, −Z** of its origin (the code turns it to the right quadrant); 0.02 proud of the walls' faces both ways, so it hides a convex corner's gap and a concave corner's overlap |
 
@@ -390,7 +391,7 @@ collision off. Each slot has its own origin:
 |---|---|---|
 | `Sign` | The centre of the hotel sign's `Board` front face | −Z, toward the street |
 | `Lobby` | The lobby's `Entrance` attachment (the threshold, on the floor) | −Z, toward the street |
-| `Facade` | The facade's own frames: a facade cosmetic is a **Folder** `ServerStorage.Cosmetics.<Id>` (`assets/Cosmetics/<Id>/`) holding its own `Facade_Wall`, `Facade_Entrance` and `Facade_Corner`, each to the "Facade" contract above, worn on any location in place of the kit's. Until its pieces exist, a colour scheme (`colour`, `trim`) on the blockout | −Z, toward the outside |
+| `Facade` | The facade's own frames: a facade cosmetic is a **Folder** `ServerStorage.Cosmetics.<Id>` (`assets/Cosmetics/<Id>/`) holding its own `Facade_Wall`, the four `Facade_Window_<Type>`, `Facade_Entrance` and `Facade_Corner`, each to the "Facade" contract above, worn on any location in place of the kit's. Until its pieces exist, a colour scheme (`colour`, `trim`) on the blockout | −Z, toward the outside |
 
 A sign cosmetic dresses the sign (it never covers the Board's text); a lobby
 cosmetic hangs above the entrance and stays clear of a 5-stud person walking

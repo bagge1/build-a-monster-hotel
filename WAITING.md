@@ -547,6 +547,7 @@ Med Claudes skärmdump där det finns en. -->
 
 1. ~~**Slå på Studio Access to API Services**~~ (gjort 2026-10-19: på i
    Experience Settings; save och load provas nu, resultatet i
+   - Ett fönster kostar **$100** (platshållare), och att sälja det ger allt tillbaka.
    `archive/NATTLOGG-2026-10-19.md` och memory `phase-status`).
 2. ~~**Skapa passen och produkterna i Creator Hub**~~ (gjort 2026-10-20 av
    Claude i din Creator Hub, på ditt ord: de fem passen, de åtta produkterna,

@@ -718,6 +718,7 @@ After the soft launch we apply for Kids/Select eligibility:
 | 2026-10-20 | Facades: the Manor's and the Lodge's own facade pieces are modelled first, then the Gothic, Neon, Candy and Pirate packs and the Slime facade as styles that replace them on any location; the packs cost **149 each** (§10.2, A.10; Claude's one-line looks, his "yes, as drafts") | His picks: kits first, then packs; one price, no style worth more than another |
 | 2026-10-20 | **Tiles, not areas:** the plot is bought a cell at a time, cheaply; a hotel starts as a 4 × 4 square centred on the entrance, the reception across from the arch and one room beside it; no lobby strip and no fixed spaces; one or more desks anywhere; the facade only round what is owned (§5.4, A.1) | His rulings from looking at the game ("Customizability is KEY!"), his picks of a 1-cell tile and the 4 × 4 start; it replaces the six areas, the 2-row lobby and its gallery, and "room for 2–4 Standard Rooms" at the start |
 | 2026-10-20 | **Flip:** F mirrors a room or amenity left to right, moving its door (A.1) | His ask |
+| 2026-10-20 | **Windows are pieces:** walls are plain; one window per wall section, bought and placed from four types (Twin sash, Arched, Round, Wide), two on the front at the start, moved out when a tile is bought, restyled by a facade pack (A.1) | His rulings and picks ("CUSTOMIZATION IS KEY!!") |
 
 ---
 
@@ -801,13 +802,28 @@ Every number below is a **placeholder** (tagged `PLACEHOLDER` in
 - **The Resident Wing** is a garden behind the hotel (48 studs deep), where
   residents wander.
 - **The facade** (his ruling, 2026-10-20: "It should only have walls where
-  you have unlocked"): a wall with two windows on **every edge between an
+  you have unlocked"): a plain wall on **every edge between an
   owned cell and one not owned** (or the plot's edge), on every floor, with a
   post at each corner of the outline; the entrance arch on floor 1's front
   edge at x 5–6. Above floor 1, the street-facing edges of the plot stay
   open (his ruling of 2026-10-19); edges facing a cell not owned are walled.
   The pieces are `MODELS.md`, "Facade". The Wing doorway of the first
   draft is gone: residents never walk through it.
+- **Windows are bought and placed** (his ruling, 2026-10-20: "windows should
+  be bought and placed with 4 different to choose from only start with some
+  windows on the front"; "CUSTOMIZATION IS KEY!!"). **One window per wall
+  section** (one tile's edge), on any outer wall of any floor, picked from
+  four types: **Twin sash** (two tall narrow panes), **Arched** (one tall
+  pointed arch), **Round** (a round moon window), **Wide** (a broad
+  three-pane window with a flower box), each hotel kit in its own look (his
+  "yes, as drafts"). Placed, moved, swapped for another type and sold like
+  any piece, in build mode. **A new hotel starts with a Twin sash** on each
+  of the two front walls beside the entrance (x 4 and x 7, floor 1). **When a
+  tile is bought and a windowed wall becomes an inside one, its window moves
+  out** to the new outer wall in the same line (his pick); if that wall
+  already has one, it is refunded. A facade pack brings **its own version of
+  all four** (his pick), worn on every window. A window costs $100
+  (PLACEHOLDER); selling refunds it all.
 - **Flip** (his ask, 2026-10-20: "you should be able to flip with F that
   mirrors the room (so you can change the door placement)"): in build mode,
   **F** (gamepad L1, a **⇋ Flip** button beside Rotate on touch) mirrors the
