@@ -117,6 +117,15 @@ The user-level `CLAUDE.md` has the rules (batch lookups, hand over at a review
 point past ~250k, `WAITING.md`, memory as state, skills as recipes, shared
 tree). Here:
 
+- **August uses this computer while sessions run** (he plays games on it;
+  his report 2026-10-20: "4 second mega lag spikes"). A session never
+  searches a whole disk (`find /`, a search of `C:\` or `D:\`: one ran ten
+  minutes and stuttered his game); it searches the project or a named
+  folder. Blender runs at below-normal priority with at most 4 threads
+  (`-t 4`, started with `start /belownormal` or lowered with
+  `(Get-Process blender).PriorityClass = 'BelowNormal'`), one build at a
+  time. Studio is never brought to the front while he is at the computer
+  (skill `playtest`, "Input").
 - **Memory is in the repo**, `memory/`, read by Claude Code through a junction
   (skill `machine-setup`). A memory file a session changes is committed with
   its work.
