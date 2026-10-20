@@ -586,6 +586,24 @@ Med Claudes skärmdump där det finns en. -->
      Hur de ser ut är ditt.
    - Ett fönster kostar **$100** (platshållare), och att sälja det ger allt tillbaka.
 
+31. **Att vrida kameran i Build** (din rapport 2026-10-20: "you cant rotate
+   the camera in build mode"). Provat utan att ta fokus från dig: tangenterna
+   **,** och **.** vrider kameran, liksom knappen **↻ View** (och styrkorsets
+   vänster/höger); Roblox egen kamera är avstängd i Build och tar inte
+   musen. Höger musknapp med drag är gjort oberoende av allt annat som kan
+   "ta" musrörelsen, men det kan bara provas med riktig mus. **Säg** hur du
+   försökte vrida (höger musknapp och dra, styrplatta, några tangenter?), och
+   om **Q / E** eller en text i Build om hur man vrider vore bättre. Provas med
+   riktig mus i en nattkörning eller när du säger till (`TESTRUN.md`, "Build
+   camera turn").
+32. **Flip och fönster** (dina beslut 2026-10-20, GDD A.1): byggda och provade
+   via spelets egna anrop (`TESTRUN.md`, "Flip", "Windows"). **F** gör ingenting
+   för de importerade rummen än: Roblox kan inte spegla en mesh, så varje rum
+   behöver sin `_Mirror` från kitets skript (MODELS.md); tills dess säger Build
+   "Can't be flipped yet". Fönstren är grå blockformer tills kitets fönster
+   finns. Att välja kort, trycka F och trycka på en vägg med riktig mus provas
+   i en nattkörning.
+
 ## §3 Creator Hub och publicering
 
 1. ~~**Slå på Studio Access to API Services**~~ (gjort 2026-10-19: på i

@@ -1692,7 +1692,21 @@ function BuildController.Start()
 		return true
 	end)
 	UserInputService.InputChanged:Connect(function(input, processed)
-		if not active or processed then
+		if not active then
+			return
+		end
+		-- A right-drag that began on the plot turns the camera wherever the
+		-- cursor goes and whatever else marks the move as taken (his report,
+		-- 2026-10-20: "you cant rotate the camera in build mode").
+		if
+			input.UserInputType == Enum.UserInputType.MouseMovement
+			and rightDownAt
+			and UserInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton2)
+		then
+			turnBy(-input.Delta.X * 0.008)
+			return
+		end
+		if processed then
 			return
 		end
 		if
@@ -1704,12 +1718,6 @@ function BuildController.Start()
 		if input.UserInputType == Enum.UserInputType.MouseWheel then
 			zoomBy(1 - 0.12 * input.Position.Z)
 			return
-		end
-		if
-			input.UserInputType == Enum.UserInputType.MouseMovement
-			and UserInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton2)
-		then
-			turnBy(-input.Delta.X * 0.008)
 		end
 		-- A window being placed or moved lights the wall it would go on.
 		if
@@ -1733,12 +1741,20 @@ function BuildController.Start()
 		end
 	end)
 	UserInputService.InputBegan:Connect(function(input, processed)
-		if not active or processed then
+		if not active then
 			return
 		end
+		-- The right button starts a turn anywhere but on the build mode's own buttons.
 		if input.UserInputType == Enum.UserInputType.MouseButton2 then
-			rightDownAt = Vector2.new(input.Position.X, input.Position.Y)
-		elseif
+			if not overUi(input.Position.X, input.Position.Y) then
+				rightDownAt = Vector2.new(input.Position.X, input.Position.Y)
+			end
+			return
+		end
+		if processed then
+			return
+		end
+		if
 			input.UserInputType == Enum.UserInputType.MouseButton1
 			or input.UserInputType == Enum.UserInputType.Touch
 		then

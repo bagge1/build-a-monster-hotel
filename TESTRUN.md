@@ -642,6 +642,16 @@ facade cosmetic, a blockout opening until then. Played on `Test_Tiles1020a`.
 - [A] How the four kinds look: the kit's models (MODELS.md) replace the
   blockout shapes.
 
+## Build camera turn (his report 2026-10-20)
+
+- [x] The , and . keys turn the build camera (fired as the `Camera` action);
+  the D-pad's view turn too. Roblox's own camera actions are all off in build
+  mode (they do not take the right button).
+- [ ] By a real mouse (night or his yes): a right-drag on the plot turns the
+  camera; one that starts on the build mode's buttons does not; a right-click
+  without a drag still stops placing. The drag no longer depends on Roblox's
+  `processed` flag.
+
 ## August keeps
 
 - How the street, the lobby and the rooms look (every look is a night draft).
@@ -680,3 +690,4 @@ facade cosmetic, a blockout opening until then. Played on `Test_Tiles1020a`.
 - 2026-10-20 22:42 Tiles, desks and the facade (Test_Tiles1020a): the start square, tiles bought by remote and by a click, the outline walled on two floors (rays, a walker), two desks with a guest at each, a desk sold with a guest waiting, the goal card's block and the free Coffin Suite, rejoin; fixed: the tile plates redrawn every second. No errors of the game's own.
 - 2026-10-20 22:56 Flip (Test_Tiles1020a): refused without a mirror model; on the blockout path a flipped Standard Room's door on its other cell and a guest walked in through it; build mode's Flip action and button present. Also: a tile purchase now redraws only the slabs, plates and facade (a quick run of purchases lost one to the rate limit while each rebuilt the whole hotel). No errors of the game's own.
 - 2026-10-20 23:03 Windows (Test_Tiles1020a): the start's two Twin sash, place, swap, move, sell and the refusals by remote; a window moved out by a tile purchase; the four blockout shapes. No errors of the game's own.
+- 2026-10-20 23:07 Build camera turn: , . and the view turn work; Roblox's camera actions off while building; the right-drag made independent of `processed`, its real-mouse check left for a night run (WAITING §2.31).
