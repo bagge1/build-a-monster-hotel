@@ -446,6 +446,25 @@ Placed by the player **on a grid of 3 studs** (a quarter cell), turned in
     against a wall, never across the doorway.
 - Glows are their own parts (`Glow_Warm_1` for flames). `Body` does not
   collide (a placed piece never traps a player).
+- **The model agrees with `Pieces`**: its footprint and layer are its
+  entry's `w`, `d` and `layer`, and the entry's `height` is the body's top
+  to 0.3 (the build mode's ghost and the stand-in block are drawn from it).
+  An id every kit has (`always`) has one height for several models and is
+  held to its footprint and layer only. The kit reads `Pieces.luau` and
+  refuses a mismatch (2026-10-20).
+- **A seat** (rule 6): a piece a person sits on declares each seat in its
+  build script (the kit's `seat()`, recorded in the manifest's
+  `decor.seats`): its top **1.5 to 2.0** above the floor (the person's legs
+  are 2), at least **1.2 deep**, **2 wide** a person, and **nothing above it
+  for 3 studs**. A narrower seat names his ruling (the `Armchair` at 1 × 1,
+  2026-10-20). The kit checks it on the built and the re-imported
+  triangles. No attachment: no code seats anyone yet; the day one does,
+  `Seat_<n>` goes here first.
+- **No coplanar faces** (they z-fight, `DEVNOTES.md`): two of a piece's
+  solids never share a plane facing the same way where both are seen; a
+  detail sits 0.01 to 0.03 proud. The kit refuses a pair unless it is buried
+  in a third solid, lies on the floor facing down, or (a `Wall` piece) lies
+  on the wall's face (2026-10-20, lifted from the monster kit).
 
 **Where the code lets it stand** (`Grid`, `Furnish`): inside one room's walls
 (never across a wall, never in the 6 × 6 just inside the door, never on the

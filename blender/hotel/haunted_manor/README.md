@@ -509,3 +509,176 @@ MeshPart), but **31 arrived with `PrimaryPart` nil** (all but the new
 files have it (a `rojo build` to XML shows `Root` on all 39), and `HotelKit`
 sets it on every clone. Workspace copies deleted. **Studio runtime is not
 tested**: the shell, the desk and the decor are not yet placed, walked or lit.
+
+## 2026-10-20: the ten decor pieces he named (WAITING §2.24)
+
+His picks from the grey silhouettes (`silhouettes/README.md`,
+`archive/screens/2026-10-19_decor_silhouettes.jpg`): the **longcase** clock
+(A), the **grand** piano (A), the **Armchair kept at 1 × 1**, and the tags and
+prices GDD A.2 proposed. Each keeps its silhouette's frame, footprint and
+outline; detail, colour and glows are added here.
+
+**The contract first** (`MODELS.md`, "Decor", 2026-10-20), enforced by the kit
+(`tools/hotel_kit.py`) in `finish()` and again in `validate()` on the
+re-imported FBX:
+
+- **The model agrees with `Pieces.luau`**: footprint and layer equal to the
+  entry's `w`, `d`, `layer`; its `height` the body's top to 0.3 (the build
+  mode's ghost is drawn from it). Proving it on both kits found seven stand-in
+  heights off by up to 0.6 (Candles, CatBasket, Cauldron, SteakPlatter,
+  Chandelier; Frostfang's IceBlock, CocoaMug): `Pieces.luau` now says the
+  models' heights. The ids every kit shares (`always`: Bench, UrnPlanter, the
+  rugs) are held to footprint and layer only.
+- **Seats** (rule 6): `seat()` declares each; top 1.5 to 2.0, at least 1.2
+  deep, 2 wide a person, nothing over it for 3 studs, checked by rays on the
+  triangles. Declared: the Armchair (1.6 wide, his ruling named), the Velvet
+  Sofa (two seats, one a cushion, 2.08 each), the Grand Piano's bench (2.0 × 1.2), and the old
+  `Decor_Bench` in both kits (three, 6.1 wide; only its manifest record
+  changed).
+- **Proof**: both kits rebuilt in full (49/49 and 25/25 through `finish()` and
+  re-imported); every earlier piece's manifest record identical to HEAD but
+  the Bench's added seat.
+
+| Decor | Footprint, layer | What it is | Top | Triangles |
+|---|---|---|---|---|
+| `Decor_GrandfatherClock` | 1x1 Floor | his A: a longcase in dark wood, bracket feet, a panelled plinth, the trunk door's pointed glass window with the brass pendulum, gilt hood columns, the dial (gold bezel, bone face, hour marks, hands at ten past ten) under a moon arch with a crescent, a round pediment with three gilt finials | 6.95 | 1,422 |
+| `Decor_WallClock` | 1x1 Wall | a round dark-wood case with the same dial over a pendulum box with a pointed glass window and a brass bob, a drop finial below, a gilt finial on top; hung from 2.9 to 7.0, its back on the wall | 6.98 | 694 |
+| `Decor_BlackRoses` | 1x1 Floor | seven black roses with red hearts and three leaves in a teal vase with a gold band, on a slim turned plum pedestal | 4.78 | 1,164 |
+| `Decor_CarnivorousPlant` | 1x1 Floor | a flytrap in a stone pot with a teal band: a thick curved stalk, two lobes gaping toward the front (dark green outside, wine-red inside, nine straw-coloured cilia each), a small closed trap on a side stalk, leaves over the rim | 3.58 | 788 |
+| `Decor_GhostFern` | 1x1 Floor | a pale teal fern in a plum pot on a sturdy three-legged stand: eight fronds, each one blade with its edges folded down and pinched to a third at every other station (the pinnae) along a jade rib, arching out and down | 3.31 | 1,474 |
+| `Decor_Armchair` | 1x1 Floor | his ruling 1 × 1: a wingback, crimson-dark frame, crimson cushion and inner back with five tufting buttons, rolled arms, wings, a round-topped back, turned legs; the seat 1.6 wide at 1.72 | 5.00 | 788 |
+| `Decor_VelvetSofa` | 2x1 Floor | a camelback for two: plum frame, two violet cushions (a seat each) and a violet inner back with eight buttons, rolled arms, turned legs; the seats at 1.68 | 3.90 | 932 |
+| `Decor_Bookshelf` | 2x1 Wall | a gothic bookcase: two bays under pointed arches, a plum back, four shelves of books in the set's colours (two leaning, a flat stack), a skull bookend, a teal potion bottle, a cornice with a gilt finial; its back on the wall | 6.98 | 1,284 |
+| `Decor_SideTable` | 1x1 Floor | a round pedestal table on three curved feet, a brass lantern (dish, candlestick, four ribs, cap) round a cream candle whose flame is `Glow_Warm_1`, a wine-red book | 4.00 | 1,018 |
+| `Decor_GrandPiano` | 2x2 Floor | his A: a black baby grand, keyboard toward −Z, its spine on the player's left, the lid propped on a stick over a gold plate on a pale soundboard, five octaves of black keys, a low music desk with a sheet, three turned legs with brass castors, the pedal lyre, and its bench with a crimson cushion | 5.14 | 1,396 |
+
+All are `Root` + `Body` (the side table also `Glow_Warm_1`); nothing collides;
+no `LOD_Proxy` (decor has none). Nothing moves: the pendulums and hands are
+part of `Body` (MODELS.md rule 2 would split them the day code swings them).
+Helpers in the build script: `limb`, `tilt_to`, `clock_face`, `GRAND`, `_inset`.
+
+**Renders** (`review/decor/`, not in git; Cycles, the 5-stud figure beside
+each, seated in the armchair and on the sofa): `1_row_a_front`,
+`2_row_b_front`, `3_build_camera` (the build camera's ~51° from the front),
+`4_seats`, `5_clock_close`, `6_piano_close`, `7_plants_close`. Rendered by a
+scratch script, not kept.
+
+**Iterations before the review** (Claude's own look): the piano's treble cheek
+rendered as a black patch (smoothing across a thin bevelled block; with
+backface culling it is solid, no flipped face): its bevel removed. The Ghost
+Fern read first as loose chips, then as tentacles: each frond is now one lobed
+blade, wider and lower.
+
+**A seated person at the piano** does not fit under its keys: the blocky
+avatar's thighs reach 0.9 above the bench, past the key bed (1.8). Kept at a
+real piano's proportions to the standing person (keys at 2.48, half his
+height); no code seats anyone at it.
+
+### Blind review 2026-10-20 (the ten; Fable, round 1)
+
+Seven pictures in `review/decor/` (the two rows from the front with the
+standing figure, the build camera, the seats with sitters, the clock, the
+piano and the plants close). Triage:
+
+| # | The reviewer's finding | Triage |
+|---|---|---|
+| 1 | The Armchair cannot seat the avatar: the body is narrower than torso and arms; seated, the arms pass through the armrests | **His ruling** (2026-10-20, "keep 1×1", after WAITING §2.24 told him the seat is 1.44 against a 2-wide person): kept; the arms slimmed so the seat is 1.6 |
+| 2 | The sofa's end clips a seated arm; three cushions for one sitter | **False**: the contract's seat is 2 wide a person, and the sofa seats two on 4.16; a Roblox avatar's arms (4 wide with the torso) pass through any armrest of a real sofa's proportion. Three cushions are the camelback's look, as on the silhouette he saw |
+| 3 | The piano's pedal lyre is white | **False**: a crop shows the lyre black; the pale is the floor tile between its posts |
+| 4 | The piano is toy-scaled; the bench jammed under the keys, a sitter's legs inside the piano | Scale: **false** by proportion (keyboard 3.28 wide, 82 % of the figure's 4-stud span; a real one is about 70 % of a person's). The sitter: **his call**, WAITING §2.24: the blocky avatar's thighs (0.9 thick) do not fit under a key bed at a real piano's height |
+| 5 | The flytrap reads as Mario's Piranha Plant (red-white jaws, green stalk, orange pot) | **Confirmed** (taste: check against famous designs) and fixed: a stone pot with a teal band, dark green lobes, wine-red inside, green cilia instead of white teeth |
+| 6 | The fern is thin, a spider plant; its stand's legs vanish from the build camera | **Confirmed**, fixed: legs 0.11 thick (from 0.07), blades 20 % wider |
+| 7 | The side table and the roses are twins from above (dark round top on a dark pedestal) | **Confirmed**, fixed: the roses stand on a pale stone pedestal |
+| 8 | The clock's bob touches the window's foot; the moon is a dot | **Confirmed**, fixed: the bob raised 0.28 (its foot 0.41 above the window's); the moon a crescent |
+| 9 | The wall clock is twice life size | **His call**, WAITING §2.24 (the silhouette's size; readable on a phone) |
+| 10 | The bookcase looks under 1 stud deep | **False**: the case is 1.4 deep (z −0.3 to the wall at 1.1), the cornice 1.55 |
+| 11 | The sofa's crest is too small to read | **False** as a fault: a carved crest at the camelback's hump, a detail for close view, not a bat |
+
+Could not judge: whether the tiles are 3 studs and the wall pieces touch
+their wall: both proven by the validator (Root 3fw × 0.2 × 3fd; a Wall
+piece's back at z = 3fd/2 − 0.4 to 0.05). Added for round 2: both sofa seats
+taken, and a straight-down orthographic view (`8_top_ortho`).
+
+### Blind review 2026-10-20 (round 2, a new reviewer on new pictures)
+
+| # | The reviewer's finding | Triage |
+|---|---|---|
+| 1 | The seats do not fit the avatar: arms through the armchair's armrests; two sitters on the sofa overlap | Armchair: **his ruling** (1 × 1). The sofa: the contract's seat is 2 wide a person (the torso); with its arms the avatar is 4. **His call**, WAITING §2.24 |
+| 2 | A black hole in the sofa's back between the two heads | **False**: the two stand-in sitters' boxes overlap there (an arm of each inside the other's chest) and Cycles renders the shared faces black; the sofa is closed (the validator) and whole in every view without sitters |
+| 3 | Three cushions for a sofa that seats two | **False** (as round 1) |
+| 4 | A flat black box under the piano's key bed; the pedals on the floor | The box: **confirmed**: the cheek blocks' sides and bottoms lay in the key bed's planes (it would flicker in Roblox). Fixed (the cheeks 0.03 proud at the sides, 0.05 lower), and **the kit now refuses it** (below). The pedals: **false** (a lyre's pedals are a hand above the floor; these 0.08 to 0.12) |
+| 5 | From the build camera the roses are a smudge, the wall clock's face a dot, the flytrap's teeth the lids' green | Roses: **confirmed**, fixed (red hearts, not dark red). Teeth: **confirmed**, fixed (straw). The wall clock: **false** (a 1.4-wide dial seen from the whole-plot camera; the zoom brings it close) |
+| 6 | The armchair's armrests nearly flush with the seat | **False**: 0.53 to 0.7 above the cushion, a real armchair's 20 cm |
+| 7 | A leaning book pokes out of the bookcase | **False**: both leaning books measured inside their bays (x −1.15..−0.47 and 1.30..1.82) and under the shelf above |
+| 8 | The moon arch reads as a sticker; the clock is as deep as it is wide | **False** as faults: a longcase's moon dial is painted in its arch; the depth (1.6 of 2.08) is the silhouette he picked |
+| 9 | The rose pedestal reads as a birdbath, and is the wall stand-ins' colour | **Confirmed**, fixed: a slim plum pedestal, its top 1.12 across (from 1.56) |
+| 10 | The flytrap's open-jaw pose is still the Piranha Plant's | **False**: the open jaws are what a flytrap is; the colours that made it Mario's (red head, white teeth, orange pot) are gone |
+
+**A rule the kit now enforces: no coplanar faces** (`MODELS.md`, "Decor").
+`coplanar_shells()` in `tools/hotel_kit.py`, lifted from the monster kit, runs
+in `finish()` on every decor piece: two solids' faces in one plane, facing the
+same way and overlapping, refuse the piece, unless the pair is buried in a
+third solid, lies on the floor facing down, or lies on a Wall piece's wall
+face. It found, besides the piano's cheeks: the two clocks' hands (now 0.012
+apart), the grandfather clock's crescent on its bezel's face, the wall
+clock's case front on its pendulum box's, the piano's cover over the action
+on its rim, and in four pieces already in the game: `Decor_SandTray` (the
+rake's two bars), `Decor_Cauldron` (the three logs, now 0.006 apart in
+radius), `Decor_MoonWindow` (the mullion and transom) and `Decor_Chandelier`
+(its three feet and the spokes' boxes), each fixed by a hair with no change of
+look, and in Frostfang's `Decor_CocoaMug` (the snowflake's bars, now
+staggered by `flake(..., stagger=True)`). **Those five need a new import.**
+Not checked: rooms, amenities, the lobby, the desk, the stairs and the sign
+(the check is decor's only); the lodge's other snowflakes share the same
+crossed bars.
+
+### Blind review 2026-10-20 (round 3, a new reviewer on new pictures)
+
+| # | The reviewer's finding | Triage |
+|---|---|---|
+| 1 | A sitter clips the armchair's arms | **His ruling** (1 × 1), as before |
+| 2 | The armchair is as tall as a standing avatar (5.0); a sitter's head hides in its hood | **His call**, WAITING §2.24 (the silhouette he picked) |
+| 3 | The flytrap's leaves pass through the pot wall below the rim | **Confirmed**, fixed: fanned out over the soil and the rim |
+| 4 | The flytrap still reads as the Piranha Plant | **His call**, WAITING §2.24 (twice now; Claude's reading: false, see round 2) |
+| 5 | The black roses read red | **His call**, WAITING §2.24 (round 2 found them a smudge; red hearts were that fix) |
+| 6 | The fern reads as an agave or spider plant | **Confirmed**, fixed: each blade pinched nearly to its rib at every other station of 17 (the pinnae), the upright frond arched, the bud removed |
+| 7 | The piano's lyre and pedals lie on the floor | **Confirmed** (raised twice now), fixed: the lyre's foot 0.22 up, the pedals at 0.26 to 0.3 |
+| 8 | The clock's crescent is cut by the dial's bezel | **Confirmed**, fixed: the dial 0.05 lower, the crescent clear above it |
+| 9 | Three cushions on a sofa that seats two | **Confirmed** (raised twice), fixed: two cushions, a seat each |
+| 10 | The sitters' hips look high | **False**: the stand-in's boxes; the seats measure 1.68 to 1.75 |
+| 11 | The wall pieces take a whole tile | **False** against the contract: a Wall piece's footprint is its squares (`MODELS.md`, "Decor") |
+| 12 | Small details vanish from the build camera | **False** as a fault: the whole-plot zoom; they read at the zooms a player decorates at |
+
+### Blind review 2026-10-20 (round 4, a new reviewer on new pictures)
+
+| # | The reviewer's finding | Triage |
+|---|---|---|
+| 1 | The fern's fronds are broken shards, pieces seemingly detached | **Confirmed** (the pinches at 0.15 read as gaps), fixed: pinched to a third, a jade rib along each frond |
+| 2 | No knee room at the piano | **His call**, already in WAITING §2.24 |
+| 3 | The armchair narrower than a torso; two sitters bury the sofa's arms | **His ruling** / **his call**, already in WAITING §2.24 |
+| 4 | The flytrap reads as the Piranha Plant | **His call**, already in WAITING §2.24 |
+| 5 | The seat heights disagree (1.2, 1.3, 1.7 by eye) | **False**: measured 1.72, 1.75 and 1.68 (the kit's seat check) |
+| 6 | The fern's and the side table's legs are hairlines from the build camera | **False** as a fault: the whole-plot zoom; the fern's legs are 0.22 thick since round 2 |
+| 7 | The roses are maroon, like the armchair | **His call**, already in WAITING §2.24 |
+| 8 | A teal zigzag on the fern's pot | **False**: a frond hanging in front of the pot |
+| 9 | From above, the armchair's hood hides its seat | Part of the armchair's height, **his call** |
+| 10 | A speck on the piano's lid | **Confirmed**: the music desk's corner came through the lid near the hinge. Fixed: the desk 2.0 wide and 0.5 tall (from 2.3 and 0.64); a crop shows the lid clean. The stick's end also kept 0.1 under the lid |
+| 11 | The sofa's crest reads as dirt from above | **Confirmed** (the third reviewer to name it), removed: the hump is the back's own shape |
+
+Not judged and settled by measurement: the bookcase stands on y 0 and its
+back lies on the wall (the validator: a Wall piece's back at z = 1.1 to 0.05);
+the backs of the clocks and the bookcase are closed solids (no open edges),
+plain wood.
+
+**Round 4's fixes were not shown to a fifth reviewer**: checked in Claude's own
+renders only (the fern, the piano's lid, the sofa).
+
+### Validated, and not (the ten, 2026-10-20)
+
+**Validated** (Blender, headless): the ten and the Bench through `finish()`
+and re-imported (11/11): Root 3fw × 0.2 × 3fd, the layer's envelope, nothing
+colliding, the `Pieces.luau` agreement, every seat, no coplanar faces, the
+1,500 budget, closed meshes, names, boxes and triangle counts after the FBX
+round trip. Both kits rebuilt in full with the new checks (49/49 and 25/25).
+**Not validated:** anything in Studio. Not imported, not placed, not seen lit.
+

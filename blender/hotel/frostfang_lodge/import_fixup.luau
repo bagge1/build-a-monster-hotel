@@ -414,7 +414,7 @@ local SET = {
 		root = Vector3.new(0, 0.1, 0),
 		parts = {
 			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(3, 0.2, 3), collide = false },
-			Body = { c = Vector3.new(0, 1.3673, -0.0127), s = Vector3.new(2.2, 2.7345, 1.8144), collide = false },
+			Body = { c = Vector3.new(0, 1.3673, -0.0277), s = Vector3.new(2.2, 2.7345, 1.8412), collide = false },
 		},
 		att = {
 		},

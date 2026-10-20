@@ -29,6 +29,7 @@ import hotel_kit as K  # noqa: E402
 from hotel_kit import finish, box, span, cyl, lathe, sphere, prism, at  # noqa: E402
 
 SET = 'hotel/haunted_manor/silhouettes'
+K.IMPORT_CHECKS = False        # drafts with _A/_B ids, not for import: Pieces.luau and z-fighting are not theirs
 G, D, L = 'grey', 'stone_dark', 'stone'       # the silhouette's greys: body, shadowed detail, light detail
 
 

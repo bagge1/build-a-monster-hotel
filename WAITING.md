@@ -413,17 +413,30 @@ Med Claudes skärmdump där det finns en. -->
    Studio än, `TESTRUN.md` fas 12). Byggt enligt ditt ja: områden, trappor
    som bitar, en flyttbar disk, dekor på ett rutnät av 3 studs, golv per rum,
    lobby och korridor, och tier från inredning. Fem saker är dina:
-   - **De nya dekorbitarna för Haunted Manor** (klockor, blommor, växter,
-     möbler, piano): grå silhuetter bredvid en person,
-     `archive/screens/2026-10-19_decor_silhouettes.jpg` (Grandfather Clock,
-     Wall Clock, Black Roses, Carnivorous Plant, Ghost Fern, Armchair, Velvet
-     Sofa, Bookshelf, Side Table, Grand Piano). **Välj:** Grandfather Clock A
-     (golvur) eller B (kistformad), Grand Piano A (flygel) eller B (pianino;
-     då passar den också mot en vägg). **Armchair** är för smal på en ruta
-     (sitsen 1,44 bred, en person 2): **rekommendation** 2 × 1 rutor. Sätt
-     taggar och priser: Claudes förslag står i GDD A.2 (till exempel Grand
-     Piano: music, slow music, $2 500). Tills du valt visas de som enkla block
-     i spelet.
+   - ~~**De nya dekorbitarna för Haunted Manor**~~ (dina val 2026-10-20: golvuret
+     A, flygeln A, Armchair kvar på 1 × 1, taggar och priser som GDD A.2
+     föreslog; de förs in i GDD §18 när du sagt ja till bilderna). **Modellerade**
+     (`blender/hotel/haunted_manor/README.md`, "2026-10-20"), granskade blint i
+     fyra rundor. **Titta på bilderna** i `blender/hotel/haunted_manor/review/decor/`
+     och säg ja eller vad som ska ändras. Tre små saker är dina:
+     - **Sittplatserna** är 2 studs breda per person (avatarens kropp); med armarna
+       är avataren 4, så armarna går genom armstöden och två på soffan överlappar
+       med armarna. **Alternativet:** 4 per person (soffan rymmer då en, Armchair
+       vore 2 × 1). **Rekommendation:** behåll 2: ingen kod sätter någon i dem än.
+     - **Flygeln** har en riktig flygels mått mot den stående personen (tangenterna
+       vid 2,48, halva hans längd); en sittande avatar får inte plats med låren
+       under klaviaturen. **Alternativet:** höj den ungefär 1 stud (den ser då stor
+       ut bredvid en stående). **Rekommendation:** behåll.
+     - **Väggklockan** är ungefär 4 studs hög, större än en riktig (silhuettens
+       storlek). **Rekommendation:** behåll: urtavlan syns på en telefon.
+     - **Armchair** är 5 studs hög som silhuetten (lika hög som en stående
+       person); en sittande syns inte bakom öronlappen. **Rekommendation:** behåll.
+     - **Black Roses** har röda hjärtan i svarta kronblad; en granskare såg dem som
+       röda rosor, en annan som en mörk fläck. **Rekommendation:** behåll.
+     - **Carnivorous Plant**: två granskare tyckte att en köttätande växt med öppna
+       käftar påminner om Marios Piranha Plant, även efter att färgerna ändrats
+       (mörkgröna käftar, vinröd insida, halmgula tänder, stenkruka).
+       **Rekommendation:** behåll: formen är en flugfälla.
    - **Den blinda granskningen av disken** (Haunted Manors README): kassan ser
      ut som en fågelholk från gästens sida, klockan är guld på guldskiva, och
      lobbygolvets schack är stort (6 studs rutor; ett golv du väljer ersätter

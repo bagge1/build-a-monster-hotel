@@ -62,14 +62,17 @@ PALETTE = [
 
 # --- Shared dressing ------------------------------------------------------------------------------
 
-def flake(part, c, r, col, wall='back', t=0.06):
-    """A six-armed snowflake of three crossed bars on a wall face (or the sign)."""
+def flake(part, c, r, col, wall='back', t=0.06, stagger=False):
+    """A six-armed snowflake of three crossed bars on a wall face (or the sign). `stagger` sets each bar
+    0.01 prouder on each face than the last (and the first than the tips), so their fronts do not share a plane (decor's coplanar check, 2026-10-20;
+    the rooms', the lobby's and the sign's flakes are not yet staggered)."""
     for k in range(3):
         a = k * 60
+        tk = t + (0.02 * (k + 1) if stagger else 0)
         if wall == 'back':
-            box(part, (0, 0, 0), (2 * r, r * 0.22, t), col, m=at(c, rz=a))
+            box(part, (0, 0, 0), (2 * r, r * 0.22, tk), col, m=at(c, rz=a))
         else:
-            box(part, (0, 0, 0), (t, r * 0.22, 2 * r), col, m=at(c, rx=a))
+            box(part, (0, 0, 0), (tk, r * 0.22, 2 * r), col, m=at(c, rx=a))
     for k in range(6):   # little tips, so it reads as a flake and not a star
         a = math.radians(k * 60)
         if wall == 'back':
@@ -722,7 +725,7 @@ def d_cocoa_mug():
     for k, (x, z) in enumerate(((-0.2, 0.0), (0.25, -0.1))):   # curls of steam
         lathe('Body', [(0.12, -0.05), (0.18, -0.05), (0.18, 0.05), (0.12, 0.05)], 'white', n=8, closed=True,
               m=at((x, 2.4 + k * 0.5, z), rx=90))
-    flake('Body', (0, 1.32, -1.0), 0.25, 'white')
+    flake('Body', (0, 1.32, -1.0), 0.25, 'white', stagger=True)
     K.refit_decor()
     finish(note='a giant red mug of cocoa with marshmallows, steam curls and a snowflake')
 

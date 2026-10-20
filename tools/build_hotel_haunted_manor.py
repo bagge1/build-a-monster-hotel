@@ -2,8 +2,8 @@
 
 The 8 rooms and 5 amenities of GDD §5.2 and Pieces.luau, the Lobby (a shell),
 the FrontDesk, the stair core (StairCore, and StairCoreTop with its rail), the
-HotelSign, the RoomPlaque and the 20 Location 1 decor pieces (the last five
-the old lobby's bench, planter and carpet), each authored on tools/hotel_kit.py in the frames
+HotelSign, the RoomPlaque and the 30 Location 1 decor pieces (five the old
+lobby's bench, planter and carpet; the last ten what he named for the manor), each authored on tools/hotel_kit.py in the frames
 and with the attachments of the Luau blockout (src/server/HotelKit.luau), so
 a delivered model replaces geometry and nothing else (CLAUDE.md).
 
@@ -32,7 +32,9 @@ AMENITIES = ['SnackBar', 'MusicRoom', 'GraveyardGarden', 'QuietLibrary', 'OrganH
 DECOR = ['PuddleRug', 'SnackBasket', 'RecordPlayer', 'Candles', 'Planter', 'AntiqueWardrobe',
          'BlackoutCurtains', 'SandTray', 'CatBasket', 'Cauldron', 'SteakPlatter', 'MoonWindow',
          'PipeOrgan', 'SoundproofWalls', 'Chandelier',
-         'Bench', 'UrnPlanter', 'RugRunner', 'RugCorner', 'RugSquare']   # the last five: the old lobby's
+         'Bench', 'UrnPlanter', 'RugRunner', 'RugCorner', 'RugSquare',    # these five: the old lobby's
+         'GrandfatherClock', 'WallClock', 'BlackRoses', 'CarnivorousPlant', 'GhostFern', 'Armchair',
+         'VelvetSofa', 'Bookshelf', 'SideTable', 'GrandPiano']            # what he named (§5.4, 2026-10-20)
 
 
 # --- Shared furniture ------------------------------------------------------------------------
@@ -805,7 +807,7 @@ def d_sand_tray():
     span('Body', (-1.3, 0.75, -0.95), (1.3, 0.95, 0.95), 'sand')
     lathe('Body', [(0.45, 0.95), (0.0, 1.45)], 'honey', n=4, base=(0.5, 0, 0.2), phase=0.785)
     box('Body', (-0.6, 1.0, -0.2), (0.08, 0.06, 1.0), 'wood_dark')
-    box('Body', (-0.6, 1.0, -0.72), (0.5, 0.06, 0.08), 'wood_dark')
+    box('Body', (-0.6, 1.005, -0.72), (0.5, 0.06, 0.08), 'wood_dark')
     K.refit_decor()
     finish(note='a wooden tray of raked sand with a little pyramid')
 
@@ -835,7 +837,7 @@ def d_cauldron():
         cyl('Body', (0.85 * math.cos(a), 0, 0.85 * math.sin(a)), 0.13, 0.7, 'iron', n=6, r_top=0.16)
     for k in range(3):
         a = k * math.tau / 3
-        cyl('Body', (0, 0, 0), 0.14, 1.1, 'wood', n=6,
+        cyl('Body', (0, 0, 0), 0.14 - 0.006 * k, 1.1, 'wood', n=6,
             m=K.Matrix.Translation((0.5 * math.cos(a), 0.15, 0.5 * math.sin(a))) @ K.Matrix.Rotation(-a, 4, 'Y') @ K.Matrix.Rotation(K.math.radians(-90), 4, 'Z')
             @ K.Matrix.Translation((0, -0.55, 0)))
     lathe('Body', [(0, 0.45), (0.8, 0.55), (1.15, 1.0), (1.15, 1.45), (0.95, 1.85), (1.08, 2.0), (1.1, 2.1), (0.88, 2.05), (0.86, 1.85)],
@@ -876,7 +878,7 @@ def d_moon_window():
     moon = [(0.25 + 0.85 * math.cos(a), 4.3 + 0.85 * math.sin(a)) for a in [k * math.tau / 12 for k in range(12)]]
     prism('Glow_Cold_1', moon, -0.1, -0.05, 'moonglow', plane='xy')
     span('Body', (-0.06, 0.6, -0.14), (0.06, 6.0, 0.06), 'wood_dark')
-    span('Body', (-1.2, 3.0, -0.14), (1.2, 3.12, 0.06), 'wood_dark')
+    span('Body', (-1.2, 3.0, -0.13), (1.2, 3.12, 0.05), 'wood_dark')
     K.refit_decor()
     finish(note='a freestanding gothic window, a full moon glowing in the night pane')
 
@@ -915,7 +917,7 @@ def d_chandelier():
     decor('Chandelier', 1, 1, 'Floor')
     for k in range(3):
         a = k * math.tau / 3
-        box('Body', (0, 0, 0), (1.2, 0.2, 0.2), 'iron',
+        box('Body', (0, 0, 0), (1.2, 0.2 + 0.01 * k, 0.2), 'iron',
             m=K.Matrix.Rotation(-a, 4, 'Y') @ K.Matrix.Translation((0.6, 0.12, 0)))
     lathe('Body', [(0.25, 0), (0.12, 0.3), (0.09, 5.6), (0.2, 5.8)], 'iron', n=6)
     lathe('Body', [(1.05, 5.6), (1.25, 5.6), (1.25, 5.78), (1.05, 5.78)], 'gold', n=12, closed=True)
@@ -929,10 +931,440 @@ def d_chandelier():
         sphere('Body', (1.15 * math.cos(a + 0.63), 5.35, 1.15 * math.sin(a + 0.63)), (0.08, 0.16, 0.08), 'lavender', n=6, rings=3)
     for k in range(5):
         a = k * math.tau / 5
-        box('Body', (0.57 * math.cos(a), 5.69, 0.57 * math.sin(a)), (0.1, 0.06, 0.1), 'gold')
+        box('Body', (0.57 * math.cos(a), 5.695, 0.57 * math.sin(a)), (0.1, 0.06, 0.1), 'gold')
     sphere('Body', (0, 6.0, 0), (0.2, 0.25, 0.2), 'gold', n=6, rings=4)
     K.refit_decor()
     finish(note='a standing iron chandelier: a gold ring of five candles and crystal drops')
+
+
+# --- The decor he named for Haunted Manor (GDD §5.4, A.2; WAITING §2.24). His picks from the grey
+# silhouettes (2026-10-20): the longcase clock (A), the grand piano (A), the Armchair kept at 1 x 1.
+# Each keeps its silhouette's frame and outline; detail, palette and glows added here.
+
+import math  # noqa: E402
+from mathutils import Vector, Matrix  # noqa: E402
+from hotel_kit import at  # noqa: E402
+
+
+def limb(part, a, b, r0, r1, col, n=6):
+    """A tapered rod from point a to point b."""
+    a, b = Vector(a), Vector(b)
+    d = b - a
+    rot = Vector((0, 1, 0)).rotation_difference(d.normalized()).to_matrix().to_4x4()
+    cyl(part, (0, 0, 0), r0, d.length, col, n=n, r_top=r1, m=Matrix.Translation(a) @ rot)
+
+
+def tilt_to(pos, direction):
+    """A transform putting local +Y along `direction` at `pos`."""
+    rot = Vector((0, 1, 0)).rotation_difference(Vector(direction).normalized()).to_matrix().to_4x4()
+    return Matrix.Translation(Vector(pos)) @ rot
+
+
+def clock_face(c, r):
+    """A dial on a front (-Z) face whose surface is at c.z: a gold bezel, a bone face, twelve hour
+    marks and the hands at ten past ten, each a hair proud of the last."""
+    x, y, z = c
+    cyl('Body', (0, 0, 0), r + 0.09, 0.06, 'gold', n=20, m=at((x, y, z), rx=-90))
+    cyl('Body', (0, 0, 0), r, 0.08, 'bone', n=20, m=at((x, y, z), rx=-90))
+    zf = z - 0.08
+    for k in range(12):
+        a = k * math.tau / 12
+        big = k % 3 == 0
+        ln = r * (0.22 if big else 0.13)
+        rr = r * 0.8
+        box('Body', (0, 0, 0), (0.07 if big else 0.045, ln, 0.03), 'ink',
+            m=at((x + rr * math.sin(a), y + rr * math.cos(a), zf - 0.012), rz=-math.degrees(a)))
+    for k, (deg, ln, w) in enumerate(((300, 0.5, 0.075), (60, 0.78, 0.05))):   # hour at ten, minute at two
+        box('Body', (0, ln * r / 2, 0), (w, ln * r, 0.03), 'black', m=at((x, y, zf - 0.04 - 0.012 * k), rz=-deg))
+    cyl('Body', (0, 0, 0), 0.06, 0.085, 'gold', n=8, m=at((x, y, zf), rx=-90))
+
+
+def d_grandfather_clock():
+    """His pick A: a longcase clock. Bracket feet, a panelled plinth, a trunk whose door has a pointed
+    glass window and the brass pendulum behind it, a hood with gilt columns, the dial with a moon arch
+    above it, a cornice and a round pediment with three gilt finials."""
+    decor('GrandfatherClock', 1, 1, 'Floor')
+    for x in (-0.8, 0.8):
+        for z in (-0.6, 0.6):
+            span('Body', (x - 0.16, 0, z - 0.14), (x + 0.16, 0.3, z + 0.14), 'wood_dark', bevel=0.05)
+    span('Body', (-0.98, 0.28, -0.76), (0.98, 1.1, 0.76), 'wood_dark', bevel=0.06)           # plinth
+    span('Body', (-0.62, 0.42, -0.8), (0.62, 0.96, -0.74), 'wood', bevel=0.03)               # its panel
+    span('Body', (-1.03, 1.1, -0.8), (1.03, 1.26, 0.8), 'wood', bevel=0.05)                  # base moulding
+    span('Body', (-0.72, 1.26, -0.6), (0.72, 4.35, 0.6), 'wood_dark', bevel=0.05)            # trunk
+    span('Body', (-0.56, 1.45, -0.64), (0.56, 4.15, -0.58), 'wood', bevel=0.03)              # trunk door
+    win = [(-0.34, 2.25)] + arch_points(-0.34, 0.34, 3.5, 3.95, n=4) + [(0.34, 2.25)]
+    prism('Body', win, -0.68, -0.62, 'night', plane='xy')                                       # its glass
+    span('Body', (-0.025, 3.0, -0.72), (0.025, 3.85, -0.68), 'gold')                           # pendulum rod
+    cyl('Body', (0, 0, 0), 0.22, 0.05, 'gold', n=14, m=at((0, 2.88, -0.68), rx=-90))           # its bob
+    span('Body', (-0.86, 4.35, -0.72), (0.86, 4.55, 0.72), 'wood', bevel=0.04)               # waist moulding
+    span('Body', (-0.95, 4.55, -0.78), (0.95, 6.05, 0.76), 'wood_dark', bevel=0.05)          # hood
+    for x in (-0.84, 0.84):
+        cyl('Body', (x, 4.55, -0.84), 0.07, 1.5, 'gold', n=8)                                  # hood columns
+    arc = [(0.38 * math.cos(math.pi * i / 8), 5.62 + 0.38 * math.sin(math.pi * i / 8)) for i in range(9)]
+    prism('Body', arc, -0.81, -0.77, 'night', plane='xy')                                       # moon arch
+    outer = [(0.15 + 0.15 * math.cos(a), 5.86 + 0.13 * math.sin(a)) for a in
+             [math.radians(70 + 220 * i / 10) for i in range(11)]]
+    inner = [(0.21 + 0.12 * math.cos(a), 5.88 + 0.1 * math.sin(a)) for a in
+             [math.radians(255 - 160 * i / 8) for i in range(9)]]
+    prism('Body', outer + inner, -0.83, -0.79, 'moon', plane='xy')                            # a crescent
+    clock_face((0, 5.1, -0.78), 0.5)
+    span('Body', (-1.04, 6.05, -0.86), (1.04, 6.22, 0.8), 'wood', bevel=0.04)                # cornice
+    prism('Body', K.round_arch_points(-0.98, 0.98, 6.22, 6.62, n=8), -0.74, 0.7, 'wood_dark', plane='xy')
+    sphere('Body', (0, 6.36, -0.75), (0.15, 0.1, 0.03), 'gold', n=8, rings=4)                 # cartouche
+    for x in (-0.86, 0.86):
+        lathe('Body', [(0.1, 6.22), (0.12, 6.28), (0.06, 6.36), (0.1, 6.46), (0, 6.58)], 'gold', n=8,
+              base=(x, 0, -0.8))
+    lathe('Body', [(0.13, 6.56), (0.16, 6.64), (0.08, 6.74), (0.12, 6.82), (0, 6.95)], 'gold', n=8)
+    finish(note='his pick A: a longcase clock, a pointed glass trunk window with the brass pendulum, '
+                'a moon arch over the dial, gilt columns, a round pediment and three finials')
+
+
+def d_wall_clock():
+    """A round wall clock over a pendulum box with a pointed glass window, a drop finial below and a
+    gilt finial on top, hung from 3 to 7 on the wall."""
+    decor('WallClock', 1, 1, 'Wall')
+    zb = 1.1                                                                          # the wall's face
+    span('Body', (-0.55, 3.35, zb - 0.38), (0.55, 5.05, zb), 'wood_dark', bevel=0.05)
+    win = [(-0.32, 3.55)] + arch_points(-0.32, 0.32, 4.45, 4.82, n=3) + [(0.32, 3.55)]
+    prism('Body', win, zb - 0.42, zb - 0.36, 'night', plane='xy')
+    span('Body', (-0.022, 3.85, zb - 0.46), (0.022, 4.75, zb - 0.42), 'gold')
+    cyl('Body', (0, 0, 0), 0.17, 0.05, 'gold', n=12, m=at((0, 3.78, zb - 0.42), rx=-90))
+    lathe('Body', [(0.2, 3.37), (0.15, 3.22), (0.07, 3.08), (0.09, 3.0), (0, 2.92)], 'wood_dark', n=8,
+          base=(0, 0, zb - 0.19))
+    cyl('Body', (0, 0, 0), 0.95, 0.43, 'wood_dark', n=24, m=at((0, 5.85, zb), rx=-90))      # the round case
+    clock_face((0, 5.85, zb - 0.43), 0.72)
+    lathe('Body', [(0.0, 6.76), (0.13, 6.82), (0.07, 6.88), (0.09, 6.92), (0, 6.98)], 'gold', n=8,
+          base=(0, 0, zb - 0.19))
+    finish(note='a round wall clock over a pendulum box with a pointed glass window and a brass bob')
+
+
+def d_black_roses():
+    """Seven black roses with red hearts in a teal vase with a gold band, on a slim turned plum pedestal."""
+    decor('BlackRoses', 1, 1, 'Floor')
+    lathe('Body', [(0.62, 0), (0.64, 0.1), (0.5, 0.18), (0.2, 0.32), (0.13, 0.9), (0.2, 1.25), (0.13, 1.6),
+                   (0.13, 2.0), (0.3, 2.18), (0.56, 2.26), (0.56, 2.38), (0, 2.38)], 'plum', n=10)
+    lathe('Body', [(0.22, 2.38), (0.34, 2.48), (0.46, 2.78), (0.44, 3.1), (0.24, 3.42), (0.2, 3.52),
+                   (0.3, 3.66), (0.26, 3.72), (0, 3.6)], 'teal_dark', n=10)
+    lathe('Body', [(0.44, 2.88), (0.475, 2.93), (0.44, 2.98)], 'gold', n=10, closed=True)
+    roses = [((0, 4.62, 0), (0, 1, 0))]
+    for k in range(6):
+        a = k * math.tau / 6 + 0.3
+        out = Vector((math.cos(a), 0, math.sin(a)))
+        roses.append((tuple(Vector((0, 4.18 + 0.16 * (k % 2), 0)) + out * 0.5), tuple(out * 0.7 + Vector((0, 1, 0)))))
+    for pos, up in roses:
+        m = tilt_to(pos, up)
+        lathe('Body', [(0, -0.14), (0.17, -0.1), (0.27, 0.02), (0.25, 0.1), (0.15, 0.06), (0, 0.05)],
+              'black', n=7, m=m)
+        sphere('Body', (0, 0.06, 0), (0.13, 0.1, 0.13), 'crimson', n=6, rings=3, m=m)
+        foot = Vector(pos) - Vector(up).normalized() * 0.12
+        limb('Body', (foot.x * 0.25, 3.55, foot.z * 0.25), foot, 0.035, 0.03, 'moss', n=4)
+    for k in range(3):
+        a = k * math.tau / 3 + 1.0
+        sphere('Body', (0, 0, 0.3), (0.12, 0.03, 0.3), 'moss', n=6, rings=3,
+               m=at((0.2 * math.cos(a), 3.75, 0.2 * math.sin(a)), ry=-math.degrees(a) + 90, rx=25))
+    finish(note='seven black roses with red hearts in a teal vase with a gold band, on a slim plum pedestal')
+
+
+def d_carnivorous_plant():
+    """A flytrap in a stone pot with a teal band: a thick curved stalk, the trap's two dark green lobes
+    gaping toward the front, wine-red inside, straw-coloured cilia for teeth, a small closed trap on a side stalk, leaves over the rim."""
+    decor('CarnivorousPlant', 1, 1, 'Floor')
+    lathe('Body', [(0.5, 0), (0.55, 0.05), (0.72, 0.85), (0.86, 0.9), (0.88, 1.15), (0.74, 1.15), (0.7, 0.9),
+                   (0, 0.9)], 'stone_dark', n=12)
+    lathe('Body', [(0.63, 0.42), (0.68, 0.5), (0.665, 0.58)], 'teal_dark', n=12, closed=True)
+    cyl('Body', (0, 0.92, 0), 0.7, 0.1, 'wood_dark', n=12)                                    # soil
+    pts = [(0, 0.95, 0.1), (0.05, 1.9, 0.15), (0.05, 2.6, -0.05), (0.0, 3.05, -0.1)]
+    for a, b, r0, r1 in zip(pts, pts[1:], (0.19, 0.16, 0.14), (0.16, 0.14, 0.12)):
+        limb('Body', a, b, r0, r1, 'moss', n=8)
+    hinge = (0, 3.05, -0.1)
+    for tilt, inner, sign in ((38, 'bottom', -1), (-22, 'top', 1)):
+        m = at(hinge, rx=tilt)
+        sphere('Body', (0, 0, -0.42), (0.62, 0.11, 0.44), {inner: 'wine', 'rest': 'moss'}, n=12, rings=4, m=m)
+        for k in range(9):
+            t = math.pi * (0.08 + 0.84 * k / 8)
+            rim = (0.58 * math.cos(t), 0, -0.42 - 0.4 * math.sin(t))
+            lathe('Body', [(0.055, 0), (0.0, sign * 0.3)], 'straw', n=4, base=rim, m=m)
+    limb('Body', (0.1, 0.95, 0.15), (0.45, 1.75, 0.35), 0.08, 0.06, 'moss', n=6)               # the bud's stalk
+    sphere('Body', (0.5, 1.98, 0.38), (0.17, 0.26, 0.12), {'front': 'wine', 'rest': 'moss'}, n=8, rings=4)
+    for dx in (-0.08, 0.0, 0.08):
+        lathe('Body', [(0.03, 0), (0.0, 0.14)], 'straw', n=4, base=(0.5 + dx, 2.2, 0.38))
+    for a in (0.4, 2.3, 4.2):
+        sphere('Body', (0, 0, 0.55), (0.18, 0.05, 0.55), 'leaf', n=6, rings=3,
+               m=at((0, 1.21, 0), ry=math.degrees(a), rx=-6))
+    finish(note='a flytrap in a stone pot, dark green jaws wine-red inside with straw cilia, a closed bud')
+
+
+def d_ghost_fern():
+    """A pale fern in a plum pot on a three-legged stand: eight lobed fronds arching up,
+    out and down."""
+    decor('GhostFern', 1, 1, 'Floor')
+    for k in range(3):
+        a = k * math.tau / 3 + 0.5
+        d = Vector((math.cos(a), 0, math.sin(a)))
+        limb('Body', tuple(d * 0.42 + Vector((0, 1.62, 0))), tuple(d * 0.78 + Vector((0, 0.09, 0))), 0.11, 0.08,
+             'wood_dark', n=6)
+        sphere('Body', tuple(d * 0.79 + Vector((0, 0.11, 0))), 0.1, 'wood_dark', n=6, rings=3)
+    cyl('Body', (0, 1.58, 0), 0.72, 0.14, 'wood_dark', n=10)
+    lathe('Body', [(0.36, 1.72), (0.44, 1.78), (0.6, 2.45), (0.68, 2.52), (0.68, 2.64), (0.58, 2.64),
+                   (0.56, 2.5), (0, 2.5)], 'plum', n=10)
+    cyl('Body', (0, 2.48, 0), 0.55, 0.07, 'wood_dark', n=10)                                   # soil
+    base = Vector((0, 2.55, 0))
+    fronds = [(45, 1.3, 0.55, 0.75), (100, 0.9, 0.5, 0.6), (150, 1.05, 0.55, 0.7), (205, 0.95, 0.5, 0.65),
+              (232, 1.2, 0.55, 0.75), (300, 0.9, 0.5, 0.6), (345, 1.05, 0.55, 0.7), (20, 0.8, 0.85, 0.45)]
+    for yaw, reach, rise, droop in fronds:
+        a = math.radians(yaw)
+        h = Vector((math.cos(a), 0, math.sin(a)))
+        s = Vector((-h.z, 0, h.x))
+
+        def p(t):
+            return base + h * (reach * t) + Vector((0, 4 * rise * t * (1 - t) - droop * t * t, 0))
+        # One blade per frond: its two edges folded down at each station, its width tapering from the bare
+        # stem to the tip and every other station pinched to a third (the pinnae), a jade rib along it.
+        n = 15
+        top, bot = [], []
+        for i in range(n):
+            t = 0.04 + 0.96 * i / (n - 1)
+            c = p(t)
+            tan = (p(min(1.0, t + 0.02)) - p(max(0.0, t - 0.02))).normalized()
+            up = s.cross(tan).normalized()
+            w = (0.62 * min(1.0, t / 0.25) * ((1 - t) / 0.75 if t > 0.25 else 1.0) + 0.04) * (1.0 if i % 2 else 0.35)
+            for q in (c - s * w - up * 0.3 * w, c + s * w - up * 0.3 * w):
+                top.append(q + up * 0.015)
+                bot.append(q - up * 0.015)
+        faces = []
+        o = 2 * n
+        for i in range(n - 1):
+            a, b = 2 * i, 2 * (i + 1)
+            faces += [(a, a + 1, b + 1, b), (o + a, o + b, o + b + 1, o + a + 1),
+                      (a, b, o + b, o + a), (a + 1, o + a + 1, o + b + 1, b + 1)]
+        e = 2 * (n - 1)
+        faces += [(0, 1, o + 1, o), (e, o + e, o + e + 1, e + 1)]
+        K._add('Body', top + bot, faces, {'bottom': 'jade', 'rest': 'teal_light'})
+        ts = [0.0, 0.35, 0.7, 1.0]                                                            # its rib
+        for t0, t1 in zip(ts, ts[1:]):
+            limb('Body', p(t0) + Vector((0, 0.02, 0)), p(t1) + Vector((0, 0.02, 0)), 0.045 * (1 - 0.6 * t0),
+                 0.045 * (1 - 0.6 * t1), 'jade', n=3)
+    finish(note='a pale fern in a plum pot on a three-legged stand, eight lobed fronds arching out and down')
+
+
+def d_armchair():
+    """His ruling: a 1 x 1 wingback (2026-10-20). A crimson-dark frame and a crimson cushion and inner
+    back, rolled arms, wings, a tall round-topped back tufted with five buttons, turned legs. The arms
+    are as slim as real thickness allows, so the seat is 1.6 wide."""
+    decor('Armchair', 1, 1, 'Floor')
+    for x in (-0.86, 0.86):
+        lathe('Body', [(0.1, 0), (0.13, 0.12), (0.08, 0.3), (0.12, 0.52)], 'wood_dark', n=8, base=(x, 0, -0.8))
+        span('Body', (x - 0.1, 0, 0.72), (x + 0.1, 0.52, 0.92), 'wood_dark', bevel=0.03)
+    span('Body', (-1.08, 0.5, -1.0), (1.08, 1.32, 1.0), 'crimson_dark', bevel=0.1)              # seat base
+    span('Body', (-0.8, 1.3, -0.98), (0.8, 1.72, 0.55), 'crimson', bevel=0.12)                 # cushion
+    back = ([(-1.05, 1.3), (1.05, 1.3)] + K.round_arch_points(-1.05, 1.05, 4.2, 5.0, n=8)[::-1])
+    prism('Body', back, 0.55, 1.05, 'crimson_dark', plane='xy')                                  # the tall back
+    inner = [(-0.78, 1.72), (0.78, 1.72)] + K.round_arch_points(-0.78, 0.78, 4.15, 4.75, n=8)[::-1]
+    prism('Body', inner, 0.5, 0.56, 'crimson', plane='xy')                                       # its inner face
+    for x, y in ((-0.38, 3.95), (0.38, 3.95), (0, 3.4), (-0.38, 2.85), (0.38, 2.85)):
+        sphere('Body', (x, y, 0.49), (0.06, 0.06, 0.03), 'crimson_dark', n=6, rings=3)
+    for sx in (-1, 1):
+        wing = [(0.55, 1.9), (1.0, 2.2), (1.0, 4.3), (0.55, 4.6), (0.0, 4.4), (-0.3, 3.4), (-0.35, 2.4)]
+        prism('Body', wing, sx * 1.06, sx * 0.82, 'crimson_dark', plane='zy')                   # wings
+        span('Body', (min(sx * 1.08, sx * 0.8), 1.3, -0.96), (max(sx * 1.08, sx * 0.8), 2.25, 0.6),
+             'crimson_dark', bevel=0.08)                                                          # arms
+        cyl('Body', (0, 0, 0), 0.17, 1.62, 'crimson_dark', n=10, m=at((sx * 0.92, 2.25, -1.02), rx=90))
+        cyl('Body', (0, 0, 0), 0.12, 0.04, 'crimson', n=10, m=at((sx * 0.92, 2.25, -1.02), rx=-90))
+    K.seat(-0.8, 0.8, -0.98, 0.5, 1.72, narrow='his ruling 2026-10-20: the Armchair stays 1 x 1')
+    finish(note='his ruling: a 1 x 1 crimson wingback, rolled arms, a tufted round-topped back; seat 1.6 wide')
+
+
+def d_velvet_sofa():
+    """A camelback sofa for two: a plum frame, two violet velvet cushions and inner back, rolled arms,
+    a row of tufting buttons, turned legs."""
+    decor('VelvetSofa', 2, 1, 'Floor')
+    for x in (-2.3, 0.0, 2.3):
+        for z in (-0.78, 0.78):
+            if x == 0.0 and z < 0:
+                continue
+            lathe('Body', [(0.11, 0), (0.15, 0.1), (0.09, 0.28), (0.13, 0.47)], 'wood_dark', n=8, base=(x, 0, z))
+    span('Body', (-2.55, 0.45, -1.0), (2.55, 1.3, 0.95), 'plum', bevel=0.12)
+    for k in range(2):
+        x0 = -2.08 + k * 2.08
+        span('Body', (x0, 1.3, -0.98), (x0 + 2.08, 1.68, 0.48), 'violet', bevel=0.12)
+    camel = [(-2.55, 1.3), (2.55, 1.3), (2.55, 3.0), (1.6, 3.3), (0.7, 3.8), (0.0, 3.9), (-0.7, 3.8),
+             (-1.6, 3.3), (-2.55, 3.0)]
+    prism('Body', camel, 0.5, 1.05, 'plum', plane='xy')
+    face = [(-2.08, 1.68), (2.08, 1.68), (2.08, 2.95), (1.55, 3.18), (0.68, 3.62), (0.0, 3.72), (-0.68, 3.62),
+            (-1.55, 3.18), (-2.08, 2.95)]
+    prism('Body', face, 0.46, 0.52, 'violet', plane='xy')
+    for x, y in ((-1.4, 2.75), (-0.7, 3.05), (0.0, 3.15), (0.7, 3.05), (1.4, 2.75), (-1.05, 2.3), (0.0, 2.4),
+                 (1.05, 2.3)):
+        sphere('Body', (x, y, 0.44), (0.06, 0.06, 0.03), 'plum_dark', n=6, rings=3)
+    for sx in (-1, 1):
+        span('Body', (min(sx * 2.6, sx * 2.08), 1.3, -1.0), (max(sx * 2.6, sx * 2.08), 1.98, 0.95), 'plum',
+             bevel=0.1)
+        cyl('Body', (0, 0, 0), 0.26, 2.0, 'plum', n=10, m=at((sx * 2.33, 1.98, -1.04), rx=90))
+        cyl('Body', (0, 0, 0), 0.19, 0.04, 'violet', n=10, m=at((sx * 2.33, 1.98, -1.04), rx=-90))
+    for x0 in (-2.08, 0.0):                                                                       # a seat a cushion
+        K.seat(x0, x0 + 2.08, -0.98, 0.46, 1.68)
+    finish(note='a camelback velvet sofa for two: plum frame, violet cushions, tufted back')
+
+
+def d_bookshelf():
+    """A tall gothic bookcase against the wall: two bays under pointed arches, a plum back, four shelves
+    of books in the set's colours, a skull bookend and a potion bottle, a cornice."""
+    decor('Bookshelf', 2, 1, 'Wall')
+    zb, zf = 1.1, -0.3
+    span('Body', (-2.55, 0, zf - 0.08), (2.55, 0.4, zb), 'wood_dark', bevel=0.04)             # plinth
+    span('Body', (-2.3, 0.4, zb - 0.12), (2.3, 6.45, zb), 'plum_deep')                         # back
+    for x in (-2.5, 2.25):
+        span('Body', (x, 0.4, zf), (x + 0.25, 6.45, zb), 'wood_dark', bevel=0.03)              # sides
+    span('Body', (-0.1, 0.54, zf + 0.02), (0.1, 6.3, zb - 0.12), 'wood_dark')                 # centre post
+    shelves = (0.4, 1.95, 3.5, 5.0)
+    for y in shelves + (6.3,):
+        span('Body', (-2.25, y, zf), (2.25, y + 0.14, zb - 0.12), 'wood_dark')
+    for x0, x1 in ((-2.25, -0.1), (0.1, 2.25)):                                                  # pointed arches
+        arch = arch_points(x0, x1, 5.82, 6.3, n=4)
+        prism('Body', [(x0, 6.3)] + arch[:5], zf - 0.04, zf + 0.1, 'wood_dark', plane='xy')
+        prism('Body', arch[4:] + [(x1, 6.3)], zf - 0.04, zf + 0.1, 'wood_dark', plane='xy')
+    span('Body', (-2.6, 6.44, zf - 0.15), (2.6, 6.78, zb), 'wood', bevel=0.05)                # cornice
+    lathe('Body', [(0.12, 6.78), (0.15, 6.84), (0.07, 6.9), (0, 6.98)], 'gold', n=8, base=(0, 0, zf + 0.1))
+    cols = ('book_a', 'book_b', 'book_c', 'wine', 'teal_dark', 'plum', 'book_b', 'moss', 'book_a', 'ink')
+    zb0, zb1 = zf + 0.16, zb - 0.2
+
+    def row(x0, x1, y, k0, lean_at=None, hmax=1.28):
+        x, k = x0 + 0.04, k0
+        while x < x1 - 0.2:
+            bw = 0.2 + 0.07 * ((k * 5) % 3)
+            bh = min(hmax, 0.92 + 0.12 * ((k * 7) % 4))
+            col = cols[k % len(cols)]
+            if lean_at is not None and k == lean_at:
+                box('Body', (0, bh / 2, 0), (bw - 0.03, bh, zb1 - zb0), col,
+                    m=at((x + bw / 2 + 0.4, y, (zb0 + zb1) / 2), rz=18))
+                x += bw + 0.6
+            else:
+                span('Body', (x, y, zb0), (min(x + bw - 0.03, x1 - 0.04), y + bh, zb1), col)
+                x += bw
+            k += 1
+    y0, y1, y2, y3 = (s + 0.14 for s in shelves)
+    row(-2.25, -0.1, y0, 0)
+    row(0.1, 2.25, y0, 3)
+    row(-2.25, -0.1, y1, 6, lean_at=10)
+    row(0.95, 2.25, y1, 2)
+    sphere('Body', (0.5, y1 + 0.26, 0.35), (0.24, 0.24, 0.28), 'bone', n=8, rings=5)          # the skull
+    span('Body', (0.36, y1, 0.1), (0.64, y1 + 0.12, 0.42), 'bone', bevel=0.03)
+    for x in (0.41, 0.59):
+        sphere('Body', (x, y1 + 0.3, 0.07), (0.07, 0.07, 0.04), 'black', n=6, rings=3)
+    row(-2.25, -1.05, y2, 4)
+    for i, (h, col) in enumerate(((0.16, 'wine'), (0.13, 'book_b'), (0.15, 'book_c'))):         # a stack
+        yb = y2 + sum((0.16, 0.13, 0.15)[:i])
+        span('Body', (-0.95 + 0.04 * i, yb, zb0 + 0.05), (-0.25 - 0.03 * i, yb + h, zb1 - 0.05), col)
+    lathe('Body', [(0.16, y2 + 0.44), (0.2, y2 + 0.55), (0.18, y2 + 0.72), (0.07, y2 + 0.82), (0.06, y2 + 0.98),
+                   (0.08, y2 + 1.02), (0, y2 + 1.04)], 'teal', n=8, base=(-0.6, -0.0, 0.35))
+    row(0.1, 2.25, y2, 8)
+    row(-2.25, -0.1, y3, 1, hmax=1.04)
+    row(0.1, 2.25, y3, 5, lean_at=9, hmax=1.04)
+    finish(note='a gothic bookcase: two bays under pointed arches, a plum back, books, a skull and a potion')
+
+
+def d_side_table():
+    """A round pedestal table on three curved feet, a brass lantern with a lit candle (Glow_Warm_1), a book."""
+    decor('SideTable', 1, 1, 'Floor')
+    for k in range(3):
+        a = k * math.tau / 3 + 0.3
+        d = Vector((math.cos(a), 0, math.sin(a)))
+        pts = [d * 0.12 + Vector((0, 0.55, 0)), d * 0.45 + Vector((0, 0.3, 0)), d * 0.78 + Vector((0, 0.07, 0))]
+        limb('Body', pts[0], pts[1], 0.11, 0.09, 'wood_dark', n=6)
+        limb('Body', pts[1], pts[2], 0.09, 0.07, 'wood_dark', n=6)
+        sphere('Body', tuple(d * 0.82 + Vector((0, 0.07, 0))), (0.09, 0.07, 0.09), 'wood_dark', n=6, rings=3)
+    lathe('Body', [(0.22, 0.35), (0.24, 0.5), (0.13, 0.75), (0.2, 1.25), (0.11, 1.75), (0.14, 2.2), (0.26, 2.36),
+                   (0, 2.36)], 'wood_dark', n=10)
+    lathe('Body', [(0.9, 2.35), (0.98, 2.41), (0.98, 2.5), (0.93, 2.55), (0, 2.55)], 'wood', n=18)
+    lx, lz = 0.25, -0.12
+    cyl('Body', (lx, 2.55, lz), 0.34, 0.06, 'gold', n=12)                                     # the dish
+    lathe('Body', [(0.12, 2.61), (0.06, 2.7), (0.05, 2.85), (0.09, 2.9), (0.08, 2.94)], 'gold', n=8,
+          base=(lx, 0, lz))
+    cyl('Body', (lx, 2.94, lz), 0.075, 0.42, 'cream', n=8)                                   # the candle
+    sphere('Body', (lx + 0.07, 3.28, lz - 0.03), (0.035, 0.08, 0.035), 'cream', n=6, rings=3)
+    sphere('Glow_Warm_1', (lx, 3.48, lz), (0.065, 0.13, 0.065), 'flame', n=6, rings=4)
+    lathe('Body', [(0.27, 2.6), (0.31, 2.63), (0.27, 2.66)], 'gold', n=10, closed=True, base=(lx, 0, lz))
+    lathe('Body', [(0.19, 3.72), (0.23, 3.75), (0.19, 3.78)], 'gold', n=10, closed=True, base=(lx, 0, lz))
+    for k in range(4):
+        a = k * math.tau / 4 + math.pi / 4
+        d = Vector((math.cos(a), 0, math.sin(a)))
+        c = Vector((lx, 0, lz))
+        limb('Body', c + d * 0.29 + Vector((0, 2.63, 0)), c + d * 0.33 + Vector((0, 3.2, 0)), 0.025, 0.025, 'gold', n=4)
+        limb('Body', c + d * 0.33 + Vector((0, 3.2, 0)), c + d * 0.21 + Vector((0, 3.75, 0)), 0.025, 0.025, 'gold', n=4)
+    lathe('Body', [(0.21, 3.76), (0.1, 3.88), (0.05, 3.92), (0.07, 3.96), (0, 4.0)], 'gold', n=8, base=(lx, 0, lz))
+    span('Body', (-0.66, 2.55, -0.3), (-0.1, 2.58, 0.36), 'wine')                              # a book
+    span('Body', (-0.66, 2.67, -0.3), (-0.1, 2.7, 0.36), 'wine')
+    span('Body', (-0.66, 2.58, -0.3), (-0.62, 2.67, 0.36), 'wine')
+    span('Body', (-0.62, 2.58, -0.28), (-0.12, 2.67, 0.34), 'bone')
+    finish(note='a round pedestal table on curved feet, a brass lantern with a lit candle, a book')
+
+
+GRAND = [(1.85, -0.7), (1.85, 2.25), (1.7, 2.5), (1.35, 2.58), (0.85, 2.5), (0.35, 2.1), (-0.15, 1.5),
+         (-0.75, 0.9), (-1.4, 0.4), (-1.75, 0.0), (-1.85, -0.35), (-1.85, -0.7)]     # the case, from above
+
+
+def _inset(pts, t):
+    """A closed polygon moved `t` inward (counter-clockwise or not)."""
+    n = len(pts)
+    area = sum(pts[i][0] * pts[(i + 1) % n][1] - pts[(i + 1) % n][0] * pts[i][1] for i in range(n))
+    sgn = 1 if area > 0 else -1
+    out = []
+    for i in range(n):
+        (ax, az), (bx, bz), (cx, cz) = pts[i - 1], pts[i], pts[(i + 1) % n]
+        n1 = Vector((-(bz - az), bx - ax)).normalized() * sgn
+        n2 = Vector((-(cz - bz), cx - bx)).normalized() * sgn
+        nm = (n1 + n2).normalized()
+        k = t / max(0.3, nm.dot(n1))
+        out.append((bx + nm.x * k, bz + nm.y * k))
+    return out
+
+
+def d_grand_piano():
+    """His pick A: a baby grand, the keyboard toward -Z, the straight spine on the player's left (+X),
+    the curved bentside on the right, its lid propped open on a stick over a gold plate, three turned legs
+    with brass castors, the pedal lyre, a music desk with a sheet, and its bench (a seat for one)."""
+    decor('GrandPiano', 2, 2, 'Floor')
+    inner = _inset(GRAND, 0.13)
+    prism('Body', GRAND, 1.8, 2.5, 'black', plane='xz')                                           # lower case
+    prism('Body', inner, 2.5, 2.55, 'wood_light', plane='xz')                                     # soundboard
+    plate = [((x - 0.2) * 0.84 + 0.2, (z - 0.9) * 0.84 + 0.75) for x, z in inner]
+    prism('Body', plate, 2.55, 2.62, 'gold', plane='xz')                                          # the plate
+    k = len(GRAND) // 2                                                                           # the rim, in two
+    prism('Body', GRAND[:k + 1] + inner[:k + 1][::-1], 2.5, 2.9, 'black', plane='xz')
+    prism('Body', GRAND[k:] + GRAND[:1] + inner[:1] + inner[k:][::-1], 2.5, 2.9, 'black', plane='xz')
+    lid = [(x - 1.85, z) for x, z in GRAND]
+    prism('Body', lid, 0.0, 0.08, 'black', plane='xz', m=at((1.85, 2.9, 0), rz=-36))            # the lid
+    tip = at((1.85, 2.9, 0), rz=-36) @ Vector((-2.75, 0.0, 0.3))
+    limb('Body', (-1.4, 2.9, 0.3), (tip.x + 0.04, tip.y - 0.1, 0.3), 0.04, 0.035, 'black', n=4)       # its stick
+    span('Body', (-1.85, 1.8, -1.4), (1.85, 2.4, -0.7), 'black')                                  # key bed
+    for x0 in (-1.85, 1.66):
+        span('Body', (x0 - 0.03 if x0 < 0 else x0, 1.75, -1.42), (x0 + 0.19 if x0 < 0 else 1.88, 2.64, -0.69), 'black')              # cheeks
+    span('Body', (-1.64, 2.4, -1.38), (1.64, 2.48, -0.78), 'white')                               # the keys
+    oct_w = 3.28 / 5
+    for o in range(5):
+        for f in (0.12, 0.27, 0.53, 0.67, 0.81):
+            x = -1.64 + oct_w * (o + f)
+            span('Body', (x - 0.035, 2.48, -1.05), (x + 0.035, 2.56, -0.78), 'black')
+    span('Body', (-1.66, 2.48, -0.78), (1.66, 2.82, -0.7), 'black')                               # nameboard
+    span('Body', (-1.72, 2.5, -0.7), (1.72, 2.88, -0.45), 'black')                                # over the action
+    box('Body', (0, 0.25, 0), (2.0, 0.5, 0.06), 'black', m=at((0, 2.9, -0.55), rx=14))          # music desk,
+    box('Body', (0.1, 0.27, -0.04), (0.8, 0.38, 0.02), 'bone', m=at((0, 2.9, -0.55), rx=14))    # under the lid
+    for x, z in ((-1.6, -1.05), (1.6, -1.05), (1.25, 2.05)):
+        lathe('Body', [(0.15, 0.1), (0.2, 0.25), (0.13, 0.45), (0.11, 1.2), (0.18, 1.6), (0.24, 1.82)],
+              'black', n=8, base=(x, 0, z))
+        cyl('Body', (x, 0, z), 0.12, 0.12, 'gold', n=8)
+    span('Body', (-0.32, 0.34, -0.02), (-0.24, 1.82, 0.06), 'black')                              # pedal lyre
+    span('Body', (0.24, 0.34, -0.02), (0.32, 1.82, 0.06), 'black')
+    span('Body', (-0.38, 0.22, -0.08), (0.38, 0.36, 0.1), 'black')
+    for x in (-0.18, 0.0, 0.18):
+        span('Body', (x - 0.04, 0.26, -0.32), (x + 0.04, 0.3, -0.07), 'gold')
+    for x in (-0.85, 0.85):                                                                       # the bench
+        for z in (-2.4, -1.55):
+            lathe('Body', [(0.08, 0), (0.1, 0.1), (0.06, 0.6), (0.1, 1.42)], 'black', n=6, base=(x, 0, z))
+    span('Body', (-1.06, 1.4, -2.6), (1.06, 1.55, -1.36), 'black', bevel=0.04)
+    span('Body', (-1.0, 1.55, -2.58), (1.0, 1.75, -1.38), 'crimson', bevel=0.08)
+    K.seat(-1.0, 1.0, -2.58, -1.38, 1.75)
+    finish(note='his pick A: a black baby grand, its lid propped over a gold plate, three legs, a bench')
 
 
 def room_plaque():
@@ -957,6 +1389,9 @@ DECOR_BUILD = {
     'MoonWindow': d_moon_window, 'PipeOrgan': d_pipe_organ, 'SoundproofWalls': d_soundproof_walls,
     'Chandelier': d_chandelier, 'Bench': d_bench, 'UrnPlanter': d_urn_planter, 'RugRunner': d_rug_runner,
     'RugCorner': d_rug_corner, 'RugSquare': d_rug_square,
+    'GrandfatherClock': d_grandfather_clock, 'WallClock': d_wall_clock, 'BlackRoses': d_black_roses,
+    'CarnivorousPlant': d_carnivorous_plant, 'GhostFern': d_ghost_fern, 'Armchair': d_armchair,
+    'VelvetSofa': d_velvet_sofa, 'Bookshelf': d_bookshelf, 'SideTable': d_side_table, 'GrandPiano': d_grand_piano,
 }
 ROOM_BUILD = {'StandardRoom': standard_room, 'GardenRoom': garden_room, 'AtticRoom': attic_room,
               'SarcophagusSuite': sarcophagus_suite, 'PotionLoft': potion_loft, 'DenRoom': den_room,

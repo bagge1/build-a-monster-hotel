@@ -778,6 +778,127 @@ local SET = {
 		light = 12,
 		lightAll = false,
 	},
+	Decor_GrandfatherClock = {
+		root = Vector3.new(0, 0.1, 0),
+		parts = {
+			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(3, 0.2, 3), collide = false },
+			Body = { c = Vector3.new(0, 3.475, -0.0725), s = Vector3.new(2.08, 6.95, 1.745), collide = false },
+		},
+		att = {
+		},
+		precise = {  },
+		light = 12,
+		lightAll = false,
+	},
+	Decor_WallClock = {
+		root = Vector3.new(0, 0.1, 0),
+		parts = {
+			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(3, 0.2, 3), collide = false },
+			Body = { c = Vector3.new(0, 4.95, 0.8025), s = Vector3.new(1.8837, 4.06, 0.595), collide = false },
+		},
+		att = {
+		},
+		precise = {  },
+		light = 12,
+		lightAll = false,
+	},
+	Decor_BlackRoses = {
+		root = Vector3.new(0, 0.1, 0),
+		parts = {
+			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(3, 0.2, 3), collide = false },
+			Body = { c = Vector3.new(-0.0076, 2.39, -0.0022), s = Vector3.new(1.4673, 4.78, 1.4906), collide = false },
+		},
+		att = {
+		},
+		precise = {  },
+		light = 12,
+		lightAll = false,
+	},
+	Decor_CarnivorousPlant = {
+		root = Vector3.new(0, 0.1, 0),
+		parts = {
+			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(3, 0.2, 3), collide = false },
+			Body = { c = Vector3.new(-0.0209, 1.7894, -0.0151), s = Vector3.new(1.7419, 3.5788, 1.9152), collide = false },
+		},
+		att = {
+		},
+		precise = {  },
+		light = 12,
+		lightAll = false,
+	},
+	Decor_GhostFern = {
+		root = Vector3.new(0, 0.1, 0),
+		parts = {
+			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(3, 0.2, 3), collide = false },
+			Body = { c = Vector3.new(0.0511, 1.6622, -0.013), s = Vector3.new(1.9551, 3.3044, 1.8987), collide = false },
+		},
+		att = {
+		},
+		precise = {  },
+		light = 12,
+		lightAll = false,
+	},
+	Decor_Armchair = {
+		root = Vector3.new(0, 0.1, 0),
+		parts = {
+			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(3, 0.2, 3), collide = false },
+			Body = { c = Vector3.new(0, 2.5, -0.005), s = Vector3.new(2.1634, 5, 2.11), collide = false },
+		},
+		att = {
+		},
+		precise = {  },
+		light = 12,
+		lightAll = false,
+	},
+	Decor_VelvetSofa = {
+		root = Vector3.new(0, 0.1, 0),
+		parts = {
+			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(6, 0.2, 3), collide = false },
+			Body = { c = Vector3.new(0, 1.95, -0.015), s = Vector3.new(5.2, 3.9, 2.13), collide = false },
+		},
+		att = {
+		},
+		precise = {  },
+		light = 12,
+		lightAll = false,
+	},
+	Decor_Bookshelf = {
+		root = Vector3.new(0, 0.1, 0),
+		parts = {
+			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(6, 0.2, 3), collide = false },
+			Body = { c = Vector3.new(0, 3.49, 0.325), s = Vector3.new(5.2, 6.98, 1.55), collide = false },
+		},
+		att = {
+		},
+		precise = {  },
+		light = 12,
+		lightAll = false,
+	},
+	Decor_SideTable = {
+		root = Vector3.new(0, 0.1, 0),
+		parts = {
+			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(3, 0.2, 3), collide = false },
+			Body = { c = Vector3.new(0, 2, 0), s = Vector3.new(1.9302, 4, 1.96), collide = false },
+			Glow_Warm_1 = { c = Vector3.new(0.25, 3.48, -0.12), s = Vector3.new(0.1126, 0.26, 0.13), collide = false },
+		},
+		att = {
+		},
+		precise = {  },
+		light = 12,
+		lightAll = false,
+	},
+	Decor_GrandPiano = {
+		root = Vector3.new(0, 0.1, 0),
+		parts = {
+			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(6, 0.2, 6), collide = false },
+			Body = { c = Vector3.new(0.0085, 2.5698, -0.01), s = Vector3.new(3.777, 5.1395, 5.18), collide = false },
+		},
+		att = {
+		},
+		precise = {  },
+		light = 12,
+		lightAll = false,
+	},
 }
 
 local out = {}

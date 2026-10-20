@@ -150,6 +150,7 @@ class Piece:
         self.allowed = None
         self.fw = self.fd = self.layer = None   # Decor: footprint in 3-stud squares, and its layer
         self.refit = None                       # Decor: the uniform scale and shift refit_decor() applied
+        self.seats = []                         # Decor: seat() records, MODELS.md "Decor", rule 6
 
 
 P = None
@@ -628,6 +629,208 @@ def refit_decor():
     return p.refit
 
 
+IMPORT_CHECKS = True            # a draft set (the grey silhouettes, ids _A/_B, not for import) turns off the
+                                # Pieces agreement and the coplanar check
+HEIGHT_TOL = 0.3                # Pieces.luau's `height` against the body's top
+_PIECES = None
+
+
+def pieces_decor():
+    """{id: {w, d, layer, height, always}} from src/shared/Pieces.luau's decor table, read from the
+    source (MODELS.md, "Decor": the model agrees with Pieces)."""
+    global _PIECES
+    if _PIECES is None:
+        src = (ROOT / 'src' / 'shared' / 'Pieces.luau').read_text(encoding='utf8')
+        start = src.index('local decor: { Decor } = {')
+        body = src[start:src.index('\nPieces.DecorList', start)]
+        _PIECES = {}
+        for blk in re.split(r'\n\t\{\n', body)[1:]:
+            def get(k):
+                m = re.search(rf'^\t\t{k} = "?([^",\n]+)"?,', blk, re.M)
+                return m.group(1) if m else None
+            _PIECES[get('id')] = {'w': int(get('w')), 'd': int(get('d')), 'layer': get('layer'),
+                                  'height': float(get('height')), 'always': get('always') == 'true'}
+    return _PIECES
+
+
+SEAT_Y = (1.5, 2.0)             # a seat's top: the 5-stud person's legs are 2 (MODELS.md, "Decor", rule 6)
+SEAT_DEPTH, SEAT_W, SEAT_CLEAR = 1.2, 2.0, 3.0
+
+
+def seat(x0, x1, z0, z1, y, people=1, narrow=None):
+    """A place `people` sit side by side along X: the seat's top at `y` over x0..x1, z0..z1 (MODELS.md,
+    "Decor"). Checked by _seat_check on the built and the re-imported triangles; `narrow` names his
+    ruling when it is under 2 wide a person."""
+    P.seats.append({'x': [round(x0, 4), round(x1, 4)], 'z': [round(z0, 4), round(z1, 4)], 'y': round(y, 4),
+                    'people': people, 'narrow': narrow})
+    if _seat_check not in P.checks:
+        P.checks.append(_seat_check)
+
+
+def _ray_down(tris, x, z, y0):
+    """Heights where a vertical line at (x, z) crosses triangles, at or under y0."""
+    hits = []
+    for a, b, c in tris:
+        d = (b.z - c.z) * (a.x - c.x) + (c.x - b.x) * (a.z - c.z)
+        if abs(d) < 1e-9:
+            continue
+        l1 = ((b.z - c.z) * (x - c.x) + (c.x - b.x) * (z - c.z)) / d
+        l2 = ((c.z - a.z) * (x - c.x) + (a.x - c.x) * (z - c.z)) / d
+        l3 = 1 - l1 - l2
+        if min(l1, l2, l3) >= -1e-6:
+            h = l1 * a.y + l2 * b.y + l3 * c.y
+            if h <= y0:
+                hits.append(h)
+    return hits
+
+
+def _seat_check(piece, tris, stage):
+    faults = []
+    allt = [t for p, ts in tris.items() if p not in ('Root', 'LOD_Proxy') for t in ts]
+    for i, s in enumerate(piece.seats):
+        (x0, x1), (z0, z1), y = s['x'], s['z'], s['y']
+        w, d = x1 - x0, z1 - z0
+        tag = f'seat {i + 1} ({stage})'
+        if not SEAT_Y[0] <= y <= SEAT_Y[1]:
+            faults.append(f'{tag}: its top at {y:.2f}, not {SEAT_Y[0]}..{SEAT_Y[1]}')
+        if d < SEAT_DEPTH - 1e-6:
+            faults.append(f'{tag}: {d:.2f} deep, under {SEAT_DEPTH}')
+        if w < SEAT_W * s['people'] - 1e-6 and not s['narrow']:
+            faults.append(f'{tag}: {w:.2f} wide for {s["people"]}, under {SEAT_W} a person and no ruling named')
+        # The seat's middle (inset a quarter) is its top at y; nothing over the whole seat (inset 0.1) for 3.
+        for fx in (0.25, 0.5, 0.75):
+            for fz in (0.25, 0.5, 0.75):
+                x, z = x0 + w * fx, z0 + d * fz
+                top = max(_ray_down(allt, x, z, y + SEAT_CLEAR), default=None)
+                if top is None or abs(top - y) > 0.08:
+                    faults.append(f'{tag}: at ({x:.2f}, {z:.2f}) the top is '
+                                  f'{"nothing" if top is None else f"{top:.2f}"}, not the seat at {y:.2f}')
+        n = 6
+        for ix in range(n + 1):
+            for iz in range(n + 1):
+                x, z = x0 + 0.1 + (w - 0.2) * ix / n, z0 + 0.1 + (d - 0.2) * iz / n
+                over = [h for h in _ray_down(allt, x, z, y + SEAT_CLEAR) if h > y + 0.08]
+                if over:
+                    faults.append(f'{tag}: something over the seat at ({x:.2f}, {max(over):.2f}, {z:.2f})')
+                    break
+            else:
+                continue
+            break
+    return faults
+
+
+def coplanar_shells(objs, wall_z=None):
+    """Faces of two different shells (in any mesh but Root and LOD_Proxy; a shell is one closed solid
+    as a shape call made it) lying in one plane, facing the same way and overlapping: they z-fight
+    in Roblox. Lifted from monster_kit.coplanar_overlaps (Sector Omega's ship_kit): a 0.01 (normal,
+    offset) grid, then separating axes, on the finished meshes' outward normals. A pair is left out
+    when nothing can see it: buried in a third solid, on the floor facing down, or (a Wall piece,
+    `wall_z`) on the wall's face facing into it. Returns
+    {"part#shell / part#shell": (faces, a point in Blender coordinates)}."""
+    import itertools
+    import numpy as np
+    bpy.context.view_layer.update()
+    tris = []
+    for ob in objs:
+        part = ob.name
+        if part.startswith(('Root', 'LOD_Proxy')):
+            continue
+        me, mw = ob.data, ob.matrix_world
+        me.calc_loop_triangles()
+        root = list(range(len(me.vertices)))
+
+        def find(i):
+            while root[i] != i:
+                root[i] = root[root[i]]
+                i = root[i]
+            return i
+        for t in me.loop_triangles:
+            a = find(t.vertices[0])
+            for v in t.vertices[1:]:
+                b = find(v)
+                if a != b:
+                    root[b] = a
+        pts = np.array([tuple(mw @ v.co) for v in me.vertices], dtype=float)
+        for t in me.loop_triangles:
+            tris.append((f'{part}#{find(t.vertices[0])}', pts[list(t.vertices)]))
+    cell, normals, buckets = 0.01, [], {}
+    for i, (_, T) in enumerate(tris):
+        n = np.cross(T[1] - T[0], T[2] - T[0])
+        a = np.linalg.norm(n)
+        if a <= 1e-8:
+            normals.append(None)
+            continue
+        n /= a
+        normals.append(n)
+        key = np.concatenate([n, [n @ T[0]]]) / cell
+        lo, hi = np.floor(key - 0.5).astype(int), np.floor(key + 0.5).astype(int)
+        for corner in itertools.product(*[(int(x),) if x == y else (int(x), int(y)) for x, y in zip(lo, hi)]):
+            buckets.setdefault(corner, []).append(i)
+
+    def overlap(A, B, na, nb):
+        if na @ nb < 1 - 1e-6:
+            return False
+        if max(np.abs((B - A[0]) @ na).max(), np.abs((A - B[0]) @ nb).max()) > 1e-4:
+            return False
+        u = np.cross(na, (1, 0, 0) if abs(na[0]) < 0.9 else (0, 1, 0))
+        u /= np.linalg.norm(u)
+        w = np.cross(na, u)
+        a, b = np.stack([A @ u, A @ w], 1), np.stack([B @ u, B @ w], 1)
+        for poly in (a, b):
+            for k in range(3):
+                e = poly[(k + 1) % 3] - poly[k]
+                axis = np.array([-e[1], e[0]])
+                pa, pb = a @ axis, b @ axis
+                if pa.max() <= pb.min() + 1e-3 or pb.max() <= pa.min() + 1e-3:
+                    return False
+        return True
+
+    shells = {}
+    for name, T in tris:
+        shells.setdefault(name, []).append(T)
+    shells = {k: np.array(v) for k, v in shells.items()}
+    ray = np.array([0.5773, 0.5779, 0.5768])
+
+    def inside(p, T):     # parity of a skewed ray's crossings (Moller-Trumbore, vectorised)
+        e1, e2 = T[:, 1] - T[:, 0], T[:, 2] - T[:, 0]
+        h = np.cross(ray, e2)
+        a = (e1 * h).sum(1)
+        ok = np.abs(a) > 1e-12
+        f = np.where(ok, 1 / np.where(ok, a, 1), 0)
+        s_ = p - T[:, 0]
+        u = f * (s_ * h).sum(1)
+        q = np.cross(s_, e1)
+        v = f * (q @ ray)
+        t = f * (e2 * q).sum(1)
+        return int((ok & (u >= 0) & (v >= 0) & (u + v <= 1) & (t > 1e-9)).sum()) % 2 == 1
+
+    def buried(A, B, n):  # the shared face's outside is inside some third solid, the floor or the wall
+        ctr = (A.mean(0) + B.mean(0)) / 2
+        rb, nr = bl2rb(Vector(ctr)), bl2rb(Vector(n))
+        if (nr.y < -0.99 and rb.y < 0.05) or (wall_z is not None and nr.z > 0.99 and rb.z > wall_z - 0.05):
+            return True
+        return any(inside(ctr + n * 0.003, T) for k, T in shells.items())
+
+    found, seen, done = {}, set(), set()
+    for idx in buckets.values():
+        members = frozenset(idx)
+        if len(idx) < 2 or members in done:
+            continue
+        done.add(members)
+        for x in range(len(idx)):
+            for y in range(x + 1, len(idx)):
+                i, j = idx[x], idx[y]
+                if (i, j) in seen:
+                    continue
+                seen.add((i, j))
+                (na, A), (nb, B) = tris[i], tris[j]
+                if na != nb and normals[i] is not None and normals[j] is not None                         and overlap(A, B, normals[i], normals[j]) and not buried(A, B, normals[i]):
+                    key = ' / '.join(sorted((na, nb)))
+                    c, at_ = found.get(key, (0, [round(float(v), 2) for v in A.mean(0)]))
+                    found[key] = (c + 1, at_)
+    return found
+
+
 def decor_bench(length, frame, cushion, back):
     """The old lobby bench as a Floor decor (Decor_Bench), its back toward +Z, facing -Z: legs, a
     seat with a cushion, a back of two rails between posts, arms. `length` along X."""
@@ -646,6 +849,8 @@ def decor_bench(length, frame, cushion, back):
         sp((xa - 0.05, 2.35, 1.3), (xa + 0.4, 2.6, 2.95), frame, 0.05)
     for y0 in (2.2, 3.2):
         sp((x0 + 0.45, y0, 1.0), (x1 - 0.45, y0 + 0.6, 1.3), back, 0.06)
+    w = length - 0.9
+    seat(x0 + 0.45, x1 - 0.45, 1.95 - 2.8, 1.95 - 1.4, 1.85, people=max(1, int(w // SEAT_W)))
 
 
 RUG_BORDER, RUG_PIN = 0.5, 0.35     # the border's width; the pin line's distance in from the field's edge
@@ -998,6 +1203,15 @@ def check_piece(piece, boxes, tris, faults):
                       f'the layer allows 0..{top:g}')
                 if piece.layer == 'Wall':
                     fault(abs(hi.z - back) <= 0.05, f'Wall decor back at z {hi.z:.3f}, not on the wall at {back:g}')
+                if IMPORT_CHECKS:   # MODELS.md, "Decor": the model agrees with Pieces
+                    e = pieces_decor().get(name[len('Decor_'):])
+                    fault(e is not None, f'{name[len("Decor_"):]} is not in Pieces.luau\'s decor')
+                    if e:
+                        fault((e['w'], e['d'], e['layer']) == (piece.fw, piece.fd, piece.layer),
+                              f'Pieces.luau has {e["w"]} x {e["d"]} {e["layer"]}, the model '
+                              f'{piece.fw} x {piece.fd} {piece.layer}')
+                        fault(e['always'] or abs(e['height'] - hi.y) <= HEIGHT_TOL,
+                              f'Pieces.luau\'s height {e["height"]:g}, the body\'s top {hi.y:.2f}')
             hits = [p for p, (lo, hi, col) in boxes.items() if col]
             fault(not hits, f'decor collides: {hits} (a placed piece never traps a player)')
     if kind == 'Cosmetic':      # MODELS.md, "Cosmetics": visual only, nothing collides
@@ -1252,6 +1466,11 @@ def finish(proxy=None, note=''):
         tris_rb = {ob.name: _tris_rb(ob) for ob in objs}
         for fn in piece.checks:
             faults += fn(piece, tris_rb, 'built')
+    if piece.kind == 'Decor' and IMPORT_CHECKS:   # MODELS.md, "Decor": no coplanar faces (they z-fight)
+        cop = coplanar_shells(objs, decor_bounds(piece)[2] if piece.layer == 'Wall' else None)
+        if cop:
+            faults.append('coplanar faces, will z-fight: ' + '; '.join(
+                f'{n} faces at {v3(bl2rb(Vector(at_)), 2)}' for n, at_ in list(cop.values())[:6]))
     total = check_piece(piece, boxes, tris, faults)
     if faults:
         for ob in objs:
@@ -1287,6 +1506,8 @@ def finish(proxy=None, note=''):
                             'footprint_studs': [DECOR_SQUARE * piece.fw, DECOR_SQUARE * piece.fd]}
         if piece.refit:
             records['decor']['refit'] = piece.refit
+        if piece.seats:
+            records['decor']['seats'] = piece.seats
     for ob in objs:          # unique names in the .blend, so the next piece can use the same ones
         ob.name = f'{piece.name}__{ob.name}'
         ob.data.name = ob.name
@@ -1464,7 +1685,8 @@ def validate():
                     'sides and from Queue_1 to the counter, Glow_Warm_1, budget 3,000',
             'Decor': 'the contract re-checked on the re-imported boxes: Root 3fw x 0.2 x 3fd, the layer\'s envelope '
                      '(Floor and Wall: inside the footprint inset 0.4, height <= 7; Rug: inside the footprint, '
-                     'height <= 0.15; Wall: its back on z = 3fd/2 - 0.4 +-0.05), nothing collides, budget',
+                     'height <= 0.15; Wall: its back on z = 3fd/2 - 0.4 +-0.05), nothing collides, budget; '
+                     'w, d, layer and height (to 0.3) as Pieces.luau says; each seat() on the triangles',
         }.get('Room' if piece.kind == 'Amenity' else piece.kind,
               'the contract re-checked on the re-imported boxes (Root, footprint, kind rules, budgets)'))
         report['pieces'][name] = {'ok': not faults, 'faults': faults, 'checks': checks,

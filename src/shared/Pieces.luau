@@ -370,7 +370,7 @@ local decor: { Decor } = {
 		w = 1,
 		d = 1,
 		layer = "Floor",
-		height = 1.6,
+		height = 2.0,
 		colour = Color3.fromRGB(255, 220, 140),
 	},
 	{
@@ -430,7 +430,7 @@ local decor: { Decor } = {
 		w = 1,
 		d = 1,
 		layer = "Floor",
-		height = 1.4,
+		height = 1.3,
 		colour = Color3.fromRGB(200, 120, 60),
 	},
 	{
@@ -442,7 +442,7 @@ local decor: { Decor } = {
 		w = 1,
 		d = 1,
 		layer = "Floor",
-		height = 2.1,
+		height = 2.3,
 		colour = Color3.fromRGB(50, 60, 50),
 	},
 	{
@@ -454,7 +454,7 @@ local decor: { Decor } = {
 		w = 1,
 		d = 1,
 		layer = "Floor",
-		height = 3.1,
+		height = 2.9,
 		colour = Color3.fromRGB(170, 60, 50),
 	},
 	{
@@ -502,7 +502,7 @@ local decor: { Decor } = {
 		w = 1,
 		d = 1,
 		layer = "Floor",
-		height = 6.4,
+		height = 5.8,
 		colour = Color3.fromRGB(255, 230, 150),
 	},
 	-- Event decor (location 0: any location once bought in a season's shop, Events.Shops)
@@ -540,7 +540,7 @@ local decor: { Decor } = {
 		w = 1,
 		d = 1,
 		layer = "Floor",
-		height = 2.5,
+		height = 2.0,
 		colour = Color3.fromRGB(180, 230, 255),
 	},
 	{
@@ -552,7 +552,7 @@ local decor: { Decor } = {
 		w = 1,
 		d = 1,
 		layer = "Floor",
-		height = 3.1,
+		height = 2.7,
 		colour = Color3.fromRGB(130, 80, 50),
 	},
 	{
@@ -680,7 +680,7 @@ local decor: { Decor } = {
 		w = 1,
 		d = 1,
 		layer = "Floor",
-		height = 6.5,
+		height = 6.9,
 		colour = Color3.fromRGB(100, 65, 45),
 	},
 	{
@@ -692,7 +692,7 @@ local decor: { Decor } = {
 		w = 1,
 		d = 1,
 		layer = "Wall",
-		height = 5.5,
+		height = 7.0,
 		colour = Color3.fromRGB(150, 110, 60),
 	},
 	{
@@ -704,7 +704,7 @@ local decor: { Decor } = {
 		w = 1,
 		d = 1,
 		layer = "Floor",
-		height = 3.6,
+		height = 4.8,
 		colour = Color3.fromRGB(60, 30, 50),
 	},
 	{
@@ -716,7 +716,7 @@ local decor: { Decor } = {
 		w = 1,
 		d = 1,
 		layer = "Floor",
-		height = 3.8,
+		height = 3.6,
 		colour = Color3.fromRGB(90, 150, 70),
 	},
 	{
@@ -728,7 +728,7 @@ local decor: { Decor } = {
 		w = 1,
 		d = 1,
 		layer = "Floor",
-		height = 3.2,
+		height = 3.3,
 		colour = Color3.fromRGB(160, 200, 180),
 	},
 	{
@@ -740,7 +740,7 @@ local decor: { Decor } = {
 		w = 1,
 		d = 1,
 		layer = "Floor",
-		height = 3.8,
+		height = 5.0,
 		colour = Color3.fromRGB(130, 40, 60),
 	},
 	{
@@ -752,7 +752,7 @@ local decor: { Decor } = {
 		w = 2,
 		d = 1,
 		layer = "Floor",
-		height = 3.2,
+		height = 3.9,
 		colour = Color3.fromRGB(110, 50, 120),
 	},
 	{
@@ -776,7 +776,7 @@ local decor: { Decor } = {
 		w = 1,
 		d = 1,
 		layer = "Floor",
-		height = 3.4,
+		height = 4.0,
 		colour = Color3.fromRGB(110, 75, 50),
 	},
 	{
@@ -788,7 +788,7 @@ local decor: { Decor } = {
 		w = 2,
 		d = 2,
 		layer = "Floor",
-		height = 4.2,
+		height = 5.1,
 		colour = Color3.fromRGB(35, 30, 40),
 	},
 }

@@ -6439,6 +6439,21 @@
     "footprint_studs": [
      9.0,
      3.0
+    ],
+    "seats": [
+     {
+      "x": [
+       -3.05,
+       3.05
+      ],
+      "z": [
+       -0.85,
+       0.55
+      ],
+      "y": 1.85,
+      "people": 3,
+      "narrow": null
+     }
     ]
    }
   },
@@ -6687,6 +6702,698 @@
     "footprint_studs": [
      12.0,
      12.0
+    ]
+   }
+  },
+  "Decor_GrandfatherClock": {
+   "name": "Decor_GrandfatherClock",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      3.475,
+      -0.0725
+     ],
+     "size": [
+      2.08,
+      6.95,
+      1.745
+     ],
+     "triangles": 1410,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 1422,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "his pick A: a longcase clock, a pointed glass trunk window with the brass pendulum, a moon arch over the dial, gilt columns, a round pediment and three finials",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ]
+   }
+  },
+  "Decor_WallClock": {
+   "name": "Decor_WallClock",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      4.95,
+      0.8025
+     ],
+     "size": [
+      1.8837,
+      4.06,
+      0.595
+     ],
+     "triangles": 682,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 694,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a round wall clock over a pendulum box with a pointed glass window and a brass bob",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Wall",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ]
+   }
+  },
+  "Decor_BlackRoses": {
+   "name": "Decor_BlackRoses",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      -0.0076,
+      2.39,
+      -0.0022
+     ],
+     "size": [
+      1.4673,
+      4.78,
+      1.4906
+     ],
+     "triangles": 1152,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 1164,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "seven black roses with red hearts in a teal vase with a gold band, on a slim plum pedestal",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ]
+   }
+  },
+  "Decor_CarnivorousPlant": {
+   "name": "Decor_CarnivorousPlant",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      -0.0209,
+      1.7894,
+      -0.0151
+     ],
+     "size": [
+      1.7419,
+      3.5788,
+      1.9152
+     ],
+     "triangles": 776,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 788,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a flytrap in a stone pot, dark green jaws wine-red inside with straw cilia, a closed bud",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ]
+   }
+  },
+  "Decor_GhostFern": {
+   "name": "Decor_GhostFern",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0511,
+      1.6622,
+      -0.013
+     ],
+     "size": [
+      1.9551,
+      3.3044,
+      1.8987
+     ],
+     "triangles": 1462,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 1474,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a pale fern in a plum pot on a three-legged stand, eight lobed fronds arching out and down",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ]
+   }
+  },
+  "Decor_Armchair": {
+   "name": "Decor_Armchair",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      2.5,
+      -0.005
+     ],
+     "size": [
+      2.1634,
+      5.0,
+      2.11
+     ],
+     "triangles": 776,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 788,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "his ruling: a 1 x 1 crimson wingback, rolled arms, a tufted round-topped back; seat 1.6 wide",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ],
+    "seats": [
+     {
+      "x": [
+       -0.8,
+       0.8
+      ],
+      "z": [
+       -0.98,
+       0.5
+      ],
+      "y": 1.72,
+      "people": 1,
+      "narrow": "his ruling 2026-10-20: the Armchair stays 1 x 1"
+     }
+    ]
+   }
+  },
+  "Decor_VelvetSofa": {
+   "name": "Decor_VelvetSofa",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     6.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      6.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      1.95,
+      -0.015
+     ],
+     "size": [
+      5.2,
+      3.9,
+      2.13
+     ],
+     "triangles": 920,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 932,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a camelback velvet sofa for two: plum frame, violet cushions, tufted back",
+   "decor": {
+    "fw": 2,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     6.0,
+     3.0
+    ],
+    "seats": [
+     {
+      "x": [
+       -2.08,
+       0.0
+      ],
+      "z": [
+       -0.98,
+       0.46
+      ],
+      "y": 1.68,
+      "people": 1,
+      "narrow": null
+     },
+     {
+      "x": [
+       0.0,
+       2.08
+      ],
+      "z": [
+       -0.98,
+       0.46
+      ],
+      "y": 1.68,
+      "people": 1,
+      "narrow": null
+     }
+    ]
+   }
+  },
+  "Decor_Bookshelf": {
+   "name": "Decor_Bookshelf",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     6.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      6.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      3.49,
+      0.325
+     ],
+     "size": [
+      5.2,
+      6.98,
+      1.55
+     ],
+     "triangles": 1272,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 1284,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a gothic bookcase: two bays under pointed arches, a plum back, books, a skull and a potion",
+   "decor": {
+    "fw": 2,
+    "fd": 1,
+    "layer": "Wall",
+    "footprint_studs": [
+     6.0,
+     3.0
+    ]
+   }
+  },
+  "Decor_SideTable": {
+   "name": "Decor_SideTable",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      2.0,
+      0.0
+     ],
+     "size": [
+      1.9302,
+      4.0,
+      1.96
+     ],
+     "triangles": 970,
+     "collide": false
+    },
+    "Glow_Warm_1": {
+     "centre": [
+      0.25,
+      3.48,
+      -0.12
+     ],
+     "size": [
+      0.1126,
+      0.26,
+      0.13
+     ],
+     "triangles": 36,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 1018,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a round pedestal table on curved feet, a brass lantern with a lit candle, a book",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ]
+   }
+  },
+  "Decor_GrandPiano": {
+   "name": "Decor_GrandPiano",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     6.0,
+     0.2,
+     6.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      6.0,
+      0.2,
+      6.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0085,
+      2.5698,
+      -0.01
+     ],
+     "size": [
+      3.777,
+      5.1395,
+      5.18
+     ],
+     "triangles": 1384,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 1396,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "his pick A: a black baby grand, its lid propped over a gold plate, three legs, a bench",
+   "decor": {
+    "fw": 2,
+    "fd": 2,
+    "layer": "Floor",
+    "footprint_studs": [
+     6.0,
+     6.0
+    ],
+    "seats": [
+     {
+      "x": [
+       -1.0,
+       1.0
+      ],
+      "z": [
+       -2.58,
+       -1.38
+      ],
+      "y": 1.75,
+      "people": 1,
+      "narrow": null
+     }
     ]
    }
   }
