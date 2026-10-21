@@ -892,6 +892,15 @@ Med Claudes skärmdump där det finns en. -->
      av; sedan The showcase, Residents level up, Deeper mutations, Rare
      decor sets, VIP contracts och sist Expeditions, när
      `tools/balance_model.py` har prövat dem mot offline-taket.
+   - *Byggt 2026-10-21 morgon enligt rekommendationerna (PLACEHOLDER, går att
+     ändra):* Showcase (bara gatan, "Visit 3 hotels", livstidsräkning på
+     skylten, veckans favorit per gata, fyra skyltmärken vid 10/50/200/1000
+     likes), residents levlar (tak 10, behålls genom rebirth), staplade
+     mutationer (storlek + utseende, månadens mutation mars Mossy, maj
+     Rainbow, juli Sunburnt, september Moonlit, titeln "Stacked Host").
+     Dina beslut kvar: skyltmärkenas utseende, om nivåerna ska följa med
+     genom rebirth, om en missad månads mutation får komma tillbaka, och
+     månadsmutationernas namn.
 
 39. **Väggarna, dörren och möblerna: det granskaren såg som är ditt**
    (natten 2026-10-21; modellerna i `blender/rooms/<hotell>/`, bilderna i
