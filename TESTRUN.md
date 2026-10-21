@@ -717,6 +717,22 @@ draft rows (WAITING §2.36), schema 5 rebuilt. Every number PLACEHOLDER
 - [A] The values (share, prices, cap, Prestige effect) and Bayou Spa's species
   (WAITING §2.35, §2.36).
 
+## The free build camera (GDD §5.4, his ruling 2026-10-21)
+
+Built 2026-10-21 night: the camera looks at a point kept inside the hotel's
+owned tiles (a cell's margin), W/S/A/D move it (the avatar does not walk),
+the wheel zooms, a right-drag turns and tilts (12°–89°), ⬇ Top snaps to top
+view and back, one finger pans on a phone. Played on `Test_Tiles1021`, real
+keys and mouse.
+
+- [x] W held 1 s: the camera 30 studs forward, the avatar 0 studs.
+- [x] D: the camera along its own right (dot 1.00); A held 4 s stops at the
+  hotel's edge (world x 36: cells x 4–7 and a cell's margin).
+- [x] A right-drag 200 px upward tilts it from 50.9° to the 12° floor.
+- [x] ⬇ Top: straight down (picture seen).
+- [ ] On a phone: one finger pans, two zoom and twist (pinch cannot be sent).
+- [A] Whether its speeds and the tilt's direction feel right (his).
+
 ## August keeps
 
 - How the street, the lobby and the rooms look (every look is a night draft).
@@ -761,3 +777,4 @@ draft rows (WAITING §2.36), schema 5 rebuilt. Every number PLACEHOLDER
 - 2026-10-21 02:38 Tiles per floor (Test_Tiles1021): every refusal by remote (TileAbove, NoTileBelow, NotNext, DoorBlocked), prices $100 and $103, floor 2 walled round its own tiles, a stair placed free; the goal card's block (24 to 36 tiles).
 - 2026-10-21 02:38 Real input with Studio in front (Test_Tiles1021): Windows (tab, card, hover, place, the window's menu) and Flip (the ghost's door, a flipped room built, Move with F mirrors its decor) by clicks and the F key; the build camera's right-drag fixed (injected moves carry no Delta; the turn now follows the cursor) and played: a drag turns, one from a button does not, a plain right-click stops placing. No errors of the game's own (one `ContentId 203785492` type warning, not in the repo).
 - 2026-10-21 02:57 The hotel chain (Test_Chain1021): opening in order, Travel and back (each hotel's tiles, facade and staff), background earnings measured from guests only, Bayou Spa's blockout hotel and guests, the new rebirth twice (shards, the chain gone, Prestige Star, the floor cap), the panel by real clicks. No errors of the game's own.
+- 2026-10-21 03:09 The free build camera (Test_Tiles1021, real keys and mouse): WASD moves it within the hotel's area and not the avatar, the right-drag tilts, Top snaps down. No errors of the game's own.

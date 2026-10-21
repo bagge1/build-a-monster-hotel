@@ -76,6 +76,14 @@ local movingDecor: number? = nil -- a piece of decor being moved
 local cell: Grid.Cell? = nil -- where the ghost's anchor is: a cell, or a square for decor
 local yaw = 0 -- which way round the camera looks, radians (0: from the street)
 local zoom = 1 -- the camera's distance, 1 = the whole plot in view
+--[[ The free camera (GDD §5.4, his ruling 2026-10-21: "it shouldnt center
+	around the midpoint of the plot"): it looks at `focus`, a plot-local
+	point kept inside the hotel's owned area, from `pitch` above the level
+	(top view to nearly level). ]]
+local DEFAULT_PITCH = math.atan2(0.86, 0.7) -- the old fixed angle, 51°
+local PITCH_MIN, PITCH_MAX = math.rad(12), math.rad(89)
+local pitch = DEFAULT_PITCH
+local focus: Vector3? = nil -- plot-local (x, 0, z); nil until the camera first moves: the plot's middle
 
 local gui: ScreenGui
 local strip: Frame
@@ -109,6 +117,7 @@ local stopPlacing: () -> ()
 local flip: () -> ()
 local rightDownAt: Vector2? = nil
 local rightDragX: number? = nil -- the cursor's last x in a right-drag
+local rightDragY: number? = nil -- and its last y: the drag tilts the camera too
 local redrawCards: () -> ()
 local ghost: Model? = nil
 local hidden: { [BasePart]: boolean } = {}
@@ -126,6 +135,7 @@ local buildKeys: InputContext -- while building: rotate, leave, the camera
 local padKeys: InputContext -- while building with nothing selected: the cursor, A, the D-pad
 local cursorAction: InputAction
 local cameraAction: InputAction
+local panAction: InputAction -- W/S A/D move the free camera (GDD §5.4)
 local toFloor: (number) -> ()
 local turnQuarter: (number) -> ()
 
@@ -202,21 +212,62 @@ end
 
 -- ===== The camera and hidden floors =====
 
+-- The hotel's area, plot-local: the owned tiles' bounds on every floor, a cell round them.
+local function hotelBounds(): (Vector3, Vector3)
+	local cs = G.CellSize
+	local lo, hi = Vector3.new(math.huge, 0, math.huge), Vector3.new(-math.huge, 0, -math.huge)
+	for _, k in build().tiles or {} do
+		local t = Grid.tileOf(tonumber(k) or 0)
+		lo = Vector3.new(math.min(lo.X, t.x * cs), 0, math.min(lo.Z, t.z * cs))
+		hi = Vector3.new(math.max(hi.X, (t.x + 1) * cs), 0, math.max(hi.Z, (t.z + 1) * cs))
+	end
+	local size = G.Cells * cs
+	if lo.X > hi.X then
+		return Vector3.zero, Vector3.new(size, 0, size)
+	end
+	return Vector3.new(math.max(lo.X - cs, 0), 0, math.max(lo.Z - cs, 0)),
+		Vector3.new(math.min(hi.X + cs, size), 0, math.min(hi.Z + cs, size))
+end
+
 local function updateCamera()
 	local frame = plotFrame()
 	if not frame or not active then
 		return
 	end
 	local size = G.Cells * G.CellSize
-	local centre = frame:PointToWorldSpace(Vector3.new(size / 2, Grid.floorY(floor), size / 2))
+	local lo, hi = hotelBounds()
+	local f = focus or (lo + hi) / 2
+	f = Vector3.new(math.clamp(f.X, lo.X, hi.X), 0, math.clamp(f.Z, lo.Z, hi.Z))
+	focus = f
+	local centre = frame:PointToWorldSpace(Vector3.new(f.X, Grid.floorY(floor), f.Z))
 	local back = frame:VectorToWorldSpace(Vector3.new(math.sin(yaw), 0, -math.cos(yaw)))
 	camera.CameraType = Enum.CameraType.Scriptable
-	-- At zoom 1 the whole plot is in view: the distance grows with the plot
-	-- (50 back, 62 up for 72 studs). Zooming keeps the same downward angle.
+	-- At zoom 1 and the old angle the whole plot is in view, as before:
+	-- the distance grows with the plot.
+	local dist = size * 1.109 * zoom
 	camera.CFrame = CFrame.lookAt(
-		centre + back * (size * 0.7 * zoom) + Vector3.new(0, size * 0.86 * zoom, 0),
+		centre + back * (dist * math.cos(pitch)) + Vector3.new(0, dist * math.sin(pitch), 0),
 		centre
 	)
+end
+
+-- Moves the free camera's focus by `v` (x right, y forward on the screen), in studs.
+local function panBy(v: Vector2)
+	local frame = plotFrame()
+	if not frame then
+		return
+	end
+	local look = camera.CFrame.LookVector
+	local fwd = Vector3.new(look.X, 0, look.Z)
+	if fwd.Magnitude < 1e-3 then
+		fwd = Vector3.new(camera.CFrame.UpVector.X, 0, camera.CFrame.UpVector.Z) -- straight down
+	end
+	fwd = fwd.Unit
+	local right = fwd:Cross(Vector3.yAxis)
+	local move = right * v.X + fwd * v.Y
+	local size = G.Cells * G.CellSize
+	focus = (focus or Vector3.new(size / 2, 0, size / 2)) + frame:VectorToObjectSpace(move)
+	updateCamera()
 end
 
 local function setHidden()
@@ -1518,6 +1569,10 @@ function BuildController.Init()
 	tool(placingRow, "Turn", "↻ View", 114, function()
 		turnQuarter(1)
 	end)
+	tool(placingRow, "TopView", "⬇ Top", 114, function()
+		pitch = if pitch > math.rad(80) then DEFAULT_PITCH else PITCH_MAX
+		updateCamera()
+	end)
 	placeButton = tool(placingRow, "Place", "✔ Place", 114, place, Ui.Colour.Good)
 	placeButton.Visible = false
 
@@ -1554,6 +1609,17 @@ function BuildController.Init()
 		"Camera",
 		Enum.KeyCode.Thumbstick2,
 		{ Left = Enum.KeyCode.Comma, Right = Enum.KeyCode.Period }
+	)
+	panAction = Controls.direction(
+		buildKeys,
+		"Pan",
+		nil,
+		{
+			Left = Enum.KeyCode.A,
+			Right = Enum.KeyCode.D,
+			Up = Enum.KeyCode.W,
+			Down = Enum.KeyCode.S,
+		}
 	)
 	padKeys = Controls.context("BuildPad", 2000, true, false)
 	cursorAction = Controls.direction(padKeys, "Cursor", Enum.KeyCode.Thumbstick1)
@@ -1626,6 +1692,14 @@ function BuildController.Start()
 		zoom = math.clamp(pinchStart / math.max(scale, 0.05), 0.35, 1.4)
 		updateCamera()
 	end)
+	UserInputService.TouchPan:Connect(function(touches, _, velocity, _, processed)
+		if not active or processed or #touches ~= 1 or placing() then
+			return
+		end
+		local dt = 1 / 60
+		local scale = G.Cells * G.CellSize * zoom / math.max(camera.ViewportSize.Y, 1) * 1.5
+		panBy(Vector2.new(-velocity.X, velocity.Y) * dt * scale)
+	end)
 	local twistLast = 0
 	UserInputService.TouchRotate:Connect(function(_, twist, _, state, processed)
 		if not active or processed then
@@ -1642,6 +1716,10 @@ function BuildController.Start()
 	RunService.RenderStepped:Connect(function(dt)
 		if not active then
 			return
+		end
+		local pan = Controls.read(panAction)
+		if pan ~= Vector2.zero then
+			panBy(pan * (G.Cells * G.CellSize * 0.5 * zoom * dt))
 		end
 		local look = Controls.read(cameraAction)
 		if look.X ~= 0 then
@@ -1707,9 +1785,10 @@ function BuildController.Start()
 		then
 			-- By the cursor's own travel: `Delta` is zero for injected input
 			-- (the Studio MCP's), and the position is right for both.
-			local x = input.Position.X
+			local x, y = input.Position.X, input.Position.Y
+			pitch = math.clamp(pitch + (y - (rightDragY or y)) * 0.006, PITCH_MIN, PITCH_MAX)
 			turnBy(-(x - (rightDragX or x)) * 0.008)
-			rightDragX = x
+			rightDragX, rightDragY = x, y
 			return
 		end
 		if processed then
@@ -1754,7 +1833,7 @@ function BuildController.Start()
 		if input.UserInputType == Enum.UserInputType.MouseButton2 then
 			if not overUi(input.Position.X, input.Position.Y) then
 				rightDownAt = Vector2.new(input.Position.X, input.Position.Y)
-				rightDragX = input.Position.X
+				rightDragX, rightDragY = input.Position.X, input.Position.Y
 			end
 			return
 		end
@@ -1793,7 +1872,7 @@ function BuildController.Start()
 		end
 		local down = rightDownAt
 		rightDownAt = nil
-		rightDragX = nil
+		rightDragX, rightDragY = nil, nil
 		local at = Vector2.new(input.Position.X, input.Position.Y)
 		if
 			down
