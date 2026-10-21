@@ -948,6 +948,21 @@ Med Claudes skärmdump där det finns en. -->
      dem), Arcade Cabinets myntlucka som ett ansikte. **Rekommendation:**
      titta på dem i spelet först.
 
+42. **Världen: det som är ditt** (2026-10-21 morgon; tre gator i en värld,
+   byggt och spelat i Studio utan bilder, `TESTRUN.md` "The world"):
+   - **Avståndet mellan gatorna** (`World.StreetSpacing` 1400, PLACEHOLDER):
+     nästa gatas hotell syns från gatans sista tomter men inte från de
+     mittersta (dimman). *Behåll* eller *korta*. **Rekommendation:** korta
+     till 1100, så syns de från fler tomter.
+   - **Frostfangs och Bayou Spas mark- och lyktfärger, och ängen** längs
+     vägen mellan gatorna: utkast. **Rekommendation:** titta när bilderna
+     finns.
+   - **Bayou Spas träd:** en cypress som klossmodell i dag, plus Bare och
+     Crooked. *Modellera en cypress* eller *andra träd*. **Rekommendation:**
+     en cypress med mossa.
+   - **Två spelare på två gator samtidigt** är inte provat (bara du kan
+     starta **Server and Clients**).
+
 ## §3 Creator Hub och publicering
 
 1. ~~**Slå på Studio Access to API Services**~~ (gjort 2026-10-19: på i
