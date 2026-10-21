@@ -105,14 +105,20 @@ Connect: knappen under fliken Plugins i Studio. -->
    om dem. Titta gärna först på bilderna i §1 punkt 12: säger du nej till en
    stil behöver den inte importeras än.
 
-12. **Importera 77 modeller: väggarna, dörren, möblerna, den sällsynta dekoren
-   och souveniren** (natten och morgonen 2026-10-21; byggda, validerade och
+13. **Starta om `rojo serve` och tryck Connect, före importen i punkt 12**
+   (2026-10-21 förmiddag): projektfilen har fått mappen för Bayou Spas kit
+   (`assets/HotelKit/BayouSpa`), som Rojo bara ser efter en omstart. Sedan
+   **Connect** (fliken **Plugins** i Studio). Utan det sparas inte Bayou Spas
+   väggar, möbler och sällsynta set.
+
+12. **Importera 87 modeller: väggarna, dörren, möblerna, de sällsynta seten
+   och souveniren** (efter omstarten i punkt 13) (natten och morgonen 2026-10-21; byggda, validerade och
    granskade, felen rättade, se README i `blender/rooms/<hotell>/` och
    `blender/decor/`). Haunted Manor: väggen, dörrväggen, stolpen och 45
    möbler och dekorbitar; Frostfang Lodge: sina tre väggbitar
    (`FrostfangLodge_Wall_*`) och åtta möbler; Bayou Spa: sina tre väggbitar
-   (`BayouSpa_Wall_*`) och nio möbler; den sällsynta setet "The Count's Study"
-   (fem bitar) och `Souvenir_Base`. Importera **alla filer i
+   (`BayouSpa_Wall_*`) och nio möbler; de sällsynta seten "The Count's Study",
+   "Aurora Lodge" och "Lantern Grove" (fem bitar var) och `Souvenir_Base`. Importera **alla filer i
    `blender/_import/`** till **Workspace** i en dialog och skriv *importerat*
    (inte mitt i en playtest). Tills dess ritar spelet enkla klossar.
 

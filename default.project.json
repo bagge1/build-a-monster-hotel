@@ -36,6 +36,11 @@
 					"$path": {
 						"optional": "assets/HotelKit/FrostfangLodge"
 					}
+				},
+				"BayouSpa": {
+					"$path": {
+						"optional": "assets/HotelKit/BayouSpa"
+					}
 				}
 			},
 			"Cosmetics": {
