@@ -755,6 +755,37 @@ Med Claudes skärmdump där det finns en. -->
    klossmodeller med PLACEHOLDER-värden (steg 6) så att platsen går att
    spela, och de byts när du valt.
 
+37. **Bygg rummen själv, rumsvyn och en fri kamera i Build** (dina idéer
+   2026-10-21 natt, i chatten; inget byggt än, designen går in i GDD §5.4
+   först). Claudes förslag:
+   - **Rum av väggar:** du drar väggar längs rutornas kanter och sätter en
+     dörr i en vägg; ett inneslutet område med en dörr är ett rum. Du
+     möblerar det: en säng eller dubbelsäng, nattduksbord, sedan dekor.
+     **Rummets typ** avgörs av dess nyckelmöbel (en säng: Standard Room, en
+     kista: Coffin Suite, en sarkofag: Sarcophagus Suite …), med en minsta
+     storlek per typ. *Avgörs av nyckelmöbeln* eller *du väljer typen när
+     du trycker på rummet*. **Rekommendation:** nyckelmöbeln, som i Two
+     Point Hospital: det man ser är det rummet är.
+   - **Färdiga rum som snabbval:** dagens rum blir ritningar som lägger
+     väggar och möbler i ett tryck, så en ny spelare (och en telefon) slipper
+     dra varje vägg. **Rekommendation:** behåll dem så.
+   - **Tre staplar i rummet:** storlek, möbler och dekor, och tillsammans
+     ger de rummets nivå (i dag T1–T3 av dekorpoängen). *Tre staplar som
+     tillsammans ger nivån* eller *varje stapel ger sin egen bonus*.
+     **Rekommendation:** tillsammans, så att det finns ett mål.
+   - **Rumsvyn:** tryck på ett rum så zoomar kameran in på det, väggen mot
+     kameran blir genomskinlig, och staplarna visas. **Rekommendation:** ja.
+   - **Kameran:** en fri kamera inom hotellets område: W/S framåt och bakåt,
+     A/D åt sidan, hjulet zoomar, höger musknapp och dra vrider (åt sidan)
+     och lutar (uppifrån till nästan vågrätt), en knapp för rakt uppifrån.
+     På telefonen: ett finger flyttar, två fingrar zoomar och vrider.
+     **Rekommendation:** bygg den först, den står på egen hand.
+   - **Vad det kostar:** rummen byggs om från grunden (bygglogiken,
+     rutnätet, gästernas vägar, modellerna: väggar, dörrar och möbler i
+     stället för hela rum). De 21 spegelrummen från natten behövs inte när
+     rummen byggs av väggar (Flip försvinner). **Fråga:** ska detta före
+     resten av nattens lista (världen, endless content)?
+
 ## §3 Creator Hub och publicering
 
 1. ~~**Slå på Studio Access to API Services**~~ (gjort 2026-10-19: på i
