@@ -908,6 +908,13 @@ Med Claudes skärmdump där det finns en. -->
      nytt hotell blir stor ($9K–18K, inkomsten räknas minst $10/s): rätt? En
      VIP som inte blir nöjd ger ingen belöning: rätt? **Rekommendation:**
      räkna inkomsten utan golv, och ge halva belöningen för en olycklig VIP.
+   - *Expeditions är inte byggda:* modellen visar att resorna fortfarande
+     slår Wing (1,25–1,5 × med Pay 1,5; `archive/BALANCE-2026-10-21c.md`),
+     och A.11 säger att de byggs först när det är ett riktigt val. Ditt
+     beslut: Pay under 1 (0,75 eller 0,5), XP bara för speltid, och
+     matchningsbonusen på fyndchansen. **Rekommendation:** Pay 0,75, XP som
+     i Wing, bonusen på fyndchansen; och att en resa som kommer hem före
+     inloggning inte också fyller offline-kassan.
 
 39. **Väggarna, dörren och möblerna: det granskaren såg som är ditt**
    (natten 2026-10-21; modellerna i `blender/rooms/<hotell>/`, bilderna i
