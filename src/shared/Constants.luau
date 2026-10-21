@@ -269,6 +269,25 @@ Constants.Book = {
 	FamilyBonus = 0.05, -- +5 % income per family completed (§4.6)
 }
 
+-- §5.4, Appendix A.12 (his rulings 2026-10-21): rooms built from walls. PLACEHOLDER all.
+Constants.Rooms = {
+	HalfCells = 2, -- half cells to a cell side: walls stand on half-cell edges (6 studs)
+	WallCost = 5, -- a half edge of inner wall
+	DoorCost = 10, -- a door in a half edge (it replaces the wall)
+	FullSizeFactor = 2, -- a type's full size is its minimum × this
+	FurnitureTargetFactor = 2, -- a type's Furniture target is its old price × this …
+	FurnitureTargetMin = 100, -- … and at least this many points
+	DecorTargetPer4Cells = 300, -- the Decor bar is full at this per 4 cells (the old T3)
+	SizePay = 0.5, -- pay × (1 + this × Size)
+	SizeStay = 0.5, -- stay × (1 + this × Size)
+	FurniturePay = 0.5, -- pay × (1 + this × Furniture)
+	FurnitureSatisfaction = 15, -- satisfaction points × Furniture
+	DecorSatisfaction = 15, -- satisfaction points × Decor
+	DecorFriendship = 1, -- friendship per happy stay × (1 + this × Decor)
+	ComfortPerRoom = 12, -- Comfort points per ready room at full bars …
+	ComfortRoomsCap = 60, -- … summed, to this (it was the mean tier's 60 %)
+}
+
 -- §6.4, §6.5: rebirth and the Moon Tree.
 Constants.Rebirth = {
 	ShardScale = 10, -- floor(10 × √(run cash / $1M)) (§6.4)
