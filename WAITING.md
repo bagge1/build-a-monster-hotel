@@ -636,7 +636,10 @@ Med Claudes skärmdump där det finns en. -->
    försökte vrida (höger musknapp och dra, styrplatta, några tangenter?), och
    om **Q / E** eller en text i Build om hur man vrider vore bättre. Provas med
    riktig mus i en nattkörning eller när du säger till (`TESTRUN.md`, "Build
-   camera turn").
+   camera turn"). *Natten 2026-10-21:* höger musknapp och dra på tomten
+   vrider kameran (400 pixlar ≈ ett halvt varv), ett drag som börjar på en
+   knapp gör det inte, och ett högerklick utan drag slutar placera. Kvar för
+   dig: om det känns rätt, och svaret på frågan ovan.
 32. **Flip och fönster** (dina beslut 2026-10-20, GDD A.1): byggda och provade
    via spelets egna anrop (`TESTRUN.md`, "Flip", "Windows"). **F** gör ingenting
    för de importerade rummen än: Roblox kan inte spegla en mesh, så varje rum
@@ -686,6 +689,27 @@ Med Claudes skärmdump där det finns en. -->
      **Rekommendation:** behåll.
    - **Neons vinkel** över dörren svävar fritt. *Behåll*, *ta bort* eller
      *gör den till en skylt med ram*. **Rekommendation:** ta bort den.
+   - **I spelet, natten 2026-10-21** (två blinda granskare på bilder från en
+     playtest, `blender/facade/README.md`, "In the game"; bilderna i
+     `archive/screens/2026-10-21_facade_*.jpg`):
+     - **Bandet mellan våningarna** har platsens färg (lila i Haunted Manor)
+       vad du än bär för fasad: det är golvplattans kant i glipan på 1 stud
+       ovanför varje vägg. På Pirate och Slime läses det som ett lila streck
+       som inte hör dit (`2026-10-21_facade_pirate_band.jpg`). *Behåll*,
+       *ge kanten fasadens färg* (koden, liten ändring) eller *gör
+       väggbitarna 18 höga så att de täcker kanten* (modellerna).
+       **Rekommendation:** ge kanten fasadens färg när en fasad bärs.
+     - **Neon försvinner på natten**: väggen är nästan svart mot himlen, bara
+       rören syns (`2026-10-21_facade_neon_night.jpg`). **Rekommendation:**
+       en ljusare mörkblå vägg, eller rör längs varje våningskant.
+     - **Pirate läses som stockstuga**, **Slime som ett grönmålat hus**:
+       temat bärs av detaljer som är för små på gatans avstånd.
+       **Rekommendation:** titta på dem i spelet först; större drypp och
+       ett räcke eller en kölbåge är nästa steg om du håller med.
+     - **Hörnstolparna** läses som målade ränder (Haunted Manor, Frostfang),
+       **lyktan** hänger mitt i valvet (foten 7,5 över tröskeln, kolliderar
+       inte), och **pumpan** på Haunted Manors valv är för liten för att
+       läsas. **Rekommendation:** behåll alla tre tills du sett dem.
 
 ## §3 Creator Hub och publicering
 

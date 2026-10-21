@@ -32,7 +32,7 @@ wall and the four windows from outside and from inside). All seven layouts:
 bottom Candy, Pirate, Slime). Imported 2026-10-20 (staged as
 `<Style>_<Piece>.fbx`, renamed on import) and saved as 49 `.rbxm`: the kits'
 in `assets/HotelKit/<Kit>/`, the packs' in `assets/Cosmetics/Cosmetic_<Style>Facade/`.
-Read back 2026-10-21 02:30: all 256 MeshParts of the synced copies match the
+Read back 2026-10-21: all 256 MeshParts of the synced copies match the
 imports (mesh id, size, collision, transparency), no empty MeshPart, a
 PrimaryPart on each; the Workspace copies and the staged FBX removed.
 
@@ -139,6 +139,31 @@ from above, and Haunted Manor's pointed gable as a wire; the windows' scale
 (9-stud panes on a 17-stud storey) and their sill heights; the dark glass;
 Neon's entrance reading as a loading bay; the inside faces plain colour
 bands, as the old lobby wall's were.
+
+## In the game, 2026-10-21
+
+Played in Studio (night log `archive/NATTLOGG-2026-10-20.md`, 2026-10-21): both
+kits and the five packs on a three-floor hotel, rays and a walker. Two blind
+reviewers on the pictures (the kits; the packs), triaged:
+
+**Confirmed, measured**: the floor slab's edge shows in the 1-stud gap over
+every storey in the location's colour (`HotelKit.slab`), whatever facade is
+worn: a purple line on Pirate and Slime. Not a model fault; his call
+(WAITING §2.34), the code's to change.
+
+**False**: the entrance "one avatar wide" (rays: 9 studs clear, the posts at
+x ±4.5); the lobby "about 10 studs high" (the camera's perspective; floor 2's
+walls stand at 18); the arch lanterns "unlit" (every entrance has its glow,
+Neon, and a light; Neon's two); "a seam at two-thirds height" (the string
+course at 12, by design); the inside windows "not matching the outside" (the
+view was of the side walls); the blank side walls and lopsided front (the
+player places the windows); "no band between floors 2 and 3" (floor 2's top
+is the roof, outside these sets).
+
+**His call** (WAITING §2.34): the dark glass, the sill heights, Neon's
+entrance and the flower box (already there); new: the slab band's colour,
+Neon vanishing at night, Pirate and Slime reading as cabin and green house,
+the flat corner posts, the lantern in the arch, the pumpkin's size.
 
 ## Known, outside these sets
 

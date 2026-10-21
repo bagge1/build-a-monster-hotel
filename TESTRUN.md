@@ -613,9 +613,14 @@ for a kit piece with no mirror yet. Played on `Test_Tiles1020a`.
   the door → the bed, and was InRoom.
 - [x] Build mode's `Flip` action (F, ButtonL1) and the ⇋ Flip button exist;
   build mode opened by firing the HUD's own action.
-- [ ] By real input (night or his yes): choose a room card, press F, the ghost's
-  door marker moves to the other front cell, Place builds it flipped; Move a
-  placed room, F, its decor mirrors with it.
+- [x] By real input (night 2026-10-21, `Test_Tiles1021`, the kit's Standard
+  Room hidden in that play session): the Standard Room card clicked, F moved
+  the ghost's door marker from x 42 to x 54, a click on the plot built it
+  flipped (door at x 54); with an Armchair in it, a click on the room, Move,
+  F and a click: the door back to x 42, the chair from x 52.5 to 43.5
+  (mirrored about the room's middle, 48). A booked room refuses Move (`Busy`,
+  by design). The Place button is reached by sweeping the mouse over the plot,
+  which drags the ghost along: with a mouse, place by clicking the plot.
 - [A] Every kit room and amenity needs its `_Mirror` from the kit's
   `finish()` (MODELS.md) before F works on the imported models.
 
@@ -636,9 +641,11 @@ facade cosmetic, a blockout opening until then. Played on `Test_Tiles1020a`.
   behind it was bought.
 - [x] All four blockout shapes drawn on one wall (picture seen by Claude, not
   yet by August).
-- [ ] By real input (night or his yes): the Windows tab, a card, a tap on a
-  wall places it, a hovered wall lights, a tap on a window opens Move, Sell
-  and the other kinds.
+- [x] By real input (night 2026-10-21, `Test_Tiles1021`): the Windows tab
+  clicked shows the four cards, the Round card clicked, the hovered wall
+  1:9:0:0 lit (`Highlight` on it), a click placed the Round (−$100), a
+  right-click stopped placing and a click on the window opened its menu:
+  Move, Sell +$100, Another kind.
 - [A] How the four kinds look: the kit's models (MODELS.md) replace the
   blockout shapes.
 
@@ -647,10 +654,12 @@ facade cosmetic, a blockout opening until then. Played on `Test_Tiles1020a`.
 - [x] The , and . keys turn the build camera (fired as the `Camera` action);
   the D-pad's view turn too. Roblox's own camera actions are all off in build
   mode (they do not take the right button).
-- [ ] By a real mouse (night or his yes): a right-drag on the plot turns the
-  camera; one that starts on the build mode's buttons does not; a right-click
-  without a drag still stops placing. The drag no longer depends on Roblox's
-  `processed` flag.
+- [!] By the MCP's mouse (night 2026-10-21): a right-drag did not turn: injected
+  mouse moves carry `Delta` (0, 0), and the turn read only `Delta`. Fixed: the
+  turn follows the cursor's own travel (`rightDragX`), right for both. Then a
+  right-drag of 400 px on the plot turned the camera 183°; one that starts on
+  the Rooms button does not turn; a right-click without a drag stopped placing
+  (the ghost gone, the camera unturned). How it feels is his (WAITING §2.31).
 
 ## Tiles per floor, every floor walled (GDD A.1, his rulings 2026-10-20)
 
@@ -661,12 +670,14 @@ above its well; every outline edge of every floor walled, the street side
 too; profile schema 4 (tiles and purchases per floor) rebuilt every hotel
 from the start square. Specs only so far.
 
-- [ ] On a fresh profile: floor 2 bought has no tiles, no walls, no slab; its
-  first tile anywhere over floor 1's, $100; the next only beside it; one over
-  no tile refused (`NoTileBelow`); its walls round its own outline, the street
-  side included; a stair refused until the tiles above it are bought
-  (`TileAbove`).
-- [ ] The goal card's free tiles (`tutorial Goal`): fixed here, the windows
+- [x] On a fresh profile (`Test_Tiles1021`, night 2026-10-21): floor 2 bought
+  ($500) has no facade piece; a stair at (4, 2) refused `TileAbove`; a tile
+  at (9, 9) refused `NoTileBelow`; (4, 3) the first, $100; (7, 0) refused
+  `NotNext`; (5, 3) beside it, $103; floor 2's walls round its own two tiles
+  (6 walls, 4 posts, its street side 2:4:3:0 and 2:5:3:0 included). With the
+  tiles above it bought the stair is refused `DoorBlocked` until an owned
+  tile upstairs is free to step onto, then placed free (the floor's first).
+- [x] The goal card's free tiles (`tutorial Goal`): fixed here, the windows
   commit had called `windowsOut` before it was defined (selene caught it).
 
 ## August keeps
@@ -709,3 +720,6 @@ from the start square. Specs only so far.
 - 2026-10-20 23:03 Windows (Test_Tiles1020a): the start's two Twin sash, place, swap, move, sell and the refusals by remote; a window moved out by a tile purchase; the four blockout shapes. No errors of the game's own.
 - 2026-10-20 23:07 Build camera turn: , . and the view turn work; Roblox's camera actions off while building; the right-drag made independent of `processed`, its real-mouse check left for a night run (WAITING §2.31).
 - 2026-10-20 23:19 The ten new Haunted Manor decor after their import (Test_Decor1020, by remote, no window focus): all ten placed through `PlaceDecor` in the start area and a Standard Room; read back on the server: each model's base on the floor (the Wall Clock hangs from 2.92), nothing colliding, Root hidden, the Side Table's flame Neon with its light; the Bookshelf and Wall Clock refused on hallway floor ("Wall", by design) and placed in the room with their backs on its wall's face (z 95.60 both). Seen in screen captures (`archive/screens/2026-10-20_decor_ingame_*.jpg`). No errors of the game's own. Each floor piece was placed twice (the client saw the first model later than the script waited); harmless on the test profile.
+- 2026-10-21 02:38 Facades in the game (Test_Facade1021): both kits' and the five packs' real pieces on a three-floor hotel, four window types, 432 rays out of the walls blocked, the arch 25/25 open, a walker through it; Frostfang after a rebirth. Two blind reviews triaged (`blender/facade/README.md`, "In the game"). No errors of the game's own.
+- 2026-10-21 02:38 Tiles per floor (Test_Tiles1021): every refusal by remote (TileAbove, NoTileBelow, NotNext, DoorBlocked), prices $100 and $103, floor 2 walled round its own tiles, a stair placed free; the goal card's block (24 to 36 tiles).
+- 2026-10-21 02:38 Real input with Studio in front (Test_Tiles1021): Windows (tab, card, hover, place, the window's menu) and Flip (the ghost's door, a flipped room built, Move with F mirrors its decor) by clicks and the F key; the build camera's right-drag fixed (injected moves carry no Delta; the turn now follows the cursor) and played: a drag turns, one from a button does not, a plain right-click stops placing. No errors of the game's own (one `ContentId 203785492` type warning, not in the repo).

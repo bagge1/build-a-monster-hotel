@@ -108,6 +108,7 @@ local outline: (Instance?) -> ()
 local stopPlacing: () -> ()
 local flip: () -> ()
 local rightDownAt: Vector2? = nil
+local rightDragX: number? = nil -- the cursor's last x in a right-drag
 local redrawCards: () -> ()
 local ghost: Model? = nil
 local hidden: { [BasePart]: boolean } = {}
@@ -1704,7 +1705,11 @@ function BuildController.Start()
 			and rightDownAt
 			and UserInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton2)
 		then
-			turnBy(-input.Delta.X * 0.008)
+			-- By the cursor's own travel: `Delta` is zero for injected input
+			-- (the Studio MCP's), and the position is right for both.
+			local x = input.Position.X
+			turnBy(-(x - (rightDragX or x)) * 0.008)
+			rightDragX = x
 			return
 		end
 		if processed then
@@ -1749,6 +1754,7 @@ function BuildController.Start()
 		if input.UserInputType == Enum.UserInputType.MouseButton2 then
 			if not overUi(input.Position.X, input.Position.Y) then
 				rightDownAt = Vector2.new(input.Position.X, input.Position.Y)
+				rightDragX = input.Position.X
 			end
 			return
 		end
@@ -1787,6 +1793,7 @@ function BuildController.Start()
 		end
 		local down = rightDownAt
 		rightDownAt = nil
+		rightDragX = nil
 		local at = Vector2.new(input.Position.X, input.Position.Y)
 		if
 			down
