@@ -74,6 +74,7 @@ local DEFS: { [string]: Def } = {
 	Travel = { dir = "C2S", args = { "number" }, rate = 1 }, -- a location: travel to its hotel, or open it (§6.4)
 	MoonTree = { dir = "C2S", args = { "string" }, rate = 0.25 },
 	Like = { dir = "C2S", args = { "number" }, rate = 1 }, -- plot index
+	Visit = { dir = "C2S", args = { "number" }, rate = 2 }, -- plot index: stand at that hotel's forecourt (the showcase, A.11.4)
 	Tutorial = { dir = "C2S", args = { "string" }, rate = 0.25 }, -- "Skip" | "Next"
 	Daily = { dir = "C2S", args = { "string", "number" }, rate = 0.25 }, -- "Claim" | "Reroll" | "Login", index
 	Code = { dir = "C2S", args = { "string" }, rate = 2 },

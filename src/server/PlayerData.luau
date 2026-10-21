@@ -174,6 +174,9 @@ export type Data = {
 	lastSeen: number,
 	likes: number,
 	likesGiven: { day: number, plots: { [string]: boolean } },
+	likesWeek: { week: number, count: number, by: { [string]: boolean } }, -- the showcase's weekly count, each liker once (A.11.4)
+	played: { day: number, seconds: number }, -- play time this UTC day (a like counts after Constants.Showcase.LikeAfterPlay)
+	visited: { day: number, owners: { [string]: boolean } }, -- other players' lobbies walked into today ("Visit 3 hotels", A.11.4)
 	funnel: { [string]: boolean },
 	cosmetics: { [string]: boolean },
 	equipped: { [string]: string }, -- slot -> the cosmetic worn there ("" for none; Cosmetics.luau)
@@ -228,6 +231,9 @@ local TEMPLATE: Data = {
 	lastSeen = 0,
 	likes = 0,
 	likesGiven = { day = 0, plots = {} },
+	likesWeek = { week = 0, count = 0, by = {} },
+	played = { day = 0, seconds = 0 },
+	visited = { day = 0, owners = {} },
 	funnel = {},
 	cosmetics = {},
 	equipped = { Sign = "", Lobby = "", Facade = "" },

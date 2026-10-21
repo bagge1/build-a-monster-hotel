@@ -6,6 +6,13 @@
 	  - VISIT AND LIKE: walk up to any other hotel's sign and give it one like
 	    a day; likes show on the sign, and the most-liked hotel on the street
 	    wears "Street Favourite".
+	  - THE SHOWCASE (A.11.4, street only; rules in `Showcase`): a like counts
+	    only after `LikeAfterPlay` of play that day; the sign shows the
+	    lifetime count, the weekly count (each liker once a week) picks each
+	    street's favourite; milestones give sign cosmetics; the Showcase panel
+	    lists this server's hotels with Visit (the `Visit` remote stands the
+	    player at that hotel's forecourt); walking into another player's lobby
+	    counts toward the daily "Visit 3 hotels" (stat `hotelsVisited`).
 	  - FRIEND BONUS: +10 % income for everyone on the street while two or more
 	    friends play together (an `Income` category of its own, §6.2).
 	  - QUICK PINGS: a few set phrases over your head ("Need a Coffin Suite!",
@@ -25,8 +32,11 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
 
 local Bus = require(ReplicatedStorage.Shared.Bus)
+local Constants = require(ReplicatedStorage.Shared.Constants)
+local Locations = require(ReplicatedStorage.Shared.Locations)
 local Net = require(ReplicatedStorage.Shared.Net)
 local Pieces = require(ReplicatedStorage.Shared.Pieces)
+local Showcase = require(ReplicatedStorage.Shared.Showcase)
 local Species = require(ReplicatedStorage.Shared.Species)
 local PlayerData = require(ServerScriptService.Server.PlayerData)
 local PlotService = require(ServerScriptService.Server.PlotService)
@@ -34,6 +44,7 @@ local HotelService = require(ServerScriptService.Server.HotelService)
 local Income = require(ServerScriptService.Server.Income)
 local BusService = require(ServerScriptService.Server.BusService)
 local DevGrant = require(ServerScriptService.Server.DevGrant)
+local StateService = require(ServerScriptService.Server.StateService)
 
 local SocialService = {}
 
@@ -86,17 +97,121 @@ local function today(): number
 	return os.time() // 86400
 end
 
--- The most-liked hotel on the street wears the badge.
-local function refreshFavourite()
-	local best, bestLikes = nil, 0
+local function thisWeek(): number
+	return Showcase.week(os.time())
+end
+
+-- The hotels played on this server, as the showcase ranks them (A.11.4).
+local function entries(): { Showcase.Entry }
+	local out = {}
 	for _, plot in PlotService.all() do
 		local data = plot.owner and PlayerData.get(plot.owner)
-		if data and data.likes > bestLikes then
-			best, bestLikes = plot, data.likes
+		if plot.owner and data then
+			table.insert(out, {
+				key = tostring(plot.owner.UserId),
+				street = plot.street,
+				week = Showcase.weekly(data.likesWeek, thisWeek()),
+				likes = data.likes,
+			})
 		end
 	end
+	return out
+end
+
+-- Each street's hotel with the most likes this week wears the badge (A.11.4: the weekly count).
+local function refreshFavourite()
+	local best = Showcase.favourites(entries())
 	for _, plot in PlotService.all() do
-		plot.model:SetAttribute("StreetFavourite", plot == best)
+		local owner = plot.owner
+		plot.model:SetAttribute(
+			"StreetFavourite",
+			owner ~= nil and best[plot.street] == tostring(owner.UserId)
+		)
+	end
+end
+
+-- The milestone cosmetics (A.11.4) a lifetime count has reached; `announce` for a like just received.
+local function milestones(owner: Player, data: PlayerData.Data, announce: boolean)
+	for _, c in Showcase.milestones(data.likes) do
+		if not data.cosmetics[c.id] then
+			data.cosmetics[c.id] = true
+			if announce then
+				Net.fire(
+					owner,
+					"Moment",
+					"LikeMilestone",
+					{ id = c.id, name = c.name, likes = c.likes }
+				)
+			end
+		end
+	end
+end
+
+--[[ A like received by `owner` from the player keyed `liker` (a UserId):
+	the lifetime count, the weekly count (each liker once a week) and the
+	milestones. The giver's own checks are `like`'s. ]]
+local function receive(owner: Player, ownerData: PlayerData.Data, liker: string)
+	ownerData.likes += 1
+	Showcase.countWeekly(ownerData.likesWeek, liker, thisWeek())
+	milestones(owner, ownerData, true)
+	SocialService.likesChanged()
+end
+
+-- Stands the player at another hotel's forecourt (the Showcase panel's Visit, A.11.4).
+local function visit(player: Player, plotIndex: number)
+	local plot = PlotService.all()[plotIndex]
+	local character = player.Character
+	local at = plot and plot.owner and PlotService.point(plot, "Spawn")
+	if not at or not character or plot.owner == player then
+		return
+	end
+	pcall(function()
+		player:RequestStreamAroundAsync(at.Position, 5)
+	end)
+	if player.Character == character then
+		character:PivotTo(at + Vector3.new(0, 3, 0))
+	end
+end
+
+-- A lobby walked into (A.11.4's daily "Visit 3 hotels"): once a day per owner.
+local function visited(player: Player, data: PlayerData.Data, owner: string, ownerName: string)
+	if data.visited.day ~= today() then
+		data.visited = { day = today(), owners = {} }
+	end
+	if data.visited.owners[owner] then
+		return
+	end
+	data.visited.owners[owner] = true
+	PlayerData.stat(player, "hotelsVisited")
+	local n = 0
+	for _ in data.visited.owners do
+		n += 1
+	end
+	Net.fire(player, "Toast", `Visiting {ownerName}'s hotel ({n} today)`, "Good")
+end
+
+-- Who stands in whose lobby: every live hotel's floor-1 tiles, against every other player.
+local function checkVisits()
+	for _, plot in PlotService.all() do
+		local owner = plot.owner
+		local ownerData = owner and PlayerData.get(owner)
+		if owner and ownerData then
+			for player, data in PlayerData.loaded() do
+				local character = player.Character
+				local root = character and character:FindFirstChild("HumanoidRootPart")
+				if
+					player ~= owner
+					and root
+					and root:IsA("BasePart")
+					and Showcase.inside(
+						ownerData.tiles,
+						plot.frame:PointToObjectSpace(root.Position)
+					)
+				then
+					visited(player, data, tostring(owner.UserId), owner.DisplayName)
+				end
+			end
+		end
 	end
 end
 
@@ -115,13 +230,24 @@ local function like(player: Player, plotIndex: number)
 		Net.fire(player, "Refused", "Like", "You already liked this hotel today")
 		return
 	end
+	-- A like counts only from a player who has played a while today (A.11.4).
+	local played = if data.played.day == today() then data.played.seconds else 0
+	if not Showcase.canLike(played) then
+		local left = math.ceil((Constants.Showcase.LikeAfterPlay - played) / 60)
+		Net.fire(
+			player,
+			"Refused",
+			"Like",
+			`Play {left} more minute{if left == 1 then "" else "s"} today to like a hotel`
+		)
+		return
+	end
 	local ownerData = PlayerData.get(owner)
 	if not ownerData then
 		return
 	end
 	data.likesGiven.plots[key] = true
-	ownerData.likes += 1
-	SocialService.likesChanged()
+	receive(owner, ownerData, tostring(player.UserId))
 	Net.fire(player, "Toast", `You liked {owner.DisplayName}'s hotel!`, "Good")
 	Net.fire(
 		owner,
@@ -135,6 +261,7 @@ end
 -- After any like: the badge first, then every sign and leaderboard row that shows likes.
 function SocialService.likesChanged()
 	refreshFavourite()
+	StateService.markAll()
 	for _, plot in PlotService.all() do
 		local owner = plot.owner
 		local data = owner and PlayerData.get(owner)
@@ -284,20 +411,117 @@ end
 function SocialService.Init()
 	Net.on("Like", like)
 	Net.on("Ping", ping)
+	Net.on("Visit", visit)
 end
 
 function SocialService.Start()
 	Income.setFriends(function()
 		return friendsOnline
 	end)
-	PlayerData.onLoaded(function(player)
+	PlayerData.onLoaded(function(player, data)
 		leaderstats(player)
 		recomputeFriends()
+		milestones(player, data, false) -- a milestone reached while away
 		refreshFavourite()
+		StateService.markAll()
 	end)
 	Players.PlayerRemoving:Connect(function()
 		task.defer(recomputeFriends)
 		task.defer(refreshFavourite)
+		task.defer(StateService.markAll)
+	end)
+	-- Play time today (the like's rule) and the lobbies walked into (the daily visits), A.11.4.
+	task.spawn(function()
+		local last = os.clock()
+		while true do
+			task.wait(1)
+			local step = os.clock() - last
+			last = os.clock()
+			for _, data in PlayerData.loaded() do
+				if data.played.day ~= today() then
+					data.played = { day = today(), seconds = 0 }
+				end
+				data.played.seconds += step
+			end
+			local ok, err = pcall(checkVisits)
+			if not ok then
+				warn(`[social] visits: {err}`)
+			end
+		end
+	end)
+	-- The Showcase panel (A.11.4): this server's hotels by likes this week, each with Visit.
+	StateService.provide("showcase", function(player, data)
+		local best = Showcase.favourites(entries())
+		local list = {}
+		for _, plot in PlotService.all() do
+			local owner = plot.owner
+			local d = owner and PlayerData.get(owner)
+			if owner and d then
+				local key = tostring(owner.UserId)
+				local loc = Locations.get(plot.street)
+				table.insert(list, {
+					index = plot.index,
+					name = owner.DisplayName,
+					street = if loc then loc.name else `Street {plot.street}`,
+					week = Showcase.weekly(d.likesWeek, thisWeek()),
+					likes = d.likes,
+					favourite = best[plot.street] == key,
+					mine = owner == player,
+					liked = data.likesGiven.day == today() and data.likesGiven.plots[key] == true,
+				})
+			end
+		end
+		local upcoming = Showcase.nextMilestone(data.likes)
+		local played = if data.played.day == today() then data.played.seconds else 0
+		return {
+			list = list,
+			likes = data.likes,
+			week = Showcase.weekly(data.likesWeek, thisWeek()),
+			nextName = if upcoming then upcoming.name else "",
+			nextAt = if upcoming then upcoming.likes else 0,
+			likeIn = math.max(0, math.ceil((Constants.Showcase.LikeAfterPlay - played) / 60)),
+		}
+	end)
+	-- A like received from a made-up liker (`likefrom <userId>`): the weekly count, milestones, the badge.
+	DevGrant.register("likefrom", function(player, args)
+		local data = PlayerData.get(player)
+		local plot = PlotService.of(player)
+		if not data or not plot then
+			return "no data"
+		end
+		receive(player, data, args[1] or "1")
+		return `likes {data.likes} week {Showcase.weekly(data.likesWeek, thisWeek())} favourite {plot.model:GetAttribute(
+			"StreetFavourite"
+		)}`
+	end)
+	-- Play time today (`played <seconds>`), for the like's rule.
+	DevGrant.register("played", function(player, args)
+		local data = PlayerData.get(player)
+		if not data then
+			return "no data"
+		end
+		data.played = { day = today(), seconds = tonumber(args[1]) or 0 }
+		return `played {data.played.seconds}`
+	end)
+	--[[ `visit <ownerId>` counts a visit as if the player had walked into that
+		owner's lobby; `visit here` says whether the player stands in their own. ]]
+	DevGrant.register("visit", function(player, args)
+		local data = PlayerData.get(player)
+		local plot = PlotService.of(player)
+		if not data or not plot then
+			return "no data"
+		end
+		if args[1] == "here" then
+			local character = player.Character
+			local root = character and character:FindFirstChild("HumanoidRootPart")
+			return if root and root:IsA("BasePart")
+				then tostring(
+					Showcase.inside(data.tiles, plot.frame:PointToObjectSpace(root.Position))
+				)
+				else "no character"
+		end
+		visited(player, data, args[1] or "1", `#{args[1] or "1"}`)
+		return `visited {data.stats.hotelsVisited or 0}`
 	end)
 	PlotService.onBuilt(likePrompt)
 	task.spawn(function()

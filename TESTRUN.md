@@ -894,6 +894,46 @@ and `execute_luau` only (no window focus) on `Test_World1021a`.
 - [A] The looks: Frostfang's and Bayou's ground and lamps, the meadow between
   streets, the blockout cypress, the spacing (WAITING).
 
+## The showcase (GDD A.11.4, street only)
+
+Built 2026-10-21 morning (night brief step 9, piece 1), on A.11.4's
+scrutinized recommendation; street only is his call (WAITING §2.38), built as
+the draft recommends and reversible. Every number `Constants.Showcase`,
+PLACEHOLDER. Played by remotes and `execute_luau` only (no window focus) on
+`Test_Endless1021a`.
+
+- [x] Specs: `showcase` (weekly count once per liker a week, a week from
+  Monday, the play-time rule, milestones, each street's favourite, the lobby
+  test) under Lune.
+- [x] A fresh profile: `likes` 0, `likesWeek` `{week 0, count 0}`, `played`
+  counting from the join. No errors of the game's own.
+- [x] Ten likes received from nine made-up likers (`likefrom 91..99`, then 99
+  again): lifetime 10, weekly 9 (99 counted once), the Ribbon sign in
+  `cosmetics`, the pop-up "♥ 10 likes! You earned the Ribbon sign." shown on
+  the client; an 11th from 99: lifetime 11, weekly still 9.
+- [x] The sign: "…'s Hotel ★ Street Favourite / 1.5★ · ♥ 11" (the street's
+  weekly favourite, alone on the street); plot attributes `StreetFavourite`
+  true, `Likes` 11.
+- [x] **Wear it** (the `Equip` it sends): `equipped.Sign` the ribbon, its
+  blockout `Cosmetic_LikeRibbon` drawn on the sign (5 parts).
+- [x] The Showcase panel (HUD's ♥ Showcase): Head "♥ 11 in all · ♥ 9 this
+  week · Rosette sign at 50", Hint "…once you have played 9 more minutes
+  today", one row `Hotel_3` "1. …'s Hotel ★ Street Favourite", "Haunted
+  Manor · ♥ 9 this week · ♥ 11 in all", **Yours**; "Nobody else is playing
+  here yet".
+- [x] `Visit` to your own plot and to an empty plot: refused (the character
+  did not move).
+- [x] The lobby test: at the forecourt `false`, stood on start tile (5, 2)
+  `true`.
+- [x] The daily "Visit 3 hotels" (`dailykind Visit`): two visits counted from
+  three (owner 777 twice counts once): "Visit 3 hotels 2/3".
+- [ ] Two players: a real like (the 10-minute rule's refusal, the giver's
+  toast), **Visit** to the other hotel, walking into its lobby counting
+  toward the daily, the weekly favourite moving between two hotels. Needs
+  **Server and Clients**, his start.
+- [A] The four milestone cosmetics' look (blockouts: the sign frame in four
+  colours) and the panel's look.
+
 ## August keeps
 
 - How the street, the lobby and the rooms look (every look is a night draft).
@@ -941,3 +981,4 @@ and `execute_luau` only (no window focus) on `Test_World1021a`.
 - 2026-10-21 03:09 The free build camera (Test_Tiles1021, real keys and mouse): WASD moves it within the hotel's area and not the avatar, the right-drag tilts, Top snaps down. No errors of the game's own.
 - 2026-10-21 04:05 Built rooms (Test_Rooms1021a-f): stages 1-2 by remotes (schema 6, the start room, walls refused where A.12 says, a second room typed and furnished, guests walked through doors to the beds with the bars' pay, Comfort only rising, cleaning at the door, each chain hotel its own samples, the tutorial with the start room); stage 3 by real mouse and keys and a simulated phone (walls drawn by drag and tap, Half cells, Door, Remove, the type list, the Bed, the room view); stage 4 the clean-up, auto walls on a tile beside a room, a rebirth. Fixed: attachments set before parenting, location-0 furniture refused, Frostfang's start room, the phone's room view off the top. No errors of the game's own.
 - 2026-10-21 07:52 The world (Test_World1021a, by remotes, no window focus): three streets, Travel moving the live plot and the character, the chain drawn static on the other streets, a bus per street with its own family, Hunter Night on street 2, sightlines from street-end plots measured, parts and lights measured; fixed: guests stranded on a street left without a bus, far street lamps' lights. No pictures (Studio drew no frames). No errors of the game's own.
+- 2026-10-21 08:01 The showcase (A.11.4) played by remotes on Test_Endless1021a: likes, weekly count, milestone, favourite, panel, daily visits; two-player items open.

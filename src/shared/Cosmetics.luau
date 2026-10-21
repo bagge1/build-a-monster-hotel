@@ -20,7 +20,10 @@ export type Cosmetic = {
 	colour: Color3, -- the blockout's colour (the facade's, for a facade cosmetic)
 	trim: Color3?, -- a facade cosmetic's trim
 	pass: string?, -- the Store pass that owns it (§10.2's facade packs)
+	likes: number?, -- the showcase's milestone (A.11.4): earned at this many lifetime likes received
 }
+
+local Constants = require(script.Parent.Constants)
 
 local Cosmetics = {}
 
@@ -83,6 +86,39 @@ Cosmetics.List = {
 		from = "the Starter Pack",
 		colour = Color3.fromRGB(90, 170, 100),
 		trim = Color3.fromRGB(190, 255, 150),
+	},
+	-- A.11.4 the showcase: earned at lifetime likes received (Constants.Showcase.Milestones), never bought; blockouts until modelled.
+	{
+		id = "Cosmetic_LikeRibbon",
+		name = "Ribbon sign",
+		slot = "Sign",
+		from = `{Constants.Showcase.Milestones[1]} likes received`,
+		colour = Color3.fromRGB(80, 150, 230),
+		likes = Constants.Showcase.Milestones[1],
+	},
+	{
+		id = "Cosmetic_LikeRosette",
+		name = "Rosette sign",
+		slot = "Sign",
+		from = `{Constants.Showcase.Milestones[2]} likes received`,
+		colour = Color3.fromRGB(220, 70, 110),
+		likes = Constants.Showcase.Milestones[2],
+	},
+	{
+		id = "Cosmetic_LikeTrophy",
+		name = "Trophy sign",
+		slot = "Sign",
+		from = `{Constants.Showcase.Milestones[3]} likes received`,
+		colour = Color3.fromRGB(205, 160, 70),
+		likes = Constants.Showcase.Milestones[3],
+	},
+	{
+		id = "Cosmetic_LikeGoldStar",
+		name = "Gold star sign",
+		slot = "Sign",
+		from = `{Constants.Showcase.Milestones[4]} likes received`,
+		colour = Color3.fromRGB(255, 215, 60),
+		likes = Constants.Showcase.Milestones[4],
 	},
 	-- §10.2's facade packs, each a pass (Store.luau); colour schemes until the kit has styles.
 	{

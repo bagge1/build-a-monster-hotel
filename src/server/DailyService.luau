@@ -16,6 +16,7 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
 
+local Constants = require(ReplicatedStorage.Shared.Constants)
 local Format = require(ReplicatedStorage.Shared.Format)
 local Net = require(ReplicatedStorage.Shared.Net)
 local Species = require(ReplicatedStorage.Shared.Species)
@@ -36,7 +37,23 @@ local LOGIN_MINUTES = { 3, 4, 5, 6, 8, 10, 15 } -- PLACEHOLDER: days 1–7
 local LOGIN_COSMETIC = "Cosmetic_LanternSign" -- day 7's cosmetic (§8.2; Cosmetics.luau)
 
 -- The kinds of daily request (§8.2: "Serve 5 Ghosts", "Reach 3★").
-type Kind = { id: string, text: string, stat: string?, target: (number) -> number }
+type Kind = {
+	id: string,
+	text: string,
+	stat: string?,
+	target: (number) -> number,
+	when: ((Player) -> boolean)?, -- drawn only when this holds (nil: always)
+}
+
+-- Another player is on the server, so another hotel can be visited.
+local function company(player: Player): boolean
+	for other in PlayerData.loaded() do
+		if other ~= player then
+			return true
+		end
+	end
+	return false
+end
 local KINDS: { Kind } = {
 	{
 		id = "Stays",
@@ -95,6 +112,16 @@ local KINDS: { Kind } = {
 		end,
 	},
 	{
+		-- The showcase (A.11.4): the visit is asked, the like stays free (not "Like 3 hotels").
+		id = "Visit",
+		text = "Visit {n} hotels",
+		stat = "hotelsVisited",
+		target = function(_)
+			return Constants.Showcase.VisitDaily
+		end,
+		when = company,
+	},
+	{
 		id = "Serve",
 		text = "Serve {n} {species}",
 		stat = "served_",
@@ -123,7 +150,16 @@ function DailyService.featured(location: number): string
 end
 
 local function draw(player: Player, data: PlayerData.Data, rng: Random): { [string]: any }
-	local kind = KINDS[rng:NextInteger(1, #KINDS)]
+	local kinds = {}
+	for _, k in KINDS do
+		if k.when == nil or k.when(player) then
+			table.insert(kinds, k)
+		end
+	end
+	if #kinds == 0 then
+		kinds = KINDS
+	end
+	local kind = kinds[rng:NextInteger(1, #kinds)]
 	local species: string? = nil
 	local stat = kind.stat
 	if kind.id == "Serve" then
@@ -341,6 +377,29 @@ function DailyService.Start()
 			table.insert(out, `{i}: {r.text} {progress(player, data, r)}/{r.target}`)
 		end
 		return table.concat(out, " | ")
+	end)
+	-- `dailykind <id>`: request 1 drawn again as that kind (e.g. Visit), whatever `when` says.
+	DevGrant.register("dailykind", function(player, args)
+		local data = PlayerData.get(player)
+		if not data then
+			return "no data"
+		end
+		ensureDay(player, data)
+		for _, k in KINDS do
+			if k.id == args[1] then
+				local saved = KINDS
+				KINDS = { k }
+				local ok, r = pcall(draw, player, data, Random.new())
+				KINDS = saved
+				if ok then
+					data.daily.list[1] = r
+					StateService.mark(player)
+					return `1: {r.text} 0/{r.target}`
+				end
+				return `error: {r}`
+			end
+		end
+		return "no such kind"
 	end)
 	-- Progress changes as stats move: refresh the panel now and then.
 	task.spawn(function()

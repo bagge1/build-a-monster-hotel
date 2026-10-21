@@ -385,6 +385,14 @@ Constants.Social = {
 	LikesPerDay = 1, -- one like per hotel per day (§7)
 }
 
+--[[ A.11.4 the showcase, built street only (his call, WAITING §2.38: the
+	draft's recommendation, reversible). Every number PLACEHOLDER. ]]
+Constants.Showcase = {
+	Milestones = { 10, 50, 200, 1000 }, -- PLACEHOLDER: lifetime likes for the ribbon, rosette, trophy and gold star (Cosmetics.luau)
+	LikeAfterPlay = 10 * 60, -- PLACEHOLDER: a like counts only from a player with 10 minutes of play that day
+	VisitDaily = 3, -- PLACEHOLDER: the daily request "Visit 3 hotels" (other players' lobbies)
+}
+
 -- §6.2: number format.
 Constants.Format = {
 	Suffixes = { "", "K", "M", "B", "T", "Qa", "Qi" },

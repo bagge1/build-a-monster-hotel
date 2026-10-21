@@ -120,3 +120,16 @@ Cards per tab:
 - **Stairs, desks**: a piece's name, size and price ("free" for an owed stair).
 - **Floors**: a finish's name and "Its own floor"; tap a room or a hallway.
 - **Windows**: one per window type; tap an outer wall.
+
+### Showcase (`Showcase`, `src/client/ShowcasePanel.luau`)
+
+Built in code; GDD A.11.4, street only (his call, WAITING §2.38). Opened by
+the HUD's `ShowcaseButton` (left column). The list is the server's
+`showcase` state section; nothing the client sends but `Visit` (a plot
+index) and `Equip`.
+
+| Name | What | The code |
+|---|---|---|
+| `ShowcasePanel` | A window, its `Body` a scrolling list: `Head` (your lifetime and weekly likes, the next milestone), `Hint` (how long until you may like today, or how liking works), one row `Hotel_<plot index>` per hotel played on the server, most liked this week first | Redrawn on every state send while open |
+| `Hotel_<i>` | `Name` (rank, the owner's hotel, "★ Street Favourite" for its street's weekly favourite), `Likes` (its street, likes this week, in all, "you liked it today"), `Visit` ("Yours" on your own) | `Visit` sends `Visit`; the server stands you at that hotel's forecourt and the window closes |
+| `ShowcaseMilestone` | A pop-up: `Text` (the likes reached and the sign cosmetic earned), `Wear` | Opened by the `Moment` "LikeMilestone"; `Wear` sends `Equip` "Sign" |
