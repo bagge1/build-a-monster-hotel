@@ -9,8 +9,9 @@ half-cell edges, puts a door in one and furnishes the room on the 3-stud grid. S
     Furniture_<Id>      every Pieces row with `furniture = true` of the location (and, in Haunted Manor, the
                         location-0 rows, "for any room"), on its w x d 3-stud squares, with `Use` and its `Pose`
 
-Sets: blender/rooms/haunted_manor/ (location 1 and 0, the Manor's palette and dress) and
-blender/rooms/frostfang_lodge/ (location 2, the Lodge's). The look reuses the approved room models' shapes
+Sets: blender/rooms/haunted_manor/ (location 1 and 0, the Manor's palette and dress),
+blender/rooms/frostfang_lodge/ (location 2, the Lodge's) and blender/rooms/bayou_spa/ (location 3, a draft: new
+shapes, no approved room models to reuse). The look reuses the approved room models' shapes
 (tools/build_hotel_haunted_manor.py, build_hotel_frostfang_lodge.py): their beds, coffin, sarcophagus,
 nests, counters and the pipe organ, re-authored in the furniture frame (origin the footprint's centre on the
 floor, front -Z) with the faces that met in one plane moved a hair apart (decor's coplanar check).
@@ -95,6 +96,29 @@ def _lift(path, names, ns):
 
 HM_PALETTE = list(K.PALETTE)    # the kit's default is the Haunted Manor's
 FF_PALETTE = _lift(TOOLS / 'build_hotel_frostfang_lodge.py', ['PALETTE'], {})['PALETTE']
+# Bayou Spa (location 3, a draft: WAITING 2.36): a swamp spa, cosy not grim. Mossy weathered cypress, sage, lily
+# greens and lotus pinks, mud, still water and steam, warm lantern and firefly light; Locations.luau's facade
+# (80, 110, 70), trim (200, 230, 120) and lamp (200, 235, 130) are the moss and lily tones here.
+BS_PALETTE = [
+    ('moss', (92, 132, 70)), ('moss_dark', (62, 94, 52)), ('moss_light', (140, 176, 96)),
+    ('lily', (108, 168, 88)), ('lily_dark', (70, 124, 68)), ('lily_light', (160, 204, 118)),
+    ('lotus', (238, 148, 178)), ('lotus_light', (250, 206, 222)), ('lotus_heart', (250, 214, 110)),
+    ('cypress', (128, 96, 66)), ('cypress_dark', (86, 63, 45)), ('cypress_light', (172, 136, 96)),
+    ('drift', (152, 140, 120)), ('drift_dark', (112, 102, 88)), ('drift_light', (188, 176, 152)),
+    ('mud', (122, 86, 56)), ('mud_dark', (86, 60, 40)), ('mud_light', (162, 122, 82)),
+    ('water', (72, 142, 132)), ('water_deep', (42, 96, 96)), ('water_light', (132, 192, 178)),
+    ('steam', (228, 234, 232)), ('stone', (130, 136, 120)), ('stone_dark', (90, 96, 84)),
+    ('stone_light', (178, 182, 166)), ('reed', (120, 140, 70)), ('cattail', (110, 72, 44)),
+    ('rattan', (206, 170, 106)), ('rattan_dark', (162, 122, 72)), ('linen', (238, 230, 210)),
+    ('towel', (246, 243, 234)), ('sage', (152, 176, 132)), ('sage_light', (196, 212, 176)),
+    ('lavender', (176, 150, 206)), ('herb', (96, 150, 80)), ('chamomile', (246, 236, 172)),
+    ('copper', (192, 116, 72)), ('copper_dark', (142, 82, 52)), ('brass', (216, 176, 92)),
+    ('plum', (92, 72, 112)), ('velvet', (132, 42, 62)), ('iron', (60, 62, 68)), ('black', (32, 34, 36)),
+    ('white', (244, 244, 240)), ('grey', (120, 122, 118)), ('moonstone', (200, 218, 240)),
+    ('moonstone_dark', (150, 170, 200)), ('frog', (118, 188, 80)), ('frog_belly', (222, 230, 164)),
+    ('flame', (255, 205, 120), 'Warm'), ('lamp', (255, 185, 110), 'Warm'), ('firefly', (246, 240, 140), 'Warm'),
+    ('moonglow', (205, 225, 255), 'Cold'),
+]
 _REV = {'bpy': bpy, 'K': K, 'Vector': Vector, 'np': np}
 _lift(TOOLS / 'build_cosmetics_hotel.py', ['_flat', '_block', '_person'], _REV)
 _lift(TOOLS / 'build_facades.py', ['_compose'], _REV)
@@ -323,10 +347,29 @@ def rails(st, lower, upper):
     both_faces(face)
 
 
+def fringe(st):
+    """Bayou Spa: a scalloped moss fringe hanging under the crown on both faces (its top buried in the crown,
+    0.06 proud: behind the crown's front), four scallops a half edge, meeting at a point on the ends so two
+    walls in a line read as one fringe; nothing when the style has none."""
+    if not st.get('fringe'):
+        return
+
+    def face(s):
+        z0, z1 = zs(s, 0.06)
+        top = WALL - 0.5
+        for xc in (-2.25, -0.75, 0.75, 2.25):
+            pts = ([(xc - 0.75, top)]
+                   + [(xc - 0.75 * math.cos(math.pi * i / 6), top - 0.06 - 0.3 * math.sin(math.pi * i / 6))
+                      for i in range(1, 6)] + [(xc + 0.75, top)])
+            prism('Dressing', pts, z0, z1, st['fringe'])
+    both_faces(face)
+
+
 def wall_half(st):
     wpiece('Wall_Half')
     wall_body('Wall', -HALF, HALF, st['body'], top=st['crown'])
     rails(st, [(-HALF, HALF)], [(-HALF, HALF)])
+    fringe(st)
     wfinish(f"a half wall: {st['wall_note']}")
 
 
@@ -420,6 +463,7 @@ def wall_door(st):
               ka, kb, st['keystone'])
     both_faces(face)
     rails(st, [(-HALF, -trim), (trim, HALF)], [(-HALF, HALF)])
+    fringe(st)
     attach('Door', (0, 0, 0), (0, 0, -1))
     attach('Sign', SIGN, (0, 0, -1))
     wfinish(f"a half wall with an open {st['arch']}-arched doorway (clear 4 x 7.2): {st['door_note']}")
@@ -730,10 +774,11 @@ def ring_prism(part, outer, inner, y0, y1, outside, inside, top):
         j = (i + 1) % k
         faces += [(ob + i, ob + j, ot + j, ot + i), (ib + j, ib + i, it + i, it + j),
                   (ot + i, ot + j, it + j, it + i), (ib + i, ib + j, ob + j, ob + i)]
-        cols += [outside, inside, top, outside]
+        oc = outside[i % len(outside)] if isinstance(outside, (list, tuple)) else outside    # a list: per segment
+        cols += [oc, inside, top, oc]
     store = K._part(part, None)
     first = len(store[1])
-    K._add(part, verts, faces, outside)
+    K._add(part, verts, faces, cols[0])
     for n, c in enumerate(cols):
         store[2][first + n] = c
 
@@ -1456,6 +1501,400 @@ def f_sky_lounger():
          'over the foot')
 
 
+# --- Bayou Spa (location 3, a draft: WAITING 2.36) -----------------------------------------------------
+# A swamp spa, cosy not grim: weathered cypress, moss, lily pads and lotus, mud and still water, steam, warm
+# lantern and firefly light. No approved room models to reuse (the location is a draft): new shapes, kept to the
+# same checks as the Manor's and the Lodge's.
+
+def seg(part, a, b, r, col, n=6):
+    """A round rod from a to b (a stalk, a cord, a branch)."""
+    a, b = Vector(a), Vector(b)
+    d = b - a
+    cyl(part, (0, 0, 0), r, d.length, col, n=n, m=Matrix.Translation(a) @ d.to_track_quat('Y', 'Z').to_matrix().to_4x4())
+
+
+def firefly_lantern(glow, top, h=0.42, r=0.16):
+    """A firefly jar hanging from `top` (a hook's underside): a cord, a brass cap, the glowing jar (`glow`, its
+    own part: MODELS.md rule 1), a brass foot."""
+    x, y, z = top
+    cyl('Body', (x, y - 0.18, z), 0.025, 0.22, 'iron', n=4)
+    cyl('Body', (x, y - 0.3, z), r + 0.03, 0.12, 'brass', n=8, r_top=0.06)
+    cyl(glow, (x, y - 0.3 - h, z), r, h, 'firefly', n=8)
+    cyl('Body', (x, y - 0.38 - h, z), r + 0.03, 0.08, 'brass', n=8)
+
+
+def lotus(c, s=1.0, ang=0.0):
+    """A lotus flower standing on (x, y, z): six pink petals leaning out, three pale ones inside, a gold heart."""
+    x, y, z = c
+    cyl('Body', (x, y, z), 0.14 * s, 0.1 * s, 'lily_dark', n=6)
+    for k in range(6):
+        sphere('Body', (0, 0, 0), (0.11 * s, 0.27 * s, 0.17 * s), 'lotus', n=5, rings=3,
+               m=at((x, y, z), ry=ang + 60 * k) @ Matrix.Translation((0, 0.22 * s, 0.17 * s))
+               @ Matrix.Rotation(math.radians(38), 4, 'X'))
+    for k in range(3):
+        sphere('Body', (0, 0, 0), (0.1 * s, 0.25 * s, 0.13 * s), 'lotus_light', n=5, rings=3,
+               m=at((x, y, z), ry=ang + 30 + 120 * k) @ Matrix.Translation((0, 0.26 * s, 0.07 * s))
+               @ Matrix.Rotation(math.radians(14), 4, 'X'))
+    sphere('Body', (x, y + 0.3 * s, z), (0.12 * s, 0.07 * s, 0.12 * s), 'lotus_heart', n=6, rings=3)
+
+
+def frog(c, ang=0.0, s=1.0):
+    """A small green frog sitting on (x, y, z), facing -Z turned `ang` about Y."""
+    M = at(c, ry=ang)
+
+    def put(p, radii, col):
+        sphere('Body', (0, 0, 0), tuple(r * s for r in radii), col, n=6, rings=3,
+               m=M @ Matrix.Translation(Vector(p) * s))
+    put((0, 0.24, 0.05), (0.32, 0.24, 0.36), 'frog')
+    put((0, 0.2, -0.16), (0.24, 0.14, 0.2), 'frog_belly')
+    for sx in (-1, 1):
+        put((0.15 * sx, 0.46, -0.16), (0.1, 0.1, 0.1), 'frog')
+        put((0.17 * sx, 0.5, -0.24), (0.045, 0.045, 0.03), 'black')
+        put((0.3 * sx, 0.1, 0.18), (0.13, 0.1, 0.24), 'frog')
+
+
+def lily_pad(c, r, h, col, notch=0.0, n=10):
+    """A flat lily pad on (x, y, z), its V notch toward `notch` degrees (0 = +X)."""
+    x, y, z = c
+    a0 = math.radians(notch)
+    pts = [(x, z)] + [(x + r * math.cos(a0 + math.radians(16 + (360 - 32) * i / n)),
+                       z + r * math.sin(a0 + math.radians(16 + (360 - 32) * i / n))) for i in range(n + 1)]
+    prism('Body', pts, y, y + h, col, plane='xz')
+
+
+def cattails(x, z, y=0.0, k=3, tall=2.0, firefly=None):
+    """A clump of cattails on (x, y, z): k stalks of reed with brown heads, two leaf blades; `firefly`: a glow
+    part name, a firefly resting on the tallest head's tip."""
+    for i in range(k):
+        a = math.radians(40 + 360 * i / k)
+        px, pz = x + 0.12 * math.cos(a), z + 0.12 * math.sin(a)
+        h = tall * (1.0 - 0.12 * i)
+        cyl('Body', (px, y, pz), 0.045, h, 'reed', n=4)
+        cyl('Body', (px, y + h - 0.65, pz), 0.1, 0.45, 'cattail', n=6)
+        if i == 0 and firefly:
+            sphere(firefly, (px, y + h + 0.06, pz), (0.08, 0.08, 0.08), 'firefly', n=6, rings=3)
+    for i, a in enumerate((-15, 20)):
+        prism('Body', [(-0.07, 0.0), (0.07, 0.0), (0.0, tall * 0.8)], -0.02, 0.02, 'reed', plane='xy',
+              m=at((x, y + 0.03, z), ry=70 * i + 30, rz=a))     # its corners clear of the floor when leant
+
+
+def f_lily_pad_bed():
+    furn('LilyPadBed')
+    # A giant lily pad (the Victoria kind, its rim turned up) on a moss mound; a pale lotus-petal blanket, a lotus
+    # bud pillow at the head (+Z), two lotus flowers on the pad beside the guest.
+    lathe('Body', [(3.5, 0.0), (3.3, 0.3), (2.8, 0.45), (0.0, 0.48)], 'moss_dark', n=16)
+    cyl('Body', (0, 0.42, 0), 3.9, 0.26, 'lily', n=20)
+    for k in range(8):          # the veins, from the middle out (apart at the middle: no shared plane)
+        a = math.radians(22.5 + 45 * k)
+        c, s = math.cos(a), math.sin(a)
+        pts = [(0.5 * c - 0.05 * s, 0.5 * s + 0.05 * c), (3.5 * c - 0.03 * s, 3.5 * s + 0.03 * c),
+               (3.5 * c + 0.03 * s, 3.5 * s - 0.03 * c), (0.5 * c + 0.05 * s, 0.5 * s - 0.05 * c)]
+        prism('Body', pts, 0.67, 0.70, 'lily_light', plane='xz')
+    lathe('Body', [(3.62, 0.6), (3.9, 0.6), (3.98, 1.05), (3.82, 1.08), (3.62, 0.76)], 'lily_dark', n=20,
+          closed=True)
+    span('Body', (-1.6, 0.68, -2.5), (1.6, 0.82, 0.3), 'lotus_light', bevel=0.05)
+    sphere('Body', (0, 0.98, 1.95), (0.95, 0.3, 0.5), 'lotus', n=10, rings=4)
+    lotus((2.6, 0.68, 1.5), 1.2)
+    lotus((-2.55, 0.68, -1.6), 1.1, ang=20)
+    use((0, 0.82, 0), (0, 0, -1), 'Lie')     # the head on the bud pillow, the feet under the blanket
+    done("the Lily Pad Room's bed: a giant lily pad with its rim turned up on a moss mound, a pale petal blanket, a "
+         "lotus bud pillow, two lotus flowers")
+
+
+def f_willow_hammock():
+    furn('WillowHammock')
+    # The Star Hammock's sling (flat under the body, rising steeply to the ropes) in woven rattan, between two
+    # gnarled cypress posts crowned with weeping willow; a firefly jar hangs from each post (tags: fireflies).
+    for sx in (-1, 1):
+        x = 3.45 * sx
+        lathe('Body', [(0.55, 0.0), (0.38, 0.25), (0.28, 0.6), (0.25, 2.4), (0.3, 2.9), (0.0, 3.05)], 'cypress_dark',
+              n=8, base=(x, 0, 0))
+        lathe('Body', [(0.0, 2.72), (0.64, 2.78), (0.62, 3.3), (0.42, 3.75), (0.0, 3.9)], 'lily_dark', n=10,
+              base=(x, 0, 0))
+        for k in range(5):      # willow strands hanging down the outer side, their tops in the crown
+            a = math.radians(-60 + 30 * k)
+            px, pz = x + sx * 0.58 * math.cos(a), 0.58 * math.sin(a)
+            box('Body', (0, 0, 0), (0.12, 0.95 - 0.12 * (k % 2), 0.04), 'lily',      # thin across the radius
+                m=at((px, 2.4 + 0.06 * (k % 2), pz), ry=math.degrees(math.atan2(sx * math.cos(a), math.sin(a)))))
+        box('Body', (x, 2.45, -0.62), (0.1, 0.1, 1.3), 'cypress_dark')      # the lantern's hook arm
+        firefly_lantern(f'Glow_Warm_{1 if sx < 0 else 2}', (x, 2.4, -1.22))
+    n, half = 9, 3.3
+    sag = lambda x: 1.3 + 1.1 * (x / half) ** 4     # noqa: E731
+    for i in range(n):
+        xa, xb = -half + 2 * half * i / n, -half + 2 * half * (i + 1) / n
+        ya, yb = sag(xa), sag(xb)
+        ln = math.hypot(xb - xa, yb - ya) + 0.06
+        ang = math.degrees(math.atan2(yb - ya, xb - xa))
+        box('Body', (0, 0, 0), (ln, 0.15, 2.4 - 0.01 * (i % 2)), 'rattan' if i % 2 else 'rattan_dark',
+            m=at(((xa + xb) / 2, (ya + yb) / 2, 0), rz=ang))
+    for x in (-half, half):
+        for z in (-1.1, 1.1):
+            a, b = Vector((x, sag(x), z)), Vector((x * 1.06, 2.55, z * 0.25))
+            seg('Body', a, b, 0.04, 'linen', n=4)
+    sphere('Body', (-2.0, sag(-2.0) + 0.3, 0), (0.5, 0.25, 0.7), 'linen', n=8, rings=4)     # under the head
+
+    def top(x):         # the sling's top along its chords
+        i = min(n - 1, max(0, int((x + half) / (2 * half) * n)))
+        xa, xb = -half + 2 * half * i / n, -half + 2 * half * (i + 1) / n
+        ang = math.atan2(sag(xb) - sag(xa), xb - xa)
+        return sag(xa) + (x - xa) / (xb - xa) * (sag(xb) - sag(xa)) + 0.075 / math.cos(ang)
+    use((0.0, top(0.0), 0.0), (1, 0, 0), 'Lie')     # centred in the sling, the head on the pillow
+    done("the Willow Nook's hammock: woven rattan between two gnarled cypress posts crowned with weeping willow, "
+         "a firefly jar hanging from each")
+
+
+def oval(rx, rz, n=20, cz=0.0):
+    return [(rx * math.cos(2 * math.pi * (i + 0.5) / n), cz + rz * math.sin(2 * math.pi * (i + 0.5) / n))
+            for i in range(n)]
+
+
+def f_mud_tub():
+    furn('MudTub')
+    # An oval cypress tub of staves (alternate faces a lighter wood: no raised seams), two copper hoops, warm mud
+    # to the brim with a few bubbles; a rolled towel under the head (+Z), folded towels on the rim.
+    n = 20
+    out, inn = oval(2.55, 4.05, n), oval(2.25, 3.75, n)
+    ring_prism('Body', out, inn, 0.0, 2.0, ['cypress', 'cypress_light'], 'mud_dark', 'cypress_light')
+    for y0 in (0.35, 1.45):
+        ring_prism('Body', oval(2.585, 4.085, n), out, y0, y0 + 0.2, 'copper', 'copper', 'copper')
+    prism('Body', oval(2.23, 3.73, n), 0.0, 0.6, 'cypress_dark', plane='xz')
+    prism('Body', oval(2.22, 3.72, n), 1.35, 1.45, 'mud', plane='xz')
+    for x, z, r in ((-0.9, 1.0, 0.16), (1.1, -0.6, 0.12), (0.4, -2.2, 0.14), (-1.2, -1.6, 0.1)):
+        sphere('Body', (x, 1.43, z), (r, 0.015, r), 'mud_light', n=6, rings=3)
+    cyl('Body', (0, 0, 0), 0.3, 2.4, 'towel', n=8, m=at((-1.2, 0.9, 2.2), rz=-90))
+    span('Body', (1.98, 2.0, -0.6), (2.58, 2.14, 0.4), 'towel', bevel=0.03)
+    span('Body', (2.03, 2.14, -0.5), (2.53, 2.26, 0.3), 'sage', bevel=0.03)
+    # In it, on the tub's floor under the mud (as the Bathtub: the mud is no surface to the checks).
+    use((0, 0.6, 0.0), (0, 0, -1), 'Lie', liquid=(1.35, 1.45))
+    done("the Mud Bath's tub: an oval of cypress staves with two copper hoops, warm mud to the brim, a rolled towel "
+         "under the head, towels folded on the rim")
+
+
+def f_herb_bed():
+    furn('HerbBed')
+    # A weathered bed with a moss mattress under a lavender quilt; its headboard a row of rattan reed bundles
+    # bound in copper, three herb bundles hung drying from the binding (above the lying guest's head); a planter
+    # of herbs as its footboard.
+    zf, zb, hw = -2.7, 3.2, 2.3
+    for x in (-hw + 0.22, hw - 0.22):
+        for z in (zf + 0.22, zb - 0.45):
+            cyl('Body', (x, 0, z), 0.18, 0.7, 'drift_dark', n=6)
+    span('Body', (-hw, 0.6, zf), (hw, 1.1, zb - 0.25), 'drift', bevel=0.08)
+    span('Body', (-hw + 0.1, 1.1, zf + 0.1), (hw - 0.1, 1.65, zb - 0.35), 'moss', bevel=0.15)
+    span('Body', (-hw + 0.02, 1.25, zf + 0.05), (hw - 0.02, 1.8, zf + 3.6), 'lavender', bevel=0.18)
+    for z in (zf + 1.0, zf + 2.3):
+        span('Body', (-hw + 0.1, 1.8, z - 0.14), (hw - 0.1, 1.84, z + 0.14), 'sage_light')
+    span('Body', (-hw + 0.05, 1.62, zf + 3.3), (hw - 0.05, 1.86, zf + 3.8), 'linen', bevel=0.08)
+    span('Body', (-1.3, 1.6, zb - 1.5), (1.3, 2.25, zb - 0.4), 'linen', bevel=0.22)
+    for i in range(9):          # the headboard: reed bundles, tallest in the middle
+        x = -2.0 + 0.5 * i
+        h = 3.2 + 1.1 * math.cos(x / 2.2 * math.pi / 2)
+        cyl('Body', (x, 0, zb - 0.1), 0.21, h, 'rattan' if i % 2 else 'rattan_dark', n=6)
+        sphere('Body', (x, h, zb - 0.1), (0.21, 0.1, 0.21), 'rattan' if i % 2 else 'rattan_dark', n=6, rings=3)
+    span('Body', (-2.27, 2.9, zb - 0.34), (2.27, 3.05, zb + 0.14), 'copper_dark')
+    span('Body', (-1.3, 3.85, zb - 0.34), (1.3, 4.0, zb + 0.14), 'copper_dark')
+    for x, colr in ((-0.85, 'lavender'), (0.0, 'herb'), (0.85, 'chamomile')):
+        z = zb - 0.5
+        cyl('Body', (x, 3.72, z), 0.07, 0.24, 'herb', n=5)
+        cyl('Body', (x, 3.7, z), 0.1, 0.09, 'linen', n=6)
+        lathe('Body', [(0.0, 3.4), (0.2, 3.5), (0.15, 3.72)], colr, n=6, base=(x, 0, z))
+        box('Body', (x, 3.92, z + 0.12), (0.05, 0.05, 0.3), 'linen')     # its string to the binding
+    span('Body', (-2.25, 0.0, -3.75), (2.25, 1.2, zf + 0.02), 'drift', bevel=0.06)      # the planter footboard
+    span('Body', (-2.1, 1.1, -3.6), (2.1, 1.24, zf - 0.13), 'mud_dark')
+    for k, x in enumerate((-1.6, -0.8, 0.0, 0.8, 1.6)):
+        sphere('Body', (x, 1.42, -3.2), (0.38, 0.3, 0.32), ('herb', 'sage', 'lavender')[k % 3], n=8, rings=4)
+    use((0, 1.8, 0.3), (0, 0, -1), 'Lie')     # the head on the pillow's back, the feet short of the planter
+    done("the Herb Loft's bed: weathered wood, a moss mattress under a lavender quilt, a headboard of rattan reed "
+         "bundles bound in copper with herbs hung drying, a planter of herbs at its foot")
+
+
+def f_steam_pool():
+    furn('SteamPool')
+    # A round hot pool walled in mossy boulders, steam curling up from two of them, a lantern on the back stone,
+    # a smooth stone headrest at the head (+Z), lily pads and a lotus on the water.
+    lathe('Body', [(2.9, 0.0), (3.3, 0.0), (3.3, 1.05), (2.9, 1.05)], 'stone_dark', n=16, closed=True)
+    cyl('Body', (0, 0, 0), 2.92, 0.3, 'stone_dark', n=16)
+    cyl('Body', (0, 0.95, 0), 2.95, 0.05, 'water', n=16)
+    k_n = 14
+    for k in range(k_n):
+        a = 2 * math.pi * (k + 0.5) / k_n
+        r = 0.6 if k % 2 else 0.66
+        ry = 0.55 + 0.04 * (k % 3)
+        sphere('Body', (3.42 * math.cos(a), ry, 3.42 * math.sin(a)), (r, ry, r * 0.95),
+               ('stone', 'stone_light', 'stone')[k % 3], n=8, rings=3)
+    for k in (2, 5, 9, 12):      # moss on some of them
+        a = 2 * math.pi * (k + 0.5) / k_n
+        sphere('Body', (3.42 * math.cos(a), 0.98 + 0.04 * (k % 3), 3.42 * math.sin(a)), (0.42, 0.14, 0.4), 'moss',
+               n=6, rings=3)
+    sphere('Body', (0, 0.48, 2.0), (0.8, 0.26, 0.5), 'stone_light', n=10, rings=4)        # the headrest
+    for sx in (-1, 1):          # steam rising off the back stones
+        a = 2 * math.pi * ((1.5 if sx > 0 else 5.5) / k_n)    # the back (+Z) stones
+        x, z = 3.42 * math.cos(a), 3.42 * math.sin(a)
+        for i, (dy, r) in enumerate(((1.25, 0.36), (1.7, 0.3), (2.1, 0.24), (2.42, 0.17))):
+            sphere('Body', (x + 0.08 * sx * i, dy, z - 0.05 * i), (r, r * 0.8, r), 'steam', n=6, rings=3)
+    a = 2 * math.pi * (3.5 / k_n)     # the back stone, behind the head
+    lx, lz = 3.42 * math.cos(a), 3.42 * math.sin(a)
+    cyl('Body', (lx, 1.0, lz), 0.22, 0.12, 'brass', n=8)
+    cyl('Glow_Warm_1', (lx, 1.12, lz), 0.17, 0.4, 'lamp', n=8)
+    cyl('Body', (lx, 1.52, lz), 0.22, 0.14, 'brass', n=8, r_top=0.05)
+    lily_pad((-2.2, 1.0, -1.2), 0.42, 0.02, 'lily', notch=40)
+    lily_pad((2.1, 1.0, -1.6), 0.36, 0.02, 'lily_dark', notch=200)
+    lily_pad((-2.3, 1.0, 0.9), 0.32, 0.02, 'lily', notch=120)
+    lotus((-2.2, 1.02, -1.2), 0.8)
+    # In it, on the pool's floor under the water (the water and the pads on it are no surface to the checks).
+    use((0, 0.3, 0.0), (0, 0, -1), 'Lie', liquid=(0.95, 1.02))
+    done("the Steam Grotto's hot pool: still water in a ring of mossy boulders, steam curling off two of them, a "
+         "lantern on the back stone, a smooth headrest, lily pads and a lotus")
+
+
+def f_cypress_throne():
+    furn('CypressThrone')
+    # A throne carved from a cypress stump: a root flare, a moss cushion between two knobbly root-knee arms, a
+    # high back with a carved crown and a lighter inset panel, Spanish moss draped over its shoulders, a firefly
+    # jar hanging from a crooked branch.
+    lathe('Body', [(2.3, 0.0), (2.1, 0.2), (1.7, 0.42), (0.0, 0.45)], 'cypress_dark', n=12, base=(0, 0, -0.4),
+          scale=(1, 0.85))
+    half = [(1.9, 0.4), (1.9, 3.4), (1.6, 4.1), (1.1, 4.3), (0.6, 4.75)]
+    outline = half + [(0.0, 5.0)] + [(-x, y) for x, y in reversed(half)]
+    prism('Body', outline, 0.0, 0.85, 'cypress', plane='xy')
+    inset = [(0.72 * x, 2.0 + 0.62 * (y - 0.4)) for x, y in outline]
+    prism('Body', inset, -0.03, 0.0, 'cypress_light', plane='xy')
+    span('Body', (-1.0, 0.4, -1.1), (1.0, 1.2, 0.02), 'cypress_dark')
+    span('Body', (-1.2, 1.2, -1.6), (1.2, 1.55, 0.02), 'cypress', bevel=0.05)
+    span('Body', (-1.12, 1.55, -1.52), (1.12, 1.8, -0.03), 'moss', bevel=0.08)
+    for sx in (-1, 1):
+        xa, xb = sorted((1.25 * sx, 1.88 * sx))
+        span('Body', (xa, 0.4, -1.55), (xb, 2.5, 0.05), 'cypress_dark', bevel=0.18)
+        sphere('Body', (1.57 * sx, 2.5, -1.25), (0.36, 0.26, 0.36), 'cypress_light', n=8, rings=4)
+        drape = [(1.45, 4.25), (2.05, 3.55), (2.05, 2.6), (1.92, 2.3), (1.82, 2.75), (1.7, 2.35), (1.58, 2.9),
+                 (1.45, 3.3)]
+        prism('Body', [(x * sx, y) for x, y in drape][::sx], -0.07, -0.02, 'moss_light', plane='xy')
+    for p, q in (((1.3, 4.1, 0.45), (2.0, 4.6, 0.2)), ((2.0, 4.6, 0.2), (2.35, 4.5, -0.35))):
+        seg('Body', p, q, 0.07, 'cypress_dark', n=5)
+    firefly_lantern('Glow_Warm_1', (2.35, 4.47, -0.35), h=0.36, r=0.14)
+    K.seat(-1.05, 1.05, -1.45, -0.15, 1.8)
+    use((0, 1.8, -0.8), (0, 0, -1), 'Sit')
+    done("the Cypress Suite's throne carved from a cypress stump: a moss cushion, root-knee arms, a high carved back "
+         "draped with Spanish moss, a firefly jar on a crooked branch")
+
+
+def f_lagoon_perch():
+    furn('LagoonPerch')
+    # A smooth moonstone boulder with a lily-pad cushion to sit on, facing a little lagoon pool in front (-Z):
+    # lily pads, a lotus, a frog; a reed stalk curving over from behind with a glowing crescent moon on a cord;
+    # cattails at the back.
+    lathe('Body', [(1.95, 0.0), (2.05, 0.5), (1.9, 1.2), (1.5, 1.62), (0.0, 1.7)], 'moonstone', n=12,
+          base=(0, 0, 2.2), scale=(1, 0.7))
+    cyl('Body', (0, 1.66, 2.2), 1.15, 0.07, 'lily', n=12, scale=(1, 0.8))
+    sphere('Body', (-2.4, 0.6, 2.9), (0.85, 0.6, 0.75), 'moonstone_dark', n=8, rings=4)
+    sphere('Body', (-2.4, 1.08, 2.9), (0.5, 0.18, 0.45), 'moss', n=8, rings=3)
+    lathe('Body', [(2.0, 0.0), (2.35, 0.0), (2.35, 0.35), (2.2, 0.5), (2.0, 0.45)], 'stone', n=16,
+          base=(0, 0, -1.7), closed=True)
+    cyl('Body', (0, 0, -1.7), 2.03, 0.4, 'water_deep', n=16)
+    lily_pad((-0.9, 0.4, -2.5), 0.5, 0.03, 'lily', notch=70)
+    lily_pad((0.9, 0.4, -1.1), 0.42, 0.03, 'lily_dark', notch=250)
+    lily_pad((0.6, 0.4, -3.0), 0.34, 0.03, 'lily', notch=160)
+    frog((-0.9, 0.43, -2.5), ang=20, s=0.9)
+    lotus((0.9, 0.43, -1.1), 0.75)
+    sphere('Body', (2.9, 0.3, 3.3), (0.4, 0.3, 0.4), 'stone_dark', n=6, rings=3)
+    stalk = [(2.9, 0.1, 3.3), (3.0, 1.5, 3.1), (2.95, 3.0, 2.6), (2.75, 3.85, 1.9), (2.55, 4.0, 1.45)]
+    for a, b in zip(stalk, stalk[1:]):
+        seg('Body', a, b, 0.07, 'reed', n=5)
+    sphere('Body', stalk[-1], 0.07, 'reed', n=5, rings=3)
+    cyl('Body', (2.55, 3.84, 1.45), 0.02, 0.16, 'linen', n=4)
+    outer = [(0.45 * math.cos(math.radians(a)), 0.45 * math.sin(math.radians(a))) for a in range(40, 321, 20)]
+    inner = [(0.2 + 0.36 * math.cos(math.radians(a)), 0.36 * math.sin(math.radians(a))) for a in range(300, 59, -20)]
+    prism('Glow_Cold_1', outer + inner, -0.06, 0.06, 'moonglow', plane='xy',
+          m=at((2.55, 3.84 - 0.45, 1.45)))      # its top on the cord, the horns toward +X
+    cattails(-3.2, 0.8, k=3, tall=2.2)
+    cattails(3.3, -3.3, k=2, tall=1.8)
+    K.seat(-1.05, 1.05, 1.6, 2.8, 1.73)
+    use((0, 1.73, 2.2), (0, 0, -1), 'Sit')
+    done("the Moonlit Lagoon's perch: a smooth moonstone boulder with a lily-pad cushion facing a little lagoon "
+         "(lily pads, a lotus, a frog), a glowing crescent moon hung from a reed stalk, cattails")
+
+
+def f_jazz_stage():
+    furn('JazzStage')
+    # A low porch stage of weathered boards (planks in two tones, a hair apart in height) with a velvet skirt,
+    # three footlights, a vintage microphone, an upright bass leaning back, a stool with a straw boater, and a
+    # string of warm bulbs between two posts at the back.
+    span('Body', (-4.0, 0.0, -2.45), (4.0, 0.8, 2.45), 'cypress_dark')
+    zs_ = [-2.55 + 5.1 * i / 6 for i in range(7)]
+    for i in range(6):
+        span('Body', (-4.1, 0.78, zs_[i]), (4.1, 0.9 + 0.01 * (i % 2), zs_[i + 1]), 'drift' if i % 2 else 'drift_light')
+    span('Body', (-4.0, 0.05, -2.5), (4.0, 0.78, -2.45), 'velvet')
+    for k, x in enumerate((-3.0, -1.5, 1.5)):
+        sphere(f'Glow_Warm_{k + 1}', (x, 0.9, -2.25), (0.2, 0.13, 0.13), 'lamp', n=8, rings=4)
+        span('Body', (x - 0.3, 0.9, -2.15), (x + 0.3, 1.16, -2.0), 'brass', bevel=0.03)
+    cyl('Body', (0, 0.9, -1.1), 0.32, 0.06, 'iron', n=10)
+    cyl('Body', (0, 0.96, -1.1), 0.04, 3.1, 'iron', n=6)
+    cyl('Body', (0, 4.04, -1.1), 0.15, 0.08, 'brass', n=8)
+    sphere('Body', (0, 4.28, -1.1), (0.14, 0.22, 0.14), 'iron', n=8, rings=4)
+    # The upright bass, leaning 6 degrees on its endpin.
+    M = at((2.5, 0.9, 0.7), rz=6)
+    half = [(0.06, 0.32), (0.62, 0.45), (0.78, 0.9), (0.72, 1.35), (0.48, 1.65), (0.5, 1.95), (0.6, 2.25),
+            (0.45, 2.55), (0.12, 2.66)]
+    prism('Body', [(x, y) for x, y in half] + [(-x, y) for x, y in reversed(half)], -0.25, 0.25,
+          {'front': 'cypress_light', 'back': 'cypress_light', 'rest': 'cypress'}, plane='xy', m=M)
+    cyl('Body', (0, 0.0, 0), 0.03, 0.34, 'iron', n=4, m=M)
+    box('Body', (0, 3.3, -0.1), (0.18, 1.4, 0.28), 'cypress_dark', m=M)
+    box('Body', (0, 2.8, -0.27), (0.14, 2.3, 0.06), 'black', m=M)
+    sphere('Body', (0, 4.08, -0.1), (0.13, 0.16, 0.13), 'cypress_dark', n=6, rings=4, m=M)
+    for sx in (-1, 1):
+        box('Body', (0.3 * sx, 1.4, -0.26), (0.05, 0.42, 0.03), 'black', m=M)
+    # The stool and the boater.
+    for k in range(3):
+        a = math.radians(90 + 120 * k)
+        cyl('Body', (-2.4 + 0.3 * math.cos(a), 0.9, 0.8 + 0.3 * math.sin(a)), 0.05, 1.5, 'cypress', n=4)
+    cyl('Body', (-2.4, 2.4, 0.8), 0.42, 0.1, 'cypress', n=10)
+    cyl('Body', (-2.4, 2.5, 0.8), 0.4, 0.03, 'rattan', n=12)
+    cyl('Body', (-2.4, 2.53, 0.8), 0.24, 0.2, 'rattan', n=10)
+    cyl('Body', (-2.4, 2.56, 0.8), 0.25, 0.07, 'velvet', n=10)
+    # The posts and the string of lights.
+    for sx in (-1, 1):
+        cyl('Body', (3.75 * sx, 0.9, 2.2), 0.13, 3.6, 'cypress', n=6)
+        sphere('Body', (3.75 * sx, 4.55, 2.2), 0.17, 'brass', n=6, rings=3)
+    pts = [(-3.75 + 7.5 * i / 8, 4.3 - 0.5 * math.sin(math.pi * i / 8), 2.2) for i in range(9)]
+    for a, b in zip(pts, pts[1:]):
+        seg('Body', a, b, 0.025, 'black', n=4)
+    for x, y, z in pts[1:-1]:
+        sphere('Glow_Warm_4', (x, y - 0.13, z), (0.09, 0.12, 0.09), 'lamp', n=6, rings=3)
+    stand()
+    done("the Jazz Porch's stage: weathered boards on a velvet skirt, three footlights, a vintage microphone, an "
+         "upright bass, a stool with a straw boater, a string of warm bulbs")
+
+
+def f_lily_basin():
+    furn('LilyBasin')
+    # A low round stone pond: a pale coping, still water, notched lily pads, two lotus flowers, a mossy rock, a
+    # frog on the rim, cattails at the back with a firefly resting on one.
+    lathe('Body', [(3.4, 0.0), (4.0, 0.0), (4.0, 0.9), (3.4, 0.9)], 'stone', n=16, closed=True)
+    lathe('Body', [(3.32, 0.9), (4.06, 0.9), (4.06, 1.0), (3.32, 1.0)], 'stone_light', n=16, closed=True)
+    cyl('Body', (0, 0, 0), 3.42, 0.75, 'water', n=16)
+    for x, z, r, colr, nt in ((-1.4, -1.2, 0.7, 'lily', 30), (0.6, -2.0, 0.55, 'lily_dark', 160),
+                              (1.8, 0.2, 0.6, 'lily', 250), (-0.6, 0.9, 0.5, 'lily_dark', 300),
+                              (-2.3, 0.6, 0.45, 'lily', 90)):
+        lily_pad((x, 0.75, z), r, 0.03, colr, notch=nt)
+    lotus((-1.4, 0.78, -1.2), 1.0)
+    lotus((1.8, 0.78, 0.2), 0.85, ang=25)
+    sphere('Body', (0.9, 0.6, 1.9), (0.9, 0.5, 0.7), 'stone_dark', n=8, rings=4)
+    sphere('Body', (0.9, 1.0, 1.9), (0.6, 0.16, 0.48), 'moss', n=8, rings=3)
+    a = math.radians(225)
+    frog((3.7 * math.cos(a), 1.0, -3.7 * math.sin(a)), ang=-45)
+    cattails(-1.8, 2.3, y=0.75, k=3, tall=2.0, firefly='Glow_Warm_1')
+    cattails(2.6, 1.9, y=0.75, k=2, tall=1.6)
+    stand()
+    done("the Lily Pond's basin: a round stone pond with a pale coping, still water, notched lily pads, two lotus "
+         "flowers, a mossy rock, a frog on the rim, cattails with a firefly")
+
+
+def bs_furniture():
+    return {'LilyPadBed': f_lily_pad_bed, 'WillowHammock': f_willow_hammock, 'MudTub': f_mud_tub,
+            'HerbBed': f_herb_bed, 'SteamPool': f_steam_pool, 'CypressThrone': f_cypress_throne,
+            'LagoonPerch': f_lagoon_perch, 'JazzStage': f_jazz_stage, 'LilyBasin': f_lily_basin}
+
+
 # --- Styles -------------------------------------------------------------------------------------------
 
 def _courses(y0, y1, n, cols):
@@ -1484,6 +1923,17 @@ STYLES = {
         post_note='banded as the walls meeting it (dark skirting and wainscot, light rails, the log courses, the '
                   'snow cornice), so their bands turn the corner on it',
         furniture=ff_furniture, locations=(2,)),
+    'bayou_spa': dict(
+        title='Bayou Spa: inner walls, a door and furniture (built rooms)', location=3, palette=BS_PALETTE,
+        body=[(0.0, 3.2, 'cypress'), (3.2, WALL, 'sage')], reveal='cypress_dark', skirting='cypress_dark',
+        chair='cypress_light', picture='cypress_light', crown='moss', fringe='moss', arch='round', trim='cypress_dark',
+        trim_base='cypress', keystone='lily',
+        wall_note='a cypress wainscot under soft sage, light cypress rails, a moss crown with a scalloped moss '
+                  'fringe hanging under it, both faces',
+        door_note='a round arch, dark cypress trim with a lily-green keystone, plinth blocks, both faces',
+        post_note='banded as the walls meeting it (dark skirting, the cypress wainscot, light rails, sage, the moss '
+                  'crown), so their bands turn the corner on it',
+        furniture=bs_furniture, locations=(3,)),
 }
 
 _HM = _lift(TOOLS / 'build_hotel_haunted_manor.py', ['pumpkin'], {'sphere': sphere, 'cyl': cyl})
@@ -1721,7 +2171,7 @@ def review_sitting(out, fbx, style, manifest):
     hm_man = json.loads((hm / 'manifest.json').read_text())['pieces']
     stool = hm_man['Furniture_BarStool']['attachments']['Use']
     shots, scenes = [], []
-    counter = {'haunted_manor': 'Furniture_SnackCounter', 'frostfang_lodge': 'Furniture_CocoaBar'}[style]
+    counter = {'haunted_manor': 'Furniture_SnackCounter', 'frostfang_lodge': 'Furniture_CocoaBar'}.get(style)
 
     def at_counter():
         place(fbx, counter, (0, 0, 0))
@@ -1729,7 +2179,8 @@ def review_sitting(out, fbx, style, manifest):
         sp = Vector(stool['pos'])
         _sitting((-sp.x, sp.y, -sp.z - 3.0), (0, 0, 1))
         return (-4.6, 0, -4.6), (4.6, 6.2, 1.6)
-    scenes.append(('BarStool_at_' + counter[len('Furniture_'):], at_counter))
+    if counter:         # Bayou Spa has no counter
+        scenes.append(('BarStool_at_' + counter[len('Furniture_'):], at_counter))
     for n, r in manifest.items():
         if r.get('furniture', {}).get('pose') != 'Sit' or n == 'Furniture_BarStool':
             continue

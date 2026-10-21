@@ -115,4 +115,4 @@ In `blender/_import/`: the walls as `FrostfangLodge_Wall_Half.fbx`,
 repeat the Manor's; rename to `Wall_*` on saving into
 `assets/HotelKit/FrostfangLodge/`), the furniture unprefixed.
 
-Bayou Spa (location 3) is not modelled: its style is still a draft.
+Bayou Spa (location 3) is modelled since 2026-10-21 (`blender/rooms/bayou_spa/`), a draft.
