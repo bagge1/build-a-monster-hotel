@@ -105,14 +105,16 @@ Connect: knappen under fliken Plugins i Studio. -->
    om dem. Titta gärna först på bilderna i §1 punkt 12: säger du nej till en
    stil behöver den inte importeras än.
 
-12. **Importera 59 modeller: väggarna, dörren och möblerna för de byggda
-   rummen** (natten 2026-10-21; byggda, validerade och granskade två gånger,
-   felen rättade, `blender/rooms/<hotell>/README.md`). Haunted Manor: väggen,
-   dörrväggen, stolpen och 45 möbler och dekorbitar; Frostfang Lodge: sina
-   tre väggbitar och åtta möbler (`FrostfangLodge_Wall_*`). Importera **alla
-   filer i `blender/_import/`** till **Workspace** i en dialog och skriv
-   *importerat* (inte mitt i en playtest). Tills dess ritar spelet enkla
-   klossar på samma platser. Bilderna: `blender/rooms/<hotell>/review/`.
+12. **Importera 77 modeller: väggarna, dörren, möblerna, den sällsynta dekoren
+   och souveniren** (natten och morgonen 2026-10-21; byggda, validerade och
+   granskade, felen rättade, se README i `blender/rooms/<hotell>/` och
+   `blender/decor/`). Haunted Manor: väggen, dörrväggen, stolpen och 45
+   möbler och dekorbitar; Frostfang Lodge: sina tre väggbitar
+   (`FrostfangLodge_Wall_*`) och åtta möbler; Bayou Spa: sina tre väggbitar
+   (`BayouSpa_Wall_*`) och nio möbler; den sällsynta setet "The Count's Study"
+   (fem bitar) och `Souvenir_Base`. Importera **alla filer i
+   `blender/_import/`** till **Workspace** i en dialog och skriv *importerat*
+   (inte mitt i en playtest). Tills dess ritar spelet enkla klossar.
 
 ## §1 Att titta på eller spela
 
