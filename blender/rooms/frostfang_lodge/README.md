@@ -61,7 +61,10 @@ whole width, the sitting sheet).
   two teal cushions meeting at the hinge, the pillow at the head end, the
   blanket at the foot; `Use` (0, 1.05, 0.55).
 - **`CocoaBar`**: top 3.45 → **3.75**, the pot, mugs and jar with it (the
-  bar stool's seated guest has the thighs at 3.5).
+  bar stool's seated guest has the thighs at 3.5). Since the blind review
+  of 2026-10-21 (night) its front stands 0.6 further back (z -0.25) under
+  the top, which overhangs it by 0.8: knee room for the stool, as the
+  Manor's `SnackCounter` (the Manor's README).
 - **The walls and the post**: banded as the walls meeting it (dark skirting
   and wainscot, light rails, the log courses, the snow cornice), each wall's
   top face snow: the Manor's README.
@@ -97,6 +100,8 @@ Workbench, light grey).
 
 ## Staged
 
+Re-staged after the Manor's furniture review (2026-10-21, night):
+`Furniture_CocoaBar.fbx` (the knee overhang).
 Re-staged after the second review (2026-10-21): `FrostfangLodge_Wall_Half.fbx`,
 `FrostfangLodge_Wall_Door.fbx`, `FrostfangLodge_Wall_Post.fbx`,
 `Furniture_StarHammock.fbx`, `Furniture_SnowNest.fbx`,

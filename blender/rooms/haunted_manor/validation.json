@@ -476,13 +476,13 @@
    "ok": true,
    "faults": [],
    "checks": [
-    "3 part names round-trip",
+    "4 part names round-trip",
     "every box within 0.02 stud and every triangle count as built (orientation and scale)",
     "the atlas travels embedded in the FBX",
     "the piece's own checks re-run on the re-imported triangles",
     "the contract re-checked on the re-imported boxes: Root 3fw x 0.2 x 3fd, the layer's envelope (Floor and Wall: inside the footprint inset 0.4, height <= 7; Rug: inside the footprint, height <= 0.15; Wall: its back on z = 3fd/2 - 0.4 +-0.05), nothing collides, budget; w, d, layer and height (to 0.3) as Pieces.luau says; each seat() on the triangles"
    ],
-   "triangles": 1200,
+   "triangles": 1260,
    "budget": 1500,
    "collision_precise": [],
    "attachments": [
@@ -499,7 +499,7 @@
     "the piece's own checks re-run on the re-imported triangles",
     "the contract re-checked on the re-imported boxes: Root 3fw x 0.2 x 3fd, the layer's envelope (Floor and Wall: inside the footprint inset 0.4, height <= 7; Rug: inside the footprint, height <= 0.15; Wall: its back on z = 3fd/2 - 0.4 +-0.05), nothing collides, budget; w, d, layer and height (to 0.3) as Pieces.luau says; each seat() on the triangles"
    ],
-   "triangles": 498,
+   "triangles": 878,
    "budget": 1500,
    "collision_precise": [],
    "attachments": [
@@ -584,7 +584,7 @@
     "the piece's own checks re-run on the re-imported triangles",
     "the contract re-checked on the re-imported boxes: Root 3fw x 0.2 x 3fd, the layer's envelope (Floor and Wall: inside the footprint inset 0.4, height <= 7; Rug: inside the footprint, height <= 0.15; Wall: its back on z = 3fd/2 - 0.4 +-0.05), nothing collides, budget; w, d, layer and height (to 0.3) as Pieces.luau says; each seat() on the triangles"
    ],
-   "triangles": 684,
+   "triangles": 1484,
    "budget": 1500,
    "collision_precise": [],
    "attachments": [
@@ -652,7 +652,7 @@
     "the piece's own checks re-run on the re-imported triangles",
     "the contract re-checked on the re-imported boxes: Root 3fw x 0.2 x 3fd, the layer's envelope (Floor and Wall: inside the footprint inset 0.4, height <= 7; Rug: inside the footprint, height <= 0.15; Wall: its back on z = 3fd/2 - 0.4 +-0.05), nothing collides, budget; w, d, layer and height (to 0.3) as Pieces.luau says; each seat() on the triangles"
    ],
-   "triangles": 350,
+   "triangles": 672,
    "budget": 1500,
    "collision_precise": [],
    "attachments": [
@@ -748,7 +748,7 @@
     "the piece's own checks re-run on the re-imported triangles",
     "the contract re-checked on the re-imported boxes: Root 3fw x 0.2 x 3fd, the layer's envelope (Floor and Wall: inside the footprint inset 0.4, height <= 7; Rug: inside the footprint, height <= 0.15; Wall: its back on z = 3fd/2 - 0.4 +-0.05), nothing collides, budget; w, d, layer and height (to 0.3) as Pieces.luau says; each seat() on the triangles"
    ],
-   "triangles": 808,
+   "triangles": 872,
    "budget": 1500,
    "collision_precise": [],
    "attachments": []
@@ -763,7 +763,7 @@
     "the piece's own checks re-run on the re-imported triangles",
     "the contract re-checked on the re-imported boxes: Root 3fw x 0.2 x 3fd, the layer's envelope (Floor and Wall: inside the footprint inset 0.4, height <= 7; Rug: inside the footprint, height <= 0.15; Wall: its back on z = 3fd/2 - 0.4 +-0.05), nothing collides, budget; w, d, layer and height (to 0.3) as Pieces.luau says; each seat() on the triangles"
    ],
-   "triangles": 288,
+   "triangles": 320,
    "budget": 1500,
    "collision_precise": [],
    "attachments": []
@@ -772,7 +772,7 @@
    "ok": true,
    "faults": [],
    "checks": [
-    "2 part names round-trip",
+    "6 part names round-trip",
     "every box within 0.02 stud and every triangle count as built (orientation and scale)",
     "the atlas travels embedded in the FBX",
     "the piece's own checks re-run on the re-imported triangles",

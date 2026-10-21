@@ -115,13 +115,19 @@ def f_salad_bar():
     for k, colr in enumerate(('amber', 'slime', 'crimson', 'amber', 'cream', 'slime', 'crimson')):
         x = -3.3 + k * 1.1
         lathe('Body', [(0.15, 3.3), (0.15, 3.68), (0.06, 3.8), (0.06, 3.92)], colr, n=6, base=(x, 0, 0.75))
-    for x in (-3.9, 3.9):       # the canopy over the step, on gold posts
-        cyl('Body', (x, 3.3, 0.8), 0.08, 0.7, 'gold', n=6)
-    span('Body', (-4.05, 4.0, -0.35), (4.05, 4.16, 1.05), 'plum', bevel=0.04)
-    span('Body', (-4.08, 3.86, -0.38), (4.08, 4.02, -0.3), 'gold')
+    # The sneeze guard (blind review 2026-10-21: an opaque plum canopy at 3.9 hid the bowls from the raised
+    # camera): one thin pane, `Glass` (the code may make it glass; MODELS.md, "Furniture"), level at 4.0 over
+    # the bowls, on gold rails and six slim gold posts clear of the bowls.
+    declare('Glass', False)
+    for x in (-3.95, 0.0, 3.95):
+        for z in (-0.88, 0.39):
+            cyl('Body', (x, 2.78, z), 0.05, 1.16, 'gold', n=6)
+    for z0, z1 in ((-0.92, -0.85), (0.36, 0.43)):
+        span('Body', (-4.02, 3.94, z0), (4.02, 4.0, z1), 'gold')
+    span('Glass', (-4.0, 4.0, -0.9), (4.0, 4.04, 0.4), 'moon')
     stand()
     done('a salad bar: four bowls of greens, beets, carrots and slime-green salad on a dark counter with moss '
-         'panels, dressings on a step at the back, a plum canopy with a gold hem')
+         'panels, dressings on a step at the back, a thin glass sneeze guard on gold posts over the bowls')
 
 
 def f_coffee_urn():
@@ -130,17 +136,34 @@ def f_coffee_urn():
     span('Body', (-0.8, 0.3, -0.95), (0.8, 2.2, -0.88), 'wood', bevel=0.03)
     sphere('Body', (0.55, 1.25, -0.98), 0.07, 'gold', n=6, rings=3)
     span('Body', (-1.08, 2.5, -0.98), (1.08, 2.65, 1.0), 'wood', bevel=0.04)
-    lathe('Body', [(0.45, 2.65), (0.5, 2.8), (0.62, 3.1), (0.62, 4.05), (0.45, 4.3), (0.14, 4.4), (0.14, 4.5),
-                   (0.0, 4.55)], 'gold', n=10, base=(0, 0, 0.2))
-    lathe('Body', [(0.64, 3.35), (0.64, 3.55)], 'crimson', n=10, base=(0, 0, 0.2))
-    span('Body', (-0.07, 3.05, -0.75), (0.07, 3.17, -0.3), 'gold')        # the tap, out of the urn's front
-    cyl('Body', (0, 2.88, -0.7), 0.05, 0.18, 'gold', n=6)
-    span('Body', (-0.05, 3.17, -0.6), (0.05, 3.42, -0.5), 'black')
-    for x, colr in ((-0.7, 'white'), (0.72, 'crimson')):
-        cyl('Body', (x, 2.65, -0.6), 0.2, 0.03, 'white', n=8)
-        cyl('Body', (x, 2.68, -0.6), 0.14, 0.24, colr, n=8)
+    # A station, not a giant urn (blind review 2026-10-21: the 1.9-tall urn dwarfed its cabinet): the urn 1.3
+    # tall on the left on little feet, its tap and black handle over a drip tray, cups and saucers on the right,
+    # and a dark upstand at the back with a shelf of cups, so the piece keeps its height (Pieces' 4.6).
+    ux, uz = -0.35, 0.05
+    lathe('Body', [(0.3, 2.65), (0.33, 2.72), (0.22, 2.82), (0.4, 2.98), (0.44, 3.15), (0.44, 3.6),
+                   (0.34, 3.78), (0.12, 3.85), (0.12, 3.92), (0.0, 3.97)], 'gold', n=10, base=(ux, 0, uz))
+    lathe('Body', [(0.46, 3.3), (0.46, 3.44)], 'crimson', n=10, base=(ux, 0, uz))
+    for s in (-1, 1):           # its handles, out of its sides and down
+        xa, xb = sorted((ux + s * 0.38, ux + s * 0.62))
+        span('Body', (xa, 3.42, uz - 0.04), (xb, 3.5, uz + 0.04), 'gold')
+        span('Body', (ux + s * 0.56 - 0.04, 3.2, uz - 0.03), (ux + s * 0.56 + 0.04, 3.46, uz + 0.03), 'gold')
+    span('Body', (ux - 0.06, 3.0, uz - 0.72), (ux + 0.06, 3.12, uz - 0.38), 'gold')   # the tap, from the front
+    cyl('Body', (ux, 2.84, uz - 0.66), 0.05, 0.16, 'gold', n=6)
+    span('Body', (ux - 0.05, 3.12, uz - 0.6), (ux + 0.05, 3.42, uz - 0.5), 'black')
+    span('Body', (ux - 0.3, 2.65, uz - 0.88), (ux + 0.3, 2.7, uz - 0.44), 'iron')    # the drip tray
+    cyl('Body', (ux, 2.7, uz - 0.66), 0.13, 0.14, 'white', n=8)                     # a cup under the tap
+    for x, z, colr in ((0.55, -0.55, 'crimson'), (0.6, 0.0, 'white')):              # cups on saucers
+        cyl('Body', (x, 2.65, z), 0.26, 0.03, 'white', n=10)
+        cyl('Body', (x, 2.68, z), 0.17, 0.26, colr, n=8)
+        span('Body', (x + 0.15, 2.76, z - 0.03), (x + 0.27, 2.88, z + 0.03), colr)
+    span('Body', (-1.0, 2.65, 0.75), (1.0, 4.2, 1.0), 'wood_dark', bevel=0.04)     # the upstand
+    span('Body', (-1.06, 4.2, 0.68), (1.06, 4.36, 1.06), 'plum_dark', bevel=0.03)
+    span('Body', (-0.95, 3.75, 0.45), (0.95, 3.85, 0.76), 'wood')                    # its shelf of cups
+    for k, x in enumerate((-0.6, -0.15, 0.3, 0.75)):
+        cyl('Body', (x, 3.85, 0.6), 0.12, 0.2, ('crimson', 'white')[k % 2], n=8)
     stand()
-    done('a coffee and cocoa urn: a tall gold urn with a crimson band and a tap on a dark cabinet, two cups')
+    done('a coffee and cocoa station: a gold urn with a crimson band, handles and a tap over a drip tray on a '
+         'dark cabinet, cups on saucers, a dark upstand with a shelf of cups')
 
 
 def f_dessert_trolley():
@@ -262,20 +285,77 @@ def f_board_game_shelf():
     shelves = (0.3, 1.6, 2.9, 4.2)
     for y in shelves[1:]:
         span('Body', (-2.3, y - 0.12, -0.85), (2.3, y, 0.95), 'wood')
-    cols = ('book_a', 'book_b', 'book_c', 'teal', 'pumpkin', 'violet', 'rose', 'moss')
-    k = 0
+    # Game boxes, not books (blind review 2026-10-21: thin flat stacks read as a bookcase): wide square boxes,
+    # each with its lid a hair wider than the box and a band of another colour, so the lid's seam shows; in
+    # each bay one of three ways (a flat stack, boxes stood on edge, one stood up showing its lid's picture),
+    # with game pieces (pawns, dice) in front of a few.
+    cols = ('crimson', 'teal', 'pumpkin', 'violet', 'moss', 'sky', 'rose', 'amber')
+    lids = ('cream', 'gold', 'cream', 'lilac', 'bone', 'cream', 'white', 'night')
+    k = [0]
+
+    def game_box(lo, hi, axis):
+        """A box from lo to hi; its lid the top 40 % along `axis` (1: lying flat, the lid up; 2: stood up, the
+        lid's face toward -Z; 0: on edge, the lid toward -X), 0.02 wider all round, in another colour."""
+        c, lid = cols[k[0] % len(cols)], lids[k[0] % len(lids)]
+        k[0] += 1
+        lo, hi = list(lo), list(hi)
+        split = list(lo)
+        cut = hi[axis] - 0.4 * (hi[axis] - lo[axis]) if axis == 1 else lo[axis] + 0.4 * (hi[axis] - lo[axis])
+        if axis == 1:
+            span('Body', lo, (hi[0], cut, hi[2]), c)
+            span('Body', (lo[0] - 0.02, cut - 0.01, lo[2] - 0.02), (hi[0] + 0.02, hi[1], hi[2] + 0.02), lid)
+        elif axis == 2:     # stood up, the lid toward -Z: the lid is the front 40 % (its foot 0.02 into the
+            span('Body', (lo[0], lo[1], cut), hi, c)        # shelf, so its bottom never shares the box's plane)
+            span('Body', (lo[0] - 0.02, lo[1] - 0.02, lo[2]), (hi[0] + 0.02, hi[1] + 0.02, cut + 0.01), lid)
+        else:               # on edge, the lid toward -X
+            span('Body', (cut, lo[1], lo[2]), hi, c)
+            span('Body', (lo[0], lo[1] - 0.02, lo[2] - 0.02), (cut + 0.01, hi[1] + 0.02, hi[2] + 0.02), lid)
+        return c
+
+    def pawn(x, y, z, colr):
+        lathe('Body', [(0.1, y), (0.1, y + 0.05), (0.035, y + 0.22), (0.0, y + 0.24)], colr, n=6, base=(x, 0, z))
+        sphere('Body', (x, y + 0.3, z), 0.07, colr, n=6, rings=3)
+
+    def die(x, y, z):
+        span('Body', (x - 0.1, y, z - 0.1), (x + 0.1, y + 0.2, z + 0.1), 'white')
+        for dx, dy in ((-0.05, 0.05), (0.05, 0.15)):
+            span('Body', (x + dx - 0.02, y + dy - 0.02, z - 0.11), (x + dx + 0.02, y + dy + 0.02, z - 0.09),
+                 'black')
+
     for si, y0 in enumerate(shelves):
-        for xc, n in ((-1.5, 3 + si % 2), (0.0, 2 + (si + 1) % 3), (1.5, 4 - si % 2)):
-            y = y0
-            for j in range(n):
-                w, d, h = 1.15 - 0.07 * ((j + si) % 3), 1.35 - 0.08 * ((j + 2 * si) % 3), 0.18 + 0.04 * (j % 2)
-                span('Body', (xc - w / 2 + 0.03 * (j % 2), y, -d / 2 + 0.05), (xc + w / 2 + 0.03 * (j % 2), y + h,
-                                                                              d / 2 + 0.05), cols[k % len(cols)])
-                y += h
-                k += 1
+        for bi, xc in enumerate((-1.5, 0.0, 1.5)):
+            way = (si + bi) % 3
+            if way == 0:        # a flat stack of two deep boxes, a title strip on each lid's front
+                y = y0
+                for j in range(2):
+                    w, d, h = 1.3 - 0.12 * ((j + si) % 2), 1.3 - 0.12 * (j % 2), 0.4 - 0.04 * ((j + bi) % 2)
+                    dx = 0.05 * (1 - 2 * (j % 2))
+                    c = game_box((xc - w / 2 + dx, y, -d / 2 + 0.1), (xc + w / 2 + dx, y + h, d / 2 + 0.1), 1)
+                    span('Body', (xc + dx - 0.3, y + h - 0.12, -d / 2 + 0.06), (xc + dx + 0.3, y + h - 0.05,
+                                                                              -d / 2 + 0.1), c)
+                    y += h
+                if si % 2 == 0:     # pawns on the shelf in front of the stack
+                    pawn(xc + 0.35, y0, -0.72, 'crimson')
+                    pawn(xc - 0.2, y0, -0.7, 'sky')
+            elif way == 1:      # two stood up, one behind the other, each lid's picture showing
+                game_box((xc - 0.62, y0, 0.25), (xc + 0.38, y0 + 1.05, 0.5), 2)
+                box('Body', (0, 0, 0), (0.22, 0.22, 0.05), 'gold', m=at((xc - 0.42, y0 + 0.85, 0.225), rz=45))
+                face = game_box((xc - 0.3, y0, -0.45), (xc + 0.62, y0 + 0.85, -0.2), 2)
+                cyl('Body', (0, 0, 0), 0.22, 0.04, 'night' if face != 'violet' else 'cream', n=6,
+                    m=at((xc + 0.16, y0 + 0.38, -0.45), rx=-90))
+                span('Body', (xc - 0.18, y0 + 0.66, -0.49), (xc + 0.5, y0 + 0.74, -0.45), 'gold')
+            else:               # one stood up showing its lid, its picture a disc and a pawn, another behind it
+                game_box((xc - 0.6, y0, 0.2), (xc + 0.55, y0 + 1.0, 0.45), 2)
+                face = game_box((xc - 0.62, y0, -0.45), (xc + 0.62, y0 + 0.95, -0.2), 2)
+                cyl('Body', (0, 0, 0), 0.26, 0.04, 'gold' if face != 'amber' else 'crimson', n=6,
+                    m=at((xc - 0.18, y0 + 0.5, -0.45), rx=-90))
+                box('Body', (0, 0, 0), (0.36, 0.36, 0.05), 'night', m=at((xc + 0.36, y0 + 0.5, -0.475), rz=45))
+                if si % 2 == 0:
+                    die(xc + 0.35, y0, -0.7)
     stand()
-    done('a shelf of board games on the wall: dark wood, a plum cornice, stacks of coloured game boxes on four '
-         'shelves')
+    done('a shelf of board games on the wall: dark wood, a plum cornice; on four shelves wide game boxes with '
+         'lids of another colour, stacked flat with title strips and stood up showing the pictures on their lids, '
+         'pawns and dice')
 
 
 # --- Lounge -------------------------------------------------------------------------------------------
@@ -347,19 +427,28 @@ def f_washstand():
 
 
 def f_toilet():
+    # One pedestal toilet (blind review 2026-10-21: a tapered bucket with a disc lid, and a cistern on a column
+    # of its own behind it that never met the bowl): an oval bowl flaring from a pedestal on a foot, its back
+    # running up into a deck the cistern stands on; a dark wood seat and a closed wood lid on the rim.
     mfurn('Toilet')
-    lathe('Body', [(0.5, 0.0), (0.55, 0.15), (0.7, 1.0), (0.85, 1.45), (0.0, 1.45)], 'white', n=14,
-          base=(0, 0, -0.2), scale=(1.15, 0.85))
-    cyl('Body', (0, 1.45, -0.2), 1.0, 0.15, 'wood_dark', n=16, scale=(1.05, 0.75))
-    span('Body', (-0.6, 0, 0.45), (0.6, 1.75, 0.95), 'white', bevel=0.08)
-    span('Body', (-0.85, 1.75, 0.6), (0.85, 3.2, 1.05), 'wood_dark', bevel=0.06)
-    span('Body', (-0.92, 3.2, 0.55), (0.92, 3.32, 1.08), 'white', bevel=0.03)
-    span('Body', (0.55, 2.7, 0.52), (0.85, 2.78, 0.64), 'gold')
-    sphere('Body', (0.85, 2.74, 0.55), 0.07, 'gold', n=6, rings=3)
-    K.seat(-1.0, 1.0, -0.85, 0.4, 1.6)
-    use((0, 1.6, -0.2), (0, 0, -1), 'Sit')
-    done("a white toilet with a dark wood seat at 1.6 and a wood-clad cistern with a gold lever, for an "
-         "en-suite inside a room's walls")
+    zc, sz = -0.35, 0.75        # the bowl's centre and its oval (x 1, z 0.75)
+    lathe('Body', [(0.62, 0.0), (0.62, 0.08), (0.5, 0.2), (0.44, 0.6), (0.7, 1.0), (0.93, 1.3), (0.97, 1.43),
+                   (0.0, 1.46)], 'white', n=16, base=(0, 0, zc), scale=(1.0, sz))
+    prism('Body', [(-0.25, 0.0), (0.3, 0.0), (0.95, 0.95), (0.95, 1.44), (-0.25, 1.44)], -0.42, 0.42, 'white',
+          plane='zy')           # the bowl's back, rising to the deck under the cistern
+    lathe('Body', [(0.62, 1.42), (1.0, 1.42), (1.0, 1.53), (0.62, 1.53)], 'wood_dark', n=16, base=(0, 0, zc),
+          scale=(1.0, sz), closed=True)     # the seat
+    lathe('Body', [(0.95, 1.53), (0.98, 1.58), (0.95, 1.67), (0.85, 1.71), (0.0, 1.72)], 'wood', n=16,
+          base=(0, 0, zc), scale=(1.0, sz))  # the lid, closed
+    span('Body', (-0.8, 1.42, 0.45), (0.8, 3.2, 1.05), 'wood_dark', bevel=0.05)     # the cistern on the deck
+    span('Body', (-0.86, 3.2, 0.4), (0.86, 3.36, 1.1), 'white', bevel=0.03)
+    span('Body', (-0.6, 1.8, 0.42), (0.6, 2.9, 0.47), 'wood', bevel=0.02)            # its panel
+    span('Body', (0.45, 2.98, 0.37), (0.75, 3.06, 0.46), 'gold')                     # the lever
+    sphere('Body', (0.75, 3.02, 0.36), 0.07, 'gold', n=6, rings=3)
+    K.seat(-1.0, 1.0, -0.95, 0.25, 1.72)
+    use((0, 1.72, -0.35), (0, 0, -1), 'Sit')
+    done("a white pedestal toilet: an oval bowl with a dark wood seat and a closed wood lid at 1.72, a wood-clad "
+         "cistern with a gold lever on the bowl's back, for an en-suite inside a room's walls")
 
 
 # --- Garden -------------------------------------------------------------------------------------------
@@ -374,11 +463,15 @@ def f_garden_bench():
         sphere('Body', ((xa + xb) / 2, 3.48, 0.85), 0.13, 'iron', n=6, rings=3)
     span('Body', (-2.35, 1.4, -0.9), (2.35, 1.55, 0.7), 'iron')
     span('Body', (-2.5, 1.55, -1.0), (2.5, 1.75, 0.5), 'wood', bevel=0.03)
-    for y in (2.0, 2.55):
-        span('Body', (-2.35, y, 0.58), (2.35, y + 0.35, 0.75), 'wood', bevel=0.03)
-    span('Body', (-2.35, 3.2, 0.68), (2.35, 3.36, 0.9), 'iron', bevel=0.03)
+    # The back's slats and top rail on the posts' front (blind review 2026-10-21: they hung between the posts,
+    # behind their front faces), 0.02 into them.
+    for y in (2.0, 2.58):
+        span('Body', (-2.5, y, 0.57), (2.5, y + 0.35, 0.77), 'wood', bevel=0.03)
+    span('Body', (-2.5, 3.2, 0.55), (2.5, 3.36, 0.77), 'iron', bevel=0.03)
     K.seat(-2.4, 2.4, -0.95, 0.45, 1.75, people=2)
-    use((-1.1, 1.75, -0.25), (0, 0, -1), 'Sit')
+    # Use at the seat's middle (the sitting sheet, 2026-10-21: at x -1.1 the seated person's left arm, 1.9 out,
+    # went through the arm and its post at x -2.35; at 0 both arms clear the arms' inner faces by 0.45).
+    use((0, 1.75, -0.25), (0, 0, -1), 'Sit')
     done('a garden bench for two: a wooden seat and back on a black wrought-iron frame with arms and finials')
 
 
@@ -447,28 +540,37 @@ def d_luggage_cart():
 def d_fireplace():
     mdecor('Fireplace')
     back = 1.1
+    # Blind review 2026-10-21: the mantel at 4.25 was a 5-stud person's head height, and the keystone hung
+    # down into the arch's tip (a loose dark square in the opening). Now the arch 0.3 lower, the mantel's top
+    # at 3.5 (the person's chest), the keystone standing on the arch's apex; above the mantel a gothic
+    # overmantel mirror in a dark frame, so the piece keeps its height (Pieces' 5.6).
     span('Body', (-2.6, 0, -1.1), (2.6, 0.3, back), 'stone_dark', bevel=0.04)          # the hearth
-    opening = [(x, y + 0.3) for x, y in gothic(-1.3, 1.3, 1.7, 2.6)]
-    surround = ([(-2.4, 0.3), (-1.3, 0.3)] + arch_points(-1.3, 1.3, 2.0, 2.9, n=3)
-                + [(1.3, 0.3), (2.4, 0.3), (2.4, 4.0), (-2.4, 4.0)])
+    spring, apex = 1.8, 2.6
+    opening = [(x, y + 0.3) for x, y in gothic(-1.3, 1.3, spring - 0.3, apex - 0.3)]
+    surround = ([(-2.4, 0.3), (-1.3, 0.3)] + arch_points(-1.3, 1.3, spring, apex, n=3)
+                + [(1.3, 0.3), (2.4, 0.3), (2.4, 3.25), (-2.4, 3.25)])
     prism('Body', surround, 0.4, back, 'stone', plane='xy')
     prism('Body', [(x * 0.985, y) for x, y in opening], 0.8, back - 0.02, 'black', plane='xy')
-    span('Body', (-0.22, 2.55, 0.36), (0.22, 3.2, 0.42), 'stone_dark')                 # the keystone
-    span('Body', (-2.6, 4.0, 0.2), (2.6, 4.25, back), 'wood_dark', bevel=0.04)          # the mantel shelf
+    prism('Body', [(-0.2, apex + 0.02), (0.2, apex + 0.02), (0.26, 3.12), (-0.26, 3.12)], 0.36, 0.44,
+          'stone_dark', plane='xy')                                                    # the keystone
+    span('Body', (-2.6, 3.25, 0.2), (2.6, 3.5, back), 'wood_dark', bevel=0.04)          # the mantel shelf
     span('Body', (-0.9, 0.3, 0.2), (0.9, 0.45, 0.75), 'iron')                           # the grate and logs
     cyl('Body', (0, 0, 0), 0.18, 1.5, 'wood', n=8, m=at((-0.75, 0.62, 0.45), rz=-90))
     cyl('Body', (0, 0, 0), 0.16, 1.3, 'wood_dark', n=8, m=at((-0.5, 0.62, 0.62), rz=-75))
     for k, (x, y, z, s) in enumerate(((-0.35, 1.05, 0.5, 1.0), (0.3, 1.0, 0.55, 0.85), (0.0, 1.2, 0.6, 1.2))):
         sphere('Glow_Warm_1', (x, y, z), (0.25 * s, 0.5 * s, 0.2 * s), 'flame', n=8, rings=5)
+    m = 3.5                     # the mantel's top
+    prism('Body', lifted(gothic(-1.15, 1.15, 1.25, 2.05), m), 0.88, back, 'wood_dark', plane='xy')
+    prism('Body', lifted(gothic(-0.95, 0.95, 1.15, 1.85), m + 0.08), 0.84, 0.9, 'moon', plane='xy')
     for k, x in enumerate((-1.9, 1.9)):
-        lathe('Body', [(0.22, 4.25), (0.22, 4.31), (0.08, 4.45), (0.07, 4.95), (0.15, 5.0)], 'gold', n=8,
-              base=(x, 0, 0.65))
-        cyl('Body', (x, 5.0, 0.65), 0.08, 0.4, 'cream', n=8)
-        sphere(f'Glow_Warm_{k + 2}', (x, 5.52, 0.65), (0.06, 0.14, 0.06), 'flame', n=6, rings=4)
-    prism('Body', lifted(gothic(-0.45, 0.45, 0.6, 0.9), 4.25), 0.45, 0.85, 'wood_dark', plane='xy')
-    cyl('Body', (0, 0, 0), 0.28, 0.06, 'bone', n=12, m=at((0, 4.75, 0.47), rx=-90))
-    ddone('a stone fireplace with a pointed-arch opening and a keystone, logs burning on an iron grate, a dark '
-          'mantel with two gold candlesticks and a mantel clock')
+        lathe('Body', [(0.22, m), (0.22, m + 0.06), (0.08, m + 0.2), (0.07, m + 0.7), (0.15, m + 0.75)], 'gold',
+              n=8, base=(x, 0, 0.65))
+        cyl('Body', (x, m + 0.75, 0.65), 0.08, 0.4, 'cream', n=8)
+        sphere(f'Glow_Warm_{k + 2}', (x, m + 1.27, 0.65), (0.06, 0.14, 0.06), 'flame', n=6, rings=4)
+    prism('Body', lifted(gothic(-0.45, 0.45, 0.6, 0.9), m), 0.45, 0.8, 'wood_dark', plane='xy')
+    cyl('Body', (0, 0, 0), 0.28, 0.06, 'bone', n=12, m=at((0, m + 0.5, 0.47), rx=-90))
+    ddone('a stone fireplace with a pointed-arch opening and a keystone on its apex, logs burning on an iron '
+          'grate, a dark mantel at 3.5 with two gold candlesticks and a mantel clock, a gothic overmantel mirror')
 
 
 def d_towel_rack():
@@ -479,10 +581,19 @@ def d_towel_rack():
         sphere('Body', (x, 4.28, 0.82), 0.09, 'gold', n=6, rings=3)
     for y in (2.6, 4.0):
         cyl('Body', (0, 0, 0), 0.06, 1.76, 'gold', n=6, m=at((-0.88, y, 0.7), rz=-90))
-    span('Body', (-0.7, 2.75, 0.6), (0.7, 4.1, 0.82), 'crimson', bevel=0.04)          # a bath towel on the top rail
-    span('Body', (-0.72, 3.4, 0.58), (0.72, 3.52, 0.84), 'gold')
-    span('Body', (-0.45, 1.75, 0.62), (0.45, 2.68, 0.8), 'cream', bevel=0.04)         # a hand towel below
-    ddone('a gold towel rack hung on the wall: a crimson bath towel with a gold band, a cream hand towel')
+    # Each towel hangs over its rail in two layers 0.1 thick, the front longer, folded round the rail (blind
+    # review 2026-10-21: a slab read from the side as a bar): its side, a U over the rail, shows its thickness.
+    def drape(x0, x1, y, front, rear, colr, t=0.1, gap=0.08, n=5):
+        z, r0, r1 = 0.7, gap, gap + t       # the rail's line; the fold's inner and outer radius
+        outer = [(z - r1 * math.cos(math.pi * i / n), y + r1 * math.sin(math.pi * i / n)) for i in range(n + 1)]
+        inner = [(z + r0 * math.cos(math.pi * i / n), y + r0 * math.sin(math.pi * i / n)) for i in range(n + 1)]
+        prism('Body', [(z - r1, front)] + outer + [(z + r1, rear), (z + r0, rear)] + inner + [(z - r0, front)],
+              x0, x1, colr, plane='zy')
+    drape(-0.7, 0.7, 4.0, 2.85, 3.35, 'crimson')                                       # a bath towel, top rail
+    span('Body', (-0.72, 3.25, 0.5), (0.72, 3.37, 0.54), 'gold')                       # its band, on the front
+    drape(-0.45, 0.45, 2.6, 1.75, 2.1, 'cream', t=0.08, gap=0.08)                      # a hand towel below
+    ddone('a gold towel rack hung on the wall: a crimson bath towel with a gold band and a cream hand towel, '
+          'each folded over its rail')
 
 
 def d_fountain():
@@ -497,11 +608,12 @@ def d_fountain():
     cyl('Body', (0, 2.45, 0), 1.0, 0.07, 'sky', n=12)
     lathe('Body', [(0.2, 2.5), (0.15, 3.4), (0.5, 3.75), (0.52, 3.85), (0.0, 3.75)], 'stone', n=10)
     lathe('Body', [(0.15, 3.78), (0.25, 4.0), (0.2, 4.3), (0.0, 4.75)], 'stone_dark', n=8)
-    for k in range(4):
-        a = math.pi / 4 + k * math.pi / 2
-        cyl('Body', (1.12 * math.cos(a), 0.65, 1.12 * math.sin(a)), 0.06, 1.85, 'sky', n=5)
-    ddone('a two-tier stone fountain in a round basin: water in both bowls and four streams falling, lily pads, '
-          'a dark stone spire')
+    for k in range(4):          # the four streams, each its own part Jet_<n> (the code may add a water effect;
+        a = math.pi / 4 + k * math.pi / 2       # MODELS.md, "Decor"), not colliding
+        cyl(f'Jet_{k + 1}', (1.12 * math.cos(a), 0.65, 1.12 * math.sin(a)), 0.06, 1.85, 'sky', n=5,
+            collide=False)
+    ddone('a two-tier stone fountain in a round basin: water in both bowls and four streams falling (Jet_1 to '
+          'Jet_4), lily pads, a dark stone spire')
 
 
 def d_candelabra():

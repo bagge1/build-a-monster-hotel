@@ -963,11 +963,13 @@ def f_snack_counter():
     furn('SnackCounter')
     # Its top at 3.75 (2026-10-21, second review: at 3.45 a guest on the bar stool, seat 2.6, had the thighs
     # above it): the counter 0.3 taller, its jars and pie with it.
+    # The front 0.6 further back under the top, which overhangs it by 0.8 (blind review of the sitting sheet,
+    # 2026-10-21: the seated guest's legs read as in the counter's front): knee room for the bar stool.
     up = 0.3
-    span('Body', (-4.0, 0, -0.85), (4.0, 3.2 + up, 1.0), 'plum', bevel=0.1)
+    span('Body', (-4.0, 0, -0.25), (4.0, 3.2 + up, 1.0), 'plum', bevel=0.1)
     for i in range(13):
         x = -3.6 + i * 0.6
-        span('Body', (x - 0.15, 0.2, -0.88), (x + 0.15, 3.0 + up, -0.8), 'pumpkin' if i % 2 else 'cream')
+        span('Body', (x - 0.15, 0.2, -0.28), (x + 0.15, 3.0 + up, -0.2), 'pumpkin' if i % 2 else 'cream')
     span('Body', (-4.1, 3.2 + up, -1.05), (4.1, 3.45 + up, 1.1), 'wood_light', bevel=0.06)
     for x, colr in ((-3.0, 'pumpkin'), (-1.8, 'rose'), (2.8, 'slime')):
         lathe('Body', [(0.3, 3.45), (0.38, 3.6), (0.38, 4.2), (0.25, 4.3)], 'lavender', n=8, base=(x, up, 0.3))
@@ -1415,11 +1417,12 @@ def _ff_mug(part, c, r=0.32, h=0.6, col='red', band='cream'):
 def f_cocoa_bar():
     furn('CocoaBar')
     # Its top at 3.75, as the Snack Counter's (a guest on the bar stool sits at it), its pot, mugs and jar with it.
+    # The front 0.6 further back, under a top overhanging it by 0.8, as the Snack Counter's (knee room).
     up = 0.3
-    span('Body', (-4.0, 0, -0.85), (4.0, 3.2 + up, 1.0), 'cocoa_dark', bevel=0.1)
+    span('Body', (-4.0, 0, -0.25), (4.0, 3.2 + up, 1.0), 'cocoa_dark', bevel=0.1)
     for i in range(13):
         x = -3.6 + i * 0.6
-        span('Body', (x - 0.15, 0.2, -0.88), (x + 0.15, 3.0 + up, -0.8), 'red' if i % 2 else 'cream')
+        span('Body', (x - 0.15, 0.2, -0.28), (x + 0.15, 3.0 + up, -0.2), 'red' if i % 2 else 'cream')
     span('Body', (-4.1, 3.2 + up, -1.05), (4.1, 3.45 + up, 1.1), 'wood_light', bevel=0.06)
     lathe('Body', [(0.45, 3.45), (0.6, 3.7), (0.62, 4.4), (0.45, 4.6), (0.15, 4.75), (0, 4.8)], 'red', n=10,
           base=(-2.4, up, 0.3))

@@ -51,25 +51,25 @@ ask every kit for a model. No `keyFor`: a new room type is his call.
 | Purpose | Model | Use | Tags | Top |
 |---|---|---|---|---|
 | Dining | `Furniture_DiningChair`: crimson cushion, plum gothic back, gold finials | Sit 1.82 | — | 4.54 |
-| Dining | `Furniture_SaladBar` (3 x 1): four bowls, dressings on a step, plum canopy | Stand | snacks | 4.16 |
-| Dining | `Furniture_CoffeeUrn`: gold urn with a tap on a cabinet, two cups | Stand | cocoa, snacks | 4.55 |
+| Dining | `Furniture_SaladBar` (3 x 1): four bowls, dressings on a step, a `Glass` sneeze guard on gold posts | Stand | snacks | 4.04 |
+| Dining | `Furniture_CoffeeUrn`: a station: gold urn, tap over a drip tray, cups on saucers, an upstand with a shelf of cups | Stand | cocoa, snacks | 4.36 |
 | Dining | `Furniture_DessertTrolley` (2 x 1): layer cake, jelly, cake stand, pie | Stand | snacks | 3.5 |
 | Games | `Furniture_DartsBoard` (Wall): board, three darts, chalk scoreboard | Stand | fun | 5.85 |
 | Games | `Furniture_ArcadeCabinet`: glowing screen and marquee, joystick | Stand | fun | 5.62 |
 | Games | `Furniture_PingPongTable` (3 x 2): teal top, net, two bats, a ball | Stand | fun | 3.05 |
-| Games | `Furniture_BoardGameShelf` (Wall, 2 x 1): stacks of game boxes | Stand | fun | 5.55 |
+| Games | `Furniture_BoardGameShelf` (Wall, 2 x 1): game boxes with lids, flat and stood up showing their pictures, pawns, dice | Stand | fun | 5.55 |
 | Lounge | `Furniture_ChessTable`: an 8 x 8 board on a pedestal, a game on | Stand | quiet | 3.28 |
 | Lounge | `Furniture_CoffeeTable` (2 x 1, top 1.48): teapot, cups, biscuits, a book | Stand | — | 2.1 |
 | Bathroom | `Furniture_Washstand`: basin in a marble top, gothic mirror | Stand | damp | 5.3 |
-| Bathroom | `Furniture_Toilet`: dark wood seat at 1.6 (a closed lid), cistern | Sit 1.6 | — | 3.32 |
+| Bathroom | `Furniture_Toilet`: a pedestal bowl, dark wood seat, closed wood lid at 1.72, the cistern on the bowl's back | Sit 1.72 | — | 3.36 |
 | Garden | `Furniture_GardenBench` (2 x 1): for two, wood on wrought iron | Sit 1.75 | garden | 3.61 |
 | Spooky | `Furniture_CrystalBallTable`: plum cloth, glowing ball (`Glow_Cold_1`), two candles, cards | Stand | darkness | 3.9 |
 | Lobby | `Decor_PlantStand`: a fern in a pot on an iron stand | — | garden | 4.6 |
 | Lobby | `Decor_HallStand`: umbrella well, oval mirror, a coat and a top hat | — | antique furniture | 6.5 |
 | Lobby | `Decor_LuggageCart` (2 x 1): gold bellhop cart, trunk, hatbox, cases | — | — | 4.92 |
-| Lounge | `Decor_Fireplace` (Wall, 2 x 1): stone pointed arch, fire (`Glow_Warm_1`), mantel candlesticks and clock | — | candles, antique furniture | 5.66 |
-| Bathroom | `Decor_TowelRack` (Wall): gold rails, a crimson and a cream towel | — | damp | 4.37 |
-| Garden | `Decor_Fountain` (2 x 2): two stone tiers, water, four streams, lily pads | — | garden, damp | 4.75 |
+| Lounge | `Decor_Fireplace` (Wall, 2 x 1): stone pointed arch, fire (`Glow_Warm_1`), the mantel at 3.5 with candlesticks and a clock, an overmantel mirror | — | candles, antique furniture | 5.55 |
+| Bathroom | `Decor_TowelRack` (Wall): gold rails, a crimson and a cream towel folded over them | — | damp | 4.37 |
+| Garden | `Decor_Fountain` (2 x 2): two stone tiers, water, four streams (`Jet_1` to `Jet_4`), lily pads | — | garden, damp | 4.75 |
 | Spooky | `Decor_Candelabra`: iron, five candles, each flame its own glow | — | candles, darkness | 5.76 |
 
 `fun` is the pool table's tag; no species wants it yet. The gramophone he
@@ -88,6 +88,62 @@ coplanar, now apart), `Use` (Stand 1.5 in front; Sit on a seat by rule 6:
 the budgets (1,500). Every furniture piece's height agrees with its Pieces
 row to 0.3 (no new height findings). **Not done**: a blind review of these
 sheets; anything in Studio; a guest walking to them.
+
+## The 21 pieces, fixed after their blind review (2026-10-21, night)
+
+A context-free review of `review/more/`; fit and readability fixed in
+`tools/build_built_rooms_more.py`, his looks left alone (the hall stand
+reading like a clock, the crystal ball's drape, the fountain's jets, the
+arcade's coin door, the candelabra's base).
+
+- **`Toilet`**: was a tapered bucket with a disc lid and a cistern on a
+  column of its own that never met it. Now one pedestal toilet: an oval
+  bowl (2.0 x 1.5) flaring from a pedestal on a foot, its back rising to a
+  deck the wood-clad cistern stands on (x 1.6, z 0.45..1.05, top 3.36), a
+  dark wood seat ring and a closed wood lid; seat and `Use` at **1.72**
+  (was 1.6), `Use` (0, 1.72, -0.35); the seated person clears the cistern
+  by 0.3 (sitting sheet).
+- **`SaladBar`**: the opaque plum canopy at 3.9-4.16 hid the bowls from the
+  raised camera. Now a thin pane, part **`Glass`** (0.04 thick, x -4..4,
+  z -0.9..0.4, at 4.0; not colliding; `MODELS.md` names it), on gold rails
+  and six 0.05 gold posts clear of the bowls. It is opaque pale blue in the
+  Workbench sheets; the code may make it glass.
+- **`BoardGameShelf`**: read as a bookcase. Now game boxes: each box with
+  its lid 0.02 wider and of another colour (the seam shows); per bay a flat
+  stack of two deep boxes with title strips, two stood up one behind the
+  other showing the pictures on their lids, or one stood up showing its
+  lid; four pawns and two dice. 1,484 triangles (budget 1,500).
+- **`Fireplace`**: the keystone hung 0.35 down into the arch's tip (the
+  loose dark square); it now stands on the apex. The mantel's top **4.25 →
+  3.5** (the arch 0.3 lower: spring 1.8, apex 2.6), the candlesticks and
+  clock on it; above it a gothic overmantel mirror in a dark frame (top
+  5.55), so the piece keeps Pieces' height 5.6 (a decor's height is
+  refused past 0.3).
+- **`SnackCounter`** (and the Lodge's **`CocoaBar`**, main script): the
+  seated guest's legs read as in the counter's front from three-quarters
+  (the side view had 0.66 between the knees and the front). Now the front
+  is 0.6 further back (z -0.85 → -0.25) under the top, which overhangs it
+  by **0.8**: knee room; the top, jars and pie unchanged.
+- **`GardenBench`**: `Use` x -1.1 → **0**: the seated person's arm (1.9
+  out) went through the arm and its post at x -2.35; now 0.45 clear each
+  side. The back's slats and top rail stand on the posts' front (z 0.55-0.77,
+  x -2.5..2.5), not between them.
+- **`TowelRack`**: each towel now hangs over its rail in two layers 0.1
+  thick (the hand towel's 0.08), folded round the rail, the front longer:
+  the side view shows a U, not a bar.
+- **`CoffeeUrn`**: the 1.9-tall urn dwarfed its cabinet. Now a station: the
+  urn 1.3 tall (top 3.97, r 0.44) with handles, its gold tap and black
+  handle over an iron drip tray with a cup under it, two cups on saucers,
+  and a dark upstand at the back (top 4.36) with a shelf of four cups.
+- **`Fountain`**: its four streams are now parts **`Jet_1`..`Jet_4`**, not
+  colliding (`MODELS.md`, "Decor"), for a water effect the code may add.
+
+Validators: all 10 rebuilt pieces passed the build's checks and the
+re-import validation (`validation.json`); no new height findings. The
+sheets in `review/more/` and the Manor's and the Lodge's `furniture_`,
+`elevations_` and `sitting_sheet.png` are re-rendered (Workbench, light
+grey), with close-ups `review/more/closeup_*.png`. **Not done**: a second
+blind review of these fixes; anything in Studio.
 
 ## Fixed after the blind review (2026-10-21)
 
@@ -258,3 +314,9 @@ All 48 FBX in `blender/_import/` (unprefixed; the Lodge's walls there are
 `import_fixup.luau` (their meshes are unchanged).
 The 21 new pieces staged 2026-10-21 beside them: 14 `Furniture_<Id>` and 7
 `Decor_<Id>` (the table above); nothing of the earlier batch removed.
+Re-staged after their blind review (2026-10-21, night), replacing the
+earlier files: `Furniture_Toilet`, `Furniture_SaladBar`,
+`Furniture_BoardGameShelf`, `Furniture_SnackCounter`,
+`Furniture_GardenBench`, `Furniture_CoffeeUrn`, `Decor_Fireplace`,
+`Decor_TowelRack`, `Decor_Fountain` (and the Lodge's
+`Furniture_CocoaBar`).

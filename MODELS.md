@@ -487,6 +487,11 @@ Placed by the player **on a grid of 3 studs** (a quarter cell), turned in
     against a wall, never across the doorway.
 - Glows are their own parts (`Glow_Warm_1` for flames). `Body` does not
   collide (a placed piece never traps a player).
+- **Glass and water the code may dress** (2026-10-21): a pane (a salad
+  bar's sneeze guard) is one part `Glass`, which the code may make glass;
+  a fountain's falling streams are `Jet_<n>`, one part each, to which the
+  code may add a water effect. Neither collides; until the code does
+  anything with them they show as built.
 - **The model agrees with `Pieces`**: its footprint and layer are its
   entry's `w`, `d` and `layer`, and the entry's `height` is the body's top
   to 0.3 (the build mode's ghost and the stand-in block are drawn from it).
@@ -617,6 +622,7 @@ rule 6, `w`, `d`, `layer` and `height` its `Pieces` row's), and adds:
 | `Root` | 3w × 0.2 × 3d at (0, 0.1, 0) | Placement on the decor grid |
 | `Body` | The visible mesh(es), not colliding | The square(s) it stands on block guests |
 | `Glow_<Colour>_<n>` | Lamps, flames, potions (rule 1) | Lit |
+| `Glass` | A pane (the `SaladBar`'s sneeze guard), one part, not colliding | May make it glass |
 | `Use` (attachment, `Pose` attribute) | Above | Where a guest uses it |
 | `LOD_Proxy` | For a piece wider than 2 squares or over 4 tall, as the kit makes it | Hidden at import |
 
