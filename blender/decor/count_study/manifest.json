@@ -1,0 +1,734 @@
+{
+ "set": "decor/count_study",
+ "title": "The Count's Study (Haunted Manor's rare decor set)",
+ "frame": "Roblox studs, piece frame: X right, Y up, door/front toward -Z, origin per MODELS.md; Blender holds them as (-x, z, y)",
+ "atlas": "textures/HotelAtlas.png (embedded in every FBX)",
+ "palette": {
+  "plum": [
+   90,
+   70,
+   110
+  ],
+  "plum_dark": [
+   60,
+   45,
+   78
+  ],
+  "plum_deep": [
+   40,
+   30,
+   55
+  ],
+  "violet": [
+   130,
+   90,
+   180
+  ],
+  "lilac": [
+   170,
+   135,
+   210
+  ],
+  "lavender": [
+   210,
+   190,
+   235
+  ],
+  "teal": [
+   40,
+   150,
+   150
+  ],
+  "teal_dark": [
+   25,
+   95,
+   105
+  ],
+  "teal_light": [
+   110,
+   205,
+   190
+  ],
+  "pumpkin": [
+   240,
+   130,
+   40
+  ],
+  "pumpkin_dark": [
+   185,
+   85,
+   30
+  ],
+  "amber": [
+   240,
+   175,
+   70
+  ],
+  "gold": [
+   220,
+   180,
+   90
+  ],
+  "moon": [
+   175,
+   200,
+   240
+  ],
+  "moon_dark": [
+   90,
+   115,
+   170
+  ],
+  "night": [
+   35,
+   40,
+   70
+  ],
+  "bone": [
+   235,
+   225,
+   200
+  ],
+  "cream": [
+   245,
+   238,
+   250
+  ],
+  "wood": [
+   125,
+   82,
+   55
+  ],
+  "wood_dark": [
+   80,
+   52,
+   38
+  ],
+  "wood_light": [
+   170,
+   120,
+   80
+  ],
+  "stone": [
+   130,
+   125,
+   140
+  ],
+  "stone_dark": [
+   85,
+   82,
+   95
+  ],
+  "moss": [
+   85,
+   120,
+   70
+  ],
+  "grass": [
+   90,
+   150,
+   80
+  ],
+  "leaf": [
+   125,
+   185,
+   90
+  ],
+  "crimson": [
+   140,
+   30,
+   55
+  ],
+  "crimson_dark": [
+   90,
+   20,
+   40
+  ],
+  "rose": [
+   200,
+   90,
+   120
+  ],
+  "black": [
+   30,
+   28,
+   36
+  ],
+  "iron": [
+   60,
+   62,
+   70
+  ],
+  "sand": [
+   220,
+   200,
+   140
+  ],
+  "meat": [
+   170,
+   60,
+   50
+  ],
+  "straw": [
+   205,
+   170,
+   90
+  ],
+  "white": [
+   240,
+   240,
+   245
+  ],
+  "slime": [
+   140,
+   210,
+   90
+  ],
+  "sky": [
+   90,
+   140,
+   220
+  ],
+  "dusty": [
+   150,
+   130,
+   110
+  ],
+  "jade": [
+   120,
+   200,
+   170
+  ],
+  "honey": [
+   240,
+   190,
+   80
+  ],
+  "brown": [
+   140,
+   100,
+   70
+  ],
+  "wine": [
+   120,
+   30,
+   50
+  ],
+  "ink": [
+   50,
+   45,
+   70
+  ],
+  "book_a": [
+   150,
+   60,
+   70
+  ],
+  "book_b": [
+   60,
+   110,
+   130
+  ],
+  "book_c": [
+   190,
+   150,
+   70
+  ],
+  "grey": [
+   110,
+   110,
+   120
+  ],
+  "flame": [
+   255,
+   205,
+   120
+  ],
+  "lamp": [
+   255,
+   185,
+   110
+  ],
+  "moonglow": [
+   205,
+   225,
+   255
+  ],
+  "brew": [
+   120,
+   255,
+   160
+  ],
+  "eyes": [
+   255,
+   240,
+   120
+  ]
+ },
+ "pieces": {
+  "Decor_CountStudy_Portrait": {
+   "name": "Decor_CountStudy_Portrait",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     6.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      6.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      4.16,
+      0.8061
+     ],
+     "size": [
+      4.9956,
+      5.52,
+      0.5878
+     ],
+     "triangles": 1044,
+     "collide": false
+    },
+    "Glow_Eyes_1": {
+     "centre": [
+      -0.155,
+      4.39,
+      0.946
+     ],
+     "size": [
+      0.15,
+      0.08,
+      0.028
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Glow_Eyes_2": {
+     "centre": [
+      0.155,
+      4.39,
+      0.946
+     ],
+     "size": [
+      0.15,
+      0.08,
+      0.028
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Glow_Warm_1": {
+     "centre": [
+      -2.35,
+      3.92,
+      0.66
+     ],
+     "size": [
+      0.1039,
+      0.28,
+      0.12
+     ],
+     "triangles": 36,
+     "collide": false
+    },
+    "Glow_Warm_2": {
+     "centre": [
+      2.35,
+      3.92,
+      0.66
+     ],
+     "size": [
+      0.1039,
+      0.28,
+      0.12
+     ],
+     "triangles": 36,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 1152,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "the Count's portrait: a gold pointed-arch frame with a crimson slip, the Count in a black cape and a high crimson collar, widow's peak, glowing eyes (Glow_Eyes_1, _2), a moon behind; the crest (a gold bat on a crimson roundel) on the apex; two candle sconces (Glow_Warm_1, _2)",
+   "decor": {
+    "fw": 2,
+    "fd": 1,
+    "layer": "Wall",
+    "footprint_studs": [
+     6.0,
+     3.0
+    ]
+   },
+   "pieces_row": {
+    "id": "CountStudy_Portrait",
+    "w": 2,
+    "d": 1,
+    "layer": "Wall",
+    "height": 6.92,
+    "model_top": 6.92,
+    "set": "CountStudy",
+    "found": true,
+    "location": 1
+   }
+  },
+  "Decor_CountStudy_Globe": {
+   "name": "Decor_CountStudy_Globe",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      2.0636,
+      0.0
+     ],
+     "size": [
+      2.0741,
+      4.1272,
+      2.0741
+     ],
+     "triangles": 1388,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 1400,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "the Count's night globe: a gilded globe (gold lands on a night sea) on a tilted axis in a gold meridian, a dark wood horizon ring on four struts, a turned stand with gold bands; the crest (a gold bat) on the meridian's top",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ]
+   },
+   "pieces_row": {
+    "id": "CountStudy_Globe",
+    "w": 1,
+    "d": 1,
+    "layer": "Floor",
+    "height": 4.13,
+    "model_top": 4.127,
+    "set": "CountStudy",
+    "found": true,
+    "location": 1
+   }
+  },
+  "Decor_CountStudy_Clock": {
+   "name": "Decor_CountStudy_Clock",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      3.365,
+      0.0
+     ],
+     "size": [
+      1.9,
+      6.73,
+      1.4
+     ],
+     "triangles": 752,
+     "collide": false
+    },
+    "Glow_Cold_1": {
+     "centre": [
+      0.0,
+      4.85,
+      -0.62
+     ],
+     "size": [
+      0.8239,
+      0.8239,
+      0.04
+     ],
+     "triangles": 60,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 824,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "the Count's clock: a longcase clock shaped as a coffin standing up, dark wood on gold ball feet, a crimson inlay, the pendulum behind a pointed window, a moonlit dial (Glow_Cold_1) at five to midnight in a gold bezel; the crest (a gold bat) on the crown",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ]
+   },
+   "pieces_row": {
+    "id": "CountStudy_Clock",
+    "w": 1,
+    "d": 1,
+    "layer": "Floor",
+    "height": 6.73,
+    "model_top": 6.73,
+    "set": "CountStudy",
+    "found": true,
+    "location": 1
+   }
+  },
+  "Decor_CountStudy_Bust": {
+   "name": "Decor_CountStudy_Bust",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      2.445,
+      0.0
+     ],
+     "size": [
+      1.5,
+      4.89,
+      1.5
+     ],
+     "triangles": 1048,
+     "collide": false
+    },
+    "Glow_Eyes_1": {
+     "centre": [
+      -0.11,
+      4.5,
+      -0.288
+     ],
+     "size": [
+      0.0953,
+      0.07,
+      0.06
+     ],
+     "triangles": 36,
+     "collide": false
+    },
+    "Glow_Eyes_2": {
+     "centre": [
+      0.11,
+      4.5,
+      -0.288
+     ],
+     "size": [
+      0.0953,
+      0.07,
+      0.06
+     ],
+     "triangles": 36,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 1132,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "the Count's bust: his head in white marble with a black widow's peak, pointed ears and glowing eyes (Glow_Eyes_1, _2), a high-collared cape, on a gold socle and a crimson column with gold bands and black capital; the crest (a gold bat on a black plaque) on the column; a raven on the capital",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ]
+   },
+   "pieces_row": {
+    "id": "CountStudy_Bust",
+    "w": 1,
+    "d": 1,
+    "layer": "Floor",
+    "height": 4.89,
+    "model_top": 4.89,
+    "set": "CountStudy",
+    "found": true,
+    "location": 1
+   }
+  },
+  "Decor_CountStudy_Rug": {
+   "name": "Decor_CountStudy_Rug",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     9.0,
+     0.2,
+     6.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      9.0,
+      0.2,
+      6.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      0.0725,
+      0.0
+     ],
+     "size": [
+      9.0,
+      0.145,
+      6.0
+     ],
+     "triangles": 400,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 412,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "the Count's rug: crimson in a black and gold border, a gold medallion with the crest (a gold bat, its head away from the door) in the middle, gold corners and two gold diamonds",
+   "decor": {
+    "fw": 3,
+    "fd": 2,
+    "layer": "Rug",
+    "footprint_studs": [
+     9.0,
+     6.0
+    ]
+   },
+   "pieces_row": {
+    "id": "CountStudy_Rug",
+    "w": 3,
+    "d": 2,
+    "layer": "Rug",
+    "height": 0.14,
+    "model_top": 0.145,
+    "set": "CountStudy",
+    "found": true,
+    "location": 1
+   }
+  }
+ },
+ "mirrors": {}
+}
