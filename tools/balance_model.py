@@ -10,14 +10,18 @@ It MEASURES; it never tunes. Every number is read from the game's Luau files
 (src/shared/Constants.luau, Pieces.luau, Species.luau, Mutations.luau) with a
 small Luau-literal parser, and the formulas it mirrors are guarded: if a
 formula's source line changes shape (the bus's size and the tutorial's
-Commons, Economy's cost curves and tile ladder, Furnish's tier points, Stay's
-tip and review, Rating's categories, staff coverage and stars, the tutorial's
-voucher, free tiles, booked Vampire and friendship, the chain's opening,
-background earnings, measured rate, floor cap and rebirth check), the model
-stops with an error naming the line, rather than silently simulating an old
-rule.
+Commons, the tile ladder, a piece's points, Stay's satisfaction, tip and
+review, Rating's categories, staff coverage and stars, the built rooms'
+requirement, bars, bonuses, Comfort points, wall, door and furniture prices,
+the start room, how GuestService and ResidentService apply the bonuses, the
+tutorial's steps, voucher, free tiles, booked Vampire and friendship, the
+chain's opening, background earnings, measured rate, floor cap and rebirth
+check), the model stops with an error naming the line, rather than silently
+simulating an old rule.
 
 Run:  python tools/balance_model.py [--seeds 4] [--hours 8] [--skip-tutorial] [--out <file for the raw tables>]
+      [--set Section.Key=value ...]   a WHAT-IF in memory only (e.g. --set Chain.OpenCost.2=500000):
+                                      nothing is written to src/, and the report says which values were set.
 
 THE CHAIN (as ChainService, Chain.luau and Constants.Chain implement it, 2026-10-21)
   - Opening location L+1 costs Chain.OpenCost[L+1] from the one purse and
@@ -45,8 +49,12 @@ THE CHAIN (as ChainService, Chain.luau and Constants.Chain implement it, 2026-10
     wherever the player is; staff work only at the hotel they were assigned at
     (ResidentService), so each new hotel needs its own Room Service.
   - Floors: Chain.floorCap(0) before any rebirth (the old FloorCap of 3 is
-    gone). The tutorial's free Commons, Vampire Count and Coffin Suite happen
+    gone). The tutorial's free Commons, Vampire Count and Coffin happen
     once, at Haunted Manor.
+  - Every new hotel starts with its one built room (PlayerData.startRoom,
+    Constants.Rooms.Start, free): an L of 4 cells, the location's first room
+    type with no unlock, its key piece in it (a Bed at Haunted Manor, the
+    type's first key elsewhere). So opening costs OpenCost alone.
   - Rebirth-ready (Chain.rebirthReady): every location opened, each hotel's
     rating >= RebirthRating (5): the played one live, the others as left.
 
@@ -59,10 +67,10 @@ THE OPENING POLICY (the model's choice, stated)
   investment is bought only when it pays itself back (cost / expected extra
   income) before the opening price would be saved anyway at the present
   income. The next location is opened the first second cash covers its price
-  plus its first room while the played hotel stands at 5★. The model never
-  travels back.
+  while the played hotel stands at 5★ (the new hotel's first room is free).
+  The model never travels back.
 
-WHAT IS SIMULATED (as the code implements it, 2026-10-19 evening)
+WHAT IS SIMULATED (as the code implements it, 2026-10-21: built rooms, GDD 5.4, A.12)
   - No walk-ins (GDD 4.3): every guest but the tutorial Slime rides the bus.
   - The Night Bus (BusService, Bus): first bus at FirstBusDelay on a fresh
     server, then every Interval; its size clamp(ceil(VacantShare x vacant
@@ -78,30 +86,52 @@ WHAT IS SIMULATED (as the code implements it, 2026-10-19 evening)
     hotel's vacant room types replace drawn guests from the end of the list.
     Their Scoring.TutorialBoost does nothing solo (no other hotel to beat).
   - A stay (GuestService, Stay): desk -> room -> pays payRate per second into
-    the till, payRate = speciesPay x tierPay x mutation x milestone(type count),
-    fixed at check-in; one request in the middle half of the stay, open
-    RequestWindow s; satisfaction, tip, review, friendship at check-out; the
-    room is then dirty until cleaned. Mutations are rolled from Mutations.luau.
-  - Tiers from furnishing (Furnish, GDD 5.4): a room's decor is worth its
-    price x PointsPerCash; T2/T3 at TierPoints scaled by cells over
-    TierPointsCells.
-  - The rating (HotelService.inputs, Rating): recomputed every 5 s from tiers
-    (Comfort full at MaxTier), preference share, desk waits, requests, dirty
-    rooms, amenities, decor items and room types, plus staff coverage (Room
+    the till, payRate = speciesPay x mutation x milestone(ready rooms of the
+    type) x the room's pay bonus, fixed at check-in (the tier is always 1:
+    tierPay 1, SatisfactionPerTier adds 0); the stay is the rarity's x the
+    stay bonus; one request in the middle half of the stay, open
+    RequestWindow s; satisfaction (Stay's, clamped, + the satisfaction
+    bonus, clamped), tip, review, friendship (+ the friendship bonus per happy
+    stay) at check-out; the room is then dirty until cleaned. Mutations are
+    rolled from Mutations.luau.
+  - Built rooms (Rooms, A.12): a room of a type is walls, a door, its key
+    furniture and at least its minimum cells (the type's w x d); making the
+    area a room is free. Walls cost WallCost a half edge, a door DoorCost + the
+    WallCost of its half edge; furniture and decor their price, no growth
+    with the count (the old 1.15^n room price is gone with the placed rooms).
+    Its three bars (Rooms.bars): Size = (cells - min) / (full - min), full =
+    min x FullSizeFactor; Furniture = furniture points / max(type's price x
+    FurnitureTargetFactor, FurnitureTargetMin); Decor = decor points /
+    (DecorTargetPer4Cells x cells / 4); points = price x PointsPerCash. Their
+    bonuses (Rooms.bonuses) exactly: pay x (1 + SizePay s)(1 + FurniturePay f),
+    stay x (1 + SizeStay s), satisfaction + FurnitureSatisfaction f +
+    DecorSatisfaction d, friendship x (1 + DecorFriendship d). Amenities are
+    built the same way (their key furniture, their minimum cells); a ready
+    amenity counts for Fun, for the satisfaction of its floor's guests, gives
+    its tags to its floor, and its bars count in Comfort like a room's
+    (HotelService.inputs inserts every ready room's and amenity's bars).
+  - The rating (HotelService.inputs, Rating): recomputed every 5 s: Comfort =
+    Rooms.comfortPoints (each ready room's and amenity's (s + f + d) / 3 x
+    ComfortPerRoom, summed, to ComfortRoomsCap) + 40 x preference share;
+    desk waits, requests, dirty rooms, ready amenities, every furniture and
+    decor item in the hotel (Style) and room types, plus staff coverage (Room
     Service's efficiency over rooms / RoomsPerStaff) and the share of recent
     cleanings within CleanOnTime; averaged with the last ReviewsKept reviews,
     rounded to a half. Unlocks (Unlocks.met) are permanent once met.
-  - Residents (ResidentService): +1 friendship per happy stay, move-in at the
+  - Residents (ResidentService): + the friendship bonus per happy stay, move-in at the
     rarity's threshold or by the early chance; only the tutorial Slime needs
     TutorialFriendship; the tutorial's guests are happy by force. A resident in the
     Wing earns EarnFraction of its species' pay into the till; one on staff
     earns nothing but works (Room Service modelled; the others not used).
   - The Monster Book: a species found pays SpeciesFoundPaySeconds of its pay.
-  - The tutorial (TutorialService): the tutorial Slime FirstGuestDelay s after
-    the first room, walking in (TUTORIAL_WALK s); the Goal card's free Coffin
-    Suite (voucher); a Vampire Count booked on the next bus once 2 buses have
-    passed since the Goal card, the tutorial is Done and a Coffin Suite stands
-    vacant (it skips browsing).
+  - The tutorial (TutorialService, steps CheckIn, Collect, SecondRoom,
+    Furnish, Bus, MoveIn, Goal, Clean, Staff, Preview, Done): the tutorial
+    Slime FirstGuestDelay s after CheckIn starts (the start room is there),
+    walking in (TUTORIAL_WALK s); the Goal card's voucher makes the Coffin
+    (the Coffin Suite's key piece) free, its walls and space are paid; a
+    Vampire Count booked on the next bus once 2 buses have passed since the
+    Goal card, the tutorial is Done and a Coffin Suite stands vacant (it
+    skips browsing).
   - Space (GDD 5.4, Appendix A.1, his rulings 2026-10-20): rooms and
     amenities only on owned tiles. A hotel starts with the StartTiles square;
     the tutorial's Goal card gives the TutorialTiles block free. More space is
@@ -112,7 +142,8 @@ WHAT IS SIMULATED (as the code implements it, 2026-10-19 evening)
     needed. ASSUMPTION (no number in the code): USABLE_SHARE of a floor's
     owned tiles, after the entrance's mouth and the desk (4 cells, floor 1)
     and a stair (4 cells on each floor it joins), takes rooms and amenities;
-    the rest is hallway. Shapes are not packed: cells are counted.
+    the rest is hallway (the corridors to the rooms' doors). Shapes are not
+    packed: cells are counted.
 
 WHAT IS NOT SIMULATED (stated so the numbers are read honestly)
   Hunter Night (its reward is +5 min of income every 90 min), events and
@@ -120,9 +151,12 @@ WHAT IS NOT SIMULATED (stated so the numbers are read honestly)
   Tree, Prestige Stars (none before the first rebirth), Book family bonuses
   (+5 %), offline earnings, other players on the street (they split the bus),
   pitching, Front Desk / Housekeeping / Bellhop / Entertainment staff,
-  selling, moving rooms, replacing decor, hallway decor, windows, residents'
-  perks, travelling back to a hotel left, the time Travel itself takes, and
-  the room shapes (cells are counted, not packed).
+  selling, enlarging, moving or retyping a room, replacing decor, hallway
+  decor and furniture, floor finishes, windows, residents' perks, travelling
+  back to a hotel left, the time Travel itself takes, the walk from the door
+  to the key furniture, and the room shapes (cells are counted, walls priced
+  by an assumed share of a compact rectangle's perimeter, furniture by its
+  squares, nothing packed or routed).
 
 THE PLAYER (assumptions that most affect the result)
   - Plays continuously and well: checks a guest in CHECKIN_DELAY s after it
@@ -141,37 +175,66 @@ THE PLAYER (assumptions that most affect the result)
     take it, one resident goes on Room Service at that hotel (a species whose
     best job it is, if one idles in the Wing; else the lowest earner).
 
+HOW THE PLAYER BUILDS A ROOM (ASSUMPTIONS: the code prices walls, not shapes)
+  - A room or amenity is built in one go: its walls, its door, the type
+    chosen, its key furniture (the cheapest key piece placeable at the
+    location, Pieces.decorHere: the location's own or location-0 furniture),
+    so it is ready at once.
+  - Its walls: the most compact rectangle of its cells (a x b, a <= b, a at
+    least the type's shorter side); it pays WALL_SHARE of that rectangle's
+    perimeter in half edges, one of them its door. The rest is the facade
+    (free) or a neighbour's wall paid already: rooms stand in rows.
+  - Size: a new room is built either at its minimum cells (Size bar 0) or
+    at its full size (min x FullSizeFactor, Size bar 1); which, rule 6
+    decides by return on cost, the cells charged at the marginal tile price
+    (they use up owned space too); --size min|full forces one (a policy
+    what-if). Rooms are never enlarged afterwards. The score does not count
+    the Size bar's longer stay, which is worth most when the bus, not the
+    rooms, limits the guests.
+  - Furniture and decor stand on at most FILL_SHARE of a room's squares
+    (Grid.Squares^2 a cell), so a door, a path and the key spot stay free.
+    A "fill" buys the pieces still missing from a bar: repeatedly the
+    cheapest piece placeable here (of that bar's kind) worth the points
+    still missing, else the dearest; paid at price, overshoot included.
+
 THE GREEDY BUYING POLICY (checked every second; one purchase per check)
-  1. Tutorial: first room at FIRST_ROOM_AT s; the second room as soon as it is
-     affordable; the free Coffin Suite the moment the Goal card gives it. At a
-     newly opened hotel, its cheapest room with no unlock at once.
+  1. Tutorial: the second room (a Standard Room at its minimum, the Bed) as
+     soon as it is affordable; the Coffin Suite with the voucher's free
+     Coffin the moment the Goal card gives it (saving for its walls and the
+     tiles it needs).
   2. Goal: once the Coffin Suite is unlocked and none stands, save for it if it
      costs at most 20 minutes of income; then, while no Vampire Count lives
-     in the Wing, save for its matching decor (darkness, organ music) when a
+     in the Wing, save for its matching pieces (darkness, organ music) when a
      piece costs at most 10 minutes of income.
-  3. Decor that matches the room's guests: for each room, the best set of up
-     to three decor pieces for the species its type serves (weighted by how
-     often they come), given the amenities on its floor; a missing piece is
-     bought when it costs at most 90 s of income (or 30 % of cash). Empty
-     slots get the cheapest piece for Style when it costs <= 20 s of income.
-     Every piece adds tier points.
+  3. Pieces that match the room's guests: for each room, the best set of up
+     to three furniture or decor pieces for the species its type serves
+     (weighted by how often they come), given its key piece's tags and the
+     amenities on its floor; a missing piece is bought when it costs at most
+     90 s of income (or 30 % of cash). Every piece adds points to its bar
+     (furniture to Furniture, decor to Decor) and one item to Style.
+     3b. Bars: a room's Furniture fill, then its Decor fill, when it costs at
+     most BAR_FILL_S s of income (rooms in the order built).
   4. Amenities: up to three per floor that has rooms (satisfaction counts
      three on a guest's floor), and more while the hotel's Fun is short of
-     100 (ceil(100 / FunPerAmenity) in all: with two floors three a floor is
-     not enough, 2026-10-21); the most useful tags first, a duplicate when no
-     new type is left; each bought, with the tiles it needs, when it costs
-     <= 3 minutes of income.
-  5. The first room of a newly unlocked type, when it costs <= 5 minutes of
-     income.
-  6. Return on cost: every new room of an owned type whose rooms are mostly
-     full (mean occupancy >= ROOM_FULL) or whose next room reaches a
-     milestone, and every tier upgrade, is scored by its expected extra income per second (observed occupancy of
-     that room or type, the species' observed pay, tier +50 %, the milestone
-     doubling when the next room reaches 5/10/25) divided by its cost
-     (plus the tiles or floor it needs when there is no space). A tier
-     upgrade is the decor still needed for the next tier, bought as filler
-     pieces of FILLER_COST. The best is bought when affordable; otherwise the
-     player saves for it (rules 2-5 still run).
+     100 (ceil(100 / FunPerAmenity) in all); the most useful tags first, a
+     duplicate when no new type is left or the new one is still too dear;
+     each built at its minimum with its key piece only (its bars are not
+     filled), with the tiles it needs, when it costs <= 3 minutes of income.
+     Rules 5 and 6 build a room only if the space left on the floors the cap
+     allows (every tile bought) still holds the amenities Fun lacks: without
+     that, rooms fill both floors first and Fun stays short of 5★ for good.
+  5. The first room of a newly unlocked type (at its minimum), when it costs
+     <= 5 minutes of income.
+  6. Return on cost: a new room of an owned type whose rooms are mostly full
+     (mean occupancy >= ROOM_FULL) or whose next room reaches a milestone, at
+     its minimum or at its full size; every unfilled Furniture or Decor bar
+     of a room; and a floor a room type waits for. Each is scored by its
+     expected extra income per second (observed occupancy, the species'
+     observed pay, the pay bonus of its bars, the milestone doubling at
+     5/10/25 ready rooms of the type, and the tip on the satisfaction a bar
+     adds) divided by its cost (plus the tiles or floor it needs when there is
+     no space). The best is bought when affordable; otherwise the player
+     saves for it (rules 2-5 still run).
 """
 
 from __future__ import annotations
@@ -190,7 +253,6 @@ from itertools import combinations
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # ---------------------------------------------------------------- player model
-FIRST_ROOM_AT = 15  # s: the player places the first room
 CHECKIN_DELAY = 4  # s at the desk before the player taps check-in
 CLEAN_DELAY = 5  # s after check-out before the player cleans (plus the hold)
 COLLECT_EVERY = 30  # s between till collections
@@ -207,7 +269,11 @@ ENTRANCE_DESK_CELLS = 4  # floor 1: the entrance's mouth (2 cells, Grid.entrance
 STAIR_CELLS = 4  # a 2x2 Stairs on the floor it stands on, and its well on the floor above
 ROOM_FULL = 0.6  # a type's rooms are "full" when, on average, not vacant 60 % of the time
 DECOR_MATCH_SLOTS = 3  # the policy furnishes for preferences with up to 3 pieces a room
-FILLER_COST = 60  # $ per filler decor item bought for tier points (Side Table, Record Player)
+WALL_SHARE = 0.75  # ASSUMPTION: a room pays this share of its rectangle's perimeter (the rest: facade, a neighbour's wall)
+FILL_SHARE = 0.5  # ASSUMPTION: furniture and decor cover at most half of a room's squares (door, path, key spot free)
+BAR_FILL_S = 120  # policy: a room's Furniture or Decor bar is filled when the fill costs <= 2 min of income
+SIZE_POLICY = "roi"  # rule 6's new rooms: "roi" (min or full, by return on cost), "min" or "full" (--size)
+START_CELLS = 4  # Constants.Rooms.Start is "an L of four cells" (its comment; the model does not flood-fill walls)
 
 
 # ------------------------------------------------------- a Luau literal parser
@@ -392,20 +458,61 @@ FORMULA_GUARDS = [
     ("src/shared/Rating.luau", "return if need > 0 then math.clamp(efficiency / need, 0, 1) else 0"),
     ("src/shared/Rating.luau", "R.CleanPerOnTime * math.clamp(i.onTimeShare or 0, 0, 1)"),
     ("src/server/HotelService.luau", "if room.dirtySince and now - room.dirtySince > Constants.Rating.CleanOnTime then"),
-    ("src/shared/Furnish.luau", "out[i] = math.ceil(need * scale)"),
     ("src/shared/Furnish.luau", "return if d then math.floor(d.cost * E.PointsPerCash) else 0"),
     ("src/server/GuestService.luau", "g.requestAt = now + stay * (0.25 + 0.5 * rng:NextNumber())"),
     ("src/server/GuestService.luau", "g.payRate * S.RequestTipSeconds"),
-    ("src/shared/Economy.luau", "piece.cost * E.RoomCostGrowth ^ owned + 0.5"),
-    ("src/shared/Economy.luau", "return 1 + E.TierPayBonus * (tier - 1)"),
     ("src/shared/Economy.luau", "* Constants.Residents.EarnFraction"),
+    ("src/shared/Economy.luau", "return Economy.speciesPay(speciesId) * Economy.tierPay(tier) * Mutations.payMultiplier(mutation) * Economy.milestoneMultiplier(typeCount) * multiplier"),
     ("src/shared/Stay.luau", "math.floor(payRate * stay * (satisfaction / 100) * S.TipFraction)"),
     ("src/shared/Stay.luau", "math.clamp(1 + math.floor(satisfaction / 25), 1, 5)"),
     ("src/shared/Stay.luau", "math.min(S.SatisfactionAmenityMax, S.SatisfactionPerAmenity * i.amenities)"),
-    # Built rooms (GDD A.12, 2026-10-21): Comfort's room part is Rooms.comfortPoints over the ready rooms'
-    # bars, and a room's pay/stay/satisfaction/friendship come from Rooms.bonuses. NOT YET MODELLED here:
-    # the model still runs on tiers (its numbers for Comfort and pay are the tiers' until it is updated).
+    ("src/shared/Stay.luau", "+ S.SatisfactionPerTier * (i.tier - 1)"),
+    # Built rooms (GDD 5.4, A.12, 2026-10-21): what a type needs, its bars, their bonuses, Comfort
+    ("src/shared/Rooms.luau", "fullCells = minCells * R.FullSizeFactor,"),
+    ("src/shared/Rooms.luau", "furnitureTarget = math.max(p.cost * R.FurnitureTargetFactor, R.FurnitureTargetMin),"),
+    ("src/shared/Rooms.luau", "return R.DecorTargetPer4Cells * cells / 4"),
+    ("src/shared/Rooms.luau", "if d.furniture and d.keyFor and table.find(d.keyFor, typeId) then"),
+    ("src/shared/Rooms.luau", "local minCells = p.w * p.d"),
+    ("src/shared/Rooms.luau", "then clamp01((a.size - req.minCells) / span)"),
+    ("src/shared/Rooms.luau", "furniture = if req.furnitureTarget > 0 then clamp01(fp / req.furnitureTarget) else 1,"),
+    ("src/shared/Rooms.luau", "decor = if decorTarget > 0 then clamp01(dp / decorTarget) else 0,"),
+    ("src/shared/Rooms.luau", "table.insert(if row and row.furniture then out.furniture else out.decor, d)"),
+    ("src/shared/Rooms.luau", "pay = (1 + R.SizePay * s) * (1 + R.FurniturePay * f),"),
+    ("src/shared/Rooms.luau", "stay = 1 + R.SizeStay * s,"),
+    ("src/shared/Rooms.luau", "satisfaction = R.FurnitureSatisfaction * f + R.DecorSatisfaction * d,"),
+    ("src/shared/Rooms.luau", "friendship = 1 + R.DecorFriendship * d,"),
+    ("src/shared/Rooms.luau", "sum += (clamp01(b.size) + clamp01(b.furniture) + clamp01(b.decor)) / 3 * R.ComfortPerRoom"),
+    ("src/shared/Rooms.luau", "return math.min(sum, R.ComfortRoomsCap)"),
+    ("src/shared/Rooms.luau", "if #keyPieces(world, roomId) == 0 then"),
+    ("src/shared/Rooms.luau", "if a.size < req.minCells then"),
     ("src/shared/Rating.luau", "local comfort = Rooms.comfortPoints(i.roomBars) + 40 * i.prefsShare"),
+    # ... how the server applies them
+    ("src/server/GuestService.luau", "g.tier = 1"),
+    ("src/server/GuestService.luau", "g.stayMult = if bonus then bonus.stay else 1"),
+    ("src/server/GuestService.luau", "g.satBonus = if bonus then bonus.satisfaction else 0"),
+    ("src/server/GuestService.luau", "g.friendshipMult = if bonus then bonus.friendship else 1"),
+    ("src/server/GuestService.luau", "local typeCount = HotelService.readyOfType(player, data, rec.type)"),
+    ("src/server/GuestService.luau", "g.payRate = Economy.guestPay(g.species, 1, g.mutation, typeCount, Income.multiplier(player)) * (if bonus then bonus.pay else 1)"),
+    ("src/server/GuestService.luau", "deskWait = g.waited, }) + g.satBonus, -- the Furniture and Decor bars (A.12) 0, 100 )"),
+    ("src/server/GuestService.luau", "local stay = Constants.Rarity[sp.rarity].stay * g.stayMult"),
+    ("src/server/ResidentService.luau", "local gain = g.friendshipMult or 1"),
+    ("src/server/ResidentService.luau", "local now = before + gain"),
+    ("src/server/HotelService.luau", "if p and ok then table.insert(bars, Rooms.bars(w, id)) end"),
+    ("src/server/HotelService.luau", "for _ in data.decor do decor += 1 end"),
+    ("src/server/HotelService.luau", "if not best or matched > best.prefsMatched then"),
+    # ... and what building costs: walls, doors, furniture and decor at their price; a room's type is free
+    ("src/server/BuildService.luau", "if not PlayerData.spend(player, R.WallCost) then"),
+    ("src/server/BuildService.luau", "local cost = R.DoorCost + (if rec then 0 else R.WallCost)"),
+    ("src/server/BuildService.luau", "local cost = if d.location == 0 and not d.always and not d.furniture then 0 else d.cost"),
+    ("src/server/BuildService.luau", "data.rooms[newId(data)] = { type = typeId, floor = floor, hx = hx, hz = hz, finish = \"\" }"),
+    # a new hotel's start room, and the tutorial's steps and free key piece
+    ("src/server/PlayerData.luau", "if p.kind == \"Room\" and p.location == data.location and p.unlock == nil then"),
+    ("src/server/PlayerData.luau", "item = req.keys[1] or item"),
+    ("src/server/PlayerData.luau", "{ item = item, floor = 1, x = f.x, z = f.z, r = f.r, room = \"\", paid = 0 }"),
+    ("src/server/TutorialService.luau", "\"CheckIn\", \"Collect\", \"SecondRoom\", \"Furnish\", \"Bus\", \"MoveIn\", \"Goal\", \"Clean\", \"Staff\", \"Preview\", \"Done\","),
+    ("src/server/TutorialService.luau", "return readyRooms(player, data) >= 2"),
+    ("src/server/TutorialService.luau", "if s == \"CheckIn\" and not slimeSent[player] then"),
+    ("src/server/BuildService.luau", "local voucher = voucherFor(data, d)"),
     ("src/shared/Rating.luau", "math.clamp(100 - i.meanWait * R.ServiceWaitPerPoint, 0, 100) * 0.6 + 40 * i.requestShare"),
     ("src/shared/Rating.luau", "100 * (1 - i.dirtyRooms / i.rooms)"),
     ("src/shared/Rating.luau", "math.min(100, i.amenities * R.FunPerAmenity + i.entertainers * R.FunPerEntertainer)"),
@@ -476,7 +583,7 @@ def load_game() -> dict:
     check_formulas()
     C = "src/shared/Constants.luau"
     G = {}
-    for key in ["Rarity", "Economy", "Bus", "Scoring", "Stay", "Tutorial", "Rating", "Residents", "Staff", "Book", "Chain", "Grid"]:
+    for key in ["Rarity", "Economy", "Bus", "Scoring", "Stay", "Tutorial", "Rating", "Residents", "Staff", "Book", "Chain", "Grid", "Rooms"]:
         G[key] = assignment(C, rf"^Constants\.{key}")
         if not isinstance(G[key], dict):
             raise ParseError(f"{C}: Constants.{key} is not a table")
@@ -484,10 +591,13 @@ def load_game() -> dict:
         for k in ["pay", "stay", "friendship", "weight", "moveInChance"]:
             need(need(G["Rarity"], r, C), k, f"{C} Rarity.{r}")
     for sect, keys in {
-        "Economy": ["StartCash", "BasePay", "LocationPayMultiplier", "RoomCostGrowth", "TierPayBonus", "MaxTier", "TierPoints", "TierPointsCells", "PointsPerCash",
+        "Economy": ["StartCash", "BasePay", "LocationPayMultiplier", "PointsPerCash",
                     "TileCost", "TileGrowth", "TileFloorFactor", "Milestones", "FloorCosts"],
         "Chain": ["Locations", "RebirthRating", "OpenCost", "BackgroundShare", "RateWindow", "StartFloorCap", "FloorCapMax"],
-        "Grid": ["StartTiles", "TutorialTiles", "Cells"],
+        "Grid": ["StartTiles", "TutorialTiles", "Cells", "Squares"],
+        "Rooms": ["HalfCells", "WallCost", "DoorCost", "FullSizeFactor", "FurnitureTargetFactor", "FurnitureTargetMin", "DecorTargetPer4Cells",
+                  "SizePay", "SizeStay", "FurniturePay", "FurnitureSatisfaction", "DecorSatisfaction", "DecorFriendship",
+                  "ComfortPerRoom", "ComfortRoomsCap", "Start"],
         "Bus": ["Interval", "EpicEvery", "LegendaryEvery", "MythicEvery", "VacantShare", "MinPerPlayer", "MaxPerPlayer", "FirstBusDelay", "BrowseTime", "StepOff"],
         "Stay": ["SatisfactionBase", "SatisfactionPerPreference", "SatisfactionPerTier", "SatisfactionPerAmenity", "SatisfactionAmenityMax", "SatisfactionRequestPlayer", "SatisfactionRequestStaff", "SatisfactionRequestMissed", "WaitFree", "WaitPerPoint", "WaitMaxPenalty", "Happy", "TipFraction", "RequestWindow", "RequestTipSeconds", "CleanHold", "ReviewsKept"],
         "Tutorial": ["FirstGuestDelay", "CommonBuses", "CommonsPerBus"],
@@ -516,6 +626,10 @@ def load_game() -> dict:
     G["DecorSlots"] = DECOR_MATCH_SLOTS
     G["Mutations"] = [(m["id"], m["chance"], m["pay"]) for m in muts if m.get("chance", 0) > 0]
     G["AllSpecies"] = {s["id"]: s for s in species}
+    G["AllDecor"] = {d["id"]: d for d in decor}
+    start = G["Rooms"]["Start"]
+    if not isinstance(start, dict) or not start.get("type") or not start.get("furniture"):
+        raise ParseError(f"{C}: Constants.Rooms.Start has no type or furniture")
     goal = re.search(r'HotelService\.vacantFor\(player, "(\w+)"\)', read("src/server/TutorialService.luau"))
     if not goal:
         raise ParseError("src/server/TutorialService.luau: no booked tutorial guest (HotelService.vacantFor(player, \"<id>\"))")
@@ -526,15 +640,35 @@ def load_game() -> dict:
         g = dict(G)
         g["Location"] = L
         g["Pieces"] = {p["id"]: p for p in pieces if p.get("location") == L}
-        g["Decor"] = {d["id"]: d for d in decor if d.get("location") == L or (d.get("location") == 0 and d.get("always"))}
+        # Pieces.decorHere: the location's own, `always`, and location-0 furniture (event decor not simulated)
+        g["Decor"] = {d["id"]: d for d in decor if d.get("cost", 0) > 0 and (
+            d.get("location") == L or (d.get("location") == 0 and (d.get("always") or d.get("furniture"))))}
         g["Species"] = {s["id"]: s for s in species if s.get("location") == L}
         if not g["Species"]:
             raise ParseError(f"Species.luau: no species of location {L}")
         for sid, s in g["Species"].items():
             if s["room"] not in g["Pieces"]:
                 raise ParseError(f"Species {sid}: room {s['room']} is not a location-{L} piece")
-        if not any(p["kind"] == "Room" and not p.get("unlock") for p in g["Pieces"].values()):
+        firsts = [pid for pid, p in g["Pieces"].items() if p["kind"] == "Room" and not p.get("unlock")]
+        if not firsts:
             raise ParseError(f"Pieces.luau: location {L} has no room without an unlock (its first room)")
+        # Rooms.requirement's keys (every furniture row naming the type, in Pieces order); the player can place only those here
+        g["Keys"] = {}
+        for pid, p in g["Pieces"].items():
+            if p["kind"] not in ("Room", "Amenity"):
+                continue
+            keys = [d["id"] for d in decor if d.get("furniture") and pid in (d.get("keyFor") or [])]
+            here = [k for k in keys if k in g["Decor"]]
+            if not here:
+                raise ParseError(f"Pieces.luau: {pid} has no key furniture placeable at location {L}")
+            g["Keys"][pid] = (keys, min(here, key=lambda k: g["Decor"][k]["cost"]))
+        # PlayerData.startRoom: Start.type at its location, else the first room type with no unlock (Pieces order)
+        stype = start["type"] if start["type"] in g["Pieces"] else firsts[0]
+        item = start["furniture"][0]["item"]
+        sd = G["AllDecor"].get(item)
+        if sd and start["type"] in (sd.get("keyFor") or []) and item not in g["Keys"][stype][0]:
+            item = g["Keys"][stype][0][0]
+        g["StartRoom"] = (stype, item)
         G["Loc"][L] = g
     if "StandardRoom" not in G["Loc"][1]["Pieces"] or G["AllSpecies"][G["RebirthResident"]]["room"] not in G["Loc"][1]["Pieces"]:
         raise ParseError("Pieces: StandardRoom / the tutorial guest's room missing at location 1")
@@ -551,32 +685,67 @@ def floor_cap(G, rebirths=0):
 class Rules:
     def __init__(self, G):
         self.G = G
-        self.E, self.S, self.R = G["Economy"], G["Stay"], G["Rating"]
+        self.E, self.S, self.R, self.RM = G["Economy"], G["Stay"], G["Rating"], G["Rooms"]
 
-    def piece_cost(self, pid, owned):
-        return math.floor(self.G["Pieces"][pid]["cost"] * self.E["RoomCostGrowth"] ** owned + 0.5)
-
-    def thresholds(self, pid):
+    # ---- built rooms (Rooms.requirement, bars, bonuses, comfortPoints)
+    def min_cells(self, pid):
         p = self.G["Pieces"][pid]
-        scale = p["w"] * p["d"] / self.E["TierPointsCells"]
-        return [math.ceil(n * scale) for n in self.E["TierPoints"]]
+        return p["w"] * p["d"]
 
-    def tier_of(self, pid, points):
-        tier = 1
-        for i, n in enumerate(self.thresholds(pid)):
-            if points >= n:
-                tier = i + 2
-        return min(tier, self.E["MaxTier"])
+    def full_cells(self, pid):
+        return self.min_cells(pid) * self.RM["FullSizeFactor"]
 
-    def tier_cost(self, room):
-        """$ of decor still needed for the room's next tier (points = price x PointsPerCash)."""
-        for n in self.thresholds(room.type):
-            if room.points < n:
-                return math.ceil((n - room.points) / self.E["PointsPerCash"])
-        return None
+    def furniture_target(self, pid):
+        return max(self.G["Pieces"][pid]["cost"] * self.RM["FurnitureTargetFactor"], self.RM["FurnitureTargetMin"])
 
-    def tier_pay(self, tier):
-        return 1 + self.E["TierPayBonus"] * (tier - 1)
+    def decor_target(self, cells):
+        return self.RM["DecorTargetPer4Cells"] * cells / 4
+
+    def points(self, item):
+        """Furnish.points: a piece's points from its price."""
+        return math.floor(self.G["Decor"][item]["cost"] * self.E["PointsPerCash"])
+
+    def bars(self, pid, cells, fp, dp):
+        lo, hi = self.min_cells(pid), self.full_cells(pid)
+        span = hi - lo
+        c01 = lambda v: max(0.0, min(1.0, v))
+        size = c01((cells - lo) / span) if span > 0 else (1 if cells >= lo else 0)
+        ft = self.furniture_target(pid)
+        dt = self.decor_target(cells)
+        return (size, c01(fp / ft) if ft > 0 else 1, c01(dp / dt) if dt > 0 else 0)
+
+    def bonuses(self, bars):
+        """Rooms.bonuses: (pay, stay, satisfaction, friendship)."""
+        R = self.RM
+        s, f, d = (max(0.0, min(1.0, b)) for b in bars)
+        return ((1 + R["SizePay"] * s) * (1 + R["FurniturePay"] * f), 1 + R["SizeStay"] * s,
+                R["FurnitureSatisfaction"] * f + R["DecorSatisfaction"] * d, 1 + R["DecorFriendship"] * d)
+
+    def comfort_points(self, ready):
+        total = sum((max(0, min(1, s)) + max(0, min(1, f)) + max(0, min(1, d))) / 3 * self.RM["ComfortPerRoom"] for s, f, d in ready)
+        return min(total, self.RM["ComfortRoomsCap"])
+
+    def shape(self, pid, cells):
+        """ASSUMPTION: the most compact a x b rectangle of `cells` (a <= b, a at least the type's shorter side)."""
+        p = self.G["Pieces"][pid]
+        lo = min(p["w"], p["d"])
+        for a in range(int(math.isqrt(cells)), 0, -1):
+            if cells % a == 0 and a >= lo:
+                return a, cells // a
+        return lo, math.ceil(cells / lo)
+
+    def walls_cost(self, pid, cells):
+        """WALL_SHARE of the rectangle's perimeter in half edges at WallCost, one of them a door (DoorCost + its WallCost)."""
+        a, b = self.shape(pid, cells)
+        half_edges = max(1, round(WALL_SHARE * 2 * (a + b) * self.RM["HalfCells"]))
+        return half_edges * self.RM["WallCost"] + self.RM["DoorCost"]
+
+    def key_cost(self, pid):
+        return self.G["Decor"][self.G["Keys"][pid][1]]["cost"]
+
+    def build_cost(self, pid, cells, free_key=False):
+        """Walls, the door and the cheapest key piece placeable here; making the area a room is free."""
+        return self.walls_cost(pid, cells) + (0 if free_key else self.key_cost(pid))
 
     def milestone(self, count):
         m = 1
@@ -600,13 +769,15 @@ class Rules:
         over = max(0, s - self.S["WaitFree"])
         return min(self.S["WaitMaxPenalty"], math.floor(over / self.S["WaitPerPoint"]))
 
-    def satisfaction(self, prefs, tier, amen, rp, rs, rm, wait):
+    def satisfaction(self, prefs, amen, rp, rs, rm, wait, sat_bonus):
+        """Stay.satisfaction (the tier always 1: its term adds 0), clamped, + the bars' bonus, clamped (GuestService.checkout)."""
         S = self.S
+        tier = 1
         s = (S["SatisfactionBase"] + S["SatisfactionPerPreference"] * prefs + S["SatisfactionPerTier"] * (tier - 1)
              + min(S["SatisfactionAmenityMax"], S["SatisfactionPerAmenity"] * amen)
              + S["SatisfactionRequestPlayer"] * rp + S["SatisfactionRequestStaff"] * rs
              + S["SatisfactionRequestMissed"] * rm - self.wait_penalty(wait))
-        return max(0, min(100, s))
+        return max(0, min(100, max(0, min(100, s)) + sat_bonus))
 
     def tip(self, rate, stay, sat):
         return math.floor(rate * stay * (sat / 100) * self.S["TipFraction"])
@@ -614,11 +785,10 @@ class Rules:
     def review(self, sat):
         return max(1, min(5, 1 + math.floor(sat / 25)))
 
-    def categories(self, tiers, prefs_share, mean_wait, checkins, req_share, rooms, dirty, amen, decor, types,
+    def categories(self, ready_bars, prefs_share, mean_wait, checkins, req_share, rooms, dirty, amen, decor, types,
                    desk=0.0, room_service=0.0, housekeeping=0.0, on_time=0.0):
         R = self.R
-        tm = sum(tiers) / len(tiers) if tiers else 0
-        comfort = min(100, tm / self.E["MaxTier"] * 100) * 0.6 + 40 * prefs_share
+        comfort = self.comfort_points(ready_bars) + 40 * prefs_share
         service = (max(0, min(100, 100 - mean_wait * R["ServiceWaitPerPoint"])) * 0.6 + 40 * req_share) if checkins > 0 else 0
         clean = 100 * (1 - dirty / rooms) if rooms > 0 else 0
         # staff coverage and rooms cleaned on time (Rating.categories): points on top
@@ -643,13 +813,15 @@ class Rules:
 # --------------------------------------------------------------- the simulation
 @dataclass
 class Room:
+    """A built room or amenity (Rooms): its cells, and the furniture and decor standing in it."""
     id: int
     type: str
     floor: int
-    tier: int = 1
-    decor: list = field(default_factory=list)
-    points: int = 0
-    filler: int = 0  # decor items bought only for tier points
+    cells: int
+    items: list = field(default_factory=list)  # every furniture and decor piece in it, the key piece first
+    fp: int = 0  # furniture points
+    dp: int = 0  # decor points
+    squares: int = 0  # squares its pieces cover
     state: str = "Vacant"  # Vacant | Reserved | Occupied | Dirty
     dirty_since: int = 0
     occ: float = 0.5  # EMA of not-vacant
@@ -668,7 +840,9 @@ class Guest:
     waited: int = 0
     prefs: int = 0
     amen: int = 0
-    tier: int = 1
+    stay_mult: float = 1.0  # the room's bonuses (Rooms.bonuses), fixed at check-in
+    sat_bonus: float = 0.0
+    fr_mult: float = 1.0
     rate: float = 0.0
     stay_end: int = 0
     req_at: int | None = None
@@ -681,6 +855,7 @@ class Guest:
 
 
 PLAN_CACHE: dict = {}
+FILL_CACHE: dict = {}
 
 
 class Sim:
@@ -713,7 +888,7 @@ class Sim:
         self.wall0 = self.rng.uniform(0, 7200)  # wall clock phase (s) at join
         self.last_bus_wall = self.wall0
         # tutorial
-        self.tstep = "Build" if tutorial else "Done"
+        self.tstep = "CheckIn" if tutorial else "Done"  # TutorialService.Steps[1]: the start room stands already
         self.tstep_since = 0
         self.slime_at = None
         self.tut_goal = False
@@ -744,11 +919,12 @@ class Sim:
         self.tiles = {1: st["w"] * st["d"]}
         self.bought = {1: 0}
         self.rooms: list[Room] = []
-        self.amenities: list[tuple[str, int]] = []
+        self.amenities: list[Room] = []
         self.guests: list[Guest] = []
         self.pending_bus = []
         self.booked = []  # tutorial guests riding the next bus to this hotel
         self.reviews: deque = deque(maxlen=G["Stay"]["ReviewsKept"])  # data.reviews: each hotel its own
+        self.sats: deque = deque(maxlen=G["Stay"]["ReviewsKept"])  # the satisfaction behind them (a metric)
         if loc == 1:
             # HotelService's per-player samples (made once, on load; Travel does not clear them, so a new
             # hotel's rating starts from the last hotel's desk waits, preference shares, requests and cleanings)
@@ -765,6 +941,14 @@ class Sim:
         self.sample_at, self.sample_income = t, self.guest_income
         self.staff_assigned_at = None
         self.loc_started = t
+        # PlayerData.startRoom: one built room, free (Constants.Rooms.Start: an L of START_CELLS cells, its key piece)
+        stype, item = self.G["StartRoom"]
+        if self.rules.min_cells(stype) > START_CELLS:
+            raise ParseError(f"the start room ({START_CELLS} cells) is smaller than {stype}'s minimum: update the model")
+        r = Room(self.next_id, stype, 1, START_CELLS)
+        self.next_id += 1
+        self.add_piece(r, item)
+        self.rooms.append(r)
 
     def open_next(self, t):
         """ChainService.travel to the next location not opened: pay, put this hotel away, start the new one."""
@@ -810,7 +994,10 @@ class Sim:
             self.at_event[key] = {"t": t, "cash": self.cash, "run_cash": self.run_cash, "inc": self.income_rate() * 60,
                                   "bg": self.background_rate() * 60, "rate": self.rate * 60, "rooms": len(self.rooms),
                                   "floors": self.floors, "tiles": dict(self.tiles), "cats": list(self.cats),
-                                  "rating": self.rating, "reviews": statistics.fmean(self.reviews) if self.reviews else 0}
+                                  "rating": self.rating, "reviews": statistics.fmean(self.reviews) if self.reviews else 0,
+                                  "bars": [statistics.fmean(self.room_bars(r)[i] for r in self.rooms) if self.rooms else 0 for i in range(3)],
+                                  "cells": statistics.fmean(r.cells / self.rules.min_cells(r.type) for r in self.rooms) if self.rooms else 0,
+                                  "sat": statistics.fmean(self.sats) if self.sats else 0}
 
     # ---- helpers
     def mark(self, key, t):
@@ -833,8 +1020,7 @@ class Sim:
         return sum(1 for r in self.rooms if r.type == pid)
 
     def floor_used(self, f):
-        used = sum(self.G["Pieces"][r.type]["w"] * self.G["Pieces"][r.type]["d"] for r in self.rooms if r.floor == f)
-        return used + sum(self.G["Pieces"][a]["w"] * self.G["Pieces"][a]["d"] for a, af in self.amenities if af == f)
+        return sum(r.cells for r in self.rooms + self.amenities if r.floor == f)
 
     def reserved(self, f, floors=None):
         floors = self.floors if floors is None else floors
@@ -909,13 +1095,57 @@ class Sim:
             self.mark(f"floor_{f}_L{self.loc}", t)
         return True
 
-    def add_decor(self, r, d):
-        r.decor.append(d)
-        self.add_points(r, self.G["Decor"][d]["cost"])
+    def add_piece(self, r, item):
+        """A furniture or decor piece set in room r (Rooms.contents: furniture to its Furniture bar, decor to Decor)."""
+        d = self.G["Decor"][item]
+        r.items.append(item)
+        if d.get("furniture"):
+            r.fp += self.rules.points(item)
+        else:
+            r.dp += self.rules.points(item)
+        r.squares += d["w"] * d["d"]
 
-    def add_points(self, r, cost):
-        r.points += math.floor(cost * self.G["Economy"]["PointsPerCash"])
-        r.tier = self.rules.tier_of(r.type, r.points)
+    def room_bars(self, r):
+        return self.rules.bars(r.type, r.cells, r.fp, r.dp)
+
+    def free_squares(self, r):
+        return FILL_SHARE * r.cells * self.G0["Grid"]["Squares"] ** 2 - r.squares
+
+    def fill_plan(self, r, kind):
+        """The pieces the policy buys to fill a bar ("furniture" or "decor"): repeatedly the cheapest piece worth
+        the points still missing, else the dearest, while they fit (FILL_SHARE). Returns (items, cost, gain in bar)."""
+        bars = self.room_bars(r)
+        if kind == "furniture":
+            missing = self.rules.furniture_target(r.type) * (1 - bars[1])
+        else:
+            missing = self.rules.decor_target(r.cells) * (1 - bars[2])
+        if missing <= 0:
+            return [], 0, 0
+        key = (self.loc, kind, math.ceil(missing), math.floor(self.free_squares(r)))
+        if key not in FILL_CACHE:
+            pool = [(self.G["Decor"][i]["cost"], self.rules.points(i), self.G["Decor"][i]["w"] * self.G["Decor"][i]["d"], i)
+                    for i in self.G["Decor"] if bool(self.G["Decor"][i].get("furniture")) == (kind == "furniture") and self.rules.points(i) > 0]
+            room, left, out, cost = self.free_squares(r), missing, [], 0
+            while left > 0:
+                fits = [p for p in pool if p[2] <= room]
+                if not fits:
+                    break
+                enough = [p for p in fits if p[1] >= left]
+                p = min(enough) if enough else max(fits, key=lambda q: (q[1], -q[2]))
+                out.append(p[3])
+                cost += p[0]
+                left -= p[1]
+                room -= p[2]
+            FILL_CACHE[key] = (out, cost)
+        out, cost = FILL_CACHE[key]
+        if not out:
+            return [], 0, 0
+        pts = sum(self.rules.points(i) for i in out)
+        if kind == "furniture":
+            after = self.rules.bars(r.type, r.cells, r.fp + pts, r.dp)[1] - bars[1]
+        else:
+            after = self.rules.bars(r.type, r.cells, r.fp, r.dp + pts)[2] - bars[2]
+        return out, cost, after
 
     def floor_for(self, cells):
         for f in range(1, self.floors + 1):
@@ -924,16 +1154,17 @@ class Sim:
         return None
 
     def room_tags(self, room):
+        """HotelService.roomTags: its furniture's and decor's tags, and every ready amenity's on its floor."""
         tags = set()
-        for d in room.decor:
+        for d in room.items:
             tags.update(self.G["Decor"][d]["tags"])
-        for a, f in self.amenities:
-            if f == room.floor:
-                tags.update(self.G["Pieces"][a]["tags"])
+        for a in self.amenities:
+            if a.floor == room.floor:
+                tags.update(self.G["Pieces"][a.type]["tags"])
         return tags
 
     def amen_on(self, f):
-        return sum(1 for _, af in self.amenities if af == f)
+        return sum(1 for a in self.amenities if a.floor == f)
 
     def matched(self, sid, tags):
         return sum(1 for p in self.G["Species"][sid]["prefs"] if p in tags)
@@ -969,7 +1200,7 @@ class Sim:
         for r in self.rooms:
             if r.state == "Vacant" and r.type == want:
                 m = self.matched(sid, self.room_tags(r))
-                if best is None or m > bm or (m == bm and r.tier > best.tier):
+                if best is None or m > bm:  # HotelService.vacantFor: the most preferences matched, the first on a tie
                     best, bm = r, m
         return best
 
@@ -1004,10 +1235,10 @@ class Sim:
         g.waited = t - g.desk_since
         self.waits.append(g.waited)
         r = g.room
-        g.tier = r.tier
         g.prefs = self.matched(g.sid, self.room_tags(r))
         g.amen = self.amen_on(r.floor)
-        g.rate = self.rules.species_pay(g.sid) * self.rules.tier_pay(r.tier) * g.mut_pay * self.rules.milestone(self.type_count(r.type))
+        pay, g.stay_mult, g.sat_bonus, g.fr_mult = self.rules.bonuses(self.room_bars(r))
+        g.rate = self.rules.species_pay(g.sid) * g.mut_pay * self.rules.milestone(self.type_count(r.type)) * pay
         self.observed_pay.setdefault(r.type, deque(maxlen=20)).append(self.rules.species_pay(g.sid) * g.mut_pay)
         r.state = "Occupied"
         g.state = "ToRoom"
@@ -1019,12 +1250,13 @@ class Sim:
 
     def checkout(self, t, g):
         R = self.rules
-        sat = R.satisfaction(g.prefs, g.tier, g.amen, g.rp, g.rs, g.rm, g.waited)
+        sat = R.satisfaction(g.prefs, g.amen, g.rp, g.rs, g.rm, g.waited, g.sat_bonus)
         if g.happy_floor:
             sat = max(sat, g.happy_floor)
-        stay = R.stay_len(g.sid)
+        stay = R.stay_len(g.sid) * g.stay_mult
         self.earn_till(R.tip(g.rate, stay, sat))
         self.reviews.append(R.review(sat))
+        self.sats.append(sat)
         sp = self.G["Species"][g.sid]
         self.prefs_shares.append(g.prefs / max(1, len(sp["prefs"])))
         g.room.state, g.room.dirty_since = "Dirty", t
@@ -1035,7 +1267,7 @@ class Sim:
             self.run_cash += bonus
         if sat >= self.G["Stay"]["Happy"]:
             self.mark("first_happy_stay", t)
-            now = self.friendship.get(g.sid, 0) + 1
+            now = self.friendship.get(g.sid, 0) + g.fr_mult  # the Decor bar's friendship (ResidentService)
             self.friendship[g.sid] = now
             thr = self.G["Residents"]["TutorialFriendship"] if getattr(g, "tutorial_friend", False) else self.G["Rarity"][sp["rarity"]]["friendship"]
             early = self.rng.random() < self.G["Rarity"][sp["rarity"]]["moveInChance"]
@@ -1076,7 +1308,7 @@ class Sim:
                 self.check_in(t, g)
             if g.state == "ToRoom" and t >= g.at:
                 g.state = "InRoom"
-                stay = self.rules.stay_len(g.sid)
+                stay = self.rules.stay_len(g.sid) * g.stay_mult  # the Size bar's longer stay
                 g.stay_end = t + stay
                 g.req_at = t + int(stay * (0.25 + 0.5 * self.rng.random()))
                 self.mark("first_guest_pays", t)
@@ -1168,7 +1400,7 @@ class Sim:
         vacant room types replace drawn guests from the end of the list, never a guarantee nor the announced
         Legendary+. Solo, their TutorialBoost toward the hotel changes nothing: no other hotel competes."""
         T = self.G["Tutorial"]
-        if not self.tutorial or self.tstep in ("Build", "CheckIn", "Done") or self.tut_common_buses >= T["CommonBuses"]:
+        if not self.tutorial or self.tstep in ("CheckIn", "Done") or self.tut_common_buses >= T["CommonBuses"]:
             return
         slot = len(out) - 1  # 0-based: the last drawn guest
         if slot < guaranteed:
@@ -1228,12 +1460,12 @@ class Sim:
         return sum(1 for x in self.clean_times if x <= lim) / judged if judged else 0
 
     def recompute(self, t):
-        tiers = [r.tier for r in self.rooms]
+        ready_bars = [self.room_bars(r) for r in self.rooms + self.amenities]  # every ready room's and amenity's
         dirty = sum(1 for r in self.rooms if r.state == "Dirty")
-        decor = sum(len(r.decor) + r.filler for r in self.rooms)
+        decor = sum(len(r.items) for r in self.rooms + self.amenities)  # data.decor: every furniture and decor piece
         types = len({r.type for r in self.rooms})
         cats = self.rules.categories(
-            tiers,
+            ready_bars,
             statistics.fmean(self.prefs_shares) if self.prefs_shares else 0,
             statistics.fmean(self.waits) if self.waits else 0,
             len(self.waits),
@@ -1249,23 +1481,37 @@ class Sim:
     def buy(self, t, kind, what, cost):
         inc = self.income_rate() * 60
         self.cash -= cost
-        meaningful = kind in ("room", "tier", "floor", "tiles", "amenity") or (kind == "decor" and inc > 0 and cost >= inc)
+        meaningful = kind in ("room", "furnish", "floor", "tiles", "amenity") or (kind == "decor" and inc > 0 and cost >= inc)
         self.purchases.append((t, kind, what, cost, inc, meaningful, self.loc))
 
-    def place_room(self, t, pid, free=False):
-        cells = self.G["Pieces"][pid]["w"] * self.G["Pieces"][pid]["d"]
+    def place_room(self, t, pid, cells=None, free_key=False):
+        """A room or amenity built in one go (walls, door, type, key piece): ready at once."""
+        cells = cells or self.rules.min_cells(pid)
         f = self.floor_for(cells)
         if f is None:
             return False
-        cost = 0 if free else self.rules.piece_cost(pid, self.type_count(pid))
+        cost = self.rules.build_cost(pid, cells, free_key)
         if cost > self.cash:
             return False
-        self.buy(t, "room", pid, cost)
-        occ = statistics.fmean([r.occ for r in self.rooms if r.type == pid]) if any(r.type == pid for r in self.rooms) else 0.5
-        self.rooms.append(Room(self.next_id, pid, f, occ=occ))
+        amenity = self.G["Pieces"][pid]["kind"] == "Amenity"
+        self.buy(t, "amenity" if amenity else "room", pid, cost)
+        mine = [r.occ for r in self.rooms if r.type == pid]
+        r = Room(self.next_id, pid, f, cells, occ=statistics.fmean(mine) if mine else 0.5)
         self.next_id += 1
-        self.mark("first_room", t)
-        self.mark(f"first_{pid}", t)
+        self.add_piece(r, self.G["Keys"][pid][1])
+        (self.amenities if amenity else self.rooms).append(r)
+        if not amenity:
+            self.mark("first_room", t)
+            self.mark(f"first_{pid}", t)
+        return True
+
+    def fill(self, t, r, kind, plan):
+        items, cost, _ = plan
+        if not items or cost > self.cash:
+            return False
+        for i in items:
+            self.add_piece(r, i)
+        self.buy(t, "furnish", f"{r.type} {kind}", cost)
         return True
 
     def species_weights(self, pid):
@@ -1281,13 +1527,15 @@ class Sim:
         return out
 
     def decor_plan(self, room):
+        """The best set of up to DECOR_MATCH_SLOTS pieces (furniture or decor placeable here) for the preferences
+        of the species the room's type serves, given its pieces' and its floor's amenities' tags."""
         floor_tags = set()
-        for a, f in self.amenities:
-            if f == room.floor:
-                floor_tags.update(self.G["Pieces"][a]["tags"])
+        for a in self.amenities:
+            if a.floor == room.floor:
+                floor_tags.update(self.G["Pieces"][a.type]["tags"])
         w = self.species_weights(room.type)
-        have = list(room.decor)
-        free_slots = self.G["DecorSlots"] - len(have)
+        have = list(room.items)
+        free_slots = self.G["DecorSlots"] - (len(have) - 1)  # the key piece is not a slot
         if free_slots <= 0:
             return []
         ckey = (self.loc, room.type, tuple(sorted(have)), frozenset(floor_tags))
@@ -1316,19 +1564,43 @@ class Sim:
         w = self.species_weights(pid)
         return sum(self.rules.species_pay(s) * x for s, x in w.items()) / max(1e-9, sum(w.values()))
 
-    def first_room(self):
-        """The location's cheapest room with no unlock: what a new hotel places first."""
-        rooms = [pid for pid, p in self.G["Pieces"].items() if p["kind"] == "Room" and not p.get("unlock")]
-        return min(rooms, key=lambda pid: self.G["Pieces"][pid]["cost"])
-
     def open_price(self):
-        """What opening the next location takes now (its price and its first room), or None at the last."""
+        """What opening the next location takes now (its price: its first room is free), or None at the last."""
         nxt = self.loc + 1
         if nxt > self.G0["Chain"]["Locations"]:
             return None
-        g = self.G0["Loc"][nxt]
-        first = min((p["cost"] for p in g["Pieces"].values() if p["kind"] == "Room" and not p.get("unlock")))
-        return self.G0["Chain"]["OpenCost"][nxt] + first
+        return self.G0["Chain"]["OpenCost"][nxt]
+
+    def space_cost(self, f, cells):
+        """What `cells` of owned space are worth at floor f's next tile price (the policy's opportunity cost)."""
+        return cells / USABLE_SHARE * self.rules.tile_cost(f, self.bought.get(f, 0))
+
+    def leaves_amenity_space(self, cells):
+        """Policy: a new room leaves room (on the floors the cap allows, every tile bought) for the amenities
+        Fun still needs (ceil(100 / FunPerAmenity) in all), each at the location's smallest amenity size."""
+        missing = math.ceil(100 / self.G["Rating"]["FunPerAmenity"]) - len(self.amenities)
+        if missing <= 0:
+            return True
+        smallest = min(self.rules.min_cells(a) for a, p in self.G["Pieces"].items() if p["kind"] == "Amenity")
+        top = min(self.floor_cap_max, len(self.G["Economy"]["FloorCosts"]))
+        free = sum(self.usable(f, self.G0["Grid"]["Cells"] ** 2, top) - self.floor_used(f) for f in range(1, top + 1))
+        return free - cells >= missing * smallest
+
+    def bar_gain(self, r, kind, plan, n):
+        """Expected extra $/s of filling a bar: the pay bonus (Furniture) and the tip on the satisfaction it adds."""
+        _, _, db = plan
+        if db <= 0:
+            return 0
+        RM, S = self.G0["Rooms"], self.G0["Stay"]
+        s, f, d = self.room_bars(r)
+        base = self.avg_pay(r.type) * self.rules.milestone(n) * r.occ
+        pay = self.rules.bonuses((s, f, d))[0]
+        if kind == "furniture":
+            dpay = self.rules.bonuses((s, f + db, d))[0] - pay
+            dsat = RM["FurnitureSatisfaction"] * db
+        else:
+            dpay, dsat = 0, RM["DecorSatisfaction"] * db
+        return base * (dpay + pay * S["TipFraction"] * dsat / 100)
 
     def policy(self, t):
         inc = max(self.income_rate(), 0.25)
@@ -1337,7 +1609,7 @@ class Sim:
         saving = None
         price = self.open_price()
         if price is not None and self.tstep == "Done":
-            if self.cash >= self.G0["Chain"]["OpenCost"][self.loc + 1]:
+            if self.cash >= price:
                 self.mark(f"afford_open_{self.loc + 1}", t)
                 self.snap(f"afford_open_{self.loc + 1}", t)
             if self.rating >= self.G0["Chain"]["RebirthRating"]:
@@ -1345,25 +1617,22 @@ class Sim:
                     self.open_next(t)
                     return
                 saving = (price - self.cash) / inc  # seconds still to save at the present income
-        # 2. the goal: the tutorial guest's room (the Coffin Suite) and its decor, at Haunted Manor
+        # 2. the goal: the tutorial guest's room (the Coffin Suite) and its pieces, at Haunted Manor
         goal = self.G["AllSpecies"][self.G["RebirthResident"]]["room"]
         if goal in P and self.buildable(goal) and self.type_count(goal) == 0:
-            cells = P[goal]["w"] * P[goal]["d"]
-            if self.vouchers.get(goal):
-                if self.place_room(t, goal, free=True):
-                    self.vouchers[goal] -= 1
+            cells = self.rules.min_cells(goal)
+            free = bool(self.vouchers.get(goal))
+            if self.floor_for(cells) is None:
+                o = self.expand_option(cells)
+                if free or (o and o[0] + self.rules.build_cost(goal, cells) <= 20 * 60 * inc):
+                    self.expand(t, cells)  # save for the tiles the suite needs
                     return
-                if self.floor_for(cells) is None:
-                    self.expand(t, cells)  # the goal card: save for the tiles the free suite needs
-                    return
-            cost = self.rules.piece_cost(goal, 0)
-            if cost <= 20 * 60 * inc:
-                if self.cash >= cost:
-                    if self.floor_for(cells) is None:
-                        self.expand(t, cells)
-                        return
-                    self.place_room(t, goal)
-                return  # saving for it
+            else:
+                cost = self.rules.build_cost(goal, cells, free)
+                if free or cost <= 20 * 60 * inc:
+                    if self.place_room(t, goal, cells, free_key=free) and free:
+                        self.vouchers[goal] -= 1
+                    return  # built, or saving for it
         has_goal = any(r["sid"] == self.G["RebirthResident"] for r in self.residents)
         for r in self.rooms:
             if r.type == goal and not has_goal:
@@ -1371,26 +1640,28 @@ class Sim:
                     c = self.G["Decor"][d]["cost"]
                     if c > 10 * 60 * inc:
                         break  # out of reach for now: rule 3 buys it when it is cheap
+                    if self.G["Decor"][d]["w"] * self.G["Decor"][d]["d"] > self.free_squares(r):
+                        continue
                     if self.cash >= c:
-                        self.add_decor(r, d)
+                        self.add_piece(r, d)
                         self.buy(t, "decor", d, c)
                         return
                     return  # saving for it
-        # 3. matching decor
+        # 3. pieces that match the guests' preferences
         for r in self.rooms:
             for d in self.decor_plan(r):
                 c = self.G["Decor"][d]["cost"]
-                if c <= self.cash and (c <= 90 * inc or c <= 0.3 * self.cash):
-                    self.add_decor(r, d)
+                fits = self.G["Decor"][d]["w"] * self.G["Decor"][d]["d"] <= self.free_squares(r)
+                if fits and c <= self.cash and (c <= 90 * inc or c <= 0.3 * self.cash):
+                    self.add_piece(r, d)
                     self.buy(t, "decor", d, c)
                     return
-        cheapest = min(self.G["Decor"], key=lambda d: self.G["Decor"][d]["cost"])
-        cc = self.G["Decor"][cheapest]["cost"]
-        if cc <= 20 * inc and cc <= self.cash:
-            for r in self.rooms:
-                if len(r.decor) < self.G["DecorSlots"] and cheapest not in r.decor:
-                    self.add_decor(r, cheapest)
-                    self.buy(t, "decor", cheapest, cc)
+        # 3b. the bars: a room's Furniture fill, then its Decor fill, when cheap against income
+        for r in self.rooms:
+            for kind in ("furniture", "decor"):
+                plan = self.fill_plan(r, kind)
+                if plan[0] and plan[1] <= BAR_FILL_S * inc and plan[1] <= self.cash:
+                    self.fill(t, r, kind, plan)
                     return
         # 4. amenities: three per floor with rooms, and more while Fun is short of 100
         fun_need = math.ceil(100 / self.G["Rating"]["FunPerAmenity"])
@@ -1399,71 +1670,92 @@ class Sim:
                 continue
             if self.amen_on(f) >= 3 and len(self.amenities) >= fun_need:
                 continue
-            owned = {a for a, af in self.amenities if af == f}
-            best, bv = None, None
+            owned = {a.type for a in self.amenities if a.floor == f}
+            ranked = []
             for a, p in P.items():
                 if p["kind"] != "Amenity" or not self.buildable(a):
                     continue
-                c = self.rules.piece_cost(a, sum(1 for x, _ in self.amenities if x == a))
+                c = self.rules.build_cost(a, self.rules.min_cells(a))
                 tags = set(p["tags"])
                 val = sum(self.matched(r_sid, tags) for rr in self.rooms if rr.floor == f for r_sid in self.species_weights(rr.type))
-                key = (a not in owned, val > 0, -c)
-                if bv is None or key > bv:
-                    best, bv = (a, c, p["w"] * p["d"]), key
-            if not best:
+                ranked.append(((a not in owned, val > 0, -c), (a, c, self.rules.min_cells(a))))
+            ranked.sort(key=lambda x: x[0], reverse=True)
+            for _, best in ranked:  # the most useful first; a duplicate when the new type is still too dear
+                n = 0
+                if self.floor_used(f) + best[2] > self.floor_cap(f):
+                    n = self.tiles_needed(f, best[2])
+                    if n is None:
+                        break
+                extra = self.tiles_cost(f, n) if n else 0
+                if best[1] + extra <= 180 * inc and best[1] + extra <= self.cash:
+                    break
+            else:
                 continue
-            n = 0
-            if self.floor_used(f) + best[2] > self.floor_cap(f):
-                n = self.tiles_needed(f, best[2])
-                if n is None:
-                    continue
-            extra = self.tiles_cost(f, n) if n else 0
+            if n is None:
+                continue
             if best[1] + extra <= 180 * inc and best[1] + extra <= self.cash:
                 if n:
                     self.buy(t, "tiles", f"{n} on floor {f}", extra)
                     self.tiles[f] += n
                     self.bought[f] = self.bought.get(f, 0) + n
-                self.amenities.append((best[0], f))
-                self.buy(t, "amenity", best[0], best[1])
+                # the amenity on this floor (place_room takes the first floor with room: this one has it now)
+                cells = best[2]
+                cost = self.rules.build_cost(best[0], cells)
+                r = Room(self.next_id, best[0], f, cells)
+                self.next_id += 1
+                self.add_piece(r, self.G["Keys"][best[0]][1])
+                self.amenities.append(r)
+                self.buy(t, "amenity", best[0], cost)
                 return
-        # 5. the first room of a newly unlocked type
+        # 5. the first room of a newly unlocked type, at its minimum
         for pid, p in P.items():
             if p["kind"] == "Room" and pid != goal and self.type_count(pid) == 0 and self.buildable(pid):
-                c = self.rules.piece_cost(pid, 0)
-                cells = p["w"] * p["d"]
+                cells = self.rules.min_cells(pid)
+                if not self.leaves_amenity_space(cells):
+                    continue
+                c = self.rules.build_cost(pid, cells)
                 if self.floor_for(cells) is None:
                     o = self.expand_option(cells)
                     if o and c + o[0] <= 300 * inc and c + o[0] <= self.cash:
                         self.expand(t, cells)
                         return
                     continue
-                if c <= 300 * inc and c <= self.cash and self.place_room(t, pid):
+                if c <= 300 * inc and c <= self.cash and self.place_room(t, pid, cells):
                     return
-        # 6. return on cost: new rooms of owned types and tier upgrades
+        # 6. return on cost: new rooms of owned types (at their minimum or full size), bar fills, a floor
         cands = []
         for pid in {r.type for r in self.rooms}:
             mine = [r for r in self.rooms if r.type == pid]
             n = len(mine)
             occ = statistics.fmean(r.occ for r in mine)
             pay = self.avg_pay(pid)
-            d = pay * self.rules.milestone(n + 1) * occ ** 2
-            if self.rules.milestone(n + 1) > self.rules.milestone(n):
-                d += sum(pay * self.rules.tier_pay(r.tier) * r.occ for r in mine) * self.rules.milestone(n)
-            cost = self.rules.piece_cost(pid, n)
-            cells = P[pid]["w"] * P[pid]["d"]
-            extra = 0
-            if self.floor_for(cells) is None:
-                o = self.expand_option(cells)
-                extra = o[0] if o else None
             jump = self.rules.milestone(n + 1) > self.rules.milestone(n)
-            if extra is not None and (occ >= ROOM_FULL or jump):
-                cands.append((d / (cost + extra), "room", pid, cost + extra))
+            if occ >= ROOM_FULL or jump:
+                key_bar = self.rules.bars(pid, self.rules.min_cells(pid), self.rules.points(self.G["Keys"][pid][1]), 0)[1]
+                sizes = {"roi": (self.rules.min_cells(pid), self.rules.full_cells(pid)),
+                         "min": (self.rules.min_cells(pid),), "full": (self.rules.full_cells(pid),)}[SIZE_POLICY]
+                for cells in sizes:
+                    if not self.leaves_amenity_space(cells):
+                        continue
+                    size = self.rules.bars(pid, cells, 0, 0)[0]
+                    d = pay * self.rules.bonuses((size, key_bar, 0))[0] * self.rules.milestone(n + 1) * occ ** 2
+                    if jump:
+                        d += sum(pay * self.rules.bonuses(self.room_bars(r))[0] * r.occ for r in mine) * self.rules.milestone(n)
+                    cost = self.rules.build_cost(pid, cells)
+                    f = self.floor_for(cells)
+                    if f is None:
+                        o = self.expand_option(cells)
+                        if o is None:
+                            continue
+                        extra = o[0]
+                    else:
+                        extra = self.space_cost(f, cells)
+                    cands.append((d / (cost + extra), "room", (pid, cells), cost + extra))
             for r in mine:
-                tc = self.rules.tier_cost(r)
-                if tc is None:
-                    continue
-                d = pay * self.G["Economy"]["TierPayBonus"] * self.rules.milestone(n) * r.occ
-                cands.append((d / tc, "tier", r, tc))
+                for kind in ("furniture", "decor"):
+                    plan = self.fill_plan(r, kind)
+                    if plan[0] and plan[1] > 0:
+                        cands.append((self.bar_gain(r, kind, plan, n) / plan[1], "furnish", (r, kind, plan), plan[1]))
         # a room type that needs a floor more: the floor is a candidate of its own while it is missing
         wants_floor = any((p.get("unlock") or {}).get("floor", 0) > self.floors for p in P.values())
         if wants_floor and self.floors < self.floor_cap_max and self.room_count() >= 2:
@@ -1477,32 +1769,29 @@ class Sim:
             return
         cands.sort(key=lambda c: -c[0])
         _, kind, what, cost = cands[0]
-        if cost > self.cash:
-            return  # save for it
         if kind == "floor":
+            if cost > self.cash:
+                return  # save for it
             self.buy(t, "floor", self.floors + 1, cost)
             self.floors += 1
             self.tiles.setdefault(self.floors, 0)
             self.bought.setdefault(self.floors, 0)
         elif kind == "room":
-            cells = P[what]["w"] * P[what]["d"]
+            pid, cells = what
             if self.floor_for(cells) is None:
-                self.expand(t, cells)
+                self.expand(t, cells)  # its space first (saving for it while it is dearer than cash)
                 return
-            self.place_room(t, what)
+            self.place_room(t, pid, cells)
         else:
-            self.buy(t, "tier", f"{what.type} T{what.tier + 1}", cost)
-            what.filler += math.ceil(cost / FILLER_COST)
-            self.add_points(what, cost)
+            r, k, plan = what
+            self.fill(t, r, k, plan)
 
     # ---- the tutorial
     def tutorial_tick(self, t):
         s = self.tstep
         since = t - self.tstep_since
         done = False
-        if s == "Build":
-            done = self.room_count() >= 1
-        elif s == "CheckIn":
+        if s == "CheckIn":
             if self.slime_at is None:
                 self.slime_at = t + self.G["Tutorial"]["FirstGuestDelay"]
             done = self.checkins >= 1
@@ -1510,6 +1799,8 @@ class Sim:
             done = self.collects >= 1
         elif s == "SecondRoom":
             done = self.room_count() >= 2
+        elif s == "Furnish":
+            done = self.room_count() >= 2  # ready rooms: the model's rooms are ready when built
         elif s == "Bus":
             done = self.events.get("first_bus_guest") is not None or since > 150
         elif s == "MoveIn":
@@ -1521,7 +1812,7 @@ class Sim:
         elif s == "Staff":
             done = any(r["role"] for r in self.residents)
         elif s == "Preview":
-            done = since > 5  # the player presses Next
+            done = since > 5  # the player presses Next (else 25 s)
         elif s == "Done":
             # TutorialService: booked on the next bus once 2+ buses passed since the goal and a Coffin Suite is vacant
             if (self.tut_goal and not self.tut_vampire_sent and self.bus_index - self.tut_goal_bus >= 2
@@ -1533,7 +1824,7 @@ class Sim:
             if g:
                 g.tutorial_friend = True
         if done:
-            steps = ["Build", "CheckIn", "Collect", "SecondRoom", "Bus", "MoveIn", "Goal", "Clean", "Staff", "Preview", "Done"]
+            steps = ["CheckIn", "Collect", "SecondRoom", "Furnish", "Bus", "MoveIn", "Goal", "Clean", "Staff", "Preview", "Done"]
             nxt = steps[steps.index(s) + 1]
             self.tstep, self.tstep_since = nxt, t
             if nxt == "Goal":
@@ -1596,14 +1887,8 @@ class Sim:
                 self.run_cash += math.floor(self.till)
                 self.till -= math.floor(self.till)
                 self.collects += 1
-            if self.tutorial and self.tstep == "Build":
-                if t >= FIRST_ROOM_AT:
-                    self.place_room(t, "StandardRoom")
-            elif self.tutorial and self.tstep == "SecondRoom":
-                self.place_room(t, "StandardRoom")
-            elif self.room_count() == 0 and (self.loc > 1 or not self.tutorial):
-                if t >= FIRST_ROOM_AT:
-                    self.place_room(t, self.first_room())
+            if self.tutorial and self.tstep == "SecondRoom":
+                self.place_room(t, self.G["StartRoom"][0])  # a Standard Room at its minimum, its Bed
             elif self.tstep not in ("CheckIn", "Collect"):
                 self.policy(t)
             self.income_log.append(self.this_second)
@@ -1715,8 +2000,25 @@ def main():
     ap.add_argument("--hours", type=float, default=8)
     ap.add_argument("--skip-tutorial", action="store_true", help="also run the chain with the tutorial skipped")
     ap.add_argument("--out", default=None)
+    ap.add_argument("--set", action="append", default=[], metavar="Section.Key=value",
+                    help="a what-if, in memory only: override a value read from Constants (e.g. Chain.OpenCost.2=500000)")
+    ap.add_argument("--size", choices=("roi", "min", "full"), default="roi",
+                    help="the player's size policy for new rooms in rule 6 (a policy what-if, not a value)")
     a = ap.parse_args()
+    global SIZE_POLICY
+    SIZE_POLICY = a.size
     G = load_game()
+    for spec in a.set:
+        path, _, val = spec.partition("=")
+        keys = path.split(".")
+        node = G
+        for k in keys[:-1]:
+            node = node[int(k) if k.isdigit() else k]
+        last = int(keys[-1]) if keys[-1].isdigit() else keys[-1]
+        if last not in node:
+            raise ParseError(f"--set {spec}: no such value")
+        node[last] = float(val) if "." in val or "e" in val else int(val)
+        print(f"  WHAT-IF (memory only): {path} = {val}", file=sys.stderr)
     results = []
     for tut in ((True, False) if a.skip_tutorial else (True,)):
         sims = []
@@ -1767,6 +2069,12 @@ def render(G, results, a):
     nL = C["Locations"]
     names = {1: "Haunted Manor", 2: "Frostfang Lodge", 3: "Bayou Spa"}
     L_ = []
+    if a.size != "roi":
+        L_.append(f"**POLICY WHAT-IF:** new rooms in rule 6 always at their {a.size} size.")
+        L_.append("")
+    if a.set:
+        L_.append("**WHAT-IF, values changed in memory only (nothing in src/):** " + ", ".join(a.set))
+        L_.append("")
     L_.append(f"Model: {a.seeds} seeds per scenario, up to {a.hours:g} h of play; medians over seeds ('—' = not reached in "
               f"most seeds). Floor cap Chain.floorCap(0) = {floor_cap(G, 0)}; opening "
               + ", ".join(f"{names.get(k, k)} {money(v)}" for k, v in sorted(C['OpenCost'].items()))
@@ -1834,8 +2142,8 @@ def render(G, results, a):
         L_.append("Snapshots (medians over seeds): cash and income at each moment. Income is all of it per minute "
                   "(guests, tips, Wing, background); 'measured' is the played hotel's ChainService rate, 'background' what the hotels left pay.")
         L_.append("")
-        L_.append("| Moment | Time | Cash | Run cash | Income/min | Measured rate/min | Background/min | Rooms | Floors | Tiles (floor 1 / 2) | Rating | Categories (C/S/Cl/F/St) | Mean review |")
-        L_.append("|---|---|---|---|---|---|---|---|---|---|---|---|---|")
+        L_.append("| Moment | Time | Cash | Run cash | Income/min | Measured rate/min | Background/min | Rooms | Floors | Tiles (floor 1 / 2) | Rating | Categories (C/S/Cl/F/St) | Mean review | Mean satisfaction | Rooms' bars Size/Furniture/Decor | Cells / minimum |")
+        L_.append("|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|")
         keys = []
         for L in range(1, nL + 1):
             if L > 1:
@@ -1846,7 +2154,7 @@ def render(G, results, a):
             snaps = [s.at_event.get(k) for s in sims]
             snaps = [x for x in snaps if x]
             if len(snaps) <= len(sims) / 2:
-                L_.append(f"| {k} | — | | | | | | | | | | | |")
+                L_.append(f"| {k} | — | | | | | | | | | | | | | | |")
                 continue
             md = lambda f: statistics.median(f(x) for x in snaps)
             cats = "/".join(f"{md(lambda x, i=i: x['cats'][i]):.0f}" for i in range(5))
@@ -1854,7 +2162,8 @@ def render(G, results, a):
                       f"{money(md(lambda x: x['inc']))} | {money(md(lambda x: x['rate']))} | {money(md(lambda x: x['bg']))} | "
                       f"{md(lambda x: x['rooms']):.0f} | {md(lambda x: x['floors']):.0f} | "
                       f"{md(lambda x: x['tiles'].get(1, 0)):.0f} / {md(lambda x: x['tiles'].get(2, 0)):.0f} | "
-                      f"{md(lambda x: x['rating']):.1f}★ | {cats} | {md(lambda x: x['reviews']):.2f} |")
+                      f"{md(lambda x: x['rating']):.1f}★ | {cats} | {md(lambda x: x['reviews']):.2f} | {md(lambda x: x['sat']):.0f} | "
+                      + "/".join(f"{md(lambda x, i=i: x['bars'][i]):.2f}" for i in range(3)) + f" | {md(lambda x: x['cells']):.2f} |")
         L_.append("")
         L_.append("§6.2 rule of thumb per location (meaningful purchases after its first 5 minutes; minutes of income each; "
                   "longest gap between meaningful purchases, median over seeds):")
@@ -1892,7 +2201,7 @@ def render(G, results, a):
     L_.append("| §6.3 moment | Target | " + " | ".join(R["label"] for R in results) + " |")
     L_.append("|---|---|" + "---|" * len(results))
     row = lambda name, tgt, f: L_.append(f"| {name} | {tgt} | " + " | ".join(f(R) for R in results) + " |")
-    row("First room bought", "0:10–0:30", lambda R: f"{fmt(R['first_room'])} (by assumption)")
+    row("First room bought (the start room stands from 0:00, free)", "0:10–0:30", lambda R: f"{fmt(R['first_room'])} (the second room)")
     row("First guest pays", "by 1:00", lambda R: fmt(R["first_pays"]))
     row("First bus", "by 2:00", lambda R: f"{fmt(R['first_bus'])} (first bus guest at the desk {fmt(R['first_bus_guest'])})")
     row("3–5 purchases", "by 5:00", lambda R: f"{R['buys5_all']:.0f} ({R['buys5_meaningful']:.0f} meaningful)")
