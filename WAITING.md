@@ -105,6 +105,15 @@ Connect: knappen under fliken Plugins i Studio. -->
    om dem. Titta gärna först på bilderna i §1 punkt 12: säger du nej till en
    stil behöver den inte importeras än.
 
+12. **Importera 59 modeller: väggarna, dörren och möblerna för de byggda
+   rummen** (natten 2026-10-21; byggda, validerade och granskade två gånger,
+   felen rättade, `blender/rooms/<hotell>/README.md`). Haunted Manor: väggen,
+   dörrväggen, stolpen och 45 möbler och dekorbitar; Frostfang Lodge: sina
+   tre väggbitar och åtta möbler (`FrostfangLodge_Wall_*`). Importera **alla
+   filer i `blender/_import/`** till **Workspace** i en dialog och skriv
+   *importerat* (inte mitt i en playtest). Tills dess ritar spelet enkla
+   klossar på samma platser. Bilderna: `blender/rooms/<hotell>/review/`.
+
 ## §1 Att titta på eller spela
 
 <!-- Det bara en människa kan bedöma: hur det känns, hur det ser ut.
@@ -916,6 +925,23 @@ Med Claudes skärmdump där det finns en. -->
    - **Rumsvyn på mobilen:** panelens text är liten och HUD:ens högerkolumn
      skymmer rummet. **Rekommendation:** dölj högerkolumnen i rumsvyn och
      gör panelen bredare; säg till om du vill något annat när du sett den.
+
+41. **Nya rumstyper av de nya möblerna?** (natten 2026-10-21; 21 nya bitar
+   för matsal, spel, lounge, badrum, trädgård och lobby, `Pieces.luau`,
+   PLACEHOLDER). Frågor som är dina, var och en *ja* eller *nej*:
+   - Ett **Game Room** (nyckel: Pool Table, Ping-Pong Table eller Arcade
+     Cabinet, taggen fun) — och vilken art ska vilja ha fun? Ingen vill det i
+     dag, så spelbitarna fyller bara Furniture-baren. **Rekommendation:** ja,
+     och ge fun till Pumpkin Head och Ice Imp.
+   - Ett **Dining Room** (nyckel: Breakfast Buffet eller Salad Bar), eller
+     räcker Snack Bar? **Rekommendation:** räcker; låt Salad Bar och Dessert
+     Trolley också vara nyckel för Snack Bar.
+   - Ska ett rum med **Washstand och Toilet** räknas som en-suite och ge en
+     bonus? **Rekommendation:** ja, en liten bonus på nöjdheten.
+   - Ska **Fountain och Garden Bench** vara nyckel för Graveyard Garden?
+     **Rekommendation:** ja.
+   - Ska den nya **dekoren** finnas på alla platser (en modell per hotell)?
+     **Rekommendation:** ja, när Frostfangs och Bayou Spas modeller görs.
 
 ## §3 Creator Hub och publicering
 
