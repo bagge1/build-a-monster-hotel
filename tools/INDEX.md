@@ -282,3 +282,10 @@ round the arch), `assembly_check` (pieces laid round a room, overlaps outside
 the posts), `patch_fixup` (the Pose attribute in import_fixup.luau). Shapes:
 `hm_bed`, `ff_bed` (the rooms' beds centred, any width) and one `f_<id>` per
 piece. Review: Workbench on light grey, `review_walls`, `review_furniture`.
+
+`build_built_rooms_more.py` (run by it, in its namespace, not on its own):
+the 21 pieces by purpose of 2026-10-21 (dining, games, lounge, bathroom,
+garden, lobby, spooky) for the Manor: `mfurn()`, `mdecor()` (a `Decor_<Id>`
+in this set, `STYLES`' `decor`), `hung_check` (a `Wall` piece may hang on
+the wall's plane), `gothic()` and `ellipse()` outlines, `candle()`, and
+`review_more` (their sheets in `review/more/`).

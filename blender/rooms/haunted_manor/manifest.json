@@ -2930,6 +2930,1941 @@
     "model_top": 5.52,
     "height_finding": null
    }
+  },
+  "Furniture_DiningChair": {
+   "name": "Furniture_DiningChair",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      2.27,
+      -0.0044
+     ],
+     "size": [
+      2.12,
+      4.54,
+      2.1112
+     ],
+     "triangles": 376,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      2.27,
+      -0.0044
+     ],
+     "size": [
+      2.12,
+      4.54,
+      2.1112
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      1.82,
+      -0.15
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    }
+   },
+   "triangles": 388,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a dining chair: a crimson cushion at 1.82 on dark wood, a plum gothic-arched back with a crimson panel, gold finials",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ],
+    "seats": [
+     {
+      "x": [
+       -1.0,
+       1.0
+      ],
+      "z": [
+       -1.0,
+       0.7
+      ],
+      "y": 1.82,
+      "people": 1,
+      "narrow": null
+     }
+    ]
+   },
+   "furniture": {
+    "id": "DiningChair",
+    "pose": "Sit",
+    "keyFor": [],
+    "pieces_height": 4.4,
+    "model_top": 4.54,
+    "height_finding": null
+   }
+  },
+  "Furniture_SaladBar": {
+   "name": "Furniture_SaladBar",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     9.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      9.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      2.08,
+      0.0
+     ],
+     "size": [
+      8.2,
+      4.16,
+      2.1
+     ],
+     "triangles": 1188,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      2.08,
+      0.0
+     ],
+     "size": [
+      8.2,
+      4.16,
+      2.1
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -3.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 1200,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a salad bar: four bowls of greens, beets, carrots and slime-green salad on a dark counter with moss panels, dressings on a step at the back, a plum canopy with a gold hem",
+   "decor": {
+    "fw": 3,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     9.0,
+     3.0
+    ]
+   },
+   "furniture": {
+    "id": "SaladBar",
+    "pose": "Stand",
+    "keyFor": [],
+    "pieces_height": 4.2,
+    "model_top": 4.16,
+    "height_finding": null
+   }
+  },
+  "Furniture_CoffeeUrn": {
+   "name": "Furniture_CoffeeUrn",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      2.275,
+      -0.0203
+     ],
+     "size": [
+      2.16,
+      4.55,
+      2.0406
+     ],
+     "triangles": 486,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      2.275,
+      -0.0203
+     ],
+     "size": [
+      2.16,
+      4.55,
+      2.0406
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -3.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 498,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a coffee and cocoa urn: a tall gold urn with a crimson band and a tap on a dark cabinet, two cups",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ]
+   },
+   "furniture": {
+    "id": "CoffeeUrn",
+    "pose": "Stand",
+    "keyFor": [],
+    "pieces_height": 4.6,
+    "model_top": 4.55,
+    "height_finding": null
+   }
+  },
+  "Furniture_DessertTrolley": {
+   "name": "Furniture_DessertTrolley",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     6.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      6.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      1.75,
+      0.0
+     ],
+     "size": [
+      4.94,
+      3.5,
+      1.9
+     ],
+     "triangles": 970,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -3.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 982,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a two-tier dessert trolley on black wheels, gold posts and push bar: a pink layer cake with a cherry, a green jelly, a cake stand of little cakes; a pie and plates below",
+   "decor": {
+    "fw": 2,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     6.0,
+     3.0
+    ]
+   },
+   "furniture": {
+    "id": "DessertTrolley",
+    "pose": "Stand",
+    "keyFor": [],
+    "pieces_height": 3.6,
+    "model_top": 3.5,
+    "height_finding": null
+   }
+  },
+  "Furniture_DartsBoard": {
+   "name": "Furniture_DartsBoard",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      4.025,
+      0.62
+     ],
+     "size": [
+      2.0,
+      3.65,
+      0.96
+     ],
+     "triangles": 480,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      4.025,
+      0.62
+     ],
+     "size": [
+      2.0,
+      3.65,
+      0.96
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -3.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 492,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a darts board hung on the wall: rings of black, cream, crimson and green on a gothic-arched dark backboard, three darts in it, a chalk scoreboard under it",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Wall",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ]
+   },
+   "furniture": {
+    "id": "DartsBoard",
+    "pose": "Stand",
+    "keyFor": [],
+    "pieces_height": 5.8,
+    "model_top": 5.85,
+    "height_finding": null
+   }
+  },
+  "Furniture_ArcadeCabinet": {
+   "name": "Furniture_ArcadeCabinet",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      2.81,
+      -0.025
+     ],
+     "size": [
+      2.1,
+      5.62,
+      2.05
+     ],
+     "triangles": 288,
+     "collide": false
+    },
+    "Glow_Cold_1": {
+     "centre": [
+      0.0,
+      3.8289,
+      -0.4946
+     ],
+     "size": [
+      1.5,
+      1.0355,
+      0.2353
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Glow_Warm_1": {
+     "centre": [
+      0.0,
+      5.05,
+      -0.725
+     ],
+     "size": [
+      1.7,
+      0.6,
+      0.03
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      2.81,
+      -0.025
+     ],
+     "size": [
+      2.1,
+      5.62,
+      2.05
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -3.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 324,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "an arcade cabinet: plum with violet sides, a glowing slanted screen and marquee, a joystick and three buttons, a coin door",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ]
+   },
+   "furniture": {
+    "id": "ArcadeCabinet",
+    "pose": "Stand",
+    "keyFor": [],
+    "pieces_height": 5.6,
+    "model_top": 5.62,
+    "height_finding": null
+   }
+  },
+  "Furniture_PingPongTable": {
+   "name": "Furniture_PingPongTable",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     9.0,
+     0.2,
+     6.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      9.0,
+      0.2,
+      6.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      1.525,
+      0.0
+     ],
+     "size": [
+      8.0,
+      3.05,
+      5.12
+     ],
+     "triangles": 368,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      1.525,
+      0.0
+     ],
+     "size": [
+      8.0,
+      3.05,
+      5.12
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -4.5
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 380,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a ping-pong table: a dark teal top with white lines on iron legs, a grey net with a white band between gold posts, two bats and a ball",
+   "decor": {
+    "fw": 3,
+    "fd": 2,
+    "layer": "Floor",
+    "footprint_studs": [
+     9.0,
+     6.0
+    ]
+   },
+   "furniture": {
+    "id": "PingPongTable",
+    "pose": "Stand",
+    "keyFor": [],
+    "pieces_height": 3.0,
+    "model_top": 3.05,
+    "height_finding": null
+   }
+  },
+  "Furniture_BoardGameShelf": {
+   "name": "Furniture_BoardGameShelf",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     6.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      6.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      2.775,
+      0.05
+     ],
+     "size": [
+      5.16,
+      5.55,
+      2.1
+     ],
+     "triangles": 672,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      2.775,
+      0.05
+     ],
+     "size": [
+      5.16,
+      5.55,
+      2.1
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -3.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 684,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a shelf of board games on the wall: dark wood, a plum cornice, stacks of coloured game boxes on four shelves",
+   "decor": {
+    "fw": 2,
+    "fd": 1,
+    "layer": "Wall",
+    "footprint_studs": [
+     6.0,
+     3.0
+    ]
+   },
+   "furniture": {
+    "id": "BoardGameShelf",
+    "pose": "Stand",
+    "keyFor": [],
+    "pieces_height": 5.6,
+    "model_top": 5.55,
+    "height_finding": null
+   }
+  },
+  "Furniture_ChessTable": {
+   "name": "Furniture_ChessTable",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      1.64,
+      0.0
+     ],
+     "size": [
+      2.1,
+      3.28,
+      2.1
+     ],
+     "triangles": 1052,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -3.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 1064,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a chess table: a cream and dark-wood board on a turned pedestal, a game under way",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ]
+   },
+   "furniture": {
+    "id": "ChessTable",
+    "pose": "Stand",
+    "keyFor": [],
+    "pieces_height": 3.0,
+    "model_top": 3.28,
+    "height_finding": null
+   }
+  },
+  "Furniture_CoffeeTable": {
+   "name": "Furniture_CoffeeTable",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     6.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      6.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      1.05,
+      0.0
+     ],
+     "size": [
+      5.0,
+      2.1,
+      2.0
+     ],
+     "triangles": 704,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -3.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 716,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a low coffee table on turned legs: a white teapot with a gold knob, two violet cups, a plate of biscuits, a book",
+   "decor": {
+    "fw": 2,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     6.0,
+     3.0
+    ]
+   },
+   "furniture": {
+    "id": "CoffeeTable",
+    "pose": "Stand",
+    "keyFor": [],
+    "pieces_height": 2.0,
+    "model_top": 2.1,
+    "height_finding": null
+   }
+  },
+  "Furniture_Washstand": {
+   "name": "Furniture_Washstand",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      2.65,
+      0.009
+     ],
+     "size": [
+      2.16,
+      5.3,
+      1.982
+     ],
+     "triangles": 462,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      2.65,
+      0.009
+     ],
+     "size": [
+      2.16,
+      5.3,
+      1.982
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -3.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 474,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a washstand: a white basin with a gold tap in a cream marble top on a dark cabinet, a gothic-arched mirror behind it",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ]
+   },
+   "furniture": {
+    "id": "Washstand",
+    "pose": "Stand",
+    "keyFor": [],
+    "pieces_height": 5.4,
+    "model_top": 5.3,
+    "height_finding": null
+   }
+  },
+  "Furniture_Toilet": {
+   "name": "Furniture_Toilet",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      1.66,
+      0.0722
+     ],
+     "size": [
+      2.0596,
+      3.32,
+      2.0156
+     ],
+     "triangles": 338,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      1.6,
+      -0.2
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    }
+   },
+   "triangles": 350,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a white toilet with a dark wood seat at 1.6 and a wood-clad cistern with a gold lever, for an en-suite inside a room's walls",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ],
+    "seats": [
+     {
+      "x": [
+       -1.0,
+       1.0
+      ],
+      "z": [
+       -0.85,
+       0.4
+      ],
+      "y": 1.6,
+      "people": 1,
+      "narrow": null
+     }
+    ]
+   },
+   "furniture": {
+    "id": "Toilet",
+    "pose": "Sit",
+    "keyFor": [],
+    "pieces_height": 3.6,
+    "model_top": 3.32,
+    "height_finding": null
+   }
+  },
+  "Furniture_GardenBench": {
+   "name": "Furniture_GardenBench",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     6.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      6.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      1.805,
+      -0.0287
+     ],
+     "size": [
+      5.16,
+      3.61,
+      1.9826
+     ],
+     "triangles": 500,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      -1.1,
+      1.75,
+      -0.25
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    }
+   },
+   "triangles": 512,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a garden bench for two: a wooden seat and back on a black wrought-iron frame with arms and finials",
+   "decor": {
+    "fw": 2,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     6.0,
+     3.0
+    ],
+    "seats": [
+     {
+      "x": [
+       -2.4,
+       2.4
+      ],
+      "z": [
+       -0.95,
+       0.45
+      ],
+      "y": 1.75,
+      "people": 2,
+      "narrow": null
+     }
+    ]
+   },
+   "furniture": {
+    "id": "GardenBench",
+    "pose": "Sit",
+    "keyFor": [],
+    "pieces_height": 3.6,
+    "model_top": 3.61,
+    "height_finding": null
+   }
+  },
+  "Furniture_CrystalBallTable": {
+   "name": "Furniture_CrystalBallTable",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      1.53,
+      0.0
+     ],
+     "size": [
+      2.0478,
+      3.06,
+      2.0478
+     ],
+     "triangles": 438,
+     "collide": false
+    },
+    "Glow_Cold_1": {
+     "centre": [
+      0.0,
+      3.4,
+      0.0
+     ],
+     "size": [
+      0.9659,
+      1.0,
+      0.9659
+     ],
+     "triangles": 168,
+     "collide": false
+    },
+    "Glow_Warm_1": {
+     "centre": [
+      -0.65,
+      3.08,
+      0.45
+     ],
+     "size": [
+      0.0866,
+      0.24,
+      0.1
+     ],
+     "triangles": 36,
+     "collide": false
+    },
+    "Glow_Warm_2": {
+     "centre": [
+      0.65,
+      3.18,
+      0.45
+     ],
+     "size": [
+      0.0866,
+      0.24,
+      0.1
+     ],
+     "triangles": 36,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -3.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 690,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a fortune-teller's table: a plum cloth with a gold band, a glowing crystal ball on a gold stand, two candles and three cards dealt",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ]
+   },
+   "furniture": {
+    "id": "CrystalBallTable",
+    "pose": "Stand",
+    "keyFor": [],
+    "pieces_height": 3.8,
+    "model_top": 3.9,
+    "height_finding": null
+   }
+  },
+  "Decor_PlantStand": {
+   "name": "Decor_PlantStand",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      2.2,
+      0.0274
+     ],
+     "size": [
+      1.9056,
+      4.4,
+      1.8579
+     ],
+     "triangles": 594,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 606,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a fern in a terracotta pot with a gold rim on a wrought-iron stand",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ]
+   }
+  },
+  "Decor_HallStand": {
+   "name": "Decor_HallStand",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0117,
+      3.25,
+      0.15
+     ],
+     "size": [
+      2.1234,
+      6.5,
+      1.6
+     ],
+     "triangles": 476,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 488,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a Victorian hall stand: an umbrella well, a gothic-arched back with an oval mirror in gold, two gold hooks with a crimson coat and a top hat",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ]
+   }
+  },
+  "Decor_LuggageCart": {
+   "name": "Decor_LuggageCart",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     6.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      6.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      2.46,
+      0.0
+     ],
+     "size": [
+      5.1,
+      4.92,
+      2.1
+     ],
+     "triangles": 692,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 704,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a bellhop's luggage cart in gold on a crimson deck: a banded trunk with a hatbox, two suitcases",
+   "decor": {
+    "fw": 2,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     6.0,
+     3.0
+    ]
+   }
+  },
+  "Decor_Fireplace": {
+   "name": "Decor_Fireplace",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     6.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      6.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      2.7,
+      0.0
+     ],
+     "size": [
+      5.2,
+      5.4,
+      2.2
+     ],
+     "triangles": 532,
+     "collide": false
+    },
+    "Glow_Warm_1": {
+     "centre": [
+      -0.0415,
+      1.175,
+      0.5676
+     ],
+     "size": [
+      1.0564,
+      1.25,
+      0.4866
+     ],
+     "triangles": 192,
+     "collide": false
+    },
+    "Glow_Warm_2": {
+     "centre": [
+      -1.9,
+      5.52,
+      0.65
+     ],
+     "size": [
+      0.1039,
+      0.28,
+      0.12
+     ],
+     "triangles": 36,
+     "collide": false
+    },
+    "Glow_Warm_3": {
+     "centre": [
+      1.9,
+      5.52,
+      0.65
+     ],
+     "size": [
+      0.1039,
+      0.28,
+      0.12
+     ],
+     "triangles": 36,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 808,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a stone fireplace with a pointed-arch opening and a keystone, logs burning on an iron grate, a dark mantel with two gold candlesticks and a mantel clock",
+   "decor": {
+    "fw": 2,
+    "fd": 1,
+    "layer": "Wall",
+    "footprint_studs": [
+     6.0,
+     3.0
+    ]
+   }
+  },
+  "Decor_TowelRack": {
+   "name": "Decor_TowelRack",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      2.935,
+      0.825
+     ],
+     "size": [
+      2.04,
+      2.87,
+      0.55
+     ],
+     "triangles": 276,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 288,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a gold towel rack hung on the wall: a crimson bath towel with a gold band, a cream hand towel",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Wall",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ]
+   }
+  },
+  "Decor_Fountain": {
+   "name": "Decor_Fountain",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     6.0,
+     0.2,
+     6.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      6.0,
+      0.2,
+      6.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      2.375,
+      0.0
+     ],
+     "size": [
+      4.3155,
+      4.75,
+      4.3155
+     ],
+     "triangles": 706,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 718,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a two-tier stone fountain in a round basin: water in both bowls and four streams falling, lily pads, a dark stone spire",
+   "decor": {
+    "fw": 2,
+    "fd": 2,
+    "layer": "Floor",
+    "footprint_studs": [
+     6.0,
+     6.0
+    ]
+   }
+  },
+  "Decor_Candelabra": {
+   "name": "Decor_Candelabra",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      2.75,
+      0.0
+     ],
+     "size": [
+      1.9956,
+      5.5,
+      1.9956
+     ],
+     "triangles": 552,
+     "collide": false
+    },
+    "Glow_Warm_1": {
+     "centre": [
+      -0.85,
+      5.27,
+      0.0
+     ],
+     "size": [
+      0.1039,
+      0.28,
+      0.12
+     ],
+     "triangles": 36,
+     "collide": false
+    },
+    "Glow_Warm_2": {
+     "centre": [
+      0.85,
+      5.27,
+      0.0
+     ],
+     "size": [
+      0.1039,
+      0.28,
+      0.12
+     ],
+     "triangles": 36,
+     "collide": false
+    },
+    "Glow_Warm_3": {
+     "centre": [
+      0.0,
+      5.27,
+      -0.85
+     ],
+     "size": [
+      0.1039,
+      0.28,
+      0.12
+     ],
+     "triangles": 36,
+     "collide": false
+    },
+    "Glow_Warm_4": {
+     "centre": [
+      0.0,
+      5.27,
+      0.85
+     ],
+     "size": [
+      0.1039,
+      0.28,
+      0.12
+     ],
+     "triangles": 36,
+     "collide": false
+    },
+    "Glow_Warm_5": {
+     "centre": [
+      0.0,
+      5.62,
+      0.0
+     ],
+     "size": [
+      0.1039,
+      0.28,
+      0.12
+     ],
+     "triangles": 36,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 744,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a standing iron candelabra with a gold collar: five cream candles in gold cups, each flame its own glow",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ]
+   }
   }
  },
  "mirrors": {}

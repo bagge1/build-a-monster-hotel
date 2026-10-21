@@ -588,7 +588,9 @@ rule 6, `w`, `d`, `layer` and `height` its `Pieces` row's), and adds:
   checks hold; 2026-10-21, the `BarStool` at 2.6).
 - **Nothing floats**: every solid of the body stands on the floor or
   touches one that does (2026-10-21: an organ's pipes, finials, mug
-  handles and a blanket stood on nothing).
+  handles and a blanket stood on nothing). A `Wall` piece may instead
+  hang: a solid touching the wall's plane behind it (z = 3fd/2 − 0.4) is
+  held as one on the floor (2026-10-21, the `DartsBoard`).
 - **A `Use` attachment**: where a booked guest stands, sits or lies to use
   the piece; the code walks the guest to it and turns them to its
   LookVector. Its **`Pose` attribute** (a string) says how: `Lie`, `Sit` or

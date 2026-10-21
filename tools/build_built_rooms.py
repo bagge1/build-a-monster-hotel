@@ -788,6 +788,7 @@ def hm_furniture():
         'Nightstand': f_nightstand, 'Wardrobe': f_wardrobe, 'WritingDesk': f_writing_desk,
         'DiningTable': f_dining_table, 'BreakfastBuffet': f_buffet, 'BarStool': f_bar_stool,
         'PoolTable': f_pool_table, 'CardTable': f_card_table, 'Bathtub': f_bathtub, 'FloorLamp': f_floor_lamp,
+        **more_furniture(),     # tools/build_built_rooms_more.py
     }
 
 
@@ -1469,7 +1470,7 @@ STYLES = {
         door_note='a pointed arch, dark wood trim with a gold keystone, plinth blocks, both faces',
         post_note='banded as the walls meeting it (dark skirting, plum wainscot, gold chair rail, lilac paper, gold '
                   'picture rail and crown), so their bands turn the corner on it',
-        furniture=hm_furniture, locations=(1, 0)),
+        furniture=hm_furniture, locations=(1, 0), decor=lambda: more_decor()),
     'frostfang_lodge': dict(
         title='Frostfang Lodge: inner walls, a door and furniture (built rooms)', location=2, palette=FF_PALETTE,
         body=[(0.0, 3.2, 'wood_dark')] + _courses(3.2, WALL, 13, ('log', 'log_dark')), reveal='log_dark',
@@ -1897,6 +1898,7 @@ def main():
         missing = [i for i in ids if i not in table]
         assert not missing, f'{style}: no build for {missing}'
         builds += [(f'Furniture_{i}', table[i]) for i in ids]
+        builds += [(f'Decor_{i}', fn) for i, fn in st.get('decor', dict)().items()]    # the set's own decor
         bad = False
         for name, fn in builds:
             if not want(name):
@@ -1911,9 +1913,12 @@ def main():
             continue
         built = [p.name for p, _, _ in K.BUILT]
         furn_names = [n for n in built if n.startswith('Furniture_')]
+        laid = furn_names + [n for n in built if n.startswith('Decor_')]
         rows = [(['Wall_Half', 'Wall_Door', 'Wall_Post'], 2.0, 1.0)]
-        for i in range(0, len(furn_names), 8):
-            rows.append((furn_names[i:i + 8], 2.0, 1.0))
+        for i in range(0, len(laid), 8):
+            rows.append((laid[i:i + 8], 2.0, 1.0))
+        more = [n for n in built if n in MORE_NAMES]        # their own sheets (review/more/), below
+        furn_names = [n for n in furn_names if n not in MORE_NAMES]
         K.end_set(st['title'], rows, sheet=False)
         out = K.ROOT / 'blender' / set_dir
         manifest = json.loads((out / 'manifest.json').read_text())
@@ -1929,6 +1934,8 @@ def main():
             'the attachments and the Use Pose attribute exist only in manifest.json until import_fixup.luau makes them',
             'the code placing walls, doors and posts (none exists yet); walls meeting the facade (not assembled here)',
             'a guest walking to Use, sitting or lying: no walker or animation has run']
+        if more and not K.NOPREVIEW:
+            print(f"SHEETS {review_more(out / 'review', out / 'fbx', more, manifest['pieces'])}", flush=True)
         if K.ONLY is None and not K.NOPREVIEW:
             rev = out / 'review'
             faults, sheet = review_walls(rev, out / 'fbx')
@@ -1939,7 +1946,8 @@ def main():
             fsheet = review_furniture(rev, out / 'fbx', furn_names, manifest['pieces'])
             esheet = review_elevations(rev, out / 'fbx', furn_names, manifest['pieces'])
             lsheet = review_lying(rev, out / 'fbx', furn_names, manifest['pieces'])
-            ssheet = review_sitting(rev, out / 'fbx', style, manifest['pieces'])
+            ssheet = review_sitting(rev, out / 'fbx', style,
+                                    {n: r for n, r in manifest['pieces'].items() if n not in MORE_NAMES})
             print(f'SHEETS {sheet} {fsheet} {esheet} {lsheet} {ssheet}', flush=True)
             if faults:
                 refused.append(f'{style}/assembly: {faults[:4]}')
@@ -1948,5 +1956,10 @@ def main():
     if refused:
         raise SystemExit(f'REFUSED: {refused}')
 
+
+# More furniture and decor by purpose (night draft 2026-10-21): their shapes are tools/build_built_rooms_more.py,
+# run in this namespace (it uses furn, use, stand, done and the kit's shapes as they are here).
+_MORE = TOOLS / 'build_built_rooms_more.py'
+exec(compile(_MORE.read_text(encoding='utf8'), str(_MORE), 'exec'))
 
 main()

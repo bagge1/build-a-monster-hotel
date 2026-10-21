@@ -6,7 +6,7 @@ to the contract in `MODELS.md`, "Inner walls, doors and furniture (built
 rooms)". Built by `tools/build_built_rooms.py -- sets haunted_manor`; a night
 draft (2026-10-21) for his review. **Nothing here has been seen in Studio.**
 
-## What is in it (27 models)
+## What is in it (48 models)
 
 | Model | What | Triangles |
 |---|---|---|
@@ -15,6 +15,7 @@ draft (2026-10-21) for his review. **Nothing here has been seen in Studio.**
 | `Wall_Post` | The 0.6 joint post, 17.02 tall, banded as the walls meeting it: dark skirting, plum wainscot, gold chair rail, lilac paper, gold picture rail and crown | 72 |
 | 14 furniture, location 1 | `Bed`, `DoubleBed`, `PlanterBed`, `FourPosterBed`, `Sarcophagus`, `WitchBed`, `DenNest`, `Coffin`, `OperaChaise`, `SnackCounter`, `Jukebox`, `Gravestone`, `ReadingDesk`, `PipeOrgan` | 140-1,080 |
 | 10 furniture, location 0 (in the Manor's style) | `Nightstand`, `Wardrobe`, `WritingDesk`, `DiningTable`, `BreakfastBuffet`, `BarStool`, `PoolTable`, `CardTable`, `Bathtub`, `FloorLamp` | 282-916 |
+| 21 more by purpose (night draft 2026-10-21, below) | 13 furniture, location 0; `Furniture_CrystalBallTable`, location 1; 7 `Decor_<Id>`, location 1 | 288-1,200 |
 
 Every furniture piece is `Furniture_<Id>` on its `Pieces.luau` row's w x d
 squares and layer, with `Use` and its `Pose` (Lie: the beds, coffin,
@@ -28,6 +29,65 @@ Suite's coffin (its lid left off; its gold bat now on the foot; 6.0 long, below)
 Bar's counter, a Graveyard Garden tombstone, and `Decor_PipeOrgan`'s geometry
 as `Furniture_PipeOrgan`. New: the four-poster's canopy, planter bed,
 chaise, jukebox, reading desk and the ten location-0 pieces.
+
+## More furniture and decor by purpose (night draft 2026-10-21)
+
+His ask that night: "flesh out with more decorations and furniture for
+different purposes (i.e. snack bars, breakfast buffet tables, pool tables
+etc. etc.)". 21 pieces so a player can make a dining room, a game room, a
+lounge, an en-suite bathroom, a garden and a lobby feel real. Every pick,
+tag and price is a PLACEHOLDER for his review (`Pieces.luau`, under "More
+furniture and decor by purpose"); their shapes are
+`tools/build_built_rooms_more.py`, which `tools/build_built_rooms.py` runs.
+
+**Furniture or decor** (the rule used): furniture is what a guest is walked
+to and uses (sits on, eats from, plays, washes at): it has a `Use` and
+counts toward the Furniture bar. Decor is what is looked at or sets the
+mood, toward the Decor bar. Furniture is location 0 (any room; this is the
+model until a kit has its own). The decor is the Manor's (location 1):
+location-0 decor is event decor to `Pieces.decorHere`, and `always` would
+ask every kit for a model. No `keyFor`: a new room type is his call.
+
+| Purpose | Model | Use | Tags | Top |
+|---|---|---|---|---|
+| Dining | `Furniture_DiningChair`: crimson cushion, plum gothic back, gold finials | Sit 1.82 | — | 4.54 |
+| Dining | `Furniture_SaladBar` (3 x 1): four bowls, dressings on a step, plum canopy | Stand | snacks | 4.16 |
+| Dining | `Furniture_CoffeeUrn`: gold urn with a tap on a cabinet, two cups | Stand | cocoa, snacks | 4.55 |
+| Dining | `Furniture_DessertTrolley` (2 x 1): layer cake, jelly, cake stand, pie | Stand | snacks | 3.5 |
+| Games | `Furniture_DartsBoard` (Wall): board, three darts, chalk scoreboard | Stand | fun | 5.85 |
+| Games | `Furniture_ArcadeCabinet`: glowing screen and marquee, joystick | Stand | fun | 5.62 |
+| Games | `Furniture_PingPongTable` (3 x 2): teal top, net, two bats, a ball | Stand | fun | 3.05 |
+| Games | `Furniture_BoardGameShelf` (Wall, 2 x 1): stacks of game boxes | Stand | fun | 5.55 |
+| Lounge | `Furniture_ChessTable`: an 8 x 8 board on a pedestal, a game on | Stand | quiet | 3.28 |
+| Lounge | `Furniture_CoffeeTable` (2 x 1, top 1.48): teapot, cups, biscuits, a book | Stand | — | 2.1 |
+| Bathroom | `Furniture_Washstand`: basin in a marble top, gothic mirror | Stand | damp | 5.3 |
+| Bathroom | `Furniture_Toilet`: dark wood seat at 1.6 (a closed lid), cistern | Sit 1.6 | — | 3.32 |
+| Garden | `Furniture_GardenBench` (2 x 1): for two, wood on wrought iron | Sit 1.75 | garden | 3.61 |
+| Spooky | `Furniture_CrystalBallTable`: plum cloth, glowing ball (`Glow_Cold_1`), two candles, cards | Stand | darkness | 3.9 |
+| Lobby | `Decor_PlantStand`: a fern in a pot on an iron stand | — | garden | 4.6 |
+| Lobby | `Decor_HallStand`: umbrella well, oval mirror, a coat and a top hat | — | antique furniture | 6.5 |
+| Lobby | `Decor_LuggageCart` (2 x 1): gold bellhop cart, trunk, hatbox, cases | — | — | 4.92 |
+| Lounge | `Decor_Fireplace` (Wall, 2 x 1): stone pointed arch, fire (`Glow_Warm_1`), mantel candlesticks and clock | — | candles, antique furniture | 5.66 |
+| Bathroom | `Decor_TowelRack` (Wall): gold rails, a crimson and a cream towel | — | damp | 4.37 |
+| Garden | `Decor_Fountain` (2 x 2): two stone tiers, water, four streams, lily pads | — | garden, damp | 4.75 |
+| Spooky | `Decor_Candelabra`: iron, five candles, each flame its own glow | — | candles, darkness | 5.76 |
+
+`fun` is the pool table's tag; no species wants it yet. The gramophone he
+might expect is the Manor's `Decor_RecordPlayer` already. **New rule in
+the build** (`MODELS.md`, "Nothing floats"): a `Wall` piece may hang, a
+solid touching the wall's plane counted as standing (`hung_check`); the
+darts board and the towel rack hang, and show floating in the elevations
+(no wall is drawn there).
+
+Validated by the build (all passed, the first run refused two, fixed): the
+decor checks (footprint, 0.4 inset, layer, Pieces' w/d/layer, the decor's
+height to 0.3 as a fault, the wall pieces' backs on z = 1.1, no coplanar
+faces: the bench's arms and legs and the candelabra's crossed arms were
+coplanar, now apart), `Use` (Stand 1.5 in front; Sit on a seat by rule 6:
+1.5-2.0 high, 2 wide a person, 1.2 deep, nothing over it), nothing floating,
+the budgets (1,500). Every furniture piece's height agrees with its Pieces
+row to 0.3 (no new height findings). **Not done**: a blind review of these
+sheets; anything in Studio; a guest walking to them.
 
 ## Fixed after the blind review (2026-10-21)
 
@@ -181,15 +241,20 @@ floor height, from the front and from the side, on its squares),
 Counter, and on the organ's bench, from the side and three-quarters),
 `review/lying_sheet.png` (every `Lie` piece from above and from the side
 with the 5-stud person lying on its `Use`; the four-poster also from the
-raised camera). Workbench on light grey (Studio was running: no EEVEE or
+raised camera). The 21 pieces of 2026-10-21 have their own sheets in
+`review/more/`: `furniture_sheet.png`, `elevations_sheet.png` and
+`sitting_sheet.png` (the chair, the toilet and the bench with the 5-stud
+person sitting). Workbench on light grey (Studio was running: no EEVEE or
 Cycles).
 
 ## Staged
 
-All 27 FBX in `blender/_import/` (unprefixed; the Lodge's walls there are
+All 48 FBX in `blender/_import/` (unprefixed; the Lodge's walls there are
 `FrostfangLodge_Wall_*`). Re-staged after the second review (2026-10-21):
 `Wall_Half`, `Wall_Door`, `Wall_Post`, `Furniture_Coffin`,
 `Furniture_DenNest`, `Furniture_SnackCounter`, `Furniture_ReadingDesk`,
 `Furniture_WitchBed`, `Furniture_BarStool`, `Furniture_PipeOrgan`. The
 `Bathtub`'s and `OperaChaise`'s moved `Use` points live in
 `import_fixup.luau` (their meshes are unchanged).
+The 21 new pieces staged 2026-10-21 beside them: 14 `Furniture_<Id>` and 7
+`Decor_<Id>` (the table above); nothing of the earlier batch removed.
