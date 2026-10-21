@@ -62,8 +62,8 @@ local SET = {
 		root = Vector3.new(0, 0.1, 0),
 		parts = {
 			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(6, 0.2, 6), collide = false },
-			Body = { c = Vector3.new(0, 3.45, 1.1734), s = Vector3.new(3.6, 6.9, 2.8533), collide = false },
-			LOD_Proxy = { c = Vector3.new(0, 3.45, 1.1734), s = Vector3.new(3.6, 6.9, 2.8533), collide = false },
+			Body = { c = Vector3.new(0, 3.45, 1.15), s = Vector3.new(3.6, 6.9, 2.9), collide = false },
+			LOD_Proxy = { c = Vector3.new(0, 3.45, 1.15), s = Vector3.new(3.6, 6.9, 2.9), collide = false },
 		},
 		att = {
 			{ "Use", Vector3.new(0, 0, -4.5), Vector3.new(0, 0, 1) },
@@ -81,7 +81,7 @@ local SET = {
 			LOD_Proxy = { c = Vector3.new(0, 2.5, 0.0109), s = Vector3.new(4.1435, 5, 5.7717), collide = false },
 		},
 		att = {
-			{ "Use", Vector3.new(0, 1.8, -0.8), Vector3.new(0, 0, -1) },
+			{ "Use", Vector3.new(0, 1.8, -0.05), Vector3.new(0, 0, -1) },
 		},
 		precise = {  },
 		light = 12,
@@ -96,7 +96,7 @@ local SET = {
 			LOD_Proxy = { c = Vector3.new(0, 2.5, 0.0109), s = Vector3.new(6.0435, 5, 5.7717), collide = false },
 		},
 		att = {
-			{ "Use", Vector3.new(-1.3, 1.8, -0.8), Vector3.new(0, 0, -1) },
+			{ "Use", Vector3.new(-1.3, 1.8, -0.05), Vector3.new(0, 0, -1) },
 		},
 		precise = {  },
 		light = 12,
@@ -111,7 +111,7 @@ local SET = {
 			LOD_Proxy = { c = Vector3.new(0, 0.9245, 0), s = Vector3.new(4.52, 1.849, 6.92), collide = false },
 		},
 		att = {
-			{ "Use", Vector3.new(0, 1.56, -1.2), Vector3.new(0, 0, -1) },
+			{ "Use", Vector3.new(0, 1.56, 0.25), Vector3.new(0, 0, -1) },
 		},
 		precise = {  },
 		light = 12,
@@ -122,11 +122,11 @@ local SET = {
 		root = Vector3.new(0, 0.1, 0),
 		parts = {
 			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(9, 0.2, 9), collide = false },
-			Body = { c = Vector3.new(0, 3.23, 0.0159), s = Vector3.new(6.0435, 6.46, 5.7617), collide = false },
-			LOD_Proxy = { c = Vector3.new(0, 3.23, 0.0159), s = Vector3.new(6.0435, 6.46, 5.7617), collide = false },
+			Body = { c = Vector3.new(0, 3.2, 0.0159), s = Vector3.new(6.0435, 6.4, 5.7617), collide = false },
+			LOD_Proxy = { c = Vector3.new(0, 3.2, 0.0159), s = Vector3.new(6.0435, 6.4, 5.7617), collide = false },
 		},
 		att = {
-			{ "Use", Vector3.new(-1.3, 1.8, -0.8), Vector3.new(0, 0, -1) },
+			{ "Use", Vector3.new(-1.3, 1.8, -0.05), Vector3.new(0, 0, -1) },
 		},
 		precise = {  },
 		light = 12,
@@ -141,7 +141,7 @@ local SET = {
 			LOD_Proxy = { c = Vector3.new(0, 1.34, 0), s = Vector3.new(3.9, 2.68, 5.65), collide = false },
 		},
 		att = {
-			{ "Use", Vector3.new(0, 2.2, -0.6), Vector3.new(0, 0, -1) },
+			{ "Use", Vector3.new(0, 2.2, 0.15), Vector3.new(0, 0, -1) },
 		},
 		precise = {  },
 		light = 12,
@@ -156,7 +156,7 @@ local SET = {
 			LOD_Proxy = { c = Vector3.new(-0.1507, 2.5, 0.175), s = Vector3.new(4.4448, 5, 6.1), collide = false },
 		},
 		att = {
-			{ "Use", Vector3.new(-0.4, 1.8, -0.6), Vector3.new(0, 0, -1) },
+			{ "Use", Vector3.new(-0.7, 1.8, -0.05), Vector3.new(0, 0, -1) },
 		},
 		precise = {  },
 		light = 12,
@@ -171,7 +171,7 @@ local SET = {
 			LOD_Proxy = { c = Vector3.new(0, 0.675, 0), s = Vector3.new(4.8972, 1.35, 6.9541), collide = false },
 		},
 		att = {
-			{ "Use", Vector3.new(0.6, 0.72, 0.2), Vector3.new(0, 0, -1) },
+			{ "Use", Vector3.new(0, 0.75, 0), Vector3.new(0, 0, -1) },
 		},
 		precise = {  },
 		light = 12,
@@ -182,11 +182,11 @@ local SET = {
 		root = Vector3.new(0, 0.1, 0),
 		parts = {
 			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(6, 0.2, 9), collide = false },
-			Body = { c = Vector3.new(0, 1, -0.27), s = Vector3.new(3.8, 2, 4.99), collide = false },
-			LOD_Proxy = { c = Vector3.new(0, 1, -0.27), s = Vector3.new(3.8, 2, 4.99), collide = false },
+			Body = { c = Vector3.new(0, 1, -0.02), s = Vector3.new(3.8, 2, 6.04), collide = false },
+			LOD_Proxy = { c = Vector3.new(0, 1, -0.02), s = Vector3.new(3.8, 2, 6.04), collide = false },
 		},
 		att = {
-			{ "Use", Vector3.new(0, 1.62, -0.6), Vector3.new(0, 0, -1) },
+			{ "Use", Vector3.new(0, 1.62, 0.3), Vector3.new(0, 0, -1) },
 		},
 		precise = {  },
 		light = 12,
@@ -343,10 +343,10 @@ local SET = {
 		root = Vector3.new(0, 0.1, 0),
 		parts = {
 			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(3, 0.2, 3), collide = false },
-			Body = { c = Vector3.new(0, 1.3, -0.075), s = Vector3.new(2.08, 2.6, 1.75), collide = false },
+			Body = { c = Vector3.new(0, 1.6, -0.075), s = Vector3.new(2.08, 3.2, 1.75), collide = false },
 		},
 		att = {
-			{ "Use", Vector3.new(0, 2, -0.2), Vector3.new(0, 0, -1) },
+			{ "Use", Vector3.new(0, 2.6, -0.2), Vector3.new(0, 0, -1) },
 		},
 		precise = {  },
 		light = 12,

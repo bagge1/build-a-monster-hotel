@@ -18,7 +18,8 @@ floor, front -Z) with the faces that met in one plane moved a hair apart (decor'
 The contract is enforced here (MODELS.md, "Checks"): the walls' exact boxes, the opening clear, nothing outside
 the frame, the piece the same turned 180 degrees about Y, no coplanar faces; furniture through the kit's decor
 checks (footprint, 0.4 inset, layer, seats, coplanar faces, w/d/layer from Pieces.luau) plus `Use`: its Pose,
-a Lie or Sit point on the surface it names with nothing over it, a Stand point 1.5 in front of the front edge.
+a Lie or Sit point on the surface it names with nothing over it, a Stand point 1.5 in front of the front edge, the
+5-stud person lying on a Lie point (lie_faults), a bar stool's seat at 2.4-2.8, and no shell floating.
 Pieces.luau's `height` against the model's top is recorded as a finding (validation.json `height_findings`),
 not refused: those heights are the blockouts' placeholders, and this session may not touch src/.
 
@@ -27,7 +28,9 @@ not refused: those heights are the blockouts' placeholders, and this session may
 
 Writes blender/rooms/<set>/: fbx/*.fbx, manifest.json, validation.json, import_fixup.luau (with each Use's
 Pose attribute), the .blend, and review/ (Workbench sheets on light grey: the walls assembled round a room
-corner with a T and a free end, the joints close up, the furniture on its squares beside a 5-stud person).
+corner with a T and a free end, the joints close up, the door piece alone, the furniture on its squares beside
+a 5-stud person, floor-level elevations of every piece from the front and the side, and every Lie piece from above
+and from the side with the 5-stud person lying on its Use).
 """
 import ast
 import json
@@ -391,11 +394,18 @@ def wall_door(st):
 
     def face(s):
         z0, z1 = zs(s, 0.06)
-        for sx in (-1, 1):      # the jambs' trim and a plinth at their feet
+        for sx in (-1, 1):      # the jambs' trim and a plinth block at their feet
             xa, xb = sorted((sx * OPEN_X, sx * trim))
-            span('Dressing', (xa, 0.6, z0), (xb, OPEN_Y, z1), st['trim'])
-            pa, pb = zs(s, PROUD)
-            span('Dressing', (xa, 0.0, pa), (xb, 0.6, pb), st['trim_base'], bevel=0.02)
+            span('Dressing', (xa, 0.72, z0), (xb, OPEN_Y, z1), st['trim'])
+            # The plinth (blind review 2026-10-21: an uncapped grey block): the frame's own wood, a little
+            # wider than the casing on its outer side, a chamfered body under a prouder moulded cap the
+            # casing lands on. Its inner end stays on the jamb's line (x = +-2, the opening clear).
+            pa, pb = zs(s, PROUD - 0.012)
+            ca, cb = zs(s, PROUD)
+            bx = sorted((sx * OPEN_X, sx * (trim + 0.07)))
+            cx = sorted((sx * OPEN_X, sx * (trim + 0.1)))
+            span('Dressing', (bx[0], 0.0, pa), (bx[1], 0.6, pb), st['trim'], bevel=0.02)
+            span('Dressing', (cx[0], 0.6, ca), (cx[1], 0.74, cb), st['trim'], bevel=0.03)
         prism('Dressing', outer + list(reversed(inner)), z0, z1, st['trim'])
         ka, kb = zs(s, PROUD - 0.005, base=TH + 0.005)    # the keystone, prouder than the trim, its back in it
         top = _arch_y(outer, 0.0)
@@ -424,14 +434,72 @@ def furn(id_):
     p.name = f'Furniture_{id_}'
     p.row = row
     p.pose = None
+    p.lie = None
     p.checks.append(use_check)
+    p.checks.append(grounded_check)
     return p
 
 
-def use(pos, look, pose):
+PERSON = 5.0                    # the 5-stud person (CLAUDE.md, "The scale of a person"), lying: head top to feet
+LIE_RISE = (0.45, 0.8)          # over the body, the most a surface may rise above a Lie point: under the legs and
+                                # torso (a footboard any higher is through the feet), under the head (its pillow)
+LIE_DROP = 0.6                  # the most the surface may fall under the body (more, and it hangs off an end)
+HEAD = 1.2                      # the head's end of the body, where the pillow is
+
+
+def use(pos, look, pose, rise=None, waive=None):
+    """`rise`: (legs and torso, head) when a piece's lying surface is not flat (a hammock's sling rises to its
+    ends); `waive`: the reason a Lie piece cannot hold the 5-stud person straight (a finding, recorded)."""
     assert pose in POSES, pose
     attach('Use', pos, look)
     K.P.pose = pose
+    K.P.lie = {'rise': tuple(rise or LIE_RISE), 'waived': waive} if pose == 'Lie' else None
+
+
+def surface_y(x, z, above=20.0):
+    """The top of the piece built so far at (x, z) (for a Use point on a curved or stretched surface)."""
+    tris = []
+    for n, (vs, fs, _) in K.P.parts.items():
+        if n in ('Root', 'LOD_Proxy'):
+            continue
+        for f in fs:
+            for i in range(1, len(f) - 1):
+                tris.append((vs[f[0]], vs[f[i]], vs[f[i + 1]]))
+    return round(max(K._ray_down(tris, x, z, above)), 3)
+
+
+def lie_faults(piece, allt, pos, look, tag):
+    """MODELS.md, "Furniture" (`Lie`, at the middle of where the body lies): the 5-stud person centred on Use,
+    the head toward -LookVector, lies on the piece: every point of the body's line (and the legs' lines) is in
+    the footprint, on something no more than LIE_DROP below the Lie point, and under nothing that rises more
+    than the piece's rise (legs and torso; the head's last HEAD on its pillow) within USE_CLEAR."""
+    f = []
+    a = Vector((look.x, 0, look.z)).normalized()
+    b = Vector((-a.z, 0, a.x))
+    body, head = piece.lie['rise']
+    hx, hz = 1.5 * piece.fw, 1.5 * piece.fd
+    n = 40
+    for i in range(n + 1):
+        t = -PERSON / 2 + 0.05 + (PERSON - 0.1) * i / n
+        lines = (0.0, -0.45, 0.45) if t > 0.5 else (0.0,)
+        for s in lines:
+            q = pos + a * t + b * s
+            where = f'{"head" if t < 0 else "feet"} {abs(t):.2f} from Use' + (f', leg line {s:+.2f}' if s else '')
+            if abs(q.x) > hx + 1e-6 or abs(q.z) > hz + 1e-6:
+                f.append(f'{tag}: the lying person leaves the footprint ({where})')
+                return f
+            hits = K._ray_down(allt, q.x, q.z, pos.y + USE_CLEAR)
+            top = max(hits, default=None)
+            rise = head if t < -PERSON / 2 + HEAD else body
+            if top is None or top < pos.y - LIE_DROP:
+                f.append(f'{tag}: the lying person hangs off the piece ({where}: '
+                         f'{"nothing" if top is None else f"{top:.2f}"} under it, the Lie point at {pos.y:.2f})')
+                return f
+            if top > pos.y + rise + 1e-6:
+                f.append(f'{tag}: something at {top:.2f} goes through the lying person ({where}; the Lie point at '
+                         f'{pos.y:.2f}, at most {rise} higher)')
+                return f
+    return f
 
 
 def stand():
@@ -466,7 +534,74 @@ def use_check(piece, tris, stage):
         inside = [s for s in piece.seats if s['x'][0] <= pos.x <= s['x'][1] and s['z'][0] <= pos.z <= s['z'][1]]
         if not inside:
             f.append(f'{tag}: a Sit point not on a declared seat (rule 6)')
+    if piece.pose == 'Lie' and not piece.lie['waived']:
+        f += lie_faults(piece, allt, pos, look, tag)
     return f
+
+
+GROUND_TOL = 0.03               # a shell touching the floor or a grounded shell's box within this is held
+
+
+def grounded_check(piece, tris, stage):
+    """Nothing floats (blind review 2026-10-21; floor-level elevations found an organ's pipes, finials, mug
+    handles and a blanket standing on nothing): every shell (a connected solid, joined by shared corners) of
+    the body stands on the floor or touches a shell that does, box to box within GROUND_TOL."""
+    boxes = []
+    for part, ts in tris.items():
+        if part in ('Root', 'LOD_Proxy'):
+            continue
+        parent = {}
+
+        def find(k):
+            while parent.setdefault(k, k) != k:
+                parent[k] = parent[parent[k]]
+                k = parent[k]
+            return k
+        for t in ts:
+            ks = [(round(v.x, 3), round(v.y, 3), round(v.z, 3)) for v in t]
+            for k in ks[1:]:
+                a, b = find(ks[0]), find(k)
+                if a != b:
+                    parent[b] = a
+        shells = {}
+        for k in list(parent):
+            shells.setdefault(find(k), []).append(k)
+        for pts in shells.values():
+            boxes.append((tuple(min(p[i] for p in pts) for i in range(3)), tuple(max(p[i] for p in pts) for i in range(3))))
+    held = [lo[1] <= GROUND_TOL for lo, _ in boxes]
+    grew = True
+    while grew:
+        grew = False
+        for i, (lo, hi) in enumerate(boxes):
+            if held[i]:
+                continue
+            for j, (lo2, hi2) in enumerate(boxes):
+                if held[j] and all(lo[k] <= hi2[k] + GROUND_TOL and lo2[k] <= hi[k] + GROUND_TOL for k in range(3)):
+                    held[i] = grew = True
+                    break
+    loose = [b for b, h in zip(boxes, held) if not h]
+    return [f'floats ({stage}): a shell {K.v3(lo, 2)}..{K.v3(hi, 2)} stands on nothing' for lo, hi in loose[:4]]
+
+
+BAR_SEAT_Y = (2.4, 2.8)         # a bar stool's seat, at a counter 3.4-3.8 (MODELS.md, "Furniture")
+
+
+def bar_seat(x0, x1, z0, z1, y):
+    """A bar stool's seat: rule 6's checks with its top at BAR_SEAT_Y instead of 1.5-2.0 (the 5-stud person
+    sits high at a counter, feet on the stool's ring)."""
+    K.seat(x0, x1, z0, z1, y, narrow=None)
+    K.P.seats[-1]['bar'] = True
+    K.P.checks.remove(K._seat_check)
+    K.P.checks.append(_bar_seat_check)
+
+
+def _bar_seat_check(piece, tris, stage):
+    saved = K.SEAT_Y
+    K.SEAT_Y = BAR_SEAT_Y
+    try:
+        return K._seat_check(piece, tris, stage)
+    finally:
+        K.SEAT_Y = saved
 
 
 def _body_bounds(piece):
@@ -485,6 +620,9 @@ def done(note):
     rec['furniture'] = {'id': piece.name[len('Furniture_'):], 'pose': piece.pose, 'keyFor': piece.row['keyFor'],
                         'pieces_height': piece.row['height'], 'model_top': round(hi.y, 3),
                         'height_finding': FINDINGS.get(piece.name)}
+    if piece.lie:
+        rec['furniture']['lie'] = {'person': PERSON, 'rise': list(piece.lie['rise']), 'drop': LIE_DROP,
+                                   'waived': piece.lie['waived']}
     return rec
 
 
@@ -550,7 +688,9 @@ def hm_furniture():
     }
 
 
-def lie_on_blanket(y=1.8, z=-0.8, x=0.0):
+def lie_on_blanket(y=1.8, z=-0.05, x=0.0):
+    """The Lie point of a bed 5.65 long (ZF..ZB): the 5-stud person's middle, the head's top at the pillow's
+    back (ZB - 0.4), the feet inside the footboard (ZF + 0.25)."""
     use((x, y, z), (0, 0, -1), 'Lie')
 
 
@@ -575,14 +715,24 @@ def f_four_poster():
     for x in (-2.72, 2.72):
         for z in (zf + 0.22, zb - 0.22):
             cyl('Body', (x, 0, z), 0.17, 5.9, 'wood_dark', n=8)
-            sphere('Body', (x, 6.2, z), 0.26, 'gold', n=8, rings=4)
-    span('Body', (-2.98, 5.5, zf), (2.98, 5.95, zb), 'plum_dark', bevel=0.1)
+            sphere('Body', (x, 6.14, z), 0.26, 'gold', n=8, rings=4)     # seated on the post (was 0.04 over it)
+    # The canopy is an open frame (blind review 2026-10-21: a solid tester hid the bed and its guest from the
+    # raised and top-down phone camera): plum rails on the posts, a plum valance hanging from each side rail,
+    # the gold band on the foot rail. The side rails run between the end rails (their ends buried in them)
+    # and sit 0.02 higher and lower, so no two faces share a plane.
+    for sx in (-1, 1):
+        x = 2.77 * sx
+        span('Body', (x - 0.17, 5.55, zf + 0.1), (x + 0.17, 5.88, zb - 0.1), 'plum_dark', bevel=0.04)
+        xa, xb = sorted((2.9 * sx, 2.98 * sx))      # the valance's top is held inside the rail
+        span('Body', (xa, 5.02, zf + 0.34), (xb, 5.62, zb - 0.34), 'plum', bevel=0.02)
+    for z in (zf + 0.22, zb - 0.22):
+        span('Body', (-2.8, 5.57, z - 0.16), (2.8, 5.86, z + 0.16), 'plum_dark', bevel=0.04)
     span('Body', (-3.02, 5.38, zf - 0.04), (3.02, 5.62, zf + 0.3), 'gold', bevel=0.05)     # its valance's gold band
     for x in (-2.72, 2.72):
         lathe('Body', [(0.42, 2.6), (0.24, 4.2), (0.44, 5.5)], 'plum', n=6, base=(x, 0, zf + 0.62), scale=(0.4, 1))
     lie_on_blanket(x=-1.3)
-    done('an antique four-poster: dark turned posts with gold finials, a plum canopy with a gold valance, '
-         'drapes tied at the foot, the gothic headboard')
+    done('an antique four-poster: dark turned posts with gold finials, an open plum canopy frame with side '
+         'valances and a gold band at the foot, drapes tied at the foot, the gothic headboard')
 
 
 def f_planter_bed():
@@ -599,7 +749,7 @@ def f_planter_bed():
         pumpkin_('Body', (x, 1.3 + 0.3 * 0.78, 3.0), 0.3)
     for k, (x, z) in enumerate(((-2.09, -2.4), (-2.09, -0.6), (2.09, -1.5), (2.09, 0.4), (-2.09, 1.4), (2.09, 2.2))):
         sphere('Body', (x, 1.42, z), (0.16, 0.12, 0.16), ('violet', 'pumpkin', 'lilac')[k % 3], n=6, rings=3)
-    lie_on_blanket(y=1.56, z=-1.2)
+    lie_on_blanket(y=1.56, z=0.25)     # the head on the pillow, the feet inside the foot rim
     done('a bed in a wooden planter: a moss mattress under a leaf blanket, pumpkins at the head, flowers on the rim')
 
 
@@ -620,7 +770,7 @@ def f_sarcophagus():
         box('Body', (x, 2.62, zb - 1.3), (0.24, 0.1, 0.12), 'ink')
     for x in (-0.95, 0.95):
         span('Body', (x - 0.22, 2.0, zb - 1.5), (x + 0.22, 2.45, zb - 0.5), 'teal', bevel=0.05)
-    use((0, 2.2, -0.6), (0, 0, -1), 'Lie')
+    use((0, 2.2, 0.15), (0, 0, -1), 'Lie')     # on the lid, 5.35 long: the head on the face, the feet 0.3 in
     done("the Sarcophagus Suite's sarcophagus: gold on a stone plinth, teal bands, its face and striped headdress")
 
 
@@ -635,7 +785,7 @@ def f_witch_bed():
     lathe('Body', [(0.0, 3.62), (0.55, 3.62), (0.55, 3.68), (0.26, 3.7), (0.0, 4.5)], 'black', n=10,
           base=(-1.85, 0, zb - 0.15))
     lathe('Body', [(0.27, 3.72), (0.27, 3.86), (0.24, 3.88)], 'violet', n=10, base=(-1.85, 0, zb - 0.15))
-    use((-0.4, 1.8, -0.6), (0, 0, -1), 'Lie')
+    use((-0.7, 1.8, -0.05), (0, 0, -1), 'Lie')     # the legs beside the cat
     done("the Potion Loft's witch's bed: teal blanket, violet gothic headboard, a black cat asleep on it, a hat on a post")
 
 
@@ -651,25 +801,27 @@ def f_den_nest():
         for dz in (-0.14, 0.14):
             sphere('Body', (x, 0.95, -1.2 + dz), 0.18, 'bone', n=6, rings=4)
     stretch(1.3, 1.3)
-    use((0.6, 0.72, 0.2), (0, 0, -1), 'Lie')
+    use((0, surface_y(0, 0), 0), (0, 0, -1), 'Lie')     # centred: 4.98 inside the rim, the head on the pillow
     done("the Den Room's round straw nest, a third larger for its 3 x 3: a brown cushion, a rose pillow, a bone")
 
 
 def f_coffin():
     furn('Coffin')
-    zf, zb = ZF, ZB
-    outline = [(-0.95, zf + 0.1), (0.95, zf + 0.1), (1.9, zb - 1.9), (1.4, zb - 0.6), (-1.4, zb - 0.6),
-               (-1.9, zb - 1.9)]
+    # 6.0 long (blind review 2026-10-21: the Coffin Suite's 4.95 left a 5-stud guest's feet over the foot); its
+    # outline's proportions kept along the length (the shoulders 0.737 of the way to the head), the width as it was.
+    zf, zb = -3.0, 3.0
+    zsh = zf + 0.737 * (zb - zf)
+    outline = [(-0.95, zf), (0.95, zf), (1.9, zsh), (1.4, zb), (-1.4, zb), (-1.9, zsh)]
     prism('Body', outline, 0, 1.5, 'wood_dark', plane='xz')
     prism('Body', [(x * 0.84, z + (0.12 if z < 0 else -0.12)) for x, z in outline], 1.5, 1.62, 'crimson',
           plane='xz')
-    span('Body', (-0.9, 1.62, zb - 1.7), (0.9, 2.0, zb - 0.9), 'cream', bevel=0.15)
+    span('Body', (-0.9, 1.62, zb - 1.1), (0.9, 2.0, zb - 0.3), 'cream', bevel=0.15)
     bat = [(0, 0.55), (0.35, 0.9), (0.9, 0.75), (1.25, 1.25), (0.7, 1.2), (0.3, 1.5), (0, 1.3),
            (-0.3, 1.5), (-0.7, 1.2), (-1.25, 1.25), (-0.9, 0.75), (-0.35, 0.9)]
-    m = K.Matrix.Translation((0, 0, zf + 0.1))       # the gold bat on the coffin's foot end
+    m = K.Matrix.Translation((0, 0, zf))       # the gold bat on the coffin's foot end
     prism('Body', [(x * 0.55, y) for x, y in bat], -0.04, 0.01, 'gold', plane='xy', m=m)
-    use((0, 1.62, -0.6), (0, 0, -1), 'Lie')
-    done("the Coffin Suite's coffin: dark wood, red velvet, a cream pillow, the gold bat on its foot")
+    use((0, 1.62, 0.3), (0, 0, -1), 'Lie')     # the head's top 0.1 behind the pillow, the feet 0.7 inside the foot
+    done("the Coffin Suite's coffin, 6.0 long: dark wood, red velvet, a cream pillow, the gold bat on its foot")
 
 
 def f_opera_chaise():
@@ -760,7 +912,8 @@ def f_pipe_organ():
     furn('PipeOrgan')
     span('Body', (-1.8, 0, -0.6), (1.8, 2.6, 0.6), 'wood_dark', bevel=0.1)
     span('Body', (-1.6, 2.2, -0.75), (1.6, 2.45, -0.15), 'white', bevel=0.03)
-    span('Body', (-1.8, 2.6, -0.2), (1.8, 3.4, 0.6), 'wood_dark', bevel=0.08)
+    # The upper case runs back under the pipes (floor-level elevations 2026-10-21: they stood on nothing).
+    span('Body', (-1.8, 2.6, -0.2), (1.8, 3.4, 1.3), 'wood_dark', bevel=0.08)
     for i, h in enumerate((4.0, 4.8, 5.6, 6.6, 5.6, 4.8, 4.0)):
         x = -1.5 + i * 0.5
         cyl('Body', (x, 3.4, 1.05), 0.22, h - 3.4, 'gold', n=8)
@@ -862,21 +1015,23 @@ def f_buffet():
 
 def f_bar_stool():
     furn('BarStool')
+    # The seat at 2.6 (blind review 2026-10-21: at 2.0 it sat a guest chin-high at counters 3.4-3.8): the
+    # approved stool raised 0.6 on a longer pedestal, the foot ring where a seated person's feet hang.
     cyl('Body', (0, 0, -0.2), 0.75, 0.1, 'iron', n=10)
-    cyl('Body', (0, 0.1, -0.2), 0.13, 1.66, 'iron', n=6)
+    cyl('Body', (0, 0.1, -0.2), 0.13, 2.26, 'iron', n=6)
     lathe('Body', [(0.55, 0.55), (0.6, 0.55), (0.6, 0.62), (0.55, 0.62)], 'gold', n=10, base=(0, 0, -0.2),
           closed=True)
     for k in range(4):
         box('Body', (0, 0, 0), (0.44, 0.05, 0.06), 'gold',
             m=at((0, 0.585, -0.2), ry=45 + 90 * k) @ Matrix.Translation((0.34, 0, 0)))
-    span('Body', (-1.0, 1.72, -0.9), (1.0, 1.84, 0.8), 'wood_dark', bevel=0.03)
-    span('Body', (-1.04, 1.84, -0.88), (1.04, 2.0, 0.48), 'crimson', bevel=0.05)
+    span('Body', (-1.0, 2.32, -0.9), (1.0, 2.44, 0.8), 'wood_dark', bevel=0.03)
+    span('Body', (-1.04, 2.44, -0.88), (1.04, 2.6, 0.48), 'crimson', bevel=0.05)
     for x in (-0.9, 0.9):
-        span('Body', (x - 0.09, 1.84, 0.56), (x + 0.09, 2.5, 0.74), 'wood_dark', bevel=0.02)
-    span('Body', (-1.0, 2.38, 0.54), (1.0, 2.6, 0.76), 'wood_dark', bevel=0.04)
-    K.seat(-1.0, 1.0, -0.85, 0.45, 2.0)
-    use((0, 2.0, -0.2), (0, 0, -1), 'Sit')
-    done('a bar stool on an iron pedestal with a gold foot ring, a crimson cushion, a low back')
+        span('Body', (x - 0.09, 2.44, 0.56), (x + 0.09, 3.1, 0.74), 'wood_dark', bevel=0.02)
+    span('Body', (-1.0, 2.98, 0.54), (1.0, 3.2, 0.76), 'wood_dark', bevel=0.04)
+    bar_seat(-1.0, 1.0, -0.85, 0.45, 2.6)
+    use((0, 2.6, -0.2), (0, 0, -1), 'Sit')
+    done('a bar stool on an iron pedestal with a gold foot ring, a crimson cushion at 2.6, a low back')
 
 
 def f_pool_table():
@@ -926,7 +1081,9 @@ def f_bathtub():
     cyl('Body', (0, 0, 0), 0.07, 0.5, 'gold', n=6, m=at((2.38, 2.2, 0), rz=90))
     for x, z, r in ((-0.6, 0.3, 0.16), (-0.3, -0.25, 0.12), (0.5, 0.2, 0.14)):
         sphere('Body', (x, 1.3, z), (r, r * 0.6, r), 'white', n=6, rings=3)
-    use((-0.3, 1.3, 0.0), (1, 0, 0), 'Lie')
+    use((-0.3, 1.3, 0.0), (1, 0, 0), 'Lie',
+        waive='a tub is lain in reclining: its 2 x 1 squares (Pieces) hold 4.4 inside, a straight 5-stud person '
+              "needs 3 x 1 (August's call)")
     done('a white clawfoot tub on gold feet, full to the middle, a gold tap at its foot end')
 
 
@@ -986,7 +1143,7 @@ def ff_furniture():
 def f_ice_bed():
     furn('IceBed')
     ff_bed(frame='wood_light', quilt=('red', 'cream'), head='ice', head_col='ice')
-    use((0, 1.83, -0.8), (0, 0, -1), 'Lie')
+    use((0, 1.83, -0.05), (0, 0, -1), 'Lie')
     done("the Igloo Room's bed: a red plaid quilt, an igloo-dome ice headboard with frost courses")
 
 
@@ -1003,7 +1160,7 @@ def f_ice_slab():
     prism('Body', rock, zb - 0.32, zb + 0.04, 'stone_dark', plane='xy')
     for x, y in ((-0.3, 3.8), (1.4, 3.4)):
         sphere('Body', (x, y - 0.05, zb - 0.14), (0.36, 0.12, 0.2), 'snow', n=6, rings=3)
-    use((0, 1.58, -0.8), (0, 0, -1), 'Lie')
+    use((0, 1.58, -0.05), (0, 0, -1), 'Lie')
     done("the Ice Cave's stone slab bed under furs, a rock headboard with snow on it")
 
 
@@ -1016,7 +1173,7 @@ def f_snow_nest():
           scale=(1.2, 0.8))
     sphere('Body', (0, 1.05, 1.4), (0.8, 0.3, 0.45), 'snow', n=8, rings=4)
     stretch(1.3, 1.3)
-    use((0, 1.0, -1.04), (0, 0, -1), 'Lie')
+    use((0, surface_y(0, 0), 0), (0, 0, -1), 'Lie')     # centred: the head on the pillow, the feet in the rim
     done("the Yeti Den's round fur nest, a third larger for its 3 x 3: a blue blanket, a snow pillow")
 
 
@@ -1039,9 +1196,10 @@ def f_knitting_chair():
     for k in range(4):
         span('Body', (-0.7 + k * 0.47 - 0.08, 1.75, 0.7), (-0.7 + k * 0.47 + 0.08, 3.3, 0.8), 'wood')
     span('Body', (-1.1, 3.3, 0.62), (1.1, 3.6, 0.9), 'wood_dark', bevel=0.05)
-    span('Body', (-0.85, 2.2, 0.86), (0.85, 3.25, 0.96), 'lilac', bevel=0.03)
+    # The blanket hangs on the back slats and under the top rail (it stood 0.06 behind them).
+    span('Body', (-0.85, 2.2, 0.79), (0.85, 3.32, 0.95), 'lilac', bevel=0.03)
     for y in (2.45, 2.95):
-        span('Body', (-0.86, y, 0.84), (0.86, y + 0.12, 0.98), 'snow')
+        span('Body', (-0.86, y, 0.77), (0.86, y + 0.12, 0.97), 'snow')
     lathe('Body', [(0.45, 0), (0.6, 0.55), (0.62, 0.62), (0.5, 0.62), (0.4, 0.08)], 'wood_light', n=10,
           base=(1.95, 0, -1.4), closed=True)
     cyl('Body', (1.95, 0.02, -1.4), 0.46, 0.1, 'wood', n=10)
@@ -1067,7 +1225,7 @@ def f_glacier_coil():
         lathe('Body', [(0.28, 0), (0.28, 3.6), (0, 4.4)], 'ice', n=6, base=(x, 0, 2.52))
         cyl('Body', (x, 3.4, 2.52), 0.33, 0.2, 'gold', n=6)
     stretch(1.3, 1.3)
-    use((0, 1.15, -0.91), (0, 0, -1), 'Lie')
+    use((0, surface_y(0, 0), 0), (0, 0, -1), 'Lie')     # centred: 5.28 inside the rim, the head on the pillow
     done("the Glacier Suite's coiled round bed, a third larger: gold-banded ice, a navy blanket, two crystal pillars")
 
 
@@ -1103,7 +1261,7 @@ def f_star_hammock():
                  0.18 * math.sin(math.pi / 2 + k * math.pi / 5) * (1 if k % 2 == 0 else 0.45)) for k in range(10)]
         y = top(x)
         prism('Body', [(px + x, pz + z) for px, pz in star], y - 0.01, y + 0.02, 'yellow', plane='xz')
-    use((0.2, top(0.2), 0.0), (1, 0, 0), 'Lie')
+    use((0.2, top(0.2), 0.0), (1, 0, 0), 'Lie', rise=(0.8, 1.1))     # the sling rises to its ends
     done('a hammock of navy cloth with yellow stars, slung between two snow-capped log posts')
 
 
@@ -1112,7 +1270,7 @@ def _ff_mug(part, c, r=0.32, h=0.6, col='red', band='cream'):
     cyl(part, (x, y, z), r, h, col, n=8)
     cyl(part, (x, y + h * 0.4, z), r + 0.02, h * 0.2, band, n=8)
     cyl(part, (x, y + h - 0.04, z), r - 0.05, 0.06, 'cocoa', n=8)
-    box(part, (x + r + 0.1, y + h * 0.5, z), (0.14, h * 0.55, 0.12), col)
+    box(part, (x + r + 0.03, y + h * 0.5, z), (0.14, h * 0.55, 0.12), col)     # its handle into the mug's side
 
 
 def f_cocoa_bar():
@@ -1148,7 +1306,7 @@ def f_sky_lounger():
     for z in (-2.5, -1.4):
         span('Body', (-1.36, 1.14, z - 0.12), (1.36, 1.17, z + 0.12), 'cream')
     span('Body', (-0.9, 1.15, 1.35), (0.9, 1.6, 1.95), 'snow', bevel=0.18)
-    use((0, 1.15, -1.0), (0, 0, -1), 'Lie')
+    use((0, 1.15, -0.7), (0, 0, -1), 'Lie')     # the head on the pillow, the feet on the cushion's end
     done('a deck lounger: teal cushions, its back raised at the head, a red plaid blanket over the legs')
 
 
@@ -1350,8 +1508,96 @@ def review_walls(out, fbx):
     shots.append(render(out / 'door_inside.png', (0.25, 0.25, 1.0), (900, 640), (5.5, 0, -0.4), (12.6, 11.0, 0.4)))
     for o in behind:
         o.hide_render = False
-    sheet = _REV['_compose']([[shots[0], shots[1]], [shots[2], shots[3]], [shots[4], shots[5]]], out / 'walls_sheet.png')
+    # The door piece alone at the same angles: what is seen through the doorway in the room shots is the room
+    # behind it (the far T joint's post, the side door), not the piece.
+    clear()
+    place(fbx, 'Wall_Door', (9, 0, 0), 0)
+    _REV['_block']('floor', (4, -0.3, -3), (14, 0, 3), (150, 150, 156))
+    shots.append(render(out / 'door_alone.png', (-0.25, 0.25, -1.0), (900, 640), (5.5, 0, -0.4), (12.6, 11.0, 0.4)))
+    shots.append(render(out / 'door_alone_foot.png', (-0.6, 0.35, -1.0), (900, 640), (6.2, 0, -0.4), (8.4, 1.6, 0.4)))
+    sheet = _REV['_compose']([[shots[0], shots[1]], [shots[2], shots[3]], [shots[4], shots[5]],
+                              [shots[6], shots[7]]], out / 'walls_sheet.png')
     return faults, sheet
+
+
+def _lying(use_pos, look):
+    """The 5-stud person (_person's blocks) lying on its back on a Lie point: the head toward -look, the feet
+    toward +look, the body's middle on the point."""
+    skin, shirt, legs = (250, 200, 160), (70, 130, 200), (60, 60, 80)
+    a = Vector((look[0], 0, look[2])).normalized()
+    b = Vector((-a.z, 0, a.x))
+    y0 = use_pos[1]
+    p = Vector(use_pos)
+
+    def blk(t0, t1, s0, s1, h, rgb):
+        c = [p + a * t + b * s for t in (t0, t1) for s in (s0, s1)]
+        lo = Vector((min(v.x for v in c), y0, min(v.z for v in c)))
+        hi = Vector((max(v.x for v in c), y0 + h, max(v.z for v in c)))
+        _REV['_block']('lying', lo, hi, rgb)
+    blk(-2.5, -1.5, -0.6, 0.6, 1.2, skin)          # head
+    blk(-1.5, 0.5, -1.0, 1.0, 1.0, shirt)          # torso
+    blk(-1.5, 0.5, -1.9, -1.02, 0.9, skin)         # arms
+    blk(-1.5, 0.5, 1.02, 1.9, 0.9, skin)
+    blk(0.5, 2.5, -0.95, -0.05, 0.9, legs)         # legs
+    blk(0.5, 2.5, 0.05, 0.95, 0.9, legs)
+
+
+def _squares(cx, size, ang=0):
+    w, d = (size[2], size[0]) if ang % 180 else (size[0], size[2])
+    for i in range(int(round(w / 3))):
+        for k in range(int(round(d / 3))):
+            x0, z0 = cx - w / 2 + 3 * i, -d / 2 + 3 * k
+            shade = (205, 205, 210) if (i + k) % 2 else (185, 185, 192)
+            _REV['_block']('sq', (x0 + 0.03, -0.06, z0 + 0.03), (x0 + 2.97, -0.01, z0 + 2.97), shade)
+    return w, d
+
+
+def review_elevations(out, fbx, names, manifest, per_row=4):
+    """Side elevations at floor level (a level camera, no floor under the pieces, only their 3-stud squares
+    as a thin plate): anything floating shows the background under it, anything leaving its squares shows
+    past the plate's ends. Each row twice: from the front (-Z) and from the side (the pieces turned 90)."""
+    by = sorted(names, key=lambda n: (-manifest[n]['root']['size'][2], n))
+    rows = [by[i:i + per_row] for i in range(0, len(by), per_row)]
+    shots = []
+    for ri, row in enumerate(rows):
+        for ang, tag in ((0, 'front'), (90, 'side')):
+            clear()
+            x = 0.0
+            for n in row:
+                size = manifest[n]['root']['size']
+                w = size[2] if ang else size[0]
+                cx = x + w / 2
+                place(fbx, n, (cx, 0, 0), ang)
+                _squares(cx, size, ang)
+                x += w + 2.0
+            _REV['_person'](Vector((x + 1.0, 0, 0)), 0.0)
+            shots.append(render(out / f'elevation_{ri + 1}_{tag}.png', (0.0, 0.0, -1.0), (1200, 300),
+                                (-1, -0.3, -5), (x + 3, 7.4, 5), scale=1.02))
+    return _REV['_compose']([[p] for p in shots], out / 'elevations_sheet.png')
+
+
+def review_lying(out, fbx, names, manifest):
+    """Every Lie piece with the 5-stud person lying on its Use point: from straight above and level from the
+    side; the four-poster also from the raised phone camera."""
+    shots = []
+    for n in names:
+        u = manifest[n]['attachments'].get('Use')
+        if manifest[n].get('furniture', {}).get('pose') != 'Lie' or not u:
+            continue
+        size = manifest[n]['root']['size']
+        lo, hi = (-size[0] / 2 - 0.5, -0.1, -size[2] / 2 - 0.5), (size[0] / 2 + 0.5, 7.0, size[2] / 2 + 0.5)
+        for view, d in (('top', (0.0, 1.0, -0.05)), ('side', (-1.0, 0.0, 0.0) if abs(u['look'][2]) > 0.5
+                                                              else (0.0, 0.0, -1.0))):
+            clear()
+            place(fbx, n, (0, 0, 0))
+            _squares(0.0, size)
+            _lying(u['pos'], u['look'])
+            shots.append(render(out / f'lying_{n[len("Furniture_"):]}_{view}.png', d, (600, 600), lo, hi))
+        if n == 'Furniture_FourPosterBed':
+            shots.append(render(out / 'lying_FourPosterBed_phone.png', (-0.35, 1.1, -1.0), (600, 600), lo, hi))
+    rows = [shots[i:i + 4] for i in range(0, len(shots), 4)]
+    rows[-1] += [None] * (4 - len(rows[-1]))
+    return _REV['_compose'](rows, out / 'lying_sheet.png')
 
 
 def review_furniture(out, fbx, names, manifest, per_row=4):
@@ -1477,7 +1723,9 @@ def main():
                                           'two doors, a straight run): coplanar same-facing overlaps between pieces',
                                'faults': faults}
             fsheet = review_furniture(rev, out / 'fbx', furn_names, manifest['pieces'])
-            print(f'SHEETS {sheet} {fsheet}', flush=True)
+            esheet = review_elevations(rev, out / 'fbx', furn_names, manifest['pieces'])
+            lsheet = review_lying(rev, out / 'fbx', furn_names, manifest['pieces'])
+            print(f'SHEETS {sheet} {fsheet} {esheet} {lsheet}', flush=True)
             if faults:
                 refused.append(f'{style}/assembly: {faults[:4]}')
         (out / 'validation.json').write_text(json.dumps(val, indent=1))

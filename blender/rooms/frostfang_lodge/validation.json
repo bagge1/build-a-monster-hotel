@@ -25,7 +25,7 @@
     "the atlas travels embedded in the FBX",
     "the contract re-checked on the re-imported boxes (Root, footprint, kind rules, budgets)"
    ],
-   "triangles": 996,
+   "triangles": 1172,
    "budget": 1200,
    "collision_precise": [],
    "attachments": [

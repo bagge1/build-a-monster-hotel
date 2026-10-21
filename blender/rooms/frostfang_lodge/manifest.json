@@ -425,7 +425,7 @@
       17.0,
       0.56
      ],
-     "triangles": 496,
+     "triangles": 672,
      "collide": false
     },
     "LOD_Proxy": {
@@ -469,7 +469,7 @@
      ]
     }
    },
-   "triangles": 996,
+   "triangles": 1172,
    "budget": 1200,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
@@ -601,7 +601,7 @@
      "pos": [
       0.0,
       1.83,
-      -0.8
+      -0.05
      ],
      "look": [
       0.0,
@@ -632,7 +632,16 @@
     ],
     "pieces_height": 2.0,
     "model_top": 3.6,
-    "height_finding": "Pieces.luau's height 2, the body's top 3.60"
+    "height_finding": "Pieces.luau's height 2, the body's top 3.60",
+    "lie": {
+     "person": 5.0,
+     "rise": [
+      0.45,
+      0.8
+     ],
+     "drop": 0.6,
+     "waived": null
+    }
    }
   },
   "Furniture_IceSlab": {
@@ -700,7 +709,7 @@
      "pos": [
       0.0,
       1.58,
-      -0.8
+      -0.05
      ],
      "look": [
       0.0,
@@ -731,7 +740,16 @@
     ],
     "pieces_height": 1.8,
     "model_top": 3.87,
-    "height_finding": "Pieces.luau's height 1.8, the body's top 3.87"
+    "height_finding": "Pieces.luau's height 1.8, the body's top 3.87",
+    "lie": {
+     "person": 5.0,
+     "rise": [
+      0.45,
+      0.8
+     ],
+     "drop": 0.6,
+     "waived": null
+    }
    }
   },
   "Furniture_SnowNest": {
@@ -798,8 +816,8 @@
     "Use": {
      "pos": [
       0.0,
-      1.0,
-      -1.04
+      0.75,
+      0.0
      ],
      "look": [
       0.0,
@@ -830,7 +848,16 @@
     ],
     "pieces_height": 1.6,
     "model_top": 1.35,
-    "height_finding": null
+    "height_finding": null,
+    "lie": {
+     "person": 5.0,
+     "rise": [
+      0.45,
+      0.8
+     ],
+     "drop": 0.6,
+     "waived": null
+    }
    }
   },
   "Furniture_KnittingChair": {
@@ -997,8 +1024,8 @@
     "Use": {
      "pos": [
       0.0,
-      1.15,
-      -0.91
+      1.058,
+      0.0
      ],
      "look": [
       0.0,
@@ -1029,7 +1056,16 @@
     ],
     "pieces_height": 2.4,
     "model_top": 4.4,
-    "height_finding": "Pieces.luau's height 2.4, the body's top 4.40"
+    "height_finding": "Pieces.luau's height 2.4, the body's top 4.40",
+    "lie": {
+     "person": 5.0,
+     "rise": [
+      0.45,
+      0.8
+     ],
+     "drop": 0.6,
+     "waived": null
+    }
    }
   },
   "Furniture_StarHammock": {
@@ -1128,7 +1164,16 @@
     ],
     "pieces_height": 3.0,
     "model_top": 2.98,
-    "height_finding": null
+    "height_finding": null,
+    "lie": {
+     "person": 5.0,
+     "rise": [
+      0.8,
+      1.1
+     ],
+     "drop": 0.6,
+     "waived": null
+    }
    }
   },
   "Furniture_CocoaBar": {
@@ -1295,7 +1340,7 @@
      "pos": [
       0.0,
       1.15,
-      -1.0
+      -0.7
      ],
      "look": [
       0.0,
@@ -1326,7 +1371,16 @@
     ],
     "pieces_height": 1.6,
     "model_top": 1.85,
-    "height_finding": null
+    "height_finding": null,
+    "lie": {
+     "person": 5.0,
+     "rise": [
+      0.45,
+      0.8
+     ],
+     "drop": 0.6,
+     "waived": null
+    }
    }
   }
  },

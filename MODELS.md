@@ -583,14 +583,25 @@ rule 6, `w`, `d`, `layer` and `height` its `Pieces` row's), and adds:
 - **Footprint exactly `w × d` squares of 3 studs**, from its `Pieces` row
   (no refit to a smaller one): `Root` 3w × 0.2 × 3d at (0, 0.1, 0).
 - **Built for the 5-stud person**: a bed's mattress top at about 2, a
-  table's top 2.6 to 3, a counter's 3.4 to 3.8, a seat's 1.5 to 2.0.
+  table's top 2.6 to 3, a counter's 3.4 to 3.8, a seat's 1.5 to 2.0. A
+  bar stool's seat, for those counters, is **2.4 to 2.8** (rule 6's other
+  checks hold; 2026-10-21, the `BarStool` at 2.6).
+- **Nothing floats**: every solid of the body stands on the floor or
+  touches one that does (2026-10-21: an organ's pipes, finials, mug
+  handles and a blanket stood on nothing).
 - **A `Use` attachment**: where a booked guest stands, sits or lies to use
   the piece; the code walks the guest to it and turns them to its
   LookVector. Its **`Pose` attribute** (a string) says how: `Lie`, `Sit` or
   `Stand`.
   - `Lie` (a bed, coffin, nest, tub, hammock): on the lying surface's top,
     at the middle of where the body lies, LookVector toward the **foot end**
-    (the head toward the opposite end).
+    (the head toward the opposite end). **The 5-stud person fits**: lying
+    5 long centred on `Use`, the body stays in the footprint and on the
+    piece (nothing falls more than 0.6 under it) and nothing rises through
+    it (at most 0.45 under the legs and torso, a footboard included; 0.8
+    under the head's last 1.2, its pillow). A sling that rises to its ends
+    names its own allowance; a piece that cannot hold the person straight
+    names why (the `Bathtub`, reclined).
   - `Sit`: on the seat's top at its middle, LookVector the way the sitter
     faces.
   - `Stand` (a counter, jukebox, organ, table, gravestone): on the floor,
@@ -610,8 +621,9 @@ rule 6, `w`, `d`, `layer` and `height` its `Pieces` row's), and adds:
 **Checks** (the set's build script refuses a piece that breaks them): the
 walls' boxes and opening, a post covering every wall end's dressing, both
 faces alike (the piece equals itself turned 180°), nothing outside the
-frame; furniture's footprint, inset, height, `Use` and its `Pose`, and the
-decor checks (seats, coplanar faces). Budgets: a wall piece **1,200**
+frame; furniture's footprint, inset, height, `Use` and its `Pose` (a `Lie`
+point's 5-stud fit), nothing floating, and the decor checks (seats,
+coplanar faces). Budgets: a wall piece **1,200**
 triangles, a post 200, a furniture piece **1,500** (decor's).
 
 ### Floor finishes (code only)

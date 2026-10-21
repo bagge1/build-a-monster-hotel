@@ -66,7 +66,7 @@ local SET = {
 			LOD_Proxy = { c = Vector3.new(0, 1.8, 0.015), s = Vector3.new(3.9, 3.6, 5.68), collide = false },
 		},
 		att = {
-			{ "Use", Vector3.new(0, 1.83, -0.8), Vector3.new(0, 0, -1) },
+			{ "Use", Vector3.new(0, 1.83, -0.05), Vector3.new(0, 0, -1) },
 		},
 		precise = {  },
 		light = 12,
@@ -81,7 +81,7 @@ local SET = {
 			LOD_Proxy = { c = Vector3.new(0, 1.935, 0.02), s = Vector3.new(4, 3.87, 5.69), collide = false },
 		},
 		att = {
-			{ "Use", Vector3.new(0, 1.58, -0.8), Vector3.new(0, 0, -1) },
+			{ "Use", Vector3.new(0, 1.58, -0.05), Vector3.new(0, 0, -1) },
 		},
 		precise = {  },
 		light = 12,
@@ -96,7 +96,7 @@ local SET = {
 			LOD_Proxy = { c = Vector3.new(0, 0.675, 0), s = Vector3.new(4.8972, 1.35, 6.9541), collide = false },
 		},
 		att = {
-			{ "Use", Vector3.new(0, 1, -1.04), Vector3.new(0, 0, -1) },
+			{ "Use", Vector3.new(0, 0.75, 0), Vector3.new(0, 0, -1) },
 		},
 		precise = {  },
 		light = 12,
@@ -125,7 +125,7 @@ local SET = {
 			LOD_Proxy = { c = Vector3.new(0, 2.2, 0.0507), s = Vector3.new(5.033, 4.4, 7.3086), collide = false },
 		},
 		att = {
-			{ "Use", Vector3.new(0, 1.15, -0.91), Vector3.new(0, 0, -1) },
+			{ "Use", Vector3.new(0, 1.058, 0), Vector3.new(0, 0, -1) },
 		},
 		precise = {  },
 		light = 12,
@@ -170,7 +170,7 @@ local SET = {
 			LOD_Proxy = { c = Vector3.new(0, 0.9251, 0.1824), s = Vector3.new(2.8, 1.8503, 6.9649), collide = false },
 		},
 		att = {
-			{ "Use", Vector3.new(0, 1.15, -1), Vector3.new(0, 0, -1) },
+			{ "Use", Vector3.new(0, 1.15, -0.7), Vector3.new(0, 0, -1) },
 		},
 		precise = {  },
 		light = 12,
