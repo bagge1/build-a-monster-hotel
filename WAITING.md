@@ -105,7 +105,7 @@ Connect: knappen under fliken Plugins i Studio. -->
    om dem. Titta gärna först på bilderna i §1 punkt 12: säger du nej till en
    stil behöver den inte importeras än.
 
-13. **Starta om `rojo serve` och tryck Connect, före importen i punkt 12**
+13. ~~**Starta om `rojo serve` och tryck Connect, före importen i punkt 12**~~ (gjort av dig 2026-10-21 eftermiddag)
    (2026-10-21 förmiddag): projektfilen har fått mappen för Bayou Spas kit
    (`assets/HotelKit/BayouSpa`), som Rojo bara ser efter en omstart. Sedan
    **Connect** (fliken **Plugins** i Studio). Utan det sparas inte Bayou Spas
