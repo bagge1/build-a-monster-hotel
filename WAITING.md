@@ -799,6 +799,84 @@ Med Claudes skärmdump där det finns en. -->
      rummen byggs av väggar (Flip försvinner). **Fråga:** ska detta före
      resten av nattens lista (världen, endless content)?
 
+38. **Endless content: dina beslut** (GDD A.11, nattutkast 2026-10-21,
+   granskat av en blind granskare samma dag; varje fynd står bredvid sitt
+   förslag i A.11 som "Scrutiny 2026-10-21"). Alla siffror är PLACEHOLDER.
+   Per del: det som är ditt, valen och rekommendationen efter granskningen.
+   - **VIP contracts:** *hur VIP:n kommer* (bussen bokad till hotellet /
+     en vanlig gäst / en inspektion), *vad kontraktet kräver* (rumstyp och
+     staplar / typ och art / ett mål för hela hotellet), *tidsgränsen*
+     (45 min spel / 24 h / UTC-dagen), *belöningen* (pengar / pengar och
+     artens Souvenir / Moon Shards), *hur många samtidigt* (1 / 1, 2 från
+     4★ / 3). **Rekommendation:** bussen, rumstyp och staplar, 45 min spel
+     som bara räknas när det hotellet spelas, pengar och Souvenir, 1 och 2
+     från 4★. Nytt efter granskningen: **högst 3 avklarade per dag**, ett
+     missat kontrakt försvinner, kravet ligger alltid över ditt bästa rum,
+     och **VIP:n är en extra plats på bussen** (räknas inte i 40 %, rummet
+     hålls) — en rad om det i §4.3 väntar på ditt ja.
+   - **Expeditions:** *vem som får gå* (Wing-boende / även personal / en
+     egen plats), *klockan* (realtid / speltid), *belöningen* (fast / fast
+     och en chans på ett fynd / du väljer), *vad som gör en resa bättre*
+     (antal och sällsynthet / gillar platsen / nivå), *Robux-skip* (nej /
+     ja), *notis* "Your residents are back" (nej / ja). **Rekommendation:**
+     Wing-boende, realtid, fast och ett fynd, gillar och nivå, inget skip,
+     notisen. Nytt: resan betalar **1,5 × vad de hade tjänat på att stanna,
+     med offline-taket** (annars var 8 h-resan vid varje utloggning alltid
+     bäst), fyndchans per resa bland ännu inte funna bitar, en knapp **Best
+     for this trip**; rebirth kallar hem gruppen. Notisen är en tredje text
+     som du gör i Creator Hub (Engagement → Notifications).
+   - **Rare decor sets och Souvenirs:** *hur fynd görs* (slump / milstolpar /
+     Souvenirs av milstolpe, set-bitar av slump med garanti), *vad ett set
+     gör* (bara utseende / Decor-stapeln i ett rum / hela hotellet),
+     *kopior* (en / en per fynd / hittad en gång, sedan köpt), *genom
+     rebirth* (behålls / förloras). **Rekommendation:** milstolpe och
+     slump med garanti, Decor-stapeln (+0,25) **i ett rum per set och
+     hotell**, kopior till butikens pris per poäng, behålls. Nytt: **ett
+     set per plats vid lansering** (15 bitar i stället för 30), slumpen
+     drar bara ofunna bitar. **Ditt utseende:** *varje Souvenir egen
+     modell* eller *en gemensam form (en liten monter) i artens färger med
+     dess märke*. **Rekommendation:** den gemensamma formen, så att 27
+     Souvenirs inte blir 27 modeller.
+   - **The showcase:** *räckvidd* (gatan / gatan och en global veckotopp /
+     även en visningstomt för andras sparade hotell), *vad som gillas*
+     (spelaren / varje hotell / varje rum), *vilken siffra* (livstid /
+     livstid på skylten och en veckosiffra / sedan rebirth), *belöning*
+     (ingen / pengar per gilla / kosmetika vid milstolpar).
+     **Rekommendation:** **bara gatan vid lansering** (Visit når inte ett
+     hotell på en annan server), spelaren, livstid och vecka, kosmetika.
+     Nytt: dagens uppdrag blir **"Visit 3 hotels"** i stället för "Like 3
+     hotels"; den globala topplistan efter lansering, där varje gillare
+     räknas en gång i veckan per spelare.
+   - **Deeper mutations:** *vad som staplas* (en storlek och ett utseende /
+     två vilka som helst / inget), *betalningen* (multiplicerad ×10 /
+     adderad ×6 / den största +1), *rotationen* (månad / vecka / per
+     familj), *Monster Book* (en stapel fyller båda och ger en titel / varje
+     kombination en sida). **Rekommendation:** storlek och utseende,
+     adderad, månad, båda fylls. Nytt: månadens mutation är en rad bland
+     utseendena (så Golden finns varje månad) och en egen Seasons-rad i
+     boken. **Ditt:** *får en missad månads mutation komma tillbaka utanför
+     säsong som ett VIP contract*, eller *bara nästa år*.
+     **Rekommendation:** bara nästa år, eftersom Seasons-raden inte längre
+     hindrar någon titel.
+   - **Residents level up:** *vad en nivå ger* (Wing och personal / även
+     perk / bara Wing), *taket* (10 för alla / efter sällsynthet / höjs av
+     rebirth), *hur nivån tas* (automatiskt / för pengar), *dubbletter
+     som XP* (nej / ja). **Rekommendation:** Wing och personal, 10 för alla,
+     för pengar, nej. Nytt: priset räknas i **den boendes egen Wing-takt**
+     (betalar tillbaka på 2–27 h), XP **1 per minut i arbete** i Wing och
+     som personal lika (cirka 15 h spel till taket).
+   - **Vad rebirth behåller** (§6.4): i dag Residents, Monster Book,
+     kosmetika, Moon Shards, Moon Tree, vänskap. Ska **nivåerna** och
+     **fynden** (decor-set, Souvenirs) också behållas? Granskaren menar att
+     rebirth då bara tar väggarna. **Rekommendation:** behåll båda: rebirth
+     tar fortfarande pengarna, alla hotell och platserna, nivån har ett tak
+     och set-bonusen gäller ett rum per set och hotell. Ett beslut, skrivet i
+     §6.4.
+   - **Byggordningen** (A.11.7): decor-modellerna börjar direkt vid sidan
+     av; sedan The showcase, Residents level up, Deeper mutations, Rare
+     decor sets, VIP contracts och sist Expeditions, när
+     `tools/balance_model.py` har prövat dem mot offline-taket.
+
 ## §3 Creator Hub och publicering
 
 1. ~~**Slå på Studio Access to API Services**~~ (gjort 2026-10-19: på i

@@ -1317,28 +1317,57 @@ guest.
 1. *How the VIP arrives.* (a) On the next bus, booked to the hotel;
    (b) a normal bus guest any hotel may win; (c) no guest, an inspection of
    the room. **Recommend (a)**: the bus stays the only way in (§4.3, his "no
-   walk-ins"), and nobody loses a guest they built for.
+   walk-ins"), and nobody loses a guest they built for. **The VIP rides as an
+   extra seat**: it is not counted in the bus's 40 % of vacant rooms or its
+   cap, and its room is held (not Vacant) from **Ready**, so no other hotel's
+   guest is taken by it. A line saying so goes into §4.3 with his yes.
+   *Scrutiny 2026-10-21: a booked guest on a bus of fixed size takes a seat
+   from every other hotel → the VIP is an extra seat and its room is held;
+   the §4.3 line waits on his yes (WAITING §2.38).*
 2. *What a contract asks.* (a) A room type plus one or two bar thresholds
    (Size, Furniture, Decor) and maybe a preference tag; (b) only a type and a
    species; (c) a whole-hotel goal (a rating, an amenity). **Recommend (a)**:
    it pushes customizing, the game's most important thing (§5.4), and uses
-   the bars he ruled.
+   the bars he ruled. **A spec is drawn against the player's own rooms**: at
+   least one bar is set above what the best room of that type in the hotel
+   has now (or the type is not built there), so every contract asks for a
+   change. *Scrutiny 2026-10-21: a room that already meets the spec makes the
+   contract free money → specs are drawn so one bar must change.*
 3. *The deadline.* (a) Play time from accepting (45 min); (b) real time
    (24 h); (c) the UTC day, with the daily requests. **Recommend (a)**: his
-   pick names a deadline, and play time is fair to a player who logs off. A
-   missed contract goes back to the ledger with no penalty.
+   pick names a deadline, and play time is fair to a player who logs off.
+   **The clock runs only while the contract's own hotel is played** (not
+   while the player is at another hotel of the chain). A missed contract is
+   gone: its offer is replaced by a new draw, no penalty beyond that.
+   *Scrutiny 2026-10-21: which clock runs at another hotel of the chain was
+   undefined → the contract's hotel only. Scrutiny 2026-10-21: a free,
+   re-listed contract with no cost is kept running for ever (finding 2,
+   below) → a missed contract loses its offer.*
 4. *The reward.* (a) Cash only (minutes of income); (b) cash plus that
    species' souvenir the first time (A.11.3); (c) Moon Shards. **Recommend
    (b)**: cash scales with the hotel, and the souvenir ties the contract to a
-   character. Shards stay rebirth's and the Book's (§6.1).
+   character. Shards stay rebirth's and the Book's (§6.1). A souvenir comes
+   by **whichever comes first**, the species' first contract or its 3rd
+   move-in (A.11.3 decision 1), so no souvenir waits on the draw.
+   *Scrutiny 2026-10-21: the souvenir hangs on a species the player cannot
+   choose (one swap a day); a Book-page request for a species → kept,
+   because the 3rd move-in already reaches every souvenir; the "whichever
+   first" is now written out.*
 5. *How many at once.* (a) One active; (b) one, two from 4★; (c) three.
    **Recommend (b)**: one is easy to follow on a phone; a second is
    something to grow into.
 
 **Numbers (PLACEHOLDER):** unlock 2★; 3 offers, 1 free swap a day (+1 with
-VIP Lobby, as the daily reroll); deadline 45 min of play; reward 15 minutes
+VIP Lobby, as the daily reroll); deadline 45 min of play; **at most 3
+contracts completed per UTC day** (per player, all hotels together), the
+ledger shows "new contracts tomorrow" after; reward 15 minutes
 of income × 1 / 1.5 / 2 / 3 / 4 / 6 by the VIP's rarity; thresholds 0.5 or
 1.0 on one bar, 0.5 on a second from 3.5★; the VIP's pay ×2 for its stay.
+*Scrutiny 2026-10-21: up to 90 minutes of income plus a double stay, every
+45 minutes, free to accept and re-listed when missed, is a lasting +30–50 %
+income for whoever keeps one running → a cap of 3 completions per UTC day
+(so at most ~4.5 h of income a day at the rarest, usually far less) and a
+missed contract loses its offer.*
 
 **What it builds on.** `src/server/DailyService.luau` (a list drawn per
 player, rerolls, progress kept in the profile); `src/server/BusService.luau`
@@ -1394,13 +1423,41 @@ glows; the player taps **Collect**.
 6. *A notification.* (a) None; (b) "Your residents are back" for trips of
    2 h and more (Open Cloud, as A.9's). **Recommend (b)**: it is the hook
    §9 counts, and Roblox sends at most one a day anyway.
+   *Scrutiny 2026-10-21: a notification with no server running needs an
+   outside scheduler, the opt-in and an approved string; underestimated →
+   kept, because A.9's `NotifyService` already queues in a MemoryStore that
+   any running server sends from (one due while none runs goes out when the
+   next starts), with the opt-in offered once and the key in Secrets. What is
+   new is a third string made in Creator Hub (his, WAITING §2.38) and sharing
+   Roblox's one-a-day with A.9's two.*
+
+**Mid-trip.** **Travel** to another hotel of the chain changes nothing (the
+residents are the chain's). **A rebirth** calls the party home: it pays the
+elapsed part of the fixed reward before the reset (so that cash goes with the
+run) and rolls no find; a destination is offered only while its location is
+open in the current run. *Scrutiny 2026-10-21: rebirth or travel mid-trip was
+undefined → defined here.*
+
+**Picking.** A **Best for this trip** button fills the three places
+(matching preferences first, then level, then rarity), and the player may
+change any of them. *Scrutiny 2026-10-21: picking 3 of up to 17 residents on
+a phone is tedious → the button.*
 
 **Numbers (PLACEHOLDER):** lengths 30 min / 2 h / 8 h; one trip at a time
-(a Moon Tree node for a second); up to 3 residents; the fixed reward 1.5 ×
-what those residents would have earned in the Wing over the trip, so a trip
-beats staying a little; a find at 5 % per resident-hour, a guaranteed find
-every 10 trips of 2 h or more; +20 % for each resident matching the
-destination; XP per hour away (A.11.6).
+(a Moon Tree node for a second); up to 3 residents; **the fixed reward is
+1.5 × what those residents would have earned by staying, counted as staying
+counts**: the Wing rate while the player plays, the offline rate (§4.6) while
+away, and nothing past the offline cap (2 h, 8 h with Night Manager), so a
+trip beats staying a little and never beats the cap; **a find at 5 / 15 / 35 %
+per trip** by length, rolled among the destination location's **unfound**
+pieces, a guaranteed find every 10 trips of 2 h or more; +20 % for each
+resident matching the destination; XP per hour away (A.11.6).
+*Scrutiny 2026-10-21: 1.5 × uncapped Wing earnings in real time, while the
+offline till stops at 2 h, made the top three on an 8 h trip at every logout
+strictly better than anything else (12 rate-hours against 1) → a trip pays
+by staying's rules, offline cap included; its edge is the find and the XP.
+Scrutiny 2026-10-21: 5 % per resident-hour (1.2 finds an 8 h trip) empties
+30 pieces in days → a chance per trip, among unfound pieces only.*
 
 **What it builds on.** `src/server/ResidentService.luau` (Wing earnings, the
 offline till, the away state of the Hunter Camp, `campUntil`, and the
@@ -1441,25 +1498,51 @@ they come from, so the player always knows what to chase.
    move-in), set pieces by free rolls with a guaranteed find after a run of
    misses. **Recommend (c)**: souvenirs are a sure collection tied to the
    characters (§1.1 pillar 1); set pieces keep the surprise without luck
-   that never ends.
+   that never ends. **Every roll draws among the location's unfound pieces**,
+   and the guarantee gives an unfound one; a duplicate (paid in cash) comes
+   only once a location's sets are complete. *Scrutiny 2026-10-21: the
+   40-miss guarantee dropped a random piece, so it could be a duplicate →
+   rolls and the guarantee draw only unfound pieces.*
 2. *What a set does.* (a) Looks only; (b) a whole set in one room adds to
    its Decor bar (A.12) and gives a tag of its own; (c) a hotel-wide bonus.
    **Recommend (b), kept small**: it shows in the bars he ruled and rewards
-   building a room round a set, but no room needs one.
+   building a room round a set, but no room needs one. **The bonus counts in
+   one room per set per hotel** (the first room to hold the whole set; copies
+   elsewhere are looks and points only).
+   *Scrutiny 2026-10-21: found once, copied for cash, kept through rebirth,
+   +0.25 Decor: after a rebirth every room carries a set from minute one →
+   the bonus counts once per set per hotel, and a copy costs what a shop
+   piece of the same points costs (Numbers), so cash buys no Decor cheaper
+   than the shop sells it.*
 3. *Copies.* (a) Found once, placed once; (b) each find is one copy;
    (c) found once, then any number placed for cash at its price.
    **Recommend (c)**: three hotels (§6.4) and many rooms want copies, and a
    find stays a find. A second find of the same piece pays cash.
 4. *Through a rebirth.* (a) What was found stays found, the placed copies go
    with the hotel; (b) all found pieces are lost. **Recommend (a)**: like
-   cosmetics and the Book (§6.4, "keeps").
+   cosmetics and the Book (§6.4, "keeps"); with the bonus once per set per
+   hotel it is a head start, not a free tier. What rebirth keeps is decided
+   once, in §6.4, together with A.11.6 decision 4 → his call (WAITING
+   §2.38).
+5. *A defended Hunter Night's find.* Per street or per hotel. **Recommend
+   per street**: one roll for each player on the street, as A.8 already pays
+   every player on a defended street. *Scrutiny 2026-10-21: per hotel or per
+   street was open; the review's "per defended hotel" → kept per street,
+   because Hunter Night is co-op (§8.1) and A.8 defines a defended night for
+   the whole street; a per-hotel roll would punish the weaker hotel in a
+   shared fight.*
 
-**Numbers (PLACEHOLDER):** two sets per location at launch (six, 30 pieces);
+**Numbers (PLACEHOLDER):** **one set per location at launch** (three, 15
+pieces), a second per location after launch;
 one souvenir per species (about 27 at launch); a set piece at 2 % per happy stay
 of a Rare-or-better guest, guaranteed after 40 misses; the set bonus +0.25
 to the room's Decor bar; a set piece's points (and so its Decor worth) as a
-decor piece of twice its listed price; a copy's price that of a shop piece
-of its size.
+decor piece of twice its listed price; **a copy's price that of a shop piece
+of the same points** (twice its size's).
+*Scrutiny 2026-10-21: 57 Blender models (30 set pieces, 27 souvenirs) before
+three features pay out → one set per location at launch (15 pieces), and the
+art starts first (A.11.7). That souvenirs share one base mesh, recoloured with
+the species' emblem, is a look → his call (WAITING §2.38).*
 
 **What it builds on.** `src/shared/Pieces.luau` (Decor rows: a new `found`
 field and a `set` id; event decor of location 0 is already decor not sold in
@@ -1472,8 +1555,8 @@ map in `PlayerData`, a `src/shared/Finds.luau` (the rolls and the guarantee,
 pure).
 
 **Art and UI.** The largest art cost of the six: **every piece is a Blender
-model** under MODELS.md's Decor rules (footprint, layer, height, seats). Six
-sets of five, and about 27 souvenirs (small, 1 × 1, `Floor` or `Wall`). MODELS.md
+model** under MODELS.md's Decor rules (footprint, layer, height, seats). Three
+sets of five at launch, and about 27 souvenirs (small, 1 × 1, `Floor` or `Wall`). MODELS.md
 needs a line for a set (one look across five pieces) before the first is
 modelled. UI: the Found tab with outlines, the find pop-up, souvenirs on the
 Book page, a set's progress in the room view.
@@ -1499,13 +1582,24 @@ counts of likes received, the player earns a sign cosmetic.
 1. *Its reach.* (a) The street (server) plus a global board of the week's
    most liked; (b) also a showcase plot that loads any player's saved hotel
    (from the board) to walk and like, even when they are offline.
-   **Recommend (a) now, (b) after launch**: (a) is small and uses what
-   exists; (b) needs another player's saved layout read and built on a plot
-   of its own, which is large.
+   **Recommend the street only now, the global board and (b) after
+   launch**: the street tab is small and uses what exists, and every hotel
+   on it can be visited; (b) needs another player's saved layout read and
+   built on a plot of its own, which is large. The global board, when it
+   comes, shows names and counts without **Visit** until (b) exists.
+   *Scrutiny 2026-10-21: "Visit" on a global board cannot reach a hotel on
+   another server or offline → the tab ships street-only. Scrutiny
+   2026-10-21: a global weekly top 50 is gamed by rings of alt accounts →
+   it waits until after launch, and its weekly count counts each liker once
+   per week per liked player (Numbers).*
 2. *What is liked.* (a) The player: one count shown on every one of their
    hotels' signs (as now); (b) each hotel of the chain on its own; (c) each
    room, from the room view. **Recommend (a)**: a rebirth takes the hotels
    apart (§6.4), and a count that never falls is what he asked to see.
+   *Scrutiny 2026-10-21: one count on three signs lets a visitor like the
+   same player three times a day → kept, because `SocialService` already
+   keys a day's likes by the owner's UserId, not the plot, so a player is
+   liked once a day by each visitor whichever sign is used.*
 3. *Which count.* (a) Lifetime only; (b) lifetime on the sign, a weekly
    count for the board; (c) since the last rebirth. **Recommend (b)**: the
    sign shows everything earned, and a weekly board can be topped by a new
@@ -1516,8 +1610,12 @@ counts of likes received, the player earns a sign cosmetic.
 
 **Numbers (PLACEHOLDER):** milestones at 10 / 50 / 200 / 1,000 likes (a
 ribbon, a rosette, a trophy, a gold star on the sign); a like counts only
-from a player with 10 minutes of play that day; the board's top 50; a daily
-request "Like 3 hotels" (`DailyService`).
+from a player with 10 minutes of play that day; the board's top 50 (after
+launch), its weekly count counting each liker once a week per liked player;
+a daily request **"Visit 3 hotels"** (walk into the lobby of three other
+players' hotels; `DailyService`).
+*Scrutiny 2026-10-21: a daily "Like 3 hotels" pays for likes and makes
+them noise → "Visit 3 hotels": the visit is asked, the like stays free.*
 
 **What it builds on.** `src/server/SocialService.luau` (likes, `likesGiven`,
 Street Favourite, the sign prompt); `src/server/HotelService.luau` (the
@@ -1561,13 +1659,29 @@ resident earns more, and the Book counts it.
    point 3: no "one time only").
 4. *The Book.* (a) A stack fills both of its single entries, and a first
    stack gives a title; (b) every combination is an entry. **Recommend
-   (a)**: no new pages, and a stack is still worth finding.
+   (a)**: no new pages, and a stack is still worth finding. **The monthly
+   mutations are a Seasons row of their own** on the page, not part of the
+   mutation set whose title §4.6 gives, so no title waits a year.
+   *Scrutiny 2026-10-21: a missed month is a year's wait for one Book entry;
+   let the month's mutation return off-season as a VIP contract → the
+   Seasons row is apart from the mutation set (revised); whether a missed
+   month may come back off-season, against "it comes back next year", is
+   his call (WAITING §2.38).*
 
 **Numbers (PLACEHOLDER):** the size roll and the look roll are independent,
 at §4.5's chances (a Giant Golden is 4 % × 1 % = 0.04 %); the monthly
-mutation at 3 % (as Pumpkin), ×4 pay, rolled in place of the look roll in
-its month; months: March Mossy, May Rainbow, July Sunburnt, September
-Moonlit (Halloween, Winter as now; the rest none).
+mutation at 3 % (as Pumpkin), ×4 pay, **a row of the look table in its
+month only**, beside Shadow, Golden and Glitched (taken first and the rest
+scaled, as `Events.rollMutation` does Pumpkin today), so every look can
+appear in every month; months: March Mossy, May Rainbow, July Sunburnt,
+September Moonlit (Halloween, Winter as now; the rest none).
+*Scrutiny 2026-10-21: "rolled in place of the look roll" would shut Shadow,
+Golden and Glitched out of six months a year, and the Book with them → the
+monthly mutation is one more row of the look table in its month.
+Scrutiny 2026-10-21: a Giant Golden at 0.04 % is never seen; roll size at a
+raised rate once a look hits → kept, because any stack is (5 + 4) % ×
+(2 + 1 + 0.2) % ≈ 0.29 %, about three an hour on a full street, the title
+is for a first stack of any kind, and no Book entry needs one pair.*
 
 **What it builds on.** `src/shared/Mutations.luau` (rows gain a `group`,
 "Size" or "Look"; `roll` gives up to one of each; `payMultiplier` takes the
@@ -1575,7 +1689,10 @@ pair); `src/shared/Events.luau` (`season`, `rollMutation`: a monthly row);
 `src/server/BusService.luau` and `src/server/GuestService.luau` (where a
 mutation is rolled and announced); `src/server/BookService.luau`
 (`find`, `mutationSetDone`); `src/server/ResidentService.luau` and
-`PlayerData.ResidentRecord.mutation` (a pair, e.g. "Giant+Golden").
+`PlayerData.ResidentRecord`: **two fields**, `mutation` (the look, as now)
+and `size` (Tiny, Giant or nil), so every check of `mutation == "Golden"`
+keeps working. *Scrutiny 2026-10-21: one field holding "Giant+Golden"
+breaks every `== "Golden"` silently → two fields.*
 Client: `MonsterKit`, `GuestRenderer`, `ResidentRenderer` apply scale and
 tint together.
 
@@ -1593,9 +1710,9 @@ experience by working and goes up levels to a cap (his "to some extent").
 A level makes it better at what it does: more earnings in the Wing, more
 efficiency on staff. Friendship stays per species and unchanged (§4.6).
 
-**How it plays.** Residents fill an XP bar by doing their job: staff by
-their errands and check-ins, Wing residents slowly over time, all of them on
-expeditions (A.11.2). A full bar shows **Level up** on the resident's row
+**How it plays.** Residents fill an XP bar by doing their job, at the same
+pace in the Wing and at a staff post (by minutes at work while the player
+plays), and on expeditions (A.11.2). A full bar shows **Level up** on the resident's row
 in the Residents panel. A level number floats over its head in the Wing and
 at work.
 
@@ -1611,20 +1728,33 @@ at work.
    later if long-time players hit the cap.
 3. *How a level is taken.* (a) Automatically when the bar is full; (b) the
    bar fills, then a cash price levels it. **Recommend (b)**: a cash sink
-   for the late game, priced in minutes of income, and a tap that is a
-   moment.
+   for the late game, priced in **that resident's own Wing rate** (what it
+   earns, or would earn, in the Wing), and a tap that is a moment.
 4. *Through a rebirth.* (a) Levels kept, as residents are; (b) reset to 1.
    **Recommend (a)**: rebirth keeps the residents as the head start (§6.4),
-   and the cap bounds it.
+   and the cap bounds it; rebirth still takes the cash, every hotel and the
+   locations opened.
+   *Scrutiny 2026-10-21: levels kept, finds kept (A.11.3) and residents kept
+   leave rebirth resetting only the walls; decide once, in §6.4, what rebirth
+   keeps → his call (WAITING §2.38).*
 5. *Merging duplicates for XP.* (a) No: a holiday still gives Moon Shards;
    (b) a duplicate can be given up for XP. **Recommend (a)**: giving up one
    monster to feed another reads badly in a cozy game, and the holiday
    already gives duplicates a use.
 
 **Numbers (PLACEHOLDER):** cap 10; Wing earnings +10 % a level (+90 % at 10);
-staff efficiency +3 % a level; XP 1 per errand, check-in or scared hunter,
-1 per 10 minutes in the Wing, 6 per hour on an expedition; the bar 20 × level
-XP; the price 5 × level minutes of income.
+staff efficiency +3 % a level; **XP 1 per minute at work while the player
+plays, in the Wing or at a post alike**, 20 per hour on an expedition; the
+bar 20 × level XP (900 to the cap: about 15 h of play); **the price 10 ×
+level minutes of that resident's own Wing rate** (level 1 → 2 pays back in
+about 100 minutes, 9 → 10 in about 27 h).
+*Scrutiny 2026-10-21: 5 × level minutes of total income bought +10 % of one
+resident's share, a few % of income, so it never paid back → priced in that
+resident's own Wing rate. Scrutiny 2026-10-21: 1 XP per 10 Wing minutes put
+a Wing resident's cap ~150 h away while staff got there in a tenth of that;
+XP per cash earned → revised to one time-based scale for both, not per
+cash, since cash would level a Mythic faster than the loved Common decision
+2 is for.*
 
 **What it builds on.** `src/server/ResidentService.luau` (Wing earnings,
 `efficiencyOf`, errands, the offline till); `src/shared/Staff.luau` (`due`,
@@ -1639,24 +1769,34 @@ the resident's nameplate (`ResidentRenderer`).
 
 #### A.11.7 Build order (recommended)
 
-1. **The showcase** (S): most of it exists, it costs no art beyond four
-   blockouts, and it gives the street a goal at once.
-2. **Residents level up** (S–M): expeditions and the staff feed it, so it
-   comes before them; it touches only the residents' own code.
+0. **The decor art starts at once**, beside everything below: the three
+   launch sets (15 pieces) and the souvenirs are the long pole, they are
+   Blender work that blocks no code, and each set needs his look first.
+1. **The showcase** (S, street-only): most of it exists, it costs no art
+   beyond four blockouts, and it gives the street a goal at once.
+2. **Residents level up** (S–M): expeditions feed it, so it comes before
+   them; it touches only the residents' own code.
 3. **Deeper mutations** (M): no art, no dependency; the monthly mutation
    alone can ship first.
-4. **Rare decor sets and souvenirs** (M, art L): the rewards the last two
+4. **Rare decor sets and souvenirs** (M in code): the rewards the last two
    pay out in. The souvenirs and the Found tab can come before A.12; the set
-   bonus waits on its Decor bar. Its models start early, since they are the
-   long pole.
-5. **Expeditions** (M): needs levelling for its XP and the finds for its
-   roll.
-6. **VIP contracts** (M): last, because its asks are A.12's bars and its
-   rewards are the souvenirs; built on everything above.
+   bonus waits on its Decor bar.
+5. **VIP contracts** (M): its asks are A.12's bars (built before all of
+   A.11) and its reward the souvenirs; it pushes customizing, the game's
+   most important thing (§5.4).
+6. **Expeditions** (M): last, because it is the one that can unbalance the
+   economy: built only once its pay by staying's rules (A.11.2) has been run
+   through `tools/balance_model.py` against the offline cap.
 
 Why this order: each step is played on its own and leaves nothing half
 built, the small ones come first, and nothing is built before what it
 rewards with or reads from exists.
+*Scrutiny 2026-10-21: decor art first (the long pole); VIP contracts before
+expeditions; expeditions not until their dominance is solved → the art is
+step 0, beside the rest; VIP contracts move ahead of expeditions (A.12
+comes before all of A.11, so "last because of A.12" no longer held); the
+dominance is solved in the draft (A.11.2) and expeditions wait on the
+balance model.*
 
 ### A.12 Built rooms: the rules (night draft 2026-10-21, his rulings in §5.4)
 
