@@ -993,6 +993,18 @@ Med Claudes skärmdump där det finns en. -->
    - **Två spelare på två gator samtidigt** är inte provat (bara du kan
      starta **Server and Clients**).
 
+43. **Bayou Spas väggar och möbler: det som är ditt** (2026-10-21 morgon;
+   `blender/rooms/bayou_spa/`, bilderna i `review/`; felen rättas i skriptet):
+   - **Väggarna** läses som grön salongspanel snarare än träsk (inga plankor,
+     ingen mossa eller väder). **Rekommendation:** grövre plank och mossa.
+   - **Lily Basin och Steam Pool** är lika uppifrån (runda, turkosa, med
+     näckrosblad), och Lily Basin är ankelhög. **Rekommendation:** gör
+     Lily Basin högre som ett fat på fot.
+   - **Pilträden** på Willow Hammock läses som svampar. **Rekommendation:**
+     hängande grenar i stället för kupoler.
+   - **Poserna** (modellerarens val): man ligger i Mud Tub och Steam Pool och
+     sitter på Lagoon Perch. Ok?
+
 ## §3 Creator Hub och publicering
 
 1. ~~**Slå på Studio Access to API Services**~~ (gjort 2026-10-19: på i
