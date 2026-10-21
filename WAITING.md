@@ -896,6 +896,20 @@ Med Claudes skärmdump där det finns en. -->
      en bred gäst och en spelare får inte plats bredvid varandra.
      *Behåll 4* eller *5 studs* (väggbiten är 6). **Rekommendation:** 5.
 
+40. **De byggda rummen i spelet: det som är ditt** (natten 2026-10-21, byggt
+   och spelat i Studio, `TESTRUN.md` "Built rooms"):
+   - **Startrummet** är ett L på fyra rutor till höger om disken sett från
+     gatan: en 2×2 får inte plats, eftersom väggar inte får röra disken eller
+     entrén. *Duger formen och sidan*, eller *flytta disken så att en 2×2
+     får plats*. **Rekommendation:** flytta disken ett steg in.
+   - **En ruta köpt bredvid ett rum får väggar av sig själv, gratis**, och
+     **att välja rumstyp kostar inget**. **Rekommendation:** behåll båda.
+   - **Tutorialens andra rum** kostar ungefär $180 (två rutor, väggar, dörr,
+     Bed). **Rekommendation:** behåll; det är tidigt och billigt.
+   - **Rumsvyn på mobilen:** panelens text är liten och HUD:ens högerkolumn
+     skymmer rummet. **Rekommendation:** dölj högerkolumnen i rumsvyn och
+     gör panelen bredare; säg till om du vill något annat när du sett den.
+
 ## §3 Creator Hub och publicering
 
 1. ~~**Slå på Studio Access to API Services**~~ (gjort 2026-10-19: på i
