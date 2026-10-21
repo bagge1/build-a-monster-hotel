@@ -35,7 +35,13 @@ ends and lower edge, Bayou's an open trestle table; Bayou's heat lamps one high 
 pitcher white enamel, its skirt one cream, its cloth past its hem; the shelf's brackets knees against the wall, no
 aurora, its top at 5.06; the toilet's pedestal widest at the floor, its lid flat and narrower, clear of the back;
 Bayou's crook one smooth rod over a wider stone; the stools' seats without a tab; the Lodge's nightstand's and
-urn's tops past their fronts.
+urn's tops past their fronts. The fifth (2026-10-21): the toilet's ceramic one loft tapering from the rim to a
+narrower foot, its back carrying the cistern (no waist, flare or plinth), the lid hinged at the seat's back, no roll,
+a real flush lever; the shelf's sides ending on a bottom board, knees under the board, chunky game boxes; Bayou's
+lantern the lamp (1.7 tall) on a slimmer crook and smaller stone, cattails in the stone; Bayou's heat lamps small
+round hoods with lit rims; the chafing dishes' spoons toward the guest; the Lodge's shield on a pleat; Bayou's
+trestle shelf low between the X's feet, no bowls; Bayou's bench arms low; the Lodge's urn a light grille, its
+stool a snowflake on the seat; Bayou's stool a back 1 tall.
 
 Frostfang Lodge (an icy lodge): pale birch with log legs and edges, carved snowflakes on the panels, red and
 cream plaid, iron hardware, snow caps on the tall tops, aurora stripes (teal, mint, violet) as accents, an
@@ -210,7 +216,9 @@ def chafing_dish(kit, cx, cz, food, lumps, y=2.65, n=6):
     span('Body', (cx - 0.64, y + 0.26, cz - 0.36), (cx + 0.64, y + 0.36, cz + 0.36), food)
     for dx, dz, r, col in lumps:
         sphere('Body', (cx + dx, y + 0.37, cz + dz), r, col, n=n, rings=3)
-    seg('Body', (cx + 0.3, y + 0.38, cz + 0.22), (cx + 0.7, y + 0.5, cz + 0.4), 0.03, trim, n=4)
+    # The spoon's handle toward the guest, over the pan's front rim (the fifth blind review, 2026-10-21: toward the
+    # back it stuck out over the table's back edge).
+    seg('Body', (cx + 0.2, y + 0.38, cz + 0.05), (cx + 0.45, y + 0.48, cz - 0.5), 0.03, trim, n=4)
 
 
 def basket(kit, x, z, y=2.65):
@@ -242,8 +250,8 @@ def buffet_table(kit):
     # The cloth over the top, its front past the skirt's hem band and badge (the fourth blind review, 2026-10-21: the
     # Lodge's red hem band stood 0.02-0.035 past the top's front edge, a base wider than its top).
     span('Body', (-4.08, 2.48, -1.1 if kit == 'ff' else -1.09), (4.08, 2.65, 1.04), a, bevel=0.03)
-    n = 8
-    for i in range(n):                                                                    # pleats on the front
+    n = 7 if kit == 'ff' else 8     # the Lodge's odd, so its shield sits on the middle pleat, not on a seam (the
+    for i in range(n):              # fifth blind review, 2026-10-21)                     # pleats on the front
         xa, xb = -4.0 + 8.0 * i / n, -4.0 + 8.0 * (i + 1) / n
         span('Body', (xa, 0.34, -1.02 - 0.02 * (i % 2)), (xb, 2.5, -0.96), b if i % 2 else a)
     for sx in (-1, 1):                                                                    # and on the ends
@@ -525,7 +533,7 @@ def bs_buffet():
             (-1.0, 'lotus_heart', [(-0.35, -0.12, (0.2, 0.08, 0.16), 'chamomile'),
                                    (0.05, 0.1, (0.22, 0.09, 0.17), 'chamomile'),
                                    (0.35, -0.15, (0.18, 0.07, 0.14), 'chamomile'),
-                                   (-0.1, -0.16, (0.06, 0.04, 0.06), 'herb'), (0.28, 0.14, (0.06, 0.04, 0.06), 'herb')]),
+                                   (-0.1, -0.16, (0.06, 0.04, 0.06), 'herb')]),
             (0.75, 'mud_light', [(-0.3 + 0.2 * i, (-0.18, 0.12, -0.05, 0.16, -0.12)[i], (0.26, 0.08, 0.08), 'mud_dark')
                                  for i in range(4)]))
     for x, food, lumps in pans:
@@ -539,8 +547,10 @@ def bs_buffet():
     span('Body', (-3.82, 5.25, 0.55), (1.82, 5.37, 0.69), 'brass')
     for x, _f, _l in pans:
         span('Body', (x - 0.04, 5.27, -0.02), (x + 0.04, 5.35, 0.6), 'brass')
-        lathe('Body', [(0.36, 4.62), (0.24, 4.86), (0.08, 5.06), (0.06, 5.3)], 'copper', n=6, base=(x, 0, 0.0))
-        cyl('Glow_Warm_1', (x, 4.56, 0.0), 0.2, 0.07, 'lamp', n=6)
+        # A small round copper hood, its lit rim showing round it from above (the fifth blind review, 2026-10-21:
+        # hexagonal hoods 0.72 across read as brown cubes over the food from above, the glow hidden under them).
+        lathe('Body', [(0.25, 4.62), (0.1, 4.88), (0.05, 5.3)], 'copper', n=8, base=(x, 0, 0.0))
+        cyl('Glow_Warm_1', (x, 4.55, 0.0), 0.33, 0.08, 'lamp', n=8)
     for k in range(3):                                                       # a stack of plates
         cyl('Body', (2.6, 2.65 + 0.06 * k, -0.3), 0.42, 0.05, 'white', n=8)
     lathe('Body', [(0.3, 2.65), (0.34, 2.88), (0.28, 3.06), (0.15, 3.15), (0.17, 3.2), (0.0, 3.23)], 'copper', n=8,
@@ -576,12 +586,16 @@ def ff_bar_stool():
             cyl('Body', (x, 0, z), 0.1, 2.44, 'birch', n=6)
     lathe('Body', [(0.69, 1.42), (0.77, 1.42), (0.77, 1.5), (0.69, 1.5)], 'log', n=12, closed=True)
     oval_seat('birch', 'red')
-    for z in (-0.4, 0.2):           # the plaid, its stripes ending at the cushion's edge
-        h = 0.95 * math.sqrt(1 - ((z + 0.1) / 0.7) ** 2) - 0.04
-        span('Body', (-h, 2.59, z - 0.05), (h, 2.612, z + 0.05), 'cream')
-    for x in (-0.45, 0.45):
-        h = 0.7 * math.sqrt(1 - (x / 1.0) ** 2) - 0.04
-        span('Body', (x - 0.05, 2.59, -0.1 - h), (x + 0.05, 2.616, -0.1 + h), 'cream')
+    # A six-armed snowflake inlaid on the cushion (the fifth blind review, 2026-10-21: the plaid's two stripes each
+    # way read from above as a white cross on red, a medical or a 'no' sign). Its bars and tips 0.005-0.024 proud,
+    # each its own height, under the seated thighs (2.63).
+    for k in range(3):
+        box('Body', (0, 0, 0), (0.9, 2 * (0.005 + 0.006 * k) + 0.02, 0.1), 'snow',
+            m=at((0.0, 2.59, -0.1), ry=60 * k + 90))
+    for k in range(6):
+        a = math.radians(60 * k + 90)
+        box('Body', (0, 0, 0), (0.18, 2 * 0.024 + 0.02, 0.06), 'snow',
+            m=at((0.315 * math.cos(a), 2.59, -0.1 - 0.315 * math.sin(a)), ry=60 * k + 180))
     for sx in (-1, 1):              # the back's posts, raked back from the board's back edge into the back
         seg('Body', (0.5 * sx, 2.46, 0.5), (0.6 * sx, 3.3, 0.72), 0.07, 'birch', n=6)
     back = [(-0.82, 3.05), (0.82, 3.05)] + list(reversed(round_arch_points(-0.82, 0.82, 3.65, 3.95, n=8)))
@@ -598,8 +612,9 @@ def bs_bar_stool():
     # The third blind review (2026-10-21): a slatted back to the shoulders with a lotus medallion over a tulip
     # pedestal and a foot ring read as a barber's or an office chair. Now a bar stool: four cypress root legs
     # joined by a copper foot ring (under the feet, 1.42-1.5), the oval weathered seat with a lotus-pink cushion at
-    # 2.6 (MODELS.md "Furniture"), and a low curved backrest, a band of light cypress round the seat's back at the
-    # small of the back (3.0-3.42) on two short posts, 0.25 behind the torso. The seat runs to z -0.86, 0.6 ahead
+    # 2.6 (MODELS.md "Furniture"), and a low curved backrest (since the fifth review 1 tall), a band of light cypress
+    # round the seat's back at the
+    # back (2.98-3.98) on two short posts, 0.25 behind the torso. The seat runs to z -0.86, 0.6 ahead
     # of Use (the seated figure's thighs on it, its shins hanging from the knees 0.65 ahead).
     for x in (-0.53, 0.53):
         for z in (-0.5, 0.5):
@@ -607,11 +622,17 @@ def bs_bar_stool():
     lathe('Body', [(0.69, 1.42), (0.77, 1.42), (0.77, 1.5), (0.69, 1.5)], 'copper', n=12, closed=True)
     oval_seat('drift', 'lotus')
     for sx in (-1, 1):              # the backrest's posts, raked back from the board's back edge into it
-        seg('Body', (0.45 * sx, 2.46, 0.52), (0.5 * sx, 3.1, 0.8), 0.065, 'cypress_dark', n=6)
+        seg('Body', (0.45 * sx, 2.46, 0.52), (0.5 * sx, 3.2, 0.8), 0.065, 'cypress_dark', n=6)
+    # A real low back, 1 tall (2.98-3.98), a cypress rim on its top (the fifth blind review, 2026-10-21: a band
+    # 0.42 tall at the small of the back read as a handle).
     ths = [math.radians(40 + 100 * i / 8) for i in range(9)]
     band = ([(0.96 * math.cos(t), 0.96 * math.sin(t)) for t in ths]
             + [(0.84 * math.cos(t), 0.84 * math.sin(t)) for t in reversed(ths)])
-    prism('Body', band, 3.0, 3.42, 'cypress_light', plane='xz')
+    prism('Body', band, 2.98, 3.9, 'cypress_light', plane='xz')
+    ths = [math.radians(38 + 104 * i / 8) for i in range(9)]       # 2 degrees past the band's ends: no shared plane
+    rim = ([(0.98 * math.cos(t), 0.98 * math.sin(t)) for t in ths]
+           + [(0.82 * math.cos(t), 0.82 * math.sin(t)) for t in reversed(ths)])
+    prism('Body', rim, 3.88, 3.98, 'cypress_dark', plane='xz')
     bar_seat(-1.0, 1.0, -0.8, 0.6, 2.6)
     use((0, 2.6, -0.2), (0, 0, -1), 'Sit')
     done('a bar stool on four cypress root legs joined by a copper foot ring, a lotus-pink cushion at 2.6 on an '
@@ -732,14 +753,20 @@ def salad_bar(kit):
                 prism('Body', [(za - 0.11, 0.0), (za + 0.11, 0.0), (zb + 0.11, 2.64), (zb - 0.11, 2.64)], xa, xb,
                       'cypress_dark', plane='zy')
         cyl('Body', (0, 0, 0), 0.09, 7.4, 'cypress_dark', n=6, m=at((-3.7, 1.32, 0.0), rz=-90))   # the stretcher
-        span('Body', (-3.45, 1.38, -0.78), (3.45, 1.5, 0.78), 'drift', bevel=0.03)             # the open shelf
         span('Body', (-3.5, 2.42, -1.0), (3.5, 2.62, -0.88), 'cypress')                       # an apron under the top
-        basket('bs', -1.9, 0.0, y=1.5)
+        # The open shelf low, between the X's spread feet (the fifth blind review, 2026-10-21: at 1.38-1.5, where
+        # the legs cross, its 1.56 depth ran through the X in the side view), on a rail at each end whose ends
+        # stop in the legs; under it nothing like a plate (a stack of stone bowls on it read as the plates): a
+        # basket of rolls and a stone crock.
+        for sx in (-1, 1):
+            xa, xb = sorted((3.38 * sx, 3.7 * sx))
+            span('Body', (xa, 0.3, -0.66), (xb, 0.42, 0.66), 'cypress_dark')
+        span('Body', (-3.5, 0.41, -0.44), (3.5, 0.53, 0.44), 'drift', bevel=0.03)
+        basket('bs', -1.9, 0.0, y=0.53)
         for dx, dz in ((-0.18, -0.05), (0.15, 0.1), (0.0, -0.12)):
-            sphere('Body', (-1.9 + dx, 1.72, dz), (0.14, 0.1, 0.12), 'cypress_light', n=6, rings=3)
-        for k in range(3):              # a stack of stone bowls
-            lathe('Body', [(0.22, 1.5 + 0.11 * k), (0.42, 1.66 + 0.11 * k), (0.36, 1.66 + 0.11 * k),
-                           (0.0, 1.56 + 0.11 * k)], 'stone_light', n=8, base=(1.9, 0, 0.0))
+            sphere('Body', (-1.9 + dx, 0.75, dz), (0.14, 0.1, 0.12), 'cypress_light', n=6, rings=3)
+        lathe('Body', [(0.26, 0.53), (0.34, 0.75), (0.3, 1.02), (0.2, 1.08), (0.22, 1.12), (0.0, 1.14)],
+              'stone_light', n=8, base=(1.9, 0, 0.0))                                        # a stone crock
     span('Body', (-4.1, 2.6, -1.05), (4.1, 2.78, 1.05), R['top'], bevel=0.05)
     # The well of crushed ice (Bayou's white, not the water-teal of its ping-pong table: the second blind review).
     span('Body', (-2.72, 2.77, -0.88), (3.82, 2.9, 0.04), body)                     # the ice well's tray
@@ -757,8 +784,8 @@ def salad_bar(kit):
         salad_heap(kind, x, cz, col, col2)
     seg('Body', (xs[0] - 0.3, 3.04, cz - 0.12), (xs[0] + 0.05, 3.32, cz + 0.22), 0.025, trim, n=4)   # tongs
     # At the row's start, the guest's end, under the guard's end: a stack of plates.
-    for k in range(4):
-        cyl('Body', (-3.38, 2.78 + 0.06 * k, cz), 0.42, 0.05, 'white', n=8)
+    for k in range(5):
+        cyl('Body', (-3.38, 2.78 + 0.06 * k, cz), 0.44, 0.05, 'white', n=10)
     # The sneeze guard: two posts at the ends of the pans' back edge; at each, a bracket from the post's top along
     # the pane's end to its lower front corner and a strut from the post up to that corner (a closed triangle);
     # a rail along the lower edge; the pane between them sloping from 5.0 over the pans' back edge down toward the
@@ -781,8 +808,8 @@ def salad_bar(kit):
                 "top with four steel pans heaped with lettuce, cherry tomatoes, carrot sticks and egg halves, tongs, "
                 "a stack of plates at the guest's end, a sloped glass sneeze guard high on the guest's side, framed "
                 "at its ends and lower edge in iron",
-          'bs': "a salad bar: an open cypress trestle table (crossed legs at each end, a stretcher, a shelf with a "
-                "basket of rolls and a stack of stone bowls), moss off its weathered top, a well of crushed ice "
+          'bs': "a salad bar: an open cypress trestle table (crossed legs at each end, a stretcher, a low shelf with a "
+                "basket of rolls and a stone crock), moss off its weathered top, a well of crushed ice "
                 "along its front with four brass pans heaped with lettuce, cherry tomatoes, carrot sticks and egg "
                 "halves, tongs, a stack of plates at the guest's end, a sloped glass sneeze guard high on the "
                 "guest's side, framed at its ends and lower edge in brass"}[kit])
@@ -809,7 +836,13 @@ def coffee_urn(kit):
     span('Body', (ux - 0.06, 3.0, uz - 0.72), (ux + 0.06, 3.12, uz - 0.38), metal)
     cyl('Body', (ux, 2.84, uz - 0.66), 0.05, 0.16, metal, n=6)
     span('Body', (ux - 0.05, 3.12, uz - 0.6), (ux + 0.05, 3.42, uz - 0.5), 'black' if kit == 'ff' else 'cypress_dark')
-    span('Body', (ux - 0.3, 2.65, uz - 0.88), (ux + 0.3, 2.7, uz - 0.44), 'iron')
+    if kit == 'ff':                 # a light steel grille (the fifth blind review, 2026-10-21: a dark tray read as a hole)
+        span('Body', (ux - 0.3, 2.65, uz - 0.88), (ux + 0.3, 2.68, uz - 0.44), 'grey')
+        for k in range(5):
+            zz = uz - 0.83 + 0.085 * k
+            span('Body', (ux - 0.27, 2.67, zz - 0.022), (ux + 0.27, 2.7 + 0.004 * (k % 2), zz + 0.022), 'white')
+    else:
+        span('Body', (ux - 0.3, 2.65, uz - 0.88), (ux + 0.3, 2.7, uz - 0.44), 'iron')
     cyl('Body', (ux, 2.7, uz - 0.66), 0.13, 0.14, R['cloth'], n=8)
     span('Body', (-1.0, 2.65, 0.75), (1.0, 4.2, 1.0), R['dark'], bevel=0.04)
     span('Body', (-1.06, 4.2, 0.68), (1.06, 4.36, 1.06), R['mid'], bevel=0.03)
@@ -1106,19 +1139,24 @@ def board_game_shelf(kit):
     # smeared rainbow; the top at 5.35 (the Lodge's snow 5.52) hid what lay on it from above. Now each bracket is a
     # knee in the sides' own wood against the wall, its tip 0.8 behind the case's front; no aurora; the case 0.2
     # lower and its upper bay 0.09 lower (still 0.17 air over the games), the cornice's top at 5.06, a game on it.
+    # The fifth blind review (2026-10-21): the sides still ran 0.14 under the bottom board (to the apron's foot), so
+    # from the front they were cut-off legs and from three-quarters the knee under each was a wedge with air under
+    # it; most games were thin slabs (lids 0.26-0.3 thick) and read as books. Now the bottom board is one slab under
+    # the whole case, the sides ending on it (nothing of them below its underside), no apron; two triangular knees
+    # in the sides' wood under the board, against the wall, inboard of the sides; and the games chunky boxes (0.38
+    # and more thick) with bright lids and a contrasting band, stood face-out or stacked two high, and the open game.
     R = ROLE[kit]
     back, front, bot, top = 1.1, -0.35, 2.4, 4.86
     mid = 3.62                      # the middle shelf's underside (its top 3.74)
     span('Body', (-2.3, bot, 0.95), (2.3, top, back), R['dark'] if kit == 'ff' else 'rattan_dark')
     for x in (-1, 1):
         xa, xb = sorted((2.3 * x, 2.5 * x))
-        span('Body', (xa, bot - 0.14, front), (xb, top, back), R['wood'], bevel=0.03)
-        xa, xb = sorted((2.32 * x, 2.48 * x))         # its bracket on the wall under it, a knee in the same wood
-        prism('Body', [(back - 0.01, bot - 0.14), (0.45, bot - 0.14), (back - 0.01, bot - 0.75)],
+        span('Body', (xa, bot + 0.08, front), (xb, top, back), R['wood'], bevel=0.03)
+        xa, xb = sorted((1.62 * x, 1.82 * x))         # a knee under the board, against the wall
+        prism('Body', [(back - 0.01, bot - 0.13), (0.2, bot - 0.13), (back - 0.01, bot - 0.9)],
               xa, xb, R['wood'], plane='zy')
     span('Body', (-2.56, top, front - 0.04), (2.56, top + 0.2, back), R['mid'], bevel=0.04)    # the cornice
-    span('Body', (-2.3, bot, front), (2.3, bot + 0.18, 0.95), R['wood'])               # the bottom board
-    span('Body', (-2.3, bot - 0.14, front), (2.3, bot, front + 0.16), R['mid'])        # an apron under its front
+    span('Body', (-2.53, bot - 0.14, front - 0.03), (2.53, bot + 0.18, back - 0.02), R['mid'], bevel=0.03)  # the bottom board
     span('Body', (-2.3, mid, front + 0.04), (2.3, mid + 0.12, 0.95), R['wood2'])       # the middle shelf
     if kit == 'ff':
         lids = ('red', 'teal', 'yellow', 'violet', 'orange', 'pine', 'navy', 'pink', 'mint')
@@ -1138,13 +1176,15 @@ def board_game_shelf(kit):
         return lids[i % len(lids)], pics[i % len(pics)], bases[i % 2]
 
     def flat_box(xc, y, w, d, h, z0):
-        """A game box lying flat on y: its base plain, its lid (the top half) 0.03 wider all round in a bright
-        colour, a bold block on the lid's front edge and a picture on its top. Returns its top."""
+        """A game box lying flat on y, one bright block (the fifth blind review, 2026-10-21: a cream base under a
+        lid and a band across it made each box two or three slabs, and a stack of them a pile of books): the lid
+        covers it to 0.02 over its foot, where a dark shadow line shows the inset base, a label block in a
+        contrasting colour on its front's left, a picture on its top. Returns its top."""
         lid, pic, base = colours()
-        x0, x1, z1, cut = xc - w / 2, xc + w / 2, z0 + d, y + 0.5 * h
-        span('Body', (x0 + 0.03, y, z0 + 0.03), (x1 - 0.03, cut, z1 - 0.03), base)
-        span('Body', (x0, cut - 0.01, z0), (x1, y + h, z1), lid)
-        span('Body', (x0 + 0.12, cut + 0.025, z0 - 0.015), (xc + 0.05, y + h - 0.025, z0 + 0.01), pic)
+        x0, x1, z1 = xc - w / 2, xc + w / 2, z0 + d
+        span('Body', (x0 + 0.03, y, z0 + 0.03), (x1 - 0.03, y + 0.06, z1 - 0.03), 'black')
+        span('Body', (x0, y + 0.02, z0), (x1, y + h, z1), lid)
+        span('Body', (x0 + 0.1, y + 0.08, z0 - 0.015), (x0 + 0.1 + 0.42 * w, y + h - 0.07, z0 + 0.01), pic)
         span('Body', (x0 + 0.18, y + h - 0.01, z0 + 0.16), (x0 + 0.58, y + h + 0.012, z0 + 0.5), pic)
         return y + h
 
@@ -1173,20 +1213,22 @@ def board_game_shelf(kit):
         sphere('Body', (x, y + 0.27, z), 0.065, colr, n=5, rings=3)
 
     lo, hi = bot + 0.18, mid + 0.12                   # the two shelves' tops
-    # The lower bay (1.04 clear): two deep boxes; a box stood up with another behind it, a pawn and a die before
-    # them; a deep box.
-    y = flat_box(-1.5, lo, 1.3, 0.95, 0.3, -0.12)
-    flat_box(-1.46, y, 1.2, 0.88, 0.28, -0.08)
-    standing_box(0.12, lo, 1.12, 0.86, 0.55)
-    standing_box(-0.06, lo, 1.2, 0.8, 0.2)
-    pawn(-0.4, lo, -0.15, pawns[0])
-    die(0.35, lo, -0.12)
-    flat_box(1.5, lo, 1.28, 0.9, 0.34, -0.1)
-    # The upper bay (1.12 clear): a box stood up, a die before it; a game open on a closed box (its board in four
-    # colours, two pawns), its lid standing behind it; two boxes, a die on them.
-    standing_box(-1.5, hi, 1.2, 0.95, 0.4)
-    die(-1.1, hi, -0.15)
-    y = flat_box(0.0, hi, 1.3, 0.78, 0.26, -0.15)
+    # Every game a chunky box, 0.36 and more thick (the fifth blind review, 2026-10-21: lids 0.26-0.3 read as books).
+    # The lower bay (1.04 clear): two boxes stacked; a box stood face-out with a taller one behind it, a pawn and a
+    # die before them; two boxes stacked.
+    y = flat_box(-1.5, lo, 1.3, 0.95, 0.4, -0.12)
+    flat_box(-1.46, y, 1.2, 0.88, 0.38, -0.08)
+    standing_box(0.0, lo, 1.2, 0.86, -0.1, d=0.42)
+    standing_box(0.06, lo, 1.1, 0.92, 0.42, d=0.42)
+    pawn(-0.38, lo, -0.25, pawns[0])
+    die(0.4, lo, -0.24)
+    y = flat_box(1.5, lo, 1.28, 0.9, 0.42, -0.1)
+    flat_box(1.48, y, 1.16, 0.84, 0.36, -0.06)
+    # The upper bay (1.12 clear): a box stood face-out, a die before it; a game open on its closed box (its board in
+    # four colours, two pawns), its lid standing behind it; two boxes stacked, a die on them.
+    standing_box(-1.5, hi, 1.2, 0.95, -0.05, d=0.42)
+    die(-1.05, hi, -0.24)
+    y = flat_box(0.0, hi, 1.3, 0.78, 0.36, -0.15)
     span('Body', (-0.62, y, -0.13), (0.62, y + 0.1, 0.61), bases[1])                  # the open box's tray
     span('Body', (-0.57, y + 0.1, -0.08), (0.57, y + 0.155, 0.56), board)               # the board on it
     for q, (sx, sz) in enumerate(((-1, -1), (1, -1), (-1, 1), (1, 1))):
@@ -1196,28 +1238,29 @@ def board_game_shelf(kit):
     pawn(-0.25, y + 0.155, 0.05, pawns[1])
     pawn(0.3, y + 0.155, 0.4, pawns[2])
     standing_box(0.0, hi, 1.24, 0.95, 0.66, d=0.2)
-    y = flat_box(1.5, hi, 1.3, 0.92, 0.3, -0.1)
-    y = flat_box(1.48, y, 1.2, 0.86, 0.28, -0.06)
+    y = flat_box(1.5, hi, 1.3, 0.92, 0.4, -0.1)
+    y = flat_box(1.48, y, 1.2, 0.86, 0.38, -0.06)
     die(1.75, y, 0.1)
     if kit == 'ff':
         snow_cap(-2.54, 2.54, front - 0.02, back - 0.02, top + 0.2)
-        flat_box(-1.3, top + 0.3, 1.3, 0.95, 0.24, 0.0)                                  # a game kept on top
+        flat_box(-1.3, top + 0.3, 1.3, 0.95, 0.36, 0.0)                                  # a game kept on top
         die(0.9, top + 0.3, 0.4)
-        note = ('a shelf of board games hung on the wall well off the floor on two birch knee brackets under its '
-                'birch sides, a log cornice with snow and a game on it; in two bays stacks of wide game boxes '
-                'with bright lids, boxes stood up showing boards in four colours under white title bands, one game '
-                'open with its board and pawns, dice')
+        note = ('a shelf of board games hung on the wall well off the floor, its birch sides ending on a log bottom '
+                'board, two birch knee brackets under the board against the wall, a log cornice with snow and a '
+                'game on it; in two bays chunky game boxes with bright lids and contrasting bands, stacked two high '
+                'or stood face-out showing boards in four colours under white title bands, one game open with its '
+                'board and pawns, dice')
     else:
         moss_fringe(-2.56, -0.9, top + 0.16, front - 0.04, depth=0.45)
         moss_fringe(1.2, 2.56, top + 0.16, front - 0.04, depth=0.35, col='moss_light')
-        y = flat_box(-1.3, top + 0.2, 1.3, 0.95, 0.24, 0.0)                              # games kept on top
-        flat_box(-1.26, y, 1.2, 0.88, 0.22, 0.04)
+        flat_box(-1.3, top + 0.2, 1.3, 0.95, 0.38, 0.0)                                  # a game kept on top
         die(0.9, top + 0.2, 0.4)
         die(1.25, top + 0.2, 0.55)
-        note = ('a shelf of board games hung on the wall well off the floor on two cypress knee brackets under its '
-                'sides, a woven rattan back, moss hanging off the cornice and two games and dice on it; in two bays '
-                'stacks of wide game boxes with bright lids, boxes stood up showing boards in four colours under '
-                'white title bands, one game open with its board and pawns, dice')
+        note = ('a shelf of board games hung on the wall well off the floor, its cypress sides ending on a light '
+                'cypress bottom board, two cypress knee brackets under the board against the wall, a woven rattan '
+                'back, moss hanging off the cornice and a game and dice on it; in two bays chunky game boxes with '
+                'bright lids and contrasting bands, stacked two high or stood face-out showing boards in four '
+                'colours under white title bands, one game open with its board and pawns, dice')
     stand()
     done(note)
 
@@ -1391,6 +1434,36 @@ def egg(a_back, a_front, b, cz=0.0, n=16, s=1.0):
     return pts
 
 
+def toilet_body(col):
+    """The toilet's ceramic, one closed loft (the fifth blind review, 2026-10-21): at each height an outline of a
+    half-egg at the front and straight sides running back to rounded back corners. Widest at the rim (1.45-1.6,
+    0.8 a side, its front at z -0.87, its back at 1.04 under the cistern), tapering straight down on every side
+    to the foot (0.62 a side, front -0.58, back 0.72): no waist, no flare, no plinth."""
+    def outline(a, zf, wb, zb, r=0.16, m=9):
+        bf = 0.78 * a
+        zc_ = zf + bf
+        pts = [(a * math.cos(math.pi * i / (m - 1)), zc_ - bf * math.sin(math.pi * i / (m - 1))) for i in range(m)]
+        for cx_, a0 in ((-wb + r, 180), (wb - r, 90)):                      # the back corners, -x then +x
+            pts += [(cx_ + r * math.cos(math.radians(a0 - 45 * k)), zb - r + r * math.sin(math.radians(a0 - 45 * k)))
+                    for k in range(3)]
+        return pts
+    secs = [(0.0, outline(0.62, -0.58, 0.56, 0.72))]
+    for y in (0.5, 1.0, 1.45):
+        s = y / 1.45
+        secs.append((y, outline(0.62 + 0.18 * s, -0.58 - 0.29 * s, 0.56 + 0.14 * s, 0.72 + 0.32 * s)))
+    secs.append((1.6, outline(0.79, -0.86, 0.69, 1.035)))
+    k = len(secs[0][1])
+    verts = [Vector((x, y, z)) for y, pts in secs for x, z in pts]
+    faces = []
+    for i in range(len(secs) - 1):
+        for j in range(k):
+            jj = (j + 1) % k
+            faces.append((i * k + j, i * k + jj, (i + 1) * k + jj, (i + 1) * k + j))
+    faces.append(tuple(reversed(range(k))))
+    faces.append(tuple(range((len(secs) - 1) * k, len(secs) * k)))
+    K._add('Body', verts, faces, col)
+
+
 def toilet(kit):
     kfurn('Toilet')
     # One white ceramic toilet (the third blind review, 2026-10-21: a wood cistern on a casing to the floor read
@@ -1407,39 +1480,48 @@ def toilet(kit):
     # the cistern (an egg in front of it) and stood 0.25 behind the seated back. Now the pedestal is widest at the
     # floor and straight up to the bowl, the block behind it straight-sided, the lid flat with a rim, no wider than
     # the cistern (moved back 0.06), its front 0.32 behind the seated torso's back (z 0.15).
-    zc = -0.245
-    lathe('Body', [(0.74, 0.0), (0.74, 0.05), (0.7, 0.1), (0.68, 0.55), (0.76, 0.85), (0.86, 1.12), (0.93, 1.32),
-                   (0.96, 1.5), (0.95, 1.6), (0.0, 1.6)], 'white', n=16, base=(0, 0, zc), scale=(0.94, 0.73))
-    prism('Body', [(-0.05, 0.0), (1.02, 0.0), (1.02, 1.585), (-0.05, 1.585)], -0.56, 0.56, 'white',
-          plane='zy')           # the pedestal's back, straight up to the deck the cistern stands on
+    # The fifth blind review (2026-10-21), the fourth time the bowl read as a goblet, vase or trophy: its side
+    # profile was an hourglass (a waist over a foot that flared out again), a plain box plinth stood behind it,
+    # the raised lid hinged on the cistern's face, the spare roll had no hole. Now the whole ceramic is one loft:
+    # widest at the rim and tapering straight down on every side to a foot 77 % of the rim's width (no waist, no
+    # flare), its back running up into the deck the cistern stands on directly (no plinth); the raised lid hinges
+    # at the seat ring's back, on the deck, and leans back against the cistern's front, its front 0.31 behind the
+    # seated torso's back (z 0.15); the roll is gone; the lever is a round boss and a lever arm on the cistern's
+    # side.
     seat_c, wood, metal, hole = (('birch_shade', 'log', 'iron', 'ink') if kit == 'ff'
                                  else ('cypress_light', 'cypress', 'brass', 'water_deep'))
+    zc = -0.245
+    toilet_body('white')
     outer, inner = egg(0.84, 0.68, 0.6, zc), egg(0.5, 0.36, 0.33, zc)
     ring_prism('Body', outer, inner, 1.59, 1.72, seat_c, seat_c, seat_c)          # the seat ring
     prism('Body', egg(0.5, 0.36, 0.33, zc, s=0.98), 1.5, 1.655, hole, plane='xz')  # the opening in it
-    # The lid, raised: a flat plate no wider than the cistern (0.7 a side against its 0.74), a panel inside its rim.
-    lid = [(x, 1.74 + (0.53 - z)) for x, z in egg(0.7, 0.56, 0.53)]                # 1.74-2.8
-    prism('Body', lid, 0.5, 0.555, seat_c, plane='xy')
-    panel_ = [(x, 1.74 + (0.53 - z)) for x, z in egg(0.7, 0.56, 0.53, s=0.8)]
-    prism('Body', [(x, y + 0.02) for x, y in panel_], 0.47, 0.51, 'birch' if kit == 'ff' else 'cypress', plane='xy')
-    for x in (-0.36, 0.36):                                                     # its hinges
-        span('Body', (x - 0.09, 1.64, 0.3), (x + 0.09, 1.78, 0.52), metal)
-    span('Body', (-0.74, 1.575, 0.56), (0.74, 2.8, 1.02), 'white', bevel=0.05)   # the cistern on the deck
-    span('Body', (-0.8, 2.79, 0.51), (0.8, 2.94, 1.07), wood, bevel=0.03)         # its lid, in the kit's wood
-    span('Body', (-0.86, 2.5, 0.64), (-0.72, 2.6, 0.72), metal)                  # the lever on its side
-    sphere('Body', (-0.88, 2.55, 0.59), 0.06, metal, n=6, rings=3)
-    cyl('Body', (0, 0, 0), 0.17, 0.32, 'white', n=8, m=at((0.25, 3.11, 0.79), rz=90))   # a spare roll on the lid
+    # The lid, raised: hinged at the seat ring's back on the deck (z 0.47, y 1.73), leaning back 5.6 degrees to
+    # rest its top against the cistern's front (z 0.62); a flat plate no wider than the cistern, a panel on its
+    # front inside its rim.
+    lid_m = at((0.0, 1.73, 0.47), rx=5.6)
+    lid = [(x, 0.48 - z) for x, z in egg(0.7, 0.56, 0.48)]                      # 0-0.96 up from its hinge
+    prism('Body', lid, 0.0, 0.06, seat_c, plane='xy', m=lid_m)
+    prism('Body', [(x, 0.48 - z) for x, z in egg(0.7, 0.56, 0.48, s=0.8)], -0.012, 0.02,
+          'birch' if kit == 'ff' else 'cypress', plane='xy', m=lid_m)
+    for x in (-0.36, 0.36):                                                     # its hinges, on the deck
+        span('Body', (x - 0.09, 1.58, 0.34), (x + 0.09, 1.78, 0.56), metal)
+    span('Body', (-0.74, 1.575, 0.62), (0.74, 2.8, 1.04), 'white', bevel=0.05)   # the cistern, on the bowl's back
+    span('Body', (-0.8, 2.79, 0.58), (0.8, 2.94, 1.08), wood, bevel=0.03)         # its lid, in the kit's wood
+    # The flush lever on the cistern's left side: a round boss, a lever arm forward ending in a ball.
+    cyl('Body', (0, 0, 0), 0.1, 0.05, metal, n=8, m=at((-0.735, 2.52, 0.9), rz=90))
+    seg('Body', (-0.8, 2.52, 0.9), (-0.8, 2.5, 0.5), 0.035, metal, n=5)
+    sphere('Body', (-0.8, 2.5, 0.48), 0.06, metal, n=6, rings=3)
     if kit == 'ff':
-        for z0, z1 in ((0.49, 0.53), (1.05, 1.09)):                             # the lid's bark edges
+        for z0, z1 in ((0.555, 0.595), (1.065, 1.1)):                           # the lid's bark edges
             span('Body', (-0.78, 2.8, z0), (0.78, 2.92, z1), 'log_dark')
-        note = ("a white ceramic toilet: the bowl on a wide foot, a birch seat ring at 1.72 round a dark opening, "
-                "the lid raised against a low white cistern on the bowl's back, its log lid with bark edges, an "
-                "iron lever, a spare roll")
+        note = ("a white ceramic toilet: one bowl tapering from its rim to a narrower foot, its back carrying a low "
+                "white cistern, a birch seat ring at 1.72 round a dark opening, the lid raised from the seat's back "
+                "against the cistern, its log lid with bark edges, an iron flush lever")
     else:
-        lotus((-0.42, 2.94, 0.8), s=0.36)
-        note = ("a white ceramic toilet: the bowl on a wide foot, a cypress seat ring at 1.72 round a dark opening, "
-                "the lid raised against a low white cistern on the bowl's back, its cypress lid with a lotus, a "
-                "brass lever, a spare roll")
+        lotus((-0.42, 2.94, 0.83), s=0.36)
+        note = ("a white ceramic toilet: one bowl tapering from its rim to a narrower foot, its back carrying a low "
+                "white cistern, a cypress seat ring at 1.72 round a dark opening, the lid raised from the seat's "
+                "back against the cistern, its cypress lid with a lotus, a brass flush lever")
     K.seat(-1.0, 1.0, -0.94, 0.45, 1.72)
     use((0, 1.72, -0.35), (0, 0, -1), 'Sit')
     done(note)
@@ -1466,10 +1548,13 @@ def garden_bench(kit):
                 'lying on the top one and on the posts')
     else:
         for sx in (-1, 1):
-            leg('bs', 2.42 * sx, -0.6, 2.4, r=0.08)
+            # The armrests low, 0.33-0.45 over the seat, under the thighs' top (2.35) and clear under the seated
+            # forearms (2.5): the fifth blind review (2026-10-21) saw arms at 2.36-2.5, level with the forearms'
+            # underside, pass through them in the three-quarter and side views.
+            leg('bs', 2.42 * sx, -0.6, 2.1, r=0.08)
             leg('bs', 2.4 * sx, 0.78, 3.3, r=0.1)
             xa, xb = sorted((2.34 * sx, 2.56 * sx))
-            span('Body', (xa, 2.36, -0.65), (xb, 2.5, 0.9), 'cypress_light', bevel=0.03)
+            span('Body', (xa, 2.08, -0.65), (xb, 2.2, 0.9), 'cypress_light', bevel=0.03)
         planks = 'drift'
         for i in range(5):
             ya, yb = 2.0 + 0.2 * i, 2.0 + 0.2 * (i + 1)
@@ -1517,35 +1602,40 @@ def floor_lamp(kit):
         # as segmented tubing with two kinks, and from above the lantern hung half off a stone 0.7 across. Now one
         # smooth rod (a gentle lean, then a round crook of radius 0.39 over to the hook), thinning evenly, on a
         # stone 0.9 across, so the lantern (axis x 0.45, rim 0.49) hangs over it.
-        boulder((0, 0, 0), 0.9, 0.45, 'stone', n=10)
-        cx, cy, rc = 0.06, 5.0, 0.39
-        pts = [(-0.33 * ((y - 0.3) / 4.7) ** 2, y) for y in (0.3, 1.3, 2.3, 3.2, 3.9, 4.5, 5.0)]
+        # The fifth blind review (2026-10-21): the lantern (about 1.1 tall) was the smallest thing next to a crook
+        # over 5 tall and a stone 1.8 across, and the cattails stood on the floor beside the stone. Now the lantern
+        # is the lamp: 1.7 tall (dish 2.85 to knob 4.55), 1.16 across, its glowing core 0.8 across and 1.3 tall; the
+        # crook thinner (0.085 to 0.055) and lower (5.25), its stone smaller (1.4 across, 0.35 high); the cattails
+        # planted in the stone.
+        boulder((0, 0, 0), 0.7, 0.35, 'stone', n=10)
+        lx = 0.3                    # the lantern's axis, under the hook's end
+        cx, cy, rc = -0.1, 4.85, 0.4
+        pts = [(-0.35 - 0.15 * ((y - 0.2) / 4.65) ** 2, y) for y in (0.2, 1.2, 2.2, 3.1, 3.8, 4.4, 4.85)]
         pts += [(cx - rc * math.cos(math.radians(a)), cy + rc * math.sin(math.radians(a))) for a in range(20, 181, 20)]
-        tube('Body', pts, (0.1, 0.065), 'cypress_dark', n=6)
-        lx = 0.45                   # the lantern's axis
-        lathe('Body', [(0.0, 3.3), (0.12, 3.36), (0.4, 3.44), (0.49, 3.54), (0.49, 3.6), (0.0, 3.6)], 'brass', n=12,
-              base=(lx, 0, 0))      # the dish
-        lathe('Glow_Warm_1', [(0.0, 3.59), (0.24, 3.64), (0.3, 3.84), (0.3, 4.14), (0.22, 4.34), (0.0, 4.4)],
+        tube('Body', pts, (0.085, 0.055), 'cypress_dark', n=6)
+        lathe('Body', [(0.0, 2.85), (0.16, 2.91), (0.48, 3.0), (0.58, 3.1), (0.58, 3.17), (0.0, 3.17)], 'brass',
+              n=12, base=(lx, 0, 0))      # the dish
+        lathe('Glow_Warm_1', [(0.0, 3.15), (0.3, 3.2), (0.4, 3.4), (0.4, 4.1), (0.3, 4.33), (0.0, 4.4)],
               'firefly', n=10, base=(lx, 0, 0))
-        lathe('Body', [(0.4, 4.44), (0.48, 4.44), (0.48, 4.5), (0.4, 4.5)], 'brass', n=12, closed=True,
+        lathe('Body', [(0.48, 4.34), (0.58, 4.34), (0.58, 4.41), (0.48, 4.41)], 'brass', n=12, closed=True,
               base=(lx, 0, 0))      # the open ring at its top
         for k in range(6):          # the straps up its sides
             a = math.radians(30 + 60 * k)
             c, s_ = math.cos(a), math.sin(a)
-            seg('Body', (lx + 0.45 * c, 3.56, 0.45 * s_), (lx + 0.45 * c, 4.47, 0.45 * s_), 0.03, 'brass', n=4)
+            seg('Body', (lx + 0.54 * c, 3.12, 0.54 * s_), (lx + 0.54 * c, 4.38, 0.54 * s_), 0.035, 'brass', n=4)
         for k in range(3):          # and three in over the top to the knob
             a = math.radians(90 + 120 * k)
             c, s_ = math.cos(a), math.sin(a)
-            seg('Body', (lx + 0.44 * c, 4.48, 0.44 * s_), (lx + 0.06 * c, 4.63, 0.06 * s_), 0.03, 'brass', n=4)
-        sphere('Body', (lx, 4.66, 0.0), 0.07, 'brass', n=6, rings=3)
+            seg('Body', (lx + 0.53 * c, 4.39, 0.53 * s_), (lx + 0.06 * c, 4.5, 0.06 * s_), 0.035, 'brass', n=4)
+        sphere('Body', (lx, 4.5, 0.0), 0.08, 'brass', n=6, rings=3)
         lathe('Body', [(0.12, -0.025), (0.17, -0.025), (0.17, 0.025), (0.12, 0.025)], 'brass', n=10, closed=True,
-              m=at((lx, 4.84, 0.0), rz=90))                                  # its loop, on the hook
-        lily_pad((-0.38, 0.38, 0.25), 0.22, 0.03, 'lily', notch=150)
-        lotus((-0.38, 0.41, 0.25), s=0.4)
-        cattails(0.72, -0.66, y=0.0, k=2, tall=1.5)
-        note = ('a hanging lantern: an open brass cage of straps on a dish, its glowing core of fireflies inside, '
-                'hung by its loop from the hook of a crooked cypress crook on a smooth stone with a lily pad and a '
-                'lotus on it, cattails under it')
+              m=at((lx, 4.71, 0.0), rz=90))                                  # its loop, on the hook
+        lily_pad((-0.2, 0.29, 0.32), 0.2, 0.03, 'lily', notch=150)
+        lotus((-0.2, 0.32, 0.32), s=0.34)
+        cattails(0.28, -0.3, y=0.2, k=2, tall=1.25)
+        note = ('a hanging lantern, the lamp: an open brass cage of straps on a dish round a big glowing core of '
+                'fireflies, hung by its loop from the hook of a slim cypress crook on a smooth stone with a lily pad '
+                'and a lotus on it and cattails growing from it')
     stand()
     done(note)
 

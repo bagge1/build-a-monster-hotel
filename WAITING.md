@@ -1073,6 +1073,16 @@ Med Claudes skärmdump där det finns en. -->
    - **Frostfangs snöflingor:** tre stora snidade flingor på salladsbarens
      luckor mot en sköld på buffén. **Rekommendation:** behåll (snidade
      flingor är lodgens panel, skölden buffens eget märke).
+   - **Salladsbarens glasskydd:** granskarna drar åt två håll (för lågt att nå
+     under, sedan för högt för att skydda något). Nu 1,6 över maten.
+     **Rekommendation:** sänk underkanten till 1,1 över maten: mellan ansikte
+     och mat, och gästen når ändå under.
+   - **Spelhyllans höjd** (en granskare: för låg, en annan: för hög). Nu
+     undersidan 2,26, toppen 5,06. **Rekommendation:** behåll och bedöm den i
+     Studio bredvid en avatar.
+   - **Frostfangs matstol:** ryggen når en sittandes tinningar och läses som
+     en tron. **Rekommendation:** sänk toppen till ~3,6 (axelhöjd) med runda
+     toppen och snöflingan kvar.
 
 ## §3 Creator Hub och publicering
 

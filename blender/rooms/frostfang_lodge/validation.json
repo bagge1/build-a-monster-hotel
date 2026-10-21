@@ -261,7 +261,7 @@
     "the piece's own checks re-run on the re-imported triangles",
     "the contract re-checked on the re-imported boxes: Root 3fw x 0.2 x 3fd, the layer's envelope (Floor and Wall: inside the footprint inset 0.4, height <= 7; Rug: inside the footprint, height <= 0.15; Wall: its back on z = 3fd/2 - 0.4 +-0.05), nothing collides, budget; w, d, layer and height (to 0.3) as Pieces.luau says; each seat() on the triangles"
    ],
-   "triangles": 1498,
+   "triangles": 1486,
    "budget": 1500,
    "collision_precise": [],
    "attachments": [
@@ -278,7 +278,7 @@
     "the piece's own checks re-run on the re-imported triangles",
     "the contract re-checked on the re-imported boxes: Root 3fw x 0.2 x 3fd, the layer's envelope (Floor and Wall: inside the footprint inset 0.4, height <= 7; Rug: inside the footprint, height <= 0.15; Wall: its back on z = 3fd/2 - 0.4 +-0.05), nothing collides, budget; w, d, layer and height (to 0.3) as Pieces.luau says; each seat() on the triangles"
    ],
-   "triangles": 544,
+   "triangles": 604,
    "budget": 1500,
    "collision_precise": [],
    "attachments": [
@@ -397,7 +397,7 @@
     "the piece's own checks re-run on the re-imported triangles",
     "the contract re-checked on the re-imported boxes: Root 3fw x 0.2 x 3fd, the layer's envelope (Floor and Wall: inside the footprint inset 0.4, height <= 7; Rug: inside the footprint, height <= 0.15; Wall: its back on z = 3fd/2 - 0.4 +-0.05), nothing collides, budget; w, d, layer and height (to 0.3) as Pieces.luau says; each seat() on the triangles"
    ],
-   "triangles": 1158,
+   "triangles": 1218,
    "budget": 1500,
    "collision_precise": [],
    "attachments": [
@@ -482,7 +482,7 @@
     "the piece's own checks re-run on the re-imported triangles",
     "the contract re-checked on the re-imported boxes: Root 3fw x 0.2 x 3fd, the layer's envelope (Floor and Wall: inside the footprint inset 0.4, height <= 7; Rug: inside the footprint, height <= 0.15; Wall: its back on z = 3fd/2 - 0.4 +-0.05), nothing collides, budget; w, d, layer and height (to 0.3) as Pieces.luau says; each seat() on the triangles"
    ],
-   "triangles": 1324,
+   "triangles": 1392,
    "budget": 1500,
    "collision_precise": [],
    "attachments": [
@@ -550,7 +550,7 @@
     "the piece's own checks re-run on the re-imported triangles",
     "the contract re-checked on the re-imported boxes: Root 3fw x 0.2 x 3fd, the layer's envelope (Floor and Wall: inside the footprint inset 0.4, height <= 7; Rug: inside the footprint, height <= 0.15; Wall: its back on z = 3fd/2 - 0.4 +-0.05), nothing collides, budget; w, d, layer and height (to 0.3) as Pieces.luau says; each seat() on the triangles"
    ],
-   "triangles": 818,
+   "triangles": 670,
    "budget": 1500,
    "collision_precise": [],
    "attachments": [
@@ -645,7 +645,7 @@
   },
   "Furniture_Toilet": {
    "pieces_height": 3.6,
-   "model_top": 3.267
+   "model_top": 2.94
   }
  },
  "height_note": "Pieces.luau's `height` (the blockouts' placeholder) against the model's top, more than 0.3 apart: a finding for the code session, not a fault (src/ untouched)"

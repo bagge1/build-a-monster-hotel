@@ -1786,7 +1786,7 @@
       3.26,
       2.14
      ],
-     "triangles": 1486,
+     "triangles": 1474,
      "collide": false
     },
     "LOD_Proxy": {
@@ -1818,7 +1818,7 @@
      ]
     }
    },
-   "triangles": 1498,
+   "triangles": 1486,
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
@@ -1886,7 +1886,7 @@
       3.95,
       1.6331
      ],
-     "triangles": 532,
+     "triangles": 592,
      "collide": false
     }
    },
@@ -1904,7 +1904,7 @@
      ]
     }
    },
-   "triangles": 544,
+   "triangles": 604,
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
@@ -2591,7 +2591,7 @@
       4.53,
       2.14
      ],
-     "triangles": 1146,
+     "triangles": 1206,
      "collide": false
     },
     "LOD_Proxy": {
@@ -2623,7 +2623,7 @@
      ]
     }
    },
-   "triangles": 1158,
+   "triangles": 1218,
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
@@ -3082,26 +3082,26 @@
     "Body": {
      "centre": [
       0.0,
-      3.531,
+      3.516,
       0.355
      ],
      "size": [
       5.12,
-      3.762,
+      4.032,
       1.49
      ],
-     "triangles": 1312,
+     "triangles": 1380,
      "collide": false
     },
     "LOD_Proxy": {
      "centre": [
       0.0,
-      3.531,
+      3.516,
       0.355
      ],
      "size": [
       5.12,
-      3.762,
+      4.032,
       1.49
      ],
      "triangles": 12,
@@ -3122,11 +3122,11 @@
      ]
     }
    },
-   "triangles": 1324,
+   "triangles": 1392,
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "a shelf of board games hung on the wall well off the floor on two birch knee brackets under its birch sides, a log cornice with snow and a game on it; in two bays stacks of wide game boxes with bright lids, boxes stood up showing boards in four colours under white title bands, one game open with its board and pawns, dice",
+   "note": "a shelf of board games hung on the wall well off the floor, its birch sides ending on a log bottom board, two birch knee brackets under the board against the wall, a log cornice with snow and a game on it; in two bays chunky game boxes with bright lids and contrasting bands, stacked two high or stood face-out showing boards in four colours under white title bands, one game open with its board and pawns, dice",
    "decor": {
     "fw": 2,
     "fd": 1,
@@ -3141,7 +3141,7 @@
     "pose": "Stand",
     "keyFor": [],
     "pieces_height": 5.6,
-    "model_top": 5.412,
+    "model_top": 5.532,
     "height_finding": null
    }
   },
@@ -3441,16 +3441,16 @@
     },
     "Body": {
      "centre": [
-      -0.02,
-      1.6335,
-      0.0788
+      -0.0225,
+      1.47,
+      0.115
      ],
      "size": [
-      1.8101,
-      3.2671,
-      2.0223
+      1.645,
+      2.94,
+      1.97
      ],
-     "triangles": 806,
+     "triangles": 658,
      "collide": false
     }
    },
@@ -3468,11 +3468,11 @@
      ]
     }
    },
-   "triangles": 818,
+   "triangles": 670,
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "a white ceramic toilet: the bowl on a wide foot, a birch seat ring at 1.72 round a dark opening, the lid raised against a low white cistern on the bowl's back, its log lid with bark edges, an iron lever, a spare roll",
+   "note": "a white ceramic toilet: one bowl tapering from its rim to a narrower foot, its back carrying a low white cistern, a birch seat ring at 1.72 round a dark opening, the lid raised from the seat's back against the cistern, its log lid with bark edges, an iron flush lever",
    "decor": {
     "fw": 1,
     "fd": 1,
@@ -3502,8 +3502,8 @@
     "pose": "Sit",
     "keyFor": [],
     "pieces_height": 3.6,
-    "model_top": 3.267,
-    "height_finding": "Pieces.luau's height 3.6, the body's top 3.27"
+    "model_top": 2.94,
+    "height_finding": "Pieces.luau's height 3.6, the body's top 2.94"
    }
   },
   "Furniture_GardenBench": {

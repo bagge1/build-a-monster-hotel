@@ -433,8 +433,8 @@ local SET = {
 		root = Vector3.new(0, 0.1, 0),
 		parts = {
 			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(6, 0.2, 3), collide = false },
-			Body = { c = Vector3.new(0, 3.531, 0.355), s = Vector3.new(5.12, 3.762, 1.49), collide = false },
-			LOD_Proxy = { c = Vector3.new(0, 3.531, 0.355), s = Vector3.new(5.12, 3.762, 1.49), collide = false },
+			Body = { c = Vector3.new(0, 3.516, 0.355), s = Vector3.new(5.12, 4.032, 1.49), collide = false },
+			LOD_Proxy = { c = Vector3.new(0, 3.516, 0.355), s = Vector3.new(5.12, 4.032, 1.49), collide = false },
 		},
 		att = {
 			{ "Use", Vector3.new(0, 0, -3), Vector3.new(0, 0, 1) },
@@ -491,7 +491,7 @@ local SET = {
 		root = Vector3.new(0, 0.1, 0),
 		parts = {
 			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(3, 0.2, 3), collide = false },
-			Body = { c = Vector3.new(-0.02, 1.6335, 0.0788), s = Vector3.new(1.8101, 3.2671, 2.0223), collide = false },
+			Body = { c = Vector3.new(-0.0225, 1.47, 0.115), s = Vector3.new(1.645, 2.94, 1.97), collide = false },
 		},
 		att = {
 			{ "Use", Vector3.new(0, 1.72, -0.35), Vector3.new(0, 0, -1) },

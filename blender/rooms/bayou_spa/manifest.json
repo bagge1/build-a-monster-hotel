@@ -2079,21 +2079,21 @@
       5.37,
       2.14
      ],
-     "triangles": 1410,
+     "triangles": 1390,
      "collide": false
     },
     "Glow_Warm_1": {
      "centre": [
       -1.0,
-      4.595,
+      4.59,
       0.0
      ],
      "size": [
-      3.8464,
-      0.07,
-      0.4
+      4.1098,
+      0.08,
+      0.6098
      ],
-     "triangles": 60,
+     "triangles": 84,
      "collide": false
     },
     "LOD_Proxy": {
@@ -2125,7 +2125,7 @@
      ]
     }
    },
-   "triangles": 1482,
+   "triangles": 1486,
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
@@ -2185,15 +2185,15 @@
     "Body": {
      "centre": [
       0.0,
-      1.71,
-      0.0573
+      1.99,
+      0.0673
      ],
      "size": [
       2.0596,
-      3.42,
-      1.8054
+      3.98,
+      1.8254
      ],
-     "triangles": 564,
+     "triangles": 632,
      "collide": false
     }
    },
@@ -2211,7 +2211,7 @@
      ]
     }
    },
-   "triangles": 576,
+   "triangles": 644,
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
@@ -2246,8 +2246,8 @@
     "pose": "Sit",
     "keyFor": [],
     "pieces_height": 2.6,
-    "model_top": 3.42,
-    "height_finding": "Pieces.luau's height 2.6, the body's top 3.42"
+    "model_top": 3.98,
+    "height_finding": "Pieces.luau's height 2.6, the body's top 3.98"
    }
   },
   "Furniture_PoolTable": {
@@ -2569,42 +2569,42 @@
     },
     "Body": {
      "centre": [
-      0.0921,
-      2.7247,
+      0.0972,
+      2.6497,
       0.0
      ],
      "size": [
-      1.8962,
-      5.4495,
-      1.71
+      1.526,
+      5.2994,
+      1.33
      ],
      "triangles": 998,
      "collide": false
     },
     "Glow_Warm_1": {
      "centre": [
-      0.45,
-      3.995,
+      0.3,
+      3.775,
       0.0
      ],
      "size": [
-      0.5706,
-      0.81,
-      0.6
+      0.7608,
+      1.25,
+      0.8
      ],
      "triangles": 80,
      "collide": false
     },
     "LOD_Proxy": {
      "centre": [
-      0.0921,
-      2.7247,
+      0.0972,
+      2.6497,
       0.0
      ],
      "size": [
-      1.8962,
-      5.4495,
-      1.71
+      1.526,
+      5.2994,
+      1.33
      ],
      "triangles": 12,
      "collide": false
@@ -2628,7 +2628,7 @@
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "a hanging lantern: an open brass cage of straps on a dish, its glowing core of fireflies inside, hung by its loop from the hook of a crooked cypress crook on a smooth stone with a lily pad and a lotus on it, cattails under it",
+   "note": "a hanging lantern, the lamp: an open brass cage of straps on a dish round a big glowing core of fireflies, hung by its loop from the hook of a slim cypress crook on a smooth stone with a lily pad and a lotus on it and cattails growing from it",
    "decor": {
     "fw": 1,
     "fd": 1,
@@ -2643,7 +2643,7 @@
     "pose": "Stand",
     "keyFor": [],
     "pieces_height": 5.5,
-    "model_top": 5.449,
+    "model_top": 5.299,
     "height_finding": null
    }
   },
@@ -2801,7 +2801,7 @@
       5.03,
       2.14
      ],
-     "triangles": 1276,
+     "triangles": 1308,
      "collide": false
     },
     "Glass": {
@@ -2847,11 +2847,11 @@
      ]
     }
    },
-   "triangles": 1300,
+   "triangles": 1332,
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "a salad bar: an open cypress trestle table (crossed legs at each end, a stretcher, a shelf with a basket of rolls and a stack of stone bowls), moss off its weathered top, a well of crushed ice along its front with four brass pans heaped with lettuce, cherry tomatoes, carrot sticks and egg halves, tongs, a stack of plates at the guest's end, a sloped glass sneeze guard high on the guest's side, framed at its ends and lower edge in brass",
+   "note": "a salad bar: an open cypress trestle table (crossed legs at each end, a stretcher, a low shelf with a basket of rolls and a stone crock), moss off its weathered top, a well of crushed ice along its front with four brass pans heaped with lettuce, cherry tomatoes, carrot sticks and egg halves, tongs, a stack of plates at the guest's end, a sloped glass sneeze guard high on the guest's side, framed at its ends and lower edge in brass",
    "decor": {
     "fw": 3,
     "fd": 1,
@@ -3403,26 +3403,26 @@
     "Body": {
      "centre": [
       0.0,
-      3.591,
+      3.476,
       0.335
      ],
      "size": [
       5.12,
-      3.882,
+      3.952,
       1.53
      ],
-     "triangles": 1456,
+     "triangles": 1476,
      "collide": false
     },
     "LOD_Proxy": {
      "centre": [
       0.0,
-      3.591,
+      3.476,
       0.335
      ],
      "size": [
       5.12,
-      3.882,
+      3.952,
       1.53
      ],
      "triangles": 12,
@@ -3443,11 +3443,11 @@
      ]
     }
    },
-   "triangles": 1468,
+   "triangles": 1488,
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "a shelf of board games hung on the wall well off the floor on two cypress knee brackets under its sides, a woven rattan back, moss hanging off the cornice and two games and dice on it; in two bays stacks of wide game boxes with bright lids, boxes stood up showing boards in four colours under white title bands, one game open with its board and pawns, dice",
+   "note": "a shelf of board games hung on the wall well off the floor, its cypress sides ending on a light cypress bottom board, two cypress knee brackets under the board against the wall, a woven rattan back, moss hanging off the cornice and a game and dice on it; in two bays chunky game boxes with bright lids and contrasting bands, stacked two high or stood face-out showing boards in four colours under white title bands, one game open with its board and pawns, dice",
    "decor": {
     "fw": 2,
     "fd": 1,
@@ -3462,7 +3462,7 @@
     "pose": "Stand",
     "keyFor": [],
     "pieces_height": 5.6,
-    "model_top": 5.532,
+    "model_top": 5.452,
     "height_finding": null
    }
   },
@@ -3762,16 +3762,16 @@
     },
     "Body": {
      "centre": [
-      -0.02,
-      1.6335,
-      0.0688
+      -0.0225,
+      1.5605,
+      0.105
      ],
      "size": [
-      1.8101,
-      3.2671,
-      2.0023
+      1.645,
+      3.1209,
+      1.95
      ],
-     "triangles": 1006,
+     "triangles": 858,
      "collide": false
     }
    },
@@ -3789,11 +3789,11 @@
      ]
     }
    },
-   "triangles": 1018,
+   "triangles": 870,
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "a white ceramic toilet: the bowl on a wide foot, a cypress seat ring at 1.72 round a dark opening, the lid raised against a low white cistern on the bowl's back, its cypress lid with a lotus, a brass lever, a spare roll",
+   "note": "a white ceramic toilet: one bowl tapering from its rim to a narrower foot, its back carrying a low white cistern, a cypress seat ring at 1.72 round a dark opening, the lid raised from the seat's back against the cistern, its cypress lid with a lotus, a brass flush lever",
    "decor": {
     "fw": 1,
     "fd": 1,
@@ -3823,8 +3823,8 @@
     "pose": "Sit",
     "keyFor": [],
     "pieces_height": 3.6,
-    "model_top": 3.267,
-    "height_finding": "Pieces.luau's height 3.6, the body's top 3.27"
+    "model_top": 3.121,
+    "height_finding": "Pieces.luau's height 3.6, the body's top 3.12"
    }
   },
   "Furniture_GardenBench": {
