@@ -22,6 +22,14 @@ simulating an old rule.
 Run:  python tools/balance_model.py [--seeds 4] [--hours 8] [--skip-tutorial] [--out <file for the raw tables>]
       [--set Section.Key=value ...]   a WHAT-IF in memory only (e.g. --set Chain.OpenCost.2=500000):
                                       nothing is written to src/, and the report says which values were set.
+      [--expeditions [--exp-set Key=value ...]]
+                                      the EXPEDITIONS WHAT-IF (GDD A.11.2, not built): off by default, so the
+                                      normal run is unchanged. It records the Wing as the run goes and adds a
+                                      section comparing, for players who log out N times a day for H hours,
+                                      (a) residents earning offline in the Wing to the cap against (b) the
+                                      best residents sent on trips, by A.11.2's revised rules and PLACEHOLDER
+                                      numbers (EXP below; not in src/), and the pace of the finds. See
+                                      "THE EXPEDITIONS WHAT-IF" below.
 
 THE CHAIN (as ChainService, Chain.luau and Constants.Chain implement it, 2026-10-21)
   - Opening location L+1 costs Chain.OpenCost[L+1] from the one purse and
@@ -235,6 +243,46 @@ THE GREEDY BUYING POLICY (checked every second; one purchase per check)
      adds) divided by its cost (plus the tiles or floor it needs when there is
      no space). The best is bought when affordable; otherwise the player
      saves for it (rules 2-5 still run).
+
+THE EXPEDITIONS WHAT-IF (--expeditions; GDD A.11.2 with its scrutiny lines of 2026-10-21)
+  The run itself is the normal one; the flag only records, every minute, the
+  Wing's residents (role "") and their rates, the income, and each happy stay
+  of a Rare-or-better guest by location. Then, at stages of the run (30, 60,
+  120 min of play and rebirth-ready), it plays days of a player who logs in n
+  times a day for s minutes (sessions evenly spaced, away H = 24h/n - s each
+  time), minute by minute, for 14 days (cash, days 2-14 averaged) and 120
+  days (finds), and compares:
+    (a) STAY: every Wing resident earns its rate while the player plays and
+        OfflineFraction of it while away, for at most the offline cap from
+        the logout (Economy.offline, ResidentService.welcomeBack);
+    (b) TRIP: the party (the 3 best earners, A.11.2's "Best for this trip"
+        with no level and no matching) leaves on a trip of length L at each
+        logout when the board is free (policy "logout"; "busy" also resends at
+        once whenever a trip ends while the player plays). The party earns
+        nothing in the Wing while away; the trip pays EXP.Pay x what the party
+        would have earned by staying over the trip's own time, counted as
+        staying counts (the Wing rate while the player plays, the offline rate
+        while away, nothing past the cap measured from that logout). The party
+        is back in the Wing at the trip's end (the Hunter Camp's campUntil,
+        which A.11.2 builds on) and earns by staying's rules after it.
+        Variant LEAK: welcomeBack credits rate(at join) x min(away, cap), and
+        rate() counts every resident whose campUntil has passed, so a party
+        back before the login is paid the WHOLE absence's offline till on top
+        of the trip. That is how the code stands; whether Expeditions keep it
+        is an implementation choice.
+  The +20 % per matching resident is read two ways (the draft does not say on
+  what): on the reward, or on the find chance. Finds: per trip at
+  EXP.Lengths' chance, among the destination location's unfound pieces (so
+  each find is a new piece), the guarantee read as the PityTrips-th trip of
+  PityMin or more in a row without a find; A.11.3's happy-stay roll (StayFind
+  per happy stay of a Rare-or-better guest, guaranteed after StayPity misses)
+  at the rate the run measured at Haunted Manor. The cash is the Wing's only
+  (the guests' income is the same in (a) and (b)); XP is A.11.6's.
+  NOT SIMULATED: levels (both sides scale alike), perks lost while the party
+  is away (perks are not in the model), the Moon Tree's offline nodes, the
+  Night Manager beyond one line at its 8 h cap, a second trip slot, the value
+  of a find beyond its shop price, rebirth mid-trip, and the player's own
+  income multipliers (both sides scale alike).
 """
 
 from __future__ import annotations
@@ -274,6 +322,36 @@ FILL_SHARE = 0.5  # ASSUMPTION: furniture and decor cover at most half of a room
 BAR_FILL_S = 120  # policy: a room's Furniture or Decor bar is filled when the fill costs <= 2 min of income
 SIZE_POLICY = "roi"  # rule 6's new rooms: "roi" (min or full, by return on cost), "min" or "full" (--size)
 START_CELLS = 4  # Constants.Rooms.Start is "an L of four cells" (its comment; the model does not flood-fill walls)
+
+# ------------------------------------------------- the Expeditions what-if (--expeditions)
+EXPEDITIONS = False  # set by --expeditions: record the Wing during the run and report the what-if
+# GDD A.11.2's numbers, all PLACEHOLDER, as the revised draft has them (scrutiny 2026-10-21). They are not in src/
+# (Expeditions are not built): when src/shared/Expeditions.luau exists the model stops and must read them from there.
+EXP = {
+    "Lengths": {1800: 0.05, 7200: 0.15, 28800: 0.35},  # trip length (s) -> a find's chance per trip
+    "Pay": 1.5,  # the fixed reward = Pay x what the party would have earned by staying, counted as staying counts
+    "Party": 3,  # up to three residents, Wing residents only (decision 1 (a))
+    "Match": 0.20,  # +20 % for each resident matching the destination (on what: read both ways)
+    "PityTrips": 10,  # "a guaranteed find every 10 trips of 2 h or more": the 10th such trip in a row without a find
+    "PityMin": 7200,
+    "XpPerHour": 20,  # A.11.6: XP per hour on an expedition
+    "PiecesPerLocation": 5,  # A.11.3: one set of five per location at launch
+    "StayFind": 0.02,  # A.11.3: a set piece at 2 % per happy stay of a Rare-or-better guest
+    "StayPity": 40,  # ... guaranteed after 40 misses
+}
+# The players: (name, sessions a day, minutes a session); sessions evenly spaced.
+EXP_PROFILES = [("daily 20 min (1 x 20 min)", 1, 20), ("2 h a day, 2 x 1 h", 2, 60),
+                ("2 h a day, 4 x 30 min", 4, 30), ("2 h a day, 8 x 15 min", 8, 15)]
+EXP_STAGES = [30, 60, 120, None]  # minutes of play; None = rebirth-ready (the run's end)
+EXP_PAY_SWEEP = [1.5, 1.25, 1.0, 0.75, 0.5, 0.25]
+EXP_GUARDS = [  # the offline rules the what-if mirrors
+    ("src/shared/Economy.luau", "local t = math.clamp(seconds, 0, cap)"),
+    ("src/shared/Economy.luau", "return math.floor(rate * Constants.Residents.OfflineFraction * t)"),
+    ("src/server/ResidentService.luau", "if r.role == \"\" and r.campUntil <= os.time() then total += Economy.residentPay("),
+    ("src/server/ResidentService.luau", "local away = os.time() - data.lastSeen"),
+    ("src/server/ResidentService.luau", "local earned = Economy.offline(ResidentService.rate(player, data), away, cap)"),
+    ("src/server/ResidentService.luau", "local cap = if data.passes.NightManager then Constants.Residents.NightManagerCap else Constants.Residents.OfflineCap"),
+]
 
 
 # ------------------------------------------------------- a Luau literal parser
@@ -911,6 +989,8 @@ class Sim:
         self.timeline: list = []  # (t, income/min, rating, cash, runCash, rooms, cats, location, background/min)
         self.cat_first: dict = {}  # (location, what) -> first t a category reached 95 / reviews 4.5
         self.rebirth_ready = None
+        self.wing_log: list = []  # --expeditions: per minute (t, location, the Wing's rates $/s, income $/s)
+        self.rare_happy: dict = {}  # --expeditions: location -> happy stays of Rare-or-better guests
         self.start_hotel(1, 0)
 
     def start_hotel(self, loc, t):
@@ -1279,6 +1359,8 @@ class Sim:
             self.run_cash += bonus
         if sat >= self.G["Stay"]["Happy"]:
             self.mark("first_happy_stay", t)
+            if EXPEDITIONS and sp["rarity"] not in ("Common", "Uncommon"):
+                self.rare_happy[self.loc] = self.rare_happy.get(self.loc, 0) + 1
             now = self.friendship.get(g.sid, 0) + g.fr_mult  # the Decor bar's friendship (ResidentService)
             self.friendship[g.sid] = now
             thr = self.G["Residents"]["TutorialFriendship"] if getattr(g, "tutorial_friend", False) else self.G["Rarity"][sp["rarity"]]["friendship"]
@@ -1931,7 +2013,13 @@ class Sim:
                 self._occ_pay = self._occ_busy = self._occ_rooms = 0
                 self.timeline.append((t, self.income_rate() * 60, self.rating, self.cash, self.run_cash, len(self.rooms), list(self.cats),
                                       self.loc, self.background_rate() * 60))
+                if EXPEDITIONS:
+                    self.wing_log.append((t, self.loc, sorted((self.resident_pay(r) for r in self.residents if r["role"] == ""),
+                                                              reverse=True), self.income_rate()))
         self.end = t
+        if EXPEDITIONS:  # the Wing as the run ends (rebirth-ready breaks before the minute's record)
+            self.wing_log.append((t, self.loc, sorted((self.resident_pay(r) for r in self.residents if r["role"] == ""),
+                                                      reverse=True), self.income_rate()))
         return self
 
 
@@ -2002,6 +2090,299 @@ def money(x):
     return f"${x:.0f}"
 
 
+# ------------------------------------------------------ the Expeditions what-if
+def exp_check(G):
+    """--expeditions: the offline rules it mirrors, and the numbers it holds that are not in src/ yet."""
+    if os.path.exists(os.path.join(ROOT, "src/shared/Expeditions.luau")):
+        raise ParseError("src/shared/Expeditions.luau exists: read the Expeditions numbers from it instead of EXP")
+    norm = lambda x: re.sub(r"\s+", "", x)
+    bad = [f"  {rel}: {line}" for rel, line in EXP_GUARDS if norm(line) not in norm(read(rel))]
+    if bad:
+        raise ParseError("the offline rules changed; update the Expeditions what-if:\n" + "\n".join(bad))
+    for k in ("OfflineFraction", "OfflineCap", "NightManagerCap", "LevelXpPerMinute"):
+        need(G["Residents"], k, "src/shared/Constants.luau Constants.Residents")
+
+
+def exp_days(n, s, cap_s, length_s, policy, leak, days, off_frac, xp_wing):
+    """Days of a player who logs in n times a day for s minutes (evenly spaced), minute by minute, for unit
+    rates ($1/s). Per day (days 2.. averaged): `stay` = what $1/s of Wing rate earns by staying (online and
+    offline); `counted` = the party's staying-equivalent over its trips (the reward before Pay); `party` = what
+    the party earns in the Wing outside its trips; `trips` collected; `xa`/`xb` = one party member's XP by
+    staying / with trips. `ends` = (minute, length in minutes) of every trip's end, day 1 included."""
+    P, cap_m, L_m = 1440 // n, cap_s // 60, length_s // 60
+    H = P - s
+    trip_end = None
+    acc = dict(stay=0.0, counted=0.0, party=0.0, trips=0, xa=0.0, xb=0.0)
+    ends = []
+    for t in range(days * 1440):
+        phase = t % P
+        online = phase < s
+        count = t >= 1440
+        if online and phase == 0 and t > 0 and leak:
+            # welcomeBack: rate(at join) counts every resident back from its trip, for the whole absence
+            if count and (trip_end is None or trip_end <= t):
+                acc["party"] += off_frac * 60 * min(H, cap_m)
+        if trip_end is not None and t >= trip_end and online:
+            trip_end = None  # collected
+        if trip_end is None and ((policy == "busy" and online) or phase == s):
+            trip_end = t + L_m
+        w = 60.0 if online else (60.0 * off_frac if phase - s < cap_m else 0.0)
+        on_trip = trip_end is not None and t < trip_end
+        if count:
+            acc["stay"] += w
+            acc["xa"] += xp_wing if online else 0
+            if on_trip:
+                acc["counted"] += w
+                acc["xb"] += EXP["XpPerHour"] / 60
+            elif online:
+                acc["party"] += w
+                acc["xb"] += xp_wing
+            elif not leak:
+                acc["party"] += w
+        if on_trip and t + 1 == trip_end:
+            ends.append((trip_end, L_m))
+            if count:
+                acc["trips"] += 1
+    out = {k: v / (days - 1) for k, v in acc.items()}
+    out["ends"] = ends
+    return out
+
+
+def exp_poisson(rng, lam):
+    if lam <= 0:
+        return 0
+    if lam > 60:
+        return max(0, round(rng.gauss(lam, math.sqrt(lam))))
+    k, p, lim = 0, 1.0, math.exp(-lam)
+    while True:
+        p *= rng.random()
+        if p <= lim:
+            return k
+        k += 1
+
+
+def exp_finds(ends, days, chance_mult=1.0, stay_per_day=0.0, targets=(5, 15), runs=1000, seed=7):
+    """Monte Carlo of the finds: each trip's chance by its length (x chance_mult), among unfound pieces only (a find
+    is a new piece), the guarantee on the PityTrips-th trip of PityMin or more in a row without a find; optionally
+    A.11.3's happy-stay rolls (stay_per_day of them a day, counted toward the first target only). Returns, per
+    target, the sorted days at which it was reached (math.inf when not within `days`)."""
+    rng = random.Random(seed)
+    E = EXP
+    res = {k: [] for k in targets}
+    trips = [(m / 1440, "trip", L) for m, L in ends]
+    for _ in range(runs):
+        found, miss_long, stay_miss = 0, 0, 0
+        reached = {}
+        events = trips
+        if stay_per_day > 0:
+            events = list(trips)
+            for d in range(days):
+                events += [(d + rng.random(), "stay", 0) for _ in range(exp_poisson(rng, stay_per_day))]
+            events.sort()
+        for when, kind, L in events:
+            if found >= max(targets):
+                break
+            if kind == "stay":
+                if found >= targets[0]:
+                    continue
+                stay_miss += 1
+                hit = rng.random() < E["StayFind"] or stay_miss >= E["StayPity"]
+                if hit:
+                    stay_miss = 0
+            else:
+                p = min(1.0, E["Lengths"][L * 60] * chance_mult)
+                long_ = L * 60 >= E["PityMin"]
+                hit = rng.random() < p or (long_ and miss_long + 1 >= E["PityTrips"])
+                if long_:
+                    miss_long = 0 if hit else miss_long + 1
+                elif hit:
+                    miss_long = 0
+            if hit:
+                found += 1
+                for k in targets:
+                    if found == k:
+                        reached[k] = when
+        for k in targets:
+            res[k].append(reached.get(k, math.inf))
+    return {k: sorted(v) for k, v in res.items()}
+
+
+def exp_inputs(sims, minute):
+    """Per seed, the Wing and income at `minute` of play (None = the run's end): (location, rates desc, income $/s)."""
+    out = []
+    for s in sims:
+        if not s.wing_log:
+            continue
+        if minute is None:
+            out.append(s.wing_log[-1][1:])
+            continue
+        pts = [p for p in s.wing_log if p[0] <= minute * 60]
+        if pts and s.end >= minute * 60:
+            out.append(pts[-1][1:])
+    return out
+
+
+def fdays(x):
+    if x is None or x == math.inf:
+        return "—"
+    return f"{x:.1f} d" if x < 10 else f"{x:.0f} d"
+
+
+def exp_report(G, sims):
+    R = G["Residents"]
+    off, cap, nm, xpw = R["OfflineFraction"], R["OfflineCap"], R["NightManagerCap"], R["LevelXpPerMinute"]
+    E = EXP
+    lens = sorted(E["Lengths"])
+    lname = lambda L: f"{L // 3600} h" if L >= 3600 else f"{L // 60} min"
+    out = ["", "## Expeditions what-if (GDD A.11.2, revised 2026-10-21; numbers PLACEHOLDER, not in src/)", ""]
+    out.append("Rules as the draft states them: the trip pays Pay x what its party would have earned by staying, "
+               "counted as staying counts (Wing rate while playing, offline rate while away, nothing past the cap). "
+               f"EXP = Pay {E['Pay']}, party {E['Party']}, lengths/chances "
+               + ", ".join(f"{lname(L)} {p:.0%}" for L, p in sorted(E['Lengths'].items()))
+               + f", guarantee on the {E['PityTrips']}th trip of {lname(E['PityMin'])}+ without a find, +{E['Match']:.0%} a matching resident, "
+               f"{E['XpPerHour']} XP/h away, {E['PiecesPerLocation']} pieces a location; offline {off:.0%} of the rate to "
+               f"{cap // 3600} h ({nm // 3600} h with Night Manager), Wing XP {xpw}/min while playing (Constants).")
+    # the stages
+    out += ["", "### The Wing at each stage (medians over seeds)", "",
+            "| Stage | Location(s) | Wing residents | Wing rate/min | Best 3/min (share) | Lowest 3/min | Income/min while playing |",
+            "|---|---|---|---|---|---|---|"]
+    stage_in = {}
+    for m in EXP_STAGES:
+        ins = exp_inputs(sims, m)
+        if len(ins) <= len(sims) / 2:
+            continue
+        stage_in[m] = ins
+        md = lambda f: statistics.median(f(x) for x in ins)
+        top = lambda x: sum(x[1][:E["Party"]])
+        low = lambda x: sum(x[1][-E["Party"]:])
+        tot = lambda x: sum(x[1])
+        name = "rebirth-ready" if m is None else f"{m} min"
+        out.append(f"| {name} | {','.join(str(x[0]) for x in ins)} | {md(lambda x: len(x[1])):.0f} | {money(md(tot) * 60)} | "
+                   f"{money(md(top) * 60)} ({md(lambda x: top(x) / tot(x) if tot(x) else 0):.0%}) | {money(md(low) * 60)} | {money(md(lambda x: x[2]) * 60)} |")
+    # the day coefficients
+    coef = {}
+    for name, n, s in EXP_PROFILES:
+        for L in lens:
+            for pol in ("logout", "busy"):
+                for leak in (False, True):
+                    for c in (cap, nm):
+                        if c == nm and leak:
+                            continue
+                        coef[(n, s, L, pol, leak, c)] = exp_days(n, s, c, L, pol, leak, 14, off, xpw)
+
+    def cash(ins, n, s, L, pol="logout", leak=False, c=cap, pay=None, match=0, party="top"):
+        """Per day: (a) the Wing's cash, (b) with trips, the day's whole cash in (a) (play income + offline)."""
+        k = coef[(n, s, L, pol, leak, c)]
+        W = ins[1]
+        Pn = E["Party"]
+        pr = sum(W[:Pn]) if party == "top" else sum(W[-Pn:])
+        rest = sum(W) - pr
+        pay = E["Pay"] if pay is None else pay
+        a = k["stay"] * sum(W)
+        b = pay * (1 + E["Match"] * match) * k["counted"] * pr + k["party"] * pr + k["stay"] * rest
+        day = ins[2] * 60 * n * s + (k["stay"] - 60 * n * s) * sum(W)
+        return a, b, day
+
+    out += ["", "### (a) staying against (b) the best three on a trip at every logout: cash a day (medians over seeds)", "",
+            "The Wing's cash only (the guests pay the same either way). 'Offline (a)' is what the Wing earns while the player is away; "
+            "'Δ' is (b) − (a) a day, and its share of the whole day's cash in (a) (play income + offline). "
+            "'3 matching' reads the +20 % a matching resident as on the reward (x1.6 for three); 'leak' is the code's "
+            "welcomeBack counting a party back before the login for the whole absence.", "",
+            "| Player | Away each time | Stage | Play income/day | Offline (a)/day | Δ 30 min trip | Δ 2 h trip | Δ 8 h trip | Δ 8 h, 3 matching | Δ 8 h, leak | Trips/day 30m/2h/8h |",
+            "|---|---|---|---|---|---|---|---|---|---|---|"]
+    for name, n, s in EXP_PROFILES:
+        H = 1440 // n - s
+        for m, ins_all in stage_in.items():
+            sname = "rebirth-ready" if m is None else f"{m} min"
+            row = []
+            md = lambda f: statistics.median(f(x) for x in ins_all)
+            play = md(lambda x: x[2] * 60 * n * s)
+            offa = md(lambda x: cash(x, n, s, lens[0])[0] - sum(x[1]) * 60 * n * s)
+            for L in lens:
+                d = md(lambda x: cash(x, n, s, L)[1] - cash(x, n, s, L)[0])
+                sh = md(lambda x: (cash(x, n, s, L)[1] - cash(x, n, s, L)[0]) / cash(x, n, s, L)[2])
+                row.append(f"{money(d)} ({sh:+.1%})")
+            Lb = lens[-1]
+            dm = md(lambda x: cash(x, n, s, Lb, match=3)[1] - cash(x, n, s, Lb, match=3)[0])
+            dl = md(lambda x: cash(x, n, s, Lb, leak=True)[1] - cash(x, n, s, Lb, leak=True)[0])
+            shl = md(lambda x: (cash(x, n, s, Lb, leak=True)[1] - cash(x, n, s, Lb, leak=True)[0]) / cash(x, n, s, Lb)[2])
+            trips = "/".join(f"{coef[(n, s, L, 'logout', False, cap)]['trips']:.1f}" for L in lens)
+            out.append(f"| {name} | {H // 60}:{H % 60:02d} | {sname} | {money(play)} | {money(offa)} | " + " | ".join(row)
+                       + f" | {money(dm)} | {money(dl)} ({shl:+.1%}) | {trips} |")
+    # the ratio, independent of the stage
+    out += ["", "The same as a ratio, the same at every stage: what the party brings home a day with trips over what it "
+            "brings by staying (1.00 = equal; Pay 1.5, no matching).", "",
+            "| Player | Policy | 30 min | 2 h | 8 h | 8 h, leak | 8 h, Night Manager (8 h cap) | Party XP/day: stay → 8 h trips |",
+            "|---|---|---|---|---|---|---|---|"]
+    for name, n, s in EXP_PROFILES:
+        for pol in ("logout", "busy"):
+            def ratio(L, leak=False, c=cap):
+                k = coef[(n, s, L, pol, leak, c)]
+                return (E["Pay"] * k["counted"] + k["party"]) / k["stay"]
+            k8 = coef[(n, s, lens[-1], pol, False, cap)]
+            out.append(f"| {name} | {pol} | " + " | ".join(f"{ratio(L):.2f}" for L in lens)
+                       + f" | {ratio(lens[-1], True):.2f} | {ratio(lens[-1], c=nm):.2f} | {k8['xa']:.0f} → {k8['xb']:.0f} |")
+    # the finds
+    rh = []
+    for s_ in sims:
+        t1 = s_.events.get("open_2", s_.end)
+        if t1:
+            rh.append(s_.rare_happy.get(1, 0) / (t1 / 60))
+    r1 = statistics.median(rh) if rh else 0
+    out += ["", "### The finds' pace (Monte Carlo, 1000 runs, 120 days; median and 90th percentile, days from the first trip)", "",
+            f"A location's {E['PiecesPerLocation']} pieces, and all {3 * E['PiecesPerLocation']} (three locations, one after another), by trips "
+            f"at every logout ('logout') or resent whenever one ends while playing ('busy'). 'With stays' adds A.11.3's roll "
+            f"({E['StayFind']:.0%} a happy stay of a Rare-or-better guest, guaranteed after {E['StayPity']}) at the rate the run measured at "
+            f"Haunted Manor, {r1:.2f} such stays a minute of play, to the first location's {E['PiecesPerLocation']} (the same pool). "
+            "'x1.6' reads the +20 % a matching resident as on the find's chance, three matching.", "",
+            "| Player | Policy | Trip | Trips/day | 5 pieces | 5, with stays | 5, x1.6 | All 15 |",
+            "|---|---|---|---|---|---|---|---|"]
+    q = lambda xs, f: xs[min(len(xs) - 1, int(f * len(xs)))]
+    cell = lambda xs: f"{fdays(q(xs, .5))} ({fdays(q(xs, .9))})"
+    for name, n, s in EXP_PROFILES:
+        for pol in ("logout", "busy"):
+            for L in lens:
+                k = exp_days(n, s, cap, L, pol, False, 120, off, xpw)
+                f = exp_finds(k["ends"], 120)
+                fs = exp_finds(k["ends"], 120, stay_per_day=r1 * n * s, targets=(5,))
+                fm = exp_finds(k["ends"], 120, chance_mult=1 + 3 * E["Match"], targets=(5,))
+                out.append(f"| {name} | {pol} | {lname(L)} | {k['trips']:.1f} | {cell(f[5])} | {cell(fs[5])} | {cell(fm[5])} | {cell(f[15])} |")
+    for name, n, s in EXP_PROFILES:
+        fs = exp_finds([], 120, stay_per_day=r1 * n * s, targets=(5,))
+        out.append(f"| {name} | no trips (stays alone) | — | 0 | — | {cell(fs[5])} | — | — |")
+    # what would make it a choice: the Pay sweep
+    dec = {}
+    for L in (1, 2, 3):
+        prices = sorted(d["cost"] for d in G["Loc"][L]["Decor"].values() if d.get("location") == L and not d.get("furniture"))
+        dec[L] = (statistics.median(prices), prices[-1]) if prices else (0, 0)
+    out += ["", "### What Pay would make it a choice (the trip's cash against its find)", "",
+            "Δ a day with the best three and with the lowest three sent (the finds do not depend on who goes), and what one find "
+            "costs in cash given up (−Δ / expected finds a day; '—' when the trip gains cash) and in minutes of play income at that stage. "
+            "A shop decor piece of the location costs (median / dearest) "
+            + ", ".join(f"L{L} {money(a)} / {money(b)}" for L, (a, b) in dec.items())
+            + "; a set piece is worth a decor piece of twice its listed price (A.11.3).", "",
+            "| Player | Trip | Stage | Pay | Δ/day, best 3 | Δ/day, lowest 3 | A find costs (best 3) | … in play minutes | A find costs (lowest 3) | … in play minutes |",
+            "|---|---|---|---|---|---|---|---|---|---|"]
+    for name, n, s, L in ((EXP_PROFILES[0][0], 1, 20, lens[-1]), (EXP_PROFILES[2][0], 4, 30, lens[1]), (EXP_PROFILES[2][0], 4, 30, lens[-1])):
+        k = coef[(n, s, L, "logout", False, cap)]
+        fpd = k["trips"] * E["Lengths"][L]
+        for m in (60, None):
+            if m not in stage_in:
+                continue
+            ins_all = stage_in[m]
+            md = lambda f: statistics.median(f(x) for x in ins_all)
+            inc = md(lambda x: x[2] * 60)
+            for pay in EXP_PAY_SWEEP:
+                dt = md(lambda x: cash(x, n, s, L, pay=pay)[1] - cash(x, n, s, L, pay=pay)[0])
+                dl = md(lambda x: cash(x, n, s, L, pay=pay, party="low")[1] - cash(x, n, s, L, pay=pay, party="low")[0])
+                cf = lambda d: (money(-d / fpd), f"{-d / fpd / inc:.1f}") if d < -1e-9 and fpd > 0 else ("—", "—")
+                a1, a2 = cf(dt)
+                b1, b2 = cf(dl)
+                sname = "rebirth-ready" if m is None else f"{m} min"
+                out.append(f"| {name} | {lname(L)} | {sname} | {pay:g} | {money(dt)} | {money(dl)} | {a1} | {a2} | {b1} | {b2} |")
+    return out
+
+
 def main():
     try:
         sys.stdout.reconfigure(encoding="utf-8")
@@ -2016,10 +2397,23 @@ def main():
                     help="a what-if, in memory only: override a value read from Constants (e.g. Chain.OpenCost.2=500000)")
     ap.add_argument("--size", choices=("roi", "min", "full"), default="roi",
                     help="the player's size policy for new rooms in rule 6 (a policy what-if, not a value)")
+    ap.add_argument("--expeditions", action="store_true",
+                    help="the Expeditions what-if (GDD A.11.2, not built): (a) the Wing offline against (b) trips, and the finds' pace")
+    ap.add_argument("--exp-set", action="append", default=[], metavar="Key=value",
+                    help="with --expeditions: override one of EXP's PLACEHOLDER numbers in memory (e.g. Pay=0.75)")
     a = ap.parse_args()
-    global SIZE_POLICY
+    global SIZE_POLICY, EXPEDITIONS
     SIZE_POLICY = a.size
+    EXPEDITIONS = a.expeditions
     G = load_game()
+    if EXPEDITIONS:
+        exp_check(G)
+        for spec in a.exp_set:
+            k, _, v = spec.partition("=")
+            if k not in EXP or isinstance(EXP[k], dict):
+                raise ParseError(f"--exp-set {spec}: no such number in EXP")
+            EXP[k] = float(v) if "." in v else int(v)
+            print(f"  EXPEDITIONS WHAT-IF (memory only): {k} = {v}", file=sys.stderr)
     for spec in a.set:
         path, _, val = spec.partition("=")
         keys = path.split(".")
@@ -2039,6 +2433,10 @@ def main():
             print(f"  seed {1000 + i} ({'tutorial' if tut else 'skipped'}): rebirth-ready {fmt(sims[-1].rebirth_ready)}", file=sys.stderr)
         results.append(summarize(G, sims, "with tutorial" if tut else "tutorial skipped"))
     lines = render(G, results, a)
+    if EXPEDITIONS:
+        if a.exp_set:
+            lines += ["", "**EXPEDITIONS WHAT-IF, numbers changed in memory only:** " + ", ".join(a.exp_set)]
+        lines += exp_report(G, results[0]["sims"])
     text = "\n".join(lines)
     print(text)
     if a.out:
