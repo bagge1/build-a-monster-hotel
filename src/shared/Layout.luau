@@ -5,9 +5,12 @@
 	points, tier and tags, `Furnish`). Shared, so the server (from the
 	profile) and the build mode (from the state's copy) ask the same question.
 
-	A record is `{ id, item, floor, x, z, r }`, a piece also `m` (mirrored,
-	Flip), decor also `room` ("" on hallway floor). The server keeps them in
-	maps keyed by id, the state sends lists; both are accepted.
+	A record is `{ id, item, floor, x, z, r }`, decor also `room` (kept ""
+	since rooms are built from walls, A.12). The server keeps them in maps
+	keyed by id, the state sends lists; both are accepted. The world also
+	carries the built rooms' `walls` and `rooms` (`Rooms.World`). The room
+	helpers below (`roomTier`, `container`, `canPlaceDecor`) are for placed
+	rooms and unused since built rooms (A.12): `Rooms` answers for them.
 ]]
 
 local Furnish = require(script.Parent.Furnish)
@@ -16,7 +19,7 @@ local Pieces = require(script.Parent.Pieces)
 
 local Layout = {}
 
-export type Record = { item: string, floor: number, x: number, z: number, r: number, m: boolean? }
+export type Record = { item: string, floor: number, x: number, z: number, r: number }
 
 local function each(records: { [any]: any }, fn: (string, any) -> ())
 	for k, rec in records do
@@ -39,7 +42,6 @@ function Layout.piece(id: string, rec: Record): Grid.Placed?
 		r = rec.r,
 		w = p.w,
 		d = p.d,
-		m = if rec.m and (p.kind == "Room" or p.kind == "Amenity") then true else nil,
 		id = id,
 	}
 end
@@ -211,9 +213,6 @@ function Layout.canPlaceDecor(
 	local l = Furnish.toRoom(room, d)
 	local item = { x = l.x, z = l.z, r = l.r, w = d.w, d = d.d, layer = d.layer }
 	local squares = if blocked then blocked(room.item) else nil
-	if squares and room.m then
-		squares = Furnish.mirrorSquares(room, squares)
-	end
 	local ok, refusal = Furnish.canPlace(room, others, item, squares, skip)
 	return ok, refusal, roomId
 end

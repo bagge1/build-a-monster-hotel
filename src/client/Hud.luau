@@ -59,7 +59,6 @@ local REFUSALS: { [string]: string } = {
 	NoFloorAbove = "A stair needs a floor above it",
 	DeskFloor = "The desk stays on floor 1",
 	LastDesk = "The hotel needs a desk: move it instead",
-	NoMirror = "Can't be flipped yet: its mirror image isn't modelled",
 	NotWall = "Windows go on an outer wall",
 	Wall = "A wall is in the way",
 	-- Built rooms (§5.4, A.12)

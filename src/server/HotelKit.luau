@@ -122,115 +122,6 @@ local function lamp(model: Model, n: number, at: Vector3, colour: Color3)
 	light.Parent = g
 end
 
---[[ A room or an amenity (MODELS.md, "Rooms and amenities"). Walls in
-	pieces apart round the door; the door opening 4 wide and 7 tall, on its
-	other front cell when `mirrored` (Flip, A.1). ]]
-local function blockoutPiece(id: string, mirrored: boolean?): Model
-	local piece = assert(Pieces.get(id), id)
-	assert(piece.kind == "Room" or piece.kind == "Amenity", `{id} has no room blockout`)
-	local W, D = piece.w * CELL, piece.d * CELL
-	local model, root = shell(id, Vector3.new(W, 0.2, D), Vector3.new(0, 0.1, 0))
-	local colour = piece.colour
-	local wallColour = darker(colour, 0.75)
-	local t = 0.4
-
-	part(
-		model,
-		"Floor",
-		Vector3.new(W - 0.2, 0.2, D - 0.2),
-		Vector3.new(0, 0.1, 0),
-		{ Color = darker(colour, 0.55) }
-	)
-	part(
-		model,
-		"Wall_Back",
-		Vector3.new(W, WALL, t),
-		Vector3.new(0, WALL / 2, D / 2 - t / 2),
-		{ Color = wallColour }
-	)
-	part(
-		model,
-		"Wall_Left",
-		Vector3.new(t, WALL, D - 2 * t),
-		Vector3.new(-W / 2 + t / 2, WALL / 2, 0),
-		{ Color = wallColour }
-	)
-	part(
-		model,
-		"Wall_Right",
-		Vector3.new(t, WALL, D - 2 * t),
-		Vector3.new(W / 2 - t / 2, WALL / 2, 0),
-		{ Color = wallColour }
-	)
-
-	-- The front wall, round the door.
-	local doorX = (Grid.doorAlong(piece.w, mirrored) + 0.5) * CELL - W / 2
-	local doorW, doorH = 4, 7
-	local leftEnd, rightStart = doorX - doorW / 2, doorX + doorW / 2
-	local z = -D / 2 + t / 2
-	if leftEnd > -W / 2 then
-		local len = leftEnd + W / 2
-		part(
-			model,
-			"Wall_FrontLeft",
-			Vector3.new(len, WALL, t),
-			Vector3.new(-W / 2 + len / 2, WALL / 2, z),
-			{ Color = wallColour }
-		)
-	end
-	if rightStart < W / 2 then
-		local len = W / 2 - rightStart
-		part(
-			model,
-			"Wall_FrontRight",
-			Vector3.new(len, WALL, t),
-			Vector3.new(W / 2 - len / 2, WALL / 2, z),
-			{ Color = wallColour }
-		)
-	end
-	part(
-		model,
-		"Wall_Lintel",
-		Vector3.new(doorW, WALL - doorH, t),
-		Vector3.new(doorX, doorH + (WALL - doorH) / 2, z),
-		{ Color = wallColour }
-	)
-
-	if piece.kind == "Room" then
-		-- A bed against the back wall, and the guest's spot beside it.
-		part(
-			model,
-			"Bed",
-			Vector3.new(4, 1.6, 5.5),
-			Vector3.new(0, 0.8, D / 2 - 3.4),
-			{ Color = colour }
-		)
-		part(
-			model,
-			"Pillow",
-			Vector3.new(3, 0.6, 1.2),
-			Vector3.new(0, 1.9, D / 2 - 1.4),
-			{ Color = Color3.fromRGB(240, 235, 250) }
-		)
-		attach(root, "Bed", Vector3.new(0, 0, D / 2 - 7), Vector3.new(0, 0, -1))
-	else
-		-- An amenity's centrepiece.
-		part(
-			model,
-			"Centrepiece",
-			Vector3.new(W * 0.45, 3, D * 0.3),
-			Vector3.new(0, 1.5, D / 6),
-			{ Color = colour }
-		)
-		attach(root, "Bed", Vector3.new(0, 0, -D / 6), Vector3.new(0, 0, 1))
-	end
-
-	attach(root, "Door", Vector3.new(doorX, 0, -D / 2), Vector3.new(0, 0, -1))
-	attach(root, "Sign", Vector3.new(doorX, doorH + 1.2, -D / 2 - 0.3), Vector3.new(0, 0, -1))
-	lamp(model, 1, Vector3.new(0, WALL - 1, D / 2 - 1), Color3.fromRGB(255, 200, 140))
-	return model
-end
-
 --[[ The front desk (MODELS.md, "Front desk"): 24 × 12, served toward −Z, the
 	counter's top at 3.8, the clerk behind it, the key rack at the back. ]]
 local function blockoutDesk(location: number): Model
@@ -274,32 +165,16 @@ local function blockoutDesk(location: number): Model
 	return model
 end
 
---[[ Whether a room or an amenity can be placed mirrored (Flip, A.1;
-	MODELS.md: `<PieceId>_Mirror`): its kit has the mirror, or it is still a
-	blockout, which mirrors itself. Roblox cannot mirror a mesh. ]]
-function HotelKit.mirrorable(id: string, location: number): boolean
-	local piece = Pieces.get(id)
-	if not piece or (piece.kind ~= "Room" and piece.kind ~= "Amenity") then
-		return false
-	end
-	return delivered(location, `{id}_Mirror`) ~= nil or delivered(location, id) == nil
-end
-
---[[ A piece of the layout (Pieces): a room, an amenity or the front desk,
-	mirrored (`<PieceId>_Mirror`) when `mirrored` and `mirrorable`. Stairs are
-	`HotelKit.stairs`. ]]
-function HotelKit.piece(id: string, location: number, mirrored: boolean?): Model
-	if mirrored and HotelKit.mirrorable(id, location) then
-		return template(location, `{id}_Mirror`) or blockoutPiece(id, true)
-	end
+--[[ A piece of the layout (Pieces): the front desk. Stairs are
+	`HotelKit.stairs`; rooms are built from walls (A.12, `HotelKit.walls`),
+	no longer whole models. ]]
+function HotelKit.piece(id: string, location: number): Model
 	local found = template(location, id)
 	if found then
 		return found
 	end
-	if id == "FrontDesk" then
-		return blockoutDesk(location)
-	end
-	return blockoutPiece(id)
+	assert(id == "FrontDesk", `{id} is not a placed piece`)
+	return blockoutDesk(location)
 end
 
 --[[ The wooden plaque over a room's door (MODELS.md, "Room plaque"), or nil

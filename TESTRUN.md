@@ -823,6 +823,27 @@ bonuses in place of the tiers; Comfort from `Rooms.comfortPoints`. Played on
 - [ ] A gamepad's A on an edge and on a room (no controller here).
 - [ ] A two-finger pan while the wall tool is on (one finger draws walls).
 
+### Stage 4: clean-up (`Test_Rooms1021f`)
+
+Removed: Flip and `<PieceId>_Mirror` (`HotelKit.mirrorable`, Grid's `m`,
+`Furnish.mirror`/`mirrorSquares`, their specs), the room and amenity
+blockout and `PlotService.roomInfo`. Left unused, since removing them would
+take their specs' rules with them: Grid's door and reach rules for `Room` and
+`Amenity` pieces, and `Furnish`'s room frame and tiers with `Layout`'s
+`roomTier`/`container`/`canPlaceDecor` (the game asks `Rooms`).
+
+- [x] A fresh profile after the clean-up: the desk and the ready start room,
+  the tutorial at CheckIn; no error of the game's own.
+- [x] A tile bought beside the start room put up its two walls by itself
+  (`1:8:4:1`, `1:8:5:1`); the room stayed ready.
+- [x] A rebirth (`rebirth`): the start square, the desk and a new ready start
+  room.
+- [A] The kit's `Wall_Half`, `Wall_Door`, `Wall_Post` and `Furniture_*`
+  (staged in `blender/_import` by another session) after his import: seen in
+  the game in place of the blockouts.
+- [A] Whether the start room's L of four cells on the guests' right reads as
+  "one room to its right" (`Constants.Rooms.Start`, PLACEHOLDER shape).
+
 ## August keeps
 
 - How the street, the lobby and the rooms look (every look is a night draft).
@@ -868,3 +889,4 @@ bonuses in place of the tiers; Comfort from `Rooms.comfortPoints`. Played on
 - 2026-10-21 02:38 Real input with Studio in front (Test_Tiles1021): Windows (tab, card, hover, place, the window's menu) and Flip (the ghost's door, a flipped room built, Move with F mirrors its decor) by clicks and the F key; the build camera's right-drag fixed (injected moves carry no Delta; the turn now follows the cursor) and played: a drag turns, one from a button does not, a plain right-click stops placing. No errors of the game's own (one `ContentId 203785492` type warning, not in the repo).
 - 2026-10-21 02:57 The hotel chain (Test_Chain1021): opening in order, Travel and back (each hotel's tiles, facade and staff), background earnings measured from guests only, Bayou Spa's blockout hotel and guests, the new rebirth twice (shards, the chain gone, Prestige Star, the floor cap), the panel by real clicks. No errors of the game's own.
 - 2026-10-21 03:09 The free build camera (Test_Tiles1021, real keys and mouse): WASD moves it within the hotel's area and not the avatar, the right-drag tilts, Top snaps down. No errors of the game's own.
+- 2026-10-21 04:05 Built rooms (Test_Rooms1021a-f): stages 1-2 by remotes (schema 6, the start room, walls refused where A.12 says, a second room typed and furnished, guests walked through doors to the beds with the bars' pay, Comfort only rising, cleaning at the door, each chain hotel its own samples, the tutorial with the start room); stage 3 by real mouse and keys and a simulated phone (walls drawn by drag and tap, Half cells, Door, Remove, the type list, the Bed, the room view); stage 4 the clean-up, auto walls on a tile beside a room, a rebirth. Fixed: attachments set before parenting, location-0 furniture refused, Frostfang's start room, the phone's room view off the top. No errors of the game's own.

@@ -24,10 +24,12 @@ local function inputs(over)
 end
 
 describe("Rating", function()
-	it("a ready room added never lowers Comfort (his \"no room deducts points\")", function()
+	it('a ready room added never lowers Comfort (his "no room deducts points")', function()
 		local rooms = {}
 		local last = Rating.categories(inputs({ roomBars = rooms })).Comfort
-		for _, b in { { size = 0, furniture = 0, decor = 0 }, BAR, FULL, BAR, FULL, FULL, FULL, FULL } do
+		for _, b in
+			{ { size = 0, furniture = 0, decor = 0 }, BAR, FULL, BAR, FULL, FULL, FULL, FULL }
+		do
 			table.insert(rooms, b)
 			local now = Rating.categories(inputs({ roomBars = rooms })).Comfort
 			expect.atLeast(now, last, `with {#rooms} rooms`)

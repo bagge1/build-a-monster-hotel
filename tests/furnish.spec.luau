@@ -45,54 +45,6 @@ describe("Furnish", function()
 		end
 	end)
 
-	it("a flipped room's doorway, furniture and decor mirror across its frame", function()
-		for _, size in { { 2, 2 }, { 3, 3 } } do
-			for rr = 0, 3 do
-				local room = { x = 2, z = 2, r = rr, w = size[1], d = size[2] }
-				local flipped = { x = 2, z = 2, r = rr, w = size[1], d = size[2], m = true }
-				-- The flipped doorway is the plain one's mirror image.
-				local along, m = Grid.doorAlong(room.w, false), Grid.doorAlong(room.w, true)
-				expect.eq(m, room.w - 1 - along, "the mirrored door cell")
-				if room.w == 3 then
-					expect.eq(m, along, "a 3-wide door stays in the middle")
-				end
-				-- The square just inside the flipped door is in its doorway; its mirror is not, unless centred.
-				local l = { x = m * Q + 1, z = 0, r = 0 }
-				local _, why = Furnish.canPlace(flipped, {}, item("Candles", l.x, l.z, 0))
-				expect.eq(why, "Doorway", `inside the flipped door ({size[1]} r{rr})`)
-				local p = Furnish.fromRoom(flipped, l, 1, 1)
-				local inside = Grid.doorInside(flipped)
-				expect.eq(p.x // Q, inside.x, `the flipped door side x, r{rr}`)
-				expect.eq(p.z // Q, inside.z, `the flipped door side z, r{rr}`)
-			end
-		end
-		-- Furniture squares and decor mirror across the middle, and twice is none.
-		local room = { w = 2, d = 2 }
-		local squares = { [Furnish.squareKey(0, 5)] = true, [Furnish.squareKey(2, 7)] = true }
-		local once = Furnish.mirrorSquares(room, squares)
-		expect.truthy(
-			once[Furnish.squareKey(7, 5)] and once[Furnish.squareKey(5, 7)],
-			"squares mirrored"
-		)
-		local twice = Furnish.mirrorSquares(room, once)
-		expect.truthy(
-			twice[Furnish.squareKey(0, 5)] and twice[Furnish.squareKey(2, 7)],
-			"mirrored back"
-		)
-		for r = 0, 3 do
-			local l = { x = 1, z = 2, r = r }
-			local m = Furnish.mirror(room, l, 2, 1)
-			local ex = Grid.extent(2, 1, r)
-			local mex = Grid.extent(2, 1, m.r)
-			expect.eq(ex, mex, "the same width across")
-			expect.eq(m.x, room.w * Q - l.x - ex, "across the middle")
-			expect.eq(m.r % 2, r % 2, "a front or back turn stays, a side turn swaps")
-			local back = Furnish.mirror(room, m, 2, 1)
-			expect.eq(back.x, l.x, "mirrored back x")
-			expect.eq(back.r, r, "mirrored back r")
-		end
-	end)
-
 	it("the room's frame turns with the room: its door side is the side the door faces", function()
 		for rr = 0, 3 do
 			local room = { x = 2, z = 2, r = rr, w = 2, d = 2 }

@@ -15,8 +15,10 @@
 
 	Published: each `Plot_<i>` model carries `Index`, `OwnerId`, `OwnerName`
 	and `Origin` (its frame); each piece model `PieceId`, `Item`, `Kind`,
-	`Floor`, `Tier`; each decor model (in `Decor`) `DecorId`, `Item`, `Floor`,
-	`Room`. The client's build mode reads those.
+	`Floor`; each built room's marker (`R_<id>` in `Pieces`, A.12) also
+	`Room`, `State` and `Ready`; each inner wall, door and post (in `Walls`)
+	`Edge`, `Floor` and `Door`; each decor model (in `Decor`) `DecorId`,
+	`Item`, `Floor`. The client's build mode reads those.
 
 	FREE BUILDING (§5.4, A.1, his rulings 2026-10-20): the plot is owned a
 	tile at a time; the desks and the stairs are pieces of the layout, decor
@@ -33,7 +35,6 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
 
 local Constants = require(ReplicatedStorage.Shared.Constants)
-local Furnish = require(ReplicatedStorage.Shared.Furnish)
 local Grid = require(ReplicatedStorage.Shared.Grid)
 local Layout = require(ReplicatedStorage.Shared.Layout)
 local Pieces = require(ReplicatedStorage.Shared.Pieces)
@@ -156,40 +157,6 @@ local function roomPrompts(plot: Plot, model: Model, pieceId: string)
 	help.UIOffset = Vector2.new(0, 60)
 end
 
---[[ What a room model says about itself, once per item and location: the
-	squares its own furniture covers (MODELS.md: `Bed`, `Furniture`,
-	`Centrepiece`) and its `Floor`'s top, both in the piece's own frame. ]]
-type RoomInfo = { blocked: { [number]: boolean }, floorTop: number }
-local roomInfos: { [string]: RoomInfo } = {}
-
-function PlotService.roomInfo(item: string, location: number): RoomInfo
-	local cacheKey = `{location}:{item}`
-	local cached = roomInfos[cacheKey]
-	if cached then
-		return cached
-	end
-	local piece = assert(Pieces.get(item), item)
-	local model = HotelKit.piece(item, location)
-	local pivot = model:GetPivot()
-	local boxes, floorTop = {}, 0
-	for _, d in model:GetDescendants() do
-		if d:IsA("BasePart") then
-			local cf = pivot:ToObjectSpace(d.CFrame)
-			local half = d.Size / 2
-			local lo, hi = cf.Position - half, cf.Position + half
-			if d.Name == "Bed" or d.Name == "Furniture" or d.Name == "Centrepiece" then
-				table.insert(boxes, { min = lo, max = hi })
-			elseif d.Name == "Floor" then
-				floorTop = math.max(floorTop, hi.Y)
-			end
-		end
-	end
-	model:Destroy()
-	local info = { blocked = Furnish.blocked(piece, boxes), floorTop = floorTop }
-	roomInfos[cacheKey] = info
-	return info
-end
-
 --[[ Lays a floor finish on a part (MODELS.md, "Floor finishes"): its texture
 	goes, the finish's material and colour come. A part keeps its own look
 	when the finish is "" (it is built fresh). ]]
@@ -210,14 +177,6 @@ local function lay(part: BasePart, finishId: string?)
 	end
 	part.Material = f.material
 	part.Color = f.colour
-end
-
-local function layOn(model: Instance, finishId: string?)
-	for _, d in model:GetDescendants() do
-		if d:IsA("BasePart") and d.Name == "Floor" then
-			lay(d, finishId)
-		end
-	end
 end
 
 -- Whether a stair on the floor above continues this one (same cells and turn).
@@ -248,7 +207,7 @@ local function buildPiece(
 	end
 	local model = if piece.kind == "Stairs"
 		then HotelKit.stairs(plot.location, not continued(data, rec))
-		else HotelKit.piece(rec.item, plot.location, rec.m)
+		else HotelKit.piece(rec.item, plot.location)
 	model.Name = `P_{id}`
 	model:SetAttribute("PieceId", id)
 	model:SetAttribute("Item", rec.item)
@@ -256,63 +215,8 @@ local function buildPiece(
 	model:SetAttribute("Floor", rec.floor)
 	model:PivotTo(PlotService.pieceFrame(plot, rec))
 	local root = model.PrimaryPart
-	if piece.kind == "Room" or piece.kind == "Amenity" then
-		layOn(model, rec.finish)
-		local tier = Layout.roomTier(PlotService.world(data), id)
-		model:SetAttribute("Tier", tier)
-		-- Its name over the door: on the kit's wooden plaque (his ask,
-		-- 2026-10-19), else as floating text until the plaque is imported.
-		local sign = root and root:FindFirstChild("Sign")
-		local plaque = sign and sign:IsA("Attachment") and HotelKit.plaque(plot.location)
-		local face = plaque and plaque:FindFirstChild("Face", true)
-		if plaque and face and face:IsA("BasePart") and sign and sign:IsA("Attachment") then
-			plaque:PivotTo(sign.WorldCFrame)
-			plaque.Parent = model
-			local gui = Instance.new("SurfaceGui")
-			gui.Name = "Label"
-			gui.Face = Enum.NormalId.Front
-			gui.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
-			gui.PixelsPerStud = 60
-			gui.LightInfluence = 0.6
-			gui.MaxDistance = 80
-			local function line(name: string, y: number, h: number, colour: Color3, text: string)
-				local l = Instance.new("TextLabel")
-				l.Name = name
-				l.BackgroundTransparency = 1
-				l.Position = UDim2.fromScale(0.05, y)
-				l.Size = UDim2.fromScale(0.9, h)
-				l.Font = Enum.Font.FredokaOne
-				l.TextScaled = true
-				l.TextColor3 = colour
-				l.Text = text
-				l.Parent = gui
-			end
-			line("Text", 0.06, 0.56, Color3.fromRGB(255, 232, 180), `{piece.name} · T{tier}`)
-			line("Status", 0.62, 0.32, Color3.fromRGB(255, 190, 120), "")
-			gui.Parent = face
-		elseif sign then
-			local gui = Instance.new("BillboardGui")
-			gui.Name = "Label"
-			gui.Size = UDim2.fromOffset(160, 40)
-			gui.MaxDistance = 60
-			gui.LightInfluence = 0
-			local text = Instance.new("TextLabel")
-			text.Name = "Text"
-			text.Size = UDim2.fromScale(1, 1)
-			text.BackgroundTransparency = 1
-			text.Font = Enum.Font.FredokaOne
-			text.TextScaled = true
-			text.TextColor3 = Color3.fromRGB(255, 240, 220)
-			text.TextStrokeTransparency = 0.4
-			text.Text = `{piece.name} T{tier}`
-			text.Parent = gui
-			gui.Parent = sign
-		end
-	end
 	model.Parent = plot.model:FindFirstChild("Pieces")
-	if piece.kind == "Room" then
-		roomPrompts(plot, model, id)
-	elseif piece.kind == "Desk" and root then
+	if piece.kind == "Desk" and root then
 		local desk = root:FindFirstChild("Desk")
 		local till = root:FindFirstChild("Till")
 		if desk then

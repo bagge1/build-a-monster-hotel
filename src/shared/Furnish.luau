@@ -10,9 +10,12 @@
 	frame, as it was authored (MODELS.md, "Hotel kit"): rotation 0, squares
 	(x, z) from its footprint's lowest corner, x 0..w·Squares−1 and
 	z 0..d·Squares−1, the door on the z = 0 side. `toRoom` and `fromRoom` turn
-	decor between that frame and the plot's, so decor moves with its room. A
-	mirrored room (Flip, A.1) keeps the frame; its door and furniture are
-	mirrored across it (`mirror`, `mirrorSquares`).
+	decor between that frame and the plot's, so decor moves with its room.
+
+	BUILT ROOMS (A.12, 2026-10-21) replaced placed rooms: the game asks
+	`Rooms` where decor and furniture stand. What it still uses here is a
+	piece's points and tags (`points`, `tags`); the room-frame rules and the
+	tiers stay, specced, for nothing in the game now.
 
 	THE RULES. Decor stays inside the walls; never in the doorway (the middle
 	two squares of the door's cell, two deep: 6 × 6 studs inside the door);
@@ -128,7 +131,7 @@ end
 	stand in a w × d room holding `others` (in the room's frame), with the
 	room's own furniture on `blocked` squares. `skip` is an item being moved. ]]
 function Furnish.canPlace(
-	room: { w: number, d: number, m: boolean? },
+	room: { w: number, d: number },
 	others: { Placed },
 	item: Placed,
 	blocked: { [number]: boolean }?,
@@ -139,7 +142,7 @@ function Furnish.canPlace(
 	if item.x < 0 or item.z < 0 or item.x + ex > W or item.z + ez > D then
 		return false, "Outside"
 	end
-	local along = Grid.doorAlong(room.w, room.m)
+	local along = Grid.doorAlong(room.w)
 	local door0, door1 = along * Q + 1, along * Q + Q - 2
 	local mine = {}
 	for _, s in localSquares(item, item.w, item.d) do
@@ -194,25 +197,6 @@ function Furnish.blocked(
 				out[squareKey(x, z)] = true
 			end
 		end
-	end
-	return out
-end
-
--- An item in the room's frame mirrored left to right (Flip): its squares across the middle, a side turn the other way.
-function Furnish.mirror(room: { w: number }, l: Local, w: number, d: number): Local
-	local ex = Grid.extent(w, d, l.r)
-	return { x = room.w * Q - l.x - ex, z = l.z, r = if l.r % 2 == 1 then (l.r + 2) % 4 else l.r }
-end
-
--- Furniture squares (`blocked`) mirrored left to right, for a mirrored room.
-function Furnish.mirrorSquares(
-	room: { w: number },
-	squares: { [number]: boolean }
-): { [number]: boolean }
-	local out = {}
-	for k in squares do
-		local x, z = k % 256, k // 256
-		out[squareKey(room.w * Q - 1 - x, z)] = true
 	end
 	return out
 end

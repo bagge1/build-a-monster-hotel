@@ -106,40 +106,6 @@ describe("Grid", function()
 		end
 	end)
 
-	it("a flipped piece's door moves to its other front cell; a 3-wide one stays", function()
-		for _, size in { { 2, 2 }, { 2, 3 }, { 3, 3 } } do
-			for r = 0, 3 do
-				local p = { x = 4, z = 4, r = r, w = size[1], d = size[2] }
-				local q = { x = 4, z = 4, r = r, w = size[1], d = size[2], m = true }
-				local a, b = Grid.doorCell(p), Grid.doorCell(q)
-				local moved = math.abs(a.x - b.x) + math.abs(a.z - b.z)
-				expect.eq(
-					moved,
-					if size[1] == 2 then 1 else 0,
-					`door moved ({size[1]}x{size[2]} r{r})`
-				)
-				local inside = Grid.doorInside(q)
-				local f = Grid.doorFacing(r)
-				expect.eq(b.x - inside.x, f.X, "the flipped door faces out x")
-				expect.eq(b.z - inside.z, f.Z, "the flipped door faces out z")
-			end
-		end
-		-- At r 0 a 2-wide room's door is on its lower-x cell, flipped on its higher one.
-		expect.eq(Grid.doorCell({ x = 4, z = 2, r = 0, w = 2, d = 2 }).x, 4, "plain door")
-		expect.eq(
-			Grid.doorCell({ x = 4, z = 2, r = 0, w = 2, d = 2, m = true }).x,
-			5,
-			"flipped door"
-		)
-		-- Placing checks the flipped door: a room at x 6..7 behind the desk is served only flipped.
-		local w = world()
-		local _, why = Grid.canPlace(w, placed("StandardRoom", 1, 6, 2, 0))
-		expect.eq(why, "DoorBlocked", "its door onto the desk")
-		local flippedRoom = placed("StandardRoom", 1, 6, 2, 0)
-		flippedRoom.m = true
-		expect.truthy(Grid.canPlace(w, flippedRoom), "flipped, its door beside the desk")
-	end)
-
 	it(
 		"a new hotel owns the 4 × 4 square on the entrance, and only a neighbour tile can be bought",
 		function()
