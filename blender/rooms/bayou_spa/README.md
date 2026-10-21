@@ -424,3 +424,19 @@ The Lodge's `DiningChair` back is its finding 8 (August's call); Bayou's fan bac
 **Validated**: the 7 rebuilt `VALIDATED 7/7`, no faults; every Sit piece passes `sit_faults`. Triangles: `BoardGameShelf` 1,488, `BreakfastBuffet` 1,486, `SaladBar` 1,332, `FloorLamp` 1,090, `GardenBench` 872, `Toilet` 870, `BarStool` 644 (budget 1,500; one herb sprinkle on the eggs went for the round hoods). Height findings: `BreakfastBuffet` 5.37 vs 3.0, `SaladBar` 5.03 vs 4.2, `BarStool` 3.98 vs 2.6, `Toilet` 3.12 vs 3.6.
 
 Review: `review/every/` re-rendered for all 23 (Workbench). **Not done**: a sixth blind review; restaging (`blender/_import/` holds older ones); anything in Studio.
+
+### Blind review 2026-10-21 (sixth run, one reviewer for both kits): triage, and the review rounds end here
+
+The sixth run's findings are now mostly the opposites of earlier rounds' (the skill: "fixing one finding can reopen its opposite ... which makes it his call"), so the rounds stop and the rest is August's to judge in the game (WAITING §2.45).
+
+1. Shelf brackets read as cut-off legs from the front: **False by projection** — the brackets are triangular knees under the bottom board against the wall, seen edge-on from straight in front; the three-quarter view shows one. His call if he wants L-brackets visible from the front.
+2. Toilet reads as a flowerpot (a straight taper, no foot): **his call** — round 5 called the flared foot a goblet; round 6 calls the straight taper a flowerpot. Judge it in the game.
+3. Bayou's heat lamps hide the food from above: **his call** — round 4 asked for a lamp centred over each pan. 
+4. Frostfang's buffet reads as a sideboard from above: **his call** (look); the food covers about a third of the top.
+5. Bayou's lamp reads as a bird cage on a crook, top-heavy: **his call** (look); the core glows in the game.
+6. The flush lever seems to pierce the raised lid: **False** — side-mounted, it only overlaps in the side projection.
+7. Frostfang's drip tray reads as a grate: minor, left.
+8. Dice and pawns too small for a phone: minor, left (detail, culled by distance).
+9. The bar stool's seat narrower than the seated hips: Roblox-typical, left.
+
+Restaged 2026-10-21 15:57: the pieces changed since the import was staged, copied over their `blender/_import/` copies (Frostfang 9, Bayou 9).

@@ -127,9 +127,10 @@ Connect: knappen under fliken Plugins i Studio. -->
    (en `.fbm`-mapp per fil finns), men ingen modell har kommit till
    Workspace eller någon annanstans i spelet (kollat var 5:e minut i 48 min).
    Väntar importfönstret kanske på knappen **Import** längst ner? Har det
-   hängt sig: stäng fönstret och importera samma filer igen. Femton av
-   Frostfangs och Bayous möbler rättas just nu efter en ny granskning; de
-   kommer som en liten egen import efteråt, så importera de 133 som de är.
+   hängt sig: stäng fönstret och importera samma filer igen. Arton av
+   Frostfangs och Bayous möbler, rättade efter sex granskningar, ligger nu i
+   `blender/_import/` över de gamla (kl. 16), så en ny import av alla 133
+   filer tar med dem.
 
 ## §1 Att titta på eller spela
 
@@ -1083,6 +1084,11 @@ Med Claudes skärmdump där det finns en. -->
    - **Frostfangs matstol:** ryggen når en sittandes tinningar och läses som
      en tron. **Rekommendation:** sänk toppen till ~3,6 (axelhöjd) med runda
      toppen och snöflingan kvar.
+   - **Det granskarna drog åt båda håll** (sex rundor; sjätte rundan i
+     `blender/rooms/<hotell>/README.md`): toaletten (vinglas eller
+     blomkruka), Bayous värmelampor över maten (döljer maten uppifrån),
+     Frostfangs buffé (läses som en byrå), Bayous golvlampa (fågelbur).
+     **Rekommendation:** bedöm dem i spelet efter importen.
 
 ## §3 Creator Hub och publicering
 

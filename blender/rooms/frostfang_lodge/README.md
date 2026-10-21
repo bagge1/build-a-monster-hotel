@@ -383,3 +383,19 @@ Not reported, the same geometry as Bayou's finding 6: this kit's `GardenBench` l
 **Validated**: the 5 rebuilt `VALIDATED 5/5`, no faults; every Sit piece passes `sit_faults`. Triangles: `BreakfastBuffet` 1,486, `BoardGameShelf` 1,392, `CoffeeUrn` 1,218, `Toilet` 670, `BarStool` 604 (budget 1,500). Height findings: `SaladBar` 5.03 vs 4.2, `BarStool` 3.95 vs 2.6, `Toilet` 2.94 vs 3.6 (the roll gone).
 
 Review: `review/every/` re-rendered for all 23 (Workbench). **Not done**: a sixth blind review; restaging (`blender/_import/` holds older ones); anything in Studio.
+
+### Blind review 2026-10-21 (sixth run, one reviewer for both kits): triage, and the review rounds end here
+
+The sixth run's findings are now mostly the opposites of earlier rounds' (the skill: "fixing one finding can reopen its opposite ... which makes it his call"), so the rounds stop and the rest is August's to judge in the game (WAITING §2.45).
+
+1. Shelf brackets read as cut-off legs from the front: **False by projection** — the brackets are triangular knees under the bottom board against the wall, seen edge-on from straight in front; the three-quarter view shows one. His call if he wants L-brackets visible from the front.
+2. Toilet reads as a flowerpot (a straight taper, no foot): **his call** — round 5 called the flared foot a goblet; round 6 calls the straight taper a flowerpot. Judge it in the game.
+3. Bayou's heat lamps hide the food from above: **his call** — round 4 asked for a lamp centred over each pan. 
+4. Frostfang's buffet reads as a sideboard from above: **his call** (look); the food covers about a third of the top.
+5. Bayou's lamp reads as a bird cage on a crook, top-heavy: **his call** (look); the core glows in the game.
+6. The flush lever seems to pierce the raised lid: **False** — side-mounted, it only overlaps in the side projection.
+7. Frostfang's drip tray reads as a grate: minor, left.
+8. Dice and pawns too small for a phone: minor, left (detail, culled by distance).
+9. The bar stool's seat narrower than the seated hips: Roblox-typical, left.
+
+Restaged 2026-10-21 15:57: the pieces changed since the import was staged, copied over their `blender/_import/` copies (Frostfang 9, Bayou 9).
