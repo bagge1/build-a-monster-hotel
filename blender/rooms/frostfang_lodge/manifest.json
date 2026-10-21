@@ -1433,12 +1433,12 @@
      "centre": [
       0.0,
       1.235,
-      -0.0203
+      -0.05
      ],
      "size": [
       2.16,
       2.47,
-      1.8006
+      1.86
      ],
      "triangles": 804,
      "collide": false
@@ -1778,26 +1778,26 @@
     "Body": {
      "centre": [
       0.0,
-      1.635,
+      1.63,
       -0.03
      ],
      "size": [
       8.16,
-      3.27,
+      3.26,
       2.14
      ],
-     "triangles": 1474,
+     "triangles": 1486,
      "collide": false
     },
     "LOD_Proxy": {
      "centre": [
       0.0,
-      1.635,
+      1.63,
       -0.03
      ],
      "size": [
       8.16,
-      3.27,
+      3.26,
       2.14
      ],
      "triangles": 12,
@@ -1818,11 +1818,11 @@
      ]
     }
    },
-   "triangles": 1486,
+   "triangles": 1498,
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "a breakfast buffet under a cream cloth, its skirt pleated with a red hem band and a white snowflake on a red roundel, log feet: sausages and scrambled eggs in open steel chafing dishes, a basket of rolls and a croissant, a bowl of oranges, an apple and a banana, orange juice in a jug and two glasses, pancakes with syrup and butter",
+   "note": "a breakfast buffet under a cream cloth, its skirt pleated with a red hem band and a white snowflake on a navy shield, log feet: sausages and scrambled eggs in open steel chafing dishes, a basket of rolls and a croissant, a bowl of oranges, an apple and a banana, orange juice in a white enamel pitcher and two mugs, pancakes with syrup and butter",
    "decor": {
     "fw": 3,
     "fd": 1,
@@ -1840,7 +1840,7 @@
      "CocoaLounge"
     ],
     "pieces_height": 3.0,
-    "model_top": 3.27,
+    "model_top": 3.26,
     "height_finding": null
    }
   },
@@ -1878,15 +1878,15 @@
     "Body": {
      "centre": [
       0.0,
-      1.98,
-      0.0073
+      1.975,
+      -0.0288
      ],
      "size": [
       2.0596,
-      3.96,
-      1.7054
+      3.95,
+      1.6331
      ],
-     "triangles": 544,
+     "triangles": 532,
      "collide": false
     }
    },
@@ -1904,7 +1904,7 @@
      ]
     }
    },
-   "triangles": 556,
+   "triangles": 544,
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
@@ -1939,8 +1939,8 @@
     "pose": "Sit",
     "keyFor": [],
     "pieces_height": 2.6,
-    "model_top": 3.96,
-    "height_finding": "Pieces.luau's height 2.6, the body's top 3.96"
+    "model_top": 3.95,
+    "height_finding": "Pieces.luau's height 2.6, the body's top 3.95"
    }
   },
   "Furniture_PoolTable": {
@@ -2472,27 +2472,27 @@
     "Body": {
      "centre": [
       0.0,
-      2.24,
+      2.515,
       0.0
      ],
      "size": [
       8.2,
-      4.48,
+      5.03,
       2.1
      ],
-     "triangles": 1444,
+     "triangles": 1364,
      "collide": false
     },
     "Glass": {
      "centre": [
       0.0,
-      4.125,
-      -0.465
+      4.8,
+      -0.5
      ],
      "size": [
       7.92,
-      0.6736,
-      0.8485
+      0.4274,
+      0.9122
      ],
      "triangles": 12,
      "collide": false
@@ -2500,12 +2500,12 @@
     "LOD_Proxy": {
      "centre": [
       0.0,
-      2.24,
+      2.515,
       0.0
      ],
      "size": [
       8.2,
-      4.48,
+      5.03,
       2.1
      ],
      "triangles": 12,
@@ -2526,11 +2526,11 @@
      ]
     }
    },
-   "triangles": 1468,
+   "triangles": 1388,
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "a salad bar: a birch cabinet with carved snowflake panels, a well of ice along the front of its top with five steel pans heaped with lettuce, cherry tomatoes, cucumber slices, carrot sticks and egg halves, tongs, a sloped glass sneeze guard on two iron posts on the guest's side; plates behind",
+   "note": "a salad bar: a birch cabinet with carved snowflake panels, a well of ice along the front of its top with four steel pans heaped with lettuce, cherry tomatoes, carrot sticks and egg halves, tongs, a stack of plates at the guest's end, a sloped glass sneeze guard high on the guest's side, framed at its ends and lower edge in iron",
    "decor": {
     "fw": 3,
     "fd": 1,
@@ -2545,8 +2545,8 @@
     "pose": "Stand",
     "keyFor": [],
     "pieces_height": 4.2,
-    "model_top": 4.48,
-    "height_finding": null
+    "model_top": 5.03,
+    "height_finding": "Pieces.luau's height 4.2, the body's top 5.03"
    }
   },
   "Furniture_CoffeeUrn": {
@@ -2584,12 +2584,12 @@
      "centre": [
       0.0,
       2.265,
-      0.0147
+      -0.01
      ],
      "size": [
       2.16,
       4.53,
-      2.0906
+      2.14
      ],
      "triangles": 1146,
      "collide": false
@@ -2598,12 +2598,12 @@
      "centre": [
       0.0,
       2.265,
-      0.0147
+      -0.01
      ],
      "size": [
       2.16,
       4.53,
-      2.0906
+      2.14
      ],
      "triangles": 12,
      "collide": false
@@ -3082,27 +3082,27 @@
     "Body": {
      "centre": [
       0.0,
-      3.76,
-      0.335
+      3.531,
+      0.355
      ],
      "size": [
       5.12,
-      3.52,
-      1.53
+      3.762,
+      1.49
      ],
-     "triangles": 1440,
+     "triangles": 1312,
      "collide": false
     },
     "LOD_Proxy": {
      "centre": [
       0.0,
-      3.76,
-      0.335
+      3.531,
+      0.355
      ],
      "size": [
       5.12,
-      3.52,
-      1.53
+      3.762,
+      1.49
      ],
      "triangles": 12,
      "collide": false
@@ -3122,11 +3122,11 @@
      ]
     }
    },
-   "triangles": 1452,
+   "triangles": 1324,
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "a shelf of board games hung on the wall well off the floor on two log brackets under its birch sides, a log cornice with an aurora band and snow on it; in two bays stacks of wide game boxes with bright lids, boxes stood up showing boards in four colours under white title bands, one game open with its board and pawns, dice",
+   "note": "a shelf of board games hung on the wall well off the floor on two birch knee brackets under its birch sides, a log cornice with snow and a game on it; in two bays stacks of wide game boxes with bright lids, boxes stood up showing boards in four colours under white title bands, one game open with its board and pawns, dice",
    "decor": {
     "fw": 2,
     "fd": 1,
@@ -3141,7 +3141,7 @@
     "pose": "Stand",
     "keyFor": [],
     "pieces_height": 5.6,
-    "model_top": 5.52,
+    "model_top": 5.412,
     "height_finding": null
    }
   },
@@ -3443,14 +3443,14 @@
      "centre": [
       -0.02,
       1.6335,
-      0.0488
+      0.0788
      ],
      "size": [
       1.8101,
       3.2671,
-      1.9623
+      2.0223
      ],
-     "triangles": 750,
+     "triangles": 806,
      "collide": false
     }
    },
@@ -3468,7 +3468,7 @@
      ]
     }
    },
-   "triangles": 762,
+   "triangles": 818,
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",

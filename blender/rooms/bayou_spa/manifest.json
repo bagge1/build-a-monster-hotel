@@ -2071,40 +2071,40 @@
     "Body": {
      "centre": [
       0.0,
-      2.21,
+      2.685,
       -0.03
      ],
      "size": [
       8.16,
-      4.42,
+      5.37,
       2.14
      ],
-     "triangles": 1414,
+     "triangles": 1410,
      "collide": false
     },
     "Glow_Warm_1": {
      "centre": [
       -1.0,
-      3.775,
-      0.25
+      4.595,
+      0.0
      ],
      "size": [
-      2.1196,
+      3.8464,
       0.07,
-      0.3696
+      0.4
      ],
-     "triangles": 56,
+     "triangles": 60,
      "collide": false
     },
     "LOD_Proxy": {
      "centre": [
       0.0,
-      2.21,
+      2.685,
       -0.03
      ],
      "size": [
       8.16,
-      4.42,
+      5.37,
       2.14
      ],
      "triangles": 12,
@@ -2129,7 +2129,7 @@
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "a hot breakfast station under a linen cloth, its skirt pleated over a woven rattan hem band, moss off its end, root feet: shrimp and grits, scrambled eggs with chives and sausages heaped in three open copper warming pans, two copper heat lamps glowing between them on a brass gantry, a stack of plates, a copper coffee pot",
+   "note": "a hot breakfast station under a linen cloth, its skirt pleated over a woven rattan hem band, moss off its end, root feet: shrimp and grits, scrambled eggs with chives and sausages heaped in three open copper warming pans, a copper heat lamp glowing high over each on a brass gantry, a stack of plates, a copper coffee pot",
    "decor": {
     "fw": 3,
     "fd": 1,
@@ -2147,8 +2147,8 @@
      "CocoaLounge"
     ],
     "pieces_height": 3.0,
-    "model_top": 4.42,
-    "height_finding": "Pieces.luau's height 3, the body's top 4.42"
+    "model_top": 5.37,
+    "height_finding": "Pieces.luau's height 3, the body's top 5.37"
    }
   },
   "Furniture_BarStool": {
@@ -2193,7 +2193,7 @@
       3.42,
       1.8054
      ],
-     "triangles": 576,
+     "triangles": 564,
      "collide": false
     }
    },
@@ -2211,7 +2211,7 @@
      ]
     }
    },
-   "triangles": 588,
+   "triangles": 576,
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
@@ -2569,16 +2569,16 @@
     },
     "Body": {
      "centre": [
-      0.1468,
-      2.7175,
-      -0.0064
+      0.0921,
+      2.7247,
+      0.0
      ],
      "size": [
-      1.587,
-      5.435,
-      1.2415
+      1.8962,
+      5.4495,
+      1.71
      ],
-     "triangles": 1170,
+     "triangles": 998,
      "collide": false
     },
     "Glow_Warm_1": {
@@ -2597,14 +2597,14 @@
     },
     "LOD_Proxy": {
      "centre": [
-      0.1468,
-      2.7175,
-      -0.0064
+      0.0921,
+      2.7247,
+      0.0
      ],
      "size": [
-      1.587,
-      5.435,
-      1.2415
+      1.8962,
+      5.4495,
+      1.71
      ],
      "triangles": 12,
      "collide": false
@@ -2624,7 +2624,7 @@
      ]
     }
    },
-   "triangles": 1262,
+   "triangles": 1090,
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
@@ -2643,7 +2643,7 @@
     "pose": "Stand",
     "keyFor": [],
     "pieces_height": 5.5,
-    "model_top": 5.435,
+    "model_top": 5.449,
     "height_finding": null
    }
   },
@@ -2793,27 +2793,27 @@
     "Body": {
      "centre": [
       0.0,
-      2.24,
+      2.515,
       -0.02
      ],
      "size": [
       8.2,
-      4.48,
+      5.03,
       2.14
      ],
-     "triangles": 1416,
+     "triangles": 1276,
      "collide": false
     },
     "Glass": {
      "centre": [
       0.0,
-      4.125,
-      -0.465
+      4.8,
+      -0.5
      ],
      "size": [
       7.92,
-      0.6736,
-      0.8485
+      0.4274,
+      0.9122
      ],
      "triangles": 12,
      "collide": false
@@ -2821,12 +2821,12 @@
     "LOD_Proxy": {
      "centre": [
       0.0,
-      2.24,
+      2.515,
       -0.02
      ],
      "size": [
       8.2,
-      4.48,
+      5.03,
       2.14
      ],
      "triangles": 12,
@@ -2847,11 +2847,11 @@
      ]
     }
    },
-   "triangles": 1440,
+   "triangles": 1300,
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "a salad bar: a cypress cabinet with rattan panels and moss off its edge, a well of crushed ice along the front of its top with five brass pans heaped with lettuce, cherry tomatoes, cucumber slices, carrot sticks and egg halves, tongs, a sloped glass sneeze guard on two brass posts on the guest's side; plates behind",
+   "note": "a salad bar: an open cypress trestle table (crossed legs at each end, a stretcher, a shelf with a basket of rolls and a stack of stone bowls), moss off its weathered top, a well of crushed ice along its front with four brass pans heaped with lettuce, cherry tomatoes, carrot sticks and egg halves, tongs, a stack of plates at the guest's end, a sloped glass sneeze guard high on the guest's side, framed at its ends and lower edge in brass",
    "decor": {
     "fw": 3,
     "fd": 1,
@@ -2866,8 +2866,8 @@
     "pose": "Stand",
     "keyFor": [],
     "pieces_height": 4.2,
-    "model_top": 4.48,
-    "height_finding": null
+    "model_top": 5.03,
+    "height_finding": "Pieces.luau's height 4.2, the body's top 5.03"
    }
   },
   "Furniture_CoffeeUrn": {
@@ -2905,12 +2905,12 @@
      "centre": [
       0.0,
       2.18,
-      0.0147
+      -0.01
      ],
      "size": [
       2.16,
       4.36,
-      2.0906
+      2.14
      ],
      "triangles": 1114,
      "collide": false
@@ -2919,12 +2919,12 @@
      "centre": [
       0.0,
       2.18,
-      0.0147
+      -0.01
      ],
      "size": [
       2.16,
       4.36,
-      2.0906
+      2.14
      ],
      "triangles": 12,
      "collide": false
@@ -3403,26 +3403,26 @@
     "Body": {
      "centre": [
       0.0,
-      3.911,
+      3.591,
       0.335
      ],
      "size": [
       5.12,
-      3.822,
+      3.882,
       1.53
      ],
-     "triangles": 1464,
+     "triangles": 1456,
      "collide": false
     },
     "LOD_Proxy": {
      "centre": [
       0.0,
-      3.911,
+      3.591,
       0.335
      ],
      "size": [
       5.12,
-      3.822,
+      3.882,
       1.53
      ],
      "triangles": 12,
@@ -3443,11 +3443,11 @@
      ]
     }
    },
-   "triangles": 1476,
+   "triangles": 1468,
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "a shelf of board games hung on the wall well off the floor on two cypress brackets under its sides, a woven rattan back, moss hanging off the cornice and two games and dice on it; in two bays stacks of wide game boxes with bright lids, boxes stood up showing boards in four colours under white title bands, one game open with its board and pawns, dice",
+   "note": "a shelf of board games hung on the wall well off the floor on two cypress knee brackets under its sides, a woven rattan back, moss hanging off the cornice and two games and dice on it; in two bays stacks of wide game boxes with bright lids, boxes stood up showing boards in four colours under white title bands, one game open with its board and pawns, dice",
    "decor": {
     "fw": 2,
     "fd": 1,
@@ -3462,7 +3462,7 @@
     "pose": "Stand",
     "keyFor": [],
     "pieces_height": 5.6,
-    "model_top": 5.822,
+    "model_top": 5.532,
     "height_finding": null
    }
   },
@@ -3764,14 +3764,14 @@
      "centre": [
       -0.02,
       1.6335,
-      0.0388
+      0.0688
      ],
      "size": [
       1.8101,
       3.2671,
-      1.9423
+      2.0023
      ],
-     "triangles": 950,
+     "triangles": 1006,
      "collide": false
     }
    },
@@ -3789,7 +3789,7 @@
      ]
     }
    },
-   "triangles": 962,
+   "triangles": 1018,
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",

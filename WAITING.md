@@ -1067,6 +1067,12 @@ Med Claudes skärmdump där det finns en. -->
    - **Cocoa Lounge-disken** (Frostfang) har röd-vita ränder ("candy-cane
      counter") som en granskare läste som cirkustält. *Behåll* eller *björk
      med ett rött band*. **Rekommendation:** behåll.
+   - **Bayous mossgirlanger** längs disk- och bordskanter lästes som mögel.
+     **Rekommendation:** behåll mossan men som en kort ljusgrön tofs per bit,
+     inte mörka bågar längs hela kanter.
+   - **Frostfangs snöflingor:** tre stora snidade flingor på salladsbarens
+     luckor mot en sköld på buffén. **Rekommendation:** behåll (snidade
+     flingor är lodgens panel, skölden buffens eget märke).
 
 ## §3 Creator Hub och publicering
 
