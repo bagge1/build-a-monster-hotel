@@ -325,3 +325,24 @@ anything in Studio.
 Staged 2026-10-21 in `blender/_import/` as `FrostfangLodge_Furniture_<Id>.fbx`
 (the 23; the names repeat the Manor's: rename to `Furniture_<Id>` on saving
 into `assets/HotelKit/FrostfangLodge/`), beside what was there.
+
+### Blind review 2026-10-21 (third run)
+
+A third pair of context-free reviewers (another model) looked at the rebuilt pieces. Each finding triaged,
+proved by the script's geometry where it could be; fixed in `tools/build_built_rooms_kits.py` (shared shapes
+changed Bayou's too), rebuilt alone (`-- sets frostfang_lodge only Toilet,SaladBar,BoardGameShelf,
+BreakfastBuffet,Nightstand,CoffeeUrn`):
+
+1. **`Toilet` a cabinet beside a hatbox; from above like the `Washstand`** — Confirmed + fixed: one white ceramic toilet as the Manor's that passed (bowl on a foot running up into a white deck, a low white cistern 1.58-2.8 standing on it, only its lid log with bark edges); a birch seat ring at 1.72 round a dark opening with the white rim showing round it from above; the lid raised on two iron hinges against the cistern (z 0.4-0.49, behind the torso at 0.15); a spare roll on the lid. `Use` and seat height unchanged; `sit_faults` clean.
+2. **`SaladBar` guard a glass cage (pane flat as a roof, frame on four sides)** — Confirmed + fixed: one row of five pans along the front (the guest stands only there, Stand), a pane sloping from 4.45 over the pans' back edge down to 3.8 over the front edge (0.8 over the food) between two iron end posts and brackets, open behind and above; plates behind. The carrot zigzag (three long sticks) Confirmed: now eight short sticks heaped; the pans hold lettuce, cherry tomatoes, cucumber slices, carrots, egg halves with yolks. The sheets now draw `Glass` see-through, as the code makes it in the game (`build_built_rooms.py` `_see_through`).
+3. **`BreakfastBuffet` red octagon = stop sign; cups as crumbs** — Confirmed + fixed: the roundel (twelve-sided, red) is now a navy shield edged in gold with the white snowflake; the two orange glasses (r 0.1) are two cream mugs with red bands and handles (r 0.18).
+4. **`BoardGameShelf` lopsided; top boxes clipping the cornice** — Lopsided False by geometry (both brackets were at x ±1.5..1.7, both sides 2.3-2.5: the three-quarter camera saw the right bracket inside the case, the left hidden), clipping False by geometry (0.44 air over the upper stacks) but both Confirmed as reads (the cornice's overhang and aurora hid the air from an elevated camera) + fixed: the brackets now stand under the two sides, short (to 2.0); the cornice overhangs 0.04; every bay has 0.14-0.6 air; games read as games (boxes stood up showing a four-colour board under a white title band, deep two-box stacks with a lid a hair wider, one game open with its board and pawns, dice).
+5. (Bayou's stool.)
+8. **Seated feet hang 0.6-0.7 over the floor** — Confirmed by geometry, not changed (as asked): the figure's soles are 1.1 under the seat (thighs 0.6 thick, shins 0.8, shoes 0.3), so the `DiningChair` (1.82) leaves them at 0.72, the `Toilet` (1.72) 0.62, the `GardenBench` (1.75) 0.65; the `BarStool`'s (2.6) rest on its ring at 1.5. **August's call**, kit-wide with the Manor's seats and MODELS.md rule 6 (1.5-2.0, "the legs are 2"): check a real avatar seated in Studio first.
+9. **Blank or dotted tops** — identified from `review_top` (by depth then name, four a row, drawn right to left): row 2 #1 `BoardGameShelf` and row 6 #3 `Wardrobe` are snow (**August's call**, WAITING §2.43, not changed); row 2 #4 `ArcadeCabinet` is snow too (same call); row 3 #1 `CoffeeUrn` now has marshmallows in its two mugs; row 5 #3 `Nightstand` now a book lying open and marshmallows in the mug (the two closed books gone). **`CocoaBar`'s stripes** (circus tent) — False as a fault: it is the Cocoa Lounge's candy-cane counter by design (the approved room's); **August's call** if he wants it otherwise (recommendation: keep; else birch planks with one red band).
+
+Findings 5, 6 and 7 are Bayou's (its README).
+
+**Validated**: the 6 rebuilt `VALIDATED 6/6`, no faults; every Sit piece passes `sit_faults`. Triangles: `BreakfastBuffet` 1,486, `SaladBar` 1,468, `BoardGameShelf` 1,452, `CoffeeUrn` 1,158, `Nightstand` 816, `Toilet` 762 (budget 1,500). Height findings: `Toilet` 3.27 vs 3.6 (lower: the low cistern), `BarStool` 3.96 vs 2.6 as before.
+
+Review: `review/every/` re-rendered for all 23 (Workbench). **Not done**: a fourth blind review; restaging (`blender/_import/` holds older ones); anything in Studio.

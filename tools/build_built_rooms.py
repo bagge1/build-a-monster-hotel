@@ -2098,7 +2098,26 @@ def place(fbx, name, pos, ang=0.0):
     for ob in objs:
         ob.matrix_world = M @ ob.matrix_world
         ob['piece'] = name
+        if ob.name.split('.')[0] == 'Glass':
+            _see_through(ob)
     return objs
+
+
+def _see_through(ob, alpha=0.3):
+    """A `Glass` part drawn see-through, as the code makes it in the game (HotelKit.rooted; the third blind review
+    of the kits, 2026-10-21: drawn opaque, the salad bar's sneeze guard hid the salad from above in the sheets)."""
+    for slot in ob.material_slots:
+        if slot.material is None or not slot.material.use_nodes:
+            continue
+        m = slot.material.copy()
+        for nd in m.node_tree.nodes:
+            if nd.type == 'BSDF_PRINCIPLED':
+                for link in list(nd.inputs['Alpha'].links):
+                    m.node_tree.links.remove(link)
+                nd.inputs['Alpha'].default_value = alpha
+        m.diffuse_color = (*m.diffuse_color[:3], alpha)     # the alpha Workbench draws by
+        m.surface_render_method = 'BLENDED'
+        slot.material = m
 
 
 ROOM = [    # a 2 x 2 cell room's corner with a T and a free end: (name, (x, z), turn)

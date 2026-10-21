@@ -364,3 +364,25 @@ anything in Studio.
 Staged 2026-10-21 in `blender/_import/` as `BayouSpa_Furniture_<Id>.fbx`
 (the 23; the names repeat the Manor's: rename to `Furniture_<Id>` on saving
 into `assets/HotelKit/BayouSpa/`), beside what was there.
+
+### Blind review 2026-10-21 (third run)
+
+A third pair of context-free reviewers (another model) looked at the rebuilt pieces. Each finding triaged,
+proved by the script's geometry where it could be; fixed in `tools/build_built_rooms_kits.py` (shared shapes
+changed the Lodge's too), rebuilt alone (`-- sets bayou_spa only Toilet,SaladBar,BoardGameShelf,
+BreakfastBuffet,BarStool,DiningChair,FloorLamp`):
+
+1. **`Toilet` a cabinet beside a hatbox; from above a brown oval beside a box, no white** — Confirmed + fixed: one white ceramic toilet as the Manor's that passed (bowl on a foot running up into a white deck, a low white cistern 1.58-2.8 standing on it, only its lid cypress with a lotus); a light cypress seat ring at 1.72 round a dark water opening with the white rim showing round it from above; the lid raised on two brass hinges against the cistern (z 0.4-0.49, behind the torso at 0.15); a spare roll. `Use` and seat height unchanged; `sit_faults` clean.
+2. **`SaladBar` pane floating between posts, trays both sides under a one-sided guard; carrots a smile, eggs a napkin** — Confirmed + fixed: the guest stands only at the front (Stand), so the pans are one row of five along it and the pane slopes from 4.45 over their back edge down to 3.8 over the front edge between two brass end posts and brackets that hold its ends, open behind and above; plates behind. Carrots are eight short sticks heaped, eggs are halves with yolks (on greens), with lettuce, cherry tomatoes (new palette `tomato`, `carrot` appended) and cucumber slices. The sheets now draw `Glass` see-through as the game does.
+3. **`BreakfastBuffet` a blank cream slab from above, a striped sideboard with a teapot** — Confirmed + fixed: a hot station: three open copper warming pans heaped in strong colours (shrimp on grits, scrambled eggs with chives, sausages), a brass gantry behind them with two copper heat lamps on arms between the pans glowing (`Glow_Warm_1`, 0.75 over the food), a stack of plates, the copper pot; the skirt's pleats one linen (no stripes). The basket, fruit and cup went for the budget.
+4. **`BoardGameShelf` games read as books** — Confirmed + fixed (shared with the Lodge): boxes stood up showing a four-colour board under a white title band, deep two-box stacks with a lid a hair wider, one game open with its board and pawns, dice; two games and two dice on the cornice, so from above it is more than a plank; the brackets under the sides.
+5. **`BarStool`: forearms through the counter; a barber's or office chair** — Arms False by geometry: at the Snack Counter the stool's `Use` is (0, 2.6, -2.8) looking +Z, the arms z -3.25..-2.35, y 3.35-4.6; the counter's top edge is at z -1.05 and its jars at 0.3, 1.1 clear; the front and three-quarter cameras sit behind the sitter, so the figure overlaps the counter in the picture (the rig is not at fault). Chair look Confirmed + fixed: four cypress root legs joined by the copper foot ring (feet on it at 1.5), the oval seat, a low curved backrest (3.0-3.42) on two short posts; no slats, medallion or tulip base.
+6. **`FloorLamp` opaque yellow panels, a loop held by nothing, the stalk into its bottom** — Confirmed + fixed: the whole jar was `Glow_Warm_1`. Now an open brass lantern (dish, six side straps, an open top ring, three straps to a knob), the glowing core 0.3 inside the cage seen between the straps and through the top; hung by its loop from the hook of a cypress shepherd's crook; no panels.
+7. **`DiningChair` fan held at two points, tapering to a point over the seat** — Confirmed (hub 0.23 over the seat board, nothing under it) + fixed: the fan is a half disc standing on a light cypress rail (1.71-2.06) across the seat's back that takes the back legs' tops.
+8. **Seated feet hang 0.6-0.7 over the floor** — Confirmed by geometry, not changed (as asked): soles 1.1 under the seat; `DiningChair` 1.82 leaves them at 0.72, `Toilet` 1.72 at 0.62, `GardenBench` 1.75 at 0.65; the stool's rest on its ring. **August's call** (kit-wide, MODELS.md rule 6), after a real avatar is seated in Studio.
+
+Finding 9 is the Lodge's (its README).
+
+**Validated**: the 7 rebuilt `VALIDATED 7/7`, no faults; every Sit piece passes `sit_faults`. Triangles: `BreakfastBuffet` 1,482, `BoardGameShelf` 1,476, `SaladBar` 1,440, `FloorLamp` 1,262, `Toilet` 962, `DiningChair` 612, `BarStool` 588 (budget 1,500). Height findings: `BreakfastBuffet` 4.42 vs 3.0 (the heat lamps), `Toilet` 3.27 vs 3.6, `BarStool` 3.42 vs 2.6 (was 4.5).
+
+Review: `review/every/` re-rendered for all 23 (Workbench). **Not done**: a fourth blind review; restaging (`blender/_import/` holds older ones); anything in Studio.

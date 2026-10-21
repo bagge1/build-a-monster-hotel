@@ -1058,6 +1058,15 @@ Med Claudes skärmdump där det finns en. -->
      kan inte rätta det (pallens `Use`-punkt och avstånden är kontraktets).
      **Rekommendation:** koden flyttar en barpall 0,7 mot en disk den står
      vänd mot.
+   - **Sitthöjden** (alla tre hotellen): stolar, toalett och bänk har sitsen
+     1,72–1,82 över golvet, så en sittande persons fötter hänger 0,6–0,7
+     ovanför golvet (granskningen såg det på alla sitsar). Jag mäter först en
+     riktig avatar på en stol i Studio. **Rekommendation:** blir fallet från
+     sits till fot ~1,1, sänk sitsarna till ~1,1–1,2 och matbord och kortbord
+     till ~2,0; barpallar och diskar som de är (fötterna på ringen).
+   - **Cocoa Lounge-disken** (Frostfang) har röd-vita ränder ("candy-cane
+     counter") som en granskare läste som cirkustält. *Behåll* eller *björk
+     med ett rött band*. **Rekommendation:** behåll.
 
 ## §3 Creator Hub och publicering
 
