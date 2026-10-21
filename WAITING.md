@@ -95,7 +95,7 @@ Connect: knappen under fliken Plugins i Studio. -->
    filer i `blender/_import/`** till **Workspace** i en dialog och skriv
    *importerat*. Bilderna: `blender/hotel/haunted_manor/review/decor/`.
 
-11. ~~**Importera 49 modeller: fasaderna**~~ (importerat av dig 2026-10-20 kväll; fix-up, kollision och `.rbxm` klara samma kväll, alla 49 synkade; kvar i natt: jämföra mesh-id och storlekar mot Workspace-kopiorna (`Saved<Stil>_...`), ta bort dem och `blender/_import/`) (2026-10-20). Väggarna runt det du
+11. ~~**Importera 49 modeller: fasaderna**~~ (importerat av dig 2026-10-20 kväll; fix-up, kollision och `.rbxm` klara samma kväll; natten 2026-10-21: alla 256 delar jämförda mot importen och lika, Workspace-kopiorna och `blender/_import/` borttagna, `blender/facade/README.md`. Klart.) (2026-10-20). Väggarna runt det du
    äger, i sju stilar: hotellkitens egna (Haunted Manor, Frostfang Lodge) och
    de fem fasadpaketen (Gothic, Neon, Candy, Pirate, Slime). Varje stil har
    sju bitar: en slät vägg, fyra väggar med fönster (Twin sash, Arched,

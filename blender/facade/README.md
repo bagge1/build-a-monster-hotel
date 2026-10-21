@@ -29,8 +29,12 @@ Each set: `fbx/` (seven FBX), `manifest.json`, `validation.json` (with its
 entrance with a 5-stud person, an outside and an inside corner, the plain
 wall and the four windows from outside and from inside). All seven layouts:
 `review/overview.png` (top row Haunted Manor, Frostfang, Gothic, Neon;
-bottom Candy, Pirate, Slime). Staged for import in `blender/_import/` as
-`<Style>_<Piece>.fbx` (the names repeat between sets; the import renames).
+bottom Candy, Pirate, Slime). Imported 2026-10-20 (staged as
+`<Style>_<Piece>.fbx`, renamed on import) and saved as 49 `.rbxm`: the kits'
+in `assets/HotelKit/<Kit>/`, the packs' in `assets/Cosmetics/Cosmetic_<Style>Facade/`.
+Read back 2026-10-21 02:30: all 256 MeshParts of the synced copies match the
+imports (mesh id, size, collision, transparency), no empty MeshPart, a
+PrimaryPart on each; the Workspace copies and the staged FBX removed.
 
 ## Choices made in building it (not his rulings)
 
@@ -90,8 +94,7 @@ refused. The checks also found real faults on the way: overlapping colour
 bands (Candy), a float's sliver at a plank edge (Pirate), frames lying on
 the reveals, bars on panes, sills on frames.
 
-**Not validated**: anything in Studio (the import, the fix-up, the look lit,
-the glows), the code placing these (`HotelKit.facade`), a walker through the
+**Not validated**: the look lit in Studio, the glows, the code placing these (`HotelKit.facade`), a walker through the
 entrance (its colliding boxes leave 9 × 9 clear). Studio runtime is not
 tested.
 
