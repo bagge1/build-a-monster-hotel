@@ -402,7 +402,10 @@ FORMULA_GUARDS = [
     ("src/shared/Stay.luau", "math.floor(payRate * stay * (satisfaction / 100) * S.TipFraction)"),
     ("src/shared/Stay.luau", "math.clamp(1 + math.floor(satisfaction / 25), 1, 5)"),
     ("src/shared/Stay.luau", "math.min(S.SatisfactionAmenityMax, S.SatisfactionPerAmenity * i.amenities)"),
-    ("src/shared/Rating.luau", "math.min(100, tierMean / Constants.Economy.MaxTier * 100) * 0.6 + 40 * i.prefsShare"),
+    # Built rooms (GDD A.12, 2026-10-21): Comfort's room part is Rooms.comfortPoints over the ready rooms'
+    # bars, and a room's pay/stay/satisfaction/friendship come from Rooms.bonuses. NOT YET MODELLED here:
+    # the model still runs on tiers (its numbers for Comfort and pay are the tiers' until it is updated).
+    ("src/shared/Rating.luau", "local comfort = Rooms.comfortPoints(i.roomBars) + 40 * i.prefsShare"),
     ("src/shared/Rating.luau", "math.clamp(100 - i.meanWait * R.ServiceWaitPerPoint, 0, 100) * 0.6 + 40 * i.requestShare"),
     ("src/shared/Rating.luau", "100 * (1 - i.dirtyRooms / i.rooms)"),
     ("src/shared/Rating.luau", "math.min(100, i.amenities * R.FunPerAmenity + i.entertainers * R.FunPerEntertainer)"),
@@ -424,9 +427,9 @@ FORMULA_GUARDS = [
     # pay by location, pieces by location
     ("src/shared/Economy.luau", "return E.BasePay * E.LocationPayMultiplier ^ (sp.location - 1) * Constants.Rarity[sp.rarity].pay"),
     ("src/shared/Unlocks.luau", "if piece.location ~= 0 and piece.location ~= c.location then"),
-    ("src/shared/Pieces.luau", "return d.always == true or d.location == location or unlocked[`Decor_{d.id}`] == true"),
+    ("src/shared/Pieces.luau", "return d.always == true or d.location == location or (d.furniture == true and d.location == 0) or unlocked[`Decor_{d.id}`] == true"),
     ("src/shared/Bus.luau", "if sp.rarity == rarity and locations[sp.location] then"),
-    ("src/server/HotelService.luau", "elseif p and p.kind == \"Amenity\" then amenities += 1"),
+    ("src/server/HotelService.luau", "elseif p and ok and p.kind == \"Amenity\" then amenities += 1"),
     # the chain (§6.4)
     ("src/server/ChainService.luau", "if Chain.nextToOpen(opened) ~= location then"),
     ("src/server/ChainService.luau", "local cost = Chain.openCost(location) or 0"),
