@@ -127,6 +127,7 @@ local function rebirth(player: Player, force: boolean?)
 			r.hotel = nil
 		end
 	end
+	HotelService.switchSamples(player, from, nil)
 	ChainService.redraw(player)
 	Net.fireAll("Announce", `{player.DisplayName} was reborn! Rebirth {data.rebirths}`, "Rare")
 	Net.fire(

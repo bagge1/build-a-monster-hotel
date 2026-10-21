@@ -161,6 +161,7 @@ local function travel(player: Player, location: number)
 	end
 	putAway(player, data)
 	takeOut(data, location)
+	HotelService.switchSamples(player, from, location)
 	sample(player)
 	ChainService.redraw(player)
 	if opened[location] then

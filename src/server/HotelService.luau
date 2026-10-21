@@ -52,6 +52,49 @@ export type Hotel = {
 }
 
 local hotels: { [Player]: Hotel } = {}
+
+--[[ The rating's samples of the chain's hotels not being played (§6.4: the
+	rating is each hotel's own), by location, this session. ]]
+type Samples = {
+	waits: { number },
+	prefsShares: { number },
+	requestsAsked: number,
+	requestsDone: number,
+	cleanTimes: { number },
+}
+local away: { [Player]: { [number]: Samples } } = {}
+
+--[[ Travel (ChainService): the samples of the hotel left are put away under
+	`from`, and `to`'s taken out, empty for a hotel never played this
+	session. `to` nil forgets them all (a rebirth). ]]
+function HotelService.switchSamples(player: Player, from: number, to: number?)
+	local hotel = hotels[player]
+	if not hotel then
+		return
+	end
+	local bank = away[player] or {}
+	away[player] = bank
+	if to == nil then
+		table.clear(bank)
+	else
+		bank[from] = {
+			waits = hotel.waits,
+			prefsShares = hotel.prefsShares,
+			requestsAsked = hotel.requestsAsked,
+			requestsDone = hotel.requestsDone,
+			cleanTimes = hotel.cleanTimes,
+		}
+	end
+	local s = if to then bank[to] else nil
+	if to then
+		bank[to] = nil
+	end
+	hotel.waits = if s then s.waits else {}
+	hotel.prefsShares = if s then s.prefsShares else {}
+	hotel.requestsAsked = if s then s.requestsAsked else 0
+	hotel.requestsDone = if s then s.requestsDone else 0
+	hotel.cleanTimes = if s then s.cleanTimes else {}
+end
 local ratingHandlers: { (Player, number, number) -> () } = {}
 
 -- Called when a hotel's rating changes (new, old).
@@ -469,6 +512,7 @@ function HotelService.Start()
 	end)
 	PlayerData.onDeparted(function(player)
 		hotels[player] = nil
+		away[player] = nil
 	end)
 	-- A full rebuild makes new prompts: put the room states back on them.
 	PlotService.onBuilt(function(plot)

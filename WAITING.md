@@ -729,6 +729,15 @@ Med Claudes skärmdump där det finns en. -->
      öppna. **Rekommendation:** Frostfang $250 000, Bayou Spa $10M, och
      att varje plats tjänar ×20 den förra (som Frostfangs rum redan gör);
      `tools/balance_model.py` prövar dem mot dina tider (steg 6).
+   - **Mätt natten 2026-10-21** (`archive/BALANCE-2026-10-21.md`, 4 frön, med
+     tutorial): 5★ på Haunted Manor 31:35 (mål 30–60), Frostfang 49 min efter
+     (mål 60–90), Bayou Spa 75 min efter (mål 90–120), rebirth-redo 2:44
+     (mål 3–4,5 h). Det som gör de senare för snabba: **plattor och våningar
+     kostar lika mycket på varje plats** medan rummen kostar ×20; med dem
+     också ×20 blev det 62 och 94 min och rebirth 3:12, inom alla mål.
+     **Rekommendation:** plattor och våningar ×20 per plats (som rummen).
+     Inget värde är ändrat. (Felet att ett nytt hotell ärvde det gamlas
+     betygsunderlag är rättat samma natt: varje hotell har sitt eget.)
 36. **Bayou Spa: arterna och rummen** (ditt beslut 2026-10-20: plats 3 vid
    lansering, familjen är din att välja). Ett utkast att stryka i, alla
    namn egna; sällsyntheten följer Haunted Manors (3 vanliga, 2 ovanliga,
