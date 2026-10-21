@@ -917,6 +917,14 @@ Med Claudes skärmdump där det finns en. -->
      matchningsbonusen på fyndchansen. **Rekommendation:** Pay 0,75, XP som
      i Wing, bonusen på fyndchansen; och att en resa som kommer hem före
      inloggning inte också fyller offline-kassan.
+   - *Sällsynt dekor och souvenirer byggt 2026-10-21 morgon (PLACEHOLDER i
+     `Constants.Finds`):* fynd vid nöjda vistelser av Rare+ (2 %) och Hunter
+     Night (25 % per spelare på gatan), pity efter 40 missar, setbonus +0,25
+     på Decor-baren i det äldsta rummet med hela setet, souvenir vid artens
+     tredje inflyttning eller första VIP-kontrakt; fynden behålls genom
+     rebirth. Dina frågor: siffrorna; om fynden behålls; ett souvenirmärke för
+     alla arter (färgat per art) ok; riktiga emblembilder (i dag en skiva med
+     initialen); "äldsta rummet" som rätt tolkning.
 
 39. **Väggarna, dörren och möblerna: det granskaren såg som är ditt**
    (natten 2026-10-21; modellerna i `blender/rooms/<hotell>/`, bilderna i
