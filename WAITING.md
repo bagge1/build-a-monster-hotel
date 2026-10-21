@@ -942,6 +942,11 @@ Med Claudes skärmdump där det finns en. -->
      **Rekommendation:** ja.
    - Ska den nya **dekoren** finnas på alla platser (en modell per hotell)?
      **Rekommendation:** ja, när Frostfangs och Bayou Spas modeller görs.
+   - **Utseenden granskaren tog upp** (felen rättas samma natt): Hall Stand
+     läses som ett golvur, Crystal Ball Table som en tunna (duken utan veck),
+     Fountains strålar som blå stavar (en vatteneffekt i koden kan ersätta
+     dem), Arcade Cabinets myntlucka som ett ansikte. **Rekommendation:**
+     titta på dem i spelet först.
 
 ## §3 Creator Hub och publicering
 
