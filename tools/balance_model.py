@@ -392,6 +392,8 @@ class LuauParser:
                 return ("call", v)
             if v.startswith("Enum."):
                 return ("enum", v)
+            if re.fullmatch(r"[A-Z]\.\w+", v):  # a constant through a one-letter alias (M.MonthlyPay): kept as its name
+                return ("ref", v)
             raise ParseError(f"{self.where}: a name the model cannot evaluate: {v}")
         raise ParseError(f"{self.where}: unexpected {v!r}")
 
@@ -462,7 +464,7 @@ FORMULA_GUARDS = [
     ("src/server/GuestService.luau", "g.requestAt = now + stay * (0.25 + 0.5 * rng:NextNumber())"),
     ("src/server/GuestService.luau", "g.payRate * S.RequestTipSeconds"),
     ("src/shared/Economy.luau", "* Constants.Residents.EarnFraction"),
-    ("src/shared/Economy.luau", "return Economy.speciesPay(speciesId) * Economy.tierPay(tier) * Mutations.payMultiplier(mutation) * Economy.milestoneMultiplier(typeCount) * multiplier"),
+    ("src/shared/Economy.luau", "return Economy.speciesPay(speciesId) * Economy.tierPay(tier) * Mutations.payMultiplier(size, mutation) * Economy.milestoneMultiplier(typeCount) * multiplier"),
     ("src/shared/Stay.luau", "math.floor(payRate * stay * (satisfaction / 100) * S.TipFraction)"),
     ("src/shared/Stay.luau", "math.clamp(1 + math.floor(satisfaction / 25), 1, 5)"),
     ("src/shared/Stay.luau", "math.min(S.SatisfactionAmenityMax, S.SatisfactionPerAmenity * i.amenities)"),
@@ -492,7 +494,7 @@ FORMULA_GUARDS = [
     ("src/server/GuestService.luau", "g.satBonus = if bonus then bonus.satisfaction else 0"),
     ("src/server/GuestService.luau", "g.friendshipMult = if bonus then bonus.friendship else 1"),
     ("src/server/GuestService.luau", "local typeCount = HotelService.readyOfType(player, data, rec.type)"),
-    ("src/server/GuestService.luau", "g.payRate = Economy.guestPay(g.species, 1, g.mutation, typeCount, Income.multiplier(player)) * (if bonus then bonus.pay else 1)"),
+    ("src/server/GuestService.luau", "g.payRate = Economy.guestPay( g.species, 1, g.mutation, typeCount, Income.multiplier(player), g.size ) * (if bonus then bonus.pay else 1)"),
     ("src/server/GuestService.luau", "deskWait = g.waited, }) + g.satBonus, -- the Furniture and Decor bars (A.12) 0, 100 )"),
     ("src/server/GuestService.luau", "local stay = Constants.Rarity[sp.rarity].stay * g.stayMult"),
     ("src/server/ResidentService.luau", "local gain = g.friendshipMult or 1"),
@@ -624,7 +626,10 @@ def load_game() -> dict:
     species = assignment("src/shared/Species.luau", r"^local rows\s*:\s*\{\s*Species\s*\}")
     muts = assignment("src/shared/Mutations.luau", r"^local rows\s*:\s*\{\s*Mutation\s*\}")
     G["DecorSlots"] = DECOR_MATCH_SLOTS
-    G["Mutations"] = [(m["id"], m["chance"], m["pay"]) for m in muts if m.get("chance", 0) > 0]
+    # A size and a look are rolled apart, their pay ADDED (Mutations.payMultiplier, A.11.5);
+    # the month's or season's own row (`event`) is not simulated.
+    G["Mutations"] = [(m["id"], m["chance"], m["pay"], m.get("group", "Look")) for m in muts
+                      if m.get("chance", 0) > 0 and not m.get("event")]
     G["AllSpecies"] = {s["id"]: s for s in species}
     G["AllDecor"] = {d["id"]: d for d in decor}
     start = G["Rooms"]["Start"]
@@ -1205,12 +1210,19 @@ class Sim:
         return best
 
     def roll_mut(self):
-        x, at = self.rng.random(), 0.0
-        for mid, ch, pay in self.G["Mutations"]:
-            at += ch
-            if x < at:
-                return mid, pay
-        return None, 1.0
+        # Mutations.rollSize and rollLook: one draw each over its group's rows; pay = 1 + the extras.
+        got, extra = [], 0.0
+        for group in ("Size", "Look"):
+            x, at = self.rng.random(), 0.0
+            for mid, ch, pay, g in self.G["Mutations"]:
+                if g != group:
+                    continue
+                at += ch
+                if x < at:
+                    got.append(mid)
+                    extra += pay - 1
+                    break
+        return ("+".join(got) or None), 1.0 + extra
 
     # ---- guests
     def spawn(self, t, sid, source, room, walk, happy_floor=None):
