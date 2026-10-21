@@ -2062,24 +2062,24 @@
      "centre": [
       0.0,
       1.64,
-      -0.02
+      -0.03
      ],
      "size": [
-      8.2,
+      8.16,
       3.28,
       2.14
      ],
-     "triangles": 1350,
+     "triangles": 1422,
      "collide": false
     },
     "LOD_Proxy": {
      "centre": [
       0.0,
       1.64,
-      -0.02
+      -0.03
      ],
      "size": [
-      8.2,
+      8.16,
       3.28,
       2.14
      ],
@@ -2101,11 +2101,11 @@
      ]
     }
    },
-   "triangles": 1362,
+   "triangles": 1434,
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "a cypress sideboard on root feet with three rattan doors and moss hanging off its end: a plate of beignets, a copper coffee pot, a jug of juice, a bowl of berries",
+   "note": "a buffet table under a linen cloth, its skirt pleated over a woven rattan hem band, moss off its end, root feet: a closed and an open copper chafing dish (beignets), a copper cloche, a copper coffee pot, plates and a bowl of berries",
    "decor": {
     "fw": 3,
     "fd": 1,
@@ -2161,15 +2161,29 @@
     "Body": {
      "centre": [
       0.0,
-      1.67,
-      0.055
+      2.25,
+      0.03
      ],
      "size": [
       2.1,
-      3.34,
-      1.61
+      4.5,
+      1.66
      ],
-     "triangles": 460,
+     "triangles": 564,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      2.25,
+      0.03
+     ],
+     "size": [
+      2.1,
+      4.5,
+      1.66
+     ],
+     "triangles": 12,
      "collide": false
     }
    },
@@ -2187,11 +2201,11 @@
      ]
     }
    },
-   "triangles": 472,
+   "triangles": 576,
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "a bar stool on a cypress root pedestal with a copper foot ring, a lotus-pink cushion at 2.6 on a weathered seat, a low woven rattan back",
+   "note": "a bar stool on a cypress root pedestal with a copper foot ring, a lotus-pink cushion at 2.6 on a weathered seat, a woven rattan back up to the shoulders under a round-topped cypress crest with a lotus",
    "decor": {
     "fw": 1,
     "fd": 1,
@@ -2207,7 +2221,7 @@
        1.0
       ],
       "z": [
-       -0.6,
+       -0.8,
        0.6
       ],
       "y": 2.6,
@@ -2222,8 +2236,8 @@
     "pose": "Sit",
     "keyFor": [],
     "pieces_height": 2.6,
-    "model_top": 3.34,
-    "height_finding": "Pieces.luau's height 2.6, the body's top 3.34"
+    "model_top": 4.5,
+    "height_finding": "Pieces.luau's height 2.6, the body's top 4.50"
    }
   },
   "Furniture_PoolTable": {
@@ -2545,42 +2559,42 @@
     },
     "Body": {
      "centre": [
-      0.0,
-      2.67,
-      0.0
+      0.1468,
+      2.6306,
+      -0.0142
      ],
      "size": [
-      1.9499,
-      5.34,
-      2.0
+      1.587,
+      5.2613,
+      1.2571
      ],
-     "triangles": 428,
+     "triangles": 738,
      "collide": false
     },
     "Glow_Warm_1": {
      "centre": [
-      0.55,
-      4.32,
+      0.0,
+      4.27,
       0.0
      ],
      "size": [
-      0.2587,
-      0.36,
-      0.2587
+      1.1784,
+      1.14,
+      1.1784
      ],
-     "triangles": 28,
+     "triangles": 120,
      "collide": false
     },
     "LOD_Proxy": {
      "centre": [
-      0.0,
-      2.67,
-      0.0
+      0.1468,
+      2.6306,
+      -0.0142
      ],
      "size": [
-      1.9499,
-      5.34,
-      2.0
+      1.587,
+      5.2613,
+      1.2571
      ],
      "triangles": 12,
      "collide": false
@@ -2600,11 +2614,11 @@
      ]
     }
    },
-   "triangles": 468,
+   "triangles": 870,
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "a standing lamp: a crooked cypress branch on a smooth stone, a lily-pad shade, a firefly jar hanging under it, cattails at its foot",
+   "note": "a standing lamp: a big glowing jar of fireflies cradled in three prongs at the top of a crooked cypress branch on a smooth stone, a brass foot and lid, a small lily pad with a lotus on top, cattails at its foot",
    "decor": {
     "fw": 1,
     "fd": 1,
@@ -2619,7 +2633,7 @@
     "pose": "Stand",
     "keyFor": [],
     "pieces_height": 5.5,
-    "model_top": 5.34,
+    "model_top": 5.261,
     "height_finding": null
    }
   },
@@ -2658,12 +2672,12 @@
      "centre": [
       0.0,
       2.24,
-      0.1788
+      0.084
      ],
      "size": [
       2.12,
       4.48,
-      1.4784
+      1.668
      ],
      "triangles": 604,
      "collide": false
@@ -2672,12 +2686,12 @@
      "centre": [
       0.0,
       2.24,
-      0.1788
+      0.084
      ],
      "size": [
       2.12,
       4.48,
-      1.4784
+      1.668
      ],
      "triangles": 12,
      "collide": false
@@ -2717,7 +2731,7 @@
        1.0
       ],
       "z": [
-       -0.55,
+       -0.75,
        0.65
       ],
       "y": 1.82,
@@ -2777,7 +2791,7 @@
       4.0,
       2.14
      ],
-     "triangles": 1392,
+     "triangles": 1452,
      "collide": false
     },
     "Glass": {
@@ -2823,11 +2837,11 @@
      ]
     }
    },
-   "triangles": 1416,
+   "triangles": 1476,
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "a cypress salad bar with rattan panels and moss off its edge: herbs, radishes, corn and berries in stone bowls, dressings on a step, a thin glass sneeze guard on brass posts",
+   "note": "a salad bar: a cypress cabinet with rattan panels and moss off its edge, a well of ice on its top with ten brass pans of herbs, radishes, corn, berries and greens, tongs, dressings on a step, a thin glass sneeze guard on brass posts",
    "decor": {
     "fw": 3,
     "fd": 1,
@@ -3379,27 +3393,27 @@
     "Body": {
      "centre": [
       0.0,
-      2.775,
-      0.03
+      2.925,
+      0.305
      ],
      "size": [
       5.16,
-      5.55,
-      2.14
+      5.25,
+      1.59
      ],
-     "triangles": 1248,
+     "triangles": 1040,
      "collide": false
     },
     "LOD_Proxy": {
      "centre": [
       0.0,
-      2.775,
-      0.03
+      2.925,
+      0.305
      ],
      "size": [
       5.16,
-      5.55,
-      2.14
+      5.25,
+      1.59
      ],
      "triangles": 12,
      "collide": false
@@ -3419,11 +3433,11 @@
      ]
     }
    },
-   "triangles": 1260,
+   "triangles": 1052,
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "a shelf of board games on the wall: cypress sides, a woven rattan back, moss hanging off the cornice; wide game boxes with lids of another colour, stacked flat and stood up showing their pictures",
+   "note": "a shelf of board games hung on the wall on two cypress brackets, off the floor: cypress sides, a woven rattan back, moss hanging off the cornice; wide game boxes with lids of another colour, stacked flat and stood up showing their pictures",
    "decor": {
     "fw": 2,
     "fd": 1,
@@ -3740,12 +3754,12 @@
      "centre": [
       0.0,
       1.8468,
-      0.1858
+      0.0842
      ],
      "size": [
       1.9616,
       3.6936,
-      1.8285
+      2.0315
      ],
      "triangles": 836,
      "collide": false
@@ -3785,8 +3799,8 @@
        1.0
       ],
       "z": [
-       -0.74,
-       0.46
+       -0.94,
+       0.45
       ],
       "y": 1.72,
       "people": 1,
@@ -3838,12 +3852,12 @@
      "centre": [
       0.0,
       1.72,
-      0.157
+      0.057
      ],
      "size": [
       5.1511,
       3.44,
-      1.6139
+      1.8139
      ],
      "triangles": 860,
      "collide": false
@@ -3883,7 +3897,7 @@
        2.4
       ],
       "z": [
-       -0.62,
+       -0.85,
        0.58
       ],
       "y": 1.75,

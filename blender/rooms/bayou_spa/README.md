@@ -156,20 +156,20 @@ pads, lotus flowers, frogs, firefly jars.
 | `Wardrobe` (2 x 1) | Louvred rattan doors in dark frames, a round-arched top with a lily-pad medallion, Spanish moss off the cornice | Stand |
 | `WritingDesk` (2 x 1) | Root legs, a weathered top with moss off its corner, a lily-pad paperweight, a copper inkpot and reed pen, a pot of moss | Stand |
 | `DiningTable` (2 x 2) | Root legs, a woven rattan runner, plates on lily-pad mats, a lotus in a stone bowl | Stand |
-| `BreakfastBuffet` (3 x 1) | Rattan doors, moss off its end, beignets, a copper coffee pot, juice, berries | Stand |
-| `BarStool` | A cypress root pedestal, a copper foot ring at 1.42, a lotus-pink cushion at 2.6, a low rattan back | Sit (0, 2.6, -0.2) |
+| `BreakfastBuffet` (3 x 1) | A table under a linen cloth, its skirt pleated over a woven rattan hem band, moss off its end; two copper chafing dishes (one open: beignets), a copper cloche, a copper coffee pot, plates, berries | Stand |
+| `BarStool` | A cypress root pedestal, a copper foot ring at 1.42 (0.72 across), a lotus-pink cushion at 2.6 (its seat to z -0.8), a woven rattan back up to the shoulders under a round-topped cypress crest with a lotus (top 4.5) | Sit (0, 2.6, -0.2) |
 | `PoolTable` (3 x 2) | Cypress on six root legs, moss off the apron, green felt, weathered rails, lotus sights | Stand |
 | `CardTable` (2 x 2) | Green felt in a cypress rim, a root pedestal, cards, chips, a firefly jar (`Glow_Warm_1`) | Stand |
 | `Bathtub` (2 x 1) | A copper soaking tub on four frogs, water with two lily pads, a brass tap, a frog on the rim | Lie (-0.3, 0.75, 0), waived |
-| `FloorLamp` | A crooked cypress branch on a stone, a lily-pad shade, a firefly jar hanging under it (`Glow_Warm_1`), cattails | Stand |
+| `FloorLamp` | A big glowing jar of fireflies (`Glow_Warm_1`, 1.2 across, 1.2 tall) cradled in three prongs on a crooked cypress branch on a stone, a brass foot and lid, a small lily pad with a lotus on top, cattails | Stand |
 | `DiningChair` | Root legs, a lotus cushion at 1.82 on a rattan seat, a peacock fan back of woven rattan | Sit (0, 1.82, -0.15) |
-| `SaladBar` (3 x 1) | Rattan panels, moss off the top, herbs, radishes, corn and berries in stone bowls, a `Glass` guard on brass posts | Stand |
+| `SaladBar` (3 x 1) | Rattan panels, moss off the top; a well of ice with ten brass pans of herbs, radishes, corn, berries and greens, tongs; dressings on a step; a `Glass` guard on brass posts | Stand |
 | `CoffeeUrn` | A copper tea urn, cups on saucers, an upstand with jars of chamomile, lavender and herbs, moss off its top | Stand |
 | `DessertTrolley` (2 x 1) | A lotus-pink layer cake with a lotus, a frog-green jelly, beignets; a pecan pie below | Stand |
 | `DartsBoard` (Wall) | On a round woven rattan backer with Spanish moss off its rim, lotus flights, a slate scoreboard | Stand |
 | `ArcadeCabinet` | Cypress with lily-green sides and a lily pad each, a moon-glow screen (`Glow_Cold_1`), a firefly marquee (`Glow_Warm_1`) with moss over it | Stand |
 | `PingPongTable` (3 x 2) | A deep water-green top on root legs, a reed-green net, lotus and lily bats | Stand |
-| `BoardGameShelf` (Wall, 2 x 1) | Cypress, a rattan back, lidded game boxes, moss off the cornice | Stand |
+| `BoardGameShelf` (Wall, 2 x 1) | Hung on the wall on two cypress brackets, 1.25 off the floor: cypress, a rattan back, lidded game boxes in three bays, moss off the cornice | Stand |
 | `ChessTable` | A linen and dark-cypress board on a root pedestal, linen and moss men | Stand |
 | `CoffeeTable` (2 x 1) | A live-edge cypress slab on two root stumps, a copper teapot, cups, a lotus bowl, a frog | Stand |
 | `Washstand` | A stone basin, a copper tap, an oval moonstone mirror in cypress with moss over it, a lotus | Stand |
@@ -183,8 +183,8 @@ against `Pieces.luau`, no coplanar faces, nothing floating (the darts board
 and the board-game shelf hang on the wall's plane), `Use` and its `Pose`,
 the seats by rule 6 (the stool's at 2.6), budgets (all under 1,500), and
 **every Sit piece held to the seated 5-stud person** (`sit_faults`, per
-piece: `sit_figure`): the seats end where the shins hang (0.4 ahead of
-`Use`), so they are 0.4-0.5 shallower in front than the Manor's, and the
+piece: `sit_figure`): the seats ended where the old figure's shins hung
+(0.4 ahead of `Use`; 0.6 since the kits' blind review, below), and the
 backs stand 0.3 behind the torso. The tub is waived as the Manor's (2 x 1
 holds a reclined guest; 3 x 2 is August's call). Fixed during the build:
 three coplanar pairs (a seat board's back face in the back legs', a tap's
@@ -206,6 +206,74 @@ the Manor's Snack Counter (the Spa has no counter; its top is the Cocoa Bar's 3.
 as a section, front, three-quarter). Looked at by Claude; fixed from the
 sheets: none beyond the build's own refusals. **Not done**: a blind review of these sheets; anything
 in Studio.
+
+### Fixed after the kits' blind review (2026-10-21)
+
+A context-free review of the two kits' location-0 sheets; fixed in
+`tools/build_built_rooms_kits.py` (and the figure in `build_built_rooms.py`),
+the changed pieces rebuilt alone (`-- sets bayou_spa only BarStool,
+DiningChair,Toilet,GardenBench,BoardGameShelf,BreakfastBuffet,SaladBar,
+FloorLamp`):
+
+- **The seated figure's rig** (the sitting sheets' side view; `sit_blocks` in
+  `tools/build_built_rooms.py`, the one figure the sheets draw and `sit_faults`
+  checks): its thighs were 0.9 thick and began at the torso's middle, and its
+  shins, 0.9 deep, hung from 0.4 ahead of `Use`, under the thighs' middle, so
+  every seat had to end under the torso's front and the side view showed lap
+  and legs as one stepped block hanging in front of the seat. Now the thighs
+  (0.6 thick) lie from under the torso's back to the knees 1.2 ahead, the
+  shins (0.55 deep) hang from the knees (0.65 to 1.2 ahead), the feet under
+  them; the soles stay 1.1 under the seat (the bar stools' rings). The new
+  figure lies inside the old one's boxes, so every seat that passed still
+  passes (Bayou's own throne and perch were not rebuilt).
+- **The four seats run 0.6 ahead of `Use`**, under the thighs, ending before
+  the shins (was 0.4, which the old rig forced): `BarStool` to z -0.8,
+  `DiningChair` -0.75, `Toilet` -0.95 (its oval 2.0 x 1.4, centred at z
+  -0.245, its back clear of the cistern), `GardenBench` -0.85 (its front legs
+  moved to z -0.6). The backs still stand 0.3 behind the torso, and on the
+  chairs (seats 1.72-1.82) the feet hang about 0.7 off the floor: rule 6's
+  heights and the stools' rings, not changed.
+- **The stool at the counter's side view** is a section too (the near arm
+  hid the torso and thighs).
+- **`BoardGameShelf`** stood on the floor as a bookcase. It is now hung on
+  the wall: a case 1.45 deep from 1.25 up to its cornice, its back on the
+  wall's plane (z 1.1), on two brackets fixed to the wall, nothing reaching
+  the floor; held by the wall's plane (`hung_check`), as the darts board.
+  Three bays of game boxes (were four), the boxes 1.0 deep. The contract is
+  the Manor's (`Wall` layer, back on the wall, `Stand` 1.5 in front, 2 x 1);
+  **the Manor's own shelf still stands on the floor** against the wall.
+- **`BreakfastBuffet` and `SaladBar` read alike** (a panelled sideboard with
+  food on top, both). The buffet is now a table under a cloth, its skirt in
+  pleats with a hem band, the feet showing under it, served from two chafing
+  dishes (one closed under a rolled lid, one open with a spoon), a cloche on
+  a platter and a plate stack. The salad bar keeps its panelled cabinet and
+  its `Glass` guard on posts and has a well of ice on its top with ten pans
+  of salad in two rows (tongs in three, tomatoes or radishes heaped on two)
+  and three dressings on the step. Names and `Use` as before.
+- **`FloorLamp`**: the light was a small firefly jar under a lily pad 2
+  wide; it read as a pole with something small on it. The light is now the
+  lamp: a big glowing jar of fireflies (`Glow_Warm_1`, 1.2 across, 3.7 to
+  4.84) cradled in three prongs at the top of the crooked branch, a brass
+  foot and lid, a small lily pad with a lotus on the lid.
+- **`BarStool`** had no back to speak of (a band 0.7 high). Now woven
+  rattan between two posts up to the shoulders under a round-topped light
+  cypress crest with a lotus (top 4.5), 0.3 behind the torso; its foot ring
+  0.72 across (was 0.64), under the feet.
+
+Not changed (August's calls, `WAITING.md` §2.43): the `Bathtub`'s size.
+
+**Validated** (`validation.json`): the 8 rebuilt `VALIDATED 8/8`; the set
+35/35 with no faults; every Sit piece passes `sit_faults` with the new
+figure. Triangles: `BreakfastBuffet` 1,434, `SaladBar` 1,476,
+`BoardGameShelf` 1,052, `BarStool` 576, `DiningChair` 616, `Toilet` 848,
+`GardenBench` 872, `FloorLamp` 870. Height findings: `BarStool` 4.5 vs 2.6
+(its back; was 3.34); the lamp's top 5.26 against 5.5 is within 0.3.
+
+Review: `review/every/` re-rendered for all 23 with the new figure
+(Workbench). **Not done**: a second blind review; restaging (the 8 in
+`blender/_import/` are the old ones); anything in Studio; the set's own
+`review/sitting_sheet.png` (throne, perch) still shows the old figure. The
+set's `.blend` holds only the last partial build's pieces.
 
 Staged 2026-10-21 in `blender/_import/` as `BayouSpa_Furniture_<Id>.fbx`
 (the 23; the names repeat the Manor's: rename to `Furniture_<Id>` on saving

@@ -132,20 +132,20 @@ aurora stripes (teal, mint, violet) as accents.
 | `Wardrobe` (2 x 1) | Birch armoire between four log posts, snowflake doors with iron strap hinges, an aurora band, a little log cabin roof with snow on both slopes (top 6.2) | Stand |
 | `WritingDesk` (2 x 1) | Log legs and stretchers, aurora bands either side of the drawer, letter, inkpot, quill, mug | Stand |
 | `DiningTable` (2 x 2) | Log legs, a red plaid runner, plates with napkins in aurora colours, a bowl of apples | Stand |
-| `BreakfastBuffet` (3 x 1) | Snowflake doors, pancakes with syrup and butter, a bread basket, milk jug, jam | Stand |
-| `BarStool` | Four birch legs, an iron foot ring at 1.42, a red plaid cushion at 2.6, a log back rail | Sit (0, 2.6, -0.2) |
+| `BreakfastBuffet` (3 x 1) | A table under a cream cloth, its skirt pleated, a red hem band, red snowflakes; two steel chafing dishes (one open: scrambled eggs), a cloche, pancakes with syrup and butter, plates | Stand |
+| `BarStool` | Four birch legs, an iron foot ring at 1.42, a red plaid cushion at 2.6 (its seat to z -0.8), a log back rail | Sit (0, 2.6, -0.2) |
 | `PoolTable` (3 x 2) | Dark log body on six log legs, green felt, birch rails with aurora sights | Stand |
 | `CardTable` (2 x 2) | Green felt in a birch rim with an aurora-teal band, a log pedestal, cards and chips | Stand |
 | `Bathtub` (2 x 1) | Birch staves in two iron hoops, water with foam, a rolled plaid towel, an iron pump | Lie (-0.3, 0.75, 0), waived |
 | `FloorLamp` | A birch post with its dark marks on a log-slice foot, a cream shade with a red hem and a teal band, `Glow_Warm_1` | Stand |
 | `DiningChair` | Birch, a plaid cushion at 1.82, a round-topped back with a carved snowflake over an aurora band | Sit (0, 1.82, -0.15) |
-| `SaladBar` (3 x 1) | Snowflake panels, four foods in log bowls, dressings, a `Glass` sneeze guard (ice) on iron posts | Stand |
+| `SaladBar` (3 x 1) | Snowflake panels; a well of ice with ten steel pans of salad, tongs; dressings on a step; a `Glass` sneeze guard (ice) on iron posts | Stand |
 | `CoffeeUrn` | A red enamel cocoa urn over a drip tray, mugs, a log upstand with mugs and snow on top | Stand |
 | `DessertTrolley` (2 x 1) | A Yule log cake with holly, a gingerbread house with a snowy roof, a jelly; a berry pie below | Stand |
 | `DartsBoard` (Wall) | On a log slice with snow on it, darts with aurora flights, a chalk scoreboard | Stand |
 | `ArcadeCabinet` | Navy sides with aurora waves, a frost-blue screen (`Glow_Cold_1`), an aurora marquee (`Glow_Magic_1`), snow on top | Stand |
 | `PingPongTable` (3 x 2) | A navy top on log legs, a frosted net, red and teal bats | Stand |
-| `BoardGameShelf` (Wall, 2 x 1) | Birch, lidded game boxes, a log cornice with an aurora band and snow | Stand |
+| `BoardGameShelf` (Wall, 2 x 1) | Hung on the wall on two log brackets, 1.25 off the floor: birch, lidded game boxes in three bays, a log cornice with an aurora band and snow | Stand |
 | `ChessTable` | A birch and dark-log board on a log pedestal, snow-white and navy men | Stand |
 | `CoffeeTable` (2 x 1) | A birch slab with bark edges on two log rounds, a cocoa pot, mugs, gingerbread stars, a book | Stand |
 | `Washstand` | A white basin in a stone top, an iron pump tap, a round-topped frosted mirror in a log frame | Stand |
@@ -159,8 +159,8 @@ against `Pieces.luau`, no coplanar faces, nothing floating (the darts board
 and the board-game shelf hang on the wall's plane), `Use` and its `Pose`,
 the seats by rule 6 (the stool's at 2.6), budgets (all under 1,500), and
 **every Sit piece held to the seated 5-stud person** (`sit_faults`, per
-piece: `sit_figure`): the seats end where the shins hang (0.4 ahead of
-`Use`), so they are 0.4-0.5 shallower in front than the Manor's, and the
+piece: `sit_figure`): the seats ended where the old figure's shins hung
+(0.4 ahead of `Use`; 0.6 since the kits' blind review, below), and the
 backs stand 0.3 behind the torso. The tub is waived as the Manor's (2 x 1
 holds a reclined guest; 3 x 2 is August's call). Fixed during the build:
 three coplanar pairs (a seat board's back face in the back legs', a tap's
@@ -182,6 +182,64 @@ its own Cocoa Bar; the stool, chair, toilet and bench with the person seated: si
 as a section, front, three-quarter). Looked at by Claude; fixed from the
 sheets: round snow lumps read as plates lying on the tops (now one long low drift), the wardrobe's gable ridge read as an open book (now a cabin roof running left to right). **Not done**: a blind review of these sheets; anything
 in Studio.
+
+### Fixed after the kits' blind review (2026-10-21)
+
+A context-free review of the two kits' location-0 sheets; fixed in
+`tools/build_built_rooms_kits.py` (and the figure in `build_built_rooms.py`),
+the changed pieces rebuilt alone (`-- sets frostfang_lodge only BarStool,
+DiningChair,Toilet,GardenBench,BoardGameShelf,BreakfastBuffet,SaladBar`):
+
+- **The seated figure's rig** (the sitting sheets' side view; `sit_blocks` in
+  `tools/build_built_rooms.py`, the one figure the sheets draw and `sit_faults`
+  checks): its thighs were 0.9 thick and began at the torso's middle, and its
+  shins, 0.9 deep, hung from 0.4 ahead of `Use`, under the thighs' middle, so
+  every seat had to end under the torso's front and the side view showed lap
+  and legs as one stepped block hanging in front of the seat. Now the thighs
+  (0.6 thick) lie from under the torso's back to the knees 1.2 ahead, the
+  shins (0.55 deep) hang from the knees (0.65 to 1.2 ahead), the feet under
+  them; the soles stay 1.1 under the seat (the bar stools' rings). The new
+  figure lies inside the old one's boxes, so every seat that passed still
+  passes (Bayou's own throne and perch were not rebuilt).
+- **The four seats run 0.6 ahead of `Use`**, under the thighs, ending before
+  the shins (was 0.4, which the old rig forced): `BarStool` to z -0.8,
+  `DiningChair` -0.75, `Toilet` -0.95 (its oval 2.0 x 1.4, centred at z
+  -0.245, its back clear of the cistern), `GardenBench` -0.85 (its front legs
+  moved to z -0.6). The backs still stand 0.3 behind the torso, and on the
+  chairs (seats 1.72-1.82) the feet hang about 0.7 off the floor: rule 6's
+  heights and the stools' rings, not changed.
+- **The stool at the counter's side view** is a section too (the near arm
+  hid the torso and thighs).
+- **`BoardGameShelf`** stood on the floor as a bookcase. It is now hung on
+  the wall: a case 1.45 deep from 1.25 up to its cornice, its back on the
+  wall's plane (z 1.1), on two brackets fixed to the wall, nothing reaching
+  the floor; held by the wall's plane (`hung_check`), as the darts board.
+  Three bays of game boxes (were four), the boxes 1.0 deep. The contract is
+  the Manor's (`Wall` layer, back on the wall, `Stand` 1.5 in front, 2 x 1);
+  **the Manor's own shelf still stands on the floor** against the wall.
+- **`BreakfastBuffet` and `SaladBar` read alike** (a panelled sideboard with
+  food on top, both). The buffet is now a table under a cloth, its skirt in
+  pleats with a hem band, the feet showing under it, served from two chafing
+  dishes (one closed under a rolled lid, one open with a spoon), a cloche on
+  a platter and a plate stack. The salad bar keeps its panelled cabinet and
+  its `Glass` guard on posts and has a well of ice on its top with ten pans
+  of salad in two rows (tongs in three, tomatoes or radishes heaped on two)
+  and three dressings on the step. Names and `Use` as before.
+
+Not changed (August's calls, `WAITING.md` §2.43): the `Bathtub`'s size, the
+snow on the tall tops.
+
+**Validated** (`validation.json`): the 7 rebuilt `VALIDATED 7/7` (the salad
+bar once more after a trim: 1/1); the set 34/34 with no faults; every Sit
+piece passes `sit_faults` with the new figure. Triangles: `BreakfastBuffet`
+1,338, `SaladBar` 1,396, `BoardGameShelf` 1,196, `BarStool` 392,
+`DiningChair` 768, `Toilet` 780, `GardenBench` 456. Height findings as
+before (the buffet's top 3.28 against 3.0 is within 0.3).
+
+Review: `review/every/` re-rendered for all 23 with the new figure
+(Workbench). **Not done**: a second blind review; restaging (the 7 in
+`blender/_import/` are the old ones); anything in Studio. The set's
+`.blend` holds only the last partial build's pieces (rebuilt by the script).
 
 Staged 2026-10-21 in `blender/_import/` as `FrostfangLodge_Furniture_<Id>.fbx`
 (the 23; the names repeat the Manor's: rename to `Furniture_<Id>` on saving

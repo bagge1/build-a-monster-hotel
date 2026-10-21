@@ -645,11 +645,18 @@ SIT_GAP = 0.03                  # the seated figure's blocks shrunk by this befo
 
 def sit_blocks(use_pos, look):
     """The 5-stud person seated on a Sit point, facing `look`, as boxes (lo, hi, rgb) in the piece's frame:
-    the torso and head over the point, the thighs level on the seat to the knees 1.3 ahead (a lighter
-    blue), the shins hanging straight down from the knees to 1.1 under the seat, the feet pointing ahead
-    0.3 past the knees (dark shoes: the pose reads seated from the front too), the arms beside the torso
-    from an armrest's height (_person's widths). The review's figure and sit_faults' are this one; each box
-    is (lo, hi, rgb, name)."""
+    the torso and head over the point, the thighs (a lighter blue, 0.6 thick) lying level on the seat from
+    the seat of the trousers under the torso's back to the knees 1.2 ahead, the shins (0.55 deep) hanging
+    straight down from the knees, not from the thighs' middle, to 1.1 under the seat, the feet under them
+    pointing ahead 0.3 past the knees (dark shoes: the pose reads seated from the front too), the arms
+    beside the torso from an armrest's height (_person's widths). The review's figure and sit_faults' are
+    this one; each box is (lo, hi, rgb, name).
+
+    2026-10-21, the kits' blind review (the side view's rig): the thighs were 0.9 thick and began at the
+    torso's middle, and the shins 0.9 deep hung from 0.4 ahead, under the thighs' middle, so a seat had to
+    end under the torso's front and the side view showed the lap and legs hanging in front of the seat as
+    one stepped block. A seat may now run 0.6 ahead of Use, under the thighs, the shins hanging past its
+    front edge; the soles stay 1.1 under the seat (the bar stool's ring)."""
     a = Vector((look[0], 0, look[2])).normalized()
     b = Vector((-a.z, 0, a.x))
     p = Vector(use_pos)
@@ -665,9 +672,9 @@ def sit_blocks(use_pos, look):
     for s0, s1, side in ((-1.9, -1.02, 'one'), (1.02, 1.9, 'other')):
         blk(-0.45, 0.45, s0, s1, ys + 0.75, ys + 2.0, SKIN, f'{side} arm')
     for s0, s1, side in ((-0.95, -0.05, 'one'), (0.05, 0.95, 'other')):
-        blk(0.0, 1.3, s0, s1, ys, ys + 0.9, THIGHS, f'{side} thigh')
-        blk(0.4, 1.3, s0, s1, ys - 0.8, ys, LEGS, f'{side} shin')
-        blk(0.4, 1.6, s0, s1, ys - 1.1, ys - 0.8, SHOES, f'{side} foot')
+        blk(-0.5, 1.2, s0, s1, ys, ys + 0.6, THIGHS, f'{side} thigh')
+        blk(0.65, 1.2, s0, s1, ys - 0.8, ys, LEGS, f'{side} shin')
+        blk(0.5, 1.5, s0, s1, ys - 1.1, ys - 0.8, SHOES, f'{side} foot')
     return out
 
 
