@@ -440,7 +440,7 @@
       17.0,
       0.56
      ],
-     "triangles": 864,
+     "triangles": 976,
      "collide": false
     },
     "LOD_Proxy": {
@@ -484,11 +484,11 @@
      ]
     }
    },
-   "triangles": 956,
+   "triangles": 1068,
    "budget": 1200,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "a half wall with an open round-arched doorway (clear 4 x 7.2): a round arch, dark cypress trim with a lily-green keystone, plinth blocks, both faces",
+   "note": "a half wall with an open round-arched doorway (clear 4 x 7.2): a round arch, dark cypress trim with a light cypress keystone under a moss cap, plinth blocks, both faces",
    "wall": {
     "frame": "origin the half edge middle on the walking surface, the edge along X (x -3..3), centred on it 0.4 thick, both faces alike (the same turned 180 degrees)",
     "dressing_max_proud": 0.08
@@ -536,16 +536,16 @@
       17.02,
       0.6
      ],
-     "triangles": 60,
+     "triangles": 124,
      "collide": true
     }
    },
    "attachments": {},
-   "triangles": 72,
+   "triangles": 136,
    "budget": 200,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "the joint post, 0.6 square, 17.02 tall: banded as the walls meeting it (dark skirting, the cypress wainscot, light rails, sage, the moss crown), so their bands turn the corner on it",
+   "note": "the joint post, 0.6 square, 17.02 tall: banded as the walls meeting it (dark skirting, the cypress wainscot, light rails, sage, the moss crown), so their bands turn the corner on it; its upright edges chamfered 0.08 (blind review 2026-10-21: its square edge 0.1 proud of the wainscot read as a dark slit at the joint)",
    "wall": {
     "frame": "origin the half edge middle on the walking surface, the edge along X (x -3..3), centred on it 0.4 thick, both faces alike (the same turned 180 degrees)",
     "dressing_max_proud": 0.08
@@ -593,7 +593,7 @@
       1.2831,
       7.862
      ],
-     "triangles": 1018,
+     "triangles": 1062,
      "collide": false
     },
     "LOD_Proxy": {
@@ -625,7 +625,7 @@
      ]
     }
    },
-   "triangles": 1030,
+   "triangles": 1074,
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
@@ -694,21 +694,21 @@
      "centre": [
       0.0,
       1.95,
-      -0.0978
+      0.0
      ],
      "size": [
       8.1174,
       3.9,
-      2.5955
+      3.9
      ],
-     "triangles": 760,
+     "triangles": 804,
      "collide": false
     },
     "Glow_Warm_1": {
      "centre": [
-      -3.45,
-      1.89,
-      -1.22
+      -3.77,
+      1.91,
+      -0.88
      ],
      "size": [
       0.2956,
@@ -720,9 +720,9 @@
     },
     "Glow_Warm_2": {
      "centre": [
-      3.45,
-      1.89,
-      -1.22
+      3.77,
+      1.91,
+      -0.88
      ],
      "size": [
       0.2956,
@@ -736,12 +736,12 @@
      "centre": [
       0.0,
       1.95,
-      -0.0978
+      0.0
      ],
      "size": [
       8.1174,
       3.9,
-      2.5955
+      3.9
      ],
      "triangles": 12,
      "collide": false
@@ -751,7 +751,7 @@
     "Use": {
      "pos": [
       0.0,
-      1.3752,
+      1.375,
       0.0
      ],
      "look": [
@@ -761,7 +761,7 @@
      ]
     }
    },
-   "triangles": 828,
+   "triangles": 872,
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
@@ -968,7 +968,7 @@
      "pos": [
       0.0,
       1.8,
-      0.3
+      0.0
      ],
      "look": [
       0.0,
@@ -1045,21 +1045,21 @@
     "Body": {
      "centre": [
       0.0,
-      1.278,
-      -0.0228
+      1.413,
+      -0.0285
      ],
      "size": [
-      7.7246,
-      2.556,
-      7.7977
+      7.8117,
+      2.826,
+      8.037
      ],
-     "triangles": 1456,
+     "triangles": 1452,
      "collide": false
     },
     "Glow_Warm_1": {
      "centre": [
       0.0,
-      1.32,
+      1.52,
       3.42
      ],
      "size": [
@@ -1073,13 +1073,13 @@
     "LOD_Proxy": {
      "centre": [
       0.0,
-      1.278,
-      -0.0228
+      1.413,
+      -0.0285
      ],
      "size": [
-      7.7246,
-      2.556,
-      7.7977
+      7.8117,
+      2.826,
+      8.037
      ],
      "triangles": 12,
      "collide": false
@@ -1089,7 +1089,7 @@
     "Use": {
      "pos": [
       0.0,
-      0.3,
+      0.1,
       0.0
      ],
      "look": [
@@ -1099,7 +1099,7 @@
      ]
     }
    },
-   "triangles": 1496,
+   "triangles": 1492,
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
@@ -1120,8 +1120,8 @@
      "SteamGrotto"
     ],
     "pieces_height": 1.2,
-    "model_top": 2.556,
-    "height_finding": "Pieces.luau's height 1.2, the body's top 2.56",
+    "model_top": 2.826,
+    "height_finding": "Pieces.luau's height 1.2, the body's top 2.83",
     "lie": {
      "person": 5.0,
      "rise": [
@@ -1166,16 +1166,16 @@
     },
     "Body": {
      "centre": [
-      0.1427,
+      0.0,
       2.5,
       -0.4
      ],
      "size": [
-      4.7287,
+      5.12,
       5.0,
-      3.7768
+      4.1873
      ],
-     "triangles": 590,
+     "triangles": 598,
      "collide": false
     },
     "Glow_Warm_1": {
@@ -1194,14 +1194,14 @@
     },
     "LOD_Proxy": {
      "centre": [
-      0.1427,
+      0.0,
       2.5,
       -0.4
      ],
      "size": [
-      4.7287,
+      5.12,
       5.0,
-      3.7768
+      4.1873
      ],
      "triangles": 12,
      "collide": false
@@ -1221,7 +1221,7 @@
      ]
     }
    },
-   "triangles": 630,
+   "triangles": 638,
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
@@ -1241,8 +1241,8 @@
        1.05
       ],
       "z": [
-       -1.45,
-       -0.15
+       -1.2,
+       0.0
       ],
       "y": 1.8,
       "people": 1,
@@ -1296,14 +1296,14 @@
      "centre": [
       -0.0691,
       2.035,
-      -0.1792
+      -0.1769
      ],
      "size": [
       7.5028,
       4.07,
-      7.6513
+      7.6559
      ],
-     "triangles": 1298,
+     "triangles": 1318,
      "collide": false
     },
     "Glow_Cold_1": {
@@ -1324,12 +1324,12 @@
      "centre": [
       -0.0691,
       2.035,
-      -0.1792
+      -0.1769
      ],
      "size": [
       7.5028,
       4.07,
-      7.6513
+      7.6559
      ],
      "triangles": 12,
      "collide": false
@@ -1340,7 +1340,7 @@
      "pos": [
       0.0,
       1.73,
-      2.2
+      1.95
      ],
      "look": [
       0.0,
@@ -1349,7 +1349,7 @@
      ]
     }
    },
-   "triangles": 1418,
+   "triangles": 1438,
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
@@ -1369,8 +1369,8 @@
        1.05
       ],
       "z": [
-       1.6,
-       2.8
+       1.85,
+       3.05
       ],
       "y": 1.73,
       "people": 1,
@@ -1423,12 +1423,12 @@
     "Body": {
      "centre": [
       0.0,
-      2.5584,
+      3.495,
       0.0
      ],
      "size": [
       8.2,
-      5.1168,
+      6.99,
       5.1
      ],
      "triangles": 896,
@@ -1479,12 +1479,12 @@
     "Glow_Warm_4": {
      "centre": [
       0.0,
-      3.8243,
+      6.4663,
       2.2
      ],
      "size": [
       5.76,
-      0.5487,
+      0.3326,
       0.1559
      ],
      "triangles": 168,
@@ -1493,12 +1493,12 @@
     "LOD_Proxy": {
      "centre": [
       0.0,
-      2.5584,
+      3.495,
       0.0
      ],
      "size": [
       8.2,
-      5.1168,
+      6.99,
       5.1
      ],
      "triangles": 12,
@@ -1540,8 +1540,8 @@
      "JazzPorch"
     ],
     "pieces_height": 1.2,
-    "model_top": 5.117,
-    "height_finding": "Pieces.luau's height 1.2, the body's top 5.12"
+    "model_top": 6.99,
+    "height_finding": "Pieces.luau's height 1.2, the body's top 6.99"
    }
   },
   "Furniture_LilyBasin": {

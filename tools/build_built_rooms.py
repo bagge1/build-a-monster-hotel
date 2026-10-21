@@ -457,10 +457,25 @@ def wall_door(st):
             span('Dressing', (bx[0], 0.0, pa), (bx[1], 0.6, pb), st['trim'], bevel=0.02)
             span('Dressing', (cx[0], 0.6, ca), (cx[1], 0.74, cb), st['trim'], bevel=0.03)
         prism('Dressing', outer + list(reversed(inner)), z0, z1, st['trim'])
-        ka, kb = zs(s, PROUD - 0.005, base=TH + 0.005)    # the keystone, prouder than the trim, its back in it
         top = _arch_y(outer, 0.0)
-        prism('Dressing', [(-0.3, top - 0.75), (0.3, top - 0.75), (0.38, top), (-0.38, top)],
-              ka, kb, st['keystone'])
+        if st.get('keystone_moss'):
+            # Bayou Spa (2026-10-21, blind review: a bright green block on the crown): a light cypress keystone
+            # with moss over its head, hanging in three scallops down its face, the moss the proudest.
+            ka, kb = zs(s, PROUD - 0.015, base=TH + 0.005)
+            prism('Dressing', [(-0.34, top - 0.85), (0.34, top - 0.85), (0.44, top), (-0.44, top)],
+                  ka, kb, st['keystone'])
+            ma, mb = zs(s, PROUD - 0.01, base=TH + 0.01)
+            moss = [(-0.5, top + 0.06), (0.5, top + 0.06), (0.5, top - 0.12)]
+            for i, xc in enumerate((0.3, 0.0, -0.3)):
+                dip = 0.36 if i == 1 else 0.28
+                moss += [(xc + 0.15 * math.cos(math.pi * k / 4), top - 0.12 - dip * math.sin(math.pi * k / 4))
+                         for k in range(1, 4)] + [(xc - 0.15, top - 0.12)]
+            moss[-1] = (-0.5, top - 0.12)
+            prism('Dressing', moss, ma, mb, st['keystone_moss'])
+        else:
+            ka, kb = zs(s, PROUD - 0.005, base=TH + 0.005)    # the keystone, prouder than the trim, its back in it
+            prism('Dressing', [(-0.3, top - 0.75), (0.3, top - 0.75), (0.38, top), (-0.38, top)],
+                  ka, kb, st['keystone'])
     both_faces(face)
     rails(st, [(-HALF, -trim), (trim, HALF)], [(-HALF, HALF)])
     fringe(st)
@@ -490,20 +505,25 @@ def post_bands(st):
     return bands
 
 
-def column(part, h, bands):
-    """A square column x, z -h..h in colour bands [(y0, y1, colour)], one closed solid: rings of four
-    corners at each band's foot, a side face per band and side, a cap at each end (no faces between bands)."""
+def column(part, h, bands, chamfer=0.0):
+    """A square column x, z -h..h in colour bands [(y0, y1, colour)], one closed solid: rings of corners at
+    each band's foot, a side face per band and side, a cap at each end (no faces between bands). `chamfer`:
+    its four upright edges cut at 45 degrees that far each way (an octagon; its box still -h..h)."""
     ys = [bands[0][0]] + [b[1] for b in bands]
-    corners = ((-h, -h), (h, -h), (h, h), (-h, h))
+    c = chamfer
+    corners = (((-h, -h), (h, -h), (h, h), (-h, h)) if c <= 0 else
+               ((-h + c, -h), (h - c, -h), (h, -h + c), (h, h - c), (h - c, h), (-h + c, h), (-h, h - c),
+                (-h, -h + c)))
+    m = len(corners)
     verts = [Vector((x, y, z)) for y in ys for x, z in corners]
-    faces, cols = [(3, 2, 1, 0)], [bands[0][2]]
-    for k, (_, _, c) in enumerate(bands):
-        for i in range(4):
-            j = (i + 1) % 4
-            faces.append((4 * k + i, 4 * k + j, 4 * (k + 1) + j, 4 * (k + 1) + i))
-            cols.append(c)
-    top = 4 * len(bands)
-    faces.append((top, top + 1, top + 2, top + 3))
+    faces, cols = [tuple(range(m - 1, -1, -1))], [bands[0][2]]
+    for k, (_, _, col) in enumerate(bands):
+        for i in range(m):
+            j = (i + 1) % m
+            faces.append((m * k + i, m * k + j, m * (k + 1) + j, m * (k + 1) + i))
+            cols.append(col)
+    top = m * len(bands)
+    faces.append(tuple(range(top, top + m)))
     cols.append(bands[-1][2])
     store = K._part(part, None)
     first = len(store[1])
@@ -514,7 +534,7 @@ def column(part, h, bands):
 
 def wall_post(st):
     wpiece('Wall_Post')
-    column('Post', POST, post_bands(st))
+    column('Post', POST, post_bands(st), chamfer=st.get('post_chamfer', 0.0))
     wfinish(f"the joint post, 0.6 square, 17.02 tall: {st['post_note']}")
 
 
@@ -538,6 +558,8 @@ LIE_RISE = (0.45, 0.8)          # over the body, the most a surface may rise abo
                                 # torso (a footboard any higher is through the feet), under the head (its pillow)
 LIE_DROP = 0.6                  # the most the surface may fall under the body (more, and it hangs off an end)
 HEAD = 1.2                      # the head's end of the body, where the pillow is
+SIT_FIGURE = [False]            # sit_faults on (per style, main()): Bayou Spa's seats are held to the seated
+                                # figure; the Manor's and the Lodge's get it when next rebuilt and reviewed
 
 
 def use(pos, look, pose, rise=None, waive=None, liquid=None):
@@ -616,6 +638,75 @@ def lie_faults(piece, allt, pos, look, tag):
     return f
 
 
+SKIN, SHIRT, LEGS, THIGHS, SHOES = (250, 200, 160), (70, 130, 200), (60, 60, 80), (84, 84, 112), (34, 34, 40)
+SIT_GAP = 0.03                  # the seated figure's blocks shrunk by this before the piece may not touch them
+
+
+def sit_blocks(use_pos, look):
+    """The 5-stud person seated on a Sit point, facing `look`, as boxes (lo, hi, rgb) in the piece's frame:
+    the torso and head over the point, the thighs level on the seat to the knees 1.3 ahead (a lighter
+    blue), the shins hanging straight down from the knees to 1.1 under the seat, the feet pointing ahead
+    0.3 past the knees (dark shoes: the pose reads seated from the front too), the arms beside the torso
+    from an armrest's height (_person's widths). The review's figure and sit_faults' are this one; each box
+    is (lo, hi, rgb, name)."""
+    a = Vector((look[0], 0, look[2])).normalized()
+    b = Vector((-a.z, 0, a.x))
+    p = Vector(use_pos)
+    ys = p.y
+    out = []
+
+    def blk(t0, t1, s0, s1, y0, y1, rgb, name):
+        c = [p + a * t + b * s for t in (t0, t1) for s in (s0, s1)]
+        out.append((Vector((min(v.x for v in c), y0, min(v.z for v in c))),
+                    Vector((max(v.x for v in c), y1, max(v.z for v in c))), rgb, name))
+    blk(-0.5, 0.5, -1.0, 1.0, ys, ys + 2.0, SHIRT, 'torso')
+    blk(-0.6, 0.6, -0.6, 0.6, ys + 2.0, ys + 3.0, SKIN, 'head')
+    for s0, s1, side in ((-1.9, -1.02, 'one'), (1.02, 1.9, 'other')):
+        blk(-0.45, 0.45, s0, s1, ys + 0.75, ys + 2.0, SKIN, f'{side} arm')
+    for s0, s1, side in ((-0.95, -0.05, 'one'), (0.05, 0.95, 'other')):
+        blk(0.0, 1.3, s0, s1, ys, ys + 0.9, THIGHS, f'{side} thigh')
+        blk(0.4, 1.3, s0, s1, ys - 0.8, ys, LEGS, f'{side} shin')
+        blk(0.4, 1.6, s0, s1, ys - 1.1, ys - 0.8, SHOES, f'{side} foot')
+    return out
+
+
+def _tri_box(tri, lo, hi):
+    """Whether a triangle and an axis-aligned box overlap (separating axes, Akenine-Moller)."""
+    c, h = (lo + hi) / 2, (hi - lo) / 2
+    v = [t - c for t in tri]
+    for i in range(3):
+        if min(p[i] for p in v) > h[i] or max(p[i] for p in v) < -h[i]:
+            return False
+    e = [v[1] - v[0], v[2] - v[1], v[0] - v[2]]
+    n = e[0].cross(e[1])
+    if abs(n.dot(v[0])) > abs(n.x) * h.x + abs(n.y) * h.y + abs(n.z) * h.z:
+        return False
+    for ed in e:
+        for ax in (Vector((1, 0, 0)), Vector((0, 1, 0)), Vector((0, 0, 1))):
+            axis = ax.cross(ed)
+            if axis.length < 1e-12:
+                continue
+            ps = [axis.dot(p) for p in v]
+            r = abs(axis.x) * h.x + abs(axis.y) * h.y + abs(axis.z) * h.z
+            if min(ps) > r or max(ps) < -r:
+                return False
+    return True
+
+
+def sit_faults(allt, pos, look, tag):
+    """The seated 5-stud person (sit_blocks) is clear of the piece: no face of it inside any block shrunk by
+    SIT_GAP (blind review 2026-10-21, Bayou Spa: the throne's seat front through the shins, its armrests
+    through the arms, the perch's boulder through the legs, and the sheet read as a person standing)."""
+    for lo, hi, _, nm in sit_blocks(pos, look):
+        g = Vector((SIT_GAP,) * 3)
+        lo2, hi2 = lo + g, hi - g
+        for t in allt:
+            if _tri_box(t, lo2, hi2):
+                cen = (t[0] + t[1] + t[2]) / 3
+                return [f'{tag}: the piece goes through the seated person\'s {nm} (a face at {K.v3(cen, 2)})']
+    return []
+
+
 def stand():
     """The Stand point: the square in front of the front edge's middle, facing the piece."""
     use((0, 0, -1.5 * K.P.fd - 1.5), (0, 0, 1), 'Stand')
@@ -651,6 +742,8 @@ def use_check(piece, tris, stage):
         inside = [s for s in piece.seats if s['x'][0] <= pos.x <= s['x'][1] and s['z'][0] <= pos.z <= s['z'][1]]
         if not inside:
             f.append(f'{tag}: a Sit point not on a declared seat (rule 6)')
+        if SIT_FIGURE[0]:
+            f += sit_faults(allt, pos, look, tag)
     if piece.pose == 'Lie' and not piece.lie['waived']:
         f += lie_faults(piece, allt, pos, look, tag)
     return f
@@ -1580,8 +1673,8 @@ def cattails(x, z, y=0.0, k=3, tall=2.0, firefly=None):
 
 def f_lily_pad_bed():
     furn('LilyPadBed')
-    # A giant lily pad (the Victoria kind, its rim turned up) on a moss mound; a pale lotus-petal blanket, a lotus
-    # bud pillow at the head (+Z), two lotus flowers on the pad beside the guest.
+    # A giant lily pad (the Victoria kind, its rim turned up) on a moss mound; a linen petal sheet, a pale lotus-petal
+    # blanket, a lotus bud pillow at the head (+Z), two lotus flowers on the pad beside the guest.
     lathe('Body', [(3.5, 0.0), (3.3, 0.3), (2.8, 0.45), (0.0, 0.48)], 'moss_dark', n=16)
     cyl('Body', (0, 0.42, 0), 3.9, 0.26, 'lily', n=20)
     for k in range(8):          # the veins, from the middle out (apart at the middle: no shared plane)
@@ -1592,7 +1685,11 @@ def f_lily_pad_bed():
         prism('Body', pts, 0.67, 0.70, 'lily_light', plane='xz')
     lathe('Body', [(3.62, 0.6), (3.9, 0.6), (3.98, 1.05), (3.82, 1.08), (3.62, 0.76)], 'lily_dark', n=20,
           closed=True)
-    span('Body', (-1.6, 0.68, -2.5), (1.6, 0.82, 0.3), 'lotus_light', bevel=0.05)
+    # The guest lies on petals the whole length, arms included (2026-10-21, blind review: the blanket stopped
+    # at the waist and the body bridged the pad over a gap): a pink petal sheet under the head and torso, the
+    # pale petal blanket over the legs 0.02 higher, both 4 wide.
+    span('Body', (-2.0, 0.68, 0.26), (2.0, 0.8, 2.6), 'linen', bevel=0.04)
+    span('Body', (-2.02, 0.68, -2.6), (2.02, 0.82, 0.3), 'lotus_light', bevel=0.05)
     sphere('Body', (0, 0.98, 1.95), (0.95, 0.3, 0.5), 'lotus', n=10, rings=4)
     lotus((2.6, 0.68, 1.5), 1.2)
     lotus((-2.55, 0.68, -1.6), 1.1, ang=20)
@@ -1616,26 +1713,32 @@ def f_willow_hammock():
             px, pz = x + sx * 0.58 * math.cos(a), 0.58 * math.sin(a)
             box('Body', (0, 0, 0), (0.12, 0.95 - 0.12 * (k % 2), 0.04), 'lily',      # thin across the radius
                 m=at((px, 2.4 + 0.06 * (k % 2), pz), ry=math.degrees(math.atan2(sx * math.cos(a), math.sin(a)))))
-        box('Body', (x, 2.45, -0.62), (0.1, 0.1, 1.3), 'cypress_dark')      # the lantern's hook arm
-        firefly_lantern(f'Glow_Warm_{1 if sx < 0 else 2}', (x, 2.4, -1.22))
-    n, half = 9, 3.3
-    sag = lambda x: 1.3 + 1.1 * (x / half) ** 4     # noqa: E731
-    for i in range(n):
-        xa, xb = -half + 2 * half * i / n, -half + 2 * half * (i + 1) / n
+        # The lantern hangs off the post's front-outer side, clear of the widened sling and its ropes.
+        hx, hz = x + sx * 0.32, -0.88
+        seg('Body', (x + sx * 0.12, 2.5, -0.2), (hx, 2.47, hz), 0.05, 'cypress_dark', n=5)      # its hook branch
+        firefly_lantern(f'Glow_Warm_{1 if sx < 0 else 2}', (hx, 2.42, hz))
+    # The sling 3.9 wide (the 5-stud person's arms on it, 3.8) and flat under the whole body, rising only past
+    # its ends (2026-10-21, Bayou blind review: 2.4 wide, the arms over its edges, and the Lodge's x^4 curve
+    # still rose 0.36 under the head and feet, the straight body sunk into it): level to |x| 2.5, then up to
+    # the ropes in three short chords a side.
+    half, flat = 3.3, 2.5
+    sag = lambda x: 1.3 + 1.1 * max(0.0, (abs(x) - flat) / (half - flat)) ** 1.6     # noqa: E731
+    xs = [-3.3, -3.05, -2.8, -2.55, -1.7, -0.85, 0.0, 0.85, 1.7, 2.55, 2.8, 3.05, 3.3]
+    for i, (xa, xb) in enumerate(zip(xs, xs[1:])):
         ya, yb = sag(xa), sag(xb)
         ln = math.hypot(xb - xa, yb - ya) + 0.06
         ang = math.degrees(math.atan2(yb - ya, xb - xa))
-        box('Body', (0, 0, 0), (ln, 0.15, 2.4 - 0.01 * (i % 2)), 'rattan' if i % 2 else 'rattan_dark',
-            m=at(((xa + xb) / 2, (ya + yb) / 2, 0), rz=ang))
+        box('Body', (0, 0, 0), (ln, 0.15 + 0.02 * (i % 2), 3.9 - 0.01 * (i % 2)), 'rattan' if i % 2 else
+            'rattan_dark', m=at(((xa + xb) / 2, (ya + yb) / 2, 0), rz=ang))     # the flat chords 0.01 apart
     for x in (-half, half):
-        for z in (-1.1, 1.1):
+        for z in (-1.9, 1.9):
             a, b = Vector((x, sag(x), z)), Vector((x * 1.06, 2.55, z * 0.25))
             seg('Body', a, b, 0.04, 'linen', n=4)
     sphere('Body', (-2.0, sag(-2.0) + 0.3, 0), (0.5, 0.25, 0.7), 'linen', n=8, rings=4)     # under the head
 
     def top(x):         # the sling's top along its chords
-        i = min(n - 1, max(0, int((x + half) / (2 * half) * n)))
-        xa, xb = -half + 2 * half * i / n, -half + 2 * half * (i + 1) / n
+        i = max(k for k in range(len(xs) - 1) if xs[k] <= x or k == 0)
+        xa, xb = xs[i], xs[i + 1]
         ang = math.atan2(sag(xb) - sag(xa), xb - xa)
         return sag(xa) + (x - xa) / (xb - xa) * (sag(xb) - sag(xa)) + 0.075 / math.cos(ang)
     use((0.0, top(0.0), 0.0), (1, 0, 0), 'Lie')     # centred in the sling, the head on the pillow
@@ -1694,7 +1797,7 @@ def f_herb_bed():
     span('Body', (-2.27, 2.9, zb - 0.34), (2.27, 3.05, zb + 0.14), 'copper_dark')
     span('Body', (-1.3, 3.85, zb - 0.34), (1.3, 4.0, zb + 0.14), 'copper_dark')
     for x, colr in ((-0.85, 'lavender'), (0.0, 'herb'), (0.85, 'chamomile')):
-        z = zb - 0.5
+        z = zb - 0.42      # against the reeds, behind the lying guest's head (2026-10-21, blind review: it clipped them)
         cyl('Body', (x, 3.72, z), 0.07, 0.24, 'herb', n=5)
         cyl('Body', (x, 3.7, z), 0.1, 0.09, 'linen', n=6)
         lathe('Body', [(0.0, 3.4), (0.2, 3.5), (0.15, 3.72)], colr, n=6, base=(x, 0, z))
@@ -1703,46 +1806,58 @@ def f_herb_bed():
     span('Body', (-2.1, 1.1, -3.6), (2.1, 1.24, zf - 0.13), 'mud_dark')
     for k, x in enumerate((-1.6, -0.8, 0.0, 0.8, 1.6)):
         sphere('Body', (x, 1.42, -3.2), (0.38, 0.3, 0.32), ('herb', 'sage', 'lavender')[k % 3], n=8, rings=4)
-    use((0, 1.8, 0.3), (0, 0, -1), 'Lie')     # the head on the pillow's back, the feet short of the planter
+    use((0, 1.8, 0.0), (0, 0, -1), 'Lie')     # the head's top 0.08 short of the herb bundles, on the pillow
     done("the Herb Loft's bed: weathered wood, a moss mattress under a lavender quilt, a headboard of rattan reed "
          "bundles bound in copper with herbs hung drying, a planter of herbs at its foot")
+
+
+def boulder(c, r, h, col, sz=0.95, n=8):
+    """A rounded stone standing flat on (x, y, z): its widest a third up, r across, h tall, `sz` its depth
+    (2026-10-21, Bayou blind review: spheres stood on their points, balanced on bevelled undersides)."""
+    lathe('Body', [(0.82 * r, 0.0), (r, 0.35 * h), (0.72 * r, 0.82 * h), (0.0, h)], col, n=n, base=c,
+          scale=(1, sz))
 
 
 def f_steam_pool():
     furn('SteamPool')
     # A round hot pool walled in mossy boulders, steam curling up from two of them, a lantern on the back stone,
-    # a smooth stone headrest at the head (+Z), lily pads and a lotus on the water.
-    lathe('Body', [(2.9, 0.0), (3.3, 0.0), (3.3, 1.05), (2.9, 1.05)], 'stone_dark', n=16, closed=True)
-    cyl('Body', (0, 0, 0), 2.92, 0.3, 'stone_dark', n=16)
-    cyl('Body', (0, 0.95, 0), 2.95, 0.05, 'water', n=16)
+    # a smooth stone headrest at the head (+Z), lily pads and a lotus on the water. The guest lies in it on its
+    # floor (0.1) under the water (1.1-1.15), only the head's top above it (2026-10-21, blind review: on a 0.3
+    # floor under water at 1.0, the body showed at the rim's height); the boulders stand flat on the floor.
+    lathe('Body', [(2.9, 0.0), (3.3, 0.0), (3.3, 1.2), (2.9, 1.2)], 'stone_dark', n=14, closed=True)
+    cyl('Body', (0, 0, 0), 2.92, 0.1, 'stone_dark', n=14)
+    cyl('Body', (0, 1.1, 0), 2.95, 0.05, 'water', n=14)
     k_n = 14
+    tops = {}
     for k in range(k_n):
         a = 2 * math.pi * (k + 0.5) / k_n
         r = 0.6 if k % 2 else 0.66
-        ry = 0.55 + 0.04 * (k % 3)
-        sphere('Body', (3.42 * math.cos(a), ry, 3.42 * math.sin(a)), (r, ry, r * 0.95),
-               ('stone', 'stone_light', 'stone')[k % 3], n=8, rings=3)
+        h = 2 * (0.62 + 0.04 * (k % 3))
+        tops[k] = h
+        boulder((3.42 * math.cos(a), 0.0, 3.42 * math.sin(a)), r, h, ('stone', 'stone_light', 'stone')[k % 3], n=6)
     for k in (2, 5, 9, 12):      # moss on some of them
         a = 2 * math.pi * (k + 0.5) / k_n
-        sphere('Body', (3.42 * math.cos(a), 0.98 + 0.04 * (k % 3), 3.42 * math.sin(a)), (0.42, 0.14, 0.4), 'moss',
+        sphere('Body', (3.42 * math.cos(a), tops[k] - 0.08, 3.42 * math.sin(a)), (0.42, 0.14, 0.4), 'moss',
                n=6, rings=3)
-    sphere('Body', (0, 0.48, 2.0), (0.8, 0.26, 0.5), 'stone_light', n=10, rings=4)        # the headrest
+    sphere('Body', (0, 0.36, 2.0), (0.8, 0.26, 0.5), 'stone_light', n=10, rings=4)       # the headrest, on the floor
     for sx in (-1, 1):          # steam rising off the back stones
-        a = 2 * math.pi * ((1.5 if sx > 0 else 5.5) / k_n)    # the back (+Z) stones
+        k = 1 if sx > 0 else 5
+        a = 2 * math.pi * ((k + 0.5) / k_n)    # the back (+Z) stones
         x, z = 3.42 * math.cos(a), 3.42 * math.sin(a)
-        for i, (dy, r) in enumerate(((1.25, 0.36), (1.7, 0.3), (2.1, 0.24), (2.42, 0.17))):
-            sphere('Body', (x + 0.08 * sx * i, dy, z - 0.05 * i), (r, r * 0.8, r), 'steam', n=6, rings=3)
+        for i, (dy, r) in enumerate(((0.12, 0.36), (0.57, 0.3), (0.97, 0.24), (1.29, 0.17))):
+            sphere('Body', (x + 0.08 * sx * i, tops[k] + dy, z - 0.05 * i), (r, r * 0.8, r), 'steam', n=6, rings=3)
     a = 2 * math.pi * (3.5 / k_n)     # the back stone, behind the head
     lx, lz = 3.42 * math.cos(a), 3.42 * math.sin(a)
-    cyl('Body', (lx, 1.0, lz), 0.22, 0.12, 'brass', n=8)
-    cyl('Glow_Warm_1', (lx, 1.12, lz), 0.17, 0.4, 'lamp', n=8)
-    cyl('Body', (lx, 1.52, lz), 0.22, 0.14, 'brass', n=8, r_top=0.05)
-    lily_pad((-2.2, 1.0, -1.2), 0.42, 0.02, 'lily', notch=40)
-    lily_pad((2.1, 1.0, -1.6), 0.36, 0.02, 'lily_dark', notch=200)
-    lily_pad((-2.3, 1.0, 0.9), 0.32, 0.02, 'lily', notch=120)
-    lotus((-2.2, 1.02, -1.2), 0.8)
+    ly = tops[3] - 0.04
+    cyl('Body', (lx, ly, lz), 0.22, 0.12, 'brass', n=8)
+    cyl('Glow_Warm_1', (lx, ly + 0.12, lz), 0.17, 0.4, 'lamp', n=8)
+    cyl('Body', (lx, ly + 0.52, lz), 0.22, 0.14, 'brass', n=8, r_top=0.05)
+    lily_pad((-2.2, 1.15, -1.2), 0.42, 0.02, 'lily', notch=40)
+    lily_pad((2.1, 1.15, -1.6), 0.36, 0.02, 'lily_dark', notch=200)
+    lily_pad((-2.3, 1.15, 0.9), 0.32, 0.02, 'lily', notch=120)
+    lotus((-2.2, 1.17, -1.2), 0.8)
     # In it, on the pool's floor under the water (the water and the pads on it are no surface to the checks).
-    use((0, 0.3, 0.0), (0, 0, -1), 'Lie', liquid=(0.95, 1.02))
+    use((0, 0.1, 0.0), (0, 0, -1), 'Lie', liquid=(1.1, 1.17))
     done("the Steam Grotto's hot pool: still water in a ring of mossy boulders, steam curling off two of them, a "
          "lantern on the back stone, a smooth headrest, lily pads and a lotus")
 
@@ -1751,28 +1866,31 @@ def f_cypress_throne():
     furn('CypressThrone')
     # A throne carved from a cypress stump: a root flare, a moss cushion between two knobbly root-knee arms, a
     # high back with a carved crown and a lighter inset panel, Spanish moss draped over its shoulders, a firefly
-    # jar hanging from a crooked branch.
-    lathe('Body', [(2.3, 0.0), (2.1, 0.2), (1.7, 0.42), (0.0, 0.45)], 'cypress_dark', n=12, base=(0, 0, -0.4),
+    # jar hanging from a crooked branch. Fitted to the seated 5-stud person (2026-10-21, blind review: the arms
+    # went through the person's arms and the seat's front through the shins): the arms stand 3.92 apart (the
+    # person 3.8 across), the seat 1.2 deep from the back, its front where the shins hang, the guest's back 0.3
+    # off the backrest.
+    lathe('Body', [(2.55, 0.0), (2.35, 0.2), (1.9, 0.42), (0.0, 0.45)], 'cypress_dark', n=12, base=(0, 0, -0.4),
           scale=(1, 0.85))
-    half = [(1.9, 0.4), (1.9, 3.4), (1.6, 4.1), (1.1, 4.3), (0.6, 4.75)]
+    half = [(2.45, 0.4), (2.45, 3.4), (2.1, 4.1), (1.45, 4.4), (0.75, 4.8)]
     outline = half + [(0.0, 5.0)] + [(-x, y) for x, y in reversed(half)]
     prism('Body', outline, 0.0, 0.85, 'cypress', plane='xy')
     inset = [(0.72 * x, 2.0 + 0.62 * (y - 0.4)) for x, y in outline]
     prism('Body', inset, -0.03, 0.0, 'cypress_light', plane='xy')
-    span('Body', (-1.0, 0.4, -1.1), (1.0, 1.2, 0.02), 'cypress_dark')
-    span('Body', (-1.2, 1.2, -1.6), (1.2, 1.55, 0.02), 'cypress', bevel=0.05)
-    span('Body', (-1.12, 1.55, -1.52), (1.12, 1.8, -0.03), 'moss', bevel=0.08)
+    span('Body', (-1.6, 0.4, -1.1), (1.6, 1.2, 0.02), 'cypress_dark')
+    span('Body', (-1.98, 1.2, -1.2), (1.98, 1.55, 0.02), 'cypress', bevel=0.05)
+    span('Body', (-1.92, 1.55, -1.18), (1.92, 1.8, -0.03), 'moss', bevel=0.08)
     for sx in (-1, 1):
-        xa, xb = sorted((1.25 * sx, 1.88 * sx))
-        span('Body', (xa, 0.4, -1.55), (xb, 2.5, 0.05), 'cypress_dark', bevel=0.18)
-        sphere('Body', (1.57 * sx, 2.5, -1.25), (0.36, 0.26, 0.36), 'cypress_light', n=8, rings=4)
-        drape = [(1.45, 4.25), (2.05, 3.55), (2.05, 2.6), (1.92, 2.3), (1.82, 2.75), (1.7, 2.35), (1.58, 2.9),
-                 (1.45, 3.3)]
+        xa, xb = sorted((1.96 * sx, 2.56 * sx))
+        span('Body', (xa, 0.0, -1.55), (xb, 2.5, 0.05), 'cypress_dark', bevel=0.18)
+        sphere('Body', (2.26 * sx, 2.5, -1.25), (0.3, 0.24, 0.32), 'cypress_light', n=8, rings=4)
+        drape = [(1.75, 4.22), (2.4, 3.75), (2.5, 3.4), (2.5, 2.9), (2.38, 2.62), (2.28, 3.0), (2.16, 2.66),
+                 (2.05, 3.1), (1.92, 3.45)]
         prism('Body', [(x * sx, y) for x, y in drape][::sx], -0.07, -0.02, 'moss_light', plane='xy')
-    for p, q in (((1.3, 4.1, 0.45), (2.0, 4.6, 0.2)), ((2.0, 4.6, 0.2), (2.35, 4.5, -0.35))):
+    for p, q in (((1.6, 4.2, 0.45), (2.15, 4.75, 0.2)), ((2.15, 4.75, 0.2), (2.35, 4.5, -0.35))):
         seg('Body', p, q, 0.07, 'cypress_dark', n=5)
     firefly_lantern('Glow_Warm_1', (2.35, 4.47, -0.35), h=0.36, r=0.14)
-    K.seat(-1.05, 1.05, -1.45, -0.15, 1.8)
+    K.seat(-1.05, 1.05, -1.2, 0.0, 1.8)
     use((0, 1.8, -0.8), (0, 0, -1), 'Sit')
     done("the Cypress Suite's throne carved from a cypress stump: a moss cushion, root-knee arms, a high carved back "
          "draped with Spanish moss, a firefly jar on a crooked branch")
@@ -1782,12 +1900,14 @@ def f_lagoon_perch():
     furn('LagoonPerch')
     # A smooth moonstone boulder with a lily-pad cushion to sit on, facing a little lagoon pool in front (-Z):
     # lily pads, a lotus, a frog; a reed stalk curving over from behind with a glowing crescent moon on a cord;
-    # cattails at the back.
-    lathe('Body', [(1.95, 0.0), (2.05, 0.5), (1.9, 1.2), (1.5, 1.62), (0.0, 1.7)], 'moonstone', n=12,
-          base=(0, 0, 2.2), scale=(1, 0.7))
-    cyl('Body', (0, 1.66, 2.2), 1.15, 0.07, 'lily', n=12, scale=(1, 0.8))
-    sphere('Body', (-2.4, 0.6, 2.9), (0.85, 0.6, 0.75), 'moonstone_dark', n=8, rings=4)
-    sphere('Body', (-2.4, 1.08, 2.9), (0.5, 0.18, 0.45), 'moss', n=8, rings=3)
+    # cattails at the back. The boulder is long across and shallow front to back, the cushion at its front, so
+    # the seated person's shins hang clear in front of it (2026-10-21, blind review: on a round boulder's top
+    # the legs went down through the stone, the figure read as standing on it).
+    lathe('Body', [(1.95, 0.0), (2.05, 0.45), (1.95, 1.1), (1.55, 1.58), (0.0, 1.68)], 'moonstone', n=12,
+          base=(0, 0, 2.6), scale=(1, 0.5))
+    cyl('Body', (0, 1.5, 2.45), 1.15, 0.23, 'lily', n=12, scale=(1, 0.52))
+    boulder((-2.4, 0.0, 2.9), 0.85, 1.15, 'moonstone_dark', sz=0.88)
+    sphere('Body', (-2.4, 1.08, 2.9), (0.48, 0.16, 0.42), 'moss', n=8, rings=3)
     lathe('Body', [(2.0, 0.0), (2.35, 0.0), (2.35, 0.35), (2.2, 0.5), (2.0, 0.45)], 'stone', n=16,
           base=(0, 0, -1.7), closed=True)
     cyl('Body', (0, 0, -1.7), 2.03, 0.4, 'water_deep', n=16)
@@ -1796,7 +1916,7 @@ def f_lagoon_perch():
     lily_pad((0.6, 0.4, -3.0), 0.34, 0.03, 'lily', notch=160)
     frog((-0.9, 0.43, -2.5), ang=20, s=0.9)
     lotus((0.9, 0.43, -1.1), 0.75)
-    sphere('Body', (2.9, 0.3, 3.3), (0.4, 0.3, 0.4), 'stone_dark', n=6, rings=3)
+    boulder((2.9, 0.0, 3.3), 0.4, 0.55, 'stone_dark')
     stalk = [(2.9, 0.1, 3.3), (3.0, 1.5, 3.1), (2.95, 3.0, 2.6), (2.75, 3.85, 1.9), (2.55, 4.0, 1.45)]
     for a, b in zip(stalk, stalk[1:]):
         seg('Body', a, b, 0.07, 'reed', n=5)
@@ -1808,8 +1928,8 @@ def f_lagoon_perch():
           m=at((2.55, 3.84 - 0.45, 1.45)))      # its top on the cord, the horns toward +X
     cattails(-3.2, 0.8, k=3, tall=2.2)
     cattails(3.3, -3.3, k=2, tall=1.8)
-    K.seat(-1.05, 1.05, 1.6, 2.8, 1.73)
-    use((0, 1.73, 2.2), (0, 0, -1), 'Sit')
+    K.seat(-1.05, 1.05, 1.85, 3.05, 1.73)
+    use((0, 1.73, 1.95), (0, 0, -1), 'Sit')
     done("the Moonlit Lagoon's perch: a smooth moonstone boulder with a lily-pad cushion facing a little lagoon "
          "(lily pads, a lotus, a frog), a glowing crescent moon hung from a reed stalk, cattails")
 
@@ -1851,11 +1971,14 @@ def f_jazz_stage():
     cyl('Body', (-2.4, 2.5, 0.8), 0.4, 0.03, 'rattan', n=12)
     cyl('Body', (-2.4, 2.53, 0.8), 0.24, 0.2, 'rattan', n=10)
     cyl('Body', (-2.4, 2.56, 0.8), 0.25, 0.07, 'velvet', n=10)
-    # The posts and the string of lights.
+    # The posts and the string of lights, as high as a Floor piece may reach (MODELS.md: at most 7 tall): the
+    # string pulled nearly taut, its lowest bulb 5.4 over the deck, clear of a 5-stud person walking the stage
+    # by 0.4 (2026-10-21, blind review: it sagged to 2.6 over the deck, through their head; the review asked
+    # for 7 over the deck, which the 7-stud layer cannot hold over a 0.9 deck).
     for sx in (-1, 1):
-        cyl('Body', (3.75 * sx, 0.9, 2.2), 0.13, 3.6, 'cypress', n=6)
-        sphere('Body', (3.75 * sx, 4.55, 2.2), 0.17, 'brass', n=6, rings=3)
-    pts = [(-3.75 + 7.5 * i / 8, 4.3 - 0.5 * math.sin(math.pi * i / 8), 2.2) for i in range(9)]
+        cyl('Body', (3.75 * sx, 0.9, 2.2), 0.13, 5.88, 'cypress', n=6)
+        sphere('Body', (3.75 * sx, 6.82, 2.2), 0.17, 'brass', n=6, rings=3)     # its band clear of the post's faces
+    pts = [(-3.75 + 7.5 * i / 8, 6.7 - 0.15 * math.sin(math.pi * i / 8), 2.2) for i in range(9)]
     for a, b in zip(pts, pts[1:]):
         seg('Body', a, b, 0.025, 'black', n=4)
     for x, y, z in pts[1:-1]:
@@ -1927,12 +2050,14 @@ STYLES = {
         title='Bayou Spa: inner walls, a door and furniture (built rooms)', location=3, palette=BS_PALETTE,
         body=[(0.0, 3.2, 'cypress'), (3.2, WALL, 'sage')], reveal='cypress_dark', skirting='cypress_dark',
         chair='cypress_light', picture='cypress_light', crown='moss', fringe='moss', arch='round', trim='cypress_dark',
-        trim_base='cypress', keystone='lily',
+        trim_base='cypress', keystone='cypress_light', keystone_moss='moss', post_chamfer=0.08, sit_figure=True,
         wall_note='a cypress wainscot under soft sage, light cypress rails, a moss crown with a scalloped moss '
                   'fringe hanging under it, both faces',
-        door_note='a round arch, dark cypress trim with a lily-green keystone, plinth blocks, both faces',
+        door_note='a round arch, dark cypress trim with a light cypress keystone under a moss cap, plinth blocks, '
+                  'both faces',
         post_note='banded as the walls meeting it (dark skirting, the cypress wainscot, light rails, sage, the moss '
-                  'crown), so their bands turn the corner on it',
+                  'crown), so their bands turn the corner on it; its upright edges chamfered 0.08 (blind review '
+                  '2026-10-21: its square edge 0.1 proud of the wainscot read as a dark slit at the joint)',
         furniture=bs_furniture, locations=(3,)),
 }
 
@@ -1979,7 +2104,8 @@ ROOM = [    # a 2 x 2 cell room's corner with a T and a free end: (name, (x, z),
 POSTS = [(0, 0), (12, 0), (0, 12), (12, 12), (6, 12), (6, 24), (24, 0), (6, 6)]
 
 
-def render(path, direction, res, lo, hi, scale=1.04):
+def render(path, direction, res, lo, hi, scale=1.04, cut=None):
+    """`cut`: a Roblox point; everything nearer the camera than it is cut away (a section, by clip_start)."""
     sc = bpy.context.scene
     sc.render.engine = 'BLENDER_WORKBENCH'
     sc.display.shading.light = 'STUDIO'
@@ -2010,6 +2136,7 @@ def render(path, direction, res, lo, hi, scale=1.04):
     ys = [(p - centre).dot(up) for p in pts]
     cam.data.ortho_scale = max(max(xs) - min(xs), (max(ys) - min(ys)) * res[0] / res[1]) * scale
     cam.location += right * (max(xs) + min(xs)) / 2 + up * (max(ys) + min(ys)) / 2
+    cam.data.clip_start = 0.1 if cut is None else (cam.location - K.rb2bl(cut)).dot(d)
     path.parent.mkdir(parents=True, exist_ok=True)
     sc.render.filepath = str(path)
     bpy.ops.render.render(write_still=True)
@@ -2142,26 +2269,10 @@ def _lying(use_pos, look):
 
 
 def _sitting(use_pos, look):
-    """The 5-stud person sitting on a Sit point, facing `look`: the torso and head over the point, the thighs
-    level on the seat to the knees 1.3 ahead, the shins hanging to 1.1 under the seat, the forearms at an
-    armrest's height (the standing figure's blocks, _person's widths)."""
-    skin, shirt, legs = (250, 200, 160), (70, 130, 200), (60, 60, 80)
-    a = Vector((look[0], 0, look[2])).normalized()
-    b = Vector((-a.z, 0, a.x))
-    p = Vector(use_pos)
-    ys = p.y
-
-    def blk(t0, t1, s0, s1, y0, y1, rgb):
-        c = [p + a * t + b * s for t in (t0, t1) for s in (s0, s1)]
-        _REV['_block']('sitting', Vector((min(v.x for v in c), y0, min(v.z for v in c))),
-                       Vector((max(v.x for v in c), y1, max(v.z for v in c))), rgb)
-    blk(-0.5, 0.5, -1.0, 1.0, ys, ys + 2.0, shirt)                  # torso
-    blk(-0.6, 0.6, -0.6, 0.6, ys + 2.0, ys + 3.0, skin)             # head
-    for s0, s1 in ((-1.9, -1.02), (1.02, 1.9)):                     # arms
-        blk(-0.45, 0.45, s0, s1, ys + 0.75, ys + 2.0, skin)
-    for s0, s1 in ((-0.95, -0.05), (0.05, 0.95)):                   # thighs and shins
-        blk(0.0, 1.3, s0, s1, ys, ys + 0.9, legs)
-        blk(0.4, 1.3, s0, s1, ys - 1.1, ys, legs)
+    """The 5-stud person sitting on a Sit point, facing `look` (sit_blocks: the same blocks sit_faults
+    checks the piece against)."""
+    for lo, hi, rgb, _ in sit_blocks(use_pos, look):
+        _REV['_block']('sitting', lo, hi, rgb)
 
 
 def review_sitting(out, fbx, style, manifest):
@@ -2190,7 +2301,10 @@ def review_sitting(out, fbx, style, manifest):
             u = r['attachments']['Use']
             _sitting(u['pos'], u['look'])
             sz = r['root']['size']
-            return (-sz[0] / 2 - 0.3, 0, -sz[2] / 2 - 0.3), (sz[0] / 2 + 0.3, 5.2, sz[2] / 2 + 0.3)
+            # The side view a section just outside the torso (2026-10-21, Bayou blind review: the near armrest
+            # hid the thighs, and the shins alone read as a person standing): the near arm and armrest cut away.
+            cut = (u['pos'][0] - 1.01, 0, 0) if abs(u['look'][2]) > 0.5 else None
+            return (-sz[0] / 2 - 0.3, 0, -sz[2] / 2 - 0.3), (sz[0] / 2 + 0.3, 5.2, sz[2] / 2 + 0.3), cut
         scenes.append((n[len('Furniture_'):], one))
     if 'Furniture_PipeOrgan' in manifest:
         def organ():
@@ -2202,9 +2316,10 @@ def review_sitting(out, fbx, style, manifest):
     for name, build in scenes:
         for view, d in (('side', (-1.0, 0.0, 0.0)), ('three_quarter', (-0.7, 0.45, -1.0))):
             clear()
-            lo, hi = build()
+            lo, hi, *cut = build()
             _REV['_block']('floor', (lo[0] - 1, -0.3, lo[2] - 1), (hi[0] + 1, -0.02, hi[2] + 1), (150, 150, 156))
-            shots.append(render(out / f'sitting_{name}_{view}.png', d, (600, 600), lo, hi))
+            shots.append(render(out / f'sitting_{name}_{view}.png', d, (600, 600), lo, hi,
+                                cut=cut[0] if cut and view == 'side' else None))
     rows = [shots[i:i + 4] for i in range(0, len(shots), 4)]
     rows[-1] += [None] * (4 - len(rows[-1]))
     return _REV['_compose'](rows, out / 'sitting_sheet.png')
@@ -2344,6 +2459,7 @@ def main():
         K.BUILT.clear()
         FINDINGS.clear()
         K.use_palette(st['palette'])
+        SIT_FIGURE[0] = st.get('sit_figure', False)
         K.start_set(set_dir)
         builds = [('Wall_Half', lambda: wall_half(st)), ('Wall_Door', lambda: wall_door(st)),
                   ('Wall_Post', lambda: wall_post(st))]
