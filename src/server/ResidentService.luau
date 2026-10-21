@@ -271,7 +271,8 @@ local function onCheckout(player: Player, g: GuestService.Guest, satisfaction: n
 	if not data or not sp or not Stay.isHappy(satisfaction) then
 		return
 	end
-	local gain = 1
+	-- The room's Decor bar: more friendship per happy stay (GDD A.12).
+	local gain = g.friendshipMult or 1
 	for _, f in friendshipProviders do
 		local ok, v = pcall(f, player, g.species)
 		if ok and typeof(v) == "number" then

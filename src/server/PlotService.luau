@@ -37,6 +37,7 @@ local Furnish = require(ReplicatedStorage.Shared.Furnish)
 local Grid = require(ReplicatedStorage.Shared.Grid)
 local Layout = require(ReplicatedStorage.Shared.Layout)
 local Pieces = require(ReplicatedStorage.Shared.Pieces)
+local Rooms = require(ReplicatedStorage.Shared.Rooms)
 local Locations = require(ReplicatedStorage.Shared.Locations)
 local Cosmetics = require(ReplicatedStorage.Shared.Cosmetics)
 local HotelPoints = require(ReplicatedStorage.Shared.HotelPoints)
@@ -78,8 +79,15 @@ local function placeLocal(folder: Instance, frame: CFrame)
 end
 
 -- The layout as the pure rules see it (Grid, Layout).
-function PlotService.world(data: PlayerData.Data): Grid.World
-	return Layout.world(data.floors, data.tiles, data.layout, data.decor)
+function PlotService.world(data: PlayerData.Data): Rooms.World
+	return Layout.world(
+			data.floors,
+			data.tiles,
+			data.layout,
+			data.decor,
+			data.walls,
+			data.rooms
+		) :: any
 end
 
 -- A piece's pivot in the plot's frame: its footprint's centre, turned so its door faces the right way.
@@ -326,10 +334,7 @@ local function decorFrame(plot: Plot, data: PlayerData.Data, rec: PlayerData.Dec
 	end
 	local placed = { floor = rec.floor, x = rec.x, z = rec.z, r = rec.r, w = d.w, d = d.d }
 	local lift = 0.02
-	local room = if rec.room ~= "" then data.layout[rec.room] else nil
-	if room then
-		lift += PlotService.roomInfo(room.item, plot.location).floorTop
-	end
+	local _ = data
 	return plot.frame
 		* CFrame.new(Grid.decorCentre(placed) + Vector3.new(0, lift, 0))
 		* CFrame.Angles(0, -rec.r * math.pi / 2, 0)
@@ -464,6 +469,7 @@ end
 
 -- Builds everything of a plot from its owner's data, from scratch.
 local drawCosmetics: (Plot, PlayerData.Data) -> ()
+local drawRooms: (Plot, PlayerData.Data) -> ()
 
 local function buildHotel(plot: Plot, data: PlayerData.Data?)
 	for _, child in plot.model:GetChildren() do
@@ -510,12 +516,279 @@ local function buildHotel(plot: Plot, data: PlayerData.Data?)
 	for id, rec in data.decor do
 		buildDecor(plot, id, rec, data)
 	end
+	drawRooms(plot, data)
 	layHallways(plot, data)
 	if plot.owner then
 		PlotService.refreshTraps(plot.owner)
 	end
 	for _, handler in builtHandlers do
 		task.spawn(handler, plot)
+	end
+end
+
+--[[ The room's name over its door (his ask, 2026-10-19): on the kit's wooden
+	plaque at `sign`, its state on a second line (`Status`), else as floating
+	text until the plaque is imported. ]]
+local function roomLabel(model: Model, sign: CFrame, location: number, title: string)
+	local plaque = HotelKit.plaque(location)
+	local face = plaque and plaque:FindFirstChild("Face", true)
+	if plaque and face and face:IsA("BasePart") then
+		plaque:PivotTo(sign)
+		plaque.Parent = model
+		local gui = Instance.new("SurfaceGui")
+		gui.Name = "Label"
+		gui.Face = Enum.NormalId.Front
+		gui.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
+		gui.PixelsPerStud = 60
+		gui.LightInfluence = 0.6
+		gui.MaxDistance = 80
+		local function line(name: string, y: number, h: number, colour: Color3, text: string)
+			local l = Instance.new("TextLabel")
+			l.Name = name
+			l.BackgroundTransparency = 1
+			l.Position = UDim2.fromScale(0.05, y)
+			l.Size = UDim2.fromScale(0.9, h)
+			l.Font = Enum.Font.FredokaOne
+			l.TextScaled = true
+			l.TextColor3 = colour
+			l.Text = text
+			l.Parent = gui
+		end
+		line("Text", 0.06, 0.56, Color3.fromRGB(255, 232, 180), title)
+		line("Status", 0.62, 0.32, Color3.fromRGB(255, 190, 120), "")
+		gui.Parent = face
+		return
+	end
+	if plaque then
+		plaque:Destroy()
+	end
+	local root = model.PrimaryPart :: BasePart
+	local a = Instance.new("Attachment")
+	a.Name = "LabelAt"
+	a.Parent = root
+	a.WorldCFrame = sign
+	local gui = Instance.new("BillboardGui")
+	gui.Name = "Label"
+	gui.Size = UDim2.fromOffset(160, 40)
+	gui.MaxDistance = 60
+	gui.LightInfluence = 0
+	local text = Instance.new("TextLabel")
+	text.Name = "Text"
+	text.Size = UDim2.fromScale(1, 1)
+	text.BackgroundTransparency = 1
+	text.Font = Enum.Font.FredokaOne
+	text.TextScaled = true
+	text.TextColor3 = Color3.fromRGB(255, 240, 220)
+	text.TextStrokeTransparency = 0.4
+	text.Text = title
+	text.Parent = gui
+	gui.Parent = a
+end
+
+--[[ A built room's floor finish (A.12; MODELS.md "Floor finishes"): its half
+	cells' runs along each row, a hair over the floor, in the finish's
+	material and colour. ]]
+local function roomFloor(model: Model, plot: Plot, area: Rooms.Area, finishId: string)
+	local f = Pieces.finish(finishId)
+	if not f then
+		return
+	end
+	local half = G.CellSize / Rooms.HalfCells
+	local rows: { [number]: { number } } = {}
+	for _, k in area.cells do
+		local hx, hz = Rooms.halfOf(k)
+		rows[hz] = rows[hz] or {}
+		table.insert(rows[hz], hx)
+	end
+	local y = Grid.floorY(area.floor) + 0.03
+	for hz, xs in rows do
+		table.sort(xs)
+		local i = 1
+		while i <= #xs do
+			local j = i
+			while j < #xs and xs[j + 1] == xs[j] + 1 do
+				j += 1
+			end
+			local p = Instance.new("Part")
+			p.Name = "Floor"
+			p.Anchored = true
+			p.CanCollide = false
+			p.CanQuery = false
+			p.CanTouch = false
+			p.Size = Vector3.new((j - i + 1) * half, 0.05, half)
+			p.CFrame = plot.frame * CFrame.new((xs[i] + xs[j] + 1) / 2 * half, y, (hz + 0.5) * half)
+			p.Material = f.material
+			p.Color = f.colour
+			p.Parent = model
+			i = j + 1
+		end
+	end
+end
+
+--[[ The inner walls, doors and posts (HotelKit.walls, A.12) and, for each
+	built room, an invisible marker model in `Pieces` (`R_<id>`, `PieceId` its
+	room id, `Kind` Room or Amenity, `Item` its type) carrying what the rest of
+	the game asks a room for, all read from models: `Door` (its door's
+	threshold, looking out of the room), `Sign` and the plaque over it, `Bed`
+	(where a guest ends up: its key furniture's `Use`, else `KeySpot`),
+	`KeySpot` (the square beside the key furniture, Rooms.keySpot), and the
+	door's prompts. Drawn again whole on every change of walls, rooms or
+	furniture. ]]
+function drawRooms(plot: Plot, data: PlayerData.Data)
+	local old = plot.model:FindFirstChild("Walls")
+	if old then
+		old:Destroy()
+	end
+	for id, m in plot.pieces do
+		if data.layout[id] == nil then
+			m:Destroy()
+			plot.pieces[id] = nil
+		end
+	end
+	local world = PlotService.world(data)
+	-- Which half cells belong to which room, to turn each door out of its room.
+	local inRoom: { [string]: string } = {}
+	local areas: { [string]: Rooms.Area } = {}
+	for id in data.rooms do
+		local a = Rooms.roomArea(world, id)
+		if a and not a.hallway and #a.rooms == 1 then
+			areas[id] = a
+			for _, k in a.cells do
+				inRoom[`{a.floor}:{k}`] = id
+			end
+		end
+	end
+	local drawn: { HotelKit.DrawnWall } = {}
+	for edge, rec in data.walls do
+		local floor, hx, hz, o = Rooms.edgeOf(edge)
+		local ax, az, bx, bz = Rooms.sides(hx, hz, o)
+		local aRoom = inRoom[`{floor}:{Rooms.halfKey(ax, az)}`]
+		local bRoom = inRoom[`{floor}:{Rooms.halfKey(bx, bz)}`]
+		table.insert(drawn, {
+			edge = edge,
+			door = rec.door == true,
+			outside = if aRoom and not bRoom then 1 else 0,
+		})
+	end
+	local folder = HotelKit.walls(plot.location, drawn, Rooms.posts(data.walls))
+	placeLocal(folder, plot.frame)
+	folder.Parent = plot.model
+	local doors: { [string]: Model } = {}
+	for _, m in folder:GetChildren() do
+		local e = m:GetAttribute("Edge")
+		if m:IsA("Model") and typeof(e) == "string" and m:GetAttribute("Door") then
+			doors[e] = m
+		end
+	end
+	local piecesFolder = plot.model:FindFirstChild("Pieces")
+	local half = G.CellSize / Rooms.HalfCells
+	local square = G.CellSize / G.Squares
+	for id, rec in data.rooms do
+		local piece = Pieces.get(rec.type)
+		local a = areas[id]
+		if piece and a then
+			local seed = plot.frame
+				* CFrame.new((rec.hx + 0.5) * half, Grid.floorY(rec.floor), (rec.hz + 0.5) * half)
+			local model = Instance.new("Model")
+			model.Name = `R_{id}`
+			local root = Instance.new("Part")
+			root.Name = "Root"
+			root.Anchored = true
+			root.CanCollide = false
+			root.CanQuery = false
+			root.CanTouch = false
+			root.Transparency = 1
+			root.Size = Vector3.new(1, 0.2, 1)
+			root.CFrame = seed
+			root.Parent = model
+			model.PrimaryPart = root
+			model:SetAttribute("PieceId", id)
+			model:SetAttribute("Item", rec.type)
+			model:SetAttribute("Kind", piece.kind)
+			model:SetAttribute("Floor", rec.floor)
+			model:SetAttribute("Room", true)
+			local function point(name: string, cf: CFrame)
+				local att = Instance.new("Attachment")
+				att.Name = name
+				att.Parent = root
+				att.WorldCFrame = cf
+			end
+			local e, insideA = Rooms.roomDoor(world, id)
+			local doorModel = e and doors[e]
+			local droot = doorModel and doorModel.PrimaryPart
+			local dAtt = droot and droot:FindFirstChild("Door")
+			local sAtt = droot and droot:FindFirstChild("Sign")
+			local doorCF: CFrame? = nil
+			if dAtt and dAtt:IsA("Attachment") then
+				doorCF = dAtt.WorldCFrame
+				-- The model faces its "a" side unless it was drawn turned (outside 1).
+				local _, hx, hz, o = Rooms.edgeOf(e :: string)
+				local ax, az = Rooms.sides(hx, hz, o)
+				local aPoint = plot.frame:PointToWorldSpace(
+					Vector3.new((ax + 0.5) * half, Grid.floorY(rec.floor), (az + 0.5) * half)
+				)
+				local facesA = (aPoint - (doorCF :: CFrame).Position):Dot(
+					(doorCF :: CFrame).LookVector
+				) > 0
+				if facesA == insideA then
+					doorCF = (doorCF :: CFrame) * CFrame.Angles(0, math.pi, 0)
+				end
+				point("Door", doorCF :: CFrame)
+				if sAtt and sAtt:IsA("Attachment") then
+					local sign = (doorCF :: CFrame)
+						* dAtt.WorldCFrame:ToObjectSpace(sAtt.WorldCFrame)
+					point("Sign", sign)
+				end
+			end
+			local spot = Rooms.keySpot(world, id)
+			local keyAt: CFrame? = nil
+			if spot then
+				keyAt = plot.frame
+					* CFrame.new(
+						(spot.x + 0.5) * square,
+						Grid.floorY(spot.floor),
+						(spot.z + 0.5) * square
+					)
+				point("KeySpot", keyAt :: CFrame)
+			end
+			-- Where the guest ends up: the key furniture's `Use`, else beside it.
+			local use: CFrame? = nil
+			local req = Rooms.requirement(rec.type)
+			for _, d in Rooms.contents(world, id).furniture do
+				local dm = d.id and plot.decor[d.id]
+				if not use and req and table.find(req.keys, d.item) and dm then
+					local r = dm.PrimaryPart
+					local u = r and r:FindFirstChild("Use")
+					if u and u:IsA("Attachment") then
+						use = u.WorldCFrame
+					end
+				end
+			end
+			if use or keyAt then
+				point("Bed", (use or keyAt) :: CFrame)
+			end
+			if rec.finish and rec.finish ~= "" then
+				roomFloor(model, plot, a, rec.finish)
+			end
+			model.Parent = piecesFolder
+			plot.pieces[id] = model
+			local signAt = root:FindFirstChild("Sign")
+			if signAt and signAt:IsA("Attachment") then
+				roomLabel(model, signAt.WorldCFrame, plot.location, piece.name)
+			end
+			if doorCF then
+				roomPrompts(plot, model, id)
+			end
+		end
+	end
+end
+
+-- Draws the walls, doors and rooms again (a wall, a door, a room's type or its furniture changed).
+function PlotService.refreshRooms(player: Player)
+	local plot = byPlayer[player]
+	local data = PlayerData.get(player)
+	if plot and data then
+		drawRooms(plot, data)
 	end
 end
 

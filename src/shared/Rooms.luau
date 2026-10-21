@@ -1047,6 +1047,367 @@ function Rooms.ready(world: World, roomId: string): (boolean, { string }?)
 	return true, nil
 end
 
+-- ===== Pieces, decor and tiles among the walls (wiring, 2026-10-21) =====
+
+-- The square of a cell nearest its middle a guest can stand on (where a desk's queue or a stair's foot is stood on).
+function Rooms.spotSquare(world: World, s: Grid.Spot): Spot?
+	local k = anchor(walkOf(world), s)
+	return if k then sqOf(k) else nil
+end
+
+-- Whether a wall stands on a half edge with either side in one of `cells` (cellKeys).
+local function wallTouches(world: World, cells: { [number]: boolean }): boolean
+	for e in world.walls do
+		local floor, hx, hz, o = Rooms.edgeOf(e)
+		local ax, az, bx, bz = sides(hx, hz, o)
+		if
+			cells[cellKey(floor, ax // HC, az // HC)]
+			or cells[cellKey(floor, bx // HC, bz // HC)]
+		then
+			return true
+		end
+	end
+	return false
+end
+
+local function withoutPiece(world: World, skip: Grid.Placed?): World
+	local out = table.clone(world)
+	out.pieces = {}
+	for _, p in world.pieces do
+		if not (skip and (p == skip or (p.id ~= nil and p.id == skip.id))) then
+			table.insert(out.pieces, p)
+		end
+	end
+	return out
+end
+
+--[[ Whether a desk or a stair may stand where `piece` says, among the walls
+	(`skip` a piece being moved): Grid's rules for the cells (bounds, tiles,
+	overlap, the mouth), no decor and no wall on its cells (a stair's well
+	too), no room taken or merged, nothing guests reached cut off, and its
+	own spots (the queue, the foot and head) reached on the squares. ]]
+function Rooms.canPlacePiece(
+	world: World,
+	piece: Grid.Placed,
+	skip: Grid.Placed?
+): (boolean, string?)
+	local bare = table.clone(world)
+	bare.decor = {}
+	local ok, why = Grid.canPlace(bare, piece, skip)
+	if not ok then
+		return false, why
+	end
+	local mine: { [number]: boolean } = {}
+	for _, c in Grid.cells(piece) do
+		mine[cellKey(piece.floor, c.x, c.z)] = true
+		if piece.kind == "Stairs" then
+			mine[cellKey(piece.floor + 1, c.x, c.z)] = true
+		end
+	end
+	for _, d in world.decor do
+		for _, s in Grid.squares(d) do
+			if mine[cellKey(d.floor, s.x // Q, s.z // Q)] then
+				return false, "Decor"
+			end
+		end
+	end
+	if wallTouches(world, mine) then
+		return false, "Wall"
+	end
+	local before = withoutPiece(world, skip)
+	local after = withoutPiece(world, skip)
+	table.insert(after.pieces, piece)
+	local fine, refusal = Rooms.check(before, after)
+	if not fine then
+		return false, refusal
+	end
+	local reached = reachedTargets(after)
+	for _, s in Grid.doors(piece) do
+		if not reached[`{s.floor}:{s.x}:{s.z}`] then
+			return false, "DoorUnreachable"
+		end
+	end
+	return true, nil
+end
+
+-- Whether a desk or a stair may be taken away: Grid's (never the last desk) and nothing cut off among the walls.
+function Rooms.canRemovePiece(world: World, piece: Grid.Placed): (boolean, string?)
+	local bare = table.clone(world)
+	bare.decor = {}
+	local ok, why = Grid.canRemove(bare, piece)
+	if not ok then
+		return false, why
+	end
+	return Rooms.check(world, withoutPiece(world, piece))
+end
+
+-- The squares beside a door's half edge, on both sides: kept clear of anything but rugs.
+local function doorwaySquares(world: World): { [number]: boolean }
+	local out = {}
+	for e, rec in world.walls do
+		if rec.door then
+			local floor, hx, hz, o = Rooms.edgeOf(e)
+			local ax, az, bx, bz = sides(hx, hz, o)
+			for _, h in { { ax, az }, { bx, bz } } do
+				for dz = 0, SQ - 1 do
+					for dx = 0, SQ - 1 do
+						local sx, sz = h[1] * SQ + dx, h[2] * SQ + dz
+						-- Only the row of squares touching the edge.
+						local touching = if o == 0
+							then (h[2] == az and dz == SQ - 1) or (h[2] == bz and dz == 0)
+							else (h[1] == ax and dx == SQ - 1) or (h[1] == bx and dx == 0)
+						if touching then
+							out[sqKey(floor, sx, sz)] = true
+						end
+					end
+				end
+			end
+		end
+	end
+	return out
+end
+
+--[[ Whether decor or furniture `d` may stand where it is (A.12 "Furniture":
+	on the decor grid like decor; `skip` a record's id being moved): on owned
+	cells, off pieces and stairwells, nothing but a rug in the entrance's
+	mouth or a doorway, never across a wall (rugs lie under walls), two of a
+	layer never overlapping (rugs under the rest), a `Wall` piece with its
+	back on a wall without a door or on the facade, and nothing guests
+	reached cut off. ]]
+function Rooms.canPlaceDecor(world: World, d: Grid.DecorPlaced, skip: string?): (boolean, string?)
+	if d.floor < 1 or d.floor > world.floors or d.floor % 1 ~= 0 then
+		return false, "NoFloor"
+	end
+	if d.r < 0 or d.r > 3 or d.r % 1 ~= 0 then
+		return false, "OutOfBounds"
+	end
+	local m = marks(world)
+	local rug = d.layer == "Rug"
+	local doorway = if rug then {} else doorwaySquares(world)
+	local mine: { [number]: boolean } = {}
+	for _, s in Grid.squares(d) do
+		if s.x < 0 or s.z < 0 or s.x >= NQ or s.z >= NQ then
+			return false, "OutOfBounds"
+		end
+		local cx, cz = s.x // Q, s.z // Q
+		if not Grid.isOpen(world, d.floor, cx, cz) then
+			return false, "Tile"
+		end
+		local ck = cellKey(d.floor, cx, cz)
+		if m.stair[ck] or m.desk[ck] or m.other[ck] then
+			return false, "Overlap"
+		end
+		if not rug and isMouth(d.floor, cx, cz) then
+			return false, "Entrance"
+		end
+		if doorway[sqKey(d.floor, s.x, s.z)] then
+			return false, "Doorway"
+		end
+		mine[sqKey(d.floor, s.x, s.z)] = true
+	end
+	local idx = indexWalls(world.walls)
+	if not rug then
+		-- Never across a wall: two of its squares on either side of a half edge with a wall.
+		for _, s in Grid.squares(d) do
+			for _, step in { { 1, 0 }, { 0, 1 } } do
+				local nx, nz = s.x + step[1], s.z + step[2]
+				if mine[sqKey(d.floor, nx, nz)] then
+					local ax, az, bx, bz = s.x // SQ, s.z // SQ, nx // SQ, nz // SQ
+					if
+						(ax ~= bx or az ~= bz)
+						and idx.any[between(d.floor, ax, az, bx - ax, bz - az)]
+					then
+						return false, "Across"
+					end
+				end
+			end
+		end
+	end
+	-- Two of a layer never overlap; rugs lie under the rest.
+	for _, o in world.decor do
+		local skipped = skip ~= nil and o.id == skip
+		if not skipped and o.floor == d.floor and (o.layer == "Rug") == rug then
+			for _, s in Grid.squares(o) do
+				if mine[sqKey(o.floor, s.x, s.z)] then
+					return false, "Overlap"
+				end
+			end
+		end
+	end
+	if d.layer == "Wall" then
+		-- Its back (opposite its front, Grid.doorFacing) against a wall without a door, or the facade.
+		local ex, ez = Grid.extent(d.w, d.d, d.r)
+		local back: { { number } } = {}
+		if d.r == 0 then
+			for x = d.x, d.x + ex - 1 do
+				table.insert(back, { x, d.z + ez - 1, 0, 1 })
+			end
+		elseif d.r == 2 then
+			for x = d.x, d.x + ex - 1 do
+				table.insert(back, { x, d.z, 0, -1 })
+			end
+		elseif d.r == 1 then
+			for z = d.z, d.z + ez - 1 do
+				table.insert(back, { d.x, z, -1, 0 })
+			end
+		else
+			for z = d.z, d.z + ez - 1 do
+				table.insert(back, { d.x + ex - 1, z, 1, 0 })
+			end
+		end
+		for _, b in back do
+			local sx, sz, dx, dz = b[1], b[2], b[3], b[4]
+			local nx, nz = sx + dx, sz + dz
+			local outside = nx < 0
+				or nz < 0
+				or nx >= NQ
+				or nz >= NQ
+				or not Grid.isOpen(world, d.floor, nx // Q, nz // Q)
+			local ax, az, bx, bz = sx // SQ, sz // SQ, nx // SQ, nz // SQ
+			local walled = (ax ~= bx or az ~= bz)
+				and idx.shut[between(d.floor, ax, az, bx - ax, bz - az)] == true
+			if not outside and not walled then
+				return false, "NoWall"
+			end
+		end
+	end
+	if not rug then
+		local before = table.clone(world)
+		before.decor = {}
+		for _, o in world.decor do
+			if not (skip ~= nil and o.id == skip) then
+				table.insert(before.decor, o)
+			end
+		end
+		local after = table.clone(before)
+		after.decor = table.clone(before.decor)
+		table.insert(after.decor, d)
+		local ok, why = Rooms.check(before, after)
+		if not ok then
+			return false, why
+		end
+	end
+	return true, nil
+end
+
+--[[ The walls a tile bought puts up by itself (his "the facade counts as a
+	wall"): on every half edge between the new tile and a room's area on its
+	floor, so a room never runs out into the new tile. `world` is before the
+	purchase. ]]
+function Rooms.autoWalls(world: World, floor: number, x: number, z: number): { Edge }
+	local areas, of = computeAreas(world, floor, indexWalls(world.walls), marks(world))
+	local out = {}
+	for hz = z * HC, z * HC + HC - 1 do
+		for hx = x * HC, x * HC + HC - 1 do
+			for _, s in STEPS do
+				local nx, nz = hx + s[1], hz + s[2]
+				local inside = nx // HC == x and nz // HC == z
+				local n = if inside then nil else of[Rooms.halfKey(nx, nz)]
+				if
+					n
+					and nx >= 0
+					and nz >= 0
+					and nx < H
+					and nz < H
+					and #areas[n].rooms > 0
+					and not areas[n].hallway
+				then
+					local e = betweenEdge(floor, hx, hz, s[1], s[2])
+					if not world.walls[e] and not table.find(out, e) then
+						table.insert(out, e)
+					end
+				end
+			end
+		end
+	end
+	table.sort(out)
+	return out
+end
+
+--[[ Where `Wall_Post` stands (MODELS.md "Walls"): every vertex an inner wall
+	or door touches but where exactly two meet in a straight line, as
+	{ floor, vx, vz } in half-cell units (the vertex at half cell (vx, vz)'s
+	lowest corner). ]]
+function Rooms.posts(walls: { [Edge]: WallRecord }): { { floor: number, vx: number, vz: number } }
+	local dirs: { [string]: { floor: number, vx: number, vz: number, e: number } } = {}
+	local function add(floor: number, vx: number, vz: number, bit: number)
+		local k = `{floor}:{vx}:{vz}`
+		local v = dirs[k]
+		if not v then
+			v = { floor = floor, vx = vx, vz = vz, e = 0 }
+			dirs[k] = v
+		end
+		v.e = bit32.bor(v.e, bit)
+	end
+	for e in walls do
+		local floor, hx, hz, o = Rooms.edgeOf(e)
+		if o == 0 then
+			add(floor, hx, hz, 1) -- +x from its start
+			add(floor, hx + 1, hz, 2) -- −x from its end
+		else
+			add(floor, hx, hz, 4) -- +z
+			add(floor, hx, hz + 1, 8) -- −z
+		end
+	end
+	local out = {}
+	for _, v in dirs do
+		if v.e ~= 3 and v.e ~= 12 then
+			table.insert(out, { floor = v.floor, vx = v.vx, vz = v.vz })
+		end
+	end
+	table.sort(out, function(a, b)
+		if a.floor ~= b.floor then
+			return a.floor < b.floor
+		end
+		if a.vz ~= b.vz then
+			return a.vz < b.vz
+		end
+		return a.vx < b.vx
+	end)
+	return out
+end
+
+--[[ A room's door: the first door of its area (by key), and whether the room
+	lies on the half edge's "a" side (before it, `sides`); nil without one. ]]
+function Rooms.roomDoor(world: World, roomId: string): (Edge?, boolean)
+	local a = Rooms.roomArea(world, roomId)
+	if not a or #a.doors == 0 then
+		return nil, false
+	end
+	local e = a.doors[1]
+	local _, hx, hz, o = Rooms.edgeOf(e)
+	local ax, az = sides(hx, hz, o)
+	return e, table.find(a.cells, Rooms.halfKey(ax, az)) ~= nil
+end
+
+--[[ The squares either side of a room's door, at the middle of its half
+	edge: (outside, inside); nil without a door. Staff stop outside it. ]]
+function Rooms.doorSquares(world: World, roomId: string): (Spot?, Spot?)
+	local e, insideA = Rooms.roomDoor(world, roomId)
+	if not e then
+		return nil, nil
+	end
+	local floor, hx, hz, o = Rooms.edgeOf(e)
+	local a, b
+	if o == 0 then
+		a = { floor = floor, x = hx * SQ, z = hz * SQ - 1 }
+		b = { floor = floor, x = hx * SQ, z = hz * SQ }
+	else
+		a = { floor = floor, x = hx * SQ - 1, z = hz * SQ }
+		b = { floor = floor, x = hx * SQ, z = hz * SQ }
+	end
+	if insideA then
+		return b, a
+	end
+	return a, b
+end
+
+-- The room whose area holds square (sx, sz) of `floor`, or nil.
+function Rooms.roomAtSquare(world: World, floor: number, sx: number, sz: number): string?
+	local a = Rooms.areaAt(world, floor, sx // SQ, sz // SQ)
+	return if a and not a.hallway then a.room else nil
+end
+
 -- ===== Bars and bonuses =====
 
 local function clamp01(v: number): number

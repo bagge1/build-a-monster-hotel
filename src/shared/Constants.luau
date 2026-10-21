@@ -286,6 +286,18 @@ Constants.Rooms = {
 	DecorFriendship = 1, -- friendship per happy stay × (1 + this × Decor)
 	ComfortPerRoom = 12, -- Comfort points per ready room at full bars …
 	ComfortRoomsCap = 60, -- … summed, to this (it was the mean tier's 60 %)
+	-- A new hotel's one room (his ruling 2026-10-20: "the reception in the middle and one
+	-- room to its right", as a guest sees it from the street, the −x side; built from walls
+	-- since 2026-10-21). PLACEHOLDER shape: walls may touch neither the desk nor the mouth
+	-- (A.12), so no 2 × 2 fits the start square; this is an L of four cells, (4, 2) and the
+	-- back row (4..6, 3), its door off cell (4, 1).
+	Start = {
+		type = "StandardRoom",
+		seed = { hx = 9, hz = 5 }, -- a half cell of the room (Rooms: a room is the area holding it)
+		walls = { { 4, 2, 0 }, { 4, 2, 3 }, { 5, 3, 0 }, { 6, 3, 0 }, { 6, 3, 3 } }, -- whole cell edges on floor 1: x, z, side (Rooms.cellEdges)
+		door = { hx = 9, hz = 4, o = 0 }, -- the half edge with the door (Rooms.edgeKey)
+		furniture = { { item = "Bed", x = 17, z = 13, r = 0 } }, -- squares, its head on the back wall
+	},
 }
 
 -- §6.4, §6.5: rebirth and the Moon Tree.

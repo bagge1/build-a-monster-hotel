@@ -1,8 +1,11 @@
 local Rating = require(Shared.Rating)
 
+local BAR = { size = 0, furniture = 0.5, decor = 0 }
+local FULL = { size = 1, furniture = 1, decor = 1 }
+
 local function inputs(over)
 	local i = {
-		roomTiers = { 1, 1 },
+		roomBars = { BAR, BAR },
 		prefsShare = 0.5,
 		meanWait = 10,
 		checkIns = 5,
@@ -21,12 +24,23 @@ local function inputs(over)
 end
 
 describe("Rating", function()
+	it("a ready room added never lowers Comfort (his \"no room deducts points\")", function()
+		local rooms = {}
+		local last = Rating.categories(inputs({ roomBars = rooms })).Comfort
+		for _, b in { { size = 0, furniture = 0, decor = 0 }, BAR, FULL, BAR, FULL, FULL, FULL, FULL } do
+			table.insert(rooms, b)
+			local now = Rating.categories(inputs({ roomBars = rooms })).Comfort
+			expect.atLeast(now, last, `with {#rooms} rooms`)
+			last = now
+		end
+	end)
+
 	it("stars are between 1 and 5, in half steps", function()
 		local cases = {
 			{},
-			{ roomTiers = {}, rooms = 0 },
+			{ roomBars = {}, rooms = 0 },
 			{
-				roomTiers = { 5, 5, 5 },
+				roomBars = { FULL, FULL, FULL },
 				prefsShare = 1,
 				requestShare = 1,
 				amenities = 20,
@@ -136,7 +150,7 @@ describe("Rating", function()
 				frontDesk = 5,
 				housekeeping = 5,
 				rooms = 0,
-				roomTiers = {},
+				roomBars = {},
 				checkIns = 0,
 				onTimeShare = 1,
 			},
@@ -153,7 +167,7 @@ describe("Rating", function()
 
 	it("staff earn nothing in a hotel nobody has stayed in or without rooms", function()
 		local c = Rating.categories(inputs({
-			roomTiers = {},
+			roomBars = {},
 			rooms = 0,
 			checkIns = 0,
 			frontDesk = 3,
@@ -167,7 +181,7 @@ describe("Rating", function()
 
 	it("a hotel with nothing in it rates the lowest", function()
 		local empty = inputs({
-			roomTiers = {},
+			roomBars = {},
 			rooms = 0,
 			checkIns = 0,
 			prefsShare = 0,

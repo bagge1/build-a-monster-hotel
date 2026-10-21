@@ -34,6 +34,8 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Constants = require(ReplicatedStorage.Shared.Constants)
 local Grid = require(ReplicatedStorage.Shared.Grid)
+local Pieces = require(ReplicatedStorage.Shared.Pieces)
+local Rooms = require(ReplicatedStorage.Shared.Rooms)
 
 local packages = ServerScriptService:FindFirstChild("ServerPackages")
 if not packages or not packages:FindFirstChild("ProfileStore") then
@@ -50,7 +52,7 @@ local PlayerData = {}
 --[[ Bump only when the shape changes in a way old data cannot satisfy, and add
 	the step to `migrate` in the same commit. The game is not live (CLAUDE.md),
 	so until it is, a shape change may simply start everyone over. ]]
-local SCHEMA_VERSION = 5
+local SCHEMA_VERSION = 6
 
 -- A new hotel's windows (A.1, his ruling): a Twin sash on each front wall beside the entrance, free.
 local function startWindows(): { [string]: WindowRecord }
@@ -76,13 +78,19 @@ export type PieceRecord = {
 	x: number,
 	z: number,
 	r: number,
-	m: boolean?, -- mirrored left to right (Flip, A.1), a room or amenity only
 	paid: number, -- what it cost, for the refund
-	finish: string?, -- a room's floor finish (Pieces.Finishes), "" or nil for the model's own
+	finish: string?,
 }
+-- An inner wall on a half edge (GDD §5.4, A.12), keyed by Rooms.edgeKey; `door` when it has a door in it.
+export type WallRecord = { door: boolean?, paid: number }
+--[[ A built room (A.12): its type (a Room or Amenity row of Pieces), its floor,
+	and its seed, a half cell of it (a room is the area holding its seed);
+	`finish` its floor finish ("" none). ]]
+export type RoomRecord = { type: string, floor: number, hx: number, hz: number, finish: string? }
 -- A window on a facade wall (A.1): its type (Constants.Windows.Types) and what it cost, for the refund.
 export type WindowRecord = { type: string, paid: number }
--- Decor (§5.4): squares of 3 studs on the plot, and the room it stands in ("" on hallway floor).
+-- Decor and furniture (§5.4, A.12): squares of 3 studs on the plot. `room` is kept "" (a room is
+-- found from the walls, Rooms.contents).
 export type DecorRecord = {
 	item: string,
 	floor: number,
@@ -106,6 +114,8 @@ export type ResidentRecord = {
 export type HotelRecord = {
 	layout: { [string]: PieceRecord },
 	decor: { [string]: DecorRecord },
+	walls: { [string]: WallRecord },
+	rooms: { [string]: RoomRecord },
 	tiles: { [string]: boolean },
 	tilesBought: { [string]: number },
 	windows: { [string]: WindowRecord },
@@ -132,8 +142,10 @@ export type Data = {
 	candySeason: string,
 	moonTree: { [string]: number },
 	floors: number,
-	layout: { [string]: PieceRecord },
+	layout: { [string]: PieceRecord }, -- the desks and the stairs (rooms are built from walls, `rooms`)
 	decor: { [string]: DecorRecord },
+	walls: { [string]: WallRecord }, -- inner walls and doors by Rooms.edgeKey (§5.4, A.12)
+	rooms: { [string]: RoomRecord }, -- built rooms by id (ids shared with `layout` and `decor`)
 	tiles: { [string]: boolean }, -- owned cells per floor, by Grid.tileKey(floor, x, z) (§5.4, A.1)
 	tilesBought: { [string]: number }, -- per floor, tiles bought with cash, for the next one's price (the start's and gifts are free)
 	windows: { [string]: WindowRecord }, -- by Grid.edgeKey: the windows placed on facade walls (A.1)
@@ -186,6 +198,8 @@ local TEMPLATE: Data = {
 	floors = 1,
 	layout = {},
 	decor = {},
+	walls = {},
+	rooms = {},
 	tiles = startTiles(),
 	tilesBought = {},
 	windows = startWindows(),
@@ -247,12 +261,58 @@ local function ensureDesk(data: Data)
 	end
 end
 
---[[ A new hotel (§5.4, A.1): the start square's tiles, one floor, the desk
-	across from the arch and nothing else. A rebirth (§6.4) and the tiles'
-	schema step start from here. ]]
+--[[ A new hotel's one room (his ruling 2026-10-20; built, 2026-10-21, A.12):
+	walls, a door and a Bed, `Constants.Rooms.Start`, free. ]]
+local function startRoom(data: Data)
+	local S = Constants.Rooms.Start
+	for _, w in S.walls do
+		for _, e in Rooms.cellEdges(1, w[1], w[2], w[3]) do
+			data.walls[e] = { paid = 0 }
+		end
+	end
+	data.walls[Rooms.edgeKey(1, S.door.hx, S.door.hz, S.door.o)] = { door = true, paid = 0 }
+	-- At a later location (§6.4) its first room type, with that type's key piece.
+	local typeId = S.type
+	local start = Pieces.get(typeId)
+	if start and start.location ~= data.location then
+		for _, p in Pieces.List do
+			if p.kind == "Room" and p.location == data.location and p.unlock == nil then
+				typeId = p.id
+				break
+			end
+		end
+	end
+	local req = Rooms.requirement(typeId)
+	data.rooms[tostring(data.nextId)] =
+		{ type = typeId, floor = 1, hx = S.seed.hx, hz = S.seed.hz, finish = "" }
+	data.nextId += 1
+	for _, f in S.furniture do
+		local item = f.item
+		local d = Pieces.decor(item)
+		if
+			req
+			and d
+			and d.keyFor
+			and table.find(d.keyFor, S.type)
+			and not table.find(req.keys, item)
+		then
+			item = req.keys[1] or item -- the same footprint at every location (Pieces)
+		end
+		data.decor[tostring(data.nextId)] =
+			{ item = item, floor = 1, x = f.x, z = f.z, r = f.r, room = "", paid = 0 }
+		data.nextId += 1
+	end
+end
+
+--[[ A new hotel (§5.4, A.1, A.12): the start square's tiles, one floor, the
+	desk across from the arch and one built Standard Room beside it. A
+	rebirth (§6.4), a new hotel of the chain and the schema steps start from
+	here. ]]
 function PlayerData.resetHotel(data: Data)
 	data.layout = {}
 	data.decor = {}
+	data.walls = {}
+	data.rooms = {}
 	data.tiles = startTiles()
 	data.tilesBought = {}
 	data.windows = startWindows()
@@ -260,6 +320,7 @@ function PlayerData.resetHotel(data: Data)
 	data.floors = 1
 	data.freeStairs = 0
 	ensureDesk(data)
+	startRoom(data)
 end
 
 local function migrate(data: Data)
@@ -286,6 +347,27 @@ local function migrate(data: Data)
 		for _, r in data.residents do
 			r.role = ""
 			r.hotel = nil
+		end
+	end
+	if data.nextId == 1 then
+		-- A brand-new profile (the template): a new hotel with its start room.
+		PlayerData.resetHotel(data)
+	end
+	if data.version < 6 then
+		-- Built rooms (§5.4, A.12, his rulings 2026-10-21): rooms are walls, a
+		-- door and furniture, no longer pieces. Every hotel of the chain starts
+		-- again from the start square with its one built room; not live
+		-- (CLAUDE.md): rebuilt, not migrated.
+		PlayerData.resetHotel(data)
+		for _, rec in data.chain do
+			local fresh = table.clone(data)
+			PlayerData.resetHotel(fresh)
+			rec.layout, rec.decor, rec.walls, rec.rooms =
+				fresh.layout, fresh.decor, fresh.walls, fresh.rooms
+			rec.tiles, rec.tilesBought, rec.windows = fresh.tiles, fresh.tilesBought, fresh.windows
+			rec.finishes, rec.floors, rec.freeStairs =
+				fresh.finishes, fresh.floors, fresh.freeStairs
+			data.nextId = fresh.nextId
 		end
 	end
 	ensureDesk(data)

@@ -37,6 +37,7 @@ local Grid = require(ReplicatedStorage.Shared.Grid)
 local Layout = require(ReplicatedStorage.Shared.Layout)
 local Net = require(ReplicatedStorage.Shared.Net)
 local Pieces = require(ReplicatedStorage.Shared.Pieces)
+local Rooms = require(ReplicatedStorage.Shared.Rooms)
 local Species = require(ReplicatedStorage.Shared.Species)
 local Stay = require(ReplicatedStorage.Shared.Stay)
 local StreetLayout = require(ReplicatedStorage.Shared.StreetLayout)
@@ -81,6 +82,10 @@ export type Guest = {
 	waited: number,
 	payRate: number,
 	tier: number,
+	-- What the room's three bars give (GDD A.12, Rooms.bonuses), set at check-in.
+	stayMult: number,
+	satBonus: number,
+	friendshipMult: number,
 	prefsMatched: number,
 	amenities: number,
 	stayEnd: number?,
@@ -178,6 +183,9 @@ local function newGuest(speciesId: string, mutation: string?, source: string): G
 		waited = 0,
 		payRate = 0,
 		tier = 1,
+		stayMult = 1,
+		satBonus = 0,
+		friendshipMult = 1,
 		prefsMatched = 0,
 		amenities = 0,
 		stayEnd = nil,
@@ -203,8 +211,12 @@ end
 
 -- ===== Paths through a hotel =====
 
-local function toWorld(plot: PlotService.Plot, floor: number, c: Grid.Cell): Vector3
-	return plot.frame:PointToWorldSpace(Grid.cellCentre(floor, c))
+-- A 3-stud square's centre (Rooms' walking grid, A.12 "Guests"), in the world.
+local SQUARE = Constants.Grid.CellSize / Constants.Grid.Squares
+local function squareWorld(plot: PlotService.Plot, floor: number, c: Grid.Cell): Vector3
+	return plot.frame:PointToWorldSpace(
+		Vector3.new((c.x + 0.5) * SQUARE, Grid.floorY(floor), (c.z + 0.5) * SQUARE)
+	)
 end
 
 -- The hotel's desks (piece ids), lowest first: the first is the one staff work at (HotelPoints).
@@ -222,10 +234,13 @@ local function desks(data: PlayerData.Data): { string }
 	return out
 end
 
---[[ The walk from a desk's queue (`deskId`, else the first desk) to a room's
-	bed (§5.4): to the cell in front of the desk, along the hallways and up or
-	down the placed stairs (Grid.route), to the door, in, to the bed (only to
-	the door with `toDoor`: staff on an errand, §4.6). ]]
+--[[ The walk from a desk's queue (`deskId`, else the first desk) to a built
+	room's key furniture (A.12 "Guests"): from the square in front of the
+	desk along the 3-stud squares between the walls, up or down the placed
+	stairs, through the room's door (Rooms.route) to the square beside its
+	key furniture (Rooms.keySpot), and onto it (the room's `Bed`: the
+	furniture's `Use`). With `toDoor` only to the square outside the door:
+	staff on an errand (§4.6). ]]
 local function roomPath(
 	plot: PlotService.Plot,
 	data: PlayerData.Data,
@@ -235,14 +250,18 @@ local function roomPath(
 	deskId: string?
 ): { Vector3 }?
 	local world = PlotService.world(data)
-	local room = Layout.find(world, pieceId)
 	local desk = (deskId and Layout.find(world, deskId)) or Layout.find(world, desks(data)[1] or "")
-	if not room or not desk then
+	if not data.rooms[pieceId] or not desk then
 		return nil
 	end
-	local door = Grid.doorCell(room)
-	local legs =
-		Grid.route(world, Grid.doors(desk)[1], { floor = room.floor, x = door.x, z = door.z })
+	local start = Rooms.spotSquare(world, Grid.doors(desk)[1])
+	local target = if toDoor
+		then (Rooms.doorSquares(world, pieceId))
+		else Rooms.keySpot(world, pieceId)
+	if not start or not target then
+		return nil
+	end
+	local legs = Rooms.route(world, start, target)
 	if not legs then
 		return nil
 	end
@@ -258,15 +277,11 @@ local function roomPath(
 			end
 		else
 			for _, c in leg.cells :: { Grid.Cell } do
-				table.insert(out, toWorld(plot, leg.floor :: number, c))
+				table.insert(out, squareWorld(plot, leg.floor :: number, c))
 			end
 		end
 	end
-	local doorPoint = PlotService.piecePoint(plot, pieceId, "Door")
 	local bed = PlotService.piecePoint(plot, pieceId, "Bed")
-	if doorPoint then
-		table.insert(out, doorPoint.Position)
-	end
 	if bed and not toDoor then
 		table.insert(out, bed.Position)
 	end
@@ -616,7 +631,7 @@ function GuestService.checkIn(player: Player, byStaff: boolean?, deskId: string?
 	if not g or not g.room then
 		return nil
 	end
-	local rec = data.layout[g.room]
+	local rec = data.rooms[g.room]
 	local path = roomPath(plot, data, here(g), g.room, false, g.desk)
 	if not rec or not path then
 		-- The room went missing or cannot be reached: the guest goes home.
@@ -628,17 +643,17 @@ function GuestService.checkIn(player: Player, byStaff: boolean?, deskId: string?
 	g.waited = os.clock() - (g.deskSince or os.clock())
 	HotelService.recordCheckIn(player, g.waited)
 	local sp = assert(Species.get(g.species))
-	g.tier = HotelService.tier(data, g.room)
+	g.tier = 1
 	g.prefsMatched = Stay.matched(sp.prefs, HotelService.roomTags(data, g.room))
 	g.amenities = HotelService.amenitiesOn(data, rec.floor)
-	local typeCount = 0
-	for _, other in data.layout do
-		if other.item == rec.item then
-			typeCount += 1
-		end
-	end
-	g.payRate =
-		Economy.guestPay(g.species, g.tier, g.mutation, typeCount, Income.multiplier(player))
+	-- The room's three bars' bonuses (A.12) replace the tiers' pay.
+	local _, bonus = HotelService.roomBars(data, g.room)
+	g.stayMult = if bonus then bonus.stay else 1
+	g.satBonus = if bonus then bonus.satisfaction else 0
+	g.friendshipMult = if bonus then bonus.friendship else 1
+	local typeCount = HotelService.readyOfType(player, data, rec.type)
+	g.payRate = Economy.guestPay(g.species, 1, g.mutation, typeCount, Income.multiplier(player))
+		* (if bonus then bonus.pay else 1)
 	leaveQueue(player, g)
 	HotelService.setRoom(player, g.room, "Occupied", g.id)
 	g.state = "ToRoom"
@@ -675,20 +690,24 @@ local function checkout(g: Guest)
 		return
 	end
 	local plot = PlotService.of(player)
-	local satisfaction = Stay.satisfaction({
-		prefsMatched = g.prefsMatched,
-		tier = g.tier,
-		amenities = g.amenities,
-		requestsPlayer = g.requestsPlayer,
-		requestsStaff = g.requestsStaff,
-		requestsMissed = g.requestsMissed,
-		deskWait = g.waited,
-	})
+	local satisfaction = math.clamp(
+		Stay.satisfaction({
+			prefsMatched = g.prefsMatched,
+			tier = g.tier,
+			amenities = g.amenities,
+			requestsPlayer = g.requestsPlayer,
+			requestsStaff = g.requestsStaff,
+			requestsMissed = g.requestsMissed,
+			deskWait = g.waited,
+		}) + g.satBonus, -- the Furniture and Decor bars (A.12)
+		0,
+		100
+	)
 	if g.happyFloor then
 		satisfaction = math.max(satisfaction, g.happyFloor)
 	end
 	local sp = assert(Species.get(g.species))
-	local stay = Constants.Rarity[sp.rarity].stay
+	local stay = Constants.Rarity[sp.rarity].stay * g.stayMult
 	local tip = math.floor(
 		Stay.tip(g.payRate, stay, satisfaction) * (1 + GuestService.tipBonus(player, "Tips"))
 	)
@@ -884,7 +903,8 @@ local function tick()
 			if now >= g.arriveAt then
 				g.state = "InRoom"
 				local sp = assert(Species.get(g.species))
-				local stay = Constants.Rarity[sp.rarity].stay
+				-- The Size bar's longer stay (A.12).
+				local stay = Constants.Rarity[sp.rarity].stay * g.stayMult
 				g.stayEnd = now + stay
 				g.requestAt = now + stay * (0.25 + 0.5 * rng:NextNumber())
 				publish(g)

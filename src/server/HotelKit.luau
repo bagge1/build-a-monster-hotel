@@ -325,14 +325,50 @@ end
 	footprint's base, front toward −Z; the blockout fills the footprint less
 	the 0.4 inset, a rug to its edges and flat, a wall piece against the back. ]]
 function HotelKit.decor(id: string, location: number): Model
-	local found = template(location, `Decor_{id}`)
-	if found then
-		return found
-	end
 	local d = assert(Pieces.decor(id), id)
+	if d.furniture then
+		-- Furniture (MODELS.md "Furniture"): `Furniture_<Id>` from the kit; the
+		-- location-0 pieces from Haunted Manor's until a kit has its own.
+		local found = template(location, `Furniture_{id}`)
+			or (if d.location == 0 then template(1, `Furniture_{id}`) else nil)
+		if found then
+			return found
+		end
+	else
+		local found = template(location, `Decor_{id}`)
+		if found then
+			return found
+		end
+	end
 	local S = CELL / G.Squares
 	local W, D = d.w * S, d.d * S
-	local model, _ = shell(`Decor_{id}`, Vector3.new(W, 0.2, D), Vector3.new(0, 0.1, 0))
+	local model, root = shell(
+		if d.furniture then `Furniture_{id}` else `Decor_{id}`,
+		Vector3.new(W, 0.2, D),
+		Vector3.new(0, 0.1, 0)
+	)
+	if d.furniture then
+		--[[ Its `Use` (MODELS.md "Furniture"): a room type's key piece is lain on
+			(a bed, a coffin, a nest), on its top's middle looking to the foot
+			end (−Z); every other piece is stood at, 1.5 in front of its front
+			edge looking at it. ]]
+		local lie = false
+		for _, t in d.keyFor or {} do
+			local p = Pieces.get(t)
+			if p and p.kind == "Room" then
+				lie = true
+			end
+		end
+		local use = if lie
+			then attach(
+				root,
+				"Use",
+				Vector3.new(0, math.min(d.height, 2.5), 0),
+				Vector3.new(0, 0, -1)
+			)
+			else attach(root, "Use", Vector3.new(0, 0, -D / 2 - 1.5), Vector3.new(0, 0, 1))
+		use:SetAttribute("Pose", if lie then "Lie" else "Stand")
+	end
 	local props = { Color = d.colour, CanCollide = false }
 	if d.layer == "Rug" then
 		part(model, "Body", Vector3.new(W, 0.1, D), Vector3.new(0, 0.05, 0), props)
@@ -355,6 +391,154 @@ function HotelKit.decor(id: string, location: number): Model
 		)
 	end
 	return model
+end
+
+-- ===== Built rooms (GDD §5.4, A.12; MODELS.md "Inner walls, doors and furniture") =====
+
+local HALF = CELL / 2 -- a half edge: 6 studs
+
+--[[ A wall piece's Luau blockout (MODELS.md "Walls"): `Wall_Half`,
+	`Wall_Door` (an open arch 4 × 7.2, its wall in pieces apart round it,
+	`Door` and `Sign`) or `Wall_Post`, with exactly the contract's parts and
+	attachments, so the kit's models replace geometry and nothing else. ]]
+local function blockoutWall(name: string, location: number): Model
+	local loc = Locations.get(location)
+	local wall = darker(loc.facade, 1.05)
+	if name == "Wall_Post" then
+		local model, _ = shell(name, Vector3.new(0.6, 0.2, 0.6), Vector3.new(0, 0.1, 0))
+		part(
+			model,
+			"Post",
+			Vector3.new(0.6, WALL + 0.02, 0.6),
+			Vector3.new(0, (WALL + 0.02) / 2, 0),
+			{
+				Color = darker(loc.trim, 0.8),
+			}
+		)
+		return model
+	end
+	local model, root = shell(name, Vector3.new(HALF, 0.2, 0.4), Vector3.new(0, 0.1, 0))
+	if name == "Wall_Door" then
+		local doorW, doorH = 4, 7.2
+		local side = (HALF - doorW) / 2
+		part(
+			model,
+			"Wall_Left",
+			Vector3.new(side, WALL, 0.4),
+			Vector3.new(-HALF / 2 + side / 2, WALL / 2, 0),
+			{
+				Color = wall,
+			}
+		)
+		part(
+			model,
+			"Wall_Right",
+			Vector3.new(side, WALL, 0.4),
+			Vector3.new(HALF / 2 - side / 2, WALL / 2, 0),
+			{
+				Color = wall,
+			}
+		)
+		part(
+			model,
+			"Wall_Lintel",
+			Vector3.new(doorW, WALL - doorH, 0.4),
+			Vector3.new(0, doorH + (WALL - doorH) / 2, 0),
+			{ Color = wall }
+		)
+		-- The frame round the opening, both faces alike, not colliding.
+		for _, z in { -0.22, 0.22 } do
+			part(
+				model,
+				"Dressing",
+				Vector3.new(doorW + 0.6, 0.3, 0.06),
+				Vector3.new(0, doorH + 0.15, z),
+				{
+					Color = loc.trim,
+					CanCollide = false,
+				}
+			)
+		end
+		attach(root, "Door", Vector3.new(0, 0, 0), Vector3.new(0, 0, -1))
+		attach(root, "Sign", Vector3.new(0, 9.6, -0.5), Vector3.new(0, 0, -1))
+		return model
+	end
+	part(model, "Wall", Vector3.new(HALF, WALL, 0.4), Vector3.new(0, WALL / 2, 0), { Color = wall })
+	return model
+end
+
+-- A wall piece: the location's kit's model, else the blockout.
+function HotelKit.wallPiece(name: string, location: number): Model
+	return template(location, name) or blockoutWall(name, location)
+end
+
+export type DrawnWall = { edge: string, door: boolean, outside: number } -- `outside`: 0 the "a" side, 1 the "b" side
+
+--[[ The inner walls of a hotel (A.12), plot-local, as a Folder `Walls`: a
+	`Wall_Half` or `Wall_Door` on every half edge in `walls`, turned so a
+	door's −Z (its `Door` attachment's look) faces `outside` (out of its room),
+	and a `Wall_Post` on every vertex `posts` gives (Rooms.posts). Each model
+	carries `Edge` and `Floor` (the build mode taps a wall by them). ]]
+function HotelKit.walls(
+	location: number,
+	walls: { DrawnWall },
+	posts: { { floor: number, vx: number, vz: number } }
+): Folder
+	local folder = Instance.new("Folder")
+	folder.Name = "Walls"
+	local sources: { [string]: Model } = {}
+	local function source(name: string): Model
+		local m = sources[name]
+		if not m then
+			m = HotelKit.wallPiece(name, location)
+			for _, d in m:GetDescendants() do
+				if d:IsA("BasePart") then
+					d.Anchored = true
+				end
+			end
+			sources[name] = m
+		end
+		return m
+	end
+	for _, w in walls do
+		local parts = string.split(w.edge, ":")
+		local floor, hx, hz, o =
+			tonumber(parts[1]) or 1,
+			tonumber(parts[2]) or 0,
+			tonumber(parts[3]) or 0,
+			tonumber(parts[4]) or 0
+		local y = Grid.floorY(floor)
+		-- The piece's −Z faces the "a" side by default: −z for an edge along x, −x along z.
+		local at, turn
+		if o == 0 then
+			at, turn = Vector3.new(hx * HALF + HALF / 2, y, hz * HALF), 0
+		else
+			at, turn = Vector3.new(hx * HALF, y, hz * HALF + HALF / 2), 1
+		end
+		if w.outside == 1 then
+			turn += 2
+		end
+		local m = source(if w.door then "Wall_Door" else "Wall_Half"):Clone()
+		m.PrimaryPart = m:FindFirstChild("Root") :: BasePart?
+		m:PivotTo(CFrame.new(at) * CFrame.Angles(0, turn * math.pi / 2, 0))
+		m.Name = if w.door then "Door" else "Wall"
+		m:SetAttribute("Edge", w.edge)
+		m:SetAttribute("Floor", floor)
+		m:SetAttribute("Door", w.door)
+		m.Parent = folder
+	end
+	for _, p in posts do
+		local m = source("Wall_Post"):Clone()
+		m.PrimaryPart = m:FindFirstChild("Root") :: BasePart?
+		m:PivotTo(CFrame.new(p.vx * HALF, Grid.floorY(p.floor), p.vz * HALF))
+		m.Name = "Post"
+		m:SetAttribute("Floor", p.floor)
+		m.Parent = folder
+	end
+	for _, m in sources do
+		m:Destroy()
+	end
+	return folder
 end
 
 --[[ A plate over the plot's cells not owned (§5.4, A.1: "cells not owned

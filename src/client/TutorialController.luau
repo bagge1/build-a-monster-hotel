@@ -24,12 +24,8 @@ local me = Players.LocalPlayer
 
 type Step = { text: string, ui: string?, world: string? }
 local STEPS: { [string]: Step } = {
-	Build = {
-		text = "Welcome, new manager! I'm Gloom. Tap Build and place a Standard Room ($50 of your $100).",
-		ui = "Hud.Left.BuildButton",
-	},
 	CheckIn = {
-		text = "A Slime is on its way! Go to the front desk and check it in.",
+		text = "Welcome, new manager! I'm Gloom. Your first room is ready and a Slime is on its way: check it in at the front desk.",
 		world = "Desk",
 	},
 	Collect = {
@@ -37,7 +33,11 @@ local STEPS: { [string]: Step } = {
 		world = "Till",
 	},
 	SecondRoom = {
-		text = "Business is booming! In Build, tap the gold tiles beside your hotel to buy room for a second room, then build it.",
+		text = "Build a second room! In Build: buy gold tiles beside the hotel, draw Walls round them, put in a Door, then tap inside and choose Standard Room.",
+		ui = "Hud.Left.BuildButton",
+	},
+	Furnish = {
+		text = "Now put a Bed in it (Build, Furniture). A room is ready once its key furniture stands in it.",
 		ui = "Hud.Left.BuildButton",
 	},
 	Bus = {
@@ -49,7 +49,7 @@ local STEPS: { [string]: Step } = {
 		ui = "Hud.Left.BookButton",
 	},
 	Goal = {
-		text = "Big news: a Vampire Count arrives in 3 buses! Build a Coffin Suite on your new tiles. The tiles and the first suite are on me.",
+		text = "Big news: a Vampire Count arrives in 3 buses! Build a Coffin Suite on your new tiles: walls, a door, then a Coffin. The tiles and the Coffin are on me.",
 		ui = "Hud.Left.BuildButton",
 	},
 	Clean = {
@@ -123,8 +123,8 @@ end
 
 local function refresh()
 	local step = me:GetAttribute("Tutorial") :: string?
-	if step == "Start" then
-		step = "Build"
+	if step == "Start" or step == "Build" then
+		step = "CheckIn"
 	end
 	local s = step and STEPS[step]
 	bubble.Visible = s ~= nil

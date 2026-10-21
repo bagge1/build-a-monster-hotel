@@ -49,6 +49,7 @@ local Grid = require(ReplicatedStorage.Shared.Grid)
 local Layout = require(ReplicatedStorage.Shared.Layout)
 local Net = require(ReplicatedStorage.Shared.Net)
 local Pieces = require(ReplicatedStorage.Shared.Pieces)
+local Rooms = require(ReplicatedStorage.Shared.Rooms)
 local Controls = require(script.Parent.Controls)
 local State = require(script.Parent.State)
 local Ui = require(script.Parent.Ui)
@@ -181,15 +182,7 @@ local function world(): Grid.World
 			tiles[Grid.tileKey(1, c.x, c.z)] = true
 		end
 	end
-	return Layout.world(b.floors, tiles, b.layout, b.decor or {})
-end
-
-local function blockedFn(item: string): { [number]: boolean }
-	local out = {}
-	for _, k in (build().blocked or {})[item] or {} do
-		out[k] = true
-	end
-	return out
+	return Layout.world(b.floors, tiles, b.layout, b.decor or {}, b.walls or {}, b.rooms or {})
 end
 
 local function record(id: number): any
@@ -491,7 +484,7 @@ local function drawGhost()
 		) :: Grid.Placed
 		candidate.id = nil
 		local skip = if moving then Layout.find(w, tostring(moving)) else nil
-		ok, why = Grid.canPlace(w, candidate, skip)
+		ok, why = Rooms.canPlacePiece(w :: any, candidate, skip)
 		local ex, ez = Grid.extent(piece.w, piece.d, rotation)
 		ghostBox(
 			model,
@@ -511,12 +504,8 @@ local function drawGhost()
 			{ item = dec.id, floor = floor, x = here.x, z = here.z, r = rotation }
 		) :: Grid.DecorPlaced
 		candidate.id = nil
-		ok, why = Layout.canPlaceDecor(
-			w,
-			candidate,
-			if movingDecor then tostring(movingDecor) else nil,
-			blockedFn
-		)
+		candidate.id = if movingDecor then tostring(movingDecor) else nil
+		ok, why = Rooms.canPlaceDecor(w :: any, candidate, candidate.id)
 		local ex, ez = Grid.extent(dec.w, dec.d, rotation)
 		local h = math.max(0.3, dec.height)
 		ghostBox(
@@ -593,13 +582,13 @@ local function place()
 		return
 	end
 	if moving and piece then
-		Net.send("Move", moving, floor, cell.x, cell.z, rotation, mirror)
+		Net.send("Move", moving, floor, cell.x, cell.z, rotation)
 		stopPlacing()
 	elseif movingDecor and d then
 		Net.send("MoveDecor", movingDecor, floor, cell.x, cell.z, rotation)
 		stopPlacing()
 	elseif piece then
-		Net.send("Place", piece.id, floor, cell.x, cell.z, rotation, mirror)
+		Net.send("Place", piece.id, floor, cell.x, cell.z, rotation)
 	elseif d then
 		Net.send("PlaceDecor", d.id, floor, cell.x, cell.z, rotation)
 	end
@@ -1610,17 +1599,12 @@ function BuildController.Init()
 		Enum.KeyCode.Thumbstick2,
 		{ Left = Enum.KeyCode.Comma, Right = Enum.KeyCode.Period }
 	)
-	panAction = Controls.direction(
-		buildKeys,
-		"Pan",
-		nil,
-		{
-			Left = Enum.KeyCode.A,
-			Right = Enum.KeyCode.D,
-			Up = Enum.KeyCode.W,
-			Down = Enum.KeyCode.S,
-		}
-	)
+	panAction = Controls.direction(buildKeys, "Pan", nil, {
+		Left = Enum.KeyCode.A,
+		Right = Enum.KeyCode.D,
+		Up = Enum.KeyCode.W,
+		Down = Enum.KeyCode.S,
+	})
 	padKeys = Controls.context("BuildPad", 2000, true, false)
 	cursorAction = Controls.direction(padKeys, "Cursor", Enum.KeyCode.Thumbstick1)
 	-- A: what a click does where the cursor is.

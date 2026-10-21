@@ -78,6 +78,8 @@ local function putAway(player: Player, data: PlayerData.Data)
 	data.chain[tostring(data.location)] = {
 		layout = data.layout,
 		decor = data.decor,
+		walls = data.walls,
+		rooms = data.rooms,
 		tiles = data.tiles,
 		tilesBought = data.tilesBought,
 		windows = data.windows,
@@ -98,6 +100,8 @@ local function takeOut(data: PlayerData.Data, location: number)
 	if rec then
 		data.layout = rec.layout
 		data.decor = rec.decor
+		data.walls = rec.walls or {}
+		data.rooms = rec.rooms or {}
 		data.tiles = rec.tiles
 		data.tilesBought = rec.tilesBought
 		data.windows = rec.windows

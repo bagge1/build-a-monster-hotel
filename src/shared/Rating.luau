@@ -7,11 +7,12 @@
 ]]
 
 local Constants = require(script.Parent.Constants)
+local Rooms = require(script.Parent.Rooms)
 
 local R = Constants.Rating
 
 export type Inputs = {
-	roomTiers: { number }, -- each room's tier
+	roomBars: { Rooms.Bars }, -- each READY room's three bars (GDD A.12)
 	prefsShare: number, -- 0..1: preferences matched in recent stays
 	meanWait: number, -- seconds at the desk, recent check-ins
 	checkIns: number, -- how many recent check-ins meanWait is over (none: no Service yet)
@@ -49,14 +50,10 @@ function Rating.coverage(efficiency: number, need: number): number
 end
 
 function Rating.categories(i: Inputs): Categories
-	local tierMean = 0
-	for _, t in i.roomTiers do
-		tierMean += t
-	end
-	tierMean = if #i.roomTiers > 0 then tierMean / #i.roomTiers else 0
-	-- The top tier is full marks (T1 of T5 was 20 before tiers came from furnishing, §5.4).
-	local comfort = math.min(100, tierMean / Constants.Economy.MaxTier * 100) * 0.6
-		+ 40 * i.prefsShare
+	-- Comfort's room part (A.12, his "no room deducts points"): what each ready
+	-- room's bars add, summed to its cap, so a new room never lowers it; its
+	-- preferences part is as before.
+	local comfort = Rooms.comfortPoints(i.roomBars) + 40 * i.prefsShare
 	-- A hotel nobody has stayed in has earned no Service and no Cleanliness yet.
 	local service = if i.checkIns > 0
 		then math.clamp(100 - i.meanWait * R.ServiceWaitPerPoint, 0, 100) * 0.6 + 40 * i.requestShare

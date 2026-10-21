@@ -84,11 +84,11 @@ function Analytics.Start()
 	local ProgressionService = require(Server.ProgressionService) :: any
 	BuildService.onChanged(function(player, what)
 		local data = PlayerData.get(player)
-		if what == "Place" and data then
+		if what == "Room" and data then
 			Analytics.first(player, "FirstRoom")
-			for _, rec in data.layout do
-				local piece = Pieces.get(rec.item)
-				if piece and piece.kind == "Room" and rec.item ~= "StandardRoom" then
+			for _, rec in data.rooms do
+				local piece = Pieces.get(rec.type)
+				if piece and piece.kind == "Room" and rec.type ~= "StandardRoom" then
 					Analytics.first(player, "FirstThemedRoom")
 				end
 			end

@@ -19,9 +19,10 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
 
 local Constants = require(ReplicatedStorage.Shared.Constants)
-local Layout = require(ReplicatedStorage.Shared.Layout)
+local Furnish = require(ReplicatedStorage.Shared.Furnish)
 local Pieces = require(ReplicatedStorage.Shared.Pieces)
 local Rating = require(ReplicatedStorage.Shared.Rating)
+local Rooms = require(ReplicatedStorage.Shared.Rooms)
 local Species = require(ReplicatedStorage.Shared.Species)
 local Stay = require(ReplicatedStorage.Shared.Stay)
 local Format = require(ReplicatedStorage.Shared.Format)
@@ -117,46 +118,83 @@ function HotelService.all(): { [Player]: Hotel }
 	return hotels
 end
 
--- Brings the room table in line with the layout: new rooms vacant, removed ones gone.
+local function world(data: PlayerData.Data): Rooms.World
+	return PlotService.world(data)
+end
+
+--[[ Each built room's readiness (A.12), by id: a room is booked only while
+	ready. Asked often, so cached per change of the hotel (`sync`). ]]
+local readyCache: { [Player]: { [string]: boolean } } = {}
+
+function HotelService.ready(player: Player, roomId: string): boolean
+	local cache = readyCache[player]
+	return cache ~= nil and cache[roomId] == true
+end
+
+--[[ Brings the room table in line with the built rooms (A.12): a ready room
+	is a room guests can be booked into (Vacant when new); a room no longer
+	ready leaves the table once nobody is in it or due, and a removed one goes. ]]
 function HotelService.sync(player: Player)
 	local hotel = hotels[player]
 	local data = PlayerData.get(player)
 	if not hotel or not data then
 		return
 	end
-	for id, rec in data.layout do
-		local piece = Pieces.get(rec.item)
-		if piece and piece.kind == "Room" and not hotel.rooms[id] then
+	local w = world(data)
+	local cache = {}
+	for id, rec in data.rooms do
+		local p = Pieces.get(rec.type)
+		local ok = p ~= nil and (Rooms.ready(w, id))
+		cache[id] = ok
+		-- Amenities are rooms too (their tags and Fun), but no guest is booked into one.
+		if ok and p and p.kind == "Room" and not hotel.rooms[id] then
 			hotel.rooms[id] = { state = "Vacant" }
 		end
 	end
-	for id in hotel.rooms do
-		if not data.layout[id] then
+	readyCache[player] = cache
+	for id, room in hotel.rooms do
+		if not data.rooms[id] or (not cache[id] and room.state == "Vacant") then
 			hotel.rooms[id] = nil
 		end
 	end
 	HotelService.refreshPrompts(player)
 end
 
-local function world(data: PlayerData.Data)
-	return Layout.world(data.floors, data.tiles, data.layout, data.decor)
+-- A room's three bars and what they give (A.12); nil for a room that is not there.
+function HotelService.roomBars(data: PlayerData.Data, roomId: string): (Rooms.Bars?, Rooms.Bonuses?)
+	if not data.rooms[roomId] then
+		return nil, nil
+	end
+	local bars = Rooms.bars(world(data), roomId)
+	return bars, Rooms.bonuses(bars)
 end
 
--- A room's tier (§5.4: from the decor inside it, T1..T3).
-function HotelService.tier(data: PlayerData.Data, pieceId: string): number
-	return (Layout.roomTier(world(data), pieceId))
-end
-
--- The tags a room has: the decor inside its walls (§5.4) and every amenity on its floor (Appendix A.2).
-function HotelService.roomTags(data: PlayerData.Data, pieceId: string): { [string]: boolean }
-	local rec = data.layout[pieceId]
+--[[ The tags a room has (§5.4, A.12): its furniture's and decor's, and every
+	ready amenity's on its floor (Appendix A.2). ]]
+function HotelService.roomTags(data: PlayerData.Data, roomId: string): { [string]: boolean }
+	local rec = data.rooms[roomId]
 	if not rec then
 		return {}
 	end
-	local tags = Layout.roomTags(world(data), pieceId)
-	for _, other in data.layout do
-		local p = Pieces.get(other.item)
-		if p and p.kind == "Amenity" and other.floor == rec.floor and p.tags then
+	local w = world(data)
+	local items = {}
+	local c = Rooms.contents(w, roomId)
+	for _, d in c.furniture do
+		table.insert(items, d.item)
+	end
+	for _, d in c.decor do
+		table.insert(items, d.item)
+	end
+	local tags = Furnish.tags(items)
+	for id, other in data.rooms do
+		local p = Pieces.get(other.type)
+		if
+			p
+			and p.kind == "Amenity"
+			and other.floor == rec.floor
+			and p.tags
+			and Rooms.ready(w, id)
+		then
 			for _, t in p.tags do
 				tags[t] = true
 			end
@@ -165,11 +203,24 @@ function HotelService.roomTags(data: PlayerData.Data, pieceId: string): { [strin
 	return tags
 end
 
+-- The ready amenities on a floor (A.12: built like rooms).
 function HotelService.amenitiesOn(data: PlayerData.Data, floor: number): number
 	local n = 0
-	for _, rec in data.layout do
-		local p = Pieces.get(rec.item)
-		if p and p.kind == "Amenity" and rec.floor == floor then
+	local w = world(data)
+	for id, rec in data.rooms do
+		local p = Pieces.get(rec.type)
+		if p and p.kind == "Amenity" and rec.floor == floor and Rooms.ready(w, id) then
+			n += 1
+		end
+	end
+	return n
+end
+
+-- The ready rooms of a type (for the milestones' count, §6.2).
+function HotelService.readyOfType(player: Player, data: PlayerData.Data, typeId: string): number
+	local n = 0
+	for id, rec in data.rooms do
+		if rec.type == typeId and HotelService.ready(player, id) then
 			n += 1
 		end
 	end
@@ -178,7 +229,7 @@ end
 
 export type Offer = { pieceId: string, prefsMatched: number, amenities: number }
 
--- The best vacant room for a species: the one matching most of its preferences, or nil.
+-- The best vacant ready room of a species' type (A.12): the one matching most of its preferences, or nil.
 function HotelService.vacantFor(player: Player, speciesId: string): Offer?
 	local hotel = hotels[player]
 	local data = PlayerData.get(player)
@@ -188,18 +239,16 @@ function HotelService.vacantFor(player: Player, speciesId: string): Offer?
 	end
 	local best: Offer? = nil
 	for id, room in hotel.rooms do
-		local rec = data.layout[id]
-		if room.state == "Vacant" and rec and rec.item == sp.room then
+		local rec = data.rooms[id]
+		if
+			room.state == "Vacant"
+			and rec
+			and rec.type == sp.room
+			and HotelService.ready(player, id)
+		then
 			local matched = Stay.matched(sp.prefs, HotelService.roomTags(data, id))
 			local amen = HotelService.amenitiesOn(data, rec.floor)
-			if
-				not best
-				or matched > best.prefsMatched
-				or (
-					matched == best.prefsMatched
-					and HotelService.tier(data, id) > HotelService.tier(data, best.pieceId)
-				)
-			then
+			if not best or matched > best.prefsMatched then
 				best = { pieceId = id, prefsMatched = matched, amenities = amen }
 			end
 		end
@@ -262,34 +311,65 @@ function HotelService.refreshPrompts(player: Player, only: string?)
 				help.ObjectText = room.request or ""
 				help.ActionText = "Help"
 			end
+		end
+	end
+	-- Every built room's plaque: its name, and its state or what it lacks (A.12 "Ready").
+	local w = world(data)
+	for id, rec in data.rooms do
+		if only == nil or only == id then
 			local model = plot.pieces[id]
-			if model then
-				model:SetAttribute("State", room.state)
-				model:SetAttribute("Request", room.request)
-				local rec = data.layout[id]
-				local piece = rec and Pieces.get(rec.item)
+			local piece = Pieces.get(rec.type)
+			if model and piece then
+				local room = hotel.rooms[id]
+				local ok, missing = Rooms.ready(w, id)
+				model:SetAttribute("State", if room then room.state else nil)
+				model:SetAttribute("Request", if room then room.request else nil)
+				model:SetAttribute("Ready", ok)
 				local label = model:FindFirstChild("Label", true)
 				local text = label and label:FindFirstChild("Text")
-				if text and text:IsA("TextLabel") and piece and rec then
-					local state = if room.state == "Dirty"
-						then "needs cleaning"
+				if text and text:IsA("TextLabel") then
+					local state = if not ok
+						then HotelService.missingText(rec.type, missing or {})
+						elseif not room then ""
+						elseif room.state == "Dirty" then "needs cleaning"
 						elseif room.request then "!"
 						elseif room.state == "Vacant" then "vacant"
 						else ""
 					-- The plaque has a line of its own for the state.
 					local status = label and label:FindFirstChild("Status")
-					local tier = HotelService.tier(data, id)
 					if status and status:IsA("TextLabel") then
-						text.Text = `{piece.name} · T{tier}`
+						text.Text = piece.name
 						status.Text = state
 					else
-						text.Text =
-							`{piece.name} T{tier}{if state ~= "" then " · " .. state else ""}`
+						text.Text = `{piece.name}{if state ~= "" then " · " .. state else ""}`
 					end
 				end
 			end
 		end
 	end
+end
+
+-- What a room lacks to be ready (Rooms.ready's list), in words.
+function HotelService.missingText(typeId: string, missing: { string }): string
+	local req = Rooms.requirement(typeId)
+	local first = missing[1]
+	if first == "KeyFurniture" and req then
+		local names = {}
+		for _, k in req.keys do
+			local d = Pieces.decor(k)
+			table.insert(names, if d then d.name else k)
+		end
+		return `needs a {table.concat(names, " or ")}`
+	elseif first == "MinSize" and req then
+		return `needs {req.minCells} cells`
+	elseif first == "Door" then
+		return "needs a door"
+	elseif first == "Unreached" then
+		return "guests can't reach it"
+	elseif first == "Hallway" then
+		return "not closed off"
+	end
+	return "not ready"
 end
 
 -- Recent stays, for the rating's Comfort and Service (Appendix A.4).
@@ -334,15 +414,19 @@ function HotelService.inputs(player: Player): Rating.Inputs?
 	if not hotel or not data then
 		return nil
 	end
-	local tiers, types, decor, amenities, rooms, dirty = {}, {}, 0, 0, 0, 0
+	local bars, types, decor, amenities, rooms, dirty = {}, {}, 0, 0, 0, 0
 	local overdue, now = 0, os.clock()
 	local w = world(data)
-	for id, rec in data.layout do
-		local p = Pieces.get(rec.item)
-		if p and p.kind == "Room" then
+	-- Ready rooms only (A.12: Comfort and Cleanliness count what each ready room adds).
+	for id, rec in data.rooms do
+		local p = Pieces.get(rec.type)
+		local ok = HotelService.ready(player, id)
+		if p and ok then
+			table.insert(bars, Rooms.bars(w, id))
+		end
+		if p and ok and p.kind == "Room" then
 			rooms += 1
-			table.insert(tiers, (Layout.roomTier(w, id)))
-			types[rec.item] = true
+			types[rec.type] = true
 			local room = hotel.rooms[id]
 			if room and room.state == "Dirty" then
 				dirty += 1
@@ -351,7 +435,7 @@ function HotelService.inputs(player: Player): Rating.Inputs?
 					overdue += 1
 				end
 			end
-		elseif p and p.kind == "Amenity" then
+		elseif p and ok and p.kind == "Amenity" then
 			amenities += 1
 		end
 	end
@@ -373,7 +457,7 @@ function HotelService.inputs(player: Player): Rating.Inputs?
 	end
 	local judged = #hotel.cleanTimes + overdue
 	return {
-		roomTiers = tiers,
+		roomBars = bars,
 		prefsShare = mean(hotel.prefsShares),
 		meanWait = mean(hotel.waits),
 		checkIns = #hotel.waits,
@@ -434,9 +518,9 @@ local function updateSign(player: Player, hotel: Hotel)
 	end
 	local featured = {}
 	local seen = {}
-	for _, rec in data.layout do
-		local p = Pieces.get(rec.item)
-		if p and p.kind == "Room" and not seen[p.id] then
+	for id, rec in data.rooms do
+		local p = Pieces.get(rec.type)
+		if p and p.kind == "Room" and not seen[p.id] and HotelService.ready(player, id) then
 			seen[p.id] = true
 			table.insert(featured, p.name)
 		end
@@ -513,6 +597,7 @@ function HotelService.Start()
 	PlayerData.onDeparted(function(player)
 		hotels[player] = nil
 		away[player] = nil
+		readyCache[player] = nil
 	end)
 	-- A full rebuild makes new prompts: put the room states back on them.
 	PlotService.onBuilt(function(plot)

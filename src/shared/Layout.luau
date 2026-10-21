@@ -69,15 +69,37 @@ function Layout.world(
 	floors: number,
 	tiles: { [any]: boolean },
 	pieces: { [any]: any },
-	decor: { [any]: any }
-): Grid.World
+	decor: { [any]: any },
+	walls: { [string]: any }?,
+	rooms: { [any]: any }?
+): Grid.World & { walls: { [string]: any }, rooms: { [string]: any } }
 	local owned = {}
 	for k, v in tiles do
 		if v then
 			owned[tonumber(k) :: number] = true
 		end
 	end
-	local world: Grid.World = { floors = floors, tiles = owned, pieces = {}, decor = {} }
+	-- Built rooms (A.12): the inner walls by edge key, the rooms by id (maps, or the state's lists).
+	local wallMap: { [string]: any } = {}
+	for k, rec in walls or {} do
+		if typeof(k) == "string" then
+			wallMap[k] = rec
+		elseif rec.edge then
+			wallMap[rec.edge] = rec
+		end
+	end
+	local roomMap: { [string]: any } = {}
+	each(rooms or {}, function(id, rec)
+		roomMap[id] = rec
+	end)
+	local world: Grid.World & { walls: { [string]: any }, rooms: { [string]: any } } = {
+		floors = floors,
+		tiles = owned,
+		pieces = {},
+		decor = {},
+		walls = wallMap,
+		rooms = roomMap,
+	}
 	each(pieces, function(id, rec)
 		local p = Layout.piece(id, rec)
 		if p then

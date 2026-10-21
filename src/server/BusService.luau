@@ -299,9 +299,9 @@ local function vacantByRoom(player: Player): { [string]: number }
 	local data = PlayerData.get(player)
 	if hotel and data then
 		for id, room in hotel.rooms do
-			local rec = data.layout[id]
+			local rec = data.rooms[id]
 			if room.state == "Vacant" and rec then
-				out[rec.item] = (out[rec.item] or 0) + 1
+				out[rec.type] = (out[rec.type] or 0) + 1
 			end
 		end
 	end

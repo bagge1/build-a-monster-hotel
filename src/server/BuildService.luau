@@ -1,29 +1,36 @@
 --!strict
 --[[
 	Building the hotel (GDD §5, §5.4, §13.2 "Placement"). The client sends only
-	an intent; this file rechecks everything: the piece exists and is unlocked
-	(`Unlocks`), the place is legal (`Grid`, `Furnish` through `Layout`), the
-	wallet holds the price (`Economy`), and a room being sold or moved has no
-	guest in it (`HotelService`).
+	an intent; this file rechecks everything: the piece or type exists and is
+	unlocked (`Unlocks`), the place is legal (`Rooms`, on `Grid`), the wallet
+	holds the price (`Economy`, `Constants.Rooms`), and a room a guest is in
+	or due at stays ready (`HotelService`).
 
 	FREE BUILDING (§5.4, A.1, his rulings of 2026-10-19 and 2026-10-20): the
 	plot is bought one tile (cell) at a time on each floor apart (`BuyTile`),
-	dearer a floor up, a tile upstairs over an owned one below; rooms, amenities, stairs and front desks are placed, moved and
-	sold anywhere on owned tiles (the first desk is free, the last cannot be
-	sold); decor stands on 3-stud squares in rooms and on hallway floor
-	(`PlaceDecor`, `MoveDecor`, `SellDecor`) and moves and goes with its room;
-	a floor finish is chosen per room and for the hallways (`Finish`); a room
-	or amenity may be placed or moved mirrored (Flip, A.1: `m`, free) when its
-	kit has `<PieceId>_Mirror` or it is still a blockout; a window is placed,
-	moved, swapped or sold on any outer wall section (`PlaceWindow`,
-	`MoveWindow`, `SellWindow`, A.1), and moves out along its line when a tile
-	bought makes its wall an inside one. A new
-	floor's first stair is free. A room's tier is its decor's (`Layout`), not
-	bought.
+	dearer a floor up, a tile upstairs over an owned one below; stairs and
+	front desks are placed, moved and sold anywhere on owned tiles (the first
+	desk is free, the last cannot be sold); a window is placed, moved, swapped
+	or sold on any outer wall section (A.1) and moves out along its line when a
+	tile bought makes its wall an inside one. A new floor's first stair is free.
 
-	Remotes: Place, Move, Sell, BuyFloor, BuyTile, PlaceWindow, MoveWindow,
-	SellWindow, PlaceDecor, MoveDecor, SellDecor, Finish, Equip. A refusal says why (`Refused`), so the client
-	can show it.
+	BUILT ROOMS (§5.4, A.12, his rulings of 2026-10-21): rooms are no longer
+	pieces. The player draws inner walls on half-cell edges (`WallRun`: a
+	straight run of half edges, put up or taken down, $5 each), puts a door in
+	one (`Door`, $10), taps an enclosed area with a door and chooses its type
+	(`MakeRoom`; `ClearRoom` makes it hallway again), and places furniture
+	like decor (`PlaceDecor`, `MoveDecor`, `SellDecor`: furniture and decor
+	stand on 3-stud squares anywhere in the hotel, `Rooms.canPlaceDecor`). A
+	tile bought beside a room is walled off from it (`Rooms.autoWalls`, free).
+	Every other change (a desk, a stair, decor, a tile) is held to
+	`Rooms.check`: no room merged into another or opened onto the hallway,
+	nothing guests reached cut off. A room's floor finish is chosen per room
+	(`Finish`). No ready-made rooms; no Flip.
+
+	Remotes: Place, Move, Sell, BuyFloor, BuyTile, WallRun, Door, MakeRoom,
+	ClearRoom, PlaceWindow, MoveWindow, SellWindow, PlaceDecor, MoveDecor,
+	SellDecor, Finish, Equip. A refusal says why (`Refused`), so the client can
+	show it.
 ]]
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -33,26 +40,27 @@ local Chain = require(ReplicatedStorage.Shared.Chain)
 local Constants = require(ReplicatedStorage.Shared.Constants)
 local Cosmetics = require(ReplicatedStorage.Shared.Cosmetics)
 local Economy = require(ReplicatedStorage.Shared.Economy)
-local Furnish = require(ReplicatedStorage.Shared.Furnish)
 local Grid = require(ReplicatedStorage.Shared.Grid)
 local Layout = require(ReplicatedStorage.Shared.Layout)
 local Net = require(ReplicatedStorage.Shared.Net)
 local Pieces = require(ReplicatedStorage.Shared.Pieces)
+local Rooms = require(ReplicatedStorage.Shared.Rooms)
 local Species = require(ReplicatedStorage.Shared.Species)
 local Unlocks = require(ReplicatedStorage.Shared.Unlocks)
 local PlayerData = require(ServerScriptService.Server.PlayerData)
 local PlotService = require(ServerScriptService.Server.PlotService)
-local HotelKit = require(ServerScriptService.Server.HotelKit)
 local HotelService = require(ServerScriptService.Server.HotelService)
 local StateService = require(ServerScriptService.Server.StateService)
 local DevGrant = require(ServerScriptService.Server.DevGrant)
+
+local R = Constants.Rooms
 
 local BuildService = {}
 
 local changedHandlers: { (Player, string) -> () } = {}
 
 --[[ Called after the layout changes (what changed: "Place", "Sell", "Move",
-	"Floor", "Tile", "Decor", "Finish"). ]]
+	"Floor", "Tile", "Decor", "Finish", "Wall", "Door", "Room"). ]]
 function BuildService.onChanged(handler: (Player, string) -> ())
 	table.insert(changedHandlers, handler)
 end
@@ -86,10 +94,11 @@ function BuildService.owned(data: PlayerData.Data, item: string): number
 	return n
 end
 
+-- Rooms built of a room type (not amenities), for Unlocks' "rooms owned" (§5.2).
 function BuildService.rooms(data: PlayerData.Data): number
 	local n = 0
-	for _, rec in data.layout do
-		local p = Pieces.get(rec.item)
+	for _, rec in data.rooms do
+		local p = Pieces.get(rec.type)
 		if p and p.kind == "Room" then
 			n += 1
 		end
@@ -100,18 +109,18 @@ end
 local tutorialUnlocks: { [Player]: { [string]: boolean } } = {}
 local windowsOut: (Player, PlayerData.Data) -> ()
 
--- The tutorial unlocks a piece early (Appendix A.7).
+-- The tutorial unlocks a room type early (Appendix A.7).
 function BuildService.tutorialUnlock(player: Player, item: string)
 	tutorialUnlocks[player] = tutorialUnlocks[player] or {}
 	tutorialUnlocks[player][item] = true
 end
 
 --[[ The goal card's free tiles (§11, A.7, his go 2026-10-20; PLACEHOLDER
-	block): a `TutorialTiles` block (3 × 4) beside the start square, so the
-	free Coffin Suite (3×3) fits. The block on the right of the start square
-	is given if a suite fits with it, else the one on the left, else the
-	right; tiles owned already stay owned. Free: the next tile's price is not
-	raised. ]]
+	block): a `TutorialTiles` block (3 × 4) beside the start square, so a
+	Coffin Suite (3×3) can be built on it: on the right of the start square
+	when it lies on the plot, else on the left; tiles owned already stay
+	owned, and the start room is walled off from the new ones (as any tile
+	bought, `Rooms.autoWalls`). Free: the next tile's price is not raised. ]]
 function BuildService.tutorialTiles(player: Player)
 	local data = PlayerData.get(player)
 	if not data then
@@ -119,46 +128,47 @@ function BuildService.tutorialTiles(player: Player)
 	end
 	local G = Constants.Grid
 	local S, T = G.StartTiles, G.TutorialTiles
-	local function block(x0: number): { string }
+	local function block(x0: number): { { number } }?
 		local out = {}
 		for z = S.z, S.z + T.d - 1 do
 			for x = x0, x0 + T.w - 1 do
-				if Grid.inBounds(x, z) then
-					table.insert(out, tostring(Grid.tileKey(1, x, z)))
+				if not Grid.inBounds(x, z) then
+					return nil
 				end
+				table.insert(out, { x, z })
 			end
 		end
 		return out
 	end
-	local function suiteFits(keys: { string }): boolean
-		local tiles = table.clone(data.tiles)
-		for _, k in keys do
-			tiles[k] = true
+	-- The side with fewer of its cells taken by rooms already (the second room may stand there).
+	local world = PlotService.world(data)
+	local function taken(b: { { number } }?): number
+		if not b then
+			return math.huge
 		end
-		local world = Layout.world(data.floors, tiles, data.layout, data.decor)
-		for z = 0, G.Cells - 1 do
-			for x = 0, G.Cells - 1 do
-				for r = 0, 3 do
-					local p =
-						Layout.piece("", { item = "CoffinSuite", floor = 1, x = x, z = z, r = r })
-					if p then
-						p.id = nil
-						if Grid.canPlace(world, p) then
-							return true
-						end
-					end
-				end
+		local n = 0
+		for _, c in b do
+			local HC = Rooms.HalfCells
+			local a = Rooms.areaAt(world, 1, c[1] * HC, c[2] * HC)
+			if a and a.room and not a.hallway then
+				n += 1
 			end
 		end
-		return false
+		return n
 	end
 	local right, left = block(S.x + S.w), block(S.x - T.w)
-	local chosen = if suiteFits(right) then right elseif suiteFits(left) then left else right
-	for _, k in chosen do
-		data.tiles[k] = true
+	local chosen = (if taken(left) < taken(right) then left else right) or left or {}
+	for _, c in chosen do
+		local key = tostring(Grid.tileKey(1, c[1], c[2]))
+		if not data.tiles[key] then
+			for _, e in Rooms.autoWalls(PlotService.world(data), 1, c[1], c[2]) do
+				data.walls[e] = { paid = 0 }
+			end
+			data.tiles[key] = true
+		end
 	end
 	windowsOut(player, data)
-	PlotService.refreshTiles(player)
+	PlotService.rebuild(player)
 	changed(player, "Tile")
 end
 
@@ -203,7 +213,7 @@ function BuildService.maxFloors(data: PlayerData.Data): number
 	return Chain.floorCap(data.rebirths) + (if data.passes.ExtraFloor then 1 else 0)
 end
 
--- What placing `item` costs now: a stair owed for a new floor is free, a tutorial voucher too.
+-- What placing `item` (a stair or a desk) costs now: a stair owed for a new floor is free.
 function BuildService.price(data: PlayerData.Data, item: string): number
 	local piece = Pieces.get(item)
 	if not piece then
@@ -216,49 +226,35 @@ function BuildService.price(data: PlayerData.Data, item: string): number
 		-- The first desk is free, every other one costs the same (§5.4, A.1, PLACEHOLDER).
 		return if BuildService.owned(data, item) == 0 then 0 else Constants.Economy.DeskCost
 	end
-	if (data.stats[`voucher_{item}`] or 0) > 0 then
-		return 0
-	end
 	return Economy.pieceCost(item, BuildService.owned(data, item))
 end
 
--- The squares a room item's own furniture covers, for Layout.canPlaceDecor.
-local function blockedFor(data: PlayerData.Data): (string) -> { [number]: boolean }
-	return function(item: string)
-		return PlotService.roomInfo(item, data.location).blocked
+--[[ Whether a change keeps every room a guest is in or due at as it was for
+	them (§4.4): still ready, the same size. `after` is the world after it. ]]
+local function keepsGuests(player: Player, data: PlayerData.Data, after: Rooms.World): boolean
+	local before = PlotService.world(data)
+	for id in data.rooms do
+		if HotelService.busy(player, id) then
+			local a, b = Rooms.roomArea(before, id), Rooms.roomArea(after, id)
+			if not Rooms.ready(after, id) or not a or not b or a.size ~= b.size then
+				return false
+			end
+		end
 	end
+	return true
 end
 
---[[ Stairs change the slabs over them and the model of the stair below, and a
-	desk the guests' queues (GuestService, on PlotService.onBuilt): the hotel
-	is built again. ]]
-local function redraw(player: Player, item: string, id: string)
-	local piece = Pieces.get(item)
-	if piece and (piece.kind == "Stairs" or piece.kind == "Desk") then
-		PlotService.rebuild(player)
-	else
-		PlotService.addPiece(player, id)
-	end
-end
+-- ===== Pieces: the stairs and the desks =====
 
--- ===== Pieces =====
-
-local function place(
-	player: Player,
-	item: string,
-	floor: number,
-	x: number,
-	z: number,
-	r: number,
-	mirrored: boolean
-)
+local function place(player: Player, item: string, floor: number, x: number, z: number, r: number)
 	local data = PlayerData.get(player)
 	local piece = Pieces.get(item)
 	if not data or not piece then
 		return
 	end
-	if mirrored and not HotelKit.mirrorable(item, data.location) then
-		refuse(player, "Place", "NoMirror")
+	if piece.kind == "Room" or piece.kind == "Amenity" then
+		-- Rooms are built from walls now (A.12): a type is chosen for an area.
+		refuse(player, "Place", "Built")
 		return
 	end
 	local ok, why = Unlocks.buildable(item, BuildService.context(player, data))
@@ -266,12 +262,11 @@ local function place(
 		refuse(player, "Place", why or "Locked")
 		return
 	end
-	local candidate = Layout.piece(
-		"",
-		{ item = item, floor = floor, x = x, z = z, r = r, m = mirrored }
-	) :: Grid.Placed
+	local candidate =
+		Layout.piece("", { item = item, floor = floor, x = x, z = z, r = r }) :: Grid.Placed
 	candidate.id = nil
-	local legal, reason = Grid.canPlace(PlotService.world(data), candidate)
+	local world = PlotService.world(data)
+	local legal, reason = Rooms.canPlacePiece(world, candidate)
 	if not legal then
 		refuse(player, "Place", reason or "Blocked")
 		return
@@ -283,34 +278,11 @@ local function place(
 	end
 	if piece.kind == "Stairs" and data.freeStairs > 0 then
 		data.freeStairs -= 1
-	elseif cost == 0 and (data.stats[`voucher_{item}`] or 0) > 0 then
-		-- A free build the tutorial gave (Appendix A.7: the goal card's Coffin Suite).
-		data.stats[`voucher_{item}`] -= 1
 	end
 	local id = newId(data)
-	data.layout[id] = {
-		item = item,
-		floor = floor,
-		x = x,
-		z = z,
-		r = r,
-		m = if candidate.m then true else nil,
-		paid = cost,
-		finish = "",
-	}
-	redraw(player, item, id)
+	data.layout[id] = { item = item, floor = floor, x = x, z = z, r = r, paid = cost, finish = "" }
+	PlotService.rebuild(player)
 	changed(player, "Place")
-end
-
--- The decor standing in room `id`, by decor id.
-local function decorIn(data: PlayerData.Data, id: string): { [string]: PlayerData.DecorRecord }
-	local out = {}
-	for did, d in data.decor do
-		if d.room == id then
-			out[did] = d
-		end
-	end
-	return out
 end
 
 local function move(
@@ -319,8 +291,7 @@ local function move(
 	floor: number,
 	x: number,
 	z: number,
-	r: number,
-	mirrored: boolean
+	r: number
 )
 	local data = PlayerData.get(player)
 	local id = tostring(idNumber)
@@ -328,50 +299,17 @@ local function move(
 	if not data or not rec then
 		return
 	end
-	if HotelService.busy(player, id) then
-		refuse(player, "Move", "Busy")
-		return
-	end
-	if mirrored ~= (rec.m == true) and not HotelKit.mirrorable(rec.item, data.location) then
-		refuse(player, "Move", "NoMirror")
-		return
-	end
 	local world = PlotService.world(data)
 	local skip = Layout.find(world, id)
-	local candidate = Layout.piece(
-		id,
-		{ item = rec.item, floor = floor, x = x, z = z, r = r, m = mirrored }
-	) :: Grid.Placed
-	local legal, reason = Grid.canPlace(world, candidate, skip)
+	local candidate =
+		Layout.piece(id, { item = rec.item, floor = floor, x = x, z = z, r = r }) :: Grid.Placed
+	local legal, reason = Rooms.canPlacePiece(world, candidate, skip)
 	if not legal then
 		refuse(player, "Move", reason or "Blocked")
 		return
 	end
-	-- Its decor goes with it, in the same place in the room (Furnish's frame),
-	-- mirrored with it when it is flipped.
-	local old = Layout.find(world, id) :: Grid.Placed
-	local flipped = (old.m == true) ~= (candidate.m == true)
-	for did, d in decorIn(data, id) do
-		local item = assert(Pieces.decor(d.item))
-		local l = Furnish.toRoom(old, { x = d.x, z = d.z, r = d.r, w = item.w, d = item.d })
-		if flipped then
-			l = Furnish.mirror(candidate, l, item.w, item.d)
-		end
-		local now = Furnish.fromRoom(candidate, l, item.w, item.d)
-		d.floor, d.x, d.z, d.r = floor, now.x, now.z, now.r
-		data.decor[did] = d
-	end
 	rec.floor, rec.x, rec.z, rec.r = floor, x, z, r
-	rec.m = if candidate.m then true else nil
-	local piece = assert(Pieces.get(rec.item))
-	if piece.kind == "Stairs" or piece.kind == "Desk" then
-		PlotService.rebuild(player)
-	else
-		PlotService.addPiece(player, id)
-		for did in decorIn(data, id) do
-			PlotService.drawDecor(player, did)
-		end
-	end
+	PlotService.rebuild(player)
 	changed(player, "Move")
 end
 
@@ -382,31 +320,15 @@ local function sell(player: Player, idNumber: number)
 	if not data or not rec then
 		return
 	end
-	if HotelService.busy(player, id) then
-		refuse(player, "Sell", "Busy")
-		return
-	end
 	local world = PlotService.world(data)
-	local ok, why = Grid.canRemove(world, Layout.find(world, id) :: Grid.Placed)
+	local ok, why = Rooms.canRemovePiece(world, Layout.find(world, id) :: Grid.Placed)
 	if not ok then
 		refuse(player, "Sell", why or "Blocked")
 		return
 	end
-	-- Its decor is sold with it.
-	local refund = Economy.refund(rec.paid or 0)
-	for did, d in decorIn(data, id) do
-		refund += Economy.refund(d.paid or 0)
-		data.decor[did] = nil
-		PlotService.drawDecor(player, did)
-	end
 	data.layout[id] = nil
-	local piece = Pieces.get(rec.item)
-	if piece and (piece.kind == "Stairs" or piece.kind == "Desk") then
-		PlotService.rebuild(player)
-	else
-		PlotService.removePiece(player, id)
-	end
-	PlayerData.refund(player, refund)
+	PlotService.rebuild(player)
+	PlayerData.refund(player, Economy.refund(rec.paid or 0))
 	changed(player, "Sell")
 end
 
@@ -465,9 +387,24 @@ local function buyTile(player: Player, floor: number, x: number, z: number)
 	if not data then
 		return
 	end
-	local ok, why = Grid.canBuyTile(PlotService.world(data).tiles, data.floors, floor, x, z)
+	local world = PlotService.world(data)
+	local ok, why = Grid.canBuyTile(world.tiles, data.floors, floor, x, z)
 	if not ok then
 		refuse(player, "BuyTile", why or "Blocked")
+		return
+	end
+	-- A room beside it is walled off from it (A.12, "the facade counts as a wall").
+	local auto = Rooms.autoWalls(world, floor, x, z)
+	local after = table.clone(world)
+	after.tiles = table.clone(world.tiles)
+	after.tiles[Grid.tileKey(floor, x, z)] = true
+	after.walls = table.clone(world.walls)
+	for _, e in auto do
+		after.walls[e] = { paid = 0 }
+	end
+	local fine, refusal = Rooms.check(world, after)
+	if not fine then
+		refuse(player, "BuyTile", refusal or "Blocked")
 		return
 	end
 	if not PlayerData.spend(player, BuildService.tileCost(data, floor)) then
@@ -476,9 +413,193 @@ local function buyTile(player: Player, floor: number, x: number, z: number)
 	end
 	data.tiles[tostring(Grid.tileKey(floor, x, z))] = true
 	data.tilesBought[tostring(floor)] = (data.tilesBought[tostring(floor)] or 0) + 1
+	for _, e in auto do
+		data.walls[e] = { paid = 0 }
+	end
 	windowsOut(player, data)
 	PlotService.refreshTiles(player)
+	if #auto > 0 then
+		PlotService.refreshRooms(player)
+	end
 	changed(player, "Tile")
+end
+
+-- ===== Built rooms (§5.4, A.12) =====
+
+--[[ A straight run of `count` half edges from (hx, hz) on `floor`, along x
+	(`o` 0) or z (`o` 1): walls put up (`on`, $WallCost each, a door's half
+	edge left as it is) or taken down (a door with them; half the price back).
+	Each half edge is checked on the hotel as the run leaves it; one refused is
+	skipped and the first refusal said. ]]
+local function wallRun(
+	player: Player,
+	floor: number,
+	hx: number,
+	hz: number,
+	o: number,
+	count: number,
+	on: boolean
+)
+	local data = PlayerData.get(player)
+	if not data or count < 1 or count > Rooms.Size or (o ~= 0 and o ~= 1) then
+		return
+	end
+	local first: string? = nil
+	local done = 0
+	local refund = 0
+	for i = 0, count - 1 do
+		local e =
+			Rooms.edgeKey(floor, hx + (if o == 0 then i else 0), hz + (if o == 1 then i else 0), o)
+		local world = PlotService.world(data)
+		local ok, why
+		if on then
+			if data.walls[e] then
+				ok, why = false, nil -- already standing: nothing to do
+			else
+				ok, why = Rooms.canWall(world, e, false)
+			end
+		else
+			ok, why = Rooms.canRemoveWall(world, e)
+		end
+		if ok then
+			local after = table.clone(world)
+			after.walls = table.clone(world.walls)
+			after.walls[e] = if on then { paid = 0 } else nil
+			if not keepsGuests(player, data, after) then
+				ok, why = false, "Busy"
+			end
+		end
+		if ok and on then
+			if not PlayerData.spend(player, R.WallCost) then
+				first = first or "Cash"
+				break
+			end
+			data.walls[e] = { paid = R.WallCost }
+			done += 1
+		elseif ok then
+			refund += Economy.refund(data.walls[e].paid or 0)
+			data.walls[e] = nil
+			done += 1
+		elseif why then
+			first = first or why
+		end
+	end
+	if refund > 0 then
+		PlayerData.refund(player, refund)
+	end
+	if first then
+		refuse(player, "WallRun", first)
+	end
+	if done > 0 then
+		PlotService.refreshRooms(player)
+		changed(player, "Wall")
+	end
+end
+
+--[[ A door put in the wall on `edge` (`on`: $DoorCost, a wall put up with it
+	where there is none) or walled up again (half its price back). ]]
+local function door(player: Player, edge: string, on: boolean)
+	local data = PlayerData.get(player)
+	if not data then
+		return
+	end
+	local world = PlotService.world(data)
+	local f, hx, hz, o = Rooms.edgeOf(edge)
+	local e = Rooms.edgeKey(f, hx, hz, o)
+	local rec = data.walls[e]
+	local ok, why
+	if rec then
+		ok, why = Rooms.canDoor(world, e, on)
+	elseif on then
+		ok, why = Rooms.canWall(world, e, true)
+	else
+		ok, why = false, "NoWall"
+	end
+	if not ok then
+		refuse(player, "Door", why or "Blocked")
+		return
+	end
+	local after = table.clone(world)
+	after.walls = table.clone(world.walls)
+	after.walls[e] = { door = if on then true else nil, paid = 0 }
+	if not keepsGuests(player, data, after) then
+		refuse(player, "Door", "Busy")
+		return
+	end
+	if on then
+		local cost = R.DoorCost + (if rec then 0 else R.WallCost)
+		if not PlayerData.spend(player, cost) then
+			refuse(player, "Door", "Cash")
+			return
+		end
+		data.walls[e] = { door = true, paid = (if rec then rec.paid else 0) + cost }
+	else
+		local back = math.min(rec.paid or 0, R.DoorCost)
+		PlayerData.refund(player, Economy.refund(back))
+		data.walls[e] = { paid = (rec.paid or 0) - back }
+	end
+	PlotService.refreshRooms(player)
+	changed(player, "Door")
+end
+
+--[[ The area holding half cell (hx, hz) of `floor` made a room of `typeId`
+	(A.12: an enclosed area with a door, the type unlocked), or its type
+	changed when it is a room already (not while a guest is in it or due). ]]
+local function makeRoom(player: Player, floor: number, hx: number, hz: number, typeId: string)
+	local data = PlayerData.get(player)
+	local p = Pieces.get(typeId)
+	if not data or not p or (p.kind ~= "Room" and p.kind ~= "Amenity") then
+		return
+	end
+	if p.location ~= data.location then
+		refuse(player, "MakeRoom", "Location")
+		return
+	end
+	local can, locked = Unlocks.buildable(typeId, BuildService.context(player, data))
+	if not can then
+		refuse(player, "MakeRoom", locked or "Locked")
+		return
+	end
+	local world = PlotService.world(data)
+	local a = Rooms.areaAt(world, floor, hx, hz)
+	local existing = a and a.room
+	if existing and HotelService.busy(player, existing) then
+		refuse(player, "MakeRoom", "Busy")
+		return
+	end
+	local ok, why = Rooms.canMakeRoom(world, floor, hx, hz, typeId, existing)
+	if not ok then
+		refuse(player, "MakeRoom", why or "Blocked")
+		return
+	end
+	if existing then
+		data.rooms[existing].type = typeId
+		-- A retyped room starts empty for guests: its old state goes.
+		local hotel = HotelService.get(player)
+		if hotel then
+			hotel.rooms[existing] = nil
+		end
+	else
+		data.rooms[newId(data)] = { type = typeId, floor = floor, hx = hx, hz = hz, finish = "" }
+	end
+	PlotService.refreshRooms(player)
+	changed(player, "Room")
+end
+
+-- A room made hallway again (its walls and furniture stay).
+local function clearRoom(player: Player, idNumber: number)
+	local data = PlayerData.get(player)
+	local id = tostring(idNumber)
+	if not data or not data.rooms[id] then
+		return
+	end
+	if HotelService.busy(player, id) then
+		refuse(player, "ClearRoom", "Busy")
+		return
+	end
+	data.rooms[id] = nil
+	PlotService.refreshRooms(player)
+	changed(player, "Room")
 end
 
 -- ===== Windows (A.1, his rulings 2026-10-20) =====
@@ -555,7 +676,22 @@ local function sellWindow(player: Player, edge: string)
 	windowsChanged(player)
 end
 
--- ===== Decor (§5.4) =====
+-- ===== Decor and furniture (§5.4, A.12) =====
+
+-- The world with decor record `id` (if any) left out and `extra` added.
+local function withDecor(world: Rooms.World, id: string?, extra: Grid.DecorPlaced?): Rooms.World
+	local after = table.clone(world)
+	after.decor = {}
+	for _, d in world.decor do
+		if not (id and d.id == id) then
+			table.insert(after.decor, d)
+		end
+	end
+	if extra then
+		table.insert(after.decor, extra)
+	end
+	return after
+end
 
 local function decorWhere(
 	player: Player,
@@ -567,19 +703,39 @@ local function decorWhere(
 	z: number,
 	r: number,
 	skip: string?
-): string?
+): boolean
 	local candidate = Layout.decor("", { item = item, floor = floor, x = x, z = z, r = r })
 	if not candidate then
-		return nil
+		return false
 	end
-	candidate.id = nil
-	local ok, why, room =
-		Layout.canPlaceDecor(PlotService.world(data), candidate, skip, blockedFor(data))
+	candidate.id = skip
+	local world = PlotService.world(data)
+	local ok, why = Rooms.canPlaceDecor(world, candidate, skip)
 	if not ok then
 		refuse(player, remote, why or "Blocked")
-		return nil
+		return false
 	end
-	return room
+	if not keepsGuests(player, data, withDecor(world, skip, candidate)) then
+		refuse(player, remote, "Busy")
+		return false
+	end
+	return true
+end
+
+-- The tutorial's free key piece (A.7: the goal card's first Coffin Suite): a voucher for a type it is a key of.
+local function voucherFor(data: PlayerData.Data, d: Pieces.Decor): string?
+	for _, t in d.keyFor or {} do
+		if (data.stats[`voucher_{t}`] or 0) > 0 then
+			return `voucher_{t}`
+		end
+	end
+	return nil
+end
+
+local function decorChanged(player: Player, id: string)
+	PlotService.drawDecor(player, id)
+	PlotService.refreshRooms(player)
+	changed(player, "Decor")
 end
 
 local function placeDecor(
@@ -599,23 +755,25 @@ local function placeDecor(
 		refuse(player, "PlaceDecor", "Location")
 		return
 	end
-	local room = decorWhere(player, "PlaceDecor", data, item, floor, x, z, r)
-	if room == nil then
+	if not decorWhere(player, "PlaceDecor", data, item, floor, x, z, r) then
 		return
 	end
-	-- Event decor (location 0, not `always`) is owned once bought in its shop: placing it is free.
-	local cost = if d.location == 0 and not d.always then 0 else d.cost
+	-- Event decor (location 0, not `always`, not furniture) is owned once bought in its shop: placing it is free.
+	local cost = if d.location == 0 and not d.always and not d.furniture then 0 else d.cost
+	local voucher = voucherFor(data, d)
+	if voucher then
+		cost = 0
+	end
 	if not PlayerData.spend(player, cost) then
 		refuse(player, "PlaceDecor", "Cash")
 		return
 	end
-	local id = newId(data)
-	data.decor[id] = { item = item, floor = floor, x = x, z = z, r = r, room = room, paid = cost }
-	PlotService.drawDecor(player, id)
-	if room ~= "" then
-		PlotService.addPiece(player, room) -- its plaque's tier
+	if voucher then
+		data.stats[voucher] -= 1
 	end
-	changed(player, "Decor")
+	local id = newId(data)
+	data.decor[id] = { item = item, floor = floor, x = x, z = z, r = r, room = "", paid = cost }
+	decorChanged(player, id)
 end
 
 local function moveDecor(
@@ -632,19 +790,11 @@ local function moveDecor(
 	if not data or not rec then
 		return
 	end
-	local room = decorWhere(player, "MoveDecor", data, rec.item, floor, x, z, r, id)
-	if room == nil then
+	if not decorWhere(player, "MoveDecor", data, rec.item, floor, x, z, r, id) then
 		return
 	end
-	local was = rec.room
-	rec.floor, rec.x, rec.z, rec.r, rec.room = floor, x, z, r, room
-	PlotService.drawDecor(player, id)
-	for _, roomId in { was, room } do
-		if roomId ~= "" and data.layout[roomId] then
-			PlotService.addPiece(player, roomId)
-		end
-	end
-	changed(player, "Decor")
+	rec.floor, rec.x, rec.z, rec.r, rec.room = floor, x, z, r, ""
+	decorChanged(player, id)
 end
 
 local function sellDecor(player: Player, idNumber: number)
@@ -654,16 +804,16 @@ local function sellDecor(player: Player, idNumber: number)
 	if not data or not rec then
 		return
 	end
-	data.decor[id] = nil
-	PlotService.drawDecor(player, id)
-	if rec.room ~= "" and data.layout[rec.room] then
-		PlotService.addPiece(player, rec.room)
+	if not keepsGuests(player, data, withDecor(PlotService.world(data), id, nil)) then
+		refuse(player, "SellDecor", "Busy")
+		return
 	end
+	data.decor[id] = nil
 	PlayerData.refund(player, Economy.refund(rec.paid or 0))
-	changed(player, "Decor")
+	decorChanged(player, id)
 end
 
--- A floor finish: `target` a room's id or "Hallway"; "" is the model's own floor.
+-- A floor finish: `target` a built room's id or "Hallway"; "" is the slab's own.
 local function finish(player: Player, target: string, finishId: string)
 	local data = PlayerData.get(player)
 	if not data then
@@ -684,13 +834,12 @@ local function finish(player: Player, target: string, finishId: string)
 		data.finishes[target] = finishId
 		PlotService.rebuild(player)
 	else
-		local rec = data.layout[target]
-		local piece = rec and Pieces.get(rec.item)
-		if not rec or not piece or (piece.kind ~= "Room" and piece.kind ~= "Amenity") then
+		local rec = data.rooms[target]
+		if not rec then
 			return
 		end
 		rec.finish = finishId
-		PlotService.addPiece(player, target)
+		PlotService.refreshRooms(player)
 	end
 	changed(player, "Finish")
 end
@@ -720,6 +869,10 @@ function BuildService.Init()
 	Net.on("Sell", sell)
 	Net.on("BuyFloor", buyFloor)
 	Net.on("BuyTile", buyTile)
+	Net.on("WallRun", wallRun)
+	Net.on("Door", door)
+	Net.on("MakeRoom", makeRoom)
+	Net.on("ClearRoom", clearRoom)
 	Net.on("PlaceWindow", placeWindow)
 	Net.on("MoveWindow", moveWindow)
 	Net.on("SellWindow", sellWindow)
@@ -739,18 +892,132 @@ local function announceUnlocks(player: Player)
 	StateService.mark(player)
 end
 
+--[[ DEV: a room of `typeId` built free in the w × d cells at (x, z) on
+	`floor`: walls round it (those standing kept), a door in its front's first
+	half edge (or the first that takes one), and one of its key furniture.
+	Returns the room's id or why not. ]]
+local function buildBox(
+	data: PlayerData.Data,
+	typeId: string,
+	floor: number,
+	x: number,
+	z: number,
+	w: number,
+	d: number
+): (string?, string?)
+	local function wall(e: string, withDoor: boolean): boolean
+		local world = PlotService.world(data)
+		if data.walls[e] then
+			if withDoor and not data.walls[e].door and Rooms.canDoor(world, e, true) then
+				data.walls[e] = { door = true, paid = 0 }
+			end
+			return true
+		end
+		if Rooms.canWall(world, e, withDoor) then
+			data.walls[e] = { door = if withDoor then true else nil, paid = 0 }
+			return true
+		end
+		return false
+	end
+	local edges: { string } = {}
+	for cx = x, x + w - 1 do
+		for _, e in Rooms.cellEdges(floor, cx, z, 0) do
+			table.insert(edges, e)
+		end
+	end
+	local front = #edges
+	for cx = x, x + w - 1 do
+		for _, e in Rooms.cellEdges(floor, cx, z + d - 1, 2) do
+			table.insert(edges, e)
+		end
+	end
+	for cz = z, z + d - 1 do
+		for _, e in Rooms.cellEdges(floor, x, cz, 1) do
+			table.insert(edges, e)
+		end
+		for _, e in Rooms.cellEdges(floor, x + w - 1, cz, 3) do
+			table.insert(edges, e)
+		end
+	end
+	-- The door first, on the front, before the box closes.
+	local doored = false
+	for i = 1, front do
+		if not doored and wall(edges[i], true) and data.walls[edges[i]].door then
+			doored = true
+		end
+	end
+	if not doored then
+		return nil, "NoDoor"
+	end
+	for _, e in edges do
+		-- A half edge on the facade or refused stays open: the box is then not closed.
+		wall(e, false)
+	end
+	local HC = Rooms.HalfCells
+	local world = PlotService.world(data)
+	local ok, why = Rooms.canMakeRoom(world, floor, x * HC, z * HC, typeId)
+	if not ok then
+		return nil, why
+	end
+	local id = newId(data)
+	data.rooms[id] = { type = typeId, floor = floor, hx = x * HC, hz = z * HC, finish = "" }
+	local req = Rooms.requirement(typeId)
+	local key = req and req.keys[1]
+	local item = key and Pieces.decor(key)
+	local area = Rooms.roomArea(PlotService.world(data), id)
+	if item and area then
+		local cells = {}
+		for _, k in area.cells do
+			cells[k] = true
+		end
+		local Q = Constants.Grid.Squares
+		local SQ = Q // HC
+		-- From the back of the box forward, so the door's side stays clear.
+		for sz = (z + d) * Q - 1, z * Q, -1 do
+			for sx = x * Q, (x + w) * Q - 1 do
+				for r = 0, 3 do
+					local c =
+						Layout.decor("", { item = item.id, floor = floor, x = sx, z = sz, r = r })
+					if c then
+						c.id = nil
+						local inside = true
+						for _, s in Grid.squares(c) do
+							if not cells[Rooms.halfKey(s.x // SQ, s.z // SQ)] then
+								inside = false
+							end
+						end
+						if inside and Rooms.canPlaceDecor(PlotService.world(data), c) then
+							data.decor[newId(data)] = {
+								item = item.id,
+								floor = floor,
+								x = sx,
+								z = sz,
+								r = r,
+								room = "",
+								paid = 0,
+							}
+							return id, nil
+						end
+					end
+				end
+			end
+		end
+	end
+	return id, "NoKeyFurniture"
+end
+
 --[[ DEV: a full hotel for the performance budget (§13.4): every tile and
-	floor, a stair to each floor, every floor packed with `item` (default
-	StandardRoom), each room with what decor fits of Candles, Planter and
-	PuddleRug. ]]
+	floor, a stair to each floor, and every floor packed with 2 × 2 rooms of
+	`item` (default StandardRoom) in rows off hallways, each with its key
+	furniture. ]]
 local function fill(player: Player, args: { string }): string
 	local data = PlayerData.get(player)
 	if not data then
 		return "no data"
 	end
 	local item = args[1] or "StandardRoom"
-	if not Pieces.get(item) then
-		return `no piece {item}`
+	if not Rooms.requirement(item) then
+		return `no room type {item}`
 	end
 	local N = Constants.Grid.Cells
 	data.floors = BuildService.maxFloors(data)
@@ -761,67 +1028,38 @@ local function fill(player: Player, args: { string }): string
 			end
 		end
 	end
-	local function try(id: string, floor: number): boolean
-		for z = 0, N - 1 do
-			for x = 0, N - 1 do
-				for r = 0, 3 do
-					local p =
-						Layout.piece("", { item = id, floor = floor, x = x, z = z, r = r }) :: Grid.Placed
+	for floor = 1, data.floors - 1 do
+		local done = false
+		for z = N - 2, 0, -1 do
+			for x = 0, N - 2 do
+				if not done then
+					local p = Layout.piece(
+						"",
+						{ item = "Stairs", floor = floor, x = x, z = z, r = 0 }
+					) :: Grid.Placed
 					p.id = nil
-					if Grid.canPlace(PlotService.world(data), p) then
-						data.layout[newId(data)] =
-							{ item = id, floor = floor, x = x, z = z, r = r, paid = 0, finish = "" }
-						return true
+					if Rooms.canPlacePiece(PlotService.world(data), p) then
+						data.layout[newId(data)] = {
+							item = "Stairs",
+							floor = floor,
+							x = x,
+							z = z,
+							r = 0,
+							paid = 0,
+							finish = "",
+						}
+						done = true
 					end
 				end
 			end
 		end
-		return false
-	end
-	for floor = 1, data.floors - 1 do
-		try("Stairs", floor)
 	end
 	local n = 0
 	for floor = 1, data.floors do
-		while try(item, floor) do
-			n += 1
-		end
-	end
-	local Q = Constants.Grid.Squares
-	for roomId, rec in data.layout do
-		if rec.item == item then
-			local placed = Layout.find(PlotService.world(data), roomId) :: Grid.Placed
-			local ex, ez = Grid.extent(placed.w, placed.d, placed.r)
-			for _, decorId in { "Candles", "Planter", "PuddleRug" } do
-				local done = false
-				for sz = rec.z * Q, (rec.z + ez) * Q - 1 do
-					for sx = rec.x * Q, (rec.x + ex) * Q - 1 do
-						if not done then
-							local c = Layout.decor(
-								"",
-								{ item = decorId, floor = rec.floor, x = sx, z = sz, r = rec.r }
-							) :: Grid.DecorPlaced
-							c.id = nil
-							local ok, _, room = Layout.canPlaceDecor(
-								PlotService.world(data),
-								c,
-								nil,
-								blockedFor(data)
-							)
-							if ok and room == roomId then
-								data.decor[newId(data)] = {
-									item = decorId,
-									floor = rec.floor,
-									x = sx,
-									z = sz,
-									r = rec.r,
-									room = roomId,
-									paid = 0,
-								}
-								done = true
-							end
-						end
-					end
+		for _, z in { 2, 5, 8 } do
+			for x = 0, N - 2, 2 do
+				if buildBox(data, item, floor, x, z, 2, 2) then
+					n += 1
 				end
 			end
 		end
@@ -829,7 +1067,7 @@ local function fill(player: Player, args: { string }): string
 	player:SetAttribute("Floors", data.floors)
 	PlotService.rebuild(player)
 	changed(player, "Floor")
-	return `{n} pieces on {data.floors} floors`
+	return `{n} rooms on {data.floors} floors`
 end
 
 function BuildService.Start()
@@ -862,43 +1100,46 @@ function BuildService.Start()
 		return "ok"
 	end)
 	DevGrant.register("fill", fill)
+	DevGrant.register("room", function(player, args)
+		-- `room <x> <z> <w> <d> [type] [floor]`: a built room, free (tiles bought for it first).
+		local data = PlayerData.get(player)
+		if not data then
+			return "no data"
+		end
+		local x, z = tonumber(args[1]) or 0, tonumber(args[2]) or 0
+		local w, d = tonumber(args[3]) or 2, tonumber(args[4]) or 2
+		local floor = tonumber(args[6]) or 1
+		for cz = z, z + d - 1 do
+			for cx = x, x + w - 1 do
+				data.tiles[tostring(Grid.tileKey(floor, cx, cz))] = true
+			end
+		end
+		local id, why = buildBox(data, args[5] or "StandardRoom", floor, x, z, w, d)
+		PlotService.rebuild(player)
+		changed(player, "Room")
+		return `room {id} {why or "ready"}`
+	end)
 	BuildService.onChanged(function(player)
 		announceUnlocks(player)
 	end)
 	HotelService.onRating(function(player)
 		announceUnlocks(player)
 	end)
-	-- What the build mode draws: the layout, the decor, the tiles, each piece's price and whether it can be built.
+	-- What the build mode draws: the layout, the walls and rooms, the decor, the tiles, the prices and what can be built.
 	StateService.provide("build", function(player, data)
 		local ctx = BuildService.context(player, data)
 		local world = PlotService.world(data)
 		local layout = {}
-		local blocked = {}
 		for id, rec in data.layout do
-			local piece = Pieces.get(rec.item)
-			local entry = {
+			table.insert(layout, {
 				id = tonumber(id),
 				item = rec.item,
 				floor = rec.floor,
 				x = rec.x,
 				z = rec.z,
 				r = rec.r,
-				m = rec.m == true,
 				paid = rec.paid or 0,
-				finish = rec.finish or "",
-			}
-			if piece and piece.kind == "Room" then
-				local tier, points, nextAt = Layout.roomTier(world, id)
-				entry.tier, entry.points, entry.nextAt = tier, points, nextAt
-				if not blocked[rec.item] then
-					local keys = {}
-					for k in PlotService.roomInfo(rec.item, data.location).blocked do
-						table.insert(keys, k)
-					end
-					blocked[rec.item] = keys
-				end
-			end
-			table.insert(layout, entry)
+			})
 		end
 		local decor = {}
 		for id, rec in data.decor do
@@ -909,21 +1150,58 @@ function BuildService.Start()
 				x = rec.x,
 				z = rec.z,
 				r = rec.r,
-				room = rec.room,
+				room = "",
 				paid = rec.paid or 0,
 			})
 		end
-		local buildable, costs, mirrorable = {}, {}, {}
+		local walls = {}
+		for edge, rec in data.walls do
+			table.insert(walls, { edge = edge, door = rec.door == true, paid = rec.paid or 0 })
+		end
+		-- Each built room with what the room view shows (A.12): ready or what it lacks, its bars and bonuses.
+		local rooms = {}
+		for id, rec in data.rooms do
+			local ok, missing = Rooms.ready(world, id)
+			local bars = Rooms.bars(world, id)
+			local a = Rooms.roomArea(world, id)
+			table.insert(rooms, {
+				id = tonumber(id),
+				type = rec.type,
+				floor = rec.floor,
+				hx = rec.hx,
+				hz = rec.hz,
+				finish = rec.finish or "",
+				ready = ok,
+				missing = missing or {},
+				missingText = if ok then "" else HotelService.missingText(rec.type, missing or {}),
+				size = if a then a.size else 0,
+				bars = bars,
+				bonuses = Rooms.bonuses(bars),
+				state = (function()
+					local hotel = HotelService.get(player)
+					local room = hotel and hotel.rooms[id]
+					return if room then room.state else ""
+				end)(),
+			})
+		end
+		local buildable, costs = {}, {}
 		for _, p in Pieces.List do
 			local ok, why = Unlocks.buildable(p.id, ctx)
 			buildable[p.id] = if ok then true else (why or "Locked")
-			costs[p.id] = BuildService.price(data, p.id)
-			mirrorable[p.id] = HotelKit.mirrorable(p.id, data.location)
+			if p.kind == "Stairs" or p.kind == "Desk" then
+				costs[p.id] = BuildService.price(data, p.id)
+			end
 		end
 		local unlockedDecor = {}
 		for _, d in Pieces.DecorList do
 			if Pieces.decorHere(d, data.location, data.unlocked) then
 				unlockedDecor[d.id] = true
+			end
+		end
+		local vouchers = {}
+		for k, v in data.stats do
+			if string.sub(k, 1, 8) == "voucher_" and v > 0 then
+				vouchers[string.sub(k, 9)] = v
 			end
 		end
 		local tiles = {}
@@ -955,9 +1233,14 @@ function BuildService.Start()
 			equipped = data.equipped,
 			traps = data.traps,
 			unlockedDecor = unlockedDecor,
+			vouchers = vouchers,
 			layout = layout,
 			decor = decor,
-			blocked = blocked,
+			walls = walls,
+			rooms = rooms,
+			types = Rooms.typesFor(ctx),
+			wallCost = R.WallCost,
+			doorCost = R.DoorCost,
 			tiles = tiles,
 			tileCosts = tileCosts,
 			windows = windows,
@@ -969,7 +1252,6 @@ function BuildService.Start()
 			floorCost = Economy.floorCost(data.floors + 1),
 			buildable = buildable,
 			costs = costs,
-			mirrorable = mirrorable,
 			location = data.location,
 		}
 	end)

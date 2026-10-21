@@ -733,6 +733,58 @@ keys and mouse.
 - [ ] On a phone: one finger pans, two zoom and twist (pinch cannot be sent).
 - [A] Whether its speeds and the tilt's direction feel right (his).
 
+## Built rooms (GDD §5.4, A.12)
+
+Built 2026-10-21 night (his rulings of 2026-10-21): rooms are inner walls on
+half edges, a door and a chosen type, furnished like decor; profile schema 6
+(`walls`, `rooms`, also in the chain's hotels); a new hotel starts with one
+built Standard Room (an L of four cells on the guests' right of the desk,
+`Constants.Rooms.Start`, PLACEHOLDER shape); remotes `WallRun`, `Door`,
+`MakeRoom`, `ClearRoom`; walls, doors and posts drawn from the kit's
+`Wall_Half`/`Wall_Door`/`Wall_Post` or a blockout carrying MODELS.md's
+attachments; guests booked into ready rooms only, walked on the 3-stud
+squares through the door to the key furniture's `Use`; the three bars'
+bonuses in place of the tiers; Comfort from `Rooms.comfortPoints`. Played on
+`Test_Rooms1021a`…`d`.
+
+### Stage 1–2: data, server, guests, rating, tutorial (by remotes)
+
+- [x] A fresh profile: the desk, the start room (9 walls, a door, 5 posts),
+  its plaque, ready; the Slime booked into it, checked in, walked from the
+  desk's square along the squares through its door to the bed's `Use` and
+  lay there (picture `archive/screens/2026-10-21_rooms_start_room_guest_on_bed.jpg`).
+- [!] The room marker's attachments were set before being parented (off by
+  the root's frame): fixed (parent first), seen at the door (57, 24) looking
+  out of the room, the bed's `Use` at (54, 43.5).
+- [x] Walls refused where A.12 says: on the mouth (`Mouth`), against the desk
+  (`Piece`), a wall taken down between two rooms (`MergesRooms`), a room's
+  wall taken down onto the hallway (`RoomTaken`), a door walled up while its
+  guest is due (`Busy`), a writing desk across a wall, a desk inside a room
+  (`Decor`/`Wall`), a placed Room piece (`Built`).
+- [!] Location-0 furniture (Nightstand, Writing Desk …) was refused
+  `Location`: `Pieces.decorHere` lets furniture of every location stand.
+- [x] A second room by remotes: two tiles, 4 half edges of wall ($20), a
+  door ($10), Standard Room chosen, a Bed ($50): ready; a Skeleton booked into
+  it walked through its door (x 94.5 at the door's half edge) to the square
+  beside the bed and onto it; its pay 1.4 (Furniture bar 0.8: × 1.4).
+- [x] Comfort never falls as rooms are added: 2 → 4 (the second room ready)
+  → 5.2 (a nightstand in it); nothing it lacks lowers it.
+- [x] A check-out leaves the room Dirty with Clean on at its door; held at
+  the door (prompt) it is Vacant again.
+- [x] Each hotel of the chain keeps its own rating samples (8acb0e8): Manor
+  Service 58.9 → Frostfang opened fresh: Service 0, its own start room →
+  back at the Manor: Service 58.9.
+- [!] A new Frostfang hotel got a Standard Room: the start room takes the
+  location's first room type and its key piece (Igloo Room, Ice Bed).
+- [x] Tutorial: CheckIn first (the start room is there), SecondRoom closed by
+  the second room's type, Furnish by its Bed, then Bus; the goal card's block
+  on the side without rooms (left when the second room stands on the right),
+  the start room walled off from new tiles by itself (`Rooms.autoWalls`), the
+  Coffin placed free (voucher), a Coffin Suite built (`room` dev) took the
+  Vampire Count.
+- [ ] Collect: the test account owns Auto Collect (its till stays 0), so the
+  step was jumped by `tutorial`.
+
 ## August keeps
 
 - How the street, the lobby and the rooms look (every look is a night draft).

@@ -16,7 +16,7 @@
 	needs 1 friendship (§6.3); the first `Tutorial.CommonBuses` buses once
 	the Slime is in bring Commons for the hotel's vacant rooms, weighted toward
 	it ("The tutorial weights Commons toward your hotel", §11 1:45; BusService);
-	the goal card unlocks the Coffin Suite with one free build, and a Vampire
+	the goal card unlocks the Coffin Suite with its key piece free (a voucher), and a Vampire
 	Count booked to this hotel rides the third bus after it once one stands
 	(§11 "the tutorial schedules it").
 ]]
@@ -38,11 +38,14 @@ local DevGrant = require(ServerScriptService.Server.DevGrant)
 
 local TutorialService = {}
 
+-- A new hotel starts with its one built room (his ruling 2026-10-20, A.12), so
+-- the first step is the Slime's check-in; the second room is built by walls, a
+-- door and a type (`SecondRoom`), then furnished (`Furnish`).
 TutorialService.Steps = {
-	"Build",
 	"CheckIn",
 	"Collect",
 	"SecondRoom",
+	"Furnish",
 	"Bus",
 	"MoveIn",
 	"Goal",
@@ -58,9 +61,21 @@ local nextPressed: { [Player]: boolean } = {}
 
 local function rooms(data: PlayerData.Data): number
 	local n = 0
-	for _, rec in data.layout do
-		local p = Pieces.get(rec.item)
+	for _, rec in data.rooms do
+		local p = Pieces.get(rec.type)
 		if p and p.kind == "Room" then
+			n += 1
+		end
+	end
+	return n
+end
+
+-- Rooms ready for guests (A.12): their key furniture in, their size, a door.
+local function readyRooms(player: Player, data: PlayerData.Data): number
+	local n = 0
+	for id, rec in data.rooms do
+		local p = Pieces.get(rec.type)
+		if p and p.kind == "Room" and HotelService.ready(player, id) then
 			n += 1
 		end
 	end
@@ -72,18 +87,19 @@ local function stat(data: PlayerData.Data, key: string): number
 end
 
 local function step(data: PlayerData.Data): string
-	return if data.tutorial == "Start" then "Build" else data.tutorial
+	-- "Build" was the first step before rooms were built from walls (A.12).
+	return if data.tutorial == "Start" or data.tutorial == "Build" then "CheckIn" else data.tutorial
 end
 
 local function satisfied(player: Player, data: PlayerData.Data, s: string, since: number): boolean
-	if s == "Build" then
-		return rooms(data) >= 1
-	elseif s == "CheckIn" then
+	if s == "CheckIn" then
 		return stat(data, "checkIns") >= 1
 	elseif s == "Collect" then
 		return stat(data, "collects") >= 1
 	elseif s == "SecondRoom" then
 		return rooms(data) >= 2
+	elseif s == "Furnish" then
+		return readyRooms(player, data) >= 2
 	elseif s == "Bus" then
 		return stat(data, "pitches") >= 1
 			or stat(data, "busGuests") >= 1
@@ -196,8 +212,7 @@ local function commonsWanted(): { Player }
 	for player, data in PlayerData.loaded() do
 		local s = step(data)
 		if
-			s ~= "Build"
-			and s ~= "CheckIn"
+			s ~= "CheckIn"
 			and s ~= "Done"
 			and stat(data, "tutorialCommonBuses") < Constants.Tutorial.CommonBuses
 		then
@@ -212,8 +227,8 @@ function TutorialService.Start()
 	PlayerData.onLoaded(function(player, data)
 		-- A new profile's "Start" is the first step, stored as such so every
 		-- publish of the profile shows the same step.
-		if data.tutorial == "Start" then
-			data.tutorial = "Build"
+		if data.tutorial == "Start" or data.tutorial == "Build" then
+			data.tutorial = "CheckIn"
 		end
 		stepStarted[player] = os.clock()
 		player:SetAttribute("Tutorial", step(data))

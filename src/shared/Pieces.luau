@@ -1622,9 +1622,13 @@ function Pieces.finish(id: string): Finish?
 	return Pieces.FinishById[id]
 end
 
--- Whether a player at `location` may place this decor (event decor once bought: `unlocked`).
+-- Whether a player at `location` may place this decor (event decor once bought: `unlocked`;
+-- furniture of every location, location 0, always, A.12).
 function Pieces.decorHere(d: Decor, location: number, unlocked: { [string]: boolean }): boolean
-	return d.always == true or d.location == location or unlocked[`Decor_{d.id}`] == true
+	return d.always == true
+		or d.location == location
+		or (d.furniture == true and d.location == 0)
+		or unlocked[`Decor_{d.id}`] == true
 end
 
 function Pieces.get(id: string): Piece?

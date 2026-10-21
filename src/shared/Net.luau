@@ -32,14 +32,23 @@ local DEFS: { [string]: Def } = {
 	-- Client to server: intents.
 	Place = {
 		dir = "C2S",
-		args = { "string", "number", "number", "number", "number", "boolean" },
+		args = { "string", "number", "number", "number", "number" },
 		rate = 0.2,
-	}, -- item, floor, x, z, r, mirrored
+	}, -- item (a stair or a desk), floor, x, z, r
 	Move = {
 		dir = "C2S",
-		args = { "number", "number", "number", "number", "number", "boolean" },
+		args = { "number", "number", "number", "number", "number" },
 		rate = 0.2,
-	}, -- id, floor, x, z, r, mirrored
+	}, -- id, floor, x, z, r
+	-- Built rooms (GDD §5.4, A.12): walls on half edges, doors, a room's type.
+	WallRun = {
+		dir = "C2S",
+		args = { "number", "number", "number", "number", "number", "boolean" },
+		rate = 0.12,
+	}, -- floor, half cell x, z, o (0 along x, 1 along z), count, on (put up / take down)
+	Door = { dir = "C2S", args = { "string", "boolean" }, rate = 0.15 }, -- a half edge's key (Rooms.edgeKey), on
+	MakeRoom = { dir = "C2S", args = { "number", "number", "number", "string" }, rate = 0.25 }, -- floor, half cell x, z, a type
+	ClearRoom = { dir = "C2S", args = { "number" }, rate = 0.25 }, -- a room's id
 	Sell = { dir = "C2S", args = { "number" }, rate = 0.2 },
 	BuyFloor = { dir = "C2S", rate = 0.5 },
 	BuyTile = { dir = "C2S", args = { "number", "number", "number" }, rate = 0.15 }, -- floor, cell x, z (§5.4, A.1)
