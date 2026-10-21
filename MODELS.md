@@ -27,6 +27,7 @@ names:
 |---|---|
 | Any model | The rules; What a model costs to draw; Checklist before handing a set over |
 | A room, an amenity, the lobby, the front desk, the stairs, a facade, decor, a rug | Hotel kit |
+| An inner wall, a door, furniture (built rooms) | Hotel kit; Inner walls, doors and furniture |
 | A monster, a hunter, the bus | Monsters and street NPCs |
 | A tree | Street scenery: trees |
 | Code that reads a model | the section for the name the code looks up: grep the name |
@@ -102,6 +103,8 @@ allow.
   | Stairs | 8,000 |
   | A facade piece | 1,500 a plain wall, 2,500 a window, 3,000 the entrance, 800 a corner (draft, 2026-10-20: one stands on every outline edge of every floor) |
   | A decor piece | 1,500 |
+  | An inner wall or door; a wall post | 1,200; 200 |
+  | A furniture piece | 1,500 |
   | The hotel sign | 3,000 (draft) |
   | A sign or lobby cosmetic | 2,000 (draft) |
   | A monster | 4,000, plus `LOD_Proxy` 300 |
@@ -167,6 +170,10 @@ part), `Centrepiece`, `Furniture`, `Dressing`, `Rug`, `ArchLeft`,
 leaf would block every guest.
 
 ### Rooms and amenities (`<PieceId>`, e.g. `StandardRoom`, `SnackBar`)
+
+**Retiring (his ruling, 2026-10-21):** rooms are built from inner walls, a
+door and furniture (below, "Inner walls, doors and furniture"). This
+section stands until the code no longer places these models.
 
 Walls 0.4 thick and 17 tall, inside the footprint: `Wall_Back` the full width,
 `Wall_Left` and `Wall_Right` between it and the front, the front wall in
@@ -508,6 +515,104 @@ that reaches into the middle of a cell (where guests walk) makes that cell no
 hallway, and is refused if it cuts a door off; one in a cell's corner leaves
 it walkable. A room's preference tags are the tags of the decor inside its
 walls; its decor points (from the price) set its tier.
+
+### Inner walls, doors and furniture (built rooms)
+
+**His ruling, 2026-10-21** (GDD §5.4, A.12): rooms are no longer whole
+models. The player draws inner walls on half-cell edges, puts a door in one,
+and furnishes the room on the 3-stud grid. The art for a room is therefore
+three kinds of piece, **one set per location kit**, in
+`ServerStorage.HotelKit.<Location>` (`assets/HotelKit/<Location>/`) like
+every other kit piece. The room and amenity models above (`StandardRoom` …,
+`<PieceId>_Mirror`) retire once the code builds rooms this way.
+
+**Names the code looks up** in `HotelKit.<Location>`: `Wall_Half`,
+`Wall_Door`, `Wall_Post`, and `Furniture_<Id>` for every `Pieces` row with
+`furniture = true` (`<Id>` its `id`: `Furniture_Bed`, `Furniture_Coffin`,
+`Furniture_PipeOrgan` …). A row without `furniture` stays `Decor_<Id>`
+(above, "Decor"). The location-0 furniture (`Nightstand`, `Wardrobe` …) is
+modelled in every kit in its style; until a kit has one, the code may take
+`HotelKit.HauntedManor`'s.
+
+#### Walls (`Wall_Half`, `Wall_Door`, `Wall_Post`)
+
+**The frame:** origin at the **middle of one half edge (6 studs), on the
+walking surface** of its floor; the edge runs along **X** (x −3..3). The
+wall is **centred on the edge**: **0.4 thick** (z −0.2..0.2, the old room
+walls' thickness, so decor's 0.4 inset clears it from either side) and **17
+tall** (y 0..17, up to the slab above, `WallHeight`). A wall has a room on
+each side, so **both faces are finished alike**: the piece is the same
+turned 180° about Y, and the code may place it either way round. It turns
+the piece 90° for an edge along Z.
+
+- **Ends.** Every part reaches exactly x −3 and 3, so two half walls in a
+  line meet face to face with no post. Dressing (skirting, rails, crown) is
+  proud of a face by **at most 0.08** (|z| ≤ 0.28) and runs to the ends.
+- **`Wall_Post`** fills the joints: a square post **0.6 × 0.6** centred on
+  the vertex (x, z −0.3..0.3), **y 0..17.02** (its top 0.02 into the slab
+  above, so it never shares the walls' top plane). It covers the ends and
+  dressing of every wall meeting there (0.02 proud of the deepest dressing).
+  **The code puts one on every vertex an inner wall or door touches, except
+  where exactly two of them meet in a straight line**: at corners, T and +
+  joints, a free end, and where an inner wall meets the facade (the post
+  closes the 0.02 between the wall's end and the facade's inner face).
+- **`Wall_Door`** is `Wall_Half` with a doorway: a clear opening **x −2..2,
+  y 0..7.2** (at least 4 × 7 for the 5-stud person, rule 6), an
+  open arch (no leaf: a closed leaf would block every guest), its frame and
+  head dressing on both faces. The wall stands in **pieces apart round the
+  opening** (`DEVNOTES.md`, "A decomposition closes small openings").
+- Nothing of a wall piece reaches outside x −3..3, z −0.3..0.3 (a post's
+  square).
+
+| Name | What | The code |
+|---|---|---|
+| `Root` | Invisible: `Wall_Half` and `Wall_Door` 6 × 0.2 × 0.4 at (0, 0.1, 0); `Wall_Post` 0.6 × 0.2 × 0.6 at (0, 0.1, 0) | Placement (`PivotTo`) |
+| `Wall` (`Wall_Half`); `Wall_Left`, `Wall_Right`, `Wall_Lintel` (`Wall_Door`); `Post` (`Wall_Post`) | The colliding parts, `Box` each: `Wall` exactly x −3..3, y 0..17, z −0.2..0.2; `Wall_Left` x −3..−2 and `Wall_Right` 2..3, y 0..17; `Wall_Lintel` x −2..2, y 7.2..17 (an arch's head may be cut into its underside; its box still starts at 7.2); `Post` x, z −0.3..0.3, y 0..17.02 | Collide; guests path through the opening |
+| `Dressing` | Skirting, rails, frames, the arch's trim: not colliding | — |
+| `Door` (attachment, `Wall_Door`) | (0, 0, 0): the threshold's middle, on the half edge's centre, LookVector **−Z** | The code turns the door so −Z faces **out of the room** (the hallway). A guest's waypoint through the door; the squares either side are its ±Z 1.5 |
+| `Sign` (attachment, `Wall_Door`) | (0, 9.6, −0.5): above the opening, 0.3 in front of the −Z face, LookVector −Z | `RoomPlaque`: the room's name and state, on the hallway side |
+
+#### Furniture (`Furniture_<Id>`)
+
+Furniture is decor that counts toward a room's Furniture bar (GDD A.12): it
+keeps **every rule of "Decor" above** (origin at the footprint's centre on
+the floor, front toward **−Z**, the body 0.4 inside the footprint's edge,
+`Body` not colliding, glows their own parts, no coplanar faces, seats by
+rule 6, `w`, `d`, `layer` and `height` its `Pieces` row's), and adds:
+
+- **Footprint exactly `w × d` squares of 3 studs**, from its `Pieces` row
+  (no refit to a smaller one): `Root` 3w × 0.2 × 3d at (0, 0.1, 0).
+- **Built for the 5-stud person**: a bed's mattress top at about 2, a
+  table's top 2.6 to 3, a counter's 3.4 to 3.8, a seat's 1.5 to 2.0.
+- **A `Use` attachment**: where a booked guest stands, sits or lies to use
+  the piece; the code walks the guest to it and turns them to its
+  LookVector. Its **`Pose` attribute** (a string) says how: `Lie`, `Sit` or
+  `Stand`.
+  - `Lie` (a bed, coffin, nest, tub, hammock): on the lying surface's top,
+    at the middle of where the body lies, LookVector toward the **foot end**
+    (the head toward the opposite end).
+  - `Sit`: on the seat's top at its middle, LookVector the way the sitter
+    faces.
+  - `Stand` (a counter, jukebox, organ, table, gravestone): on the floor,
+    at the middle of the front edge, **1.5 in front of it** (z = −3d/2 −
+    1.5, the centre of the square in front), LookVector **+Z**, toward the
+    piece. It lies outside the footprint: the code keeps that square free or
+    finds the guest another free square along the front.
+
+| Name | What | The code |
+|---|---|---|
+| `Root` | 3w × 0.2 × 3d at (0, 0.1, 0) | Placement on the decor grid |
+| `Body` | The visible mesh(es), not colliding | The square(s) it stands on block guests |
+| `Glow_<Colour>_<n>` | Lamps, flames, potions (rule 1) | Lit |
+| `Use` (attachment, `Pose` attribute) | Above | Where a guest uses it |
+| `LOD_Proxy` | For a piece wider than 2 squares or over 4 tall, as the kit makes it | Hidden at import |
+
+**Checks** (the set's build script refuses a piece that breaks them): the
+walls' boxes and opening, a post covering every wall end's dressing, both
+faces alike (the piece equals itself turned 180°), nothing outside the
+frame; furniture's footprint, inset, height, `Use` and its `Pose`, and the
+decor checks (seats, coplanar faces). Budgets: a wall piece **1,200**
+triangles, a post 200, a furniture piece **1,500** (decor's).
 
 ### Floor finishes (code only)
 
