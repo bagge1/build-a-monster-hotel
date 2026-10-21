@@ -66,17 +66,18 @@ All numbers in this doc are **starting values for tuning**, not final balance. F
 |---|---|---|
 | **Moment** | 30 s – 2 min | Catch a bus, pitch a rare guest, check guests in, clean rooms, fulfil a request, buy something |
 | **Session** | 10–20 min | Collect residents' earnings, catch 3–5 buses, finish the daily requests, upgrade a room tier, try to win today's featured monster |
-| **Long** | Days to weeks | Fill friendship meters, complete the Monster Book, find mutations, rebirth to a new location, seasonal events, new families |
+| **Long** | Days to weeks | Fill friendship meters, complete the Monster Book, find mutations, open the next hotel in the chain, rebirth, seasonal events, new families |
 
 ---
 
 ## 3. The street and the server
 
-- **Server:** 6 players, 6 plots on one street ("Creepy Lane"). Friends can join friends; private servers are cheap (§10.3).
-- **Plot claim:** on joining, the player gets the nearest free plot automatically. Their saved hotel is rebuilt there (the layout is saved relative to the plot, so any plot works).
-- **Plot size:** a 12 × 12 cell grid (1 cell = 12 studs, so a 2×2 room is 24 × 24 studs; a floor is 18 studs tall, walls up to the slab above; players are the standard ~5-stud avatar, and furniture, doors and steps are sized for them, not scaled with the grid) per floor. Floors 1–3 at start; more through progression (and a capacity pass).
+- **Server:** **8–12 players** (his ruling, 2026-10-20: "up 8–12" from 6, so a player is rarely alone; the exact number is PLACEHOLDER, WAITING §2), one plot index each. Friends can join friends; private servers are cheap (§10.3).
+- **One world, every location in it** (his ruling, 2026-10-20): the server's world holds a street for each location (Creepy Lane for Haunted Manor, then Frostfang Lodge's, then Bayou Spa's), far apart, the environment changing gradually from one into the next along the road between them. Every hotel a player has opened stands on its location's street at once, so a street is never empty and a player sees what comes next from their own plot (§6.4).
+- **Plot claim:** on joining, the player gets a free plot index automatically: the same index on every location's street. Each saved hotel is rebuilt there (the layout is saved relative to the plot, so any plot works).
+- **Plot size:** a 12 × 12 cell grid (1 cell = 12 studs, so a 2×2 room is 24 × 24 studs; a floor is 18 studs tall, walls up to the slab above; players are the standard ~5-stud avatar, and furniture, doors and steps are sized for them, not scaled with the grid) per floor. **Floors 1–2 at start**; odd rebirths unlock the right to buy one more (§6.4), and the Extra Floor pass adds one.
 - **Two bus stops** (his ruling, 2026-10-19): the Night Bus stops twice on the lane, midway between the first two plots and midway between the last two (x = ±90). Monsters walk the pavement and "browse" each hotel (§4.3). Each hotel sign shows its **star rating, its featured room types and its like count**.
-- **Mixed locations on one street:** each plot renders its owner's current location (Haunted Manor, Frostfang Lodge…) as a themed facade and ground tile. The bus carries families for every location present on the server. Players who have rebirthed have neighbours who can see what's coming, which builds aspiration.
+- **Each street its own location:** a street's plots are its location's hotels; a player who has not opened that location yet has an empty, buyable plot there. Each street's Night Bus carries its own location's family. ~~Mixed locations on one street~~ (superseded 2026-10-20 by the chain, §6.4).
 
 ---
 
@@ -323,7 +324,7 @@ Appendix A.1 and A.2 now describe; every number there a PLACEHOLDER.
 
 | Currency | Source | Spent on | Rebirth |
 |---|---|---|---|
-| **Cash ($)** | Guests, tips, residents | Rooms, tiers, decor, amenities, floors | Resets |
+| **Cash ($)** | Guests, tips, residents (one purse for every hotel in the chain) | Rooms, tiers, decor, amenities, floors, tiles, opening the next location | Resets |
 | **Moon Shards** | Rebirth; releasing residents; Book milestones | The **Moon Tree** (permanent upgrades) | Kept |
 | **Candy** (event currency) | Event play only | Event shop (cosmetics, event rooms, seasonal mutations) | Kept for the event's duration |
 
@@ -348,17 +349,33 @@ Appendix A.1 and A.2 now describe; every number there a PLACEHOLDER.
 | 3–5 purchases | by 5:00 |
 | First resident | by 3:00–5:00 (the tutorial Slime needs 1 friendship) |
 | First rare (Vampire Count) | by 10:00–15:00 (the tutorial schedules it) |
-| Rebirth visible as a goal | by 15:00 |
-| Rebirth available | 60–90 min of active play, or about 3–4 days for a daily 15–20 min player |
-| Second run | about 70% of the first |
+| The next location visible as a goal | by 15:00 |
+| 5★ at Haunted Manor | 30–60 min of active play (his target, 2026-10-20) |
+| 5★ at Frostfang Lodge | a further 60–90 min |
+| 5★ at Bayou Spa | a further 90–120 min |
+| Rebirth available (5★ on all three) | about 3–4.5 h of active play |
+| The run after a rebirth | faster: residents, Moon Tree and floors carry the head start |
 
-### 6.4 Rebirth: "Move to a new location"
+### 6.4 The hotel chain and rebirth (his rulings, 2026-10-20)
 
-- **Requirement:** rating ≥ 4★, **$1M earned this run** (tune), and **a Vampire Count resident**. A named monster is a concrete goal, as in Steal a Brainrot.
-- **Resets:** cash, rooms, amenities, decor, floors.
-- **Kept:** residents, the Monster Book, cosmetics, Moon Shards, Moon Tree, friendship progress, and every room type already unlocked (still buildable at its normal price).
-- **Gained:** a new location with a new facade and biome, **a new family of 8–10 species**, new room types and amenities, and **Moon Shards = floor(10 × √(run cash / $1M))**. That's 10 at $1M and 20 at $4M: a square-root curve, so doubling the reward needs 4× the earnings.
-- **Why keep residents:** your collection travels with you and becomes the head start for the next run. The research found that rebirths that only add a multiplier "feel the same"; rebirth has to change what the hotel looks like and what you can buy.
+**The chain** replaces "rebirth = move to a new location":
+
+- **Opening the next location does not wipe anything.** The player buys a new hotel at the next location (Haunted Manor → Frostfang Lodge → Bayou Spa), each **exponentially dearer** and **earning more** (prices PLACEHOLDER, WAITING §2). The new hotel starts as a new player's does (§5.4: the 4 × 4 start, the desk).
+- **One hotel is played at a time.** The **Travel** button switches which hotel the player plays and stands at. The others **keep earning in the background** at a share of what they earn while played (PLACEHOLDER, WAITING §2), staffed by **their own residents** (his "yes exactly"): each hotel keeps its own staff assignments.
+- **All the hotels stand in the world** (§3): the old ones stay on their streets, so other players still in the first area see them, and the world never looks empty.
+- **Cash is one purse** for the whole chain; the rating, rooms, floors, tiles and staff are each hotel's own.
+- **Gained by opening one:** a new facade and biome, **a new family of 8–10 species**, its room types and amenities.
+
+**Rebirth** is now a separate full reset:
+
+- **Requirement: 5★ (the normal 1–5 rating, §5.3) on all three hotels.** The rating is tuned so 5★ is reachable.
+- **Loses:** cash, every hotel, the locations opened (back to Haunted Manor alone).
+- **Keeps:** residents, the Monster Book, cosmetics, Moon Shards, the Moon Tree, friendship progress.
+- **Floors:** a hotel starts with **2** floors. Rebirths **1, 3, 5, 7…** each unlock the **right to buy** one more floor (it is not free). The cap is open (WAITING §2): *6 by rebirth, 7 with the pass*, or *5 and 6*. The Extra Floor pass (§10.2) adds one on top.
+- **Prestige Stars** on even rebirths (2, 4, 6…), and on every rebirth after the floor cap: a count apart from the 1–5 rating (rebirth still needs the normal 5★). Effect drafted: + income % and slightly rarer guests (values open, WAITING §2).
+- **Moon Shards = floor(10 × √(run cash / $1M))**, as before, a run now being the time between rebirths.
+- **Rebirth 10 takes very long**; more locations and content will exist by then (§6.6, §8.3).
+- **Why keep residents:** the collection travels with you and is the head start for the next run. The research found that rebirths that only add a multiplier "feel the same"; here a rebirth takes the chain apart, and each new location changes what the hotel looks like and what you can buy.
 
 ### 6.5 Moon Tree (permanent upgrades)
 
@@ -378,7 +395,7 @@ Each node costs Moon Shards that grow ×1.5 per level.
 |---|---|---|---|---|
 | 1 | Haunted Manor | Classic spooks | Slime, Skeleton, Pumpkin Head, Ghost, Mummy, Zombie, Witch, Werewolf, Vampire Count, Grand Banshee | Launch |
 | 2 | Frostfang Lodge | Ice and snow | Snowball Sprite, Ice Imp, Frost Troll, Yeti, Snow Witch, Ice Wyrm, Aurora Spirit | Launch |
-| 3 | Bayou Spa | Swamp | Bog Frog, Mossling, Gator Ghoul, Will-o'-Wisp, Swamp Hag | +1 month |
+| 3 | Bayou Spa | Swamp | Drafted for his picks (WAITING §2) | **Launch** (his ruling, 2026-10-20) |
 | 4 | Volcano Resort | Fire | Fire Imp, Magma Golem, Salamander, Phoenix, Elder Dragon | +2–3 months |
 | 5 | Sky Castle | Sky and storm | Gargoyle, Harpy, Cloud Giant, Storm Djinn, Thunderbird | +4–5 months |
 
@@ -409,6 +426,8 @@ The ranking signal "intentional co-play days" counts, and since age checks cut o
 |---|---|
 | **Contested bus** | §4.3 |
 | **Visit and like** | Walk into any hotel on the street, see its residents, give one **like** per hotel per day. Likes show on the sign; the most-liked hotel gets a "Street Favourite" badge |
+| **Showcase** | His pick (2026-10-20): like other players' hotels, **the like count displayed**; drafted in §8.3 |
+| **Seeing the chain** | Every opened hotel stands in the world (§3), so players see each other's next locations from their own plots |
 | **Co-managers** | Invite a friend to co-manage your hotel (build rights as in Theme Park Tycoon 2). The helper earns 10% of the income they generate while helping, on top of their own hotel's income |
 | **Friend bonus** | +10% income for everyone on the street while 2+ friends play together |
 | **Hunter Night** | Co-op defence of the whole street (§8.1) |
@@ -442,6 +461,18 @@ The ranking signal "intentional co-play days" counts, and since age checks cut o
 | **Monthly** | Themed event with Candy, an event shop and a seasonal mutation |
 | **Quarterly** | A new location and family |
 | **Seasonal** | Halloween (our biggest event), Winter (Frostfang crossover), Valentine's, Summer |
+
+### 8.3 Endless content (his picks, 2026-10-20)
+
+What keeps a long-time player busy between updates. His picks; each is drafted with its options and a recommendation (Appendix A.11) before it is built.
+
+- **VIP contracts:** generated demands (a guest, a room, a deadline, a reward).
+- **Expeditions:** residents sent on timed trips, coming back with rewards.
+- **Decor sets and souvenirs, rare:** found, not only bought.
+- **The showcase:** like other players' hotels, with the like count displayed (§7).
+- **Deeper mutations:** stacking, and a rotating seasonal one (§4.5).
+- **Residents keep levelling** "to some extent": a cap.
+- **Not** the weekly street league (his doubt: a new street each join).
 
 ---
 
@@ -526,7 +557,7 @@ Guide: **Gloom, the bat concierge** (our mascot). Short speech bubbles, an arrow
 | 5:00 | 3–5 purchases done. Goal card: *"A Vampire Count arrives in 3 buses. Build a Coffin Suite!"* (the tutorial schedules it) |
 | 8:00 | Clean a room, fulfil a request. Staff tab unlocks (assign the Slime to Room Service) |
 | 10:00–15:00 | **The Vampire Count arrives.** If the room is ready: a flashy cape-swirl check-in, bats, a street-wide announcement. This is the "moment of joy" (Roblox onboarding guidance) |
-| 15:00 | Preview of Frostfang Lodge, the rebirth goal |
+| 15:00 | Preview of Frostfang Lodge, the next hotel in the chain (§6.4) |
 | Session end | Daily requests done → reward. Gloom: "Your residents keep earning while you're away, up to 2 hours." |
 
 **Mobile UI rules:**
@@ -680,7 +711,7 @@ After the soft launch we apply for Kids/Select eligibility:
 2. **Residents through rebirth:** keeping them is the current plan. Check that it doesn't trivialise later runs.
 3. **2x Cash pass:** excluded at launch. Revisit after soft-launch data.
 4. **Trading residents** after launch: yes or no?
-5. **Server size:** 6, or 8 with 2 visitor slots?
+5. ~~**Server size:** 6, or 8 with 2 visitor slots?~~ 8–12 (his ruling, 2026-10-20; the number in WAITING §2).
 6. **Mascot:** is Gloom the bat right? Name and look.
 7. **Hunter Night frequency:** every 90 min, or only scheduled windows?
 8. **Launch timing:** soft launch around late February 2027, or hold for a bigger spring launch?
@@ -721,6 +752,11 @@ After the soft launch we apply for Kids/Select eligibility:
 | 2026-10-20 | **Windows are pieces:** walls are plain; one window per wall section, bought and placed from four types (Twin sash, Arched, Round, Wide), two on the front at the start, moved out when a tile is bought, restyled by a facade pack (A.1) | His rulings and picks ("CUSTOMIZATION IS KEY!!") |
 | 2026-10-20 | Every floor is walled toward the street, not only floor 1 (A.1) | His ruling from the game; replaces the open street side above floor 1 (2026-10-19) |
 | 2026-10-20 | Tiles are bought on each floor apart, dearer on higher floors; a new floor has no tiles and no walls until bought (A.1) | His ruling; replaces Claude's reading that a tile counts on every floor |
+| 2026-10-20 | **The hotel chain:** opening the next location keeps the old hotels, which earn in the background at a share with their own residents on staff; a Travel button switches the hotel played; each next location exponentially dearer and earning more; **Bayou Spa** at launch (§6.4, §6.6) | His rulings in chat; replaces "rebirth = move to a new location" |
+| 2026-10-20 | **One world:** every hotel stands in it, each location's street far from the next, the environment changing gradually between them; **8–12 plots per server** (§3) | His rulings: a player is rarely alone, and the old areas never look empty |
+| 2026-10-20 | **Rebirth** is a full reset that needs 5★ on all three hotels; loses cash, hotels and locations; keeps residents, Book, cosmetics, Moon Shards, Moon Tree, friendship; floors start at 2, odd rebirths unlock buying one more; Prestige Stars on even rebirths and after the cap (§6.4) | His rulings; the cap, the Prestige Star effect and the prices are open (WAITING §2) |
+| 2026-10-20 | Pacing targets: 5★ at location 1 in 30–60 min, 2 in 60–90, 3 in 90–120 (§6.3) | His targets |
+| 2026-10-20 | Endless content: VIP contracts, Expeditions, rare decor sets and souvenirs, the showcase with the like count, deeper mutations, resident levelling to a cap; not the weekly street league (§8.3) | His picks |
 | 2026-10-20 | **Haunted Manor's ten new decor** (§5.4, A.2): the Grandfather Clock a longcase (silhouette A), the Grand Piano a grand (A), the Armchair kept at 1 × 1, the tags and prices A.2 proposed; the ten models as rendered (`blender/hotel/haunted_manor/README.md`, 2026-10-20) | His picks from the grey silhouettes, then his yes to the renders after four blind reviews |
 
 ---
@@ -1068,8 +1104,9 @@ counting as a late one (only with rooms). A Mummy on Housekeeping (60 %) in a
   Legendary resident). Decor adds Ice Block (cold), Cocoa Mug (cocoa), Snow
   Globe (snow), Rock Pile (stone), Prank Box (mischief), Aurora Lamp (northern
   lights).
-- **Second-run rebirth** needs 4★, $20M earned this run (×20) and an Ice Wyrm
-  resident (PLACEHOLDER, mirrors the first).
+- ~~**Second-run rebirth** needs 4★, $20M earned this run (×20) and an Ice Wyrm
+  resident (PLACEHOLDER, mirrors the first).~~ Superseded 2026-10-20 by the
+  chain (§6.4): Frostfang is opened, not reached by a rebirth.
 
 ### A.7 First-time experience (§11)
 

@@ -711,6 +711,50 @@ Med Claudes skärmdump där det finns en. -->
        inte), och **pumpan** på Haunted Manors valv är för liten för att
        läsas. **Rekommendation:** behåll alla tre tills du sett dem.
 
+35. **Kedjans öppna värden** (dina beslut 2026-10-20, nu i GDD §3, §6.4,
+   §6.6, §8.3 och §18). Nattens bygge använder PLACEHOLDER tills du bestämmer:
+   - **Bakgrundsandelen**: hur mycket ett hotell du inte spelar tjänar, som
+     andel av vad det tjänar när du spelar det. **Rekommendation:** 25 %
+     (lockar att resa tillbaka, men de gamla hotellen är aldrig döda).
+   - **Plots per server**: 8, 10 eller 12. **Rekommendation:** 10: fler än
+     så och tre gator med varsitt hotell per spelare blir många delar på en
+     telefon (natten mäter det i steg 7).
+   - **Våningstaket**: *6 genom rebirth, 7 med passet*, eller *5 och 6*.
+     **Rekommendation:** 6 och 7: rebirth 9 blir den sista som ger en
+     våning, och Prestige Stars tar över därefter.
+   - **Prestige Stars effekt**: förslaget är + inkomst och lite ovanligare
+     gäster. **Rekommendation:** +5 % inkomst per stjärna och +2 % chans
+     till en högre sällsynthet per stjärna, båda med tak vid 10 stjärnor.
+   - **Platsernas pris**: vad Frostfang Lodge och Bayou Spa kostar att
+     öppna. **Rekommendation:** Frostfang $250 000, Bayou Spa $10M, och
+     att varje plats tjänar ×20 den förra (som Frostfangs rum redan gör);
+     `tools/balance_model.py` prövar dem mot dina tider (steg 6).
+36. **Bayou Spa: arterna och rummen** (ditt beslut 2026-10-20: plats 3 vid
+   lansering, familjen är din att välja). Ett utkast att stryka i, alla
+   namn egna; sällsyntheten följer Haunted Manors (3 vanliga, 2 ovanliga,
+   2 sällsynta, 1 episk, 1 legendarisk, 1 mytisk):
+
+   | Art | Sällsynthet | Rum | Gillar | Personal | Egenhet |
+   |---|---|---|---|---|---|
+   | Bog Frog | Common | Lily Pad Room | steam, jazz | Entertainment | Kväker ett ackord vid incheckningen |
+   | Mossling | Common | Lily Pad Room | moss, quiet | Housekeeping | Små skott växer där den sitter |
+   | Firefly Sprite | Common | Willow Nook | fireflies, herbs | Room Service | Lyser upp korridoren där den går |
+   | Mud Puppy | Uncommon | Mud Bath | mud, steam | Bellhop | Skakar lera på dörrvakten |
+   | Gator Ghoul | Uncommon | Mud Bath | mud, jazz | Security | Ler med alldeles för många tänder |
+   | Will-o'-Wisp | Rare | Willow Nook | fireflies, quiet | Front Desk | Slocknar när den blir blyg |
+   | Swamp Hag | Rare | Herb Loft | herbs, steam | Entertainment | Brygger en dimma som luktar mynta |
+   | Bayou Hydra | Epic | Steam Grotto | steam, jazz | Room Service | Varje huvud beställer något eget |
+   | Cypress King | Legendary | Cypress Suite | moss, fireflies | Front Desk | Bär en krona av eldflugor |
+   | Moon Heron | Mythic | Moonlit Lagoon | quiet, fireflies | Entertainment | Dess rop lugnar hela gatan |
+
+   Rummen: Lily Pad Room 2×2, Willow Nook 2×2, Mud Bath 2×3, Herb Loft
+   2×3, Steam Grotto 3×3, Cypress Suite 3×3, Moonlit Lagoon 3×3 (priserna
+   ×20 Frostfangs, PLACEHOLDER). Ny dekor för de nya smakerna: Moss Mound,
+   Firefly Jar, Steam Vent, Herb Rack, Mud Pot (jazz har redan Record
+   Player). **Stryk, byt namn eller välj** arterna; natten bygger dem som
+   klossmodeller med PLACEHOLDER-värden (steg 6) så att platsen går att
+   spela, och de byts när du valt.
+
 ## §3 Creator Hub och publicering
 
 1. ~~**Slå på Studio Access to API Services**~~ (gjort 2026-10-19: på i
