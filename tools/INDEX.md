@@ -263,3 +263,22 @@ The pure specs (`tests/*.spec.luau`) under Lune, outside Studio:
 `Shared.X` to `src/shared/X.luau`, Roblox datatypes from `@lune/roblox`, a
 seeded `Random`. `data` needs the engine (Net) and runs only in Studio
 (`test_bundle.py`). Lune is global (`rokit add --global lune-org/lune`).
+
+## build_built_rooms.py
+
+Built rooms' art (MODELS.md, "Inner walls, doors and furniture"; his ruling
+2026-10-21): per location kit `Wall_Half`, `Wall_Door`, `Wall_Post` and
+`Furniture_<Id>` for every Pieces row with `furniture = true` (the Manor also
+gets the location-0 rows); output `blender/rooms/<set>/` (`haunted_manor`,
+`frostfang_lodge`; `STYLES` holds each set's palette, wall bands, trims and
+its furniture table). `-- sets a,b`, `-- only Bed,Wall_Door`, `-- nopreview`.
+On hotel_kit, extended from the script: kind `Wall` through a wrapped
+`check_piece` (generic rules via kind Cosmetic, then `wall_boxes`), furniture
+as kind Decor named `Furniture_<Id>` (Pieces' height a finding in
+validation.json `height_findings`, not a fault), `use()`/`stand()` and
+`use_check` (the `Use` attachment and its `Pose`), `turned_twin_faults`
+(a wall the same turned 180 degrees), `coplanar_faults`, `lintel()` (bands cut
+round the arch), `assembly_check` (pieces laid round a room, overlaps outside
+the posts), `patch_fixup` (the Pose attribute in import_fixup.luau). Shapes:
+`hm_bed`, `ff_bed` (the rooms' beds centred, any width) and one `f_<id>` per
+piece. Review: Workbench on light grey, `review_walls`, `review_furniture`.

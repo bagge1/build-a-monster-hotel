@@ -1,0 +1,2845 @@
+{
+ "set": "rooms/haunted_manor",
+ "title": "Haunted Manor: inner walls, a door and furniture (built rooms)",
+ "frame": "Roblox studs, piece frame: X right, Y up, door/front toward -Z, origin per MODELS.md; Blender holds them as (-x, z, y)",
+ "atlas": "textures/HotelAtlas.png (embedded in every FBX)",
+ "palette": {
+  "plum": [
+   90,
+   70,
+   110
+  ],
+  "plum_dark": [
+   60,
+   45,
+   78
+  ],
+  "plum_deep": [
+   40,
+   30,
+   55
+  ],
+  "violet": [
+   130,
+   90,
+   180
+  ],
+  "lilac": [
+   170,
+   135,
+   210
+  ],
+  "lavender": [
+   210,
+   190,
+   235
+  ],
+  "teal": [
+   40,
+   150,
+   150
+  ],
+  "teal_dark": [
+   25,
+   95,
+   105
+  ],
+  "teal_light": [
+   110,
+   205,
+   190
+  ],
+  "pumpkin": [
+   240,
+   130,
+   40
+  ],
+  "pumpkin_dark": [
+   185,
+   85,
+   30
+  ],
+  "amber": [
+   240,
+   175,
+   70
+  ],
+  "gold": [
+   220,
+   180,
+   90
+  ],
+  "moon": [
+   175,
+   200,
+   240
+  ],
+  "moon_dark": [
+   90,
+   115,
+   170
+  ],
+  "night": [
+   35,
+   40,
+   70
+  ],
+  "bone": [
+   235,
+   225,
+   200
+  ],
+  "cream": [
+   245,
+   238,
+   250
+  ],
+  "wood": [
+   125,
+   82,
+   55
+  ],
+  "wood_dark": [
+   80,
+   52,
+   38
+  ],
+  "wood_light": [
+   170,
+   120,
+   80
+  ],
+  "stone": [
+   130,
+   125,
+   140
+  ],
+  "stone_dark": [
+   85,
+   82,
+   95
+  ],
+  "moss": [
+   85,
+   120,
+   70
+  ],
+  "grass": [
+   90,
+   150,
+   80
+  ],
+  "leaf": [
+   125,
+   185,
+   90
+  ],
+  "crimson": [
+   140,
+   30,
+   55
+  ],
+  "crimson_dark": [
+   90,
+   20,
+   40
+  ],
+  "rose": [
+   200,
+   90,
+   120
+  ],
+  "black": [
+   30,
+   28,
+   36
+  ],
+  "iron": [
+   60,
+   62,
+   70
+  ],
+  "sand": [
+   220,
+   200,
+   140
+  ],
+  "meat": [
+   170,
+   60,
+   50
+  ],
+  "straw": [
+   205,
+   170,
+   90
+  ],
+  "white": [
+   240,
+   240,
+   245
+  ],
+  "slime": [
+   140,
+   210,
+   90
+  ],
+  "sky": [
+   90,
+   140,
+   220
+  ],
+  "dusty": [
+   150,
+   130,
+   110
+  ],
+  "jade": [
+   120,
+   200,
+   170
+  ],
+  "honey": [
+   240,
+   190,
+   80
+  ],
+  "brown": [
+   140,
+   100,
+   70
+  ],
+  "wine": [
+   120,
+   30,
+   50
+  ],
+  "ink": [
+   50,
+   45,
+   70
+  ],
+  "book_a": [
+   150,
+   60,
+   70
+  ],
+  "book_b": [
+   60,
+   110,
+   130
+  ],
+  "book_c": [
+   190,
+   150,
+   70
+  ],
+  "grey": [
+   110,
+   110,
+   120
+  ],
+  "flame": [
+   255,
+   205,
+   120
+  ],
+  "lamp": [
+   255,
+   185,
+   110
+  ],
+  "moonglow": [
+   205,
+   225,
+   255
+  ],
+  "brew": [
+   120,
+   255,
+   160
+  ]
+ },
+ "pieces": {
+  "Wall_Half": {
+   "name": "Wall_Half",
+   "kind": "Wall",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     6.0,
+     0.2,
+     0.4
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      6.0,
+      0.2,
+      0.4
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Wall": {
+     "centre": [
+      0.0,
+      8.5,
+      0.0
+     ],
+     "size": [
+      6.0,
+      17.0,
+      0.4
+     ],
+     "triangles": 24,
+     "collide": true
+    },
+    "Dressing": {
+     "centre": [
+      0.0,
+      8.5,
+      0.0
+     ],
+     "size": [
+      6.0,
+      17.0,
+      0.56
+     ],
+     "triangles": 96,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      8.5,
+      0.0
+     ],
+     "size": [
+      6.0,
+      17.0,
+      0.4
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 132,
+   "budget": 1200,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a half wall: plum wainscot under lilac paper, as the Standard Room; gold chair and picture rails and crown, dark skirting, on both faces",
+   "wall": {
+    "frame": "origin the half edge middle on the walking surface, the edge along X (x -3..3), centred on it 0.4 thick, both faces alike (the same turned 180 degrees)",
+    "dressing_max_proud": 0.08
+   }
+  },
+  "Wall_Door": {
+   "name": "Wall_Door",
+   "kind": "Wall",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     6.0,
+     0.2,
+     0.4
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      6.0,
+      0.2,
+      0.4
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Wall_Left": {
+     "centre": [
+      -2.5,
+      8.5,
+      0.0
+     ],
+     "size": [
+      1.0,
+      17.0,
+      0.4
+     ],
+     "triangles": 24,
+     "collide": true
+    },
+    "Wall_Right": {
+     "centre": [
+      2.5,
+      8.5,
+      0.0
+     ],
+     "size": [
+      1.0,
+      17.0,
+      0.4
+     ],
+     "triangles": 24,
+     "collide": true
+    },
+    "Wall_Lintel": {
+     "centre": [
+      0.0,
+      12.1,
+      0.0
+     ],
+     "size": [
+      4.0,
+      9.8,
+      0.4
+     ],
+     "triangles": 40,
+     "collide": true
+    },
+    "Dressing": {
+     "centre": [
+      0.0,
+      8.5,
+      0.0
+     ],
+     "size": [
+      6.0,
+      17.0,
+      0.56
+     ],
+     "triangles": 528,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      8.5,
+      0.0
+     ],
+     "size": [
+      6.0,
+      17.0,
+      0.4
+     ],
+     "triangles": 36,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Door": {
+     "pos": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    "Sign": {
+     "pos": [
+      0.0,
+      9.6,
+      -0.5
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    }
+   },
+   "triangles": 628,
+   "budget": 1200,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a half wall with an open pointed-arched doorway (clear 4 x 7.2): a pointed arch, dark wood trim with a gold keystone, plinth blocks, both faces",
+   "wall": {
+    "frame": "origin the half edge middle on the walking surface, the edge along X (x -3..3), centred on it 0.4 thick, both faces alike (the same turned 180 degrees)",
+    "dressing_max_proud": 0.08
+   }
+  },
+  "Wall_Post": {
+   "name": "Wall_Post",
+   "kind": "Wall",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     0.6,
+     0.2,
+     0.6
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      0.6,
+      0.2,
+      0.6
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Post": {
+     "centre": [
+      0.0,
+      8.51,
+      0.0
+     ],
+     "size": [
+      0.6,
+      17.02,
+      0.6
+     ],
+     "triangles": 36,
+     "collide": true
+    }
+   },
+   "attachments": {},
+   "triangles": 48,
+   "budget": 200,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "the joint post, 0.6 square, 17.02 tall: plum with a dark wood foot and a gold cap",
+   "wall": {
+    "frame": "origin the half edge middle on the walking surface, the edge along X (x -3..3), centred on it 0.4 thick, both faces alike (the same turned 180 degrees)",
+    "dressing_max_proud": 0.08
+   }
+  },
+  "Furniture_PipeOrgan": {
+   "name": "Furniture_PipeOrgan",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     6.0,
+     0.2,
+     6.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      6.0,
+      0.2,
+      6.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      3.45,
+      1.1734
+     ],
+     "size": [
+      3.6,
+      6.9,
+      2.8533
+     ],
+     "triangles": 554,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      3.45,
+      1.1734
+     ],
+     "size": [
+      3.6,
+      6.9,
+      2.8533
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -4.5
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 566,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "Decor_PipeOrgan's geometry as furniture (the Organ Hall's key piece): seven gold pipes, a dark console, its bench; a Wall piece, its back on the wall",
+   "decor": {
+    "fw": 2,
+    "fd": 2,
+    "layer": "Wall",
+    "footprint_studs": [
+     6.0,
+     6.0
+    ],
+    "refit": {
+     "scale": 1.0,
+     "shift": [
+      0.0,
+      0.0,
+      1.3467
+     ]
+    }
+   },
+   "furniture": {
+    "id": "PipeOrgan",
+    "pose": "Stand",
+    "keyFor": [
+     "OrganHall"
+    ],
+    "pieces_height": 6.9,
+    "model_top": 6.9,
+    "height_finding": null
+   }
+  },
+  "Furniture_Bed": {
+   "name": "Furniture_Bed",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     6.0,
+     0.2,
+     9.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      6.0,
+      0.2,
+      9.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      2.5,
+      0.0109
+     ],
+     "size": [
+      4.1435,
+      5.0,
+      5.7717
+     ],
+     "triangles": 568,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      2.5,
+      0.0109
+     ],
+     "size": [
+      4.1435,
+      5.0,
+      5.7717
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      1.8,
+      -0.8
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    }
+   },
+   "triangles": 580,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "the Standard Room's bed: dark wood, a violet blanket, a gothic plum headboard with gold finials",
+   "decor": {
+    "fw": 2,
+    "fd": 3,
+    "layer": "Floor",
+    "footprint_studs": [
+     6.0,
+     9.0
+    ]
+   },
+   "furniture": {
+    "id": "Bed",
+    "pose": "Lie",
+    "keyFor": [
+     "StandardRoom"
+    ],
+    "pieces_height": 2.0,
+    "model_top": 5.0,
+    "height_finding": "Pieces.luau's height 2, the body's top 5.00"
+   }
+  },
+  "Furniture_DoubleBed": {
+   "name": "Furniture_DoubleBed",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     9.0,
+     0.2,
+     9.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      9.0,
+      0.2,
+      9.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      2.5,
+      0.0109
+     ],
+     "size": [
+      6.0435,
+      5.0,
+      5.7717
+     ],
+     "triangles": 612,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      2.5,
+      0.0109
+     ],
+     "size": [
+      6.0435,
+      5.0,
+      5.7717
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      -1.3,
+      1.8,
+      -0.8
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    }
+   },
+   "triangles": 624,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "the bed twice as wide: two pillows, a rose blanket, the same gothic headboard widened",
+   "decor": {
+    "fw": 3,
+    "fd": 3,
+    "layer": "Floor",
+    "footprint_studs": [
+     9.0,
+     9.0
+    ]
+   },
+   "furniture": {
+    "id": "DoubleBed",
+    "pose": "Lie",
+    "keyFor": [
+     "StandardRoom",
+     "AtticRoom"
+    ],
+    "pieces_height": 2.0,
+    "model_top": 5.0,
+    "height_finding": "Pieces.luau's height 2, the body's top 5.00"
+   }
+  },
+  "Furniture_PlanterBed": {
+   "name": "Furniture_PlanterBed",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     6.0,
+     0.2,
+     9.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      6.0,
+      0.2,
+      9.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      0.9245,
+      0.0
+     ],
+     "size": [
+      4.52,
+      1.849,
+      6.92
+     ],
+     "triangles": 632,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      0.9245,
+      0.0
+     ],
+     "size": [
+      4.52,
+      1.849,
+      6.92
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      1.56,
+      -1.2
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    }
+   },
+   "triangles": 644,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a bed in a wooden planter: a moss mattress under a leaf blanket, pumpkins at the head, flowers on the rim",
+   "decor": {
+    "fw": 2,
+    "fd": 3,
+    "layer": "Floor",
+    "footprint_studs": [
+     6.0,
+     9.0
+    ]
+   },
+   "furniture": {
+    "id": "PlanterBed",
+    "pose": "Lie",
+    "keyFor": [
+     "GardenRoom"
+    ],
+    "pieces_height": 1.6,
+    "model_top": 1.849,
+    "height_finding": null
+   }
+  },
+  "Furniture_FourPosterBed": {
+   "name": "Furniture_FourPosterBed",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     9.0,
+     0.2,
+     9.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      9.0,
+      0.2,
+      9.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      3.23,
+      0.0159
+     ],
+     "size": [
+      6.0435,
+      6.46,
+      5.7617
+     ],
+     "triangles": 848,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      3.23,
+      0.0159
+     ],
+     "size": [
+      6.0435,
+      6.46,
+      5.7617
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      -1.3,
+      1.8,
+      -0.8
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    }
+   },
+   "triangles": 860,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "an antique four-poster: dark turned posts with gold finials, a plum canopy with a gold valance, drapes tied at the foot, the gothic headboard",
+   "decor": {
+    "fw": 3,
+    "fd": 3,
+    "layer": "Floor",
+    "footprint_studs": [
+     9.0,
+     9.0
+    ]
+   },
+   "furniture": {
+    "id": "FourPosterBed",
+    "pose": "Lie",
+    "keyFor": [
+     "AtticRoom"
+    ],
+    "pieces_height": 6.5,
+    "model_top": 6.46,
+    "height_finding": null
+   }
+  },
+  "Furniture_Sarcophagus": {
+   "name": "Furniture_Sarcophagus",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     6.0,
+     0.2,
+     9.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      6.0,
+      0.2,
+      9.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      1.34,
+      0.0
+     ],
+     "size": [
+      3.9,
+      2.68,
+      5.65
+     ],
+     "triangles": 312,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      1.34,
+      0.0
+     ],
+     "size": [
+      3.9,
+      2.68,
+      5.65
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      2.2,
+      -0.6
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    }
+   },
+   "triangles": 324,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "the Sarcophagus Suite's sarcophagus: gold on a stone plinth, teal bands, its face and striped headdress",
+   "decor": {
+    "fw": 2,
+    "fd": 3,
+    "layer": "Floor",
+    "footprint_studs": [
+     6.0,
+     9.0
+    ]
+   },
+   "furniture": {
+    "id": "Sarcophagus",
+    "pose": "Lie",
+    "keyFor": [
+     "SarcophagusSuite"
+    ],
+    "pieces_height": 2.4,
+    "model_top": 2.68,
+    "height_finding": null
+   }
+  },
+  "Furniture_WitchBed": {
+   "name": "Furniture_WitchBed",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     6.0,
+     0.2,
+     9.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      6.0,
+      0.2,
+      9.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      -0.1507,
+      2.5,
+      0.175
+     ],
+     "size": [
+      4.4448,
+      5.0,
+      6.1
+     ],
+     "triangles": 824,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      -0.1507,
+      2.5,
+      0.175
+     ],
+     "size": [
+      4.4448,
+      5.0,
+      6.1
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      -0.4,
+      1.8,
+      -0.6
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    }
+   },
+   "triangles": 836,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "the Potion Loft's witch's bed: teal blanket, violet gothic headboard, a black cat asleep on it, a hat on a post",
+   "decor": {
+    "fw": 2,
+    "fd": 3,
+    "layer": "Floor",
+    "footprint_studs": [
+     6.0,
+     9.0
+    ]
+   },
+   "furniture": {
+    "id": "WitchBed",
+    "pose": "Lie",
+    "keyFor": [
+     "PotionLoft"
+    ],
+    "pieces_height": 2.2,
+    "model_top": 5.0,
+    "height_finding": "Pieces.luau's height 2.2, the body's top 5.00"
+   }
+  },
+  "Furniture_DenNest": {
+   "name": "Furniture_DenNest",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     9.0,
+     0.2,
+     9.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      9.0,
+      0.2,
+      9.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      0.675,
+      0.0
+     ],
+     "size": [
+      4.8972,
+      1.35,
+      6.9541
+     ],
+     "triangles": 372,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      0.675,
+      0.0
+     ],
+     "size": [
+      4.8972,
+      1.35,
+      6.9541
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.6,
+      0.72,
+      0.2
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    }
+   },
+   "triangles": 384,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "the Den Room's round straw nest, a third larger for its 3 x 3: a brown cushion, a rose pillow, a bone",
+   "decor": {
+    "fw": 3,
+    "fd": 3,
+    "layer": "Floor",
+    "footprint_studs": [
+     9.0,
+     9.0
+    ]
+   },
+   "furniture": {
+    "id": "DenNest",
+    "pose": "Lie",
+    "keyFor": [
+     "DenRoom"
+    ],
+    "pieces_height": 1.4,
+    "model_top": 1.35,
+    "height_finding": null
+   }
+  },
+  "Furniture_Coffin": {
+   "name": "Furniture_Coffin",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     6.0,
+     0.2,
+     9.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      6.0,
+      0.2,
+      9.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      1.0,
+      -0.27
+     ],
+     "size": [
+      3.8,
+      2.0,
+      4.99
+     ],
+     "triangles": 128,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      1.0,
+      -0.27
+     ],
+     "size": [
+      3.8,
+      2.0,
+      4.99
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      1.62,
+      -0.6
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    }
+   },
+   "triangles": 140,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "the Coffin Suite's coffin: dark wood, red velvet, a cream pillow, the gold bat on its foot",
+   "decor": {
+    "fw": 2,
+    "fd": 3,
+    "layer": "Floor",
+    "footprint_studs": [
+     6.0,
+     9.0
+    ]
+   },
+   "furniture": {
+    "id": "Coffin",
+    "pose": "Lie",
+    "keyFor": [
+     "CoffinSuite"
+    ],
+    "pieces_height": 2.0,
+    "model_top": 2.0,
+    "height_finding": null
+   }
+  },
+  "Furniture_OperaChaise": {
+   "name": "Furniture_OperaChaise",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     9.0,
+     0.2,
+     6.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      9.0,
+      0.2,
+      6.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      -0.2215,
+      1.3,
+      0.0
+     ],
+     "size": [
+      7.6431,
+      2.6,
+      4.0
+     ],
+     "triangles": 484,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      -0.2215,
+      1.3,
+      0.0
+     ],
+     "size": [
+      7.6431,
+      2.6,
+      4.0
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.6,
+      1.6,
+      -0.4
+     ],
+     "look": [
+      1.0,
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "triangles": 496,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "the Opera Suite's fainting couch: crimson velvet on a gold frame, a rolled head end, a tufted back",
+   "decor": {
+    "fw": 3,
+    "fd": 2,
+    "layer": "Floor",
+    "footprint_studs": [
+     9.0,
+     6.0
+    ]
+   },
+   "furniture": {
+    "id": "OperaChaise",
+    "pose": "Lie",
+    "keyFor": [
+     "OperaSuite"
+    ],
+    "pieces_height": 2.6,
+    "model_top": 2.6,
+    "height_finding": null
+   }
+  },
+  "Furniture_SnackCounter": {
+   "name": "Furniture_SnackCounter",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     9.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      9.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      2.26,
+      0.025
+     ],
+     "size": [
+      8.2,
+      4.52,
+      2.15
+     ],
+     "triangles": 554,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      2.26,
+      0.025
+     ],
+     "size": [
+      8.2,
+      4.52,
+      2.15
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -3.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 566,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "the Snack Bar's candy-striped counter, its jars of sweets and a pie",
+   "decor": {
+    "fw": 3,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     9.0,
+     3.0
+    ]
+   },
+   "furniture": {
+    "id": "SnackCounter",
+    "pose": "Stand",
+    "keyFor": [
+     "SnackBar"
+    ],
+    "pieces_height": 3.4,
+    "model_top": 4.52,
+    "height_finding": "Pieces.luau's height 3.4, the body's top 4.52"
+   }
+  },
+  "Furniture_Jukebox": {
+   "name": "Furniture_Jukebox",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      2.3,
+      -0.03
+     ],
+     "size": [
+      2.1,
+      4.6,
+      1.66
+     ],
+     "triangles": 216,
+     "collide": false
+    },
+    "Glow_Warm_1": {
+     "centre": [
+      0.0,
+      3.69,
+      -0.83
+     ],
+     "size": [
+      1.8,
+      1.38,
+      0.06
+     ],
+     "triangles": 68,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      2.3,
+      -0.03
+     ],
+     "size": [
+      2.1,
+      4.6,
+      1.66
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -3.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 296,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a jukebox: dark wood, a warm glowing arch, a record behind glass, a gold speaker grille",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ]
+   },
+   "furniture": {
+    "id": "Jukebox",
+    "pose": "Stand",
+    "keyFor": [
+     "MusicRoom"
+    ],
+    "pieces_height": 4.6,
+    "model_top": 4.6,
+    "height_finding": null
+   }
+  },
+  "Furniture_Gravestone": {
+   "name": "Furniture_Gravestone",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      1.5,
+      -0.0203
+     ],
+     "size": [
+      2.0,
+      3.0,
+      1.2405
+     ],
+     "triangles": 180,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -3.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 192,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a friendly tombstone from the Graveyard Garden: rounded, a carved cross, moss on its plinth",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ]
+   },
+   "furniture": {
+    "id": "Gravestone",
+    "pose": "Stand",
+    "keyFor": [
+     "GraveyardGarden"
+    ],
+    "pieces_height": 3.0,
+    "model_top": 3.0,
+    "height_finding": null
+   }
+  },
+  "Furniture_ReadingDesk": {
+   "name": "Furniture_ReadingDesk",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     6.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      6.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      1.355,
+      0.0
+     ],
+     "size": [
+      4.8,
+      2.71,
+      2.0
+     ],
+     "triangles": 292,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -3.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 304,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "the Quiet Library's reading desk: a sloped lectern top with an open book, dark legs and stretchers",
+   "decor": {
+    "fw": 2,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     6.0,
+     3.0
+    ]
+   },
+   "furniture": {
+    "id": "ReadingDesk",
+    "pose": "Stand",
+    "keyFor": [
+     "QuietLibrary"
+    ],
+    "pieces_height": 2.6,
+    "model_top": 2.71,
+    "height_finding": null
+   }
+  },
+  "Furniture_Nightstand": {
+   "name": "Furniture_Nightstand",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      1.21,
+      -0.0346
+     ],
+     "size": [
+      2.16,
+      2.42,
+      1.8293
+     ],
+     "triangles": 360,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -3.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 372,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a little bedside cabinet: a drawer and a door with gold knobs, two books on top",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ]
+   },
+   "furniture": {
+    "id": "Nightstand",
+    "pose": "Stand",
+    "keyFor": [],
+    "pieces_height": 2.2,
+    "model_top": 2.42,
+    "height_finding": null
+   }
+  },
+  "Furniture_Wardrobe": {
+   "name": "Furniture_Wardrobe",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     6.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      6.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      3.01,
+      -0.0133
+     ],
+     "size": [
+      4.7,
+      6.02,
+      2.1266
+     ],
+     "triangles": 424,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      3.01,
+      -0.0133
+     ],
+     "size": [
+      4.7,
+      6.02,
+      2.1266
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -3.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 436,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a tall plum wardrobe: two doors with dark gothic-arched panels, gold knobs, a gold cornice",
+   "decor": {
+    "fw": 2,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     6.0,
+     3.0
+    ]
+   },
+   "furniture": {
+    "id": "Wardrobe",
+    "pose": "Stand",
+    "keyFor": [],
+    "pieces_height": 6.0,
+    "model_top": 6.02,
+    "height_finding": null
+   }
+  },
+  "Furniture_WritingDesk": {
+   "name": "Furniture_WritingDesk",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     6.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      6.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      1.4484,
+      -0.0203
+     ],
+     "size": [
+      4.9,
+      2.8967,
+      2.0406
+     ],
+     "triangles": 384,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -3.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 396,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a writing desk on turned legs: a drawer, a sheet of paper, an inkpot and a quill",
+   "decor": {
+    "fw": 2,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     6.0,
+     3.0
+    ]
+   },
+   "furniture": {
+    "id": "WritingDesk",
+    "pose": "Stand",
+    "keyFor": [],
+    "pieces_height": 2.6,
+    "model_top": 2.897,
+    "height_finding": null
+   }
+  },
+  "Furniture_DiningTable": {
+   "name": "Furniture_DiningTable",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     6.0,
+     0.2,
+     6.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      6.0,
+      0.2,
+      6.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      1.4431,
+      0.0
+     ],
+     "size": [
+      5.0,
+      2.8862,
+      5.0
+     ],
+     "triangles": 488,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -4.5
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 500,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a square dining table on turned legs: a crimson runner, four white plates, a small pumpkin",
+   "decor": {
+    "fw": 2,
+    "fd": 2,
+    "layer": "Floor",
+    "footprint_studs": [
+     6.0,
+     6.0
+    ]
+   },
+   "furniture": {
+    "id": "DiningTable",
+    "pose": "Stand",
+    "keyFor": [],
+    "pieces_height": 2.6,
+    "model_top": 2.886,
+    "height_finding": null
+   }
+  },
+  "Furniture_BreakfastBuffet": {
+   "name": "Furniture_BreakfastBuffet",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     9.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      9.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      1.565,
+      -0.0096
+     ],
+     "size": [
+      8.2,
+      3.13,
+      2.1193
+     ],
+     "triangles": 774,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      1.565,
+      -0.0096
+     ],
+     "size": [
+      8.2,
+      3.13,
+      2.1193
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -3.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 786,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a sideboard with three cupboard doors, three gold cloches on white trays",
+   "decor": {
+    "fw": 3,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     9.0,
+     3.0
+    ]
+   },
+   "furniture": {
+    "id": "BreakfastBuffet",
+    "pose": "Stand",
+    "keyFor": [
+     "SnackBar",
+     "CocoaLounge"
+    ],
+    "pieces_height": 3.0,
+    "model_top": 3.13,
+    "height_finding": null
+   }
+  },
+  "Furniture_BarStool": {
+   "name": "Furniture_BarStool",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      1.3,
+      -0.075
+     ],
+     "size": [
+      2.08,
+      2.6,
+      1.75
+     ],
+     "triangles": 404,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      2.0,
+      -0.2
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    }
+   },
+   "triangles": 416,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a bar stool on an iron pedestal with a gold foot ring, a crimson cushion, a low back",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ],
+    "seats": [
+     {
+      "x": [
+       -1.0,
+       1.0
+      ],
+      "z": [
+       -0.85,
+       0.45
+      ],
+      "y": 2.0,
+      "people": 1,
+      "narrow": null
+     }
+    ]
+   },
+   "furniture": {
+    "id": "BarStool",
+    "pose": "Sit",
+    "keyFor": [],
+    "pieces_height": 2.6,
+    "model_top": 2.6,
+    "height_finding": null
+   }
+  },
+  "Furniture_PoolTable": {
+   "name": "Furniture_PoolTable",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     9.0,
+     0.2,
+     6.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      9.0,
+      0.2,
+      6.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      1.39,
+      0.0
+     ],
+     "size": [
+      7.8,
+      2.78,
+      4.8
+     ],
+     "triangles": 904,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      1.39,
+      0.0
+     ],
+     "size": [
+      7.8,
+      2.78,
+      4.8
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -4.5
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 916,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a pool table: dark wood on six turned legs, green baize, black pockets, five balls",
+   "decor": {
+    "fw": 3,
+    "fd": 2,
+    "layer": "Floor",
+    "footprint_studs": [
+     9.0,
+     6.0
+    ]
+   },
+   "furniture": {
+    "id": "PoolTable",
+    "pose": "Stand",
+    "keyFor": [],
+    "pieces_height": 2.6,
+    "model_top": 2.78,
+    "height_finding": null
+   }
+  },
+  "Furniture_CardTable": {
+   "name": "Furniture_CardTable",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     6.0,
+     0.2,
+     6.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      6.0,
+      0.2,
+      6.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      1.4,
+      0.0
+     ],
+     "size": [
+      4.8058,
+      2.8,
+      4.8058
+     ],
+     "triangles": 348,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -4.5
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 360,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a round card table: green baize in a wood rim on a pedestal, cards dealt, stacks of chips",
+   "decor": {
+    "fw": 2,
+    "fd": 2,
+    "layer": "Floor",
+    "footprint_studs": [
+     6.0,
+     6.0
+    ]
+   },
+   "furniture": {
+    "id": "CardTable",
+    "pose": "Stand",
+    "keyFor": [],
+    "pieces_height": 2.6,
+    "model_top": 2.8,
+    "height_finding": null
+   }
+  },
+  "Furniture_Bathtub": {
+   "name": "Furniture_Bathtub",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     6.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      6.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      1.14,
+      0.0
+     ],
+     "size": [
+      5.053,
+      2.26,
+      2.0871
+     ],
+     "triangles": 476,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      -0.3,
+      1.3,
+      0.0
+     ],
+     "look": [
+      1.0,
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "triangles": 488,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a white clawfoot tub on gold feet, full to the middle, a gold tap at its foot end",
+   "decor": {
+    "fw": 2,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     6.0,
+     3.0
+    ]
+   },
+   "furniture": {
+    "id": "Bathtub",
+    "pose": "Lie",
+    "keyFor": [],
+    "pieces_height": 2.0,
+    "model_top": 2.27,
+    "height_finding": null
+   }
+  },
+  "Furniture_FloorLamp": {
+   "name": "Furniture_FloorLamp",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      2.76,
+      0.0
+     ],
+     "size": [
+      1.9021,
+      5.52,
+      2.0
+     ],
+     "triangles": 222,
+     "collide": false
+    },
+    "Glow_Warm_1": {
+     "centre": [
+      0.0,
+      4.12,
+      0.0
+     ],
+     "size": [
+      0.4065,
+      0.52,
+      0.4065
+     ],
+     "triangles": 48,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      2.76,
+      0.0
+     ],
+     "size": [
+      1.9021,
+      5.52,
+      2.0
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -3.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 282,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a standing lamp: an iron stem on a gold foot, a violet shade with a gold hem, the bulb glowing",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ]
+   },
+   "furniture": {
+    "id": "FloorLamp",
+    "pose": "Stand",
+    "keyFor": [],
+    "pieces_height": 5.5,
+    "model_top": 5.52,
+    "height_finding": null
+   }
+  }
+ },
+ "mirrors": {}
+}

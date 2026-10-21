@@ -1,0 +1,1334 @@
+{
+ "set": "rooms/frostfang_lodge",
+ "title": "Frostfang Lodge: inner walls, a door and furniture (built rooms)",
+ "frame": "Roblox studs, piece frame: X right, Y up, door/front toward -Z, origin per MODELS.md; Blender holds them as (-x, z, y)",
+ "atlas": "textures/HotelAtlas.png (embedded in every FBX)",
+ "palette": {
+  "snow": [
+   245,
+   250,
+   255
+  ],
+  "snow_shade": [
+   214,
+   228,
+   242
+  ],
+  "frost": [
+   196,
+   222,
+   244
+  ],
+  "ice": [
+   165,
+   212,
+   240
+  ],
+  "ice_deep": [
+   115,
+   175,
+   220
+  ],
+  "ice_dark": [
+   70,
+   120,
+   170
+  ],
+  "glacier": [
+   100,
+   170,
+   220
+  ],
+  "facade": [
+   120,
+   160,
+   200
+  ],
+  "facade_dark": [
+   85,
+   120,
+   160
+  ],
+  "ground": [
+   200,
+   215,
+   230
+  ],
+  "trim": [
+   240,
+   250,
+   255
+  ],
+  "night": [
+   30,
+   40,
+   78
+  ],
+  "navy": [
+   48,
+   62,
+   110
+  ],
+  "sky": [
+   90,
+   140,
+   220
+  ],
+  "log": [
+   158,
+   104,
+   64
+  ],
+  "log_dark": [
+   118,
+   76,
+   48
+  ],
+  "wood": [
+   140,
+   92,
+   58
+  ],
+  "wood_dark": [
+   90,
+   58,
+   40
+  ],
+  "wood_light": [
+   192,
+   140,
+   92
+  ],
+  "pine": [
+   58,
+   112,
+   92
+  ],
+  "pine_dark": [
+   38,
+   80,
+   70
+  ],
+  "cocoa": [
+   122,
+   78,
+   52
+  ],
+  "cocoa_dark": [
+   82,
+   52,
+   36
+  ],
+  "cocoa_light": [
+   178,
+   128,
+   92
+  ],
+  "cream": [
+   250,
+   240,
+   225
+  ],
+  "red": [
+   205,
+   62,
+   62
+  ],
+  "red_dark": [
+   140,
+   40,
+   48
+  ],
+  "orange": [
+   240,
+   140,
+   50
+  ],
+  "yellow": [
+   250,
+   212,
+   92
+  ],
+  "gold": [
+   226,
+   186,
+   96
+  ],
+  "iron": [
+   64,
+   70,
+   86
+  ],
+  "grey": [
+   120,
+   122,
+   132
+  ],
+  "stone": [
+   138,
+   140,
+   152
+  ],
+  "stone_dark": [
+   94,
+   96,
+   110
+  ],
+  "stone_light": [
+   178,
+   180,
+   192
+  ],
+  "fur": [
+   228,
+   228,
+   234
+  ],
+  "fur_shade": [
+   190,
+   196,
+   208
+  ],
+  "mint": [
+   150,
+   226,
+   200
+  ],
+  "teal": [
+   60,
+   190,
+   185
+  ],
+  "violet": [
+   150,
+   112,
+   220
+  ],
+  "lilac": [
+   186,
+   166,
+   232
+  ],
+  "pink": [
+   230,
+   90,
+   160
+  ],
+  "pink_light": [
+   246,
+   164,
+   204
+  ],
+  "black": [
+   32,
+   34,
+   44
+  ],
+  "white": [
+   246,
+   246,
+   250
+  ],
+  "ink": [
+   40,
+   46,
+   72
+  ],
+  "flame": [
+   255,
+   205,
+   120
+  ],
+  "lamp": [
+   255,
+   185,
+   110
+  ],
+  "frostglow": [
+   205,
+   230,
+   255
+  ],
+  "aurora": [
+   130,
+   255,
+   190
+  ]
+ },
+ "pieces": {
+  "Wall_Half": {
+   "name": "Wall_Half",
+   "kind": "Wall",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     6.0,
+     0.2,
+     0.4
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      6.0,
+      0.2,
+      0.4
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Wall": {
+     "centre": [
+      0.0,
+      8.5,
+      0.0
+     ],
+     "size": [
+      6.0,
+      17.0,
+      0.4
+     ],
+     "triangles": 168,
+     "collide": true
+    },
+    "Dressing": {
+     "centre": [
+      0.0,
+      8.5,
+      0.0
+     ],
+     "size": [
+      6.0,
+      17.0,
+      0.56
+     ],
+     "triangles": 96,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      8.5,
+      0.0
+     ],
+     "size": [
+      6.0,
+      17.0,
+      0.4
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 276,
+   "budget": 1200,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a half wall: log courses over a dark wainscot, as the lodge rooms; light wood rails, a snow cornice, both faces",
+   "wall": {
+    "frame": "origin the half edge middle on the walking surface, the edge along X (x -3..3), centred on it 0.4 thick, both faces alike (the same turned 180 degrees)",
+    "dressing_max_proud": 0.08
+   }
+  },
+  "Wall_Door": {
+   "name": "Wall_Door",
+   "kind": "Wall",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     6.0,
+     0.2,
+     0.4
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      6.0,
+      0.2,
+      0.4
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Wall_Left": {
+     "centre": [
+      -2.5,
+      8.5,
+      0.0
+     ],
+     "size": [
+      1.0,
+      17.0,
+      0.4
+     ],
+     "triangles": 168,
+     "collide": true
+    },
+    "Wall_Right": {
+     "centre": [
+      2.5,
+      8.5,
+      0.0
+     ],
+     "size": [
+      1.0,
+      17.0,
+      0.4
+     ],
+     "triangles": 168,
+     "collide": true
+    },
+    "Wall_Lintel": {
+     "centre": [
+      0.0,
+      12.1,
+      0.0
+     ],
+     "size": [
+      4.0,
+      9.8,
+      0.4
+     ],
+     "triangles": 152,
+     "collide": true
+    },
+    "Dressing": {
+     "centre": [
+      0.0,
+      8.5,
+      0.0
+     ],
+     "size": [
+      6.0,
+      17.0,
+      0.56
+     ],
+     "triangles": 496,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      8.5,
+      0.0
+     ],
+     "size": [
+      6.0,
+      17.0,
+      0.4
+     ],
+     "triangles": 36,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Door": {
+     "pos": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    "Sign": {
+     "pos": [
+      0.0,
+      9.6,
+      -0.5
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    }
+   },
+   "triangles": 996,
+   "budget": 1200,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a half wall with an open round-arched doorway (clear 4 x 7.2): a round arch, dark log trim with a snow keystone, plinth blocks, both faces",
+   "wall": {
+    "frame": "origin the half edge middle on the walking surface, the edge along X (x -3..3), centred on it 0.4 thick, both faces alike (the same turned 180 degrees)",
+    "dressing_max_proud": 0.08
+   }
+  },
+  "Wall_Post": {
+   "name": "Wall_Post",
+   "kind": "Wall",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     0.6,
+     0.2,
+     0.6
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      0.6,
+      0.2,
+      0.6
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Post": {
+     "centre": [
+      0.0,
+      8.51,
+      0.0
+     ],
+     "size": [
+      0.6,
+      17.02,
+      0.6
+     ],
+     "triangles": 36,
+     "collide": true
+    }
+   },
+   "attachments": {},
+   "triangles": 48,
+   "budget": 200,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "the joint post, 0.6 square, 17.02 tall: a log post with a dark foot and a snow cap",
+   "wall": {
+    "frame": "origin the half edge middle on the walking surface, the edge along X (x -3..3), centred on it 0.4 thick, both faces alike (the same turned 180 degrees)",
+    "dressing_max_proud": 0.08
+   }
+  },
+  "Furniture_IceBed": {
+   "name": "Furniture_IceBed",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     6.0,
+     0.2,
+     9.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      6.0,
+      0.2,
+      9.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      1.8,
+      0.015
+     ],
+     "size": [
+      3.9,
+      3.6,
+      5.68
+     ],
+     "triangles": 480,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      1.8,
+      0.015
+     ],
+     "size": [
+      3.9,
+      3.6,
+      5.68
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      1.83,
+      -0.8
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    }
+   },
+   "triangles": 492,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "the Igloo Room's bed: a red plaid quilt, an igloo-dome ice headboard with frost courses",
+   "decor": {
+    "fw": 2,
+    "fd": 3,
+    "layer": "Floor",
+    "footprint_studs": [
+     6.0,
+     9.0
+    ]
+   },
+   "furniture": {
+    "id": "IceBed",
+    "pose": "Lie",
+    "keyFor": [
+     "IglooRoom"
+    ],
+    "pieces_height": 2.0,
+    "model_top": 3.6,
+    "height_finding": "Pieces.luau's height 2, the body's top 3.60"
+   }
+  },
+  "Furniture_IceSlab": {
+   "name": "Furniture_IceSlab",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     6.0,
+     0.2,
+     9.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      6.0,
+      0.2,
+      9.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      1.935,
+      0.02
+     ],
+     "size": [
+      4.0,
+      3.87,
+      5.69
+     ],
+     "triangles": 288,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      1.935,
+      0.02
+     ],
+     "size": [
+      4.0,
+      3.87,
+      5.69
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      1.58,
+      -0.8
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    }
+   },
+   "triangles": 300,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "the Ice Cave's stone slab bed under furs, a rock headboard with snow on it",
+   "decor": {
+    "fw": 2,
+    "fd": 3,
+    "layer": "Floor",
+    "footprint_studs": [
+     6.0,
+     9.0
+    ]
+   },
+   "furniture": {
+    "id": "IceSlab",
+    "pose": "Lie",
+    "keyFor": [
+     "IceCave"
+    ],
+    "pieces_height": 1.8,
+    "model_top": 3.87,
+    "height_finding": "Pieces.luau's height 1.8, the body's top 3.87"
+   }
+  },
+  "Furniture_SnowNest": {
+   "name": "Furniture_SnowNest",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     9.0,
+     0.2,
+     9.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      9.0,
+      0.2,
+      9.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      0.675,
+      0.0
+     ],
+     "size": [
+      4.8972,
+      1.35,
+      6.9541
+     ],
+     "triangles": 256,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      0.675,
+      0.0
+     ],
+     "size": [
+      4.8972,
+      1.35,
+      6.9541
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      1.0,
+      -1.04
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    }
+   },
+   "triangles": 268,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "the Yeti Den's round fur nest, a third larger for its 3 x 3: a blue blanket, a snow pillow",
+   "decor": {
+    "fw": 3,
+    "fd": 3,
+    "layer": "Floor",
+    "footprint_studs": [
+     9.0,
+     9.0
+    ]
+   },
+   "furniture": {
+    "id": "SnowNest",
+    "pose": "Lie",
+    "keyFor": [
+     "YetiDen"
+    ],
+    "pieces_height": 1.6,
+    "model_top": 1.35,
+    "height_finding": null
+   }
+  },
+  "Furniture_KnittingChair": {
+   "name": "Furniture_KnittingChair",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     6.0,
+     0.2,
+     6.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      6.0,
+      0.2,
+      6.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.6598,
+      1.8,
+      -0.16
+     ],
+     "size": [
+      3.7597,
+      3.6,
+      3.72
+     ],
+     "triangles": 1012,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      1.75,
+      -0.3
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    }
+   },
+   "triangles": 1024,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a rocking chair: a violet cushion, a lilac knitted blanket with snow stripes over its back, a yarn basket",
+   "decor": {
+    "fw": 2,
+    "fd": 2,
+    "layer": "Floor",
+    "footprint_studs": [
+     6.0,
+     6.0
+    ],
+    "seats": [
+     {
+      "x": [
+       -1.0,
+       1.0
+      ],
+      "z": [
+       -0.94,
+       0.53
+      ],
+      "y": 1.75,
+      "people": 1,
+      "narrow": null
+     }
+    ]
+   },
+   "furniture": {
+    "id": "KnittingChair",
+    "pose": "Sit",
+    "keyFor": [
+     "FrostLoft"
+    ],
+    "pieces_height": 3.6,
+    "model_top": 3.6,
+    "height_finding": null
+   }
+  },
+  "Furniture_GlacierCoil": {
+   "name": "Furniture_GlacierCoil",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     9.0,
+     0.2,
+     9.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      9.0,
+      0.2,
+      9.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      2.2,
+      0.0507
+     ],
+     "size": [
+      5.033,
+      4.4,
+      7.3086
+     ],
+     "triangles": 480,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      2.2,
+      0.0507
+     ],
+     "size": [
+      5.033,
+      4.4,
+      7.3086
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      1.15,
+      -0.91
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    }
+   },
+   "triangles": 492,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "the Glacier Suite's coiled round bed, a third larger: gold-banded ice, a navy blanket, two crystal pillars",
+   "decor": {
+    "fw": 3,
+    "fd": 3,
+    "layer": "Floor",
+    "footprint_studs": [
+     9.0,
+     9.0
+    ]
+   },
+   "furniture": {
+    "id": "GlacierCoil",
+    "pose": "Lie",
+    "keyFor": [
+     "GlacierSuite"
+    ],
+    "pieces_height": 2.4,
+    "model_top": 4.4,
+    "height_finding": "Pieces.luau's height 2.4, the body's top 4.40"
+   }
+  },
+  "Furniture_StarHammock": {
+   "name": "Furniture_StarHammock",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     9.0,
+     0.2,
+     6.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      9.0,
+      0.2,
+      6.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      1.49,
+      0.0
+     ],
+     "size": [
+      8.0163,
+      2.98,
+      2.0
+     ],
+     "triangles": 592,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      1.49,
+      0.0
+     ],
+     "size": [
+      8.0163,
+      2.98,
+      2.0
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.2,
+      1.3886,
+      0.0
+     ],
+     "look": [
+      1.0,
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "triangles": 604,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a hammock of navy cloth with yellow stars, slung between two snow-capped log posts",
+   "decor": {
+    "fw": 3,
+    "fd": 2,
+    "layer": "Floor",
+    "footprint_studs": [
+     9.0,
+     6.0
+    ]
+   },
+   "furniture": {
+    "id": "StarHammock",
+    "pose": "Lie",
+    "keyFor": [
+     "AuroraDome"
+    ],
+    "pieces_height": 3.0,
+    "model_top": 2.98,
+    "height_finding": null
+   }
+  },
+  "Furniture_CocoaBar": {
+   "name": "Furniture_CocoaBar",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     9.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      9.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      2.4,
+      0.025
+     ],
+     "size": [
+      8.2,
+      4.8,
+      2.15
+     ],
+     "triangles": 774,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      2.4,
+      0.025
+     ],
+     "size": [
+      8.2,
+      4.8,
+      2.15
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -3.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 786,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "the Cocoa Lounge's candy-cane counter: a big red cocoa pot, mugs with marshmallows, a jar",
+   "decor": {
+    "fw": 3,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     9.0,
+     3.0
+    ]
+   },
+   "furniture": {
+    "id": "CocoaBar",
+    "pose": "Stand",
+    "keyFor": [
+     "CocoaLounge"
+    ],
+    "pieces_height": 3.4,
+    "model_top": 4.8,
+    "height_finding": "Pieces.luau's height 3.4, the body's top 4.80"
+   }
+  },
+  "Furniture_SkyLounger": {
+   "name": "Furniture_SkyLounger",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     6.0,
+     0.2,
+     9.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      6.0,
+      0.2,
+      9.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      0.9251,
+      0.1824
+     ],
+     "size": [
+      2.8,
+      1.8503,
+      6.9649
+     ],
+     "triangles": 336,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      0.9251,
+      0.1824
+     ],
+     "size": [
+      2.8,
+      1.8503,
+      6.9649
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      1.15,
+      -1.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    }
+   },
+   "triangles": 348,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a deck lounger: teal cushions, its back raised at the head, a red plaid blanket over the legs",
+   "decor": {
+    "fw": 2,
+    "fd": 3,
+    "layer": "Floor",
+    "footprint_studs": [
+     6.0,
+     9.0
+    ]
+   },
+   "furniture": {
+    "id": "SkyLounger",
+    "pose": "Lie",
+    "keyFor": [
+     "AuroraDeck"
+    ],
+    "pieces_height": 1.6,
+    "model_top": 1.85,
+    "height_finding": null
+   }
+  }
+ },
+ "mirrors": {}
+}
