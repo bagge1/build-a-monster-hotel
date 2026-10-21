@@ -1060,6 +1060,60 @@ playtests.
   hotel ($10/s floor: $9K–18K at 1–3★), and whether an unhappy VIP should
   forfeit (WAITING §2.38).
 
+## Rare decor sets and souvenirs (GDD A.11.3)
+
+Built 2026-10-21 morning on A.11.3's scrutinized recommendations (his calls,
+WAITING §2.38; every number `Constants.Finds`, PLACEHOLDER): the Count's
+Study (5 pieces, Haunted Manor) found by rolls on happy stays of Rare-or-better
+guests (2 %) and a defended Hunter Night (25 %, one per player), the pity
+after 40 misses giving the next unfound piece, duplicates in cash once all
+are found; a souvenir per species by move-in no. 3 or its first VIP
+contract; found once, copies placed for cash; the set bonus (+0.25 Decor)
+once per set per hotel, the oldest room holding it; rebirth keeps the finds.
+No models imported yet: every set piece and the souvenir are Luau blockouts.
+Played by remotes and `execute_luau` only (no window focus) on
+`Test_Rare1021a`, two playtests.
+
+- [x] Specs: `finds` (9 rules), all 172 green under Lune (every spec but `data`).
+- [x] By pity: `rare roll 40 0` → 40 misses, the 41st gave the Rug (the
+  set's first in order); by roll: `rare roll 1 1` gave the Bust (random
+  among the unfound); the `Found` pop-up ("★ Found!", "The Count's Study:
+  2/5 found", size, layer, "Build → Decor, under Found", the copy's price).
+- [x] The real hooks: a happy Common Slime stay rolled nothing (misses held
+  at 40); a happy Rare Zombie's stay at 40 misses gave the Portrait (the
+  next unfound) and reset the run; a defended Hunter Night (`hunters`,
+  `defend`) rolled once (misses 3 → 4) beside its cash.
+- [x] Souvenirs: Slime's move-ins 2 and 3 (`resident Slime`) → the souvenir
+  on the 3rd, not again on the 4th; a VIP contract (Zombie, Furniture 100 %,
+  held room 2, extra seat, checked in, happy) → `Souvenir_Zombie` by
+  `ContractService.onSouvenir` ("Zombie's first VIP contract" pop-up, "A
+  souvenir!"), contract `first` Zombie.
+- [x] Placing: an unfound Globe and Ghost souvenir refused `NotFound`; the
+  Rug, Portrait (wall, back on the room's wall) and Bust placed for $80,
+  $200, $120; the Zombie souvenir for $200: its blockout drawn with
+  `Ribbon` the Zombie's colour, `Trim` 0.6 of it, `Badge` "Zombie" on its
+  front, the emblem a blockout disc with "Z" on `Medal`'s top, `Glass` glass.
+- [x] Set bonus once: two 16-cell Standard Rooms with a whole set each
+  (rooms 23 and 25): room 23 (the older) Decor 0.567 + 0.25 = 0.817 with
+  `sets` CountStudy, room 25 the same pieces 0.567 and no bonus; earlier two
+  3 × 3 rooms both full (1.0) with the bonus only in room 9; the state's room
+  rows `bonus` true / false and "5/5" (the room view's line).
+- [x] Duplicate: with all five found, a hit paid $3K (5 min of income) and
+  the "Found again" pop-up (its wording fixed and seen in the second playtest).
+- [x] Rebirth keeps: after `rebirth` the seven finds and Slime's move-ins
+  stayed, the placed copies went with the hotel; finds back from the
+  DataStore in the second playtest.
+- [!] Found while playing: furniture can cut a room's key spot off from its
+  door (a Wardrobe beside the Bed): `Rooms.ready` said ready, check-in found
+  no path and sent the VIP home. Built rooms' rule, not changed here (in the
+  report).
+- [?] The Decor tab's Found and unfound cards, the room view's set line, the
+  pop-up's **Place it** and the Book's souvenir mark: drawn from the state
+  (read and right), but not opened or clicked (no window focus); pictures
+  (Studio drew no frames in the background).
+- [A] The look of the set and the souvenir after his import, the emblem
+  disc, every number (WAITING §2.38).
+
 ## August keeps
 
 - How the street, the lobby and the rooms look (every look is a night draft).
@@ -1111,3 +1165,4 @@ playtests.
 - 2026-10-21 08:06 Residents level up (A.11.6) played by remotes on Test_Endless1021b: XP at work, refusals, two level-ups with the Wing rate and efficiency measured, panel and badge, levels through a rebirth.
 - 2026-10-21 08:12 Deeper mutations (A.11.5) played by remotes on Test_Endless1021c: stacked residents' pay, scale and tint, the Book's stack and title, the month's mutation in March by the event clock, a Tiny bus guest; balance_model's guards flag the pay lines.
 - 2026-10-21 08:35 VIP contracts (A.11.1) played by remotes on Test_VIP1021a (two playtests): offered at 3★, accepted, a room furnished to the spec and held, the VIP an extra seat on the bus booked into room 2, completed with its reward; a missed one; the daily cap; Book requests and swaps. Two fixes (free offers pruned, the reward without the VIP's own pay). The desk prompt needs Studio in front.
+- 2026-10-21 09:27 Rare decor sets and souvenirs (A.11.3) played by remotes on Test_Rare1021a (two playtests): finds by pity, roll, a happy Rare stay and a defended Hunter Night; souvenirs by move-in no. 3 and a VIP contract; placing for cash and NotFound refusals; the set bonus once per set per hotel (0.567 → 0.817 in the older room only); a duplicate; rebirth and rejoin keep the finds. One fix (the duplicate's wording). Found: furniture can wall off a room's key spot (built rooms). No errors of the game's own.

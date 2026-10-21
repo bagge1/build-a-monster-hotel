@@ -50,7 +50,7 @@ local function show(data: any)
 	end
 	local lines = {}
 	if data.kind == "Duplicate" then
-		table.insert(lines, `Another {data.name}: you have it already.`)
+		table.insert(lines, `{data.name} again: you have it already.`)
 		table.insert(lines, `+{Format.cash(data.cash or 0)}`)
 	else
 		table.insert(lines, data.name)
