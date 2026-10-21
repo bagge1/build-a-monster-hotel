@@ -901,6 +901,13 @@ Med Claudes skärmdump där det finns en. -->
      Dina beslut kvar: skyltmärkenas utseende, om nivåerna ska följa med
      genom rebirth, om en missad månads mutation får komma tillbaka, och
      månadsmutationernas namn.
+   - *VIP contracts byggt 2026-10-21 morgon (PLACEHOLDER alla siffror i
+     `Constants.Contracts`):* VIP:n åker som en extra plats på bussen (raden
+     om det i GDD §4.3 är din), tre kontrakt per dag, 45 min, belöningen 15
+     minuters inkomst × 1–6 efter sällsynthet. Dina frågor: belöningen på ett
+     nytt hotell blir stor ($9K–18K, inkomsten räknas minst $10/s): rätt? En
+     VIP som inte blir nöjd ger ingen belöning: rätt? **Rekommendation:**
+     räkna inkomsten utan golv, och ge halva belöningen för en olycklig VIP.
 
 39. **Väggarna, dörren och möblerna: det granskaren såg som är ditt**
    (natten 2026-10-21; modellerna i `blender/rooms/<hotell>/`, bilderna i
