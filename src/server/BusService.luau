@@ -27,11 +27,20 @@
 	that hotel (`Scoring`). Each bus that brought a hotel some counts in its
 	`tutorialCommonBuses` stat.
 
+	ONE WORLD (GDD §3, §6.4, his ruling 2026-10-20: "Each street's Night Bus
+	carries its own location's family"): every street with a hotel played on
+	it gets its own bus, on one timetable for the whole server. Each street's
+	bus is drawn, sized, guaranteed and announced on its own: its location's
+	species only, 40 % of that street's vacant rooms within 2–4 per player on
+	it, its guests browsing and choosing among that street's hotels only, and
+	its rare guest told to the players on that street. A street nobody plays
+	on has no bus.
+
 	Published on `workspace`: `NextBusAt` and `BusArrivedAt` (server time), so
-	every client draws the bus and the countdown.
+	every client draws the bus and the countdown, and `BusStreets` (the
+	streets with a bus, "1,3").
 ]]
 
-local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
 
@@ -56,20 +65,28 @@ local BusService = {}
 
 -- `booked`: a guest coming to one hotel (the tutorial's Vampire Count, §11), which skips browsing.
 -- `tutorialFor`: a Common the tutorial brought for that hotel (§11 1:45), which browses and scores toward it.
+-- `street`: an extra guest's street (a booked one's is its hotel's; else its species' location's).
 type Passenger = {
 	species: string,
 	mutation: string?,
 	booked: Player?,
 	happyFloor: number?,
 	tutorialFor: Player?,
+	street: number?,
+}
+
+-- One street's next bus: drawn a bus ahead, so its rare guest can be announced.
+type Line = {
+	nextList: { Passenger }?,
+	nextGuaranteed: number, -- how many of nextList's first passengers are its guarantees
+	announced: string?, -- the species announced for its next bus, Legendary and up (§4.3)
 }
 
 local rng = Random.new()
 local busIndex = 0
 local lastArrival = 0 -- server clock (os.time) of the previous bus
 local nextAt = 0 -- os.clock() of the next bus
-local nextList: { Passenger }? = nil
-local nextGuaranteed = 0 -- how many of nextList's first passengers are its guarantees
+local lines: { [number]: Line } = {} -- by street
 local drive = Bus.drive()
 local busScoreProviders: { (Player) -> number } = {}
 local extraGuests: { Passenger } = {} -- added to the next bus (the tutorial, Hunter Night's thank-you)
@@ -78,7 +95,49 @@ local tutorialHotels: () -> { Player } = function()
 	return {}
 end
 local tutorialGuests: { [number]: Player } = {} -- guest id → the hotel the tutorial brought it for
-local announced: string? = nil -- the species announced for the next bus, Legendary and up (§4.3)
+
+local function line(street: number): Line
+	local l = lines[street]
+	if not l then
+		l = { nextList = nil, nextGuaranteed = 0, announced = nil }
+		lines[street] = l
+	end
+	return l
+end
+
+-- The streets with a hotel played on them (each gets a bus), in order.
+local function liveStreets(): { number }
+	local set = {}
+	for _, plot in PlotService.all() do
+		if plot.owner then
+			set[plot.street] = true
+		end
+	end
+	local out = {}
+	for street = 1, StreetLayout.Streets do
+		if set[street] then
+			table.insert(out, street)
+		end
+	end
+	return out
+end
+
+-- The players playing a hotel on `street`.
+local function playersOn(street: number): { Player }
+	local out = {}
+	for _, plot in PlotService.all() do
+		if plot.owner and plot.street == street then
+			table.insert(out, plot.owner)
+		end
+	end
+	return out
+end
+
+local function fireStreet(street: number, ...: any)
+	for _, player in playersOn(street) do
+		Net.fire(player, ...)
+	end
+end
 
 -- A provider of a hotel's bus-score bonus as a fraction (the Moon Tree's +5 %, §6.5).
 function BusService.addScoreBonus(provider: (Player) -> number)
@@ -94,36 +153,33 @@ function BusService.onArrived(handler: (number) -> ())
 	table.insert(arrivedHandlers, handler)
 end
 
--- Adds a guest to the next bus; `opts.booked` sends it straight to that player's hotel.
+--[[ Adds a guest to the next bus; `opts.booked` sends it straight to that
+	player's hotel. It rides the bus of its booked hotel's street, else of
+	`opts.street`, else of its species' location's street. ]]
 function BusService.addToNext(
 	speciesId: string,
 	mutation: string?,
-	opts: { booked: Player?, happyFloor: number? }?
+	opts: { booked: Player?, happyFloor: number?, street: number? }?
 )
 	table.insert(extraGuests, {
 		species = speciesId,
 		mutation = mutation,
 		booked = opts and opts.booked,
 		happyFloor = opts and opts.happyFloor,
+		street = opts and opts.street,
 	})
 end
 
-local function locationsPresent(): { [number]: boolean }
-	local set = {}
-	for _, data in PlayerData.loaded() do
-		set[data.location] = true
-	end
-	if next(set) == nil then
-		set[1] = true
-	end
-	return set
+-- A street's own location (street s is location s's): its bus carries that family only.
+local function locationsPresent(street: number): { [number]: boolean }
+	return { [street] = true }
 end
 
--- The rooms vacant on the whole street now (§4.3: the bus's size follows them).
-local function vacantRooms(): number
+-- The rooms vacant on a street now (§4.3: its bus's size follows them).
+local function vacantRooms(street: number): number
 	local n = 0
 	for _, plot in PlotService.all() do
-		local hotel = plot.owner and HotelService.get(plot.owner)
+		local hotel = plot.street == street and plot.owner and HotelService.get(plot.owner)
 		if hotel then
 			for _, room in hotel.rooms do
 				if room.state == "Vacant" then
@@ -135,12 +191,12 @@ local function vacantRooms(): number
 	return n
 end
 
-local function size(): number
-	return Bus.size(vacantRooms(), #Players:GetPlayers())
+local function size(street: number): number
+	return Bus.size(vacantRooms(street), #playersOn(street))
 end
 
-local function drawIds(flags: Bus.Flags, n: number, at: number): { Passenger }
-	local ids = Bus.passengers(flags, n, locationsPresent(), function()
+local function drawIds(street: number, flags: Bus.Flags, n: number, at: number): { Passenger }
+	local ids = Bus.passengers(flags, n, locationsPresent(street), function()
 		return rng:NextNumber()
 	end, Events.weights(at))
 	local list = {}
@@ -151,23 +207,33 @@ local function drawIds(flags: Bus.Flags, n: number, at: number): { Passenger }
 end
 
 -- A bus's passengers, drawn a bus ahead: its guarantees first, then as many as the street's vacancies ask for now.
-local function draw(index: number, previous: number, at: number): ({ Passenger }, number)
+local function draw(
+	street: number,
+	index: number,
+	previous: number,
+	at: number
+): ({ Passenger }, number)
 	local flags = Bus.flags(index, previous, at)
 	local guaranteed = (if flags.mythic then 1 else 0)
 		+ (if flags.legendary then 1 else 0)
 		+ (if flags.epic then 1 else 0)
-	return drawIds(flags, size(), at), guaranteed
+	return drawIds(street, flags, size(street), at), guaranteed
 end
 
 -- At the bus's arrival: as many as the street's vacancies ask for now, never dropping a guarantee.
-local function fit(list: { Passenger }, guaranteed: number, at: number): { Passenger }
-	local want = size()
+local function fit(
+	street: number,
+	list: { Passenger },
+	guaranteed: number,
+	at: number
+): { Passenger }
+	local want = size(street)
 	while #list > math.max(want, guaranteed) do
 		table.remove(list)
 	end
 	if #list < want then
 		local none = { epic = false, legendary = false, mythic = false }
-		for _, p in drawIds(none, want - #list, at) do
+		for _, p in drawIds(street, none, want - #list, at) do
 			table.insert(list, p)
 		end
 	end
@@ -189,9 +255,10 @@ local function rarest(list: { Passenger }): Passenger?
 	return if id then list[table.find(ids, id) :: number] else nil
 end
 
--- Tells the street about the next bus's rare guest (§4.3), Legendary and up.
-local function announceNext(list: { Passenger })
-	announced = nil
+-- Tells the street about its next bus's rare guest (§4.3), Legendary and up.
+local function announceNext(street: number, list: { Passenger })
+	local l = line(street)
+	l.announced = nil
 	local p = rarest(list)
 	local sp = p and Species.get(p.species)
 	if not p or not sp then
@@ -199,9 +266,10 @@ local function announceNext(list: { Passenger })
 	end
 	local rank = table.find(Constants.RarityOrder, sp.rarity) or 0
 	if rank >= (table.find(Constants.RarityOrder, "Legendary") :: number) then
-		announced = p.species
+		l.announced = p.species
 		local mutation = if p.mutation then Mutations.ById[p.mutation].name .. " " else ""
-		Net.fireAll(
+		fireStreet(
+			street,
 			"Announce",
 			`A {sp.rarity} {mutation}{sp.name} is on the next bus! {wishText(p)}`,
 			"Rare"
@@ -209,7 +277,7 @@ local function announceNext(list: { Passenger })
 	end
 end
 
--- Where a guest goes when its browse ends: the best-scoring hotel with a vacant room of its type.
+-- Where a guest goes when its browse ends: the best-scoring hotel on its street with a vacant room of its type.
 local function decide(g: GuestService.Guest)
 	local sp = Species.get(g.species)
 	if not sp then
@@ -221,7 +289,7 @@ local function decide(g: GuestService.Guest)
 	local here = GuestService.positionOf(g)
 	for _, plot in PlotService.all() do
 		local owner = plot.owner
-		if owner then
+		if owner and plot.street == g.street then
 			local offer = HotelService.vacantFor(owner, g.species)
 			local bonus = 0
 			for _, f in busScoreProviders do
@@ -238,7 +306,7 @@ local function decide(g: GuestService.Guest)
 				amenityBonus = if offer then offer.amenities else 0,
 				pitched = g.pitches[owner.UserId] ~= nil,
 				busBonus = bonus,
-				distance = (StreetLayout.pavementFront(plot.index) - here).Magnitude,
+				distance = (StreetLayout.pavementFront(plot.index, plot.street) - here).Magnitude,
 				tutorial = tutorialGuests[g.id] == owner,
 			})
 			table.insert(jitters, Scoring.jitter(rng:NextNumber()))
@@ -259,7 +327,7 @@ local function decide(g: GuestService.Guest)
 	g.config:SetAttribute("Wish", nil)
 	GuestService.assign(g, owner, offer.pieceId)
 	if sp.rarity == "Legendary" or sp.rarity == "Mythic" or sp.rarity == "Epic" then
-		Net.fireAll("Announce", `The {sp.name} chose {owner.DisplayName}'s hotel!`, "Rare")
+		fireStreet(g.street, "Announce", `The {sp.name} chose {owner.DisplayName}'s hotel!`, "Rare")
 	end
 	PlayerData.stat(owner, "busGuests")
 end
@@ -312,16 +380,18 @@ end
 	its vacant rooms can take, in place of the bus's drawn guests from the end
 	of the list (its guarantees are first and stay, and so does a guest the
 	street was told is coming), so the bus keeps its size. ]]
-local function weightCommons(list: { Passenger }, guaranteed: number)
+local function weightCommons(street: number, list: { Passenger }, guaranteed: number)
 	for id in tutorialGuests do
 		if not GuestService.get(id) then
 			tutorialGuests[id] = nil
 		end
 	end
+	local announced = line(street).announced
 	local slot = #list
 	for _, player in tutorialHotels() do
 		local data = PlayerData.get(player)
-		if data and player.Parent and slot > guaranteed then
+		local plot = PlotService.of(player)
+		if data and player.Parent and slot > guaranteed and plot and plot.street == street then
 			local n = math.min(Constants.Tutorial.CommonsPerBus, slot - guaranteed)
 			local ids = Bus.commonsFor(
 				vacantByRoom(player),
@@ -350,30 +420,45 @@ local function weightCommons(list: { Passenger }, guaranteed: number)
 	end
 end
 
-local function arrive()
-	busIndex += 1
-	local now = os.time()
-	local guaranteed = nextGuaranteed
-	local list: { Passenger }
-	if nextList then
-		list = fit(nextList, nextGuaranteed, now)
-	else
-		list, guaranteed = draw(busIndex, lastArrival, now)
+-- The street an extra guest rides to: its booked hotel's, the one it was given, or its species' location's.
+local function extraStreet(p: Passenger): number
+	local booked = p.booked
+	local plot = booked and PlotService.of(booked)
+	if plot then
+		return plot.street
 	end
-	local ok, err = pcall(weightCommons, list, guaranteed)
+	if p.street then
+		return p.street
+	end
+	local sp = Species.get(p.species)
+	return math.clamp(sp and sp.location or 1, 1, StreetLayout.Streets)
+end
+
+-- One street's bus arriving: its passengers off at its two stops, its waiting guests aboard.
+local function arriveOn(street: number, now: number)
+	local l = line(street)
+	local guaranteed = l.nextGuaranteed
+	local list: { Passenger }
+	if l.nextList then
+		list = fit(street, l.nextList :: { Passenger }, l.nextGuaranteed, now)
+	else
+		list, guaranteed = draw(street, busIndex, lastArrival, now)
+	end
+	local ok, err = pcall(weightCommons, street, list, guaranteed)
 	if not ok then
 		warn(`[bus] tutorial Commons: {err}`)
 	end
-	for _, extra in extraGuests do
-		table.insert(list, extra)
+	for i = #extraGuests, 1, -1 do
+		local extra = extraGuests[i]
+		if extraStreet(extra) == street then
+			table.insert(list, extra)
+			table.remove(extraGuests, i)
+		end
 	end
-	table.clear(extraGuests)
-	lastArrival = now
-	workspace:SetAttribute("BusArrivedAt", workspace:GetServerTimeNow())
-	workspace:SetAttribute("BusIndex", busIndex)
-	Net.fireAll("Announce", "The Night Bus has arrived!", "Bus")
+	fireStreet(street, "Announce", "The Night Bus has arrived!", "Bus")
 	-- Half off at each stop (his ruling), the first stop's half rounded up.
-	local west, east = StreetLayout.Stops[1], StreetLayout.Stops[2]
+	local stops = StreetLayout.stops(street)
+	local west, east = stops[1], stops[2]
 	local half = math.ceil(#list / 2)
 	local first, second = {}, {}
 	for i, p in list do
@@ -385,16 +470,36 @@ local function arrive()
 		GuestService.board(east.name)
 		stepOff(east, second, half)
 	end)
+end
+
+local function arrive()
+	busIndex += 1
+	local now = os.time()
+	local streets = liveStreets()
+	for _, street in streets do
+		local ok, err = pcall(arriveOn, street, now)
+		if not ok then
+			warn(`[bus] street {street}: {err}`)
+		end
+	end
+	-- An extra for a street with no bus now (its hotel's player travelled) waits for the next.
+	lastArrival = now
+	workspace:SetAttribute("BusArrivedAt", workspace:GetServerTimeNow())
+	workspace:SetAttribute("BusIndex", busIndex)
 	for _, h in arrivedHandlers do
 		task.spawn(h, busIndex)
 	end
-	-- Draw the next bus now, so its rare guest can be announced a bus ahead.
+	-- Draw each street's next bus now, so its rare guest can be announced a bus ahead.
 	-- A Monster Parade (§8.2) runs a bus a minute.
 	local interval = if Events.parade(now) then Events.ParadeInterval else B.Interval
 	nextAt = os.clock() + interval
 	workspace:SetAttribute("NextBusAt", workspace:GetServerTimeNow() + interval)
-	nextList, nextGuaranteed = draw(busIndex + 1, now, now + interval)
-	announceNext(nextList :: { Passenger })
+	table.clear(lines)
+	for _, street in streets do
+		local l = line(street)
+		l.nextList, l.nextGuaranteed = draw(street, busIndex + 1, now, now + interval)
+		announceNext(street, l.nextList :: { Passenger })
+	end
 end
 
 -- Brings the next bus now (Call the Bus, §10.2: "for the whole server"): it drives in out of the forest.
@@ -430,18 +535,20 @@ local function pitch(player: Player, guestId: number)
 	Net.fire(player, "Toast", "Pitched! +15% toward your hotel", "Good")
 end
 
---[[ The species on the street a room could be wanted for (§7, "Need a
-	Coffin Suite!"): every guest browsing now, and the next bus's announced
-	guest. ]]
-function BusService.wanted(): { string }
+--[[ The species on a street a room could be wanted for (§7, "Need a
+	Coffin Suite!"): every guest browsing there now, and its next bus's
+	announced guest; every street's with none named. ]]
+function BusService.wanted(street: number?): { string }
 	local out = {}
 	for _, g in GuestService.all() do
-		if g.state == "Browsing" then
+		if g.state == "Browsing" and (street == nil or g.street == street) then
 			table.insert(out, g.species)
 		end
 	end
-	if announced then
-		table.insert(out, announced)
+	for s, l in lines do
+		if l.announced and (street == nil or s == street) then
+			table.insert(out, l.announced)
+		end
 	end
 	return out
 end
@@ -460,23 +567,36 @@ function BusService.Start()
 		return "bus called"
 	end)
 	DevGrant.register("nextbus", function()
-		local names = {}
-		for _, p in nextList or {} do
-			table.insert(names, p.species .. (if p.mutation then "(" .. p.mutation .. ")" else ""))
+		local out = {}
+		for street, l in lines do
+			local names = {}
+			for _, p in l.nextList or {} do
+				table.insert(
+					names,
+					p.species .. (if p.mutation then "(" .. p.mutation .. ")" else "")
+				)
+			end
+			table.insert(out, `street {street}: {table.concat(names, ", ")}`)
 		end
-		return `in {math.floor(BusService.nextIn())}s: {table.concat(names, ", ")}`
+		return `in {math.floor(BusService.nextIn())}s ({workspace:GetAttribute("BusStreets")}): {table.concat(
+			out,
+			" | "
+		)}`
 	end)
-	DevGrant.register("legendary", function()
-		-- Puts a Legendary on the next bus and announces it, as a half-hour bus would.
-		local pool = Bus.pool("Legendary", locationsPresent())
+	DevGrant.register("legendary", function(player)
+		-- Puts a Legendary on the player's street's next bus and announces it, as a half-hour bus would.
+		local plot = PlotService.of(player)
+		local street = if plot then plot.street else 1
+		local pool = Bus.pool("Legendary", locationsPresent(street))
 		if #pool == 0 then
-			return "no Legendary at these locations"
+			return "no Legendary at this location"
 		end
-		nextList = nextList or {}
-		table.insert(nextList :: { Passenger }, 1, { species = pool[1], mutation = nil })
-		nextGuaranteed += 1
-		announceNext(nextList :: { Passenger })
-		return `next bus: {pool[1]}`
+		local l = line(street)
+		l.nextList = l.nextList or {}
+		table.insert(l.nextList :: { Passenger }, 1, { species = pool[1], mutation = nil })
+		l.nextGuaranteed += 1
+		announceNext(street, l.nextList :: { Passenger })
+		return `next bus on street {street}: {pool[1]}`
 	end)
 	DevGrant.register("decide", function()
 		-- Ends every browse now (to see the choices without waiting for the walk).
@@ -490,10 +610,35 @@ function BusService.Start()
 	lastArrival = os.time()
 	nextAt = os.clock() + B.FirstBusDelay
 	workspace:SetAttribute("NextBusAt", workspace:GetServerTimeNow() + B.FirstBusDelay)
-	nextList, nextGuaranteed = draw(1, lastArrival, lastArrival + B.FirstBusDelay)
+	workspace:SetAttribute("BusStreets", "1")
 	task.spawn(function()
 		while true do
 			task.wait(0.5)
+			-- The streets with a bus follow the hotels played (a Travel moves one); a new one's bus is drawn now.
+			local streets = liveStreets()
+			local list = {}
+			for _, street in streets do
+				table.insert(list, tostring(street))
+				if not lines[street] then
+					local l = line(street)
+					local soon = os.time() + math.max(0, math.floor(nextAt - os.clock()))
+					l.nextList, l.nextGuaranteed = draw(street, busIndex + 1, lastArrival, soon)
+				end
+			end
+			-- A street left with no hotel played has no bus any more: its street guests go with the last one.
+			local live = {}
+			for _, street in streets do
+				live[street] = true
+			end
+			for _, g in GuestService.all() do
+				if not g.owner and not live[g.street] then
+					GuestService.remove(g)
+				end
+			end
+			local text = if #list > 0 then table.concat(list, ",") else "1"
+			if workspace:GetAttribute("BusStreets") ~= text then
+				workspace:SetAttribute("BusStreets", text)
+			end
 			if os.clock() >= nextAt then
 				local ok, err = pcall(arrive)
 				if not ok then

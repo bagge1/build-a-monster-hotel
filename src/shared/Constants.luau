@@ -54,6 +54,22 @@ Constants.Street = {
 	ForestRoad = 360, -- PLACEHOLDER: how far from the lane the road runs on into the forest
 }
 
+-- §3, §6.4: one world, every location's street in it (his ruling, 2026-10-20:
+-- "All the hotels stand in one world, far apart, seen from the other plots;
+-- the environment changes gradually from one place into the next"). A street
+-- per location of the chain (`Chain.Locations`), Creepy Lane's layout moved
+-- along world X; street s is location s's. PLACEHOLDER all.
+Constants.World = {
+	-- PLACEHOLDER: studs between two streets' centres. A street's own things reach ±546 in X (its road's
+	-- bends), so 1400 leaves 308 studs of forest and road between two, and the last plot of one street is
+	-- ~540 studs from the first of the next: inside the fog's end (900), down the meadow below.
+	StreetSpacing = 1400,
+	-- PLACEHOLDER: the open strip either side of the road between two streets (and the forest's clearing on
+	-- top of it), so a street-end plot sees the next street's first hotels down it instead of a wall of trees.
+	MeadowHalfWidth = 50,
+	RoadWidth = 16, -- PLACEHOLDER: the road between two streets' lanes, as wide as the bus's road
+}
+
 -- §5.4: the forest round the street (his idea, 2026-10-19; longer and thicker
 -- near the play area, his ruling the same evening). PLACEHOLDER all.
 Constants.Forest = {
@@ -68,6 +84,7 @@ Constants.Forest = {
 	LowGraphics = 0.5, -- the share of trees the low graphics tier draws
 	ProxyDistance = 260, -- studs from the camera beyond which a tree is its Root and LOD_Proxy only
 	SwapsPerPass = 40, -- trees built or stripped per LOD pass, so a camera jump never hitches
+	DrawDistance = 1100, -- PLACEHOLDER: studs from the camera beyond which a tree is not drawn at all (the fog ends at 900)
 }
 
 -- §4.2: rarity values (starting numbers).

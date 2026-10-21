@@ -1,7 +1,19 @@
 --!strict
 --[[
-	Creepy Lane's six plots (GDD §3, Appendix A.1); the lane itself is
-	`StreetService`'s.
+	The plots of every street (GDD §3, Appendix A.1); the streets themselves
+	are `StreetService`'s.
+
+	ONE WORLD (§3, §6.4, his ruling 2026-10-20): a player keeps one plot index
+	on every location's street. The hotel they play is **live** on its
+	location's street: the `Plot` every system works with (`PlotService.of`,
+	`all`), a model `Plot_<i>` in `workspace.Plots` that moves to the street
+	played (its `Origin` and `Street` change on a Travel). Every other hotel
+	of their chain is **drawn** on its street from its `HotelRecord`, whole
+	(tiles, slabs, facade, walls, doors, furniture, decor, its sign) but
+	static: no prompts, no guests, nothing hooks it (`Plot_<s>_<i>` in
+	`workspace.WorldPlots`, `Static`, `HeldBy`). A location not opened shows
+	that index's empty plot, and so does every index nobody holds. An index
+	nobody holds has its live model on Creepy Lane.
 
 	On joining, a player gets the nearest free plot (`StreetLayout.ClaimOrder`)
 	and their saved hotel is rebuilt there: the layout is saved relative to the
@@ -42,6 +54,7 @@ local Rooms = require(ReplicatedStorage.Shared.Rooms)
 local Locations = require(ReplicatedStorage.Shared.Locations)
 local Cosmetics = require(ReplicatedStorage.Shared.Cosmetics)
 local HotelPoints = require(ReplicatedStorage.Shared.HotelPoints)
+local Format = require(ReplicatedStorage.Shared.Format)
 local StreetLayout = require(ReplicatedStorage.Shared.StreetLayout)
 local HotelKit = require(ServerScriptService.Server.HotelKit)
 local PlayerData = require(ServerScriptService.Server.PlayerData)
@@ -52,7 +65,10 @@ local PlotService = {}
 
 export type Plot = {
 	index: number,
-	owner: Player?,
+	street: number, -- the street it stands on (location `street`'s, StreetLayout)
+	static: boolean, -- a chain's hotel drawn on another street: no prompts, no handlers
+	holder: Player?, -- a static plot's player
+	owner: Player?, -- a live plot's player (never set on a static one)
 	model: Model,
 	frame: CFrame,
 	location: number,
@@ -62,9 +78,12 @@ export type Plot = {
 	floors: number,
 }
 
-local plots: { Plot } = {}
+local plots: { Plot } = {} -- the live plot of each index, on its holder's played street
+local statics: { { Plot } } = {} -- street → index → that street's drawn plot
 local byPlayer: { [Player]: Plot } = {}
+local drawnChain: { [Player]: string } = {} -- what each player's statics were last drawn from
 local plotsFolder: Folder
+local worldFolder: Folder
 
 type PromptHandler = (player: Player, plot: Plot, kind: string, pieceId: string?) -> ()
 local promptHandlers: { PromptHandler } = {}
@@ -382,7 +401,7 @@ local function buildHotel(plot: Plot, data: PlayerData.Data?)
 	plot.pieces = {}
 	plot.decor = {}
 	plot.sign = nil
-	plot.location = if data then data.location else 1
+	plot.location = if data then data.location else plot.street
 	plot.floors = if data then data.floors else 1
 	plot.model:SetAttribute("Location", plot.location)
 
@@ -422,6 +441,15 @@ local function buildHotel(plot: Plot, data: PlayerData.Data?)
 	end
 	drawRooms(plot, data)
 	layHallways(plot, data)
+	if plot.static then
+		-- Drawn, not played: nothing to press, nothing that hooks a built hotel.
+		for _, d in plot.model:GetDescendants() do
+			if d:IsA("ProximityPrompt") then
+				d:Destroy()
+			end
+		end
+		return
+	end
 	if plot.owner then
 		PlotService.refreshTraps(plot.owner)
 	end
@@ -792,13 +820,6 @@ function PlotService.refreshTraps(player: Player)
 	folder.Parent = plot.model
 end
 
-function PlotService.rebuild(player: Player)
-	local plot = byPlayer[player]
-	if plot then
-		buildHotel(plot, PlayerData.get(player))
-	end
-end
-
 --[[ After a tile is bought (§5.4, A.1): what the tiles decide is drawn
 	again (the slabs, the plates, the facade and its cosmetics), the pieces
 	stay as they are. ]]
@@ -856,8 +877,20 @@ function PlotService.of(player: Player): Plot?
 	return byPlayer[player]
 end
 
+-- The live plots, one per index, wherever each stands (the played hotels and the free indexes on Creepy Lane).
 function PlotService.all(): { Plot }
 	return plots
+end
+
+-- Every plot of the world: the live ones, then each street's drawn ones (for measuring and tests).
+function PlotService.everyPlot(): { Plot }
+	local out = table.clone(plots)
+	for _, row in statics do
+		for _, p in row do
+			table.insert(out, p)
+		end
+	end
+	return out
 end
 
 function PlotService.onPrompt(handler: PromptHandler)
@@ -926,12 +959,125 @@ function PlotService.roomPrompt(plot: Plot, pieceId: string, kind: string): Prox
 	return if p and p:IsA("ProximityPrompt") then p else nil
 end
 
+-- Stands the player on their played hotel's forecourt. Its street may be far off (a Travel, a
+-- hotel played at another location on joining): the ground there is streamed in first, so they never fall.
 local function spawnAt(player: Player)
 	local plot = byPlayer[player]
 	local character = player.Character
 	local at = plot and PlotService.point(plot, "Spawn")
 	if character and at then
-		character:PivotTo(at + Vector3.new(0, 3, 0))
+		pcall(function()
+			player:RequestStreamAroundAsync(at.Position, 5)
+		end)
+		if player.Character == character and byPlayer[player] == plot then
+			character:PivotTo(at + Vector3.new(0, 3, 0))
+		end
+	end
+end
+
+-- Stands a plot on `street`: its frame, and what the clients read of it.
+local function place(plot: Plot, street: number)
+	plot.street = street
+	plot.frame = StreetLayout.plotFrame(plot.index, street)
+	plot.model:SetAttribute("Origin", plot.frame)
+	plot.model:SetAttribute("Street", street)
+end
+
+--[[ A hotel record of the chain as the drawing reads a player's data: the
+	player's own data (their worn cosmetics) with that hotel's fields. ]]
+local function view(
+	data: PlayerData.Data,
+	rec: PlayerData.HotelRecord,
+	location: number
+): PlayerData.Data
+	local v = table.clone(data)
+	v.location = location
+	v.layout = rec.layout
+	v.decor = rec.decor
+	v.walls = rec.walls or {}
+	v.rooms = rec.rooms or {}
+	v.tiles = rec.tiles
+	v.tilesBought = rec.tilesBought
+	v.windows = rec.windows
+	v.finishes = rec.finishes
+	v.floors = rec.floors
+	v.freeStairs = rec.freeStairs
+	return v
+end
+
+-- A static hotel's sign: whose it is, where, and the stars it was left with.
+local function staticSign(plot: Plot, player: Player, rec: PlayerData.HotelRecord)
+	local board = plot.sign and plot.sign:FindFirstChild("Board")
+	if not board or not board:IsA("BasePart") then
+		return
+	end
+	local gui = Instance.new("SurfaceGui")
+	gui.Name = "SignGui"
+	gui.Face = Enum.NormalId.Front
+	gui.CanvasSize = Vector2.new(480, 180)
+	gui.LightInfluence = 0
+	local label = Instance.new("TextLabel")
+	label.Name = "Text"
+	label.Size = UDim2.fromScale(1, 1)
+	label.BackgroundTransparency = 1
+	label.Font = Enum.Font.FredokaOne
+	label.TextScaled = true
+	label.TextColor3 = Color3.fromRGB(255, 230, 180)
+	label.Text =
+		`{player.DisplayName}'s {Locations.get(plot.street).name}\n{Format.stars(rec.rating)}`
+	label.Parent = gui
+	gui.Parent = board
+end
+
+--[[ Draws index `index`'s plot on `street` as what it is now: nothing where
+	the live plot of that index stands, the chain's hotel at that location if
+	its holder has opened it, else an empty plot. ]]
+local function drawStatic(index: number, street: number, player: Player?)
+	local plot = statics[street] and statics[street][index]
+	if not plot then
+		return
+	end
+	local data = player and PlayerData.get(player)
+	local live = plots[index]
+	local rec = data and data.chain[tostring(street)]
+	plot.holder = if rec then player else nil
+	plot.model:SetAttribute("HeldBy", if rec and player then player.UserId else 0)
+	plot.model:SetAttribute("HeldName", if rec and player then player.DisplayName else "")
+	if live and live.street == street then
+		for _, child in plot.model:GetChildren() do
+			child:Destroy()
+		end
+		plot.pieces, plot.decor, plot.sign = {}, {}, nil
+		return
+	end
+	if data and rec and player then
+		buildHotel(plot, view(data, rec, street))
+		staticSign(plot, player, rec)
+	else
+		buildHotel(plot, nil)
+	end
+end
+
+-- What a player's statics are drawn from: the street played and the chain's hotels with their sizes.
+local function chainKey(data: PlayerData.Data?): string
+	if not data then
+		return ""
+	end
+	local keys = {}
+	for k, rec in data.chain do
+		table.insert(keys, `{k}:{rec.floors}`)
+	end
+	table.sort(keys)
+	return `{data.location}|{table.concat(keys, ",")}`
+end
+
+-- Draws every street's plot of a player's index (or of a free index, with no player) again.
+local function drawChain(index: number, player: Player?)
+	for street = 1, StreetLayout.Streets do
+		drawStatic(index, street, player)
+	end
+	if player then
+		drawnChain[player] = chainKey(PlayerData.get(player))
 	end
 end
 
@@ -947,8 +1093,11 @@ local function claim(player: Player, data: PlayerData.Data)
 			plot.model:SetAttribute("OwnerId", player.UserId)
 			plot.model:SetAttribute("OwnerName", player.DisplayName)
 			player:SetAttribute("Plot", index)
+			place(plot, data.location)
+			player:SetAttribute("Street", plot.street)
 			buildHotel(plot, data)
-			spawnAt(player)
+			drawChain(index, player)
+			task.spawn(spawnAt, player)
 			return
 		end
 	end
@@ -961,10 +1110,37 @@ local function release(player: Player)
 		return
 	end
 	byPlayer[player] = nil
+	drawnChain[player] = nil
 	plot.owner = nil
 	plot.model:SetAttribute("OwnerId", 0)
 	plot.model:SetAttribute("OwnerName", "")
+	place(plot, 1)
 	buildHotel(plot, nil)
+	drawChain(plot.index, nil)
+end
+
+--[[ Builds the played hotel again from its data. After a Travel or a
+	rebirth (the location played is not the street it stands on), it moves to
+	its location's street first, the player with it to its forecourt, and the
+	chain's other hotels are drawn again on theirs. ]]
+function PlotService.rebuild(player: Player)
+	local plot = byPlayer[player]
+	if not plot then
+		return
+	end
+	local data = PlayerData.get(player)
+	local moved = data ~= nil and plot.street ~= data.location
+	if data and moved then
+		place(plot, data.location)
+		player:SetAttribute("Street", plot.street)
+	end
+	buildHotel(plot, data)
+	if moved or drawnChain[player] ~= chainKey(data) then
+		drawChain(plot.index, player)
+	end
+	if moved then
+		task.spawn(spawnAt, player)
+	end
 end
 
 function PlotService.Init()
@@ -975,29 +1151,52 @@ function PlotService.Init()
 	plotsFolder = Instance.new("Folder")
 	plotsFolder.Name = "Plots"
 	plotsFolder.Parent = workspace
-	for i = 1, Constants.Street.Plots do
+	local oldWorld = workspace:FindFirstChild("WorldPlots")
+	if oldWorld then
+		oldWorld:Destroy()
+	end
+	worldFolder = Instance.new("Folder")
+	worldFolder.Name = "WorldPlots"
+	worldFolder.Parent = workspace
+	local function newPlot(i: number, street: number, static: boolean, parent: Folder): Plot
 		local model = Instance.new("Model")
-		model.Name = `Plot_{i}`
+		model.Name = if static then `Plot_{street}_{i}` else `Plot_{i}`
 		model.ModelStreamingMode = Enum.ModelStreamingMode.Atomic
-		local frame = StreetLayout.plotFrame(i)
 		model:SetAttribute("Index", i)
 		model:SetAttribute("OwnerId", 0)
 		model:SetAttribute("OwnerName", "")
-		model:SetAttribute("Origin", frame)
-		model.Parent = plotsFolder
+		if static then
+			model:SetAttribute("Static", true)
+			model:SetAttribute("HeldBy", 0)
+		end
+		model.Parent = parent
 		local plot: Plot = {
 			index = i,
+			street = street,
+			static = static,
+			holder = nil,
 			owner = nil,
 			model = model,
-			frame = frame,
-			location = 1,
+			frame = CFrame.identity,
+			location = street,
 			sign = nil,
 			pieces = {},
 			decor = {},
 			floors = 1,
 		}
-		plots[i] = plot
-		buildHotel(plot, nil)
+		place(plot, street)
+		return plot
+	end
+	for i = 1, Constants.Street.Plots do
+		plots[i] = newPlot(i, 1, false, plotsFolder)
+		buildHotel(plots[i], nil)
+	end
+	for street = 1, StreetLayout.Streets do
+		statics[street] = {}
+		for i = 1, Constants.Street.Plots do
+			statics[street][i] = newPlot(i, street, true, worldFolder)
+			drawStatic(i, street, nil)
+		end
 	end
 end
 
@@ -1015,7 +1214,7 @@ function PlotService.Start()
 			spawnAt(player)
 		end)
 		if player.Character then
-			spawnAt(player)
+			task.spawn(spawnAt, player)
 		end
 	end)
 	PlayerData.onDeparted(release)

@@ -9,6 +9,15 @@
 
 	A delivered model's `LOD_Proxy` (MODELS.md, "What a model costs to draw")
 	is a later step; this works on blockouts and models alike by part name.
+
+	ONE WORLD (GDD §3, §6.4): the hotels a chain draws on its other streets
+	(`workspace.WorldPlots`, static) get the same, and in low graphics their
+	lights stay off like every other hotel not played by this player. A whole
+	far street is mostly out of the client's hands: streaming (on in
+	`default.project.json`) sends a plot only within its radius.
+	The street lamps of every street light only within `LAMP_LIGHT` of the
+	camera; their bulbs glow on (measured 2026-10-21: three streets are 180
+	lamps, 104 of them lit on a client at Creepy Lane before this).
 ]]
 
 local Players = game:GetService("Players")
@@ -38,27 +47,52 @@ end
 
 local function apply(plot: Model, hide: boolean)
 	local pieces = plot:FindFirstChild("Pieces")
+	local mine = plot:GetAttribute("Index") == me:GetAttribute("Plot")
+		and not plot:GetAttribute("Static")
 	for _, d in (if pieces then pieces:GetDescendants() else {}) do
 		if d:IsA("BasePart") and isDetail(d) then
 			d.LocalTransparencyModifier = if hide then 1 else 0
 		elseif d:IsA("PointLight") then
-			d.Enabled = not hide
-				and not (
-					me:GetAttribute("LowGraphics") == true
-					and plot:GetAttribute("Index") ~= me:GetAttribute("Plot")
-				)
+			d.Enabled = not hide and not (me:GetAttribute("LowGraphics") == true and not mine)
+		end
+	end
+end
+
+-- Every hotel in the world: the ones played (`Plots`) and the chains' others (`WorldPlots`).
+local function allPlots(): { Instance }
+	local out = {}
+	for _, name in { "Plots", "WorldPlots" } do
+		local folder = workspace:FindFirstChild(name)
+		for _, plot in (if folder then folder:GetChildren() else {}) do
+			table.insert(out, plot)
+		end
+	end
+	return out
+end
+
+-- Street lamps (every street's `Street*` folder): their light only near the camera; the bulb glows on.
+local LAMP_LIGHT = 500 -- PLACEHOLDER: studs; a lamp's light (range 24) is lost in the fog well before the fog's end
+local function lamps(eye: Vector3)
+	for _, folder in workspace:GetChildren() do
+		if folder:IsA("Folder") and string.sub(folder.Name, 1, 6) == "Street" then
+			for _, d in folder:GetDescendants() do
+				if d:IsA("PointLight") and d.Parent and d.Parent:IsA("BasePart") then
+					local p = (d.Parent :: BasePart).Position
+					d.Enabled = (Vector3.new(p.X, eye.Y, p.Z) - eye).Magnitude <= LAMP_LIGHT
+				end
+			end
 		end
 	end
 end
 
 local function step()
 	local camera = workspace.CurrentCamera
-	local plots = workspace:FindFirstChild("Plots")
-	if not camera or not plots then
+	if not camera then
 		return
 	end
 	local eye = camera.CFrame.Position
-	for _, plot in plots:GetChildren() do
+	lamps(eye)
+	for _, plot in allPlots() do
 		if plot:IsA("Model") then
 			local origin = plot:GetAttribute("Origin")
 			if typeof(origin) == "CFrame" then
@@ -78,15 +112,29 @@ end
 function Lod.Init() end
 
 function Lod.Start()
-	-- A rebuilt hotel brings new parts: reapply to it on the next step.
-	local plots = workspace:WaitForChild("Plots")
-	for _, plot in plots:GetChildren() do
+	-- A rebuilt hotel brings new parts, a moved one (Travel) a new place: reapply to it on the next step.
+	local function watch(plot: Instance)
 		if plot:IsA("Model") then
 			plot.DescendantAdded:Connect(function()
 				far[plot] = nil
 			end)
+			plot:GetAttributeChangedSignal("Origin"):Connect(function()
+				far[plot] = nil
+			end)
 		end
 	end
+	for _, name in { "Plots", "WorldPlots" } do
+		task.spawn(function()
+			local folder = workspace:WaitForChild(name)
+			for _, plot in folder:GetChildren() do
+				watch(plot)
+			end
+			folder.ChildAdded:Connect(watch) -- streamed in later
+		end)
+	end
+	me:GetAttributeChangedSignal("LowGraphics"):Connect(function()
+		table.clear(far)
+	end)
 	task.spawn(function()
 		while true do
 			task.wait(2)

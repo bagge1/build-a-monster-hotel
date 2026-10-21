@@ -9,6 +9,10 @@
 
 	A delivered `ReplicatedStorage.Monsters.NightBus` wins (MODELS.md, "Hunters
 	and the bus"); until then a Luau blockout. Client-only and read by nothing.
+
+	ONE WORLD (GDD §3, §6.4): every street with a hotel played on it has its
+	own bus on the same timetable, its street's road (`workspace.BusStreets`,
+	the server's list, "1,3").
 ]]
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -24,7 +28,7 @@ local BusRenderer = {}
 local drive = Bus.drive()
 local doorAhead = 0 -- how far ahead of the bus's centre its door is: the model's `Door` attachment
 
-local bus: Model?
+local buses: { [number]: Model } = {} -- by street
 local countdown: TextLabel
 
 local function part(
@@ -113,43 +117,70 @@ local function build(): Model
 	return m
 end
 
-local function busAt(t: number): CFrame?
+local function busAt(t: number, street: number): CFrame?
 	-- t: seconds since the bus reached the west stop (negative while it drives in).
 	if t < drive.start or t > drive.finish then
 		return nil
 	end
 	local s = drive.at(t) - doorAhead
-	local p = StreetLayout.routePoint(s)
+	local p = StreetLayout.routePoint(s, street)
 	-- Its heading from the road a little behind and ahead, so it swings round a bend, not by the segment.
-	local behind = StreetLayout.routePoint(s - 6)
-	local ahead = StreetLayout.routePoint(s + 6)
+	local behind = StreetLayout.routePoint(s - 6, street)
+	local ahead = StreetLayout.routePoint(s + 6, street)
 	local d = ahead - behind
 	local forward = if d.Magnitude > 0.01 then Vector3.new(d.X, 0, d.Z).Unit else Vector3.xAxis
 	-- Authored facing +X (MODELS.md, "NightBus"): a quarter turn from lookAt's −Z.
 	return CFrame.lookAt(p, p + forward) * CFrame.Angles(0, math.pi / 2, 0)
 end
 
+-- The streets with a bus (the server's `BusStreets`), Creepy Lane's alone until it says.
+local function busStreets(): { number }
+	local list = workspace:GetAttribute("BusStreets")
+	local out = {}
+	if typeof(list) == "string" then
+		for n in string.gmatch(list, "%d+") do
+			table.insert(out, tonumber(n) :: number)
+		end
+	else
+		table.insert(out, 1)
+	end
+	return out
+end
+
 local function frame()
 	local now = workspace:GetServerTimeNow()
 	local arrived = workspace:GetAttribute("BusArrivedAt") :: number?
 	local nextAt = workspace:GetAttribute("NextBusAt") :: number?
-	-- The bus drives in before its guests appear, so it is at the stop when they step off.
-	local cf: CFrame? = nil
-	if arrived then
-		cf = busAt(now - arrived)
-	end
-	if not cf and nextAt then
-		cf = busAt(now - nextAt)
-	end
-	if cf then
-		if not bus then
-			bus = build()
-			bus.Parent = workspace
+	local live: { [number]: boolean } = {}
+	for _, street in busStreets() do
+		live[street] = true
+		-- The bus drives in before its guests appear, so it is at the stop when they step off.
+		local cf: CFrame? = nil
+		if arrived then
+			cf = busAt(now - arrived, street)
 		end
-		(bus :: Model):PivotTo(cf)
-	elseif bus then
-		bus:Destroy()
-		bus = nil
+		if not cf and nextAt then
+			cf = busAt(now - nextAt, street)
+		end
+		local bus = buses[street]
+		if cf then
+			if not bus then
+				bus = build()
+				bus.Name = if street == 1 then "NightBus" else `NightBus_{street}`
+				bus.Parent = workspace
+				buses[street] = bus
+			end
+			(bus :: Model):PivotTo(cf)
+		elseif bus then
+			bus:Destroy()
+			buses[street] = nil
+		end
+	end
+	for street, bus in buses do
+		if not live[street] then
+			bus:Destroy()
+			buses[street] = nil
+		end
 	end
 	if nextAt then
 		countdown.Text = `Night Bus in {Format.duration(math.max(0, nextAt - now))}`

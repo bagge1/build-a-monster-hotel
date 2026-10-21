@@ -453,7 +453,7 @@ FORMULA_GUARDS = [
     ("src/server/TutorialService.luau", "and busesSince >= 2"),
     ("src/server/ResidentService.luau", "local threshold = if g.tutorialFriend"),
     ("src/server/BookService.luau", "math.floor(Economy.speciesPay(speciesId) * Constants.Book.SpeciesFoundPaySeconds)"),
-    ("src/server/BusService.luau", "nextList, nextGuaranteed = draw(busIndex + 1, now, now + interval)"),
+    ("src/server/BusService.luau", "l.nextList, l.nextGuaranteed = draw(street, busIndex + 1, now, now + interval)"),  # each street's bus a bus ahead (one world, 2026-10-21)
 ]
 
 

@@ -18,6 +18,13 @@
 	player 5 minutes of income and sends a thank-you bus of Rare-or-better
 	guests. Hunters are published like guests (`ReplicatedStorage.Hunters`),
 	and drawn by each client.
+
+	ONE WORLD (GDD §3, §6.4): a night comes to every street with a hotel
+	played on it, each hotel's hunters walking in from its own street's east
+	end and fleeing back there, where each street has its Hunter Camp
+	(`HunterCamp` on Creepy Lane, `HunterCamp_<s>` on street s; any of them
+	rescues). The night, its reward and its thank-you bus are the server's
+	(the thank-you guests ride each to its own location's street).
 ]]
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -59,7 +66,6 @@ local nightEnd = 0
 local nextNight = 0
 local total, reached = 0, 0
 local securityAt: { [Player]: number } = {}
-local camp: Part
 local trapsUsed: { [Player]: { [number]: boolean } } = {} -- this night's sprung traps
 
 local function length(path: { Vector3 }): number
@@ -123,8 +129,9 @@ local function spawnHunter(plot: PlotService.Plot, delay: number)
 			arriveAt = 0,
 			config = config,
 		}
-		local start = StreetLayout.HunterCamp + Vector3.new(30, 0, (math.random() - 0.5) * 10)
-		local front = StreetLayout.laneFront(plot.index)
+		local start = StreetLayout.hunterCamp(plot.street)
+			+ Vector3.new(30, 0, (math.random() - 0.5) * 10)
+		local front = StreetLayout.laneFront(plot.index, plot.street)
 		local entrance = PlotService.point(plot, "Entrance")
 		local path = { start, front }
 		if entrance then
@@ -140,7 +147,11 @@ end
 local function flee(h: Hunter)
 	h.state = "Fleeing"
 	local p = here(h)
-	walk(h, { p, Vector3.new(p.X, p.Y, 0), StreetLayout.HunterCamp + Vector3.new(60, 0, 0) }, 26)
+	walk(h, {
+		p,
+		Vector3.new(p.X, p.Y, 0),
+		StreetLayout.hunterCamp(StreetLayout.streetAt(p)) + Vector3.new(60, 0, 0),
+	}, 26)
 end
 
 local function net(h: Hunter)
@@ -148,7 +159,11 @@ local function net(h: Hunter)
 	local owner = h.plot.owner
 	h.state = "Leaving"
 	local p = here(h)
-	walk(h, { p, Vector3.new(p.X, p.Y, 0), StreetLayout.HunterCamp + Vector3.new(60, 0, 0) }, 14)
+	walk(h, {
+		p,
+		Vector3.new(p.X, p.Y, 0),
+		StreetLayout.hunterCamp(StreetLayout.streetAt(p)) + Vector3.new(60, 0, 0),
+	}, 14)
 	if not owner then
 		return
 	end
@@ -384,15 +399,15 @@ local function tick()
 	end
 end
 
--- The Hunter Camp: a netted resident's owner rescues it here (§8.1).
-local function buildCamp()
-	camp = Instance.new("Part")
-	camp.Name = "HunterCamp"
+-- The Hunter Camp at a street's east end: a netted resident's owner rescues it here (§8.1).
+local function buildCamp(street: number)
+	local camp = Instance.new("Part")
+	camp.Name = if street == 1 then "HunterCamp" else `HunterCamp_{street}`
 	camp.Anchored = true
 	camp.Size = Vector3.new(10, 6, 10)
 	camp.Color = Color3.fromRGB(110, 80, 60)
 	camp.Material = Enum.Material.WoodPlanks
-	camp.CFrame = CFrame.new(StreetLayout.HunterCamp + Vector3.new(14, 3, -14))
+	camp.CFrame = CFrame.new(StreetLayout.hunterCamp(street) + Vector3.new(14, 3, -14))
 	local prompt = Instance.new("ProximityPrompt")
 	prompt.ActionText = "Rescue"
 	prompt.ObjectText = "Hunter Camp"
@@ -441,7 +456,9 @@ function HunterService.Init()
 end
 
 function HunterService.Start()
-	buildCamp()
+	for street = 1, StreetLayout.Streets do
+		buildCamp(street)
+	end
 	nextNight = os.clock() + H.FirstDelay
 	workspace:SetAttribute("NextHunterNight", workspace:GetServerTimeNow() + H.FirstDelay)
 	DevGrant.register("hunters", function()

@@ -14,9 +14,15 @@
 	and `Clearing` studs kept free round each. The gaps between plots keep a
 	line of trees down their middle.
 
-	Each tree belongs to a **zone**: the plot it stands behind or beside, or 0
-	at the street's ends. A zone's trees are drawn from its plot's location's
-	set (`Forest.Sets`), so a Frostfang lodge stands among snowy firs.
+	ONE WORLD (GDD §3, §6.4, his ruling 2026-10-20): the forest covers every
+	location's street and the road between them (`StreetLayout.link`), with a
+	meadow `World.MeadowHalfWidth` either side of that road, so a street-end
+	plot sees the next street's hotels down it. Each tree belongs to a
+	**location**: its street's own, and between two streets the next one's
+	more and more often along X (`StreetLayout.blend`), so Haunted Manor's
+	crooked trees give way to Frostfang's snowy firs, and those to Bayou Spa's
+	cypresses, gradually. Its trees are drawn from that location's set
+	(`Forest.Sets`).
 ]]
 
 local Constants = require(script.Parent.Constants)
@@ -24,6 +30,7 @@ local StreetLayout = require(script.Parent.StreetLayout)
 
 local F = Constants.Forest
 local S = Constants.Street
+local W = Constants.World
 
 local Forest = {}
 
@@ -39,6 +46,13 @@ Forest.Sets = {
 		{ id = "Tree_SnowFir", weight = 5 },
 		{ id = "Tree_Fir", weight = 2 },
 		{ id = "Tree_Bare", weight = 1 },
+	},
+	-- Bayou Spa: swamp cypresses, a few bare and crooked trees. PLACEHOLDER (his picks): `Tree_Cypress` has no
+	-- model yet, `ForestRenderer` draws a blockout with MODELS.md's tree parts until one is imported.
+	[3] = {
+		{ id = "Tree_Cypress", weight = 5 },
+		{ id = "Tree_Bare", weight = 1.5 },
+		{ id = "Tree_Crooked", weight = 1 },
 	},
 } :: { [number]: { { id: string, weight: number } } }
 
@@ -64,19 +78,27 @@ export type Tree = {
 	position: Vector3, -- the trunk's foot, on the ground
 	yaw: number, -- radians
 	scale: number,
-	pick: number, -- in [0, 1): which tree of its zone's set
-	zone: number, -- a plot index, or 0
+	pick: number, -- in [0, 1): which tree of its location's set
+	location: number, -- whose set it is drawn from: its street's, blended toward the next between two
 	low: boolean, -- drawn by the low graphics tier too
 }
 
--- True where no tree may stand: the street's clearing and the road. With
--- `margin`, the clearing widened by that many studs (the thicket's reach).
+-- True where no tree may stand: every street's clearing and road, and the meadow between two streets.
+-- With `margin`, the clearing widened by that many studs (the thicket's reach).
 function Forest.cleared(p: Vector3, margin: number?): boolean
 	local C = F.Clearing + (margin or 0)
-	local ax, az = math.abs(p.X), math.abs(p.Z)
-	local laneEnd = S.LaneHalfLength + 20
+	local street = StreetLayout.streetAt(p)
+	local lx = p.X - StreetLayout.originX(street)
+	local ax, az = math.abs(lx), math.abs(p.Z)
+	local laneEnd = StreetLayout.LaneEnd
 	-- The lane and its pavements, end to end.
 	if az < S.LaneHalfWidth + S.PavementWidth + C and ax < laneEnd + C then
+		return true
+	end
+	-- The meadow along the road to the next street (or from the one before), from past the last plots on.
+	local toward = (lx > StreetLayout.RingX and street < StreetLayout.Streets)
+		or (lx < -StreetLayout.RingX and street > 1)
+	if toward and az < W.MeadowHalfWidth + C then
 		return true
 	end
 	-- A plot: its forecourt, its grid and its Wing.
@@ -84,7 +106,7 @@ function Forest.cleared(p: Vector3, margin: number?): boolean
 		local side = if p.Z > 0 then 1 else -1
 		for index = 1, S.Plots do
 			if StreetLayout.side(index) == side then
-				local x0, x1 = StreetLayout.plotSpan(index)
+				local x0, x1 = StreetLayout.plotSpan(index, street)
 				if p.X > x0 - C and p.X < x1 + C then
 					return true
 				end
@@ -94,23 +116,12 @@ function Forest.cleared(p: Vector3, margin: number?): boolean
 	return StreetLayout.roadDistance(p) < StreetLayout.RoadWidth / 2 + C
 end
 
--- The plot a point stands behind or beside (the nearest on its side), or 0 past the street's ends.
-function Forest.zone(p: Vector3): number
-	if math.abs(p.X) > StreetLayout.RingX + S.PlotGap / 2 then
-		return 0
-	end
-	local side = if p.Z > 0 then 1 else -1
-	local best, bestD = 0, math.huge
-	for index = 1, S.Plots do
-		if StreetLayout.side(index) == side then
-			local x0, x1 = StreetLayout.plotSpan(index)
-			local d = math.abs((x0 + x1) / 2 - p.X)
-			if d < bestD then
-				best, bestD = index, d
-			end
-		end
-	end
-	return best
+--[[ The location whose trees stand at `p`: its street's, and between two
+	streets the next one's with a chance growing along X (`StreetLayout.blend`).
+	`roll` in [0, 1) is the tree's own, so the forest is the same everywhere. ]]
+function Forest.locationAt(p: Vector3, roll: number): number
+	local a, b, t = StreetLayout.blend(p.X)
+	return if roll < t then b else a
 end
 
 -- The tree id for a zone's location and a tree's `pick`.
@@ -141,10 +152,12 @@ local function band(
 	keep: (Vector3) -> boolean
 )
 	local rng = Random.new(seed)
-	local xMax = S.LaneHalfLength + 20 + F.Clearing + reach
+	local xMax = StreetLayout.LaneEnd + F.Clearing + reach
 	local zMax = StreetLayout.BackZ + F.Clearing + reach
+	-- From west of the first street to east of the last: Creepy Lane's cells first, as they always were.
+	local xEnd = StreetLayout.originX(StreetLayout.Streets) + xMax
 	local x = -xMax
-	while x < xMax do
+	while x < xEnd do
 		local z = -zMax
 		while z < zMax do
 			-- Every cell draws the same numbers whether or not it gets a tree, so the forest is stable.
@@ -163,7 +176,8 @@ local function band(
 					yaw = yaw * 2 * math.pi,
 					scale = 0.8 + 0.45 * scale,
 					pick = pick,
-					zone = Forest.zone(p),
+					-- The blend's roll from the tree's own numbers, so no cell draws one more and the forest stays put.
+					location = Forest.locationAt(p, (pick * 7919 + yaw * 104729) % 1),
 					low = low < F.LowGraphics,
 				})
 			end

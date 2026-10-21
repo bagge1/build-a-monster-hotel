@@ -169,9 +169,10 @@ local function likePrompt(plot: PlotService.Plot)
 	end)
 end
 
--- "Need a Coffin Suite!" (§7): the room the rarest guest on the street wants, or the generic phrase.
-local function needRoom(): string
-	local id = Bus.rarest(BusService.wanted())
+-- "Need a Coffin Suite!" (§7): the room the rarest guest on the pinger's street wants, or the generic phrase.
+local function needRoom(player: Player): string
+	local plot = PlotService.of(player)
+	local id = Bus.rarest(BusService.wanted(if plot then plot.street else nil))
 	local sp = id and Species.get(id)
 	local room = sp and Pieces.get(sp.room)
 	if not room then
@@ -182,7 +183,7 @@ local function needRoom(): string
 end
 
 local function ping(player: Player, key: string)
-	local text = if key == "NeedRoom" then needRoom() else SocialService.Pings[key]
+	local text = if key == "NeedRoom" then needRoom(player) else SocialService.Pings[key]
 	local character = player.Character
 	local head = character and character:FindFirstChild("Head")
 	if not text or not head then

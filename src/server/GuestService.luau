@@ -25,6 +25,11 @@
 	friendship (§4.6); `checkIn`, `clean`, `fulfil` and `pathToDoor` for staff;
 	`spawnTutorial` for the tutorial's first guest; `spawnBrowsing`, `assign`,
 	`leaveStreet` and `board` for the bus.
+
+	ONE WORLD (§3, §6.4): a guest belongs to one street (`street`), the one
+	its bus stopped on: it browses that street's hotels, walks that street's
+	pavements and waits at its stops. A played hotel's guests are on its
+	street because the plot stands there.
 ]]
 
 local Players = game:GetService("Players")
@@ -76,6 +81,7 @@ export type Guest = {
 	waits: Walk.Waits, -- seconds standing at a point of the path
 	walkSpeed: number, -- the current path's speed (with any Bellhop bonus)
 	stop: string?, -- the bus stop a leaving guest walks to and waits at
+	street: number, -- the street it came to (StreetLayout), whose hotels it browses
 	speed: number,
 	desk: string?, -- the desk (a piece id) it queues at: the shortest line when it came (§5.4, A.1)
 	deskSince: number?,
@@ -177,6 +183,7 @@ local function newGuest(speciesId: string, mutation: string?, source: string): G
 		waits = {},
 		walkSpeed = Constants.Stay.WalkSpeed,
 		stop = nil,
+		street = 1,
 		speed = Constants.Stay.WalkSpeed,
 		desk = nil,
 		deskSince = nil,
@@ -310,7 +317,7 @@ end
 -- From the street to a hotel's entrance: onto its pavement, along to its path, up the path to the arch.
 local function toHotel(plot: PlotService.Plot, from: Vector3): { Vector3 }
 	local out = StreetLayout.ontoPavement(from, StreetLayout.side(plot.index))
-	table.insert(out, StreetLayout.pavementFront(plot.index))
+	table.insert(out, StreetLayout.pavementFront(plot.index, plot.street))
 	local foot = PlotService.forecourtPoint(plot, "PathFoot")
 	if foot then
 		table.insert(out, foot.Position)
@@ -358,7 +365,7 @@ local function exitPath(g: Guest, plot: PlotService.Plot, from: { Vector3 }): { 
 	if foot then
 		table.insert(out, foot.Position)
 	end
-	table.insert(out, StreetLayout.pavementFront(plot.index))
+	table.insert(out, StreetLayout.pavementFront(plot.index, plot.street))
 	return toStop(g, out)
 end
 
@@ -518,7 +525,8 @@ function GuestService.spawnTutorial(
 		newGuest(speciesId, mutation, if opts and opts.source then opts.source else "Tutorial")
 	g.happyFloor = opts and opts.happyFloor
 	g.tutorialFriend = opts ~= nil and opts.tutorialFriend == true
-	local front = StreetLayout.pavementFront(plot.index)
+	g.street = plot.street
+	local front = StreetLayout.pavementFront(plot.index, plot.street)
 	local side = if rng:NextNumber() < 0.5 then -1 else 1
 	g.path = { front + Vector3.new(side * 40, 0, 0) }
 	g.config.Parent = folder
@@ -528,7 +536,7 @@ end
 
 --[[ A bus guest (§4.3) stepping off at `stop`: onto a pavement, then
 	browsing round the ring for `BrowseTime`, pausing at the entrance of every
-	hotel on the street it passes; `onDecide` is called when the browse ends.
+	hotel played on the stop's street it passes; `onDecide` is called when the browse ends.
 	`variant` 0–3 picks the pavement it starts on (the north, or straight
 	across the lane to the south) and the way it walks, so a bus's guests
 	between them pass every hotel. ]]
@@ -546,12 +554,13 @@ function GuestService.spawnBrowsing(
 	g.speed = B.BrowseSpeed
 	g.wish = wish
 	g.onDecide = onDecide
+	g.street = stop.street
 	g.config:SetAttribute("Wish", wish)
 	local looks: { StreetLayout.Look } = {}
 	for _, plot in PlotService.all() do
-		if plot.owner then
+		if plot.owner and plot.street == stop.street then
 			table.insert(looks, {
-				s = StreetLayout.ringParam(StreetLayout.pavementFront(plot.index)),
+				s = StreetLayout.ringParam(StreetLayout.pavementFront(plot.index, plot.street)),
 				toward = Vector3.new(0, 0, StreetLayout.side(plot.index)),
 			})
 		end
@@ -567,7 +576,8 @@ function GuestService.spawnBrowsing(
 		looks,
 		B.BrowseTime,
 		g.speed,
-		B.EntrancePause * (0.8 + 0.4 * rng:NextNumber())
+		B.EntrancePause * (0.8 + 0.4 * rng:NextNumber()),
+		stop.street
 	)
 	local path: { Vector3 } = { kerb }
 	local waits: Walk.Waits = {}
@@ -587,14 +597,9 @@ function GuestService.leaveStreet(g: Guest)
 	sendHome(g, nil)
 end
 
--- The bus is at `stopName`: everyone waiting there walks to its door and is gone with it.
+-- The bus is at `stopName` (a stop's name is unique in the world): everyone waiting there walks to its door and is gone with it.
 function GuestService.board(stopName: string)
-	local stop: StreetLayout.Stop? = nil
-	for _, s in StreetLayout.Stops do
-		if s.name == stopName then
-			stop = s
-		end
-	end
+	local stop = StreetLayout.stopNamed(stopName)
 	if not stop then
 		return
 	end

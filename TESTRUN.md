@@ -844,6 +844,56 @@ take their specs' rules with them: Grid's door and reach rules for `Room` and
 - [A] Whether the start room's L of four cells on the guests' right reads as
   "one room to its right" (`Constants.Rooms.Start`, PLACEHOLDER shape).
 
+## The world (GDD §3, §6.4)
+
+Built 2026-10-21 morning (night brief step 7b, his ruling 2026-10-20: "All the
+hotels stand in one world, far apart, seen from the other plots"): a street per
+location along world X, `World.StreetSpacing` 1400 apart (PLACEHOLDER), each
+Creepy Lane's layout moved; the played hotel live on its street, the chain's
+others drawn static on theirs (`workspace.WorldPlots`); a bus and Hunter Night
+per street with a hotel played; the forest and the ground blending along the
+road between streets; Bayou Spa's cypress a Luau blockout. Played by remotes
+and `execute_luau` only (no window focus) on `Test_World1021a`.
+
+- [x] A fresh profile: plot 3 on Creepy Lane, 10 live plots in `Plots`, 30
+  drawn plots in `WorldPlots`, `Street`, `Street_2`, `Street_3`,
+  `WorldGround`, a Hunter Camp per street. No errors of the game's own.
+- [x] `chainopen 2`: the live `Plot_3` moved to street 2 (origin x 1328), the
+  character to its forecourt (1400, 4.5, 32), the Manor drawn on Creepy Lane
+  from its record (133 parts, no prompts), street 3's plot 3 empty; the bus
+  list `BusStreets` "2".
+- [x] `chainopen 3`: on street 3 (2800), both others drawn with their signs
+  ("…'s Haunted Manor 1.5★", "…'s Frostfang Lodge"), `BusStreets` "3".
+- [x] A bus on each street played: street 3's brought Mud Puppy, Bog Frog,
+  Mossling (Bayou Spa's) off at its west stop (x 2530); street 2's Frost
+  Troll, Snowball Sprite (x 1130); Creepy Lane's Skeleton, Werewolf (x −270).
+  The client drew `NightBus_3` on street 3's road. `nextbus` lists each
+  street's next bus from its own family.
+- [!] Guests stranded on a street left with no hotel played (no bus would
+  come for them): fixed, they go with the street's last bus; seen after a
+  restart (street 2's two gone 2 s after travelling to 1).
+- [x] Rejoin with Frostfang played: spawned on street 2, Manor and Bayou drawn.
+- [x] Hunter Night while on street 2: the hunter walks in from street 2's
+  east end (x 1888) to plot 3's entrance (1400, 48).
+- [x] Seen from a plot (by geometry; trees are not queryable): from street 1's
+  last plots (north and south) to street 2's first plots, 545–790 studs, no
+  tree within 6 studs of the line (nearest 19–22); inside the fog's end (900).
+  From the middle plot it is 1040: past the fog.
+- [x] Measured, one player, all three hotels (start squares, the Bayou one
+  half-filled by an interrupted `fill`: 2,038 parts): server 1,248 parts and
+  188 lights before the fill (each street 180 parts / 60 lamps); client at
+  Creepy Lane 10,612 parts (the forest 10,099: ~5,000 trees inside
+  `Forest.DrawDistance`, about as many as one street's forest drew before),
+  far plots streamed out (Bayou's 2,038-part hotel not on the client), lights
+  110 → 63 after the lamps' light was limited to 500 studs (`Lod`).
+- [?] Pictures from a plot toward the next street, and of each street's look:
+  Studio drew no frames this morning (RenderStepped 0, every `screen_capture`
+  timed out, in Edit too; the display asleep?). For a run with Studio drawing.
+- [ ] Two players on two streets at once (each street's bus and Hunter Night
+  together): needs **Server and Clients**, his start.
+- [A] The looks: Frostfang's and Bayou's ground and lamps, the meadow between
+  streets, the blockout cypress, the spacing (WAITING).
+
 ## August keeps
 
 - How the street, the lobby and the rooms look (every look is a night draft).
@@ -890,3 +940,4 @@ take their specs' rules with them: Grid's door and reach rules for `Room` and
 - 2026-10-21 02:57 The hotel chain (Test_Chain1021): opening in order, Travel and back (each hotel's tiles, facade and staff), background earnings measured from guests only, Bayou Spa's blockout hotel and guests, the new rebirth twice (shards, the chain gone, Prestige Star, the floor cap), the panel by real clicks. No errors of the game's own.
 - 2026-10-21 03:09 The free build camera (Test_Tiles1021, real keys and mouse): WASD moves it within the hotel's area and not the avatar, the right-drag tilts, Top snaps down. No errors of the game's own.
 - 2026-10-21 04:05 Built rooms (Test_Rooms1021a-f): stages 1-2 by remotes (schema 6, the start room, walls refused where A.12 says, a second room typed and furnished, guests walked through doors to the beds with the bars' pay, Comfort only rising, cleaning at the door, each chain hotel its own samples, the tutorial with the start room); stage 3 by real mouse and keys and a simulated phone (walls drawn by drag and tap, Half cells, Door, Remove, the type list, the Bed, the room view); stage 4 the clean-up, auto walls on a tile beside a room, a rebirth. Fixed: attachments set before parenting, location-0 furniture refused, Frostfang's start room, the phone's room view off the top. No errors of the game's own.
+- 2026-10-21 07:52 The world (Test_World1021a, by remotes, no window focus): three streets, Travel moving the live plot and the character, the chain drawn static on the other streets, a bus per street with its own family, Hunter Night on street 2, sightlines from street-end plots measured, parts and lights measured; fixed: guests stranded on a street left without a bus, far street lamps' lights. No pictures (Studio drew no frames). No errors of the game's own.

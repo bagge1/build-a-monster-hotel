@@ -16,6 +16,12 @@ export type Location = {
 	ground: Color3,
 	facade: Color3,
 	trim: Color3,
+	-- One world (GDD §3, §6.4): the ground round its street and the forest's floor, blended into the
+	-- next street's along the road between them, and the colour of its street lamps. Haunted Manor's are
+	-- Creepy Lane's as they always were; the others PLACEHOLDER.
+	world: Color3,
+	worldMaterial: Enum.Material,
+	lamp: Color3,
 }
 
 local Locations = {}
@@ -29,6 +35,9 @@ local rows: { Location } = {
 		ground = Color3.fromRGB(60, 50, 70),
 		facade = Color3.fromRGB(90, 70, 110),
 		trim = Color3.fromRGB(240, 150, 60),
+		world = Color3.fromRGB(45, 55, 50),
+		worldMaterial = Enum.Material.Grass,
+		lamp = Color3.fromRGB(255, 190, 120),
 	},
 	{
 		id = 2,
@@ -38,6 +47,9 @@ local rows: { Location } = {
 		ground = Color3.fromRGB(200, 215, 230),
 		facade = Color3.fromRGB(120, 160, 200),
 		trim = Color3.fromRGB(240, 250, 255),
+		world = Color3.fromRGB(150, 165, 190),
+		worldMaterial = Enum.Material.Snow,
+		lamp = Color3.fromRGB(185, 215, 255),
 	},
 	{
 		id = 3,
@@ -47,6 +59,9 @@ local rows: { Location } = {
 		ground = Color3.fromRGB(60, 80, 50),
 		facade = Color3.fromRGB(80, 110, 70),
 		trim = Color3.fromRGB(200, 230, 120),
+		world = Color3.fromRGB(42, 58, 40),
+		worldMaterial = Enum.Material.Mud,
+		lamp = Color3.fromRGB(200, 235, 130),
 	},
 	{
 		id = 4,
@@ -56,6 +71,9 @@ local rows: { Location } = {
 		ground = Color3.fromRGB(60, 40, 35),
 		facade = Color3.fromRGB(130, 60, 40),
 		trim = Color3.fromRGB(255, 140, 40),
+		world = Color3.fromRGB(50, 35, 32),
+		worldMaterial = Enum.Material.Basalt,
+		lamp = Color3.fromRGB(255, 150, 70),
 	},
 	{
 		id = 5,
@@ -65,6 +83,9 @@ local rows: { Location } = {
 		ground = Color3.fromRGB(200, 210, 230),
 		facade = Color3.fromRGB(150, 160, 210),
 		trim = Color3.fromRGB(255, 230, 120),
+		world = Color3.fromRGB(150, 160, 185),
+		worldMaterial = Enum.Material.Grass,
+		lamp = Color3.fromRGB(255, 230, 150),
 	},
 }
 
