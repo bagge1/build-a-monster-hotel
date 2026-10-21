@@ -1279,6 +1279,385 @@ All by the UTC clock, the same on every server:
   passes. Every one is drawn as a Luau blockout until its model exists
   (MODELS.md, "Cosmetics").
 
+### A.11 Endless content: drafts (night draft 2026-10-21, his picks in §8.3)
+
+His six picks (§8.3, §18 2026-10-20), each drafted before it is built. **Every
+number here is a PLACEHOLDER, and every open decision is his** (WAITING §2);
+each has a recommendation he may overrule. What holds for all six:
+
+- **Nothing here is sold for Robux**, and nothing random is ever paid for
+  (§10.1). Free randomness from play is allowed, as the mutation roll is
+  (§4.5). No timer is skipped with Robux.
+- **Nobody loses anything to another player** (§1.1): no contract, find or
+  like can be taken.
+- **Each panel is one tap from the HUD or the thing it belongs to** (the desk,
+  the Wing, the Book), with big buttons, for a phone first (§1.2).
+- **Built rooms come first** (A.12, his "This can come before yes", §18
+  2026-10-21). VIP contracts and the decor sets read its three bars.
+
+#### A.11.1 VIP contracts
+
+**What it is.** A VIP books ahead: a named guest (species, sometimes a
+mutation), the room it wants, a deadline and a reward. The room is more than
+a type: it asks for the bars of a built room (A.12), such as "a Coffin Suite,
+Decor bar full, organ music". So a contract is a reason to build and furnish
+a room in a new way.
+
+**How it plays.** From 2★ (PLACEHOLDER) the front desk has a **VIP ledger**.
+It offers three contracts for the hotel being played, drawn from its
+location's species up to the hotel's rating. The player accepts one, builds
+or refurnishes a room to its spec, and taps **Ready**. The VIP comes on the
+next Night Bus, **booked to that hotel**: it walks straight there, no browse,
+no Pitch, and other players see "VIP for <name>" over it. A happy stay in a
+room that meets the spec pays the reward. The VIP leaves a review like any
+guest.
+
+**Open decisions:**
+
+1. *How the VIP arrives.* (a) On the next bus, booked to the hotel;
+   (b) a normal bus guest any hotel may win; (c) no guest, an inspection of
+   the room. **Recommend (a)**: the bus stays the only way in (§4.3, his "no
+   walk-ins"), and nobody loses a guest they built for.
+2. *What a contract asks.* (a) A room type plus one or two bar thresholds
+   (Size, Furniture, Decor) and maybe a preference tag; (b) only a type and a
+   species; (c) a whole-hotel goal (a rating, an amenity). **Recommend (a)**:
+   it pushes customizing, the game's most important thing (§5.4), and uses
+   the bars he ruled.
+3. *The deadline.* (a) Play time from accepting (45 min); (b) real time
+   (24 h); (c) the UTC day, with the daily requests. **Recommend (a)**: his
+   pick names a deadline, and play time is fair to a player who logs off. A
+   missed contract goes back to the ledger with no penalty.
+4. *The reward.* (a) Cash only (minutes of income); (b) cash plus that
+   species' souvenir the first time (A.11.3); (c) Moon Shards. **Recommend
+   (b)**: cash scales with the hotel, and the souvenir ties the contract to a
+   character. Shards stay rebirth's and the Book's (§6.1).
+5. *How many at once.* (a) One active; (b) one, two from 4★; (c) three.
+   **Recommend (b)**: one is easy to follow on a phone; a second is
+   something to grow into.
+
+**Numbers (PLACEHOLDER):** unlock 2★; 3 offers, 1 free swap a day (+1 with
+VIP Lobby, as the daily reroll); deadline 45 min of play; reward 15 minutes
+of income × 1 / 1.5 / 2 / 3 / 4 / 6 by the VIP's rarity; thresholds 0.5 or
+1.0 on one bar, 0.5 on a second from 3.5★; the VIP's pay ×2 for its stay.
+
+**What it builds on.** `src/server/DailyService.luau` (a list drawn per
+player, rerolls, progress kept in the profile); `src/server/BusService.luau`
+(the passenger list and the announcement; a passenger gains `bookedFor`);
+`src/server/GuestService.luau` (browse, check-in, the happy stay);
+`src/server/HotelService.luau` (rooms, ready or not); the bars of A.12
+(`Constants.Rooms`, `src/shared/Furnish.luau`); `src/shared/Species.luau`,
+`src/shared/Stay.luau`. New: `src/shared/Contracts.luau` (draw and check,
+pure), a `contracts` field in `src/server/PlayerData.luau`, a state section
+(`StateService`) and remotes (`src/shared/Net.luau`).
+
+**Art and UI.** No new model: the VIP is its species' model with a gold
+nameplate and a glow (code). UI: the VIP ledger panel (UI.md first), opened
+from a prompt on the desk and a HUD button; a "VIP" tag in the room view
+when a room meets an active spec.
+
+**Size: M.**
+
+#### A.11.2 Expeditions
+
+**What it is.** Residents are sent on timed trips into the world round the
+street (the forest, the road to the next location) and come back with
+rewards. A trip runs while the player is away, so it is a reason to come
+back (§9, play days).
+
+**How it plays.** The Resident Wing gets an **Expedition board**. The
+player picks a destination (one per location opened: the Haunted Woods,
+Frostfang Pass, the Bayou backwaters), a length, and up to three residents
+from the Wing. They walk off down the road and are away, as a resident in
+the Hunter Camp is (no Wing earnings, no perk). When the time is up the board
+glows; the player taps **Collect**.
+
+**Open decisions:**
+
+1. *Who may go.* (a) Wing residents only; (b) staff too; (c) a slot of its
+   own that does not touch the Wing. **Recommend (a)**: a real trade-off
+   (earn now or a trip), and the hotel keeps running on its staff.
+2. *Its clock.* (a) Real time, offline too; (b) play time. **Recommend
+   (a)**: the point is the return visit, as offline earnings are (§4.6).
+3. *The rewards.* (a) Fixed per destination and length; (b) a fixed part
+   plus a free roll for a rare find (a decor set piece, A.11.3); (c) the
+   player picks the reward kind before leaving. **Recommend (b)**: the fixed
+   part keeps it fair and the roll is free randomness from play (§4.5), never
+   paid.
+4. *What makes a trip better.* (a) The number and rarity of the residents;
+   (b) residents whose preferences match the destination (cold-lovers to
+   Frostfang Pass) give a bonus; (c) the residents' levels (A.11.6).
+   **Recommend (b) and (c)**: a reason to keep varied residents, using the
+   preference tags species already have; level makes levelling matter.
+5. *A Robux skip.* (a) None; (b) a product that finishes a trip now.
+   **Recommend (a)**: a paid skip to a reward with a roll in it comes close
+   to a paid random item (§10.1 point 2).
+6. *A notification.* (a) None; (b) "Your residents are back" for trips of
+   2 h and more (Open Cloud, as A.9's). **Recommend (b)**: it is the hook
+   §9 counts, and Roblox sends at most one a day anyway.
+
+**Numbers (PLACEHOLDER):** lengths 30 min / 2 h / 8 h; one trip at a time
+(a Moon Tree node for a second); up to 3 residents; the fixed reward 1.5 ×
+what those residents would have earned in the Wing over the trip, so a trip
+beats staying a little; a find at 5 % per resident-hour, a guaranteed find
+every 10 trips of 2 h or more; +20 % for each resident matching the
+destination; XP per hour away (A.11.6).
+
+**What it builds on.** `src/server/ResidentService.luau` (Wing earnings, the
+offline till, the away state of the Hunter Camp, `campUntil`, and the
+published `Away`); `src/shared/Perks.luau` (away residents give no perk);
+`src/server/HunterService.luau` (the camp's timed return, the pattern to
+copy); `src/shared/Species.luau` (preference tags); `src/shared/Locations.luau`;
+`src/server/NotifyService.luau` (the queue). New: `src/shared/Expeditions.luau`
+(destinations and rewards, pure), an `expedition` field on
+`PlayerData.ResidentRecord` and on the profile.
+
+**Art and UI.** One model: the `ExpeditionBoard` by the Wing (a signpost
+with a map; MODELS.md first, with a `Prompt` attachment). The residents'
+walk off and back is the client's (`ResidentRenderer`). UI: the board's
+panel (destinations as picture cards, `UiImages`), a timer on the HUD's
+Residents button, the Collect pop-up.
+
+**Size: M.**
+
+#### A.11.3 Rare decor sets and souvenirs
+
+**What it is.** Decor that is **found, not bought**. A **decor set** is five
+themed pieces of one location (say "the Count's Study": candelabra,
+portrait, organ, globe, rug), each found on its own; a room holding a whole
+set gets a set bonus. A **souvenir** is one small keepsake per species (the
+Vampire Count's cape pin, the Slime's goo jar), placed as decor and shown
+on its Book page.
+
+**How it plays.** Finds come from play: VIP contracts (A.11.1), expeditions
+(A.11.2), Hunter Night, Book milestones. A find pops up with the piece and
+where it goes, and it appears in the build mode's decor list under
+**Found**. Pieces not found yet show there as dark outlines that say where
+they come from, so the player always knows what to chase.
+
+**Open decisions:**
+
+1. *How a find is made.* (a) Free random drops only; (b) milestones only;
+   (c) souvenirs by milestone (a species' first VIP contract, or its 3rd
+   move-in), set pieces by free rolls with a guaranteed find after a run of
+   misses. **Recommend (c)**: souvenirs are a sure collection tied to the
+   characters (§1.1 pillar 1); set pieces keep the surprise without luck
+   that never ends.
+2. *What a set does.* (a) Looks only; (b) a whole set in one room adds to
+   its Decor bar (A.12) and gives a tag of its own; (c) a hotel-wide bonus.
+   **Recommend (b), kept small**: it shows in the bars he ruled and rewards
+   building a room round a set, but no room needs one.
+3. *Copies.* (a) Found once, placed once; (b) each find is one copy;
+   (c) found once, then any number placed for cash at its price.
+   **Recommend (c)**: three hotels (§6.4) and many rooms want copies, and a
+   find stays a find. A second find of the same piece pays cash.
+4. *Through a rebirth.* (a) What was found stays found, the placed copies go
+   with the hotel; (b) all found pieces are lost. **Recommend (a)**: like
+   cosmetics and the Book (§6.4, "keeps").
+
+**Numbers (PLACEHOLDER):** two sets per location at launch (six, 30 pieces);
+one souvenir per species (about 27 at launch); a set piece at 2 % per happy stay
+of a Rare-or-better guest, guaranteed after 40 misses; the set bonus +0.25
+to the room's Decor bar; a set piece's points (and so its Decor worth) as a
+decor piece of twice its listed price; a copy's price that of a shop piece
+of its size.
+
+**What it builds on.** `src/shared/Pieces.luau` (Decor rows: a new `found`
+field and a `set` id; event decor of location 0 is already decor not sold in
+the build shop, `Events.Shops`); `src/shared/Furnish.luau` (points, tags,
+the Decor bar); `src/server/BuildService.luau` (refuses an unfound piece);
+`src/server/BookService.luau` (souvenirs on the species' page);
+`src/server/GuestService.luau` (the happy-stay roll);
+`src/server/HunterService.luau` (a defended night's find). New: a `found`
+map in `PlayerData`, a `src/shared/Finds.luau` (the rolls and the guarantee,
+pure).
+
+**Art and UI.** The largest art cost of the six: **every piece is a Blender
+model** under MODELS.md's Decor rules (footprint, layer, height, seats). Six
+sets of five, and about 27 souvenirs (small, 1 × 1, `Floor` or `Wall`). MODELS.md
+needs a line for a set (one look across five pieces) before the first is
+modelled. UI: the Found tab with outlines, the find pop-up, souvenirs on the
+Book page, a set's progress in the room view.
+
+**Size: M in code, L in art.**
+
+#### A.11.4 The showcase
+
+**What it is.** Players like each other's hotels, and the like count is
+shown (his pick, §7, §8.3). Most of it is built: a like a hotel a day, the
+count on the sign, "Street Favourite" for the street's most liked
+(`SocialService`). The showcase adds a place to see the best hotels, a count
+that new players can top, and milestones for being liked.
+
+**How it plays.** A player walks the street, visits a hotel, likes it at the
+sign (as now). The leaderboard panel gets a **Showcase** tab: the street's
+hotels by likes with a **Visit** button that walks or teleports the player to
+that hotel's entrance, and a global board of the week's most liked. At set
+counts of likes received, the player earns a sign cosmetic.
+
+**Open decisions:**
+
+1. *Its reach.* (a) The street (server) plus a global board of the week's
+   most liked; (b) also a showcase plot that loads any player's saved hotel
+   (from the board) to walk and like, even when they are offline.
+   **Recommend (a) now, (b) after launch**: (a) is small and uses what
+   exists; (b) needs another player's saved layout read and built on a plot
+   of its own, which is large.
+2. *What is liked.* (a) The player: one count shown on every one of their
+   hotels' signs (as now); (b) each hotel of the chain on its own; (c) each
+   room, from the room view. **Recommend (a)**: a rebirth takes the hotels
+   apart (§6.4), and a count that never falls is what he asked to see.
+3. *Which count.* (a) Lifetime only; (b) lifetime on the sign, a weekly
+   count for the board; (c) since the last rebirth. **Recommend (b)**: the
+   sign shows everything earned, and a weekly board can be topped by a new
+   player.
+4. *A reward for likes received.* (a) None; (b) cash per like; (c)
+   cosmetics at milestones. **Recommend (c)**: cash per like invites
+   alt-account farming; a cosmetic changes no number (§10.1 point 1).
+
+**Numbers (PLACEHOLDER):** milestones at 10 / 50 / 200 / 1,000 likes (a
+ribbon, a rosette, a trophy, a gold star on the sign); a like counts only
+from a player with 10 minutes of play that day; the board's top 50; a daily
+request "Like 3 hotels" (`DailyService`).
+
+**What it builds on.** `src/server/SocialService.luau` (likes, `likesGiven`,
+Street Favourite, the sign prompt); `src/server/HotelService.luau` (the
+sign's text, the plot's `Likes`); `src/server/LeaderboardService.luau`
+(OrderedDataStores, the weekly key pattern); `src/shared/Cosmetics.luau`
+(the Sign slot); `src/server/DailyService.luau`; `PlayerData` (`likes`,
+`likesGiven`; a `likesWeek` field).
+
+**Art and UI.** Four sign cosmetics (MODELS.md "Cosmetics"; blockouts
+first, as A.10's). UI: the Showcase tab in the leaderboard panel (UI.md
+first), the milestone pop-up.
+
+**Size: S** ((b) of decision 1 would be **L**).
+
+#### A.11.5 Deeper mutations
+
+**What it is.** Two additions to §4.5. **Stacking:** a guest can carry a size
+mutation and a look mutation at once (a Giant Golden Slime). **A rotating
+seasonal mutation:** besides Halloween's Pumpkin and Winter's Frosted, each
+month without a big season has its own mutation (Moonlit, Mossy, Rainbow …),
+the same month every year.
+
+**How it plays.** Nothing new to learn: a stacked or monthly guest arrives on
+the bus like any mutation, and its look tells what it is. The bus
+announcement names both ("A Giant Golden Vampire Count …"). A stacked
+resident earns more, and the Book counts it.
+
+**Open decisions:**
+
+1. *What can stack.* (a) One size (Tiny, Giant) and one look (Shadow,
+   Golden, Glitched, the season's); (b) any two; (c) none, only the monthly
+   mutation. **Recommend (a)**: scale and colour never fight on the model,
+   and the look stays readable.
+2. *Stacked pay.* (a) Multiplied (Giant ×2 · Golden ×5 = ×10); (b) added
+   (2 + 5 − 1 = ×6); (c) the larger plus a fixed +1. **Recommend (b)**:
+   residents are kept for ever (§6.4), so a stack must not break the
+   economy; added still pays well.
+3. *The rotation.* (a) Monthly, a set calendar repeated every year;
+   (b) weekly; (c) one per new location's family. **Recommend (a)**: it
+   gives every month a reason to log in and comes back next year (§10.1
+   point 3: no "one time only").
+4. *The Book.* (a) A stack fills both of its single entries, and a first
+   stack gives a title; (b) every combination is an entry. **Recommend
+   (a)**: no new pages, and a stack is still worth finding.
+
+**Numbers (PLACEHOLDER):** the size roll and the look roll are independent,
+at §4.5's chances (a Giant Golden is 4 % × 1 % = 0.04 %); the monthly
+mutation at 3 % (as Pumpkin), ×4 pay, rolled in place of the look roll in
+its month; months: March Mossy, May Rainbow, July Sunburnt, September
+Moonlit (Halloween, Winter as now; the rest none).
+
+**What it builds on.** `src/shared/Mutations.luau` (rows gain a `group`,
+"Size" or "Look"; `roll` gives up to one of each; `payMultiplier` takes the
+pair); `src/shared/Events.luau` (`season`, `rollMutation`: a monthly row);
+`src/server/BusService.luau` and `src/server/GuestService.luau` (where a
+mutation is rolled and announced); `src/server/BookService.luau`
+(`find`, `mutationSetDone`); `src/server/ResidentService.luau` and
+`PlayerData.ResidentRecord.mutation` (a pair, e.g. "Giant+Golden").
+Client: `MonsterKit`, `GuestRenderer`, `ResidentRenderer` apply scale and
+tint together.
+
+**Art and UI.** **No new models**: a mutation is a material, colour and size
+(§4.5); MODELS.md already asks every monster to look right at both scales
+and under every tint. A monthly look may add particles (code). UI: the Book
+page shows stacks found; the event panel names the month's mutation.
+
+**Size: M** (S for the monthly mutation alone).
+
+#### A.11.6 Residents level up, to a cap
+
+**What it is.** Each resident (the individual, not its species) gains
+experience by working and goes up levels to a cap (his "to some extent").
+A level makes it better at what it does: more earnings in the Wing, more
+efficiency on staff. Friendship stays per species and unchanged (§4.6).
+
+**How it plays.** Residents fill an XP bar by doing their job: staff by
+their errands and check-ins, Wing residents slowly over time, all of them on
+expeditions (A.11.2). A full bar shows **Level up** on the resident's row
+in the Residents panel. A level number floats over its head in the Wing and
+at work.
+
+**Open decisions:**
+
+1. *What a level gives.* (a) More Wing earnings and more staff efficiency;
+   (b) also a stronger perk; (c) Wing earnings only. **Recommend (a)**: each
+   resident gets better at its own job; perks stay flat because they add up
+   across every resident (A.5) and would run away.
+2. *The cap.* (a) One cap for all (10); (b) by rarity (Common 5 …
+   Mythic 15); (c) one cap, raised by rebirths to a maximum. **Recommend
+   (a)**: a loved Common is worth levelling (§1.1 pillar 1); (c) can come
+   later if long-time players hit the cap.
+3. *How a level is taken.* (a) Automatically when the bar is full; (b) the
+   bar fills, then a cash price levels it. **Recommend (b)**: a cash sink
+   for the late game, priced in minutes of income, and a tap that is a
+   moment.
+4. *Through a rebirth.* (a) Levels kept, as residents are; (b) reset to 1.
+   **Recommend (a)**: rebirth keeps the residents as the head start (§6.4),
+   and the cap bounds it.
+5. *Merging duplicates for XP.* (a) No: a holiday still gives Moon Shards;
+   (b) a duplicate can be given up for XP. **Recommend (a)**: giving up one
+   monster to feed another reads badly in a cozy game, and the holiday
+   already gives duplicates a use.
+
+**Numbers (PLACEHOLDER):** cap 10; Wing earnings +10 % a level (+90 % at 10);
+staff efficiency +3 % a level; XP 1 per errand, check-in or scared hunter,
+1 per 10 minutes in the Wing, 6 per hour on an expedition; the bar 20 × level
+XP; the price 5 × level minutes of income.
+
+**What it builds on.** `src/server/ResidentService.luau` (Wing earnings,
+`efficiencyOf`, errands, the offline till); `src/shared/Staff.luau` (`due`,
+`deskDelay` take efficiency); `src/server/HunterService.luau` (Security);
+`src/server/Income.luau`; `PlayerData.ResidentRecord` (`level`, `xp`).
+
+**Art and UI.** No new model. UI: the level and bar on each row of the
+Residents panel (`CollectionPanels`), the Level up button, a level badge in
+the resident's nameplate (`ResidentRenderer`).
+
+**Size: S–M.**
+
+#### A.11.7 Build order (recommended)
+
+1. **The showcase** (S): most of it exists, it costs no art beyond four
+   blockouts, and it gives the street a goal at once.
+2. **Residents level up** (S–M): expeditions and the staff feed it, so it
+   comes before them; it touches only the residents' own code.
+3. **Deeper mutations** (M): no art, no dependency; the monthly mutation
+   alone can ship first.
+4. **Rare decor sets and souvenirs** (M, art L): the rewards the last two
+   pay out in. The souvenirs and the Found tab can come before A.12; the set
+   bonus waits on its Decor bar. Its models start early, since they are the
+   long pole.
+5. **Expeditions** (M): needs levelling for its XP and the finds for its
+   roll.
+6. **VIP contracts** (M): last, because its asks are A.12's bars and its
+   rewards are the souvenirs; built on everything above.
+
+Why this order: each step is played on its own and leaves nothing half
+built, the small ones come first, and nothing is built before what it
+rewards with or reads from exists.
+
 ### A.12 Built rooms: the rules (night draft 2026-10-21, his rulings in §5.4)
 
 Every number here is a PLACEHOLDER (`Constants.Rooms`); the shapes are his
