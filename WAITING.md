@@ -877,6 +877,25 @@ Med Claudes skärmdump där det finns en. -->
      decor sets, VIP contracts och sist Expeditions, när
      `tools/balance_model.py` har prövat dem mot offline-taket.
 
+39. **Väggarna, dörren och möblerna: det granskaren såg som är ditt**
+   (natten 2026-10-21; modellerna i `blender/rooms/<hotell>/`, bilderna i
+   `review/`; felen rättas i byggskriptet samma natt, se dess README):
+   - **Frostfangs väggar** läses som ett trästaket eller en bastu, inte en
+     islodge, och dörren har Haunted Manors spetsbåge. **Rekommendation:**
+     ljusare timmer med snö på överkanten och en rund eller rak dörr.
+   - **Frostfangs möbler:** Ice Bed läses som en solstol, Ice Slab som en
+     stengrav, Snow Nest och Glacier Coil som två likadana badkar.
+     **Rekommendation:** gör om dem efter din bild när du har sett dem.
+   - **De randiga diskarna** (Breakfast Buffet, Cocoa Bar) läses som
+     tivolistånd, **garderoben** har ett starkt guldtak, **orgelns** pipor syns
+     som prickar uppifrån, **Den Nest** läses som en hundkorg.
+     **Rekommendation:** titta på dem i spelet först.
+   - **Kistan och sarkofagen är stängda** och gästen ligger på locket.
+     *Stängda* eller *öppna så att gästen ligger i*. **Rekommendation:** öppna.
+   - **Dörröppningen är 4 studs bred** (kontraktet, som rummens dörrar var):
+     en bred gäst och en spelare får inte plats bredvid varandra.
+     *Behåll 4* eller *5 studs* (väggbiten är 6). **Rekommendation:** 5.
+
 ## §3 Creator Hub och publicering
 
 1. ~~**Slå på Studio Access to API Services**~~ (gjort 2026-10-19: på i
