@@ -892,6 +892,13 @@ Med Claudes skärmdump där det finns en. -->
      **Rekommendation:** titta på dem i spelet först.
    - **Kistan och sarkofagen är stängda** och gästen ligger på locket.
      *Stängda* eller *öppna så att gästen ligger i*. **Rekommendation:** öppna.
+     *Natten:* kistan är nu öppen och bredare (gästen ligger i den, en
+     andra granskning visade att den låg på locket); sarkofagen är stängd.
+     Säg till om kistan ska vara stängd igen.
+   - **Badkaret** (2×1 rutor) rymmer en gäst halvliggande, inte rak.
+     *Behåll 2×1* eller *gör det 3×2*. **Rekommendation:** 3×2.
+   - **Orgeln** har en pall men gästen står vid den. *Stå* eller *sitta*.
+     **Rekommendation:** sitta.
    - **Dörröppningen är 4 studs bred** (kontraktet, som rummens dörrar var):
      en bred gäst och en spelare får inte plats bredvid varandra.
      *Behåll 4* eller *5 studs* (väggbiten är 6). **Rekommendation:** 5.
