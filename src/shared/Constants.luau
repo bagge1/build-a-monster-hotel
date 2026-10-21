@@ -41,15 +41,15 @@ Constants.Grid = {
 }
 
 Constants.Street = {
-	Plots = 6, -- §3
-	PlotGap = 36, -- Claude's pick in his range 24–48, 2026-10-19 (GDD §18): 144-stud plots span ±252
+	Plots = 10, -- PLACEHOLDER in his 8–12 (his ruling, 2026-10-20, §3; WAITING §2.35): five a side
+	PlotGap = 36, -- Claude's pick in his range 24–48, 2026-10-19 (GDD §18): five 144-stud plots a side span ±432
 	LaneHalfWidth = 24, -- his pick, 2026-10-19: kept, the lane stays 48 wide
 	ForecourtDepth = 24, -- his yes, 2026-10-19 (§5.4): the lane's edge to the facade; the plots moved 24 back
 	PavementWidth = 8, -- his yes (§5.4): along the lane's edge, the guests walk on it
 	PathWidth = 6, -- his yes (§5.4): from the pavement to the entrance arch
-	LaneHalfLength = 278, -- the lane runs x -278..278, 26 past the last plot
-	BusStopX = 90, -- his ruling, 2026-10-19 (§3): stops at x = ±90, between the first two plots and the last two
-	HunterCampX = 278,
+	LaneHalfLength = 458, -- the lane runs x -458..458, 26 past the last plot (as it did with six)
+	BusStopX = 270, -- his ruling, 2026-10-19 (§3): the stops between the first two plots and the last two
+	HunterCampX = 458,
 	BendRadius = 60, -- PLACEHOLDER: the road's bend into the forest at each end of the lane
 	ForestRoad = 360, -- PLACEHOLDER: how far from the lane the road runs on into the forest
 }

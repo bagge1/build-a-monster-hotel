@@ -841,10 +841,11 @@ den publika. Claude bockar av sitt; det som är ditt står med menyn. -->
    (`StudioProfile`) fungerar bara i Studio; på en publicerad server finns
    inga kommandon alls (2026-10-20). Claudes; inte provat på en riktig
    server än.
-2. **Serverstorlek 6.** Gatan har sex tomter, och den sjunde spelaren får
-   inget hotell. Ställ in **Server Size** till 6 i platsens inställningar
-   (Creator Hub, **Places**). I dag är den **60** (servern varnar om det i
-   Output, sett 2026-10-20).
+2. **Serverstorlek 10** (ändrat natten 2026-10-21: gatan har nu tio tomter,
+   PLACEHOLDER i dina 8–12, §2.35). Den elfte spelaren får inget hotell.
+   Ställ in **Server Size** till samma tal som tomterna i platsens
+   inställningar (Creator Hub, **Places**) när du valt det. I dag är den
+   **60** (servern varnar om det i Output).
 3. ~~**Tempot och tutorialens svit**~~ (§2.27, §2.28): byggt och spelat i
    Studio 2026-10-20 (`TESTRUN.md`, "Pacing and the tutorial's free area").
 4. **Spela på en riktig telefon** (§1.9) och **spela första kvarten** (§1.1).

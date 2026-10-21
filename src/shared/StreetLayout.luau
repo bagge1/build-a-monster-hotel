@@ -7,15 +7,16 @@
 	The lane runs along world X through z = 0, 48 wide. Along each edge runs
 	an 8-stud **pavement** the bus's guests browse on; behind it each plot's
 	16-stud yard, the two together the 24-stud **forecourt** (his yes,
-	2026-10-19), so a plot's front edge is 48 from the lane's centre. Plots
-	1–3 are on the north side (z > 0), plots 4–6 on the south. A plot's frame
+	2026-10-19), so a plot's front edge is 48 from the lane's centre. The
+	first half of the plots are on the north side (z > 0), the rest on the
+	south (`Constants.Street.Plots`, 10 now: 1–5 north, 6–10 south). A plot's frame
 	has its origin at the front-left corner of its grid on the ground (y = 0),
 	+X along the street and +Z away from it, with no mirroring: the south
 	side's frame is the north side's turned 180°.
 
 	The Night Bus drives east along the lane's north half, its door toward the
-	north pavement, and **stops twice**, at x = −90 and x = 90 (his ruling,
-	2026-10-19). It comes out of the forest round a bend at the west end and
+	north pavement, and **stops twice**, between the first two plots and the
+	last two (his ruling, 2026-10-19; `BusStopX`). It comes out of the forest round a bend at the west end and
 	goes back into it round a bend at the east end (`route`).
 ]]
 
@@ -44,8 +45,24 @@ local function centreX(column: number): number
 	return (column - (PER_SIDE + 1) / 2) * PITCH
 end
 
--- The order plots are claimed in (§3: "the nearest free plot"): the middle of each side first.
-StreetLayout.ClaimOrder = { 2, 5, 1, 4, 3, 6 }
+-- The order plots are claimed in (§3: "the nearest free plot"): the middle of each side first, then outward.
+StreetLayout.ClaimOrder = (function(): { number }
+	local columns = {}
+	for c = 1, PER_SIDE do
+		table.insert(columns, c)
+	end
+	local mid = (PER_SIDE + 1) / 2
+	table.sort(columns, function(a, b)
+		local da, db = math.abs(a - mid), math.abs(b - mid)
+		return if da ~= db then da < db else a < b
+	end)
+	local order = {}
+	for _, c in columns do
+		table.insert(order, c)
+		table.insert(order, c + PER_SIDE)
+	end
+	return order
+end)()
 
 -- +1 for the north side's plots, −1 for the south's.
 function StreetLayout.side(index: number): number
@@ -132,7 +149,7 @@ StreetLayout.HunterCamp = Vector3.new(S.HunterCampX, StreetLayout.GroundY, 0)
 	east end, the south pavement back west, and across at the west end. A
 	point on it is its distance `s` from the ring's start (the north-west
 	corner) in the +1 direction; −1 walks it the other way. ]]
-local RING_X = PER_SIDE // 2 * PITCH + StreetLayout.PlotSize / 2 + 10 -- 10 past the last plot's edge
+local RING_X = (PER_SIDE - 1) / 2 * PITCH + StreetLayout.PlotSize / 2 + 10 -- 10 past the last plot's edge
 local PZ = StreetLayout.PavementZ
 local RING = {
 	Vector3.new(-RING_X, StreetLayout.GroundY, PZ),
