@@ -40,6 +40,7 @@ local Chain = require(ReplicatedStorage.Shared.Chain)
 local Constants = require(ReplicatedStorage.Shared.Constants)
 local Cosmetics = require(ReplicatedStorage.Shared.Cosmetics)
 local Economy = require(ReplicatedStorage.Shared.Economy)
+local Finds = require(ReplicatedStorage.Shared.Finds)
 local Grid = require(ReplicatedStorage.Shared.Grid)
 local Layout = require(ReplicatedStorage.Shared.Layout)
 local Net = require(ReplicatedStorage.Shared.Net)
@@ -751,7 +752,12 @@ local function placeDecor(
 	if not data or not d then
 		return
 	end
-	if not Pieces.decorHere(d, data.location, data.unlocked) then
+	if d.found and not (data.finds and data.finds.found[d.id]) then
+		-- Rare decor (A.11.3): found, never bought.
+		refuse(player, "PlaceDecor", "NotFound")
+		return
+	end
+	if not Pieces.decorHere(d, data.location, data.unlocked, data.finds and data.finds.found) then
 		refuse(player, "PlaceDecor", "Location")
 		return
 	end
@@ -1164,7 +1170,22 @@ function BuildService.Start()
 			local ok, missing = Rooms.ready(world, id)
 			local bars = Rooms.bars(world, id)
 			local a = Rooms.roomArea(world, id)
+			-- A.11.3: the rare sets standing in it (pieces of each), and whether it has the set's bonus.
+			local items = {}
+			for _, d in Rooms.contents(world, id).decor do
+				table.insert(items, d.item)
+			end
+			local sets = {}
+			for setId, n in Finds.progress(items) do
+				table.insert(sets, {
+					id = setId,
+					have = n,
+					total = #Pieces.SetById[setId].pieces,
+					bonus = bars.sets ~= nil and table.find(bars.sets, setId) ~= nil,
+				})
+			end
 			table.insert(rooms, {
+				sets = sets,
 				id = tonumber(id),
 				type = rec.type,
 				floor = rec.floor,
@@ -1194,7 +1215,9 @@ function BuildService.Start()
 		end
 		local unlockedDecor = {}
 		for _, d in Pieces.DecorList do
-			if Pieces.decorHere(d, data.location, data.unlocked) then
+			if
+				Pieces.decorHere(d, data.location, data.unlocked, data.finds and data.finds.found)
+			then
 				unlockedDecor[d.id] = true
 			end
 		end

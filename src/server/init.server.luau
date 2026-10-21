@@ -38,6 +38,7 @@ local systems: { { Init: () -> (), Start: () -> () } } = {
 	require(Server.DailyService) :: any, -- dailies, login, codes; pays by StoreService's income rate
 	require(Server.ContractService) :: any, -- VIP contracts (A.11.1): over the bus, guests, the build rules and the income rate
 	require(Server.HunterService) :: any, -- Hunter Night, over guests, residents and the bus
+	require(Server.FindService) :: any, -- rare decor finds and souvenirs (A.11.3): from stays, Hunter Night, move-ins, VIP contracts
 	require(Server.EventService) :: any, -- the calendar's events, over the bus, guests and hunters
 	require(Server.NotifyService) :: any, -- notifications, from residents' offline cap and the calendar
 	require(Server.SettingsService) :: any,

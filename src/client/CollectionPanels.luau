@@ -344,11 +344,20 @@ local function drawBook()
 				table.insert(seasons, m.name)
 			end
 		end
+		-- A.11.3: the species' souvenir found, or its move-ins toward it.
+		local finds = State.data.finds
+		local souvenir = ""
+		if finds then
+			souvenir = if table.find(finds.found or {}, `Souvenir_{sp.id}`)
+				then "  ·  souvenir ★"
+				else `  ·  souvenir {(finds.moveIns or {})[sp.id] or 0}/{finds.souvenirMoveIns or 0}`
+		end
 		local seasonLine = Ui.label(
 			page,
 			"Seasons",
 			(if #seasons > 0 then "Seasons: " .. table.concat(seasons, " ") else "Seasons: ·")
-				.. (if table.find(found, "Stacked") then "  ·  stack ✓" else ""),
+				.. (if table.find(found, "Stacked") then "  ·  stack ✓" else "")
+				.. souvenir,
 			UDim2.new(1, -20, 0, 16),
 			12,
 			Ui.Colour.Moon

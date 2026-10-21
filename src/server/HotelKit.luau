@@ -24,6 +24,7 @@ local Constants = require(ReplicatedStorage.Shared.Constants)
 local Grid = require(ReplicatedStorage.Shared.Grid)
 local Pieces = require(ReplicatedStorage.Shared.Pieces)
 local Locations = require(ReplicatedStorage.Shared.Locations)
+local Species = require(ReplicatedStorage.Shared.Species)
 local Cosmetics = require(ReplicatedStorage.Shared.Cosmetics)
 local StreetLayout = require(ReplicatedStorage.Shared.StreetLayout)
 
@@ -201,6 +202,9 @@ end
 	the 0.4 inset, a rug to its edges and flat, a wall piece against the back. ]]
 function HotelKit.decor(id: string, location: number): Model
 	local d = assert(Pieces.decor(id), id)
+	if d.souvenir then
+		return HotelKit.souvenir(d)
+	end
 	if d.furniture then
 		-- Furniture (MODELS.md "Furniture"): `Furniture_<Id>` from the kit; the
 		-- location-0 pieces from Haunted Manor's until a kit has its own.
@@ -264,6 +268,151 @@ function HotelKit.decor(id: string, location: number): Model
 			Vector3.new(0, d.height / 2, 0),
 			props
 		)
+	end
+	return model
+end
+
+--[[ The souvenir's Luau blockout (MODELS.md "The souvenir"), until
+	`Souvenir_Base` is imported: a plinth (`Body`) with a band (`Trim`), the
+	rosette (`Ribbon`) on its top, the `Medal` (a clear block whose top the
+	emblem's disc is drawn on), the name plaque (`Badge`, its front face at
+	z −0.86) and the bell jar (`Glass`). 1 × 1 squares, top 3.7. ]]
+local function blockoutSouvenir(id: string): Model
+	local model, _ = shell(`Decor_{id}`, Vector3.new(3, 0.2, 3), Vector3.new(0, 0.1, 0))
+	local solid = { CanCollide = false }
+	part(model, "Body", Vector3.new(1.6, 1.65, 1.6), Vector3.new(0, 0.825, 0), {
+		CanCollide = false,
+		Color = Color3.fromRGB(80, 52, 38),
+		Material = Enum.Material.Wood,
+	})
+	part(model, "Trim", Vector3.new(1.7, 0.12, 1.7), Vector3.new(0, 0.45, 0), solid)
+	local up = CFrame.Angles(0, 0, math.pi / 2) -- a cylinder's axis is its X: stand it up
+	local ribbon = part(model, "Ribbon", Vector3.new(0.1, 1.6, 1.6), Vector3.new(0, 1.7, 0), solid)
+	ribbon.Shape = Enum.PartType.Cylinder
+	ribbon.CFrame = CFrame.new(0, 1.7, 0) * up
+	part(model, "Medal", Vector3.new(1.2, 0.13, 1.2), Vector3.new(0, 1.815, 0), {
+		CanCollide = false,
+		Transparency = 1,
+	})
+	part(model, "Badge", Vector3.new(1.08, 0.46, 0.06), Vector3.new(0, 1.0, -0.83), {
+		CanCollide = false,
+		Color = Color3.fromRGB(220, 180, 90),
+	})
+	local glass = part(model, "Glass", Vector3.new(2.05, 1.92, 1.92), Vector3.new(0, 2.675, 0), {
+		CanCollide = false,
+		CanQuery = false,
+		Material = Enum.Material.Glass,
+		Transparency = 0.7,
+		Color = Color3.fromRGB(210, 230, 240),
+	})
+	glass.Shape = Enum.PartType.Cylinder
+	glass.CFrame = CFrame.new(0, 2.675, 0) * up
+	return model
+end
+
+-- A part's own look goes (texture, SurfaceAppearance), so a flat colour lands on it.
+local function flat(p: BasePart, colour: Color3)
+	for _, c in p:GetChildren() do
+		if c:IsA("SurfaceAppearance") or c:IsA("Texture") or c:IsA("Decal") then
+			c:Destroy()
+		end
+	end
+	if p:IsA("MeshPart") then
+		pcall(function()
+			(p :: any).TextureID = ""
+		end)
+	end
+	p.Color = colour
+end
+
+--[[ A species' souvenir (GDD A.11.3, MODELS.md "The souvenir"): the one
+	model `Souvenir_Base` (`ServerStorage.Cosmetics`, as it serves every
+	location), else its blockout, tinted for the species: `Ribbon` its
+	`look.colour`, `Trim` that darkened (PLACEHOLDER: his look), its name on
+	`Badge`'s front and its emblem on `Medal`'s top. No species has an emblem
+	image yet (UI.md "Images"): the emblem is a blockout disc, the species'
+	colour in a gold ring with its initial. ]]
+function HotelKit.souvenir(d: Pieces.Decor): Model
+	local sp = Species.get(d.souvenir or "")
+	local kit = ServerStorage:FindFirstChild("Cosmetics")
+	local base = kit and kit:FindFirstChild("Souvenir_Base")
+	local model = if base and base:IsA("Model") then rooted(base) else blockoutSouvenir(d.id)
+	model.Name = `Decor_{d.id}`
+	model:SetAttribute("Souvenir", d.souvenir)
+	if not sp then
+		return model
+	end
+	local colour = sp.look.colour
+	local second = darker(colour, 0.6)
+	local ribbon = model:FindFirstChild("Ribbon", true)
+	if ribbon and ribbon:IsA("BasePart") then
+		flat(ribbon, colour)
+	end
+	local trim = model:FindFirstChild("Trim", true)
+	if trim and trim:IsA("BasePart") then
+		flat(trim, second)
+	end
+	local medal = model:FindFirstChild("Medal", true)
+	if medal and medal:IsA("BasePart") then
+		local gui = Instance.new("SurfaceGui")
+		gui.Name = "Emblem"
+		gui.Face = Enum.NormalId.Top
+		gui.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
+		gui.PixelsPerStud = 100
+		gui.LightInfluence = 0.5
+		gui.MaxDistance = 120
+		local ring = Instance.new("Frame")
+		ring.Name = "Ring"
+		ring.AnchorPoint = Vector2.new(0.5, 0.5)
+		ring.Position = UDim2.fromScale(0.5, 0.5)
+		ring.Size = UDim2.fromScale(0.98, 0.98)
+		ring.BackgroundColor3 = Color3.fromRGB(220, 180, 90)
+		ring.BorderSizePixel = 0
+		ring.Parent = gui
+		local round = Instance.new("UICorner")
+		round.CornerRadius = UDim.new(0.5, 0)
+		round.Parent = ring
+		local disc = ring:Clone()
+		disc.Name = "Disc"
+		disc.Size = UDim2.fromScale(0.74, 0.74)
+		disc.BackgroundColor3 = colour
+		disc.Parent = gui
+		local letter = Instance.new("TextLabel")
+		letter.Name = "Initial"
+		letter.AnchorPoint = Vector2.new(0.5, 0.5)
+		letter.Position = UDim2.fromScale(0.5, 0.5)
+		letter.Size = UDim2.fromScale(0.5, 0.5)
+		letter.BackgroundTransparency = 1
+		letter.Font = Enum.Font.FredokaOne
+		letter.TextScaled = true
+		letter.TextColor3 = Color3.fromRGB(255, 250, 235)
+		letter.TextStrokeTransparency = 0.5
+		letter.Text = string.sub(sp.name, 1, 1)
+		-- A Top face draws its top toward −X (DEVNOTES.md): turned to read from the front (−Z).
+		letter.Rotation = -90
+		letter.Parent = gui
+		gui.Parent = medal
+	end
+	local badge = model:FindFirstChild("Badge", true)
+	if badge and badge:IsA("BasePart") then
+		local gui = Instance.new("SurfaceGui")
+		gui.Name = "Name"
+		gui.Face = Enum.NormalId.Front
+		gui.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
+		gui.PixelsPerStud = 120
+		gui.LightInfluence = 0.6
+		gui.MaxDistance = 60
+		local text = Instance.new("TextLabel")
+		text.Name = "Text"
+		text.BackgroundTransparency = 1
+		text.Position = UDim2.fromScale(0.06, 0.1)
+		text.Size = UDim2.fromScale(0.88, 0.8)
+		text.Font = Enum.Font.FredokaOne
+		text.TextScaled = true
+		text.TextColor3 = Color3.fromRGB(60, 40, 25)
+		text.Text = sp.name
+		text.Parent = gui
+		gui.Parent = badge
 	end
 	return model
 end

@@ -84,6 +84,7 @@ local REFUSALS: { [string]: string } = {
 	Unknown = "That isn't there",
 	Location = "Not at this location",
 	Locked = "Not unlocked yet",
+	NotFound = "Not found yet: rare decor is found, not bought",
 }
 
 -- A refusal's words (the server's `Refused` reasons, and the build mode's ghost).

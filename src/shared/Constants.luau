@@ -433,6 +433,22 @@ Constants.Contracts = {
 	ArrivalGrace = 150, -- seconds a VIP taken by the bus may take to step off before its contract is Accepted again
 }
 
+--[[ GDD A.11.3: rare decor sets and souvenirs, on the draft's scrutinized
+	recommendations (his calls, WAITING §2.38). Every number PLACEHOLDER. A
+	set piece's price (`Pieces`, `cost`) is what placing a copy costs and
+	gives its points: twice a shop piece of its size's. ]]
+Constants.Finds = {
+	StayChance = 0.02, -- PLACEHOLDER: a set piece's roll per happy stay of a guest of MinRarity or rarer …
+	MinRarity = "Rare", -- … (A.11.3 Numbers)
+	Pity = 40, -- PLACEHOLDER: after 40 rolls in a row without a find, the next gives the location's next unfound piece
+	HunterChance = 0.25, -- PLACEHOLDER: one roll per player on a defended Hunter Night (decision 5: per street, every player on it)
+	SetBonus = 0.25, -- PLACEHOLDER: a whole set in one room adds this to its Decor bar, once per set per hotel
+	DuplicateMinutes = 5, -- PLACEHOLDER: a find once a location's sets are all found: minutes of income in cash (at least the piece's price)
+	SouvenirMoveIns = 3, -- PLACEHOLDER: a species' souvenir on its 3rd move-in, or its first VIP contract, whichever first
+	SouvenirCost = { 200, 4000, 80000 }, -- PLACEHOLDER: placing a souvenir, by its species' location (×20 a location, as pay)
+	KeepThroughRebirth = true, -- PLACEHOLDER (decision 4a, his call with §6.4): found stays found; placed copies go with the hotel
+}
+
 -- §6.2: number format.
 Constants.Format = {
 	Suffixes = { "", "K", "M", "B", "T", "Qa", "Qi" },

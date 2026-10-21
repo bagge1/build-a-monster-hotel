@@ -677,10 +677,10 @@ here). Written 2026-10-21, before the first set.
 One small keepsake on display, **1 × 1, layer `Floor`**, by every rule of
 "Decor" above (no `Use`, nothing colliding). The code clones it for each
 species' souvenir; the `Pieces` rows (or the code's own souvenir table)
-point at this one model. Template in `ServerStorage.Souvenirs`
-(`assets/Souvenirs/Souvenir_Base.rbxm`): used in every location, so in no
-location kit. `default.project.json` gains that folder when the first
-`.rbxm` is saved (skill `import`; a project change, so his Rojo restarts).
+point at this one model. Template in `ServerStorage.Cosmetics`
+(`assets/Cosmetics/Souvenir_Base.rbxm`, a folder already mapped, so no
+project change and no Rojo restart): used in every location, so in no
+location kit (`HotelKit.souvenir`; a Luau blockout until it is saved).
 
 | Name | What | The code |
 |---|---|---|

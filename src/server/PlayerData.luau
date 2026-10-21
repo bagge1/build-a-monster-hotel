@@ -34,6 +34,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Constants = require(ReplicatedStorage.Shared.Constants)
 local Contracts = require(ReplicatedStorage.Shared.Contracts)
+local Finds = require(ReplicatedStorage.Shared.Finds)
 local Grid = require(ReplicatedStorage.Shared.Grid)
 local Pieces = require(ReplicatedStorage.Shared.Pieces)
 local Rooms = require(ReplicatedStorage.Shared.Rooms)
@@ -186,6 +187,7 @@ export type Data = {
 	equipped: { [string]: string }, -- slot -> the cosmetic worn there ("" for none; Cosmetics.luau)
 	traps: { string }, -- the lobby's trap slots (§8.1), "" when empty
 	contracts: Contracts.Ledger, -- VIP contracts (A.11.1): offers by location, those running, the day's count
+	finds: Finds.Record, -- rare decor found (A.11.3): set pieces and souvenirs by decor id, the pity's misses, move-ins (Reconcile adds it)
 }
 
 local TEMPLATE: Data = {
@@ -244,6 +246,7 @@ local TEMPLATE: Data = {
 	equipped = { Sign = "", Lobby = "", Facade = "" },
 	traps = { "", "", "" },
 	contracts = Contracts.newLedger(),
+	finds = Finds.newRecord(),
 }
 
 local store = ProfileStore.New("MonsterHotel_Players_v1", TEMPLATE)

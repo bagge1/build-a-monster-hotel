@@ -148,6 +148,8 @@ local rightDownAt: Vector2? = nil
 local rightDragX: number? = nil -- the cursor's last x in a right-drag
 local rightDragY: number? = nil -- and its last y: the drag tilts the camera too
 local redrawCards: () -> ()
+local chooseDecor: (Pieces.Decor) -> ()
+local FOUND_GOLD = Color3.fromRGB(150, 110, 40) -- a found rare piece's card (A.11.3)
 local ghost: Model? = nil
 local hidden: { [BasePart]: boolean } = {}
 local tilePlates: { [number]: BasePart } = {} -- the buyable tiles' plates, by Grid.tileKey
@@ -1154,6 +1156,24 @@ local function firstCard(): GuiObject?
 	return best
 end
 
+-- A decor card's tap: choose it to place (or, chosen already, stop).
+function chooseDecor(d: Pieces.Decor)
+	if selectedDecor == d.id then
+		stopPlacing()
+		return
+	end
+	stopPlacing()
+	selectedDecor = d.id
+	showHover(nil)
+	info.Text = `{d.name}: {Controls.hint(
+		"tap a room or a hallway · tap the card again to stop",
+		"A in a room or a hallway · B to stop"
+	)}`
+	redrawCards()
+	drawGhost()
+	toPlot()
+end
+
 function redrawCards()
 	for _, c in cards:GetChildren() do
 		if c:IsA("GuiButton") then
@@ -1226,8 +1246,60 @@ function redrawCards()
 		end
 	elseif tab == "Decor" or tab == "Furniture" then
 		local furnitureTab = tab == "Furniture"
+		local unlocked = b.unlockedDecor or {}
+		--[[ The Decor tab's Found cards first (GDD A.11.3, UI.md "Build mode"):
+			rare pieces and souvenirs found ("★", gold), then this location's
+			set pieces and its species' souvenirs not found yet, as dark cards
+			saying where they come from, then the shop. ]]
+		if not furnitureTab then
+			local finds = State.data.finds or {}
+			local found = {}
+			for _, id in finds.found or {} do
+				found[id] = true
+			end
+			local need = finds.souvenirMoveIns or 3
+			local order = 0
+			for _, d in Pieces.DecorList do
+				if d.found and unlocked[d.id] then
+					order += 1
+					card(
+						d.id,
+						`★ {d.name}\n{d.w}×{d.d} · {Format.cash(d.cost)}`,
+						order,
+						selectedDecor == d.id,
+						true,
+						function()
+							chooseDecor(d)
+						end
+					)
+					local c = cards:FindFirstChild(d.id) :: TextButton?
+					if c and selectedDecor ~= d.id then
+						c.BackgroundColor3 = FOUND_GOLD
+					end
+				end
+			end
+			for _, d in Pieces.DecorList do
+				if d.found and d.location == b.location and not found[d.id] then
+					order += 1
+					local from = if d.souvenir
+						then `move-in no. {need}\nor first VIP`
+						else "rare stays,\nHunter Night"
+					card(`Unfound_{d.id}`, `? {d.name}\n{from}`, order, false, false, function()
+						local sp = d.souvenir and Species.get(d.souvenir)
+						info.Text = if sp
+							then `{d.name}: found when a {sp.name} moves in for the time no. {need}, or at its first VIP contract`
+							else `{d.name}: found on a happy stay of a Rare or rarer guest, or a defended Hunter Night `
+								.. `({finds.misses or 0}/{finds.pity or 0} toward a sure find)`
+					end)
+					local c = cards:FindFirstChild(`Unfound_{d.id}`) :: TextButton?
+					if c then
+						c.TextColor3 = Ui.Colour.Muted
+					end
+				end
+			end
+		end
 		for i, d in Pieces.DecorList do
-			if (b.unlockedDecor or {})[d.id] and (d.furniture == true) == furnitureTab then
+			if unlocked[d.id] and not d.found and (d.furniture == true) == furnitureTab then
 				local free = false
 				for _, t in d.keyFor or {} do
 					if (b.vouchers or {})[t] then
@@ -1238,21 +1310,8 @@ function redrawCards()
 					then "free"
 					elseif d.cost > 0 then Format.cash(d.cost)
 					else "owned"}`
-				card(d.id, text, i, selectedDecor == d.id, true, function()
-					if selectedDecor == d.id then
-						stopPlacing()
-						return
-					end
-					stopPlacing()
-					selectedDecor = d.id
-					showHover(nil)
-					info.Text = `{d.name}: {Controls.hint(
-						"tap a room or a hallway · tap the card again to stop",
-						"A in a room or a hallway · B to stop"
-					)}`
-					redrawCards()
-					drawGhost()
-					toPlot()
+				card(d.id, text, 1000 + i, selectedDecor == d.id, true, function()
+					chooseDecor(d)
 				end)
 			end
 		end
@@ -1436,6 +1495,23 @@ end
 
 function BuildController.open()
 	setActive(true)
+end
+
+-- Build mode open on the Decor tab with this piece chosen to place (a find's pop-up, A.11.3).
+function BuildController.placeDecor(id: string)
+	local d = Pieces.decor(id)
+	if not d then
+		return
+	end
+	if not active then
+		setActive(true)
+	end
+	tab = if d.furniture then "Furniture" else "Decor"
+	stopPlacing()
+	paintTabs()
+	if selectedDecor ~= id then
+		chooseDecor(d)
+	end
 end
 
 -- ===== Built rooms (GDD §5.4, A.12, his rulings 2026-10-21) =====
@@ -1937,12 +2013,22 @@ local function paintRoomView()
 			R.FurnitureSatisfaction * bars.furniture + 0.5
 		)} happiness`
 	)
+	-- A.11.3: a rare set in the room, its pieces here and whether this room has its bonus.
+	local setWords = ""
+	for _, s in rec.sets or {} do
+		local set = Pieces.SetById[s.id]
+		local name = if set then set.name else s.id
+		setWords ..= if s.bonus
+			then ` · ★ {name} {pct(Constants.Finds.SetBonus)}`
+			elseif s.have >= s.total then ` · {name}: bonus in another room`
+			else ` · {name} {s.have}/{s.total}`
+	end
 	paintBar(
 		"DecorBar",
 		bars.decor,
 		`+{math.floor(R.DecorSatisfaction * bars.decor + 0.5)} happiness · {pct(
 			R.DecorFriendship * bars.decor
-		)} friendship`
+		)} friendship{setWords}`
 	)
 end
 
@@ -2312,6 +2398,11 @@ function BuildController.Init()
 		Ui.corner(fill, 6)
 		local bonus = Ui.label(barRow, "Bonus", "", UDim2.new(1, 0, 0, 16), 13, Ui.Colour.Muted)
 		bonus.Position = UDim2.fromOffset(0, 36)
+		-- A rare set's words (A.11.3) can run long: shrink to the line, never past 13.
+		bonus.TextScaled = true
+		local most = Instance.new("UITextSizeConstraint")
+		most.MaxTextSize = 13
+		most.Parent = bonus
 	end
 	local actions = Ui.frame(viewPanel, "Actions", UDim2.new(1, 0, 0, 46))
 	actions.BackgroundTransparency = 1

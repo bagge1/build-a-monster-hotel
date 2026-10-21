@@ -40,6 +40,7 @@
 
 local Constants = require(script.Parent.Constants)
 local Furnish = require(script.Parent.Furnish)
+local Finds = require(script.Parent.Finds)
 local Grid = require(script.Parent.Grid)
 local Pieces = require(script.Parent.Pieces)
 local Species = require(script.Parent.Species)
@@ -104,7 +105,8 @@ export type TypeInfo = {
 	tags: { string }, -- the preference tags it gives (an amenity)
 }
 export type Contents = { furniture: { Grid.DecorPlaced }, decor: { Grid.DecorPlaced } }
-export type Bars = { size: number, furniture: number, decor: number }
+-- `sets`: the rare decor sets whose bonus this room has (A.11.3, once per set per hotel), in `decor` already.
+export type Bars = { size: number, furniture: number, decor: number, sets: { string }? }
 export type Bonuses = { pay: number, stay: number, satisfaction: number, friendship: number }
 export type Spot = Grid.Spot -- in squares for `walkable`, `route`, `keySpot`
 export type Leg = Grid.Leg -- as Grid's, but `cells` are squares
@@ -1431,15 +1433,56 @@ function Rooms.bars(world: World, roomId: string): Bars
 	for _, d in c.furniture do
 		fp += Furnish.points(d.item)
 	end
+	local items = {}
 	for _, d in c.decor do
 		dp += Furnish.points(d.item)
+		table.insert(items, d.item)
 	end
 	local decorTarget = req.decorTarget(a.size)
-	return {
+	local bars: Bars = {
 		size = size,
 		furniture = if req.furnitureTarget > 0 then clamp01(fp / req.furnitureTarget) else 1,
 		decor = if decorTarget > 0 then clamp01(dp / decorTarget) else 0,
 	}
+	-- A.11.3: a whole rare set adds to the Decor bar, in one room per set per hotel.
+	if #Finds.complete(items) > 0 then
+		local sets = {}
+		for setId, holder in Rooms.setBonusRooms(world) do
+			if holder == roomId then
+				table.insert(sets, setId)
+			end
+		end
+		table.sort(sets)
+		bars.decor = Finds.withBonus(bars.decor, #sets)
+		bars.sets = sets
+	end
+	return bars
+end
+
+--[[ Which room has each rare set's bonus (A.11.3): set id -> room id, the
+	oldest room holding the whole set (`Finds.bonusRooms`). Nothing when no
+	set piece stands in the hotel. ]]
+function Rooms.setBonusRooms(world: World): { [string]: string }
+	local any = false
+	for _, d in world.decor do
+		local row = Pieces.decor(d.item)
+		if row and row.set then
+			any = true
+			break
+		end
+	end
+	if not any then
+		return {}
+	end
+	local rooms = {}
+	for id in world.rooms do
+		local list = {}
+		for _, d in Rooms.contents(world, id).decor do
+			table.insert(list, d.item)
+		end
+		rooms[id] = list
+	end
+	return Finds.bonusRooms(rooms)
 end
 
 -- What a room's bars give (A.12, his yes to the mapping): each linear in its bar.

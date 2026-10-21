@@ -117,9 +117,29 @@ Cards per tab:
   and "ready" or what it lacks; a tap opens its room view.
 - **Furniture** and **Decor**: one card per piece (`<DecorId>`): name, size
   in squares, price ("free" while a tutorial voucher pays for it).
+  **Decor** starts with what is **Found** (GDD A.11.3): each rare set piece
+  and souvenir found, `<DecorId>` "★ name", gold, its copy's price; then
+  this location's set pieces and its species' souvenirs not found yet,
+  `Unfound_<DecorId>`, dark, "? name" and where it comes from (a tap says
+  more in `Info`, with the pity's count); then the shop.
+- The room view's `DecorBar` `Bonus` adds a rare set's line: "★ <set> +25%"
+  in the room that has the set's bonus, "<set>: bonus in another room", or
+  "<set> n/5".
 - **Stairs, desks**: a piece's name, size and price ("free" for an owed stair).
 - **Floors**: a finish's name and "Its own floor"; tap a room or a hallway.
 - **Windows**: one per window type; tap an outer wall.
+
+### Found (`Finds`, `src/client/FindsPanel.luau`)
+
+GDD A.11.3. The `Moment` "Found" (`FindService`: a set piece, a souvenir or
+a duplicate) opens one pop-up; mobile first, buttons 48 tall.
+
+| Name | What | The code |
+|---|---|---|
+| `FoundPopup` | A window: `Title` ("★ Found!", "A souvenir!", "Found again"), `Text` (the piece, its set's count, where it came from; a duplicate's cash), `Where` (size, layer, "Build → Decor, under Found", a copy's price), `Buttons` with `Place` ("Place it") and `Ok` ("Later"; "Lovely" for a duplicate) | `Place` opens build mode on the Decor tab with the piece chosen (`BuildController.placeDecor`) |
+
+The Book page's `Seasons` line ends with "souvenir ★" once the species'
+souvenir is found, else "souvenir n/3" (its move-ins toward it).
 
 ### Showcase (`Showcase`, `src/client/ShowcasePanel.luau`)
 

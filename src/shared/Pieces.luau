@@ -21,6 +21,9 @@
 	`colour` is the Luau blockout's (MODELS.md, "Hotel kit") until a model exists.
 ]]
 
+local Constants = require(script.Parent.Constants)
+local Species = require(script.Parent.Species)
+
 export type Unlock =
 	{ rooms: number?, floor: number?, rating: number?, legendaryResident: boolean? }
 export type Kind = "Room" | "Amenity" | "Stairs" | "Desk"
@@ -54,7 +57,15 @@ export type Decor = {
 	-- names the room types and amenities it is a key piece of.
 	furniture: boolean?,
 	keyFor: { string }?,
+	-- Rare decor (GDD A.11.3, MODELS.md "Rare decor sets and souvenirs"): `found`
+	-- pieces are never sold in the build shop, only placed once found (`Finds`);
+	-- `set` names a set of `Pieces.Sets`; `souvenir` the species a souvenir is of.
+	found: boolean?,
+	set: string?,
+	souvenir: string?,
 }
+-- A rare decor set (A.11.3): its display name, its location, its pieces in the pity's order.
+export type DecorSet = { id: string, name: string, location: number, pieces: { string } }
 export type Finish = {
 	id: string,
 	name: string,
@@ -1795,7 +1806,128 @@ local decor: { Decor } = {
 		colour = Color3.fromRGB(110, 60, 140),
 		furniture = true,
 	},
+	--[[ Rare decor sets (GDD A.11.3, MODELS.md "Rare decor sets and souvenirs"):
+		found, never sold in the build shop. Each row from its model's
+		`pieces_row` (blender/decor/<set>/manifest.json). `cost` is a copy's
+		price and gives its points: twice a shop piece of its size's
+		(PLACEHOLDER every price; no tags: his call). ]]
+	-- The Count's Study (Haunted Manor; blender/decor/count_study/)
+	{
+		id = "CountStudy_Portrait",
+		name = "The Count's Portrait",
+		tags = {},
+		cost = 200,
+		location = 1,
+		w = 2,
+		d = 1,
+		layer = "Wall",
+		height = 6.94,
+		colour = Color3.fromRGB(140, 30, 55),
+		found = true,
+		set = "CountStudy",
+	},
+	{
+		id = "CountStudy_Globe",
+		name = "Night Globe",
+		tags = {},
+		cost = 120,
+		location = 1,
+		w = 1,
+		d = 1,
+		layer = "Floor",
+		height = 4.32,
+		colour = Color3.fromRGB(35, 40, 70),
+		found = true,
+		set = "CountStudy",
+	},
+	{
+		id = "CountStudy_Clock",
+		name = "Coffin Clock",
+		tags = {},
+		cost = 160,
+		location = 1,
+		w = 1,
+		d = 1,
+		layer = "Floor",
+		height = 6.78,
+		colour = Color3.fromRGB(90, 20, 40),
+		found = true,
+		set = "CountStudy",
+	},
+	{
+		id = "CountStudy_Bust",
+		name = "The Count's Bust",
+		tags = {},
+		cost = 120,
+		location = 1,
+		w = 1,
+		d = 1,
+		layer = "Floor",
+		height = 4.17,
+		colour = Color3.fromRGB(235, 225, 200),
+		found = true,
+		set = "CountStudy",
+	},
+	{
+		id = "CountStudy_Rug",
+		name = "Crest Rug",
+		tags = {},
+		cost = 80,
+		location = 1,
+		w = 3,
+		d = 2,
+		layer = "Rug",
+		height = 0.14,
+		colour = Color3.fromRGB(140, 30, 55),
+		found = true,
+		set = "CountStudy",
+	},
 }
+
+--[[ The sets (A.11.3: one per location at launch; Frostfang Lodge's and Bayou
+	Spa's are not modelled yet). `pieces` in the order the pity gives them. ]]
+local sets: { DecorSet } = {
+	{
+		id = "CountStudy",
+		name = "The Count's Study",
+		location = 1,
+		pieces = {
+			"CountStudy_Rug",
+			"CountStudy_Portrait",
+			"CountStudy_Clock",
+			"CountStudy_Globe",
+			"CountStudy_Bust",
+		},
+	},
+}
+
+--[[ One souvenir per species (A.11.3), every one drawn from the one model
+	`Souvenir_Base` tinted per species (MODELS.md "The souvenir"): id
+	`Souvenir_<Species>`, 1 × 1 on the floor, its location the species' (it
+	may be placed at any hotel, `decorHere`). PLACEHOLDER price by location. ]]
+for _, sp in Species.List do
+	local costs = Constants.Finds.SouvenirCost
+	table.insert(decor, {
+		id = `Souvenir_{sp.id}`,
+		name = `{sp.name} Souvenir`,
+		tags = {},
+		cost = costs[sp.location] or costs[#costs],
+		location = sp.location,
+		w = 1,
+		d = 1,
+		layer = "Floor",
+		height = 3.7,
+		colour = sp.look.colour,
+		found = true,
+		souvenir = sp.id,
+	})
+end
+
+Pieces.Sets = sets
+Pieces.SetById = {} :: { [string]: DecorSet }
+for _, s in sets do
+	Pieces.SetById[s.id] = s
+end
 
 Pieces.List = pieces
 Pieces.ById = {} :: { [string]: Piece }
@@ -1905,8 +2037,18 @@ function Pieces.finish(id: string): Finish?
 end
 
 -- Whether a player at `location` may place this decor (event decor once bought: `unlocked`;
--- furniture of every location, location 0, always, A.12).
-function Pieces.decorHere(d: Decor, location: number, unlocked: { [string]: boolean }): boolean
+-- furniture of every location, location 0, always, A.12). Rare decor (A.11.3) once found
+-- (`found`, the profile's `finds.found` by decor id): a set's piece at its own location, a
+-- souvenir at any.
+function Pieces.decorHere(
+	d: Decor,
+	location: number,
+	unlocked: { [string]: boolean },
+	found: { [string]: any }?
+): boolean
+	if d.found then
+		return found ~= nil and found[d.id] ~= nil and (d.souvenir ~= nil or d.location == location)
+	end
 	return d.always == true
 		or d.location == location
 		or (d.furniture == true and d.location == 0)

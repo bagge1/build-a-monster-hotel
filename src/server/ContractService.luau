@@ -15,8 +15,8 @@
 	at the desk as long as it takes, and pays `VipPay` × for its stay. A
 	HAPPY stay in a room that met the spec at check-in completes it: cash
 	(`Contracts.reward`, minutes of income by its rarity) and, the first time
-	for a species, the souvenir's hook (`onSouvenir`, A.11.3; souvenirs are
-	not built yet, so nothing is given and only the event fires). An unhappy
+	for a species, its souvenir (`onSouvenir`, A.11.3: `FindService` gives
+	it). An unhappy
 	stay, or a room that no longer met it, ends it without the reward. A
 	contract that runs out is missed: gone, and its slot drawn anew. At most
 	`DailyCap` are completed a UTC day.
@@ -70,7 +70,7 @@ local sessions: { [Player]: { [number]: Session } } = {}
 local devStars: { [Player]: number } = {} -- Studio only (`vipstars`): the rating the ledger reads
 local souvenirHandlers: { (Player, string) -> () } = {}
 
--- Called the first time a species' contract is completed (A.11.3's souvenir; souvenirs are not built yet).
+-- Called the first time a species' contract is completed: A.11.3's souvenir (`FindService`).
 function ContractService.onSouvenir(handler: (Player, string) -> ())
 	table.insert(souvenirHandlers, handler)
 end
@@ -481,7 +481,7 @@ local function checkedOut(player: Player, g: GuestService.Guest, satisfaction: n
 	})
 	Net.fire(player, "Toast", `VIP contract done! +{Format.cash(reward)}`, "Unlock")
 	if first then
-		-- A.11.3's souvenir: not built yet, so only the event (and a stat) for now.
+		-- A.11.3's souvenir: FindService gives it (whichever first: this or the species' 3rd move-in).
 		PlayerData.stat(player, `vipFirst_{c.species}`)
 		for _, h in souvenirHandlers do
 			task.spawn(h, player, c.species)
