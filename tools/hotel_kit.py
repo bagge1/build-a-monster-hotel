@@ -29,6 +29,11 @@ triangle budgets; glow colours only in Glow_<Key>_<n> parts and
 nothing else in them; the stair core's walked boxes identical to the
 blockout's (walker-proven, 2026-10-19).
 
+MIRRORS. finish() also writes <PieceId>_Mirror for every Room and Amenity that is
+not its own mirror image (mirrored(), symmetric(); MODELS.md, "Rooms and amenities"),
+checked by the same contract mirrored back, and validate() checks it against its
+original's manifest record. `-- nomirror` turns it off for a run.
+
 ATTACHMENTS do not travel through FBX. Every attachment is in manifest.json
 (Roblox coordinates, piece frame), and import_fixup.luau, run once in Studio's
 Edit datamodel after the import, makes them on Root, sets Root, PrimaryPart,
@@ -49,6 +54,9 @@ ROOT = Path(__file__).resolve().parents[1]
 ARGS = sys.argv[sys.argv.index('--') + 1:] if '--' in sys.argv else []
 NOPREVIEW = 'nopreview' in ARGS
 ONLY = set(ARGS[ARGS.index('only') + 1].split(',')) if 'only' in ARGS else None
+NOMIRROR = 'nomirror' in ARGS   # finish() writes no <PieceId>_Mirror this run (the default writes them)
+MIRROR_KINDS = ('Room', 'Amenity')   # MODELS.md, "Rooms and amenities": F flips these (GDD A.1)
+MIRROR_SUFFIX = '_Mirror'
 
 # Constants.Grid (src/shared/Constants.luau) and MODELS.md: his ruling of 2026-10-19 evening doubled
 # the spaces (12-stud cells, 18-stud floors, walls up to the slab); doors, steps and furniture stay
@@ -151,6 +159,7 @@ class Piece:
         self.fw = self.fd = self.layer = None   # Decor: footprint in 3-stud squares, and its layer
         self.refit = None                       # Decor: the uniform scale and shift refit_decor() applied
         self.seats = []                         # Decor: seat() records, MODELS.md "Decor", rule 6
+        self.mirror_of = None                   # a <PieceId>_Mirror: the Piece it mirrors (finish())
 
 
 P = None
@@ -1160,6 +1169,12 @@ def check_piece(piece, boxes, tris, faults):
     def fault(ok, what):
         if not ok:
             faults.append(what)
+    if piece.mirror_of is not None:
+        # A <PieceId>_Mirror keeps the contract mirrored across x = 0: its boxes, mirrored back, must
+        # pass every check the original passes (walls = the blockout's, door opening, Door -> Bed walk).
+        boxes = {p: (Vector((-hi.x, lo.y, lo.z)), Vector((-lo.x, hi.y, hi.z)), col)
+                 for p, (lo, hi, col) in boxes.items()}
+        piece = piece.mirror_of
     name, kind = piece.name, piece.kind
     ascii_name = re.compile(r'^[A-Za-z][A-Za-z0-9_]*$')
     for part in boxes:
@@ -1397,14 +1412,101 @@ def _proxy(piece):
             box('LOD_Proxy', (lo + hi) / 2, hi - lo, 'grey', collide=False)
 
 
-def finish(proxy=None, note=''):
+def _flip(v):
+    """A point or direction mirrored across x = 0 (Roblox coords); 0.0 - x keeps a 0 from turning -0."""
+    return Vector((0.0 - v[0], v[1], v[2]))
+
+
+def mirrored(piece):
+    """<PieceId>_Mirror (MODELS.md, "Rooms and amenities"): the same geometry mirrored across x = 0,
+    each face's winding reversed so it stays turned out (finish() also recalculates the normals
+    outward, as for every piece), every attachment's x negated and its LookVector mirrored (Door on
+    the other front cell, a Hinge on the other jamb), the same part names, colours and collision.
+    Its checks are the original's, run on it mirrored back (check_piece)."""
+    m = Piece(piece.name + MIRROR_SUFFIX, piece.kind, piece.size, _flip(piece.root_centre), piece.w, piece.d)
+    for name, (verts, faces, cols) in piece.parts.items():
+        m.parts[name] = [[_flip(v) for v in verts], [list(reversed(f)) for f in faces], list(cols)]
+    m.collide = dict(piece.collide)
+    m.att = {a: (_flip(pos), _flip(look) if look is not None else None) for a, (pos, look) in piece.att.items()}
+    m.notes = list(piece.notes)
+    m.fw, m.fd, m.layer = piece.fw, piece.fd, piece.layer
+    m.mirror_of = piece
+
+    def back(tris):
+        return {p: [(_flip(a), _flip(c), _flip(b)) for a, b, c in ts] for p, ts in tris.items()}
+    m.checks = [lambda _p, tris, stage, fn=fn: fn(piece, back(tris), stage) for fn in piece.checks]
+    return m
+
+
+def _swap_side(name):
+    """A part's name as its mirror image would hold it if names followed the side (Left <-> Right)."""
+    return re.sub(r'Left|Right', lambda k: 'Right' if k.group() == 'Left' else 'Left', name)
+
+
+def _faces_key(verts, faces, cols, nd=3):
+    """A part's faces as a multiset of (colour, its corners rounded), blind to winding and order."""
+    from collections import Counter
+    return Counter((c, tuple(sorted(tuple(round(float(x), nd) + 0.0 for x in verts[i]) for i in f)))
+                   for f, c in zip(faces, cols))
+
+
+def symmetric(piece, twin):
+    """Whether `piece` is left-right symmetric: its mirror `twin` holds the same faces in the same
+    colours in the same parts (a Left part may answer to its Right twin) with the same collision,
+    and the same attachments. Returns (bool, why)."""
+    diff = []
+    for a, (pos, look) in piece.att.items():
+        tpos, tlook = twin.att[a]
+        if (tpos - pos).length > 1e-3 or ((look is None) != (tlook is None)) or (
+                look is not None and (tlook - look).length > 1e-3):
+            diff.append(f'attachment {a} at x {pos.x:g} (mirrored {tpos.x:g})')
+    for name, (verts, faces, cols) in piece.parts.items():
+        other = name if name in ('Root', 'LOD_Proxy') else _swap_side(name)
+        if other not in twin.parts or twin.collide.get(other) != piece.collide.get(name):
+            diff.append(f'part {name}')
+            continue
+        tv, tf, tc = twin.parts[other]
+        if _faces_key(verts, faces, cols) != _faces_key(tv, tf, tc):
+            diff.append(f'part {name}')
+    if diff:
+        return False, 'not left-right symmetric: ' + ', '.join(diff[:6]) + (f' and {len(diff) - 6} more'
+                                                                         if len(diff) > 6 else '')
+    return True, ('left-right symmetric: every part\'s faces, colours and collision and every attachment '
+                  'are their own mirror image, so the piece needs no mirror (F leaves it as it is)')
+
+
+def finish(proxy=None, note='', mirror=None):
     """Check the piece against the contract, make its meshes, export
-    fbx/<Name>.fbx, and record it for the manifest. Raises Refused on a fault."""
+    fbx/<Name>.fbx, and record it for the manifest. Raises Refused on a fault.
+
+    `mirror` (default: every Room and Amenity, unless the run says `nomirror`): also check and
+    export <Name>_Mirror (mirrored()), unless the piece is its own mirror image (symmetric());
+    the manifest says which on the original's record ('mirror', 'mirror_note'). The original's
+    own export is the same with or without it."""
     piece = P
     if proxy is None:
         proxy = piece.kind in ('Room', 'Amenity', 'Lobby', 'Desk', 'Stairs')
     if proxy:
         _proxy(piece)
+    if mirror is None:
+        mirror = piece.kind in MIRROR_KINDS and not NOMIRROR
+    elif mirror and piece.kind not in MIRROR_KINDS:
+        raise ValueError(f'{piece.name}: a {piece.kind} gets no mirror (MODELS.md: rooms and amenities only)')
+    twin, extra = None, {}
+    if mirror:
+        twin = mirrored(piece)
+        same, why = symmetric(piece, twin)
+        extra = {'mirror': None if same else twin.name, 'mirror_note': why}
+        if same:
+            twin = None
+    records = _finish_one(piece, note, extra)
+    if twin is not None:
+        _finish_one(twin, f'the mirror image of {piece.name} across x = 0, written by finish(): {note}',
+                    {'mirror_of': piece.name})
+    return records
+
+
+def _finish_one(piece, note, extra):
     faults = []
     # Glows: glow colours only in Glow_ parts, and Glow_ parts only glow colours of their key.
     for part, (verts, faces, cols) in piece.parts.items():
@@ -1415,8 +1517,11 @@ def finish(proxy=None, note=''):
                 faults.append(f'{part}: holds {sorted(set(cols))}, not only {key} glow colours')
         elif part != 'LOD_Proxy' and glows - {None}:
             faults.append(f'{part}: glow colour {sorted(c for c in set(cols) if c in GLOW_OF)} outside a Glow_ part')
-    # Attachments: every one the blockout has, where it has it.
+    # Attachments: every one the blockout has, where it has it (a mirror: the blockout's mirrored).
     expect = blockout_attachments(piece.kind, piece.w, piece.d)
+    if piece.mirror_of is not None:
+        expect = {a: (tuple(_flip(pos)), tuple(_flip(look)) if look is not None else None)
+                  for a, (pos, look) in expect.items()}
     for aname, (pos, look) in expect.items():
         if aname not in piece.att:
             faults.append(f'attachment {aname} missing')
@@ -1501,6 +1606,7 @@ def finish(proxy=None, note=''):
                            'is its own box, so nothing needs a decomposition'),
         'note': note,
     }
+    records.update(extra)
     if piece.kind == 'Decor':    # what Pieces.luau must say about it (MODELS.md, "Decor")
         records['decor'] = {'fw': piece.fw, 'fd': piece.fd, 'layer': piece.layer,
                             'footprint_studs': [DECOR_SQUARE * piece.fw, DECOR_SQUARE * piece.fd]}
@@ -1542,44 +1648,95 @@ def end_set(title, layout_rows, sheet=True):
     if ONLY is not None and (out / 'manifest.json').exists():     # a partial build keeps the rest
         old = json.loads((out / 'manifest.json').read_text())['pieces']
         manifest['pieces'] = {**old, **manifest['pieces']}
+    # Which rooms and amenities have a <PieceId>_Mirror (None: symmetric, needs none; see 'mirror_note').
+    manifest['mirrors'] = {n: r['mirror'] for n, r in manifest['pieces'].items() if 'mirror' in r}
     (out / 'manifest.json').write_text(json.dumps(manifest, indent=1))
     # Lay the pieces out for the .blend and the sheet (the FBXs are already written, at their origins).
+    # The mirrors (finish(), MODELS.md "<PieceId>_Mirror") get rows of their own after the script's, and
+    # stay out of the contact sheet, which shows the set as before; review/mirror_sheet.png pairs them.
     by_name = {piece.name: objs for piece, rec, objs in BUILT}
-    z = 0.0
-    for row, gap, scale in layout_rows:
-        names = [n for n in row if n in by_name]
-        if not names:
-            continue
-        widths = [max(BUILT[[p.name for p, _, _ in BUILT].index(n)][0].size.x, 3.0) * scale for n in names]
-        depth = max(BUILT[[p.name for p, _, _ in BUILT].index(n)][0].size.z for n in names) * scale
-        x = -(sum(widths) + gap * (len(names) - 1)) / 2
-        for n, wdt in zip(names, widths):
-            piece = BUILT[[p.name for p, _, _ in BUILT].index(n)][0]
-            off = Vector((x + wdt / 2, 0, z - piece.root_centre.z * scale))
-            for ob in by_name[n]:
-                ob.location = ob.location * scale + rb2bl(off)
-                ob.scale = (scale, scale, scale)
-                if ob.name.endswith('__LOD_Proxy') or ob.name.endswith('__Root'):
-                    ob.hide_render = True
-            x += wdt + gap
-        z += depth + gap * 1.5
+    base = {ob.name: ob.location.copy() for objs in by_name.values() for ob in objs}
+    mirror_of = {piece.name: piece.mirror_of.name for piece, _, _ in BUILT if piece.mirror_of is not None}
+    rows = list(layout_rows) + [([n + MIRROR_SUFFIX for n in row if n + MIRROR_SUFFIX in by_name], gap, scale)
+                                for row, gap, scale in layout_rows]
+    _lay_out(rows, by_name, base)
     bpy.ops.wm.save_as_mainfile(filepath=str(out / f'{SET_DIR.split("/")[-1]}.blend'))
     if sheet and not NOPREVIEW and ONLY is None:
+        mirror_obs = [ob for n in mirror_of for ob in by_name[n]]
+        shown = {ob.name: ob.hide_render for ob in mirror_obs}
+        for ob in mirror_obs:
+            ob.hide_render = True
         _sheet(out / 'review' / 'contact_sheet.png')
+        for ob in mirror_obs:
+            ob.hide_render = shown[ob.name]
+        if mirror_of:
+            _mirror_sheet(out / 'review' / 'mirror_sheet.png', mirror_of, by_name, base)
     results = validate()
     _fixup_luau(out / 'import_fixup.luau', manifest)
     return results
 
 
-def _sheet(path):
-    """One Workbench render of the whole set, at most 768 px, textured by the atlas."""
+def _piece_of(name):
+    return next(p for p, _, _ in BUILT if p.name == name)
+
+
+def _lay_out(rows, by_name, base):
+    """Place each piece's objects from their piece-frame locations `base`, row by row (front to back)."""
+    z = 0.0
+    for row, gap, scale in rows:
+        names = [n for n in row if n in by_name]
+        if not names:
+            continue
+        widths = [max(_piece_of(n).size.x, 3.0) * scale for n in names]
+        depth = max(_piece_of(n).size.z for n in names) * scale
+        x = -(sum(widths) + gap * (len(names) - 1)) / 2
+        for n, wdt in zip(names, widths):
+            piece = _piece_of(n)
+            off = Vector((x + wdt / 2, 0, z - piece.root_centre.z * scale))
+            for ob in by_name[n]:
+                ob.location = base[ob.name] * scale + rb2bl(off)
+                ob.scale = (scale, scale, scale)
+                if ob.name.endswith('__LOD_Proxy') or ob.name.endswith('__Root'):
+                    ob.hide_render = True
+            x += wdt + gap
+        z += depth + gap * 1.5
+
+
+def _mirror_sheet(path, mirror_of, by_name, base, per_row=3):
+    """One Workbench render of every original beside its mirror (original left of its mirror as
+    the sheet's camera sees them), `per_row` pairs a row; everything else hidden for it."""
+    pairs = list(mirror_of.items())         # (mirror, original)
+    shown = {ob.name: ob.hide_render for objs in by_name.values() for ob in objs}
+    for objs in by_name.values():
+        for ob in objs:
+            ob.hide_render = True
+    keep = set()
+    rows = []
+    for i in range(0, len(pairs), per_row):
+        row = []
+        for m, o in pairs[i:i + per_row]:
+            row += [m, o]                   # a row's first piece lands on the sheet's right: the original left
+            keep |= {m, o}
+        rows.append((row, 6.0, 1.0))
+    for n in keep:
+        for ob in by_name[n]:
+            ob.hide_render = False
+    _lay_out(rows, by_name, base)
+    _sheet(path, (1280, 960))
+    for objs in by_name.values():
+        for ob in objs:
+            ob.hide_render = shown[ob.name]
+
+
+def _sheet(path, size=(768, 576)):
+    """One Workbench render of what is not hidden, `size` px (768 for the whole set), textured by the atlas."""
     sc = bpy.context.scene
     sc.render.engine = 'BLENDER_WORKBENCH'
     sc.display.shading.light = 'STUDIO'
     sc.display.shading.color_type = 'TEXTURE'
     sc.display.shading.show_shadows = False
     sc.display.shading.show_cavity = True
-    sc.render.resolution_x, sc.render.resolution_y = 768, 576
+    sc.render.resolution_x, sc.render.resolution_y = size
     sc.render.film_transparent = False
     sc.world = sc.world or bpy.data.worlds.new('World')
     pts = [ob.matrix_world @ Vector(c) for ob in sc.objects if ob.type == 'MESH' and not ob.hide_render
@@ -1671,6 +1828,43 @@ def validate():
                 faults += fn(piece, tris_rb, 'fbx')
             checks.append('the piece\'s own checks re-run on the re-imported triangles')
         check_piece(piece, boxes, tris, faults)
+        if piece.mirror_of is not None:
+            # MODELS.md, "<PieceId>_Mirror": the original's contract held mirrored back (check_piece above),
+            # and against the original's own manifest record: its Door (and every attachment) the original's
+            # with x negated, every part the original's box with x negated and its triangle count.
+            orig = manifest['pieces'].get(piece.mirror_of.name)
+            if orig is None:
+                faults.append(f'the original {piece.mirror_of.name} is not in the manifest')
+            else:
+                def flipped(v):
+                    return [-v[0], v[1], v[2]]
+                oa, ma = orig['attachments'], rec['attachments']
+                door_ok = ('Door' in oa and 'Door' in ma
+                           and (Vector(ma['Door']['pos']) - Vector(flipped(oa['Door']['pos']))).length < 1e-3
+                           and (Vector(ma['Door']['look']) - Vector(flipped(oa['Door']['look']))).length < 1e-3)
+                (checks if door_ok else faults).append(
+                    f"Door at {ma.get('Door', {}).get('pos')} looking {ma.get('Door', {}).get('look')}: "
+                    f"{piece.mirror_of.name}'s Door {oa.get('Door', {}).get('pos')} with x negated"
+                    + ('' if door_ok else ' FAILED'))
+                bad = sorted(set(oa) ^ set(ma)) + [
+                    a for a in oa if a in ma and (
+                        (Vector(ma[a]['pos']) - Vector(flipped(oa[a]['pos']))).length > 1e-3
+                        or (oa[a]['look'] is None) != (ma[a]['look'] is None)
+                        or (oa[a]['look'] is not None
+                            and (Vector(ma[a]['look']) - Vector(flipped(oa[a]['look']))).length > 1e-3))]
+                (faults.append(f'attachments not the original\'s mirrored: {bad}') if bad else
+                 checks.append(f'all {len(ma)} attachments the original\'s with x negated, LookVectors mirrored'))
+                bad = sorted(set(orig['parts']) ^ set(rec['parts'])) + [
+                    p for p in orig['parts'] if p in rec['parts'] and (
+                        (Vector(rec['parts'][p]['centre']) - Vector(flipped(orig['parts'][p]['centre']))).length > 1e-3
+                        or (Vector(rec['parts'][p]['size']) - Vector(orig['parts'][p]['size'])).length > 1e-3
+                        or rec['parts'][p]['triangles'] != orig['parts'][p]['triangles']
+                        or rec['parts'][p]['collide'] != orig['parts'][p]['collide'])]
+                (faults.append(f'parts not the original\'s mirrored: {bad}') if bad else
+                 checks.append(f'the same {len(rec["parts"])} part names as the original, each its box with x '
+                               f'negated, its triangle count and its collision'))
+            checks.append('the contract above checked on this mirror mirrored back across x = 0 (the blockout '
+                          'mirrored: Door on the other front cell)')
         checks.append({
             'Room': 'the contract re-checked on the re-imported boxes: Root, footprint, wall boxes = blockout, '
                     'Floor the walking surface alone (top 0.2), door opening 4 x 7, Door -> Bed walk for a 5-stud '
@@ -1689,13 +1883,16 @@ def validate():
                      'w, d, layer and height (to 0.3) as Pieces.luau says; each seat() on the triangles',
         }.get('Room' if piece.kind == 'Amenity' else piece.kind,
               'the contract re-checked on the re-imported boxes (Root, footprint, kind rules, budgets)'))
-        report['pieces'][name] = {'ok': not faults, 'faults': faults, 'checks': checks,
+        mirror_rec = ({'mirror_of': rec['mirror_of']} if 'mirror_of' in rec else
+                      {'mirror': rec['mirror'], 'mirror_note': rec['mirror_note']} if 'mirror' in rec else {})
+        report['pieces'][name] = {'ok': not faults, 'faults': faults, 'checks': checks, **mirror_rec,
                                   'triangles': rec['triangles'], 'budget': rec['budget'],
                                   'collision_precise': rec['collision_precise'],
                                   'attachments': sorted(rec['attachments'])}
         if faults:
             failed.append(name)
     report['collision_precise'] = {n: r['collision_precise'] for n, r in manifest['pieces'].items()}
+    report['mirrors'] = {n: r['mirror'] for n, r in manifest['pieces'].items() if 'mirror' in r}
     report['not_validated'] = [
         'anything in Studio: the import, the axis conversion on Roblox\'s side (import_fixup.luau checks it first), '
         'the atlas upload, how it looks lit',

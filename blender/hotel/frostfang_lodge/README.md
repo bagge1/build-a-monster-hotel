@@ -292,3 +292,62 @@ arrived with `PrimaryPart` nil** (all but the new `FrontDesk`; `DEVNOTES.md`):
 the files have it (the serialized bytes deserialized, and a `rojo build` to
 XML: `Root` on all 25), and `HotelKit` sets it on every clone. Workspace
 copies deleted. **Studio runtime is not tested.**
+
+## 2026-10-21 night: the mirrors (`<PieceId>_Mirror`, night brief step 5)
+
+`hotel_kit.finish()` now also writes every room's and amenity's mirror image
+(MODELS.md, "Rooms and amenities": his ask 2026-10-20, F flips a room to move
+its door, GDD A.1): the same geometry mirrored across x = 0 with each face's
+winding reversed (and the normals recalculated outward, as for every piece),
+every attachment's x negated and its LookVector mirrored, the same part names
+(so a mirror's `Wall_Left` and `Wall_FrontLeft` stand at +x), the same colours
+and collision. Nobody models it; `-- nomirror` turns it off for a run.
+
+**8 mirrors, one for every room and amenity** (6 rooms, 2 amenities):
+`IglooRoom_Mirror`, `IceCave_Mirror`, `YetiDen_Mirror`, `FrostLoft_Mirror`, `GlacierSuite_Mirror`, `AuroraDome_Mirror`, `CocoaLounge_Mirror`, `AuroraDeck_Mirror`. None is its own mirror image, which `finish()` checks before writing
+one (`symmetric()`: every part's faces, colours and collision and every
+attachment): the 2-wide pieces' door is at x = -6, and the 3-wide ones
+(YetiDen, GlacierSuite, AuroraDome), whose door is at x = 0, still differ (the
+plank colours alternate from -x, and the furniture and lamps stand off the
+middle). The manifest says which on each original (`mirror`, `mirror_note`) and
+in `mirrors`; each mirror's record has `mirror_of`.
+
+**Validated (Blender, headless):** `finish()` refuses a mirror, and the
+validator re-checks it on its re-imported FBX, by the original's whole contract
+run on the mirror mirrored back across x = 0 (wall boxes = the blockout's
+mirrored, the door opening 4 x 7, the Door -> Bed walk for a 5-stud person,
+Floor, budgets, glows), plus: its `Door` the original's with x negated (x = +6
+for a 2-wide piece, 0 for a 3-wide) and looking -Z; every attachment the
+original's with x negated; the same part names as the original, each the
+original's box with x negated, its triangle count and its collision. Every
+mirror passed. Every part of every mirror FBX encloses a positive volume by its
+winding (faces turned out), the same as its original's (a script on the FBX
+arrays, outside the validator).
+
+**The originals did not change:** every original's manifest and validation
+record is equal to the one before (apart from the new `mirror` keys), and each
+original FBX's geometry arrays (vertices, polygon indices, normals, UVs,
+materials) are byte-identical to the previous build's; the files differ only
+in the FBX's creation time and object ids. `import_fixup.luau` only gained the
+mirrors' entries.
+
+**Text:** no room or amenity carries text. The atlas is flat colour cells, and
+no build script models lettering; the plaque's and the sign's words are written
+by the code on `RoomPlaque` and `HotelSign`, which get no mirror. What a mirror
+does reverse is only handedness (a picture's crescent, which side a lamp or a
+shelf stands), as a mirror should.
+
+**Pictures:** `review/mirror_sheet.png` (Workbench, every original beside its
+mirror: the original on the left, its mirror on its right, as a 2-wide
+pair's doors show). The contact
+sheet leaves the mirrors out and shows the set as before. Not yet looked at by
+a blind reviewer.
+
+**Staged** in `blender/_import/` with the other set's mirrors: the
+8 `<PieceId>_Mirror.fbx` of this set, nothing else (the atlas is
+embedded in each, as in every FBX of the set; no file name clashes with the
+other set's, so none is prefixed). Not imported.
+
+**Not validated:** anything in Studio. Not imported, not placed with F, not
+seen lit; whether Studio's importer keeps a mirrored mesh's shading as Blender
+shows it.

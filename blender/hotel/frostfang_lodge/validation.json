@@ -11,6 +11,31 @@
     "the atlas travels embedded in the FBX",
     "the contract re-checked on the re-imported boxes: Root, footprint, wall boxes = blockout, Floor the walking surface alone (top 0.2), door opening 4 x 7, Door -> Bed walk for a 5-stud person, budgets"
    ],
+   "mirror": "IglooRoom_Mirror",
+   "mirror_note": "not left-right symmetric: attachment Door at x -6 (mirrored 6), attachment Sign at x -6 (mirrored 6), part Floor, part Wall_Lintel, part Wall_FrontLeft, part Wall_FrontRight and 4 more",
+   "triangles": 4726,
+   "budget": 6000,
+   "collision_precise": [],
+   "attachments": [
+    "Bed",
+    "Door",
+    "Sign"
+   ]
+  },
+  "IglooRoom_Mirror": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "15 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "Door at [6.0, 0.0, -12.0] looking [0.0, 0.0, -1.0]: IglooRoom's Door [-6.0, 0.0, -12.0] with x negated",
+    "all 3 attachments the original's with x negated, LookVectors mirrored",
+    "the same 15 part names as the original, each its box with x negated, its triangle count and its collision",
+    "the contract above checked on this mirror mirrored back across x = 0 (the blockout mirrored: Door on the other front cell)",
+    "the contract re-checked on the re-imported boxes: Root, footprint, wall boxes = blockout, Floor the walking surface alone (top 0.2), door opening 4 x 7, Door -> Bed walk for a 5-stud person, budgets"
+   ],
+   "mirror_of": "IglooRoom",
    "triangles": 4726,
    "budget": 6000,
    "collision_precise": [],
@@ -138,6 +163,31 @@
     "the atlas travels embedded in the FBX",
     "the contract re-checked on the re-imported boxes: Root, footprint, wall boxes = blockout, Floor the walking surface alone (top 0.2), door opening 4 x 7, Door -> Bed walk for a 5-stud person, budgets"
    ],
+   "mirror": "IceCave_Mirror",
+   "mirror_note": "not left-right symmetric: attachment Door at x -6 (mirrored 6), attachment Sign at x -6 (mirrored 6), part Floor, part Wall_Lintel, part Wall_FrontLeft, part Wall_FrontRight and 5 more",
+   "triangles": 4084,
+   "budget": 6000,
+   "collision_precise": [],
+   "attachments": [
+    "Bed",
+    "Door",
+    "Sign"
+   ]
+  },
+  "IceCave_Mirror": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "15 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "Door at [6.0, 0.0, -18.0] looking [0.0, 0.0, -1.0]: IceCave's Door [-6.0, 0.0, -18.0] with x negated",
+    "all 3 attachments the original's with x negated, LookVectors mirrored",
+    "the same 15 part names as the original, each its box with x negated, its triangle count and its collision",
+    "the contract above checked on this mirror mirrored back across x = 0 (the blockout mirrored: Door on the other front cell)",
+    "the contract re-checked on the re-imported boxes: Root, footprint, wall boxes = blockout, Floor the walking surface alone (top 0.2), door opening 4 x 7, Door -> Bed walk for a 5-stud person, budgets"
+   ],
+   "mirror_of": "IceCave",
    "triangles": 4084,
    "budget": 6000,
    "collision_precise": [],
@@ -156,6 +206,31 @@
     "the atlas travels embedded in the FBX",
     "the contract re-checked on the re-imported boxes: Root, footprint, wall boxes = blockout, Floor the walking surface alone (top 0.2), door opening 4 x 7, Door -> Bed walk for a 5-stud person, budgets"
    ],
+   "mirror": "YetiDen_Mirror",
+   "mirror_note": "not left-right symmetric: part Floor, part Dressing, part Furniture, part Glow_Warm_2, part LOD_Proxy",
+   "triangles": 4886,
+   "budget": 6000,
+   "collision_precise": [],
+   "attachments": [
+    "Bed",
+    "Door",
+    "Sign"
+   ]
+  },
+  "YetiDen_Mirror": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "15 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "Door at [0.0, 0.0, -18.0] looking [0.0, 0.0, -1.0]: YetiDen's Door [0.0, 0.0, -18.0] with x negated",
+    "all 3 attachments the original's with x negated, LookVectors mirrored",
+    "the same 15 part names as the original, each its box with x negated, its triangle count and its collision",
+    "the contract above checked on this mirror mirrored back across x = 0 (the blockout mirrored: Door on the other front cell)",
+    "the contract re-checked on the re-imported boxes: Root, footprint, wall boxes = blockout, Floor the walking surface alone (top 0.2), door opening 4 x 7, Door -> Bed walk for a 5-stud person, budgets"
+   ],
+   "mirror_of": "YetiDen",
    "triangles": 4886,
    "budget": 6000,
    "collision_precise": [],
@@ -174,6 +249,31 @@
     "the atlas travels embedded in the FBX",
     "the contract re-checked on the re-imported boxes: Root, footprint, wall boxes = blockout, Floor the walking surface alone (top 0.2), door opening 4 x 7, Door -> Bed walk for a 5-stud person, budgets"
    ],
+   "mirror": "FrostLoft_Mirror",
+   "mirror_note": "not left-right symmetric: attachment Door at x -6 (mirrored 6), attachment Sign at x -6 (mirrored 6), part Floor, part Wall_Lintel, part Wall_FrontLeft, part Wall_FrontRight and 3 more",
+   "triangles": 5718,
+   "budget": 6000,
+   "collision_precise": [],
+   "attachments": [
+    "Bed",
+    "Door",
+    "Sign"
+   ]
+  },
+  "FrostLoft_Mirror": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "14 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "Door at [6.0, 0.0, -18.0] looking [0.0, 0.0, -1.0]: FrostLoft's Door [-6.0, 0.0, -18.0] with x negated",
+    "all 3 attachments the original's with x negated, LookVectors mirrored",
+    "the same 14 part names as the original, each its box with x negated, its triangle count and its collision",
+    "the contract above checked on this mirror mirrored back across x = 0 (the blockout mirrored: Door on the other front cell)",
+    "the contract re-checked on the re-imported boxes: Root, footprint, wall boxes = blockout, Floor the walking surface alone (top 0.2), door opening 4 x 7, Door -> Bed walk for a 5-stud person, budgets"
+   ],
+   "mirror_of": "FrostLoft",
    "triangles": 5718,
    "budget": 6000,
    "collision_precise": [],
@@ -192,6 +292,31 @@
     "the atlas travels embedded in the FBX",
     "the contract re-checked on the re-imported boxes: Root, footprint, wall boxes = blockout, Floor the walking surface alone (top 0.2), door opening 4 x 7, Door -> Bed walk for a 5-stud person, budgets"
    ],
+   "mirror": "GlacierSuite_Mirror",
+   "mirror_note": "not left-right symmetric: part Floor, part Dressing, part Furniture, part Glow_Cold_1, part Glow_Warm_2, part LOD_Proxy",
+   "triangles": 4790,
+   "budget": 6000,
+   "collision_precise": [],
+   "attachments": [
+    "Bed",
+    "Door",
+    "Sign"
+   ]
+  },
+  "GlacierSuite_Mirror": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "16 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "Door at [0.0, 0.0, -18.0] looking [0.0, 0.0, -1.0]: GlacierSuite's Door [0.0, 0.0, -18.0] with x negated",
+    "all 3 attachments the original's with x negated, LookVectors mirrored",
+    "the same 16 part names as the original, each its box with x negated, its triangle count and its collision",
+    "the contract above checked on this mirror mirrored back across x = 0 (the blockout mirrored: Door on the other front cell)",
+    "the contract re-checked on the re-imported boxes: Root, footprint, wall boxes = blockout, Floor the walking surface alone (top 0.2), door opening 4 x 7, Door -> Bed walk for a 5-stud person, budgets"
+   ],
+   "mirror_of": "GlacierSuite",
    "triangles": 4790,
    "budget": 6000,
    "collision_precise": [],
@@ -210,6 +335,31 @@
     "the atlas travels embedded in the FBX",
     "the contract re-checked on the re-imported boxes: Root, footprint, wall boxes = blockout, Floor the walking surface alone (top 0.2), door opening 4 x 7, Door -> Bed walk for a 5-stud person, budgets"
    ],
+   "mirror": "AuroraDome_Mirror",
+   "mirror_note": "not left-right symmetric: part Floor, part Dressing, part Glow_Magic_1, part Glow_Magic_2, part Glow_Magic_3, part Furniture and 1 more",
+   "triangles": 5726,
+   "budget": 6000,
+   "collision_precise": [],
+   "attachments": [
+    "Bed",
+    "Door",
+    "Sign"
+   ]
+  },
+  "AuroraDome_Mirror": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "17 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "Door at [0.0, 0.0, -18.0] looking [0.0, 0.0, -1.0]: AuroraDome's Door [0.0, 0.0, -18.0] with x negated",
+    "all 3 attachments the original's with x negated, LookVectors mirrored",
+    "the same 17 part names as the original, each its box with x negated, its triangle count and its collision",
+    "the contract above checked on this mirror mirrored back across x = 0 (the blockout mirrored: Door on the other front cell)",
+    "the contract re-checked on the re-imported boxes: Root, footprint, wall boxes = blockout, Floor the walking surface alone (top 0.2), door opening 4 x 7, Door -> Bed walk for a 5-stud person, budgets"
+   ],
+   "mirror_of": "AuroraDome",
    "triangles": 5726,
    "budget": 6000,
    "collision_precise": [],
@@ -228,6 +378,31 @@
     "the atlas travels embedded in the FBX",
     "the contract re-checked on the re-imported boxes: Root, footprint, wall boxes = blockout, Floor the walking surface alone (top 0.2), door opening 4 x 7, Door -> Bed walk for a 5-stud person, budgets"
    ],
+   "mirror": "CocoaLounge_Mirror",
+   "mirror_note": "not left-right symmetric: attachment Door at x -6 (mirrored 6), attachment Sign at x -6 (mirrored 6), part Floor, part Wall_Lintel, part Wall_FrontLeft, part Wall_FrontRight and 3 more",
+   "triangles": 5264,
+   "budget": 6000,
+   "collision_precise": [],
+   "attachments": [
+    "Bed",
+    "Door",
+    "Sign"
+   ]
+  },
+  "CocoaLounge_Mirror": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "13 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "Door at [6.0, 0.0, -12.0] looking [0.0, 0.0, -1.0]: CocoaLounge's Door [-6.0, 0.0, -12.0] with x negated",
+    "all 3 attachments the original's with x negated, LookVectors mirrored",
+    "the same 13 part names as the original, each its box with x negated, its triangle count and its collision",
+    "the contract above checked on this mirror mirrored back across x = 0 (the blockout mirrored: Door on the other front cell)",
+    "the contract re-checked on the re-imported boxes: Root, footprint, wall boxes = blockout, Floor the walking surface alone (top 0.2), door opening 4 x 7, Door -> Bed walk for a 5-stud person, budgets"
+   ],
+   "mirror_of": "CocoaLounge",
    "triangles": 5264,
    "budget": 6000,
    "collision_precise": [],
@@ -246,6 +421,31 @@
     "the atlas travels embedded in the FBX",
     "the contract re-checked on the re-imported boxes: Root, footprint, wall boxes = blockout, Floor the walking surface alone (top 0.2), door opening 4 x 7, Door -> Bed walk for a 5-stud person, budgets"
    ],
+   "mirror": "AuroraDeck_Mirror",
+   "mirror_note": "not left-right symmetric: attachment Door at x -6 (mirrored 6), attachment Sign at x -6 (mirrored 6), part Floor, part Wall_Lintel, part Wall_FrontLeft, part Wall_FrontRight and 6 more",
+   "triangles": 3846,
+   "budget": 6000,
+   "collision_precise": [],
+   "attachments": [
+    "Bed",
+    "Door",
+    "Sign"
+   ]
+  },
+  "AuroraDeck_Mirror": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "14 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "Door at [6.0, 0.0, -12.0] looking [0.0, 0.0, -1.0]: AuroraDeck's Door [-6.0, 0.0, -12.0] with x negated",
+    "all 3 attachments the original's with x negated, LookVectors mirrored",
+    "the same 14 part names as the original, each its box with x negated, its triangle count and its collision",
+    "the contract above checked on this mirror mirrored back across x = 0 (the blockout mirrored: Door on the other front cell)",
+    "the contract re-checked on the re-imported boxes: Root, footprint, wall boxes = blockout, Floor the walking surface alone (top 0.2), door opening 4 x 7, Door -> Bed walk for a 5-stud person, budgets"
+   ],
+   "mirror_of": "AuroraDeck",
    "triangles": 3846,
    "budget": 6000,
    "collision_precise": [],
@@ -413,6 +613,7 @@
  },
  "collision_precise": {
   "IglooRoom": [],
+  "IglooRoom_Mirror": [],
   "Lobby": [],
   "FrontDesk": [],
   "StairCore": [],
@@ -420,12 +621,19 @@
   "HotelSign": [],
   "RoomPlaque": [],
   "IceCave": [],
+  "IceCave_Mirror": [],
   "YetiDen": [],
+  "YetiDen_Mirror": [],
   "FrostLoft": [],
+  "FrostLoft_Mirror": [],
   "GlacierSuite": [],
+  "GlacierSuite_Mirror": [],
   "AuroraDome": [],
+  "AuroraDome_Mirror": [],
   "CocoaLounge": [],
+  "CocoaLounge_Mirror": [],
   "AuroraDeck": [],
+  "AuroraDeck_Mirror": [],
   "Decor_IceBlock": [],
   "Decor_CocoaMug": [],
   "Decor_PrankBox": [],
@@ -437,6 +645,16 @@
   "Decor_RugRunner": [],
   "Decor_RugCorner": [],
   "Decor_RugSquare": []
+ },
+ "mirrors": {
+  "IglooRoom": "IglooRoom_Mirror",
+  "IceCave": "IceCave_Mirror",
+  "YetiDen": "YetiDen_Mirror",
+  "FrostLoft": "FrostLoft_Mirror",
+  "GlacierSuite": "GlacierSuite_Mirror",
+  "AuroraDome": "AuroraDome_Mirror",
+  "CocoaLounge": "CocoaLounge_Mirror",
+  "AuroraDeck": "AuroraDeck_Mirror"
  },
  "not_validated": [
   "anything in Studio: the import, the axis conversion on Roblox's side (import_fixup.luau checks it first), the atlas upload, how it looks lit",

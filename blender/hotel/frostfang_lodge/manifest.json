@@ -529,7 +529,285 @@
    "budget": 6000,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "the starter room: snow-block walls, an igloo-dome headboard, an ice dresser with cocoa and a lantern"
+   "note": "the starter room: snow-block walls, an igloo-dome headboard, an ice dresser with cocoa and a lantern",
+   "mirror": "IglooRoom_Mirror",
+   "mirror_note": "not left-right symmetric: attachment Door at x -6 (mirrored 6), attachment Sign at x -6 (mirrored 6), part Floor, part Wall_Lintel, part Wall_FrontLeft, part Wall_FrontRight and 4 more"
+  },
+  "IglooRoom_Mirror": {
+   "name": "IglooRoom_Mirror",
+   "kind": "Room",
+   "footprint_cells": [
+    2,
+    2
+   ],
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     24.0,
+     0.2,
+     24.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      24.0,
+      0.2,
+      24.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Floor": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      23.8,
+      0.2,
+      23.8
+     ],
+     "triangles": 704,
+     "collide": true
+    },
+    "Rug": {
+     "centre": [
+      0.0,
+      0.225,
+      3.6
+     ],
+     "size": [
+      5.0,
+      0.05,
+      3.6
+     ],
+     "triangles": 88,
+     "collide": false
+    },
+    "Wall_Back": {
+     "centre": [
+      0.0,
+      8.5,
+      11.8
+     ],
+     "size": [
+      24.0,
+      17.0,
+      0.4
+     ],
+     "triangles": 268,
+     "collide": true
+    },
+    "Wall_Left": {
+     "centre": [
+      11.8,
+      8.5,
+      0.0
+     ],
+     "size": [
+      0.4,
+      17.0,
+      23.2
+     ],
+     "triangles": 268,
+     "collide": true
+    },
+    "Wall_Right": {
+     "centre": [
+      -11.8,
+      8.5,
+      0.0
+     ],
+     "size": [
+      0.4,
+      17.0,
+      23.2
+     ],
+     "triangles": 268,
+     "collide": true
+    },
+    "Wall_Lintel": {
+     "centre": [
+      6.0,
+      12.0,
+      -11.8
+     ],
+     "size": [
+      4.0,
+      10.0,
+      0.4
+     ],
+     "triangles": 32,
+     "collide": true
+    },
+    "Wall_FrontLeft": {
+     "centre": [
+      10.0,
+      8.5,
+      -11.8
+     ],
+     "size": [
+      4.0,
+      17.0,
+      0.4
+     ],
+     "triangles": 324,
+     "collide": true
+    },
+    "Wall_FrontRight": {
+     "centre": [
+      -4.0,
+      8.5,
+      -11.8
+     ],
+     "size": [
+      16.0,
+      17.0,
+      0.4
+     ],
+     "triangles": 324,
+     "collide": true
+    },
+    "Dressing": {
+     "centre": [
+      -0.005,
+      10.99,
+      0.03
+     ],
+     "size": [
+      23.23,
+      12.02,
+      23.26
+     ],
+     "triangles": 1442,
+     "collide": false
+    },
+    "Glow_Warm_1": {
+     "centre": [
+      0.0,
+      8.15,
+      10.9
+     ],
+     "size": [
+      0.4065,
+      0.72,
+      0.4065
+     ],
+     "triangles": 48,
+     "collide": false
+    },
+    "Bed": {
+     "centre": [
+      0.0,
+      1.8,
+      8.725
+     ],
+     "size": [
+      3.9,
+      3.6,
+      5.65
+     ],
+     "triangles": 480,
+     "collide": true
+    },
+    "Furniture": {
+     "centre": [
+      -10.86,
+      1.905,
+      -1.6
+     ],
+     "size": [
+      1.48,
+      3.81,
+      3.72
+     ],
+     "triangles": 432,
+     "collide": true
+    },
+    "Glow_Warm_2": {
+     "centre": [
+      -10.95,
+      3.3,
+      -0.8
+     ],
+     "size": [
+      0.2252,
+      0.48,
+      0.26
+     ],
+     "triangles": 36,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      8.5,
+      0.0
+     ],
+     "size": [
+      24.0,
+      17.0,
+      24.0
+     ],
+     "triangles": 108,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Door": {
+     "pos": [
+      6.0,
+      0.0,
+      -12.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    "Sign": {
+     "pos": [
+      6.0,
+      8.2,
+      -12.3
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    "Bed": {
+     "pos": [
+      0.0,
+      0.0,
+      5.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    }
+   },
+   "triangles": 4726,
+   "budget": 6000,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "the mirror image of IglooRoom across x = 0, written by finish(): the starter room: snow-block walls, an igloo-dome headboard, an ice dresser with cocoa and a lantern",
+   "mirror_of": "IglooRoom"
   },
   "Lobby": {
    "name": "Lobby",
@@ -2312,7 +2590,285 @@
    "budget": 6000,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "an ice-brick cave: a stone slab bed under furs, a glowing crystal cluster, stalactites"
+   "note": "an ice-brick cave: a stone slab bed under furs, a glowing crystal cluster, stalactites",
+   "mirror": "IceCave_Mirror",
+   "mirror_note": "not left-right symmetric: attachment Door at x -6 (mirrored 6), attachment Sign at x -6 (mirrored 6), part Floor, part Wall_Lintel, part Wall_FrontLeft, part Wall_FrontRight and 5 more"
+  },
+  "IceCave_Mirror": {
+   "name": "IceCave_Mirror",
+   "kind": "Room",
+   "footprint_cells": [
+    2,
+    3
+   ],
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     24.0,
+     0.2,
+     36.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      24.0,
+      0.2,
+      36.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Floor": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      23.8,
+      0.2,
+      35.8
+     ],
+     "triangles": 704,
+     "collide": true
+    },
+    "Rug": {
+     "centre": [
+      0.0,
+      0.225,
+      6.0
+     ],
+     "size": [
+      4.8,
+      0.05,
+      4.0
+     ],
+     "triangles": 88,
+     "collide": false
+    },
+    "Wall_Back": {
+     "centre": [
+      0.0,
+      8.5,
+      17.8
+     ],
+     "size": [
+      24.0,
+      17.0,
+      0.4
+     ],
+     "triangles": 268,
+     "collide": true
+    },
+    "Wall_Left": {
+     "centre": [
+      11.8,
+      8.5,
+      0.0
+     ],
+     "size": [
+      0.4,
+      17.0,
+      35.2
+     ],
+     "triangles": 268,
+     "collide": true
+    },
+    "Wall_Right": {
+     "centre": [
+      -11.8,
+      8.5,
+      0.0
+     ],
+     "size": [
+      0.4,
+      17.0,
+      35.2
+     ],
+     "triangles": 268,
+     "collide": true
+    },
+    "Wall_Lintel": {
+     "centre": [
+      6.0,
+      12.0,
+      -17.8
+     ],
+     "size": [
+      4.0,
+      10.0,
+      0.4
+     ],
+     "triangles": 32,
+     "collide": true
+    },
+    "Wall_FrontLeft": {
+     "centre": [
+      10.0,
+      8.5,
+      -17.8
+     ],
+     "size": [
+      4.0,
+      17.0,
+      0.4
+     ],
+     "triangles": 324,
+     "collide": true
+    },
+    "Wall_FrontRight": {
+     "centre": [
+      -4.0,
+      8.5,
+      -17.8
+     ],
+     "size": [
+      16.0,
+      17.0,
+      0.4
+     ],
+     "triangles": 324,
+     "collide": true
+    },
+    "Dressing": {
+     "centre": [
+      0.01,
+      11.14,
+      0.03
+     ],
+     "size": [
+      23.22,
+      11.72,
+      35.26
+     ],
+     "triangles": 1306,
+     "collide": false
+    },
+    "Glow_Warm_1": {
+     "centre": [
+      0.0,
+      8.15,
+      16.9
+     ],
+     "size": [
+      0.4065,
+      0.72,
+      0.4065
+     ],
+     "triangles": 48,
+     "collide": false
+    },
+    "Bed": {
+     "centre": [
+      0.0,
+      1.935,
+      14.725
+     ],
+     "size": [
+      3.9,
+      3.87,
+      5.65
+     ],
+     "triangles": 288,
+     "collide": true
+    },
+    "Furniture": {
+     "centre": [
+      -10.84,
+      1.75,
+      -4.0
+     ],
+     "size": [
+      1.48,
+      3.5,
+      4.4
+     ],
+     "triangles": 132,
+     "collide": true
+    },
+    "Glow_Cold_1": {
+     "centre": [
+      -10.85,
+      2.6,
+      -4.5
+     ],
+     "size": [
+      0.7794,
+      3.4,
+      0.9
+     ],
+     "triangles": 22,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      8.5,
+      0.0
+     ],
+     "size": [
+      24.0,
+      17.0,
+      36.0
+     ],
+     "triangles": 108,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Door": {
+     "pos": [
+      6.0,
+      0.0,
+      -18.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    "Sign": {
+     "pos": [
+      6.0,
+      8.2,
+      -18.3
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    "Bed": {
+     "pos": [
+      0.0,
+      0.0,
+      11.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    }
+   },
+   "triangles": 4084,
+   "budget": 6000,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "the mirror image of IceCave across x = 0, written by finish(): an ice-brick cave: a stone slab bed under furs, a glowing crystal cluster, stalactites",
+   "mirror_of": "IceCave"
   },
   "YetiDen": {
    "name": "YetiDen",
@@ -2587,7 +3143,285 @@
    "budget": 6000,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "a log den: a round fur nest, yeti footprints on the rug, a stone stove, a log stack"
+   "note": "a log den: a round fur nest, yeti footprints on the rug, a stone stove, a log stack",
+   "mirror": "YetiDen_Mirror",
+   "mirror_note": "not left-right symmetric: part Floor, part Dressing, part Furniture, part Glow_Warm_2, part LOD_Proxy"
+  },
+  "YetiDen_Mirror": {
+   "name": "YetiDen_Mirror",
+   "kind": "Room",
+   "footprint_cells": [
+    3,
+    3
+   ],
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     36.0,
+     0.2,
+     36.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      36.0,
+      0.2,
+      36.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Floor": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      35.8,
+      0.2,
+      35.8
+     ],
+     "triangles": 1056,
+     "collide": true
+    },
+    "Rug": {
+     "centre": [
+      0.0,
+      0.225,
+      5.5
+     ],
+     "size": [
+      6.0,
+      0.05,
+      5.0
+     ],
+     "triangles": 88,
+     "collide": false
+    },
+    "Wall_Back": {
+     "centre": [
+      0.0,
+      8.5,
+      17.8
+     ],
+     "size": [
+      36.0,
+      17.0,
+      0.4
+     ],
+     "triangles": 268,
+     "collide": true
+    },
+    "Wall_Left": {
+     "centre": [
+      17.8,
+      8.5,
+      0.0
+     ],
+     "size": [
+      0.4,
+      17.0,
+      35.2
+     ],
+     "triangles": 268,
+     "collide": true
+    },
+    "Wall_Right": {
+     "centre": [
+      -17.8,
+      8.5,
+      0.0
+     ],
+     "size": [
+      0.4,
+      17.0,
+      35.2
+     ],
+     "triangles": 268,
+     "collide": true
+    },
+    "Wall_Lintel": {
+     "centre": [
+      0.0,
+      12.0,
+      -17.8
+     ],
+     "size": [
+      4.0,
+      10.0,
+      0.4
+     ],
+     "triangles": 32,
+     "collide": true
+    },
+    "Wall_FrontLeft": {
+     "centre": [
+      10.0,
+      8.5,
+      -17.8
+     ],
+     "size": [
+      16.0,
+      17.0,
+      0.4
+     ],
+     "triangles": 324,
+     "collide": true
+    },
+    "Wall_FrontRight": {
+     "centre": [
+      -10.0,
+      8.5,
+      -17.8
+     ],
+     "size": [
+      16.0,
+      17.0,
+      0.4
+     ],
+     "triangles": 324,
+     "collide": true
+    },
+    "Dressing": {
+     "centre": [
+      0.005,
+      8.615,
+      0.03
+     ],
+     "size": [
+      35.21,
+      16.77,
+      35.26
+     ],
+     "triangles": 1578,
+     "collide": false
+    },
+    "Glow_Warm_1": {
+     "centre": [
+      0.0,
+      8.15,
+      16.9
+     ],
+     "size": [
+      0.4065,
+      0.72,
+      0.4065
+     ],
+     "triangles": 48,
+     "collide": false
+    },
+    "Bed": {
+     "centre": [
+      0.0,
+      0.675,
+      14.725
+     ],
+     "size": [
+      3.7671,
+      1.35,
+      5.3493
+     ],
+     "triangles": 256,
+     "collide": true
+    },
+    "Furniture": {
+     "centre": [
+      -16.65,
+      4.625,
+      -4.5579
+     ],
+     "size": [
+      1.9,
+      9.25,
+      6.5157
+     ],
+     "triangles": 328,
+     "collide": true
+    },
+    "Glow_Warm_2": {
+     "centre": [
+      -16.0,
+      0.85,
+      -3.0
+     ],
+     "size": [
+      0.3464,
+      0.7,
+      0.9
+     ],
+     "triangles": 36,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      8.5,
+      0.0
+     ],
+     "size": [
+      36.0,
+      17.0,
+      36.0
+     ],
+     "triangles": 108,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Door": {
+     "pos": [
+      0.0,
+      0.0,
+      -18.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    "Sign": {
+     "pos": [
+      0.0,
+      8.2,
+      -18.3
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    "Bed": {
+     "pos": [
+      0.0,
+      0.0,
+      11.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    }
+   },
+   "triangles": 4886,
+   "budget": 6000,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "the mirror image of YetiDen across x = 0, written by finish(): a log den: a round fur nest, yeti footprints on the rug, a stone stove, a log stack",
+   "mirror_of": "YetiDen"
   },
   "FrostLoft": {
    "name": "FrostLoft",
@@ -2848,7 +3682,271 @@
    "budget": 6000,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "a snow witch's loft: a violet-plaid log bed, a shelf of yarn and knitted icicles, an aurora window"
+   "note": "a snow witch's loft: a violet-plaid log bed, a shelf of yarn and knitted icicles, an aurora window",
+   "mirror": "FrostLoft_Mirror",
+   "mirror_note": "not left-right symmetric: attachment Door at x -6 (mirrored 6), attachment Sign at x -6 (mirrored 6), part Floor, part Wall_Lintel, part Wall_FrontLeft, part Wall_FrontRight and 3 more"
+  },
+  "FrostLoft_Mirror": {
+   "name": "FrostLoft_Mirror",
+   "kind": "Room",
+   "footprint_cells": [
+    2,
+    3
+   ],
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     24.0,
+     0.2,
+     36.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      24.0,
+      0.2,
+      36.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Floor": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      23.8,
+      0.2,
+      35.8
+     ],
+     "triangles": 704,
+     "collide": true
+    },
+    "Rug": {
+     "centre": [
+      0.0,
+      0.225,
+      6.0
+     ],
+     "size": [
+      4.4,
+      0.05,
+      4.4
+     ],
+     "triangles": 88,
+     "collide": false
+    },
+    "Wall_Back": {
+     "centre": [
+      0.0,
+      8.5,
+      17.8
+     ],
+     "size": [
+      24.0,
+      17.0,
+      0.4
+     ],
+     "triangles": 268,
+     "collide": true
+    },
+    "Wall_Left": {
+     "centre": [
+      11.8,
+      8.5,
+      0.0
+     ],
+     "size": [
+      0.4,
+      17.0,
+      35.2
+     ],
+     "triangles": 268,
+     "collide": true
+    },
+    "Wall_Right": {
+     "centre": [
+      -11.8,
+      8.5,
+      0.0
+     ],
+     "size": [
+      0.4,
+      17.0,
+      35.2
+     ],
+     "triangles": 268,
+     "collide": true
+    },
+    "Wall_Lintel": {
+     "centre": [
+      6.0,
+      12.0,
+      -17.8
+     ],
+     "size": [
+      4.0,
+      10.0,
+      0.4
+     ],
+     "triangles": 32,
+     "collide": true
+    },
+    "Wall_FrontLeft": {
+     "centre": [
+      10.0,
+      8.5,
+      -17.8
+     ],
+     "size": [
+      4.0,
+      17.0,
+      0.4
+     ],
+     "triangles": 324,
+     "collide": true
+    },
+    "Wall_FrontRight": {
+     "centre": [
+      -4.0,
+      8.5,
+      -17.8
+     ],
+     "size": [
+      16.0,
+      17.0,
+      0.4
+     ],
+     "triangles": 324,
+     "collide": true
+    },
+    "Dressing": {
+     "centre": [
+      0.01,
+      11.05,
+      0.03
+     ],
+     "size": [
+      23.22,
+      11.9,
+      35.26
+     ],
+     "triangles": 2026,
+     "collide": false
+    },
+    "Glow_Warm_1": {
+     "centre": [
+      0.0,
+      8.15,
+      16.9
+     ],
+     "size": [
+      0.4065,
+      0.72,
+      0.4065
+     ],
+     "triangles": 48,
+     "collide": false
+    },
+    "Bed": {
+     "centre": [
+      0.0,
+      1.955,
+      14.7351
+     ],
+     "size": [
+      3.9,
+      3.91,
+      5.6702
+     ],
+     "triangles": 592,
+     "collide": true
+    },
+    "Furniture": {
+     "centre": [
+      -10.99,
+      2.5,
+      -4.4
+     ],
+     "size": [
+      1.18,
+      5.0,
+      4.4
+     ],
+     "triangles": 764,
+     "collide": true
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      8.5,
+      0.0
+     ],
+     "size": [
+      24.0,
+      17.0,
+      36.0
+     ],
+     "triangles": 108,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Door": {
+     "pos": [
+      6.0,
+      0.0,
+      -18.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    "Sign": {
+     "pos": [
+      6.0,
+      8.2,
+      -18.3
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    "Bed": {
+     "pos": [
+      0.0,
+      0.0,
+      11.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    }
+   },
+   "triangles": 5718,
+   "budget": 6000,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "the mirror image of FrostLoft across x = 0, written by finish(): a snow witch's loft: a violet-plaid log bed, a shelf of yarn and knitted icicles, an aurora window",
+   "mirror_of": "FrostLoft"
   },
   "GlacierSuite": {
    "name": "GlacierSuite",
@@ -3137,7 +4235,299 @@
    "budget": 6000,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "a glacier suite: a gold-banded coiled round bed between crystal pillars, an ice vanity with a frost mirror"
+   "note": "a glacier suite: a gold-banded coiled round bed between crystal pillars, an ice vanity with a frost mirror",
+   "mirror": "GlacierSuite_Mirror",
+   "mirror_note": "not left-right symmetric: part Floor, part Dressing, part Furniture, part Glow_Cold_1, part Glow_Warm_2, part LOD_Proxy"
+  },
+  "GlacierSuite_Mirror": {
+   "name": "GlacierSuite_Mirror",
+   "kind": "Room",
+   "footprint_cells": [
+    3,
+    3
+   ],
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     36.0,
+     0.2,
+     36.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      36.0,
+      0.2,
+      36.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Floor": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      35.8,
+      0.2,
+      35.8
+     ],
+     "triangles": 1056,
+     "collide": true
+    },
+    "Rug": {
+     "centre": [
+      0.0,
+      0.225,
+      5.5
+     ],
+     "size": [
+      6.4,
+      0.05,
+      5.2
+     ],
+     "triangles": 88,
+     "collide": false
+    },
+    "Wall_Back": {
+     "centre": [
+      0.0,
+      8.5,
+      17.8
+     ],
+     "size": [
+      36.0,
+      17.0,
+      0.4
+     ],
+     "triangles": 268,
+     "collide": true
+    },
+    "Wall_Left": {
+     "centre": [
+      17.8,
+      8.5,
+      0.0
+     ],
+     "size": [
+      0.4,
+      17.0,
+      35.2
+     ],
+     "triangles": 268,
+     "collide": true
+    },
+    "Wall_Right": {
+     "centre": [
+      -17.8,
+      8.5,
+      0.0
+     ],
+     "size": [
+      0.4,
+      17.0,
+      35.2
+     ],
+     "triangles": 268,
+     "collide": true
+    },
+    "Wall_Lintel": {
+     "centre": [
+      0.0,
+      12.0,
+      -17.8
+     ],
+     "size": [
+      4.0,
+      10.0,
+      0.4
+     ],
+     "triangles": 32,
+     "collide": true
+    },
+    "Wall_FrontLeft": {
+     "centre": [
+      10.0,
+      8.5,
+      -17.8
+     ],
+     "size": [
+      16.0,
+      17.0,
+      0.4
+     ],
+     "triangles": 324,
+     "collide": true
+    },
+    "Wall_FrontRight": {
+     "centre": [
+      -10.0,
+      8.5,
+      -17.8
+     ],
+     "size": [
+      16.0,
+      17.0,
+      0.4
+     ],
+     "triangles": 324,
+     "collide": true
+    },
+    "Dressing": {
+     "centre": [
+      -0.02,
+      11.15,
+      0.03
+     ],
+     "size": [
+      35.28,
+      11.7,
+      35.26
+     ],
+     "triangles": 1344,
+     "collide": false
+    },
+    "Glow_Warm_1": {
+     "centre": [
+      0.0,
+      8.15,
+      16.9
+     ],
+     "size": [
+      0.4065,
+      0.72,
+      0.4065
+     ],
+     "triangles": 48,
+     "collide": false
+    },
+    "Bed": {
+     "centre": [
+      0.0,
+      2.2,
+      14.7665
+     ],
+     "size": [
+      3.8716,
+      4.4,
+      5.627
+     ],
+     "triangles": 480,
+     "collide": true
+    },
+    "Furniture": {
+     "centre": [
+      -16.87,
+      2.6813,
+      -3.0
+     ],
+     "size": [
+      1.46,
+      5.3625,
+      3.72
+     ],
+     "triangles": 208,
+     "collide": true
+    },
+    "Glow_Cold_1": {
+     "centre": [
+      -16.8,
+      3.725,
+      -1.7
+     ],
+     "size": [
+      0.3811,
+      0.85,
+      0.44
+     ],
+     "triangles": 22,
+     "collide": false
+    },
+    "Glow_Warm_2": {
+     "centre": [
+      -16.9,
+      7.55,
+      2.8
+     ],
+     "size": [
+      0.4065,
+      0.72,
+      0.4065
+     ],
+     "triangles": 48,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      8.5,
+      0.0
+     ],
+     "size": [
+      36.0,
+      17.0,
+      36.0
+     ],
+     "triangles": 108,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Door": {
+     "pos": [
+      0.0,
+      0.0,
+      -18.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    "Sign": {
+     "pos": [
+      0.0,
+      8.2,
+      -18.3
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    "Bed": {
+     "pos": [
+      0.0,
+      0.0,
+      11.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    }
+   },
+   "triangles": 4790,
+   "budget": 6000,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "the mirror image of GlacierSuite across x = 0, written by finish(): a glacier suite: a gold-banded coiled round bed between crystal pillars, an ice vanity with a frost mirror",
+   "mirror_of": "GlacierSuite"
   },
   "AuroraDome": {
    "name": "AuroraDome",
@@ -3440,7 +4830,313 @@
    "budget": 6000,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "a night-sky dome: the northern lights glowing across three walls, stars, a cloud bed, a telescope"
+   "note": "a night-sky dome: the northern lights glowing across three walls, stars, a cloud bed, a telescope",
+   "mirror": "AuroraDome_Mirror",
+   "mirror_note": "not left-right symmetric: part Floor, part Dressing, part Glow_Magic_1, part Glow_Magic_2, part Glow_Magic_3, part Furniture and 1 more"
+  },
+  "AuroraDome_Mirror": {
+   "name": "AuroraDome_Mirror",
+   "kind": "Room",
+   "footprint_cells": [
+    3,
+    3
+   ],
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     36.0,
+     0.2,
+     36.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      36.0,
+      0.2,
+      36.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Floor": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      35.8,
+      0.2,
+      35.8
+     ],
+     "triangles": 1056,
+     "collide": true
+    },
+    "Rug": {
+     "centre": [
+      0.0,
+      0.225,
+      5.5
+     ],
+     "size": [
+      6.4,
+      0.05,
+      5.2
+     ],
+     "triangles": 88,
+     "collide": false
+    },
+    "Wall_Back": {
+     "centre": [
+      0.0,
+      8.5,
+      17.8
+     ],
+     "size": [
+      36.0,
+      17.0,
+      0.4
+     ],
+     "triangles": 268,
+     "collide": true
+    },
+    "Wall_Left": {
+     "centre": [
+      17.8,
+      8.5,
+      0.0
+     ],
+     "size": [
+      0.4,
+      17.0,
+      35.2
+     ],
+     "triangles": 268,
+     "collide": true
+    },
+    "Wall_Right": {
+     "centre": [
+      -17.8,
+      8.5,
+      0.0
+     ],
+     "size": [
+      0.4,
+      17.0,
+      35.2
+     ],
+     "triangles": 268,
+     "collide": true
+    },
+    "Wall_Lintel": {
+     "centre": [
+      0.0,
+      12.0,
+      -17.8
+     ],
+     "size": [
+      4.0,
+      10.0,
+      0.4
+     ],
+     "triangles": 32,
+     "collide": true
+    },
+    "Wall_FrontLeft": {
+     "centre": [
+      10.0,
+      8.5,
+      -17.8
+     ],
+     "size": [
+      16.0,
+      17.0,
+      0.4
+     ],
+     "triangles": 324,
+     "collide": true
+    },
+    "Wall_FrontRight": {
+     "centre": [
+      -10.0,
+      8.5,
+      -17.8
+     ],
+     "size": [
+      16.0,
+      17.0,
+      0.4
+     ],
+     "triangles": 324,
+     "collide": true
+    },
+    "Dressing": {
+     "centre": [
+      0.005,
+      10.545,
+      0.03
+     ],
+     "size": [
+      35.21,
+      12.91,
+      35.26
+     ],
+     "triangles": 1790,
+     "collide": false
+    },
+    "Glow_Warm_1": {
+     "centre": [
+      0.0,
+      8.15,
+      16.9
+     ],
+     "size": [
+      0.4065,
+      0.72,
+      0.4065
+     ],
+     "triangles": 48,
+     "collide": false
+    },
+    "Glow_Magic_1": {
+     "centre": [
+      0.0308,
+      9.0299,
+      17.55
+     ],
+     "size": [
+      31.4146,
+      2.2386,
+      0.06
+     ],
+     "triangles": 192,
+     "collide": false
+    },
+    "Glow_Magic_2": {
+     "centre": [
+      17.55,
+      9.6463,
+      -2.0029
+     ],
+     "size": [
+      0.06,
+      1.9608,
+      25.4245
+     ],
+     "triangles": 144,
+     "collide": false
+    },
+    "Glow_Magic_3": {
+     "centre": [
+      -17.55,
+      9.6463,
+      -2.0029
+     ],
+     "size": [
+      0.06,
+      1.9608,
+      25.4245
+     ],
+     "triangles": 144,
+     "collide": false
+    },
+    "Bed": {
+     "centre": [
+      0.0,
+      0.975,
+      14.725
+     ],
+     "size": [
+      3.9,
+      1.95,
+      5.65
+     ],
+     "triangles": 512,
+     "collide": true
+    },
+    "Furniture": {
+     "centre": [
+      -16.8176,
+      2.3319,
+      -1.7662
+     ],
+     "size": [
+      1.4648,
+      4.6637,
+      3.9325
+     ],
+     "triangles": 256,
+     "collide": true
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      8.5,
+      0.0
+     ],
+     "size": [
+      36.0,
+      17.0,
+      36.0
+     ],
+     "triangles": 108,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Door": {
+     "pos": [
+      0.0,
+      0.0,
+      -18.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    "Sign": {
+     "pos": [
+      0.0,
+      8.2,
+      -18.3
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    "Bed": {
+     "pos": [
+      0.0,
+      0.0,
+      11.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    }
+   },
+   "triangles": 5726,
+   "budget": 6000,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "the mirror image of AuroraDome across x = 0, written by finish(): a night-sky dome: the northern lights glowing across three walls, stars, a cloud bed, a telescope",
+   "mirror_of": "AuroraDome"
   },
   "CocoaLounge": {
    "name": "CocoaLounge",
@@ -3687,7 +5383,257 @@
    "budget": 6000,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "a cocoa bar: a candy-cane counter, a big red cocoa pot, mugs with marshmallows, a snowy awning"
+   "note": "a cocoa bar: a candy-cane counter, a big red cocoa pot, mugs with marshmallows, a snowy awning",
+   "mirror": "CocoaLounge_Mirror",
+   "mirror_note": "not left-right symmetric: attachment Door at x -6 (mirrored 6), attachment Sign at x -6 (mirrored 6), part Floor, part Wall_Lintel, part Wall_FrontLeft, part Wall_FrontRight and 3 more"
+  },
+  "CocoaLounge_Mirror": {
+   "name": "CocoaLounge_Mirror",
+   "kind": "Amenity",
+   "footprint_cells": [
+    2,
+    2
+   ],
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     24.0,
+     0.2,
+     24.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      24.0,
+      0.2,
+      24.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Floor": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      23.8,
+      0.2,
+      23.8
+     ],
+     "triangles": 704,
+     "collide": true
+    },
+    "Rug": {
+     "centre": [
+      0.0,
+      0.225,
+      -5.4
+     ],
+     "size": [
+      4.6,
+      0.05,
+      3.0
+     ],
+     "triangles": 88,
+     "collide": false
+    },
+    "Wall_Back": {
+     "centre": [
+      0.0,
+      8.5,
+      11.8
+     ],
+     "size": [
+      24.0,
+      17.0,
+      0.4
+     ],
+     "triangles": 268,
+     "collide": true
+    },
+    "Wall_Left": {
+     "centre": [
+      11.8,
+      8.5,
+      0.0
+     ],
+     "size": [
+      0.4,
+      17.0,
+      23.2
+     ],
+     "triangles": 268,
+     "collide": true
+    },
+    "Wall_Right": {
+     "centre": [
+      -11.8,
+      8.5,
+      0.0
+     ],
+     "size": [
+      0.4,
+      17.0,
+      23.2
+     ],
+     "triangles": 268,
+     "collide": true
+    },
+    "Wall_Lintel": {
+     "centre": [
+      6.0,
+      12.0,
+      -11.8
+     ],
+     "size": [
+      4.0,
+      10.0,
+      0.4
+     ],
+     "triangles": 32,
+     "collide": true
+    },
+    "Wall_FrontLeft": {
+     "centre": [
+      10.0,
+      8.5,
+      -11.8
+     ],
+     "size": [
+      4.0,
+      17.0,
+      0.4
+     ],
+     "triangles": 324,
+     "collide": true
+    },
+    "Wall_FrontRight": {
+     "centre": [
+      -4.0,
+      8.5,
+      -11.8
+     ],
+     "size": [
+      16.0,
+      17.0,
+      0.4
+     ],
+     "triangles": 324,
+     "collide": true
+    },
+    "Dressing": {
+     "centre": [
+      0.01,
+      11.04,
+      0.03
+     ],
+     "size": [
+      23.22,
+      11.92,
+      23.26
+     ],
+     "triangles": 1510,
+     "collide": false
+    },
+    "Glow_Warm_1": {
+     "centre": [
+      0.0,
+      8.15,
+      10.9
+     ],
+     "size": [
+      0.4065,
+      0.72,
+      0.4065
+     ],
+     "triangles": 48,
+     "collide": false
+    },
+    "Centrepiece": {
+     "centre": [
+      0.0,
+      2.6,
+      5.75
+     ],
+     "size": [
+      3.9,
+      5.2,
+      11.7
+     ],
+     "triangles": 1418,
+     "collide": true
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      8.5,
+      0.0
+     ],
+     "size": [
+      24.0,
+      17.0,
+      24.0
+     ],
+     "triangles": 96,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Door": {
+     "pos": [
+      6.0,
+      0.0,
+      -12.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    "Sign": {
+     "pos": [
+      6.0,
+      8.2,
+      -12.3
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    "Bed": {
+     "pos": [
+      0.0,
+      0.0,
+      -4.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 5264,
+   "budget": 6000,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "the mirror image of CocoaLounge across x = 0, written by finish(): a cocoa bar: a candy-cane counter, a big red cocoa pot, mugs with marshmallows, a snowy awning",
+   "mirror_of": "CocoaLounge"
   },
   "AuroraDeck": {
    "name": "AuroraDeck",
@@ -3948,7 +5894,271 @@
    "budget": 6000,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "a viewing deck: a wide window with the northern lights glowing in it, two deck chairs with plaid blankets"
+   "note": "a viewing deck: a wide window with the northern lights glowing in it, two deck chairs with plaid blankets",
+   "mirror": "AuroraDeck_Mirror",
+   "mirror_note": "not left-right symmetric: attachment Door at x -6 (mirrored 6), attachment Sign at x -6 (mirrored 6), part Floor, part Wall_Lintel, part Wall_FrontLeft, part Wall_FrontRight and 6 more"
+  },
+  "AuroraDeck_Mirror": {
+   "name": "AuroraDeck_Mirror",
+   "kind": "Amenity",
+   "footprint_cells": [
+    2,
+    2
+   ],
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     24.0,
+     0.2,
+     24.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      24.0,
+      0.2,
+      24.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Floor": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      23.8,
+      0.2,
+      23.8
+     ],
+     "triangles": 704,
+     "collide": true
+    },
+    "Wall_Back": {
+     "centre": [
+      0.0,
+      8.5,
+      11.8
+     ],
+     "size": [
+      24.0,
+      17.0,
+      0.4
+     ],
+     "triangles": 268,
+     "collide": true
+    },
+    "Wall_Left": {
+     "centre": [
+      11.8,
+      8.5,
+      0.0
+     ],
+     "size": [
+      0.4,
+      17.0,
+      23.2
+     ],
+     "triangles": 268,
+     "collide": true
+    },
+    "Wall_Right": {
+     "centre": [
+      -11.8,
+      8.5,
+      0.0
+     ],
+     "size": [
+      0.4,
+      17.0,
+      23.2
+     ],
+     "triangles": 268,
+     "collide": true
+    },
+    "Wall_Lintel": {
+     "centre": [
+      6.0,
+      12.0,
+      -11.8
+     ],
+     "size": [
+      4.0,
+      10.0,
+      0.4
+     ],
+     "triangles": 32,
+     "collide": true
+    },
+    "Wall_FrontLeft": {
+     "centre": [
+      10.0,
+      8.5,
+      -11.8
+     ],
+     "size": [
+      4.0,
+      17.0,
+      0.4
+     ],
+     "triangles": 324,
+     "collide": true
+    },
+    "Wall_FrontRight": {
+     "centre": [
+      -4.0,
+      8.5,
+      -11.8
+     ],
+     "size": [
+      16.0,
+      17.0,
+      0.4
+     ],
+     "triangles": 324,
+     "collide": true
+    },
+    "Dressing": {
+     "centre": [
+      -0.025,
+      10.425,
+      0.01
+     ],
+     "size": [
+      23.27,
+      13.15,
+      23.22
+     ],
+     "triangles": 1018,
+     "collide": false
+    },
+    "Glow_Warm_1": {
+     "centre": [
+      -10.9,
+      7.75,
+      -2.0
+     ],
+     "size": [
+      0.4065,
+      0.72,
+      0.4065
+     ],
+     "triangles": 48,
+     "collide": false
+    },
+    "Glow_Magic_1": {
+     "centre": [
+      -0.0057,
+      6.8281,
+      11.44
+     ],
+     "size": [
+      7.8637,
+      1.3458,
+      0.06
+     ],
+     "triangles": 96,
+     "collide": false
+    },
+    "Glow_Magic_2": {
+     "centre": [
+      -0.0032,
+      5.6237,
+      11.44
+     ],
+     "size": [
+      7.3784,
+      1.0139,
+      0.06
+     ],
+     "triangles": 96,
+     "collide": false
+    },
+    "Centrepiece": {
+     "centre": [
+      0.0,
+      1.3,
+      1.1
+     ],
+     "size": [
+      3.9,
+      2.6,
+      3.8
+     ],
+     "triangles": 388,
+     "collide": true
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      8.5,
+      0.0
+     ],
+     "size": [
+      24.0,
+      17.0,
+      24.0
+     ],
+     "triangles": 96,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Door": {
+     "pos": [
+      6.0,
+      0.0,
+      -12.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    "Sign": {
+     "pos": [
+      6.0,
+      8.2,
+      -12.3
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    "Bed": {
+     "pos": [
+      0.0,
+      0.0,
+      -4.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 3846,
+   "budget": 6000,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "the mirror image of AuroraDeck across x = 0, written by finish(): a viewing deck: a wide window with the northern lights glowing in it, two deck chairs with plaid blankets",
+   "mirror_of": "AuroraDeck"
   },
   "Decor_IceBlock": {
    "name": "Decor_IceBlock",
@@ -4709,5 +6919,15 @@
     ]
    }
   }
+ },
+ "mirrors": {
+  "IglooRoom": "IglooRoom_Mirror",
+  "IceCave": "IceCave_Mirror",
+  "YetiDen": "YetiDen_Mirror",
+  "FrostLoft": "FrostLoft_Mirror",
+  "GlacierSuite": "GlacierSuite_Mirror",
+  "AuroraDome": "AuroraDome_Mirror",
+  "CocoaLounge": "CocoaLounge_Mirror",
+  "AuroraDeck": "AuroraDeck_Mirror"
  }
 }

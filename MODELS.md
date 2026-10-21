@@ -193,7 +193,11 @@ bakes each part's rotation"): the kit's `finish()` writes it from the same
 geometry mirrored across x = 0 (faces turned the right way out), with every
 attachment's x negated and its LookVector mirrored (`Door` at x = +6 for a
 2-wide piece, `Hinge` on the other jamb), the same part names, and the same
-checks. Nobody models it by hand. The code places `<PieceId>_Mirror` for a
+checks. Nobody models it by hand. The names follow the geometry: a mirror's
+`Wall_Left` and `Wall_FrontLeft` stand at +x. A piece that is its own mirror
+image (faces, colours, collision and attachments) gets none; `finish()`
+decides by comparing, and the manifest's `mirrors` says which (2026-10-21:
+none of the first two sets' 21 rooms and amenities is). The code places `<PieceId>_Mirror` for a
 piece saved with `m`; until it exists, F does nothing for that piece.
 
 ### Lobby (`Lobby`): the shell
