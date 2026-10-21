@@ -476,11 +476,23 @@ local function sendHome(g: Guest, plot: PlotService.Plot?)
 end
 
 --[[ Points a guest at a hotel: reserves the room and walks it from where it
-	stands on the street to the desk queue, by the pavement and the path. ]]
+	stands on the street to the desk queue, by the pavement and the path.
+	Never into a room it cannot walk to from the desk (A.12 "Guests"):
+	`Rooms.ready` promises a way to the key furniture, and this keeps the
+	promise if a room slips through; the guest goes home instead. ]]
 function GuestService.assign(g: Guest, player: Player, pieceId: string)
 	local plot = PlotService.of(player)
 	local hotel = HotelService.get(player)
-	if not plot or not hotel then
+	local data = PlayerData.get(player)
+	if not plot or not hotel or not data then
+		sendHome(g, nil)
+		return
+	end
+	local desk = shortestDesk(data, hotel)
+	if not roomPath(plot, data, here(g), pieceId, false, desk) then
+		warn(
+			`[guests] no way from the desk to room {pieceId}'s key furniture: {g.species} not booked`
+		)
 		sendHome(g, nil)
 		return
 	end
@@ -488,8 +500,7 @@ function GuestService.assign(g: Guest, player: Player, pieceId: string)
 	g.room = pieceId
 	g.speed = S.WalkSpeed
 	HotelService.setRoom(player, pieceId, "Reserved", g.id)
-	local data = PlayerData.get(player)
-	g.desk = if data then shortestDesk(data, hotel) else nil
+	g.desk = desk
 	table.insert(hotel.queue, g.id)
 	local k = deskLines(hotel)[g.desk or ""] or 1
 	local from = here(g)

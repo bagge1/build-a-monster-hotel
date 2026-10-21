@@ -162,9 +162,12 @@ WHAT IS NOT SIMULATED (stated so the numbers are read honestly)
   selling, enlarging, moving or retyping a room, replacing decor, hallway
   decor and furniture, floor finishes, windows, residents' perks, travelling
   back to a hotel left, the time Travel itself takes, the walk from the door
-  to the key furniture, and the room shapes (cells are counted, walls priced
-  by an assumed share of a compact rectangle's perimeter, furniture by its
-  squares, nothing packed or routed).
+  to the key furniture, the rare decor sets and souvenirs (A.11.3: their
+  `found` rows are never bought, so they are not in the shop the policy buys
+  from, and a set's bonus to its room's Decor bar is not modelled), and the
+  room shapes (cells are counted, walls priced by an assumed share of a
+  compact rectangle's perimeter, furniture by its squares, nothing packed or
+  routed).
 
 THE PLAYER (assumptions that most affect the result)
   - Plays continuously and well: checks a guest in CHECKIN_DELAY s after it
@@ -563,7 +566,7 @@ FORMULA_GUARDS = [
     ("src/shared/Rooms.luau", "friendship = 1 + R.DecorFriendship * d,"),
     ("src/shared/Rooms.luau", "sum += (clamp01(b.size) + clamp01(b.furniture) + clamp01(b.decor)) / 3 * R.ComfortPerRoom"),
     ("src/shared/Rooms.luau", "return math.min(sum, R.ComfortRoomsCap)"),
-    ("src/shared/Rooms.luau", "if #keyPieces(world, roomId) == 0 then"),
+    ("src/shared/Rooms.luau", "local hasKey = #keyPieces(world, roomId) > 0 if not hasKey then"),
     ("src/shared/Rooms.luau", "if a.size < req.minCells then"),
     ("src/shared/Rating.luau", "local comfort = Rooms.comfortPoints(i.roomBars) + 40 * i.prefsShare"),
     # ... how the server applies them
@@ -615,6 +618,7 @@ FORMULA_GUARDS = [
     ("src/shared/Economy.luau", "return E.BasePay * E.LocationPayMultiplier ^ (sp.location - 1) * Constants.Rarity[sp.rarity].pay"),
     ("src/shared/Unlocks.luau", "if piece.location ~= 0 and piece.location ~= c.location then"),
     ("src/shared/Pieces.luau", "return d.always == true or d.location == location or (d.furniture == true and d.location == 0) or unlocked[`Decor_{d.id}`] == true"),
+    ("src/shared/Pieces.luau", "if d.found then return found ~= nil and found[d.id] ~= nil"),
     ("src/shared/Bus.luau", "if sp.rarity == rarity and locations[sp.location] then"),
     ("src/server/HotelService.luau", "elseif p and ok and p.kind == \"Amenity\" then amenities += 1"),
     # the chain (§6.4)
@@ -723,8 +727,10 @@ def load_game() -> dict:
         g = dict(G)
         g["Location"] = L
         g["Pieces"] = {p["id"]: p for p in pieces if p.get("location") == L}
-        # Pieces.decorHere: the location's own, `always`, and location-0 furniture (event decor not simulated)
-        g["Decor"] = {d["id"]: d for d in decor if d.get("cost", 0) > 0 and (
+        # Pieces.decorHere: the location's own, `always`, and location-0 furniture (event decor not simulated).
+        # What a player can buy only: a `found` row (a rare set piece, A.11.3, or a souvenir) is never sold
+        # in the build shop, only placed once found, so it is left out of the shop here.
+        g["Decor"] = {d["id"]: d for d in decor if d.get("cost", 0) > 0 and not d.get("found") and (
             d.get("location") == L or (d.get("location") == 0 and (d.get("always") or d.get("furniture"))))}
         g["Species"] = {s["id"]: s for s in species if s.get("location") == L}
         if not g["Species"]:

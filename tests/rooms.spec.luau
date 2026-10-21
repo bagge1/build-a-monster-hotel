@@ -500,6 +500,125 @@ describe("Rooms", function()
 		end
 	)
 
+	it(
+		"furniture never walls a ready room's key furniture off from its door; a room cut off so is not ready and says why",
+		function()
+			local wd = world()
+			room(wd, "r", "StandardRoom", 8, 4, 2, 2)
+			local x0, z0 = 8 * Q, 4 * Q
+			-- The bed at the back, the door at the front.
+			table.insert(wd.decor, decor("Bed", 1, x0 + 1, z0 + 5, 0))
+			expect.truthy(Rooms.ready(wd, "r"), "ready")
+			-- A row across the room between the door and the bed: its last piece would close it.
+			local item = smallDecor()[1]
+			local blocker, why = nil, nil
+			for x = x0, x0 + 2 * Q - 1 do
+				local d = decor(item, 1, x, z0 + 4, 0)
+				d.id = `row{x}`
+				local ok, refusal = Rooms.canPlaceDecor(wd, d)
+				if not ok then
+					blocker, why = d, refusal
+					break
+				end
+				table.insert(wd.decor, d)
+			end
+			expect.eq(why, "KeyCutOff")
+			expect.truthy(Rooms.ready(wd, "r"), "still ready")
+			local spot = Rooms.keySpot(wd, "r")
+			expect.truthy(spot, "a spot by the bed")
+			local _, inside = Rooms.doorSquares(wd, "r")
+			expect.truthy(Rooms.route(wd, inside, spot), "a way from the door to the bed")
+			-- Forced in anyway (as a save from before the rule could hold): not ready, and why.
+			table.insert(wd.decor, blocker)
+			local ok, missing = Rooms.ready(wd, "r")
+			expect.truthy(not ok, "not ready")
+			expect.truthy(
+				missing and table.find(missing, "KeyUnreached"),
+				"its key furniture cut off"
+			)
+			expect.eq(Rooms.keySpot(wd, "r"), nil, "no spot guests reach")
+		end
+	)
+
+	it(
+		"a ready room always has a guest route from its door to its key spot, and no accepted decor takes it",
+		function()
+			local rng = Random.new(11)
+			local items = smallDecor()
+			local x0, z0 = 8 * Q, 4 * Q
+			local cutSeen, refusedSeen = false, false
+			for _ = 1, 12 do
+				local accepted = world()
+				room(accepted, "r", "StandardRoom", 8, 4, 2, 2)
+				table.insert(
+					accepted.decor,
+					decor("Bed", 1, x0 + rng:NextInteger(1, 2), z0 + rng:NextInteger(2, 5), 0)
+				)
+				local forced = table.clone(accepted)
+				forced.decor = table.clone(accepted.decor)
+				for n = 1, 40 do
+					local d = decor(
+						items[rng:NextInteger(1, #items)],
+						1,
+						x0 + rng:NextInteger(0, 2 * Q - 1),
+						z0 + rng:NextInteger(1, 2 * Q - 1),
+						0
+					)
+					d.id = `d{n}`
+					-- Through the rules: a ready room stays ready.
+					local was = Rooms.ready(accepted, "r")
+					local ok, why = Rooms.canPlaceDecor(accepted, d)
+					if ok then
+						table.insert(accepted.decor, d)
+						if was then
+							expect.truthy(
+								Rooms.ready(accepted, "r"),
+								"an accepted piece kept it ready"
+							)
+						end
+					elseif why == "KeyCutOff" then
+						refusedSeen = true
+					end
+					-- Forced past the rules: ready only with a way to the key furniture.
+					local overlaps = false
+					for _, o in forced.decor do
+						for _, a in Grid.squares(o) do
+							if a.x == d.x and a.z == d.z then
+								overlaps = true
+							end
+						end
+					end
+					if not overlaps then
+						table.insert(forced.decor, d)
+					end
+					for _, wd in { accepted, forced } do
+						local ready, missing = Rooms.ready(wd, "r")
+						local spot = Rooms.keySpot(wd, "r")
+						if ready then
+							expect.truthy(spot, "a ready room has a key spot")
+							expect.truthy(
+								Rooms.route(wd, entranceSquare(), spot),
+								"reached from the entrance"
+							)
+							local _, inside = Rooms.doorSquares(wd, "r")
+							if inside and Rooms.walkable(wd, inside.floor, inside.x, inside.z) then
+								expect.truthy(
+									Rooms.route(wd, inside, spot),
+									"reached from inside its door"
+								)
+							end
+						elseif missing and table.find(missing, "KeyUnreached") then
+							cutSeen = true
+							expect.eq(spot, nil, "no key spot when it is cut off")
+						end
+					end
+				end
+			end
+			expect.truthy(refusedSeen, "some placements refused for cutting the key off")
+			expect.truthy(cutSeen, "some forced rooms cut off")
+		end
+	)
+
 	it("a route crosses floors by the stairs and never a wall without a door", function()
 		local rng = Random.new(5)
 		local wd = stairWorld()

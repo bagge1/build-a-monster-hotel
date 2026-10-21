@@ -82,6 +82,7 @@ export type Refusal =
 	| "MergesRooms"
 	| "RoomTaken"
 	| "CutsOff"
+	| "KeyCutOff"
 	| "UnknownType"
 	| "Hallway"
 	| "NoDoor"
@@ -640,10 +641,15 @@ local function trouble(world: World): { [string]: Refusal }
 	return out
 end
 
+-- Rooms.ready with the walk and the flood given (defined below, with `keySpot`).
+local readyIn: (World, string, Walk, { [number]: number }) -> (boolean, { string }?)
+
 --[[ Whether the change from `before` to `after` keeps the rooms' rules: no
 	two rooms in one area, no room's area hallway, nothing guests reached cut
-	off. Only what the change breaks is refused. The server may call it for
-	any change (a stair or desk placed, decor moved), not only walls. ]]
+	off, and no ready room's key furniture walled or furnished off from its
+	door (`KeyCutOff`: the room stays reached, only its key spot is lost).
+	Only what the change breaks is refused. The server may call it for any
+	change (a stair or desk placed, decor moved), not only walls. ]]
 function Rooms.check(before: World, after: World): (boolean, Refusal?)
 	local was, now = trouble(before), trouble(after)
 	local ids = {}
@@ -661,6 +667,23 @@ function Rooms.check(before: World, after: World): (boolean, Refusal?)
 	for label in reachedBefore do
 		if not reachedAfter[label] then
 			return false, "CutsOff"
+		end
+	end
+	local wb, wa = walkOf(before), walkOf(after)
+	local rb, ra = fromEntrance(wb), fromEntrance(wa)
+	local rooms = {}
+	for id in after.rooms do
+		if before.rooms[id] then
+			table.insert(rooms, id)
+		end
+	end
+	table.sort(rooms)
+	for _, id in rooms do
+		if readyIn(before, id, wb, rb) then
+			local ok, missing = readyIn(after, id, wa, ra)
+			if not ok and missing and #missing == 1 and missing[1] == "KeyUnreached" then
+				return false, "KeyCutOff"
+			end
 		end
 	end
 	return true, nil
@@ -966,15 +989,15 @@ local function keyPieces(world: World, roomId: string): { Grid.DecorPlaced }
 	return out
 end
 
---[[ A square in the room beside one of its key furniture, where a booked
-	guest walks to (A.12 "Guests"), or nil. ]]
-function Rooms.keySpot(world: World, roomId: string): Spot?
+--[[ The squares beside a room's key furniture a guest can stand on, in the
+	room and not across a wall, in a fixed order. ]]
+local function keySquares(world: World, roomId: string, w: Walk): (Area?, { Spot })
 	local a = Rooms.roomArea(world, roomId)
+	local out: { Spot } = {}
 	if not a then
-		return nil
+		return nil, out
 	end
 	local set = inArea(a)
-	local w = walkOf(world)
 	for _, d in keyPieces(world, roomId) do
 		for _, s in Grid.squares(d) do
 			for _, step in STEPS do
@@ -984,19 +1007,39 @@ function Rooms.keySpot(world: World, roomId: string): Spot?
 					and canStand(w, a.floor, nx, nz)
 					and not shutBetween(w, a.floor, s.x, s.z, step[1], step[2])
 				then
-					return { floor = a.floor, x = nx, z = nz }
+					table.insert(out, { floor = a.floor, x = nx, z = nz })
 				end
 			end
+		end
+	end
+	return a, out
+end
+
+-- The first of a room's key squares guests reach from the entrance (`reach`, a flood from it), or nil.
+local function reachedKey(world: World, roomId: string, w: Walk, reach: { [number]: number }): Spot?
+	local _, spots = keySquares(world, roomId, w)
+	for _, s in spots do
+		if reach[sqKey(s.floor, s.x, s.z)] ~= nil then
+			return s
 		end
 	end
 	return nil
 end
 
---[[ Whether a room is ready for guests (A.12): its key furniture in it, at
-	least its minimum size, a door, and reached from the entrance; if not,
-	what it lacks ("Type", "Area", "Hallway", "KeyFurniture", "MinSize",
-	"Door", "Unreached"). ]]
-function Rooms.ready(world: World, roomId: string): (boolean, { string }?)
+--[[ A square in the room beside one of its key furniture that guests reach
+	from the entrance, through a door: where a booked guest walks to (A.12
+	"Guests"). Nil when there is none, walled or furnished off included. ]]
+function Rooms.keySpot(world: World, roomId: string): Spot?
+	local w = walkOf(world)
+	return reachedKey(world, roomId, w, fromEntrance(w))
+end
+
+function readyIn(
+	world: World,
+	roomId: string,
+	w: Walk,
+	reach: { [number]: number }
+): (boolean, { string }?)
 	local r = world.rooms[roomId]
 	local req = if r then Rooms.requirement(r.type) else nil
 	if not r or not req then
@@ -1010,7 +1053,8 @@ function Rooms.ready(world: World, roomId: string): (boolean, { string }?)
 	if a.hallway or #a.rooms > 1 then
 		table.insert(missing, "Hallway")
 	end
-	if #keyPieces(world, roomId) == 0 then
+	local hasKey = #keyPieces(world, roomId) > 0
+	if not hasKey then
 		table.insert(missing, "KeyFurniture")
 	end
 	if a.size < req.minCells then
@@ -1019,8 +1063,6 @@ function Rooms.ready(world: World, roomId: string): (boolean, { string }?)
 	if #a.doors == 0 then
 		table.insert(missing, "Door")
 	else
-		local w = walkOf(world)
-		local reach = fromEntrance(w)
 		local reached = false
 		for _, k in a.cells do
 			local hx, hz = Rooms.halfOf(k)
@@ -1041,12 +1083,25 @@ function Rooms.ready(world: World, roomId: string): (boolean, { string }?)
 		end
 		if not reached then
 			table.insert(missing, "Unreached")
+		elseif hasKey and not reachedKey(world, roomId, w, reach) then
+			-- The room is reached but its key furniture is walled or furnished off from the door.
+			table.insert(missing, "KeyUnreached")
 		end
 	end
 	if #missing > 0 then
 		return false, missing
 	end
 	return true, nil
+end
+
+--[[ Whether a room is ready for guests (A.12): its key furniture in it, at
+	least its minimum size, a door, reached from the entrance, and a guest
+	route through the door to a square beside its key furniture
+	(`Rooms.keySpot`); if not, what it lacks ("Type", "Area", "Hallway",
+	"KeyFurniture", "MinSize", "Door", "Unreached", "KeyUnreached"). ]]
+function Rooms.ready(world: World, roomId: string): (boolean, { string }?)
+	local w = walkOf(world)
+	return readyIn(world, roomId, w, fromEntrance(w))
 end
 
 -- ===== Pieces, decor and tiles among the walls (wiring, 2026-10-21) =====

@@ -366,6 +366,14 @@ function HotelService.missingText(typeId: string, missing: { string }): string
 		return "needs a door"
 	elseif first == "Unreached" then
 		return "guests can't reach it"
+	elseif first == "KeyUnreached" and req then
+		-- Its key furniture is walled or furnished off from the door (A.12 "Ready").
+		local names = {}
+		for _, k in req.keys do
+			local d = Pieces.decor(k)
+			table.insert(names, if d then d.name else k)
+		end
+		return `guests can't get to the {table.concat(names, " or ")}`
 	elseif first == "Hallway" then
 		return "not closed off"
 	end

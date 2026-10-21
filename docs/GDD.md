@@ -1834,8 +1834,12 @@ monsters who stay in it (Species whose room it is; for an amenity, the
 preference tags it gives) and its key furniture and minimum size.
 
 **Ready.** A room is ready for guests when its key furniture stands in it,
-its size is at least the minimum, and it has a door. A room that is not
-ready is never booked and says what it lacks.
+its size is at least the minimum, and it has a door, and a guest can walk
+through the door to a square beside its key furniture. A room that is not
+ready is never booked and says what it lacks. Furniture, decor or a wall
+that would cut a ready room's key furniture off from its door is refused
+(as a door cut off from the entrance is; found in play 2026-10-21: a
+walled-off bed left the room ready and its VIP was sent home).
 
 **Furniture** stands on the 3-stud decor grid like decor (`layer` Floor),
 inside a room or on hallway floor, and is bought and sold like decor. Each

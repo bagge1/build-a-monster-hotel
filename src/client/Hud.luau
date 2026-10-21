@@ -70,6 +70,7 @@ local REFUSALS: { [string]: string } = {
 	Exists = "Already there",
 	MergesRooms = "That would join two rooms into one",
 	RoomTaken = "That would open the room onto the hallway",
+	KeyCutOff = "That would block guests from the room's key furniture",
 	UnknownType = "Not a room type",
 	Hallway = "That's hallway: wall a space off first",
 	NoDoor = "It needs a door first",
