@@ -28,6 +28,7 @@ names:
 | Any model | The rules; What a model costs to draw; Checklist before handing a set over |
 | A room, an amenity, the lobby, the front desk, the stairs, a facade, decor, a rug | Hotel kit |
 | An inner wall, a door, furniture (built rooms) | Hotel kit; Inner walls, doors and furniture |
+| A rare decor set, a souvenir | Hotel kit; Decor; Rare decor sets and souvenirs |
 | A monster, a hunter, the bus | Monsters and street NPCs |
 | A tree | Street scenery: trees |
 | Code that reads a model | the section for the name the code looks up: grep the name |
@@ -102,7 +103,8 @@ allow.
 | The front desk | 3,000 |
   | Stairs | 8,000 |
   | A facade piece | 1,500 a plain wall, 2,500 a window, 3,000 the entrance, 800 a corner (draft, 2026-10-20: one stands on every outline edge of every floor) |
-  | A decor piece | 1,500 |
+  | A decor piece | 1,500 (a rare set's piece too) |
+  | The souvenir (`Souvenir_Base`) | 800 |
   | An inner wall or door; a wall post | 1,200; 200 |
   | A furniture piece | 1,500 |
   | The hotel sign | 3,000 (draft) |
@@ -633,6 +635,72 @@ frame; furniture's footprint, inset, height, `Use` and its `Pose` (a `Lie`
 point's 5-stud fit), nothing floating, and the decor checks (seats,
 coplanar faces). Budgets: a wall piece **1,200**
 triangles, a post 200, a furniture piece **1,500** (decor's).
+
+### Rare decor sets and souvenirs (`Decor_<SetId>_<Piece>`, `Souvenir_Base`)
+
+Decor that is **found, not bought** (GDD A.11.3): **one set of five pieces
+per location** at launch, and **one souvenir per species**, all from **one
+model**, `Souvenir_Base`, that the code colours and badges per species
+(the triage, A.11.3 "Scrutiny 2026-10-21"; that souvenirs share one base is
+his call, WAITING §2.38: the base is built so either answer costs nothing
+here). Written 2026-10-21, before the first set.
+
+#### A set piece (`Decor_<SetId>_<Piece>`, e.g. `Decor_CountStudy_Globe`)
+
+- **Every rule of "Decor" above**: origin at the footprint's centre on the
+  floor, front −Z, `fw × fd` squares of 3 studs, the 0.4 inset, at most 7
+  tall, its layer (`Floor`, `Rug`, `Wall`), `Body` not colliding, glows
+  their own parts (`Glow_<Key>_<n>`), `Glass` and `Jet_<n>` as decor's, no
+  coplanar faces, nothing floating (a `Wall` piece may hang, as
+  "Furniture"'s rule says). It is decor, not furniture: **no `Use`**, no
+  seat. A set piece a guest would use is a `Furniture_` piece and keeps that
+  section instead.
+- **Its `Pieces` row**: id `<SetId>_<Piece>` (the instance `Decor_` + id),
+  `set = "<SetId>"`, `found = true` (never sold in the build shop), the
+  location's number, and `w`, `d`, `layer`, `height` agreeing with the
+  model as every decor row does. `<SetId>` and `<Piece>` are ASCII
+  CamelCase; the display names live in the code's config.
+- **Where**: `ServerStorage.HotelKit.<Location>` (`assets/HotelKit/<Location>/`),
+  beside the kit's other decor. The set is built by one script into
+  `blender/decor/<set>/`, its README naming the five and their rows.
+- **One look across five pieces** (what makes it a set, and rarer than the
+  shop's decor): one palette of the location's colours, **one motif** (the
+  set's crest) on every piece, more trim and at least one glow among the
+  five, and each piece **read from above on a phone** (the build camera):
+  a silhouette or a pattern that says what it is from the top, not only
+  from the front. A rug in the set is how a room shows the set from above.
+- **Budget**: a decor piece's, **1,500** triangles; `LOD_Proxy` only as
+  the location's other decor has it (none in the Manor's).
+
+#### The souvenir (`Souvenir_Base`)
+
+One small keepsake on display, **1 × 1, layer `Floor`**, by every rule of
+"Decor" above (no `Use`, nothing colliding). The code clones it for each
+species' souvenir; the `Pieces` rows (or the code's own souvenir table)
+point at this one model. Template in `ServerStorage.Souvenirs`
+(`assets/Souvenirs/Souvenir_Base.rbxm`): used in every location, so in no
+location kit. `default.project.json` gains that folder when the first
+`.rbxm` is saved (skill `import`; a project change, so his Rojo restarts).
+
+| Name | What | The code |
+|---|---|---|
+| `Root` | 3 × 0.2 × 3 at (0, 0.1, 0) | Placement on the decor grid |
+| `Body` | The plinth, its moulding and feet: fixed colours from the atlas | — |
+| `Cushion` | The velvet cushion under the cloche: **one part, one flat colour** | Clears its texture, sets `Color` to the species' `look.colour` (`Species.luau`) |
+| `Trim` | The plinth's bands, the cloche's foot ring and knob: one part, one flat colour | Clears its texture, sets `Color` to the species' second colour (PLACEHOLDER: `look.colour` darkened; a look, his) |
+| `Medal` | The keepsake: a thick round medal lying on the cushion, its **top face flat** and level | The species' **emblem** on its `Top` face (a `Decal` or `SurfaceGui`; drawn with its top toward −X, `DEVNOTES.md`) |
+| `Badge` | A plaque on the plinth's front, its **front (−Z) face flat** and vertical | The species' **name** on its `Front` face (a `SurfaceGui`, as `RoomPlaque`'s `Face`) |
+| `Glass` | The cloche over the cushion, one closed part, not colliding | May make it glass (as decor's `Glass`) |
+
+- Authored with `Cushion` crimson and `Trim` gold, so an untinted clone
+  reads as finished (the Vampire Count's). The two tinted parts are kept
+  apart from `Body` so a colour lands on them and nothing else (rule 7: a
+  part the code changes earns its own).
+- The emblems are images (`UI.md`), not geometry: until one exists the
+  `Medal` shows plain gold and the `Badge` blank.
+- `Medal`'s top and `Badge`'s front each one plane with nothing proud of
+  it, so a decal fills it; both a hair clear of every other face.
+- **Budget 800** triangles.
 
 ### Floor finishes (code only)
 
