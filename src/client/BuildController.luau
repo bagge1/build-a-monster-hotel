@@ -53,6 +53,7 @@ local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
 
 local Constants = require(ReplicatedStorage.Shared.Constants)
+local Contracts = require(ReplicatedStorage.Shared.Contracts)
 local Economy = require(ReplicatedStorage.Shared.Economy)
 local Format = require(ReplicatedStorage.Shared.Format)
 local Grid = require(ReplicatedStorage.Shared.Grid)
@@ -1898,12 +1899,29 @@ local function paintRoomView()
 		elseif rec.state == "Occupied" then " · a guest is in"
 		elseif rec.state == "Reserved" then " · a guest is coming"
 		else ""
-	status.Text = if rec.ready
-		then `Ready for guests · {rec.size} cells{state}`
-		else `Not ready: {rec.missingText}`
-	status.TextColor3 = if rec.ready then Ui.Colour.Good else Ui.Colour.Bad
 	local R = Constants.Rooms
 	local bars = rec.bars or { size = 0, furniture = 0, decor = 0 }
+	-- A.11.1: a "VIP" tag when the room is held for a VIP or meets a running contract's ask.
+	local vipTag = ""
+	local vip = State.data.vip
+	for _, c in if vip then vip.active else {} do
+		if c.room == tostring(rec.id) then
+			vipTag = " · 👑 held for your VIP"
+			state = ""
+			break
+		elseif
+			c.here
+			and c.state == "Accepted"
+			and c.type == rec.type
+			and Contracts.meets(c.needs, bars)
+		then
+			vipTag = " · 👑 meets your VIP's ask"
+		end
+	end
+	status.Text = if rec.ready
+		then `Ready for guests · {rec.size} cells{state}{vipTag}`
+		else `Not ready: {rec.missingText}`
+	status.TextColor3 = if rec.ready then Ui.Colour.Good else Ui.Colour.Bad
 	local function pct(v: number): string
 		return `+{math.floor(v * 100 + 0.5)}%`
 	end

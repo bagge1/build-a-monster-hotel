@@ -78,6 +78,7 @@ local DEFS: { [string]: Def } = {
 	Visit = { dir = "C2S", args = { "number" }, rate = 2 }, -- plot index: stand at that hotel's forecourt (the showcase, A.11.4)
 	Tutorial = { dir = "C2S", args = { "string" }, rate = 0.25 }, -- "Skip" | "Next"
 	Daily = { dir = "C2S", args = { "string", "number" }, rate = 0.25 }, -- "Claim" | "Reroll" | "Login", index
+	Vip = { dir = "C2S", args = { "string", "string" }, rate = 0.3 }, -- VIP contracts (A.11.1): "Accept" | "Swap" | "Ready" | "Cancel" an id, or "Request" a species (a Book page)
 	Code = { dir = "C2S", args = { "string" }, rate = 2 },
 	Boo = { dir = "C2S", args = { "number" }, rate = 0.3 }, -- hunter id
 	Settings = { dir = "C2S", args = { "string", "boolean" }, rate = 0.25 },

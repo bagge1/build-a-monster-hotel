@@ -36,6 +36,7 @@ local systems: { { Init: () -> (), Start: () -> () } } = {
 	require(Server.ProgressionService) :: any, -- rebirth and the Moon Tree, over all of the above and the chain
 	require(Server.StoreService) :: any, -- receipts, passes, boosts; after the systems it grants into
 	require(Server.DailyService) :: any, -- dailies, login, codes; pays by StoreService's income rate
+	require(Server.ContractService) :: any, -- VIP contracts (A.11.1): over the bus, guests, the build rules and the income rate
 	require(Server.HunterService) :: any, -- Hunter Night, over guests, residents and the bus
 	require(Server.EventService) :: any, -- the calendar's events, over the bus, guests and hunters
 	require(Server.NotifyService) :: any, -- notifications, from residents' offline cap and the calendar

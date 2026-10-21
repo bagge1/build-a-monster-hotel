@@ -1000,6 +1000,66 @@ and `execute_luau` only on `Test_Endless1021c`.
   Moonlit neon), their names and months, the title's name; whether a missed
   month comes back off-season (WAITING §2.38).
 
+## VIP contracts (GDD A.11.1)
+
+Built 2026-10-21 morning on A.11.1's scrutinized recommendations (his calls,
+WAITING §2.38; reversible PLACEHOLDERs, every number `Constants.Contracts`):
+the VIP an extra bus seat booked to the hotel, its room held from Ready; a
+spec drawn one bar above the hotel's best room of the type; the clock play
+time at the contract's own hotel, stopped from Ready; a missed contract gone
+and its slot drawn anew; at most 3 completed a UTC day; a Book page asks for
+a species for a swap. Souvenirs (A.11.3) are not built: the first contract of
+a species fires `ContractService.onSouvenir` and a stat only. Played by
+remotes and `execute_luau` only (no window focus) on `Test_VIP1021a`, two
+playtests.
+
+- [x] Specs: `contracts` (12 rules), all 163 green under Lune (every spec but
+  `data`).
+- [x] Shut below 2★: the panel reads "opens at 2★, your hotel is 1.5★"; at
+  3★ (`vipstars 3`) three offers drawn, Standard Room only (the only type
+  buildable then), each one bar above the start room's.
+- [!] A drawn offer became free money once a room was built for a twin
+  contract (Golden Skeleton, Decor 100 %): fixed, offers a room meets are
+  dropped and drawn anew (`Contracts.prune`, spec); seen in the second
+  playtest (the persisted offer 3 replaced on load).
+- [x] Accept → Ready refused while no room meets it ("No Standard Room meets
+  it yet", "…isn't free" while the tutorial Slime was in it); decor placed
+  by `PlaceDecor` (Record player, Blackout curtains) → Decor 100 %; Ready
+  held room 2 (plaque `State` Reserved); the clock stood at 60 s from Ready.
+- [x] The bus: the street's next bus drawn with 3 (no vacant room), arrived
+  with 4, the VIP last, stepping off at the east stop "VIP for oden" in gold
+  with its glow (client label read), straight to plot 3 (no browse), Queued
+  10 s, checked in by Front Desk staff into room 2, pay 12.5/s (Common ×
+  Golden 5 × Furniture bar 1.25 × VIP 2). The browsing Skeleton did not get
+  the held room.
+- [!] Completed on a happy stay (review 5): +$12.6K, "VIPs today 1/3", the
+  `VipDone` pop-up, stats `vipContracts`, `vipFirst_Skeleton` (the souvenir
+  stub), its slot drawn anew. The reward counted the VIP's own doubled pay
+  in the income: fixed (`baseRate`), and in the second playtest a Rare
+  Zombie (pay 24/s) paid exactly $18,000 = $10/s floor × 15 min × 2.
+- [x] Cancel ("Let the room go") and Ready again; Booked→Arriving→Staying,
+  played 2 s over the whole run.
+- [x] Missed: `vipclock 2600` then 100 → gone, stat `vipMissed`, not
+  re-listed, its slot drawn anew (offer 5).
+- [x] Book requests: Zombie (already offered, no swap), Vampire Count refused
+  "needs a 4★ hotel", Pumpkin Head and Ghost refused (room not buildable),
+  Mummy then Werewolf each took the last offer for a swap, then "No swaps
+  left today"; the Book's 👑 on Slime, Skeleton, Mummy, Zombie, Witch,
+  Werewolf.
+- [x] Daily cap: `vipdone 3` → Accept refused "new contracts tomorrow", the
+  panel's note and a dark Accept; the ledger (done 3, swaps 2, offers) came
+  back from the DataStore in the second playtest.
+- [?] The desk's "VIP ledger" prompt (F): prompts are not shown with Studio
+  in the background (no `PromptShown`); the server's answer, the `VipLedger`
+  Moment, opened the panel. Needs Studio in front.
+- [ ] The room view's "👑 meets your VIP's ask" / "held for your VIP" (build
+  mode, not opened by remotes); an unhappy VIP (no reward); a travel or a
+  rebirth while a room is held; a phone's layout; two players seeing another's VIP.
+- [A] The numbers (unlock 2★, 3 offers, 45 min, 3 a day, 15 min × rarity,
+  ×2 pay), the VIP extra seat's line in §4.3, how a reward is sized for a new
+  hotel ($10/s floor: $9K–18K at 1–3★), and whether an unhappy VIP should
+  forfeit (WAITING §2.38).
+
 ## August keeps
 
 - How the street, the lobby and the rooms look (every look is a night draft).
@@ -1050,3 +1110,4 @@ and `execute_luau` only on `Test_Endless1021c`.
 - 2026-10-21 08:01 The showcase (A.11.4) played by remotes on Test_Endless1021a: likes, weekly count, milestone, favourite, panel, daily visits; two-player items open.
 - 2026-10-21 08:06 Residents level up (A.11.6) played by remotes on Test_Endless1021b: XP at work, refusals, two level-ups with the Wing rate and efficiency measured, panel and badge, levels through a rebirth.
 - 2026-10-21 08:12 Deeper mutations (A.11.5) played by remotes on Test_Endless1021c: stacked residents' pay, scale and tint, the Book's stack and title, the month's mutation in March by the event clock, a Tiny bus guest; balance_model's guards flag the pay lines.
+- 2026-10-21 08:35 VIP contracts (A.11.1) played by remotes on Test_VIP1021a (two playtests): offered at 3★, accepted, a room furnished to the spec and held, the VIP an extra seat on the bus booked into room 2, completed with its reward; a missed one; the daily cap; Book requests and swaps. Two fixes (free offers pruned, the reward without the VIP's own pay). The desk prompt needs Studio in front.

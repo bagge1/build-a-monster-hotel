@@ -63,6 +63,12 @@ local function labelText(c: Configuration): (string, Color3)
 	local mutation = c:GetAttribute("Mutation") :: string?
 	local name = Mutations.prefix(c:GetAttribute("Size") :: string?, mutation)
 		.. (if sp then sp.name else "?")
+	-- A VIP of a contract (A.11.1): who it is booked to, in gold, whatever it is doing.
+	local vipFor = c:GetAttribute("VipFor") :: string?
+	if vipFor and not c:GetAttribute("Request") then
+		return `👑 VIP for {vipFor}\n{name}{if state == "Queued" then "  ❗" else ""}`,
+			Ui.Colour.Gold
+	end
 	if state == "Browsing" then
 		return `{name}\n{c:GetAttribute("Wish") or ""}`,
 			if sp and sp.rarity ~= "Common" then Ui.Colour.Gold else Ui.Colour.Text
@@ -98,6 +104,16 @@ end
 local function refreshDecor(d: Drawn)
 	if not d.model then
 		return
+	end
+	-- A VIP's glow (A.11.1: "a gold nameplate and a glow (code)").
+	local root = d.model.PrimaryPart
+	if root and d.config:GetAttribute("VipFor") and not root:FindFirstChild("VipGlow") then
+		local light = Instance.new("PointLight")
+		light.Name = "VipGlow"
+		light.Color = Ui.Colour.Gold
+		light.Range = 10
+		light.Brightness = 1.5
+		light.Parent = root
 	end
 	if d.label then
 		local text, colour = labelText(d.config)
@@ -170,7 +186,7 @@ local function add(c: Instance)
 	c:GetAttributeChangedSignal("T0"):Connect(function()
 		readPath(d)
 	end)
-	for _, a in { "State", "Request", "Wish", "Queue" } do
+	for _, a in { "State", "Request", "Wish", "Queue", "VipFor" } do
 		c:GetAttributeChangedSignal(a):Connect(function()
 			refreshDecor(d)
 		end)

@@ -409,6 +409,30 @@ Constants.Showcase = {
 	VisitDaily = 3, -- PLACEHOLDER: the daily request "Visit 3 hotels" (other players' lobbies)
 }
 
+--[[ A.11.1 VIP contracts, on the draft's scrutinized recommendations (his
+	calls, WAITING §2.38; reversible). Every value PLACEHOLDER. ]]
+Constants.Contracts = {
+	UnlockStars = 2, -- PLACEHOLDER: the front desk's VIP ledger opens at 2★
+	Offers = 3, -- PLACEHOLDER: offers in the ledger, counting the contracts taken from it at that hotel
+	Active = 1, -- PLACEHOLDER: contracts running at once (decision 5b) …
+	ActiveFromStars = 4, -- … and one more from 4★ …
+	ActiveMore = 2, -- … making two
+	Swaps = 1, -- PLACEHOLDER: free swaps of an offer a UTC day (+1 with VIP Lobby, as the daily reroll); a Book request costs one
+	Deadline = 45 * 60, -- PLACEHOLDER: seconds of play at the contract's own hotel (decision 3a)
+	DailyCap = 3, -- PLACEHOLDER: contracts completed per UTC day, all hotels together; none accepted past it
+	RewardMinutes = 15, -- PLACEHOLDER: minutes of income …
+	RarityReward = { Common = 1, Uncommon = 1.5, Rare = 2, Epic = 3, Legendary = 4, Mythic = 6 }, -- … × this by the VIP's rarity
+	-- PLACEHOLDER: the rarest VIP drawn at a rating (its whole stars); none below UnlockStars.
+	RarityByStars = { [2] = "Rare", [3] = "Epic", [4] = "Legendary", [5] = "Mythic" },
+	RarityWeights = { Common = 6, Uncommon = 5, Rare = 4, Epic = 3, Legendary = 2, Mythic = 1 }, -- PLACEHOLDER: a VIP's draw by rarity
+	Thresholds = { 0.5, 1.0 }, -- PLACEHOLDER: the first bar asked for (one set above the best room's now)
+	SecondBarStars = 3.5, -- PLACEHOLDER: a second bar is asked from this rating …
+	SecondThreshold = 0.5, -- … at this
+	MutationChance = 0.1, -- PLACEHOLDER: a VIP named with a look (Shadow, Golden, Glitched; never a season's or a month's)
+	VipPay = 2, -- PLACEHOLDER: the VIP's pay × this for its stay
+	ArrivalGrace = 150, -- seconds a VIP taken by the bus may take to step off before its contract is Accepted again
+}
+
 -- §6.2: number format.
 Constants.Format = {
 	Suffixes = { "", "K", "M", "B", "T", "Qa", "Qi" },

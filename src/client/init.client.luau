@@ -21,6 +21,7 @@ local systems: { { Init: () -> (), Start: () -> () } } = {
 	require(Client.ProgressionPanel) :: any,
 	require(Client.LivePanels) :: any,
 	require(Client.ShowcasePanel) :: any, -- the showcase (A.11.4)
+	require(Client.VipPanel) :: any, -- the VIP ledger (A.11.1)
 	require(Client.HunterRenderer) :: any,
 	require(Client.Sound) :: any,
 	require(Client.Pings) :: any,

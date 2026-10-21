@@ -240,6 +240,11 @@ local function buildPiece(
 		local till = root:FindFirstChild("Till")
 		if desk then
 			makePrompt(desk, "Check in", "Front Desk", Constants.Stay.CheckInHold, plot, "Desk", id)
+			-- The VIP ledger (A.11.1): its own key and a place under the check-in prompt.
+			local vip = makePrompt(desk, "VIP ledger", "Front Desk", 0, plot, "Vip", id)
+			vip.KeyboardKeyCode = Enum.KeyCode.F
+			vip.GamepadKeyCode = Enum.KeyCode.ButtonL1
+			vip.UIOffset = Vector2.new(0, 80)
 		end
 		if till then
 			makePrompt(till, "Collect", "Till", 0, plot, "Till", nil)

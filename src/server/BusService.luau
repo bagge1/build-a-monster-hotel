@@ -36,6 +36,12 @@
 	its rare guest told to the players on that street. A street nobody plays
 	on has no bus.
 
+	VIP CONTRACTS (A.11.1, his call WAITING §2.38, the recommendation built):
+	a contract's VIP rides its hotel's street's bus as an EXTRA SEAT, added
+	after the bus is sized, so it is not counted in the 40 % of vacant rooms
+	or the cap (its room is held, not Vacant, from Ready); it steps off
+	booked to that hotel (`setVips`: ContractService's source and arrival).
+
 	Published on `workspace`: `NextBusAt` and `BusArrivedAt` (server time), so
 	every client draws the bus and the countdown, and `BusStreets` (the
 	streets with a bus, "1,3").
@@ -74,6 +80,7 @@ type Passenger = {
 	happyFloor: number?,
 	tutorialFor: Player?,
 	street: number?,
+	vip: number?, -- a VIP contract's id (A.11.1): an extra seat, booked to `booked`
 }
 
 -- One street's next bus: drawn a bus ahead, so its rare guest can be announced.
@@ -96,6 +103,11 @@ local tutorialHotels: () -> { Player } = function()
 	return {}
 end
 local tutorialGuests: { [number]: Player } = {} -- guest id → the hotel the tutorial brought it for
+-- VIP contracts (A.11.1): who rides a street's next bus as an extra seat, and what a VIP does stepping off.
+local vipSource: (number) -> { Passenger } = function()
+	return {}
+end
+local vipArrival: (GuestService.Guest, Passenger) -> () = function() end
 
 local function line(street: number): Line
 	local l = lines[street]
@@ -148,6 +160,17 @@ end
 -- The hotels whose tutorial brings them Commons on the next bus (§11 1:45): TutorialService's.
 function BusService.setTutorialHotels(provider: () -> { Player })
 	tutorialHotels = provider
+end
+
+--[[ VIP contracts (A.11.1): `source(street)` gives the VIPs riding that
+	street's bus now (extra seats, each with `vip` and `booked`), and
+	`arrival(guest, passenger)` books one stepping off into its held room. ]]
+function BusService.setVips(
+	source: (number) -> { Passenger },
+	arrival: (GuestService.Guest, Passenger) -> ()
+)
+	vipSource = source
+	vipArrival = arrival
 end
 
 function BusService.onArrived(handler: (number) -> ())
@@ -351,6 +374,16 @@ local function stepOff(stop: StreetLayout.Stop, list: { Passenger }, first: numb
 			if p.tutorialFor then
 				tutorialGuests[g.id] = p.tutorialFor
 			end
+			if p.vip then
+				g.config:SetAttribute("Wish", nil)
+				g.onDecide = nil
+				local ok, err = pcall(vipArrival, g, p)
+				if not ok then
+					warn(`[bus] VIP: {err}`)
+					GuestService.leaveStreet(g)
+				end
+				return
+			end
 			local booked = p.booked
 			local offer = booked and booked.Parent and HotelService.vacantFor(booked, p.species)
 			if booked and offer then
@@ -457,6 +490,15 @@ local function arriveOn(street: number, now: number)
 			table.insert(list, extra)
 			table.remove(extraGuests, i)
 		end
+	end
+	-- VIPs of contracts (A.11.1): extra seats, after the bus was sized.
+	local ok2, vips = pcall(vipSource, street)
+	if ok2 then
+		for _, p in vips do
+			table.insert(list, p)
+		end
+	else
+		warn(`[bus] VIPs: {vips}`)
 	end
 	fireStreet(street, "Announce", "The Night Bus has arrived!", "Bus")
 	-- Half off at each stop (his ruling), the first stop's half rounded up.

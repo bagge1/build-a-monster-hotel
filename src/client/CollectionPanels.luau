@@ -302,6 +302,16 @@ local function drawBook()
 			rarityColour(sp.rarity)
 		)
 		title.Position = UDim2.fromOffset(10, 8)
+		-- A.11.1 (decision 4): ask for this species' VIP contract, for one of the day's swaps.
+		local vip = State.data.vip
+		if vip and vip.requestable and vip.requestable[sp.id] then
+			title.Size = UDim2.new(1, -66, 0, 22)
+			local ask = Ui.button(page, "RequestVip", "👑", UDim2.fromOffset(44, 44), function()
+				Net.send("Vip", "Request", sp.id)
+			end, Ui.Colour.Pumpkin)
+			ask.Position = UDim2.new(1, -50, 0, 4)
+			ask.TextSize = 22
+		end
 		local room = Pieces.get(sp.room)
 		local info = Ui.label(
 			page,

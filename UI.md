@@ -151,3 +151,23 @@ sizes and looks of the set, found or "·"), a `Seasons` line: the season's
 and the month's looks found (`Mutations.Seasonal`) and "stack ✓" once a
 stacked one (a size and a look) has been found. The Events panel names the
 month's mutation in a line of its own.
+
+### VIP ledger (`Vip`, `src/client/VipPanel.luau`)
+
+Built in code; GDD A.11.1 (the scrutinized recommendations, his calls in
+WAITING §2.38). Opened by the HUD's `VipButton` (left column) and the front
+desk's **VIP ledger** prompt (F, LB on a gamepad; the server answers with the
+`Moment` "VipLedger"). Everything drawn is the server's `vip` state section;
+the client sends only `Vip` with an action and an id (or a species).
+
+| Name | What | The code |
+|---|---|---|
+| `VipPanel` | A window, its `Body` a scrolling list: `Head` (VIPs hosted today of the cap, swaps left, how many at a time; below the unlock, the stars it opens at), `Note` (why none can be accepted now, "new contracts tomorrow"), the running contracts `Contract_<id>`, `OffersHead` and the offers `Offer_<id>`, `Hint` | Redrawn on every state send while open; the `Status` lines each second |
+| `Contract_<id>` | `Name` (👑, the VIP's look and species, its rarity), `Spec` (room type and bars asked), `Likes` (its preferences: a happy stay needs them), `Reward`, `Status` (play time left and the best room of the type now, or what Ready lacks; "Room held" and the next bus; on its way; staying), `Ready` (green when a ready, free room meets it) or `Cancel` ("Let the room go", while held) | `Ready` sends `Vip` "Ready"; the server holds the room and the clock stops |
+| `Offer_<id>` | `Name`, `Spec`, `Likes`, `Reward` (and the deadline), `Accept`, `Swap` | `Vip` "Accept" / "Swap" |
+| `VipDone` | A pop-up: `Text` (the VIP hosted, the cash, today's count), `Ok` | Opened by the `Moment` "VipDone" |
+
+Elsewhere: a Book page of a species the ledger can draw carries `RequestVip`
+(👑, top right; `Vip` "Request" with its id, one of the day's swaps). The room
+view's `Status` adds "👑 held for your VIP" or "👑 meets your VIP's ask". A
+VIP guest's label reads "👑 VIP for <owner>" in gold, with a gold glow.

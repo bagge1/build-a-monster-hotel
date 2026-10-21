@@ -104,6 +104,7 @@ export type Guest = {
 	requestsMissed: number,
 	happyFloor: number?, -- the tutorial's: a stay at least this happy (Appendix A.7)
 	tutorialFriend: boolean?, -- the tutorial Slime: moves in after 1 happy stay (§6.3)
+	vip: boolean?, -- a VIP booked by a contract (A.11.1): waits at the desk, its pay × Contracts.VipPay
 	pitches: { [number]: number }, -- user id -> plot index (§4.3)
 	wish: string?,
 	config: Configuration,
@@ -600,6 +601,15 @@ function GuestService.spawnBrowsing(
 	return g
 end
 
+--[[ A VIP of a contract (A.11.1): booked to `owner`'s hotel by the bus, it
+	waits at the desk as long as it takes and pays `VipPay` × for its stay;
+	every client draws "VIP for <name>" over it and a glow (`VipFor`). ]]
+function GuestService.markVip(g: Guest, owner: Player)
+	g.vip = true
+	g.config:SetAttribute("VipFor", owner.DisplayName)
+	g.config:SetAttribute("VipOwner", owner.UserId)
+end
+
 -- A guest no hotel took (or one the bus has no stop for) walks back to a stop and waits for the next bus.
 function GuestService.leaveStreet(g: Guest)
 	g.owner = nil
@@ -674,6 +684,9 @@ function GuestService.checkIn(player: Player, byStaff: boolean?, deskId: string?
 		Income.multiplier(player),
 		g.size
 	) * (if bonus then bonus.pay else 1)
+	if g.vip then
+		g.payRate *= Constants.Contracts.VipPay -- A.11.1: the VIP's pay for its stay
+	end
 	leaveQueue(player, g)
 	HotelService.setRoom(player, g.room, "Occupied", g.id)
 	g.state = "ToRoom"
@@ -910,7 +923,13 @@ local function tick()
 		elseif g.state == "Queued" then
 			-- The tutorial's guest waits as long as the new player needs (§11: the
 			-- tutorial never traps anyone, and its stay counts as happy).
-			if g.owner and not g.tutorialFriend and now - (g.deskSince or now) > S.DeskPatience then
+			-- A VIP (A.11.1) waits too: its room was held for it.
+			if
+				g.owner
+				and not g.tutorialFriend
+				and not g.vip
+				and now - (g.deskSince or now) > S.DeskPatience
+			then
 				-- Gave up waiting: a 1-star review, and the room is free again.
 				local player = g.owner
 				leaveQueue(player, g)
