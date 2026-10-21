@@ -19,6 +19,11 @@
 
 	Releasing a resident ("a holiday") gives Moon Shards by rarity.
 
+	LEVELS (A.11.6, `ResidentLevels`): each resident gains XP a minute at
+	work while the player plays (the Wing or a post at the hotel played), a
+	full bar is taken by **Level up** (`LevelUp`) for a price in its own Wing
+	rate, and a level raises its Wing earnings and its staff efficiency.
+
 	STAFF ARE SEEN WORKING (§4.6, §5.4, Appendix A.5): Room Service and
 	Housekeeping walk from their post to the room by the guests' hallways and
 	stairs (`GuestService.pathToDoor`), work at the door, and walk back; one
@@ -51,6 +56,7 @@ local StateService = require(ServerScriptService.Server.StateService)
 local Income = require(ServerScriptService.Server.Income)
 local BusService = require(ServerScriptService.Server.BusService)
 local Perks = require(ReplicatedStorage.Shared.Perks)
+local ResidentLevels = require(ReplicatedStorage.Shared.ResidentLevels)
 local Staff = require(ReplicatedStorage.Shared.Staff)
 local DevGrant = require(ServerScriptService.Server.DevGrant)
 
@@ -141,20 +147,30 @@ function ResidentService.staff(data: PlayerData.Data, role: string): { number }
 			local sp = Species.get(r.species)
 			table.insert(
 				out,
-				if sp and sp.staff == role
-					then Constants.Staff.BestEfficiency
-					else Constants.Staff.OtherEfficiency
+				(
+					if sp and sp.staff == role
+						then Constants.Staff.BestEfficiency
+						else Constants.Staff.OtherEfficiency
+				) * ResidentLevels.efficiency(ResidentLevels.level(r))
 			)
 		end
 	end
 	return out
 end
 
+-- A resident's efficiency in its role: best or other, times its level's (A.11.6).
 local function efficiencyOf(rec: PlayerData.ResidentRecord): number
 	local sp = Species.get(rec.species)
-	return if sp and sp.staff == rec.role
-		then Constants.Staff.BestEfficiency
-		else Constants.Staff.OtherEfficiency
+	return (
+		if sp and sp.staff == rec.role
+			then Constants.Staff.BestEfficiency
+			else Constants.Staff.OtherEfficiency
+	) * ResidentLevels.efficiency(ResidentLevels.level(rec))
+end
+
+-- A resident's own Wing rate at level 1 and no income multiplier (A.11.6's price is in it).
+local function wingRate(rec: PlayerData.ResidentRecord): number
+	return Economy.residentPay(rec.species, if rec.mutation ~= "" then rec.mutation else nil, 1)
 end
 
 -- An errand's attributes on its resident's Configuration, or none.
@@ -212,6 +228,7 @@ local function publish(player: Player)
 		c:SetAttribute("Species", r.species)
 		c:SetAttribute("Mutation", if r.mutation ~= "" then r.mutation else nil)
 		c:SetAttribute("Role", r.role)
+		c:SetAttribute("Level", ResidentLevels.level(r))
 		c:SetAttribute("Away", away)
 		c:SetAttribute("Hotel", if r.role ~= "" then r.hotel or data.location else nil)
 		if r.role ~= "" and not away and here(data, r) then
@@ -349,7 +366,9 @@ function ResidentService.rate(player: Player, data: PlayerData.Data): number
 	local total = 0
 	for _, r in data.residents do
 		if r.role == "" and r.campUntil <= os.time() then
-			total += Economy.residentPay(r.species, if r.mutation ~= "" then r.mutation else nil, m)
+			total += Economy.residentPay(r.species, if r.mutation ~= "" then r.mutation else nil, m) * ResidentLevels.wing(
+				ResidentLevels.level(r)
+			)
 		end
 	end
 	return total
@@ -568,9 +587,70 @@ local function runErrands(
 	end
 end
 
+--[[ XP for every resident at work while the player plays (A.11.6): in the
+	Wing, or on staff at the hotel being played; not in the Hunter Camp. A bar
+	that fills sends the panel again (its Level up button). ]]
+local function giveXp(player: Player, data: PlayerData.Data, seconds: number)
+	local filled = false
+	for _, r in data.residents do
+		if r.campUntil <= os.time() and (r.role == "" or here(data, r)) then
+			local level = ResidentLevels.level(r)
+			local before = ResidentLevels.xp(r)
+			r.xp = ResidentLevels.gain(level, before, seconds)
+			if
+				not ResidentLevels.ready(level, before)
+				and ResidentLevels.ready(level, r.xp :: number)
+			then
+				filled = true
+			end
+		end
+	end
+	if filled then
+		StateService.mark(player)
+	end
+end
+
+-- Takes a resident's next level when its bar is full, for its price (A.11.6 decision 3b).
+local function levelUp(player: Player, idNumber: number)
+	local data = PlayerData.get(player)
+	local rec = data and data.residents[tostring(idNumber)]
+	local sp = rec and Species.get(rec.species)
+	if not data or not rec or not sp then
+		return
+	end
+	local level = ResidentLevels.level(rec)
+	if level >= Constants.Residents.LevelCap then
+		Net.fire(player, "Refused", "LevelUp", "Already at the top level")
+		return
+	end
+	if not ResidentLevels.ready(level, ResidentLevels.xp(rec)) then
+		Net.fire(player, "Refused", "LevelUp", "Its bar isn't full yet: it learns by working")
+		return
+	end
+	local price = ResidentLevels.price(level, wingRate(rec))
+	if not PlayerData.spend(player, price) then
+		Net.fire(player, "Refused", "LevelUp", "Cash")
+		return
+	end
+	rec.level = level + 1
+	rec.xp = 0
+	Net.fire(
+		player,
+		"Moment",
+		"LevelUp",
+		{ id = idNumber, species = rec.species, level = rec.level }
+	)
+	Net.fire(player, "Toast", `{sp.name} is now level {rec.level}!`, "Unlock")
+	PlayerData.stat(player, "levelUps")
+	publish(player)
+end
+
 -- Staff at work, once a second.
+local lastTick = os.clock()
 local function staffTick()
 	local now = os.clock()
+	local step = math.min(now - lastTick, 5)
+	lastTick = now
 	for player, data in PlayerData.loaded() do
 		local hotel = HotelService.get(player)
 		if hotel then
@@ -604,6 +684,7 @@ local function staffTick()
 				timers[key] = if room.request then timers[key] or now else nil
 			end
 			runErrands(player, data, hotel, timers, now)
+			giveXp(player, data, step)
 			-- The Wing's income into the till.
 			local rate = ResidentService.rate(player, data)
 			if rate > 0 then
@@ -627,6 +708,7 @@ function ResidentService.Init()
 	folder.Parent = ReplicatedStorage
 	Net.on("Assign", assign)
 	Net.on("Release", release)
+	Net.on("LevelUp", levelUp)
 end
 
 function ResidentService.Start()
@@ -676,12 +758,14 @@ function ResidentService.Start()
 				role = r.role,
 				hotel = if r.role ~= "" then r.hotel or data.location else nil,
 				away = r.campUntil > os.time(),
-				pay = if sp
-					then Economy.residentPay(
-						r.species,
-						if r.mutation ~= "" then r.mutation else nil,
-						1
-					)
+				pay = if sp then wingRate(r) * ResidentLevels.wing(ResidentLevels.level(r)) else 0,
+				-- A.11.6: its level, the bar, and the next level's price.
+				level = ResidentLevels.level(r),
+				xp = math.floor(ResidentLevels.xp(r)),
+				need = ResidentLevels.need(ResidentLevels.level(r)),
+				ready = ResidentLevels.ready(ResidentLevels.level(r), ResidentLevels.xp(r)),
+				price = if sp
+					then ResidentLevels.price(ResidentLevels.level(r), wingRate(r))
 					else 0,
 			})
 		end
@@ -700,6 +784,26 @@ function ResidentService.Start()
 	DevGrant.register("resident", function(player, args)
 		local id = ResidentService.add(player, args[1] or "Slime", args[2])
 		return if id then `resident {id}` else "Wing full or no data"
+	end)
+	-- `xp <id> <amount>`: XP for a resident (A.11.6), to see its bar fill without hours of play; `xp <id>` reads it.
+	DevGrant.register("xp", function(player, args)
+		local data = PlayerData.get(player)
+		local rec = data and data.residents[args[1] or "1"]
+		if not data or not rec then
+			return "no such resident"
+		end
+		local level = ResidentLevels.level(rec)
+		if args[2] then
+			rec.xp = math.min(
+				ResidentLevels.need(level),
+				ResidentLevels.xp(rec) + (tonumber(args[2]) or 0)
+			)
+			StateService.mark(player)
+		end
+		return `level {level} xp {ResidentLevels.xp(rec)}/{ResidentLevels.need(level)} price {ResidentLevels.price(
+			level,
+			wingRate(rec)
+		)} wing {wingRate(rec) * ResidentLevels.wing(level)} eff {efficiencyOf(rec)}`
 	end)
 	DevGrant.register("friend", function(player, args)
 		local data = PlayerData.get(player)

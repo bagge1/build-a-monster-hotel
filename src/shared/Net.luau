@@ -70,6 +70,7 @@ local DEFS: { [string]: Def } = {
 	Pitch = { dir = "C2S", args = { "number" }, rate = 0.25 }, -- guest id
 	Assign = { dir = "C2S", args = { "number", "string" }, rate = 0.25 }, -- resident id, role ("" = the Wing)
 	Release = { dir = "C2S", args = { "number" }, rate = 0.5 },
+	LevelUp = { dir = "C2S", args = { "number" }, rate = 0.5 }, -- resident id: take its next level (A.11.6)
 	Rebirth = { dir = "C2S", rate = 2 },
 	Travel = { dir = "C2S", args = { "number" }, rate = 1 }, -- a location: travel to its hotel, or open it (§6.4)
 	MoonTree = { dir = "C2S", args = { "string" }, rate = 0.25 },

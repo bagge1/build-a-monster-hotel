@@ -107,6 +107,8 @@ export type ResidentRecord = {
 	role: string,
 	campUntil: number,
 	hotel: number?,
+	level: number?, -- A.11.6: its level (nil reads as 1), kept through a rebirth with the resident
+	xp: number?, -- toward the next level (ResidentLevels)
 }
 --[[ A hotel of the chain that is not being played (§6.4): its own fields as
 	the played hotel keeps them in `Data`, its rating when it was left, and

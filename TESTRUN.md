@@ -934,6 +934,35 @@ PLACEHOLDER. Played by remotes and `execute_luau` only (no window focus) on
 - [A] The four milestone cosmetics' look (blockouts: the sign frame in four
   colours) and the panel's look.
 
+## Residents level up (GDD A.11.6)
+
+Built 2026-10-21 morning (night brief step 9, piece 2) on A.11.6's
+scrutinized recommendation: one time-based XP scale, the bar then a cash
+price in the resident's own Wing rate, cap 10 for all, Wing earnings and
+staff efficiency per level; levels kept through a rebirth (his call, WAITING
+§2.38: the draft's, reversible). Every number `Constants.Residents.Level*`,
+PLACEHOLDER. Played by remotes and `execute_luau` only on `Test_Endless1021b`.
+
+- [x] Specs: `levels` (level 1 by default, longer bars, the bar stops full,
+  nothing past the cap, levels never lower pay or efficiency, each level
+  pays back slower) under Lune.
+- [x] XP at work: a Slime in the Wing and a Ghost on Housekeeping each 0.10
+  XP in 6 s (1 a minute); the Ghost's efficiency 1.0 (best role).
+- [x] Level up refused with the bar not full; refused "Cash" when short
+  (the Ghost's 450 with $214).
+- [x] The Slime's bar filled (`xp 1 100` stops at 20/20) and Level up paid
+  $150 (10 min of its 0.25/s): Lv 2, XP 0/40, its Wing income 0.25 →
+  0.275/s measured (AutoCollect), the next price $330.
+- [x] The Ghost to Lv 2: efficiency 1.0 → 1.03, its Wing rate 0.825/s, the
+  next price $991.
+- [x] The Residents panel: each row's `Level` ("Lv 2", "0/40 XP", the bar,
+  "Working…"); `LevelBadge` "Lv 2" over the Slime, "Lv 1" over the Ghost.
+- [x] A rebirth: both residents kept at Lv 2 with their XP.
+- [ ] The cap reached in a real run (held by the spec only), and a level's
+  staff effect seen in the rating's coverage and Security's scare rate.
+- [A] The badge's and the row's look; whether levels go through a rebirth
+  (WAITING §2.38).
+
 ## August keeps
 
 - How the street, the lobby and the rooms look (every look is a night draft).
@@ -982,3 +1011,4 @@ PLACEHOLDER. Played by remotes and `execute_luau` only (no window focus) on
 - 2026-10-21 04:05 Built rooms (Test_Rooms1021a-f): stages 1-2 by remotes (schema 6, the start room, walls refused where A.12 says, a second room typed and furnished, guests walked through doors to the beds with the bars' pay, Comfort only rising, cleaning at the door, each chain hotel its own samples, the tutorial with the start room); stage 3 by real mouse and keys and a simulated phone (walls drawn by drag and tap, Half cells, Door, Remove, the type list, the Bed, the room view); stage 4 the clean-up, auto walls on a tile beside a room, a rebirth. Fixed: attachments set before parenting, location-0 furniture refused, Frostfang's start room, the phone's room view off the top. No errors of the game's own.
 - 2026-10-21 07:52 The world (Test_World1021a, by remotes, no window focus): three streets, Travel moving the live plot and the character, the chain drawn static on the other streets, a bus per street with its own family, Hunter Night on street 2, sightlines from street-end plots measured, parts and lights measured; fixed: guests stranded on a street left without a bus, far street lamps' lights. No pictures (Studio drew no frames). No errors of the game's own.
 - 2026-10-21 08:01 The showcase (A.11.4) played by remotes on Test_Endless1021a: likes, weekly count, milestone, favourite, panel, daily visits; two-player items open.
+- 2026-10-21 08:06 Residents level up (A.11.6) played by remotes on Test_Endless1021b: XP at work, refusals, two level-ups with the Wing rate and efficiency measured, panel and badge, levels through a rebirth.

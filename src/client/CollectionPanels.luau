@@ -93,7 +93,7 @@ local function drawResidents()
 		local sp = Species.get(r.species)
 		if sp then
 			local row =
-				Ui.frame(list, `R_{r.id}`, UDim2.new(1, -10, 0, 96), nil, Ui.Colour.PanelLight)
+				Ui.frame(list, `R_{r.id}`, UDim2.new(1, -10, 0, 140), nil, Ui.Colour.PanelLight)
 			row.LayoutOrder = i
 			Ui.corner(row, 12)
 			local mutation = if r.mutation ~= "" then Mutations.ById[r.mutation].name .. " " else ""
@@ -111,7 +111,65 @@ local function drawResidents()
 				rarityColour(sp.rarity)
 			)
 			name.Position = UDim2.fromOffset(10, 4)
-			local roles = Ui.frame(row, "Roles", UDim2.new(1, -20, 0, 56), UDim2.fromOffset(10, 34))
+			-- A.11.6: its level, the XP bar, and Level up once the bar is full.
+			local lv = Ui.frame(row, "Level", UDim2.new(1, -20, 0, 40), UDim2.fromOffset(10, 32))
+			lv.BackgroundTransparency = 1
+			local atCap = r.level >= Constants.Residents.LevelCap
+			local lvText = Ui.label(
+				lv,
+				"Value",
+				if atCap then `Lv {r.level} (top)` else `Lv {r.level}`,
+				UDim2.fromOffset(90, 40),
+				18,
+				Ui.Colour.Gold
+			)
+			lvText.Position = UDim2.fromOffset(0, 0)
+			local track = Ui.frame(
+				lv,
+				"Track",
+				UDim2.new(1, -310, 0, 14),
+				UDim2.new(0, 96, 0.5, -7),
+				Ui.Colour.Ink
+			)
+			Ui.corner(track, 7)
+			local fill = Ui.frame(
+				track,
+				"Fill",
+				UDim2.fromScale(
+					if atCap or r.need <= 0 then 1 else math.clamp(r.xp / r.need, 0, 1),
+					1
+				),
+				nil,
+				if r.ready or atCap then Ui.Colour.Gold else Ui.Colour.Teal
+			)
+			Ui.corner(fill, 7)
+			local xpText = Ui.label(
+				lv,
+				"Xp",
+				if atCap then "" else `{r.xp}/{r.need} XP`,
+				UDim2.fromOffset(90, 40),
+				14,
+				Ui.Colour.Muted
+			)
+			xpText.Position = UDim2.new(1, -210, 0, 0)
+			local up = Ui.button(
+				lv,
+				"LevelUp",
+				if atCap
+					then "Top level"
+					elseif r.ready then `Level up {Format.cash(r.price)}`
+					else "Working…",
+				UDim2.fromOffset(116, 40),
+				function()
+					if r.ready then
+						Net.send("LevelUp", r.id)
+					end
+				end,
+				if r.ready then Ui.Colour.Good else Ui.Colour.Panel
+			)
+			up.Position = UDim2.new(1, -116, 0, 0)
+			fitText(up)
+			local roles = Ui.frame(row, "Roles", UDim2.new(1, -20, 0, 56), UDim2.fromOffset(10, 78))
 			roles.BackgroundTransparency = 1
 			Ui.list(roles, Enum.FillDirection.Horizontal, 4)
 			-- Seven roles and Holiday share the row's width, so a phone's narrow

@@ -106,6 +106,36 @@ local function add(c: Instance, plotIndex: number)
 	)
 end
 
+--[[ The level over a resident's head (A.11.6): "Lv n", gold at the cap. A
+	republish replaces the Configuration, and with it the model and this. ]]
+local function levelBadge(m: Model, level: number)
+	local cf, size = m:GetBoundingBox()
+	local anchor = m.PrimaryPart or m:FindFirstChildWhichIsA("BasePart", true)
+	if not anchor then
+		return
+	end
+	local bb = Instance.new("BillboardGui")
+	bb.Name = "LevelBadge"
+	bb.Adornee = anchor
+	bb.Size = UDim2.fromOffset(64, 24)
+	bb.StudsOffsetWorldSpace = Vector3.new(0, cf.Position.Y + size.Y / 2 - anchor.Position.Y + 1, 0)
+	bb.MaxDistance = 60
+	bb.LightInfluence = 0
+	local l = Ui.label(
+		bb,
+		"Value",
+		`Lv {level}`,
+		UDim2.fromScale(1, 1),
+		16,
+		if level >= Constants.Residents.LevelCap then Ui.Colour.Gold else Ui.Colour.Text
+	)
+	l.TextXAlignment = Enum.TextXAlignment.Center
+	l.BackgroundColor3 = Ui.Colour.Ink
+	l.BackgroundTransparency = 0.3
+	Ui.corner(l, 8)
+	bb.Parent = m
+end
+
 local function remove(c: Instance)
 	local d = drawn[c :: Configuration]
 	if d then
@@ -182,6 +212,7 @@ local function frame(dt: number)
 					c:GetAttribute("Mutation") :: string?
 				)
 				if m then
+					levelBadge(m, c:GetAttribute("Level") :: number? or 1)
 					m.Parent = workspace:FindFirstChild("ClientGuests") or workspace
 					d.model = m
 					d.key = key

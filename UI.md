@@ -133,3 +133,13 @@ index) and `Equip`.
 | `ShowcasePanel` | A window, its `Body` a scrolling list: `Head` (your lifetime and weekly likes, the next milestone), `Hint` (how long until you may like today, or how liking works), one row `Hotel_<plot index>` per hotel played on the server, most liked this week first | Redrawn on every state send while open |
 | `Hotel_<i>` | `Name` (rank, the owner's hotel, "★ Street Favourite" for its street's weekly favourite), `Likes` (its street, likes this week, in all, "you liked it today"), `Visit` ("Yours" on your own) | `Visit` sends `Visit`; the server stands you at that hotel's forecourt and the window closes |
 | `ShowcaseMilestone` | A pop-up: `Text` (the likes reached and the sign cosmetic earned), `Wear` | Opened by the `Moment` "LikeMilestone"; `Wear` sends `Equip` "Sign" |
+
+### Residents: levels (`Panels`, `ResidentsPanel`, `src/client/CollectionPanels.luau`)
+
+GDD A.11.6. Each resident's row `R_<id>` carries, under its `Name` and over
+its `Roles`, a `Level` row; the resident's model carries a `LevelBadge`.
+
+| Name | What | The code |
+|---|---|---|
+| `Level` | `Value` ("Lv n", "(top)" at the cap), `Track` with `Fill` (the XP bar, gold when full), `Xp` ("x/y XP"), `LevelUp` ("Level up $price" when the bar is full, else "Working…" or "Top level") | `LevelUp` sends `LevelUp` with the resident's id; the server checks the bar, the cap and the cash |
+| `LevelBadge` | A BillboardGui over each resident in the Wing and at work: "Lv n", gold at the cap | `ResidentRenderer`, from the Configuration's `Level` |

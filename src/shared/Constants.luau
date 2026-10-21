@@ -266,6 +266,13 @@ Constants.Residents = {
 	WingCapacity = 6, -- capacity 6 at start (§4.6)
 	WingPassSlots = 6, -- Resident Wing+ (§10.2)
 	TutorialFriendship = 1, -- the tutorial Slime needs 1 (§6.3)
+	-- A.11.6 residents level up (night brief step 9): every value below PLACEHOLDER.
+	LevelCap = 10, -- PLACEHOLDER: one cap for every rarity (decision 2)
+	LevelWing = 0.10, -- PLACEHOLDER: Wing earnings +10 % a level above 1
+	LevelEfficiency = 0.03, -- PLACEHOLDER: staff efficiency +3 % a level above 1
+	LevelXpPerMinute = 1, -- PLACEHOLDER: XP a minute at work while the player plays, in the Wing or at a post alike
+	LevelXpBar = 20, -- PLACEHOLDER: the bar from level L to L+1 is this × L XP (900 to the cap)
+	LevelPriceMinutes = 10, -- PLACEHOLDER: level L to L+1 costs this × L minutes of the resident's own Wing rate
 }
 
 Constants.Staff = {
