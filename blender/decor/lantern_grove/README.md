@@ -17,19 +17,22 @@ piece** through `emblem()`. There are glows on three pieces.
 
 | Model | Squares, layer | What | Glows | Top | Triangles |
 |---|---|---|---|---|---|
-| `Decor_LanternGrove_StainedGlass` | 2 x 1, Wall | A round stained-glass window at eye level (2.6 to 6.5, centre 4.55): the crest large over a dusk bayou (plum sky, the moon, teal water, two lily pads, a lotus, two fireflies) in a moulded round frame (dark cypress, cypress, brass: three stepped rings), Spanish moss draped over its top; a firefly jar hung from a brass bracket either side | `Glow_Cold_1` (the moon), `Glow_Warm_1`, `_2` (fireflies), `_3`, `_4` (jars) | 6.55 | 1,416 |
-| `Decor_LanternGrove_Lamp` | 1 x 1, Floor | A dragonfly floor lamp: a lily-pad foot, a brass reed stem with two leaves, an eight-sided shade of warm glass with the crest on four of its panels (heads up the slope: from above four dragonflies round a lotus bud), a brass rim and cap | `Glow_Warm_1` (the whole shade) | 5.82 | 1,128 |
-| `Decor_LanternGrove_Gramophone` | 1 x 1, Floor | A cypress gramophone on brass ball feet: a plum-velvet front in a dark frame with the crest, a brass band under the lid, a brass turntable with a record and tonearm, a flower horn (brass outside, lotus pink inside) with a brass dragonfly perched on its rim | — | 4.85 | 1,348 |
-| `Decor_LanternGrove_Pirogue` | 2 x 1, Floor | A cypress pirogue (the bayou's flat-bottomed canoe) as a planter: moss to its light gunwales, a lotus, two lily pads, cattails with a firefly; a firefly jar hung from a crooked pole over the bow; the crest on both sides and on the bow's deck | `Glow_Warm_1` (the jar), `_2` (the firefly) | 3.59 | 1,436 |
-| `Decor_LanternGrove_Rug` | 3 x 2, Rug | Teal water in a rattan band and a dark cypress edge, a great lily pad (its notch to the front right) with the crest large (2.0 long, its head away from the door) inside a pale ripple, a lotus in each corner | — | 0.12 | 832 |
+| `Decor_LanternGrove_StainedGlass` | 2 x 1, Wall | A round stained-glass window at eye level (2.6 to 6.5, centre 4.55): the crest large over a dusk bayou (plum sky, the moon, teal water, two lily pads, a lotus, two fireflies) in a moulded round frame (dark cypress, cypress, brass: three stepped rings), a moss trim lying along the frame's top (15 to 165 degrees, tufts on the frame, clear of the glass); a firefly jar hung from a brass bracket either side, its light showing round its cap from above | `Glow_Cold_1` (the moon), `Glow_Warm_1`, `_2` (fireflies), `_3`, `_4` (jars) | 6.52 | 1,424 |
+| `Decor_LanternGrove_Lamp` | 1 x 1, Floor | A dragonfly floor lamp: a lily-pad foot, a brass reed stem with two leaves, an eight-sided shade of warm glass, a brass rim; one crest, large (1.0 across), lying on a plum lid in a raised brass rim on the shade's top: from above a pale dragonfly on dusk in a ring of lamplight | `Glow_Warm_1` (the whole shade) | 5.3 | 572 |
+| `Decor_LanternGrove_Gramophone` | 1 x 1, Floor | A cypress gramophone on brass ball feet: a plum-velvet front in a dark frame with the crest, a brass band under the lid, a brass turntable with a record and tonearm, a flower horn (brass outside, pale pink at the mouth deepening to a velvet throat) with the crest (0.72 across, outlined in dark cypress) perched on its rim | — | 4.86 | 1,496 |
+| `Decor_LanternGrove_Pirogue` | 2 x 1, Floor | A cypress pirogue (the bayou's flat-bottomed canoe) as a planter, resting 0.3 up on a cradle of two dark cypress stands: light moss to its gunwales, a lotus, two dark lily pads (the crest, 0.84 across, lying on the larger), cattails with a firefly; a firefly jar hung from a crooked pole well inside the bow, its light showing round its cap from above; the crest on both sides | `Glow_Warm_1` (the jar), `_2` (the firefly) | 3.54 | 1,488 |
+| `Decor_LanternGrove_Rug` | 3 x 2, Rug | Teal water in a rattan band and a dark cypress edge, a great lily pad (its notch to the front right, starting 0.95 out from the middle, clear of the crest) with the crest large (2.0 long, its head away from the door, outlined in dark cypress) inside a pale ripple, a lotus in each corner | — | 0.12 | 980 |
 
 Richer than the Spa's shop decor by intent: brass trim on every piece, the
 crest repeating, glows on three. From the raised build camera
 (`review/raised.png`) every piece reads by silhouette and colour; straight
-down at a phone's size (`review/topdown_phone.png`) the rug and its
-dragonfly, the lamp's glowing octagon with its four dragonflies, the
-gramophone's pink horn mouth and the pirogue's boat shape read; the window,
-on the wall, is a line.
+down at a phone's size (`review/topdown_phone.png`) the rug and its outlined
+dragonfly, the lamp's plum lid and crest in its ring of light, the
+gramophone's pink horn mouth round a dark throat with the outlined crest on
+its rim, and the pirogue's light moss, dark pads, crest, lotus and lit jar
+read; the window, on the wall, is a line. The outline (`DRAGONFLY_LIT`, a dark
+cypress silhouette 0.07 wider) is used where the crest lies on a ground of its
+own colours (the rug's pad, the horn's brass rim).
 
 **The `Pieces` rows the code session must add** (none exist; src/ was not
 touched): each `id` `LanternGrove_<Piece>`, `set = "LanternGrove"`,
@@ -53,9 +56,28 @@ gramophone's dark lid is under the horn and the turntable).
 
 ## Not done
 
-- **A blind review** (skill `blind-review`): not run. Claude's own look after
-  the first sheets made the pirogue's side crests larger (0.3 to 0.34: they
-  read as smudges).
+- **The blind review** (2026-10-21, context-free, both location sets):
+  confirmed and fixed in `tools/build_rare_decor.py` the same day:
+  1. From above on a phone the set vanished in its low-contrast palette: the
+     crest outlined on the rug and the horn, one large crest on the lamp's
+     plum lid in its ring of light, the horn's throat deepened to velvet, the
+     pirogue's moss lighter and its pads dark with the crest on one, the
+     jars' caps narrower so their light shows from above (`grove_jar`).
+  2. The pirogue's hull ended in a V on the floor with no stand: it rests on
+     a cradle of two stands.
+  3. The window's moss was a lumpy blob over the frame: a trim along the
+     frame's top.
+  4. The rug's lily-pad notch ran into the dragonfly's tail: the notch starts
+     0.95 out and points away from it.
+  5. The lamp shade carried four small dragonflies: one crest, larger.
+  6. The pirogue's jar arm reached past the hull's end: pole and jar stand
+     well inside the bow.
+  Not changed, his call: the lamp and the gramophone looking ordinary
+  beyond the fixes above. Before the review, Claude's own look had made the
+  pirogue's side crests larger (0.3 to 0.34: they read as smudges).
+- Triangles near the 1,500 budget (gramophone 1,496, pirogue 1,488, window
+  1,424): the pirogue's gunwales have 9 sections and its pole 5 sides to pay
+  for the cradle.
 - Anything in Studio: the import, `import_fixup.luau`, how the glows look
   (the lamp's whole shade is a `Warm` glow: Neon in Studio).
 - His look: the set, its theme, each piece and the crest are proposals.

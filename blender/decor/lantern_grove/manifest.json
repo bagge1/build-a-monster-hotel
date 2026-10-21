@@ -305,15 +305,15 @@
     "Body": {
      "centre": [
       0.0,
-      4.5755,
-      0.7372
+      4.5595,
+      0.7326
      ],
      "size": [
-      4.9511,
-      3.951,
-      0.7255
+      4.9696,
+      3.919,
+      0.7348
      ],
-     "triangles": 1280,
+     "triangles": 1288,
      "collide": false
     },
     "Glow_Cold_1": {
@@ -361,13 +361,13 @@
     "Glow_Warm_3": {
      "centre": [
       -2.3,
-      4.79,
+      4.82,
       0.55
      ],
      "size": [
-      0.2956,
+      0.3141,
       0.42,
-      0.2956
+      0.3141
      ],
      "triangles": 28,
      "collide": false
@@ -375,24 +375,24 @@
     "Glow_Warm_4": {
      "centre": [
       2.3,
-      4.79,
+      4.82,
       0.55
      ],
      "size": [
-      0.2956,
+      0.3141,
       0.42,
-      0.2956
+      0.3141
      ],
      "triangles": 28,
      "collide": false
     }
    },
    "attachments": {},
-   "triangles": 1416,
+   "triangles": 1424,
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "a round stained-glass window at eye level (2.6 to 6.5): the crest (the dragonfly, pale wings and a brass body) large over a dusk bayou (a plum sky, the moon Glow_Cold_1, teal water, lily pads, a lotus, fireflies Glow_Warm_1, _2) in a moulded round frame (dark cypress, cypress, brass) under draped moss; a firefly jar hung either side (Glow_Warm_3, _4)",
+   "note": "a round stained-glass window at eye level (2.6 to 6.5): the crest (the dragonfly, pale wings and a brass body) large over a dusk bayou (a plum sky, the moon Glow_Cold_1, teal water, lily pads, a lotus, fireflies Glow_Warm_1, _2) in a moulded round frame (dark cypress, cypress, brass), a moss trim on its top; a firefly jar hung either side (Glow_Warm_3, _4)",
    "decor": {
     "fw": 2,
     "fd": 1,
@@ -407,8 +407,8 @@
     "w": 2,
     "d": 1,
     "layer": "Wall",
-    "height": 6.55,
-    "model_top": 6.551,
+    "height": 6.52,
+    "model_top": 6.519,
     "set": "LanternGrove",
     "found": true,
     "location": 3,
@@ -453,26 +453,26 @@
     "Body": {
      "centre": [
       0.0073,
-      2.91,
+      2.65,
       0.0034
      ],
      "size": [
       1.943,
-      5.82,
+      5.3,
       1.9403
      ],
-     "triangles": 1072,
+     "triangles": 516,
      "collide": false
     },
     "Glow_Warm_1": {
      "centre": [
       0.0,
-      4.95,
+      4.875,
       0.0
      ],
      "size": [
       1.8478,
-      0.8,
+      0.65,
       1.8478
      ],
      "triangles": 44,
@@ -480,11 +480,11 @@
     }
    },
    "attachments": {},
-   "triangles": 1128,
+   "triangles": 572,
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "a dragonfly floor lamp: a lily-pad foot, a brass reed stem with two leaves, an eight-sided shade of warm glass (Glow_Warm_1) with the crest (a brass and pale dragonfly) on four panels, a brass rim, a brass cap and a lotus bud",
+   "note": "a dragonfly floor lamp: a lily-pad foot, a brass reed stem with two leaves, an eight-sided shade of warm glass (Glow_Warm_1), a brass rim; the crest (the dragonfly, pale wings and a brass body, 1.0 across) lying on a plum lid in a raised brass rim on the shade's top",
    "decor": {
     "fw": 1,
     "fd": 1,
@@ -499,8 +499,8 @@
     "w": 1,
     "d": 1,
     "layer": "Floor",
-    "height": 5.82,
-    "model_top": 5.82,
+    "height": 5.3,
+    "model_top": 5.3,
     "set": "LanternGrove",
     "found": true,
     "location": 3,
@@ -545,24 +545,24 @@
     "Body": {
      "centre": [
       0.056,
-      2.4238,
-      0.0199
+      2.4283,
+      0.0757
      ],
      "size": [
       1.952,
-      4.8476,
-      1.8798
+      4.8566,
+      1.9913
      ],
-     "triangles": 1336,
+     "triangles": 1484,
      "collide": false
     }
    },
    "attachments": {},
-   "triangles": 1348,
+   "triangles": 1496,
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "a cypress gramophone on brass ball feet: a plum-velvet front in a dark frame with the crest (the dragonfly), a brass band under the lid, a brass turntable with a record and tonearm, a flower horn (brass outside, lotus pink inside) with a brass dragonfly perched on its rim",
+   "note": "a cypress gramophone on brass ball feet: a plum-velvet front in a dark frame with the crest (the dragonfly), a brass band under the lid, a brass turntable with a record and tonearm, a flower horn (brass outside, pink at the mouth deepening to a velvet throat) with the crest perched on its rim, outlined in dark cypress",
    "decor": {
     "fw": 1,
     "fd": 1,
@@ -577,8 +577,8 @@
     "w": 1,
     "d": 1,
     "layer": "Floor",
-    "height": 4.85,
-    "model_top": 4.848,
+    "height": 4.86,
+    "model_top": 4.857,
     "set": "LanternGrove",
     "found": true,
     "location": 3,
@@ -623,21 +623,21 @@
     "Body": {
      "centre": [
       0.0,
-      1.795,
+      1.7681,
       0.0
      ],
      "size": [
       5.0,
-      3.59,
+      3.5362,
       1.68
      ],
-     "triangles": 1372,
+     "triangles": 1424,
      "collide": false
     },
     "Glow_Warm_2": {
      "centre": [
       1.7919,
-      2.9135,
+      3.2135,
       0.1771
      ],
      "size": [
@@ -650,25 +650,25 @@
     },
     "Glow_Warm_1": {
      "centre": [
-      -2.12,
-      2.96,
+      -1.74,
+      2.95,
       0.05
      ],
      "size": [
-      0.2956,
+      0.3141,
       0.42,
-      0.2956
+      0.3141
      ],
      "triangles": 28,
      "collide": false
     }
    },
    "attachments": {},
-   "triangles": 1436,
+   "triangles": 1488,
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "a cypress pirogue as a planter: moss to its light gunwales, a lotus, two lily pads, cattails with a firefly (Glow_Warm_2); a firefly jar (Glow_Warm_1) hung from a crooked pole over the bow; the crest (the dragonfly) on both sides and on the bow's deck",
+   "note": "a cypress pirogue as a planter, resting on a cradle of two dark cypress stands: light moss to its gunwales, a lotus, two dark lily pads, cattails with a firefly (Glow_Warm_2); a firefly jar (Glow_Warm_1) hung from a crooked pole inside the bow; the crest (the dragonfly) on both sides and lying on the larger pad",
    "decor": {
     "fw": 2,
     "fd": 1,
@@ -683,8 +683,8 @@
     "w": 2,
     "d": 1,
     "layer": "Floor",
-    "height": 3.59,
-    "model_top": 3.59,
+    "height": 3.54,
+    "model_top": 3.536,
     "set": "LanternGrove",
     "found": true,
     "location": 3,
@@ -729,20 +729,20 @@
     "Body": {
      "centre": [
       0.0,
-      0.0575,
+      0.062,
       0.0
      ],
      "size": [
       9.0,
-      0.115,
+      0.124,
       6.0
      ],
-     "triangles": 820,
+     "triangles": 968,
      "collide": false
     }
    },
    "attachments": {},
-   "triangles": 832,
+   "triangles": 980,
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
@@ -762,7 +762,7 @@
     "d": 2,
     "layer": "Rug",
     "height": 0.12,
-    "model_top": 0.115,
+    "model_top": 0.124,
     "set": "LanternGrove",
     "found": true,
     "location": 3,

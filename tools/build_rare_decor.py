@@ -635,6 +635,21 @@ def wave_band(x0, x1, yc, amp, th, k, ph, n=9):
     return bot + list(reversed(top))
 
 
+def curtain(x0, x1, base, amp, k, ph, lo, hi, n=7):
+    """One layer of an aurora's curtain: from lo to hi above a wave (base, amp, k cycles, phase ph) from x0
+    to x1, thinning to points at both ends; a layer reaching high (hi > 0.3) has a ragged top, its rays."""
+    top, bot = [], []
+    for i in range(n + 1):
+        f = i / n
+        x = x0 + (x1 - x0) * f
+        y = base + amp * math.sin(2 * math.pi * k * f + ph)
+        env = math.sin(math.pi * f) ** 0.5
+        rays = 1 + (0.08 * math.sin(2 * math.pi * 3.5 * f + ph) if hi > 0.3 else 0)
+        bot.append((x, y + lo * env))
+        top.append((x, y + max(lo + 0.03, hi * rays) * env))
+    return bot + list(reversed(top[1:-1]))
+
+
 def cone(part, p0, p1, r0, r1, col, n=8):
     """A tapered rod from p0 (radius r0) to p1 (radius r1)."""
     p0, p1 = Vector(p0), Vector(p1)
@@ -681,15 +696,22 @@ def loft(part, sections, cols):
 # One crest on every piece: the Frostfang, a wolf's head seen from the front (tall pointed ears, a ruff of
 # three spikes a cheek, a long muzzle), gold with a snow mask, inner ears and dark eyes and nose.
 
-WOLF_R = [(0.0, 0.50), (0.16, 0.56), (0.42, 1.05), (0.62, 0.50), (0.80, 0.42), (1.00, 0.12), (0.78, 0.04),
-          (0.94, -0.24), (0.66, -0.28), (0.72, -0.52), (0.44, -0.52), (0.26, -0.86), (0.13, -1.0), (0.0, -1.02)]
-WOLF_MASK_R = [(0.0, 0.2), (0.16, 0.08), (0.5, -0.2), (0.4, -0.46), (0.22, -0.78), (0.0, -0.78)]
-WOLF_EAR = [(0.22, 0.58), (0.40, 0.90), (0.52, 0.54)]
-WOLF_EYE = [(0.14, 0.24), (0.40, 0.32), (0.44, 0.22), (0.22, 0.14)]
-WOLF_NOSE_R = [(0.0, -0.83), (0.11, -0.86), (0.09, -0.95), (0.0, -0.98)]
-WOLF = [(sym(WOLF_R), 'gold', 0), (sym(WOLF_MASK_R), 'snow', 1), (WOLF_EAR, 'snow', 1),
-        (mirror(WOLF_EAR), 'snow', 1), (WOLF_EYE, 'night', 1), (mirror(WOLF_EYE), 'night', 1),
-        (sym(WOLF_NOSE_R), 'night', 1)]
+WOLF_R = [(0.0, 0.58), (0.18, 0.64), (0.46, 1.02), (0.66, 0.56), (0.84, 0.40), (1.00, 0.16), (0.84, 0.06),
+          (1.00, -0.16), (0.82, -0.24), (0.90, -0.46), (0.60, -0.46), (0.36, -0.60), (0.24, -0.90), (0.13, -1.0),
+          (0.0, -1.02)]
+# Blind review 2026-10-21: a white face from the brow down (the first mask) read as a husky's or a fox's. A
+# wolf's pale is on its cheeks, its ruff and the sides of its muzzle, the bridge between the eyes down to the
+# nose staying gold: one U-shaped snow patch, the bridge's gold showing through its middle; a broad ruff of
+# three tufts a cheek.
+WOLF_MASK = [(0.22, 0.04), (0.58, -0.02), (0.74, -0.30), (0.34, -0.54), (0.20, -0.84), (0.0, -0.99),
+             (-0.20, -0.84), (-0.34, -0.54), (-0.74, -0.30), (-0.58, -0.02), (-0.22, 0.04), (-0.11, -0.80),
+             (0.11, -0.80)]
+WOLF_EAR = [(0.26, 0.62), (0.44, 0.88), (0.56, 0.52)]
+WOLF_EYE = [(0.12, 0.24), (0.42, 0.32), (0.36, 0.16)]
+WOLF_NOSE = [(-0.13, -0.77), (0.13, -0.77), (0.0, -0.96)]     # its top in the bridge's gold, off the mask's edge
+WOLF = [(sym(WOLF_R), 'gold', 0), (list(reversed(WOLF_MASK)), 'snow', 1), (WOLF_EAR, 'snow_shade', 1),
+        (mirror(WOLF_EAR), 'snow_shade', 1), (WOLF_EYE, 'night', 1), (mirror(WOLF_EYE), 'night', 1),
+        (WOLF_NOSE, 'night', 2)]
 
 
 def d_lodge_painting():
@@ -706,9 +728,18 @@ def d_lodge_painting():
             prism('Body', half, front, rear, col, plane='xy')
         h, b, a = h - t + 0.01, b + t - 0.01, a - t + 0.01
     # The picture inside the opening (x +-1.57, y 2.76 up): each layer a step proud, its back in the canvas.
-    prism('Glow_Magic_1', wave_band(-1.45, 1.45, 4.45, 0.18, 0.26, 1.2, 0.3), 0.955, 0.98, 'aurora')
-    prism('Glow_Magic_2', wave_band(-1.3, 1.35, 4.92, 0.14, 0.18, 1.0, 2.0), 0.943, 0.98, 'aurora')
-    prism('Body', wave_band(-1.0, 1.0, 5.25, 0.07, 0.12, 0.8, 1.0), 0.955, 0.98, 'violet')
+    # The aurora (blind review 2026-10-21: three flat ribbons): two curtains of light, each a bright core (the
+    # glow) inside a softer body inside a dim halo, its top rippling; the upper curtain (violet) behind the
+    # lower (green, a thin violet fringe on its top). Every layer's front its own plane (0.942 to 0.966), all behind the peaks.
+    for part, x0, x1, base, amp, k, ph, layers in (
+            ('Glow_Magic_2', -1.3, 1.35, 4.82, 0.1, 1.0, 2.0,
+             [(-0.06, 0.5, 'navy', 0.966), (0.0, 0.3, 'violet', 0.962), (0.02, 0.11, None, 0.958)]),
+            ('Glow_Magic_1', -1.52, 1.52, 4.22, 0.13, 1.2, 0.3,
+             [(-0.1, 0.92, 'pine', 0.954), (0.5, 0.8, 'violet', 0.950), (-0.03, 0.56, 'mint', 0.946),
+              (0.0, 0.17, None, 0.942)])):
+        for lo, hi, col, front in layers:
+            prism(part if col is None else 'Body', curtain(x0, x1, base, amp, k, ph, lo, hi), front, 0.98,
+                  col or 'aurora')
     prism('Body', [(-1.57, 2.76), (1.57, 2.76), (1.57, 3.5), (1.15, 3.95), (0.75, 3.55), (0.15, 4.35),
                    (-0.4, 3.7), (-0.85, 4.05), (-1.57, 3.35)], 0.931, 0.98, 'snow')                # the peaks
     for pts in ([(0.15, 4.35), (0.45, 3.95), (0.75, 3.55), (0.3, 3.3)],
@@ -725,13 +756,12 @@ def d_lodge_painting():
     prism('Body', [(-1.57, 2.76), (1.57, 2.76), (1.57, 2.84), (-1.57, 2.84)], 0.875, 0.95, 'snow')  # the snow
     # The crest on the crown, its chin 0.06 into the frame's apex, its ears' tips at 6.97.
     emblem('Body', WOLF, 0.45, at((0, 6.5, 0.75)), depth=0.16)
-    for k, x in enumerate((-2.3, 2.3)):     # the lanterns: an iron backplate and arm, gold foot and finial
-        span('Body', (x - 0.13, 3.55, 1.0), (x + 0.13, 4.35, back), 'iron', bevel=0.02)
+    for k, x in enumerate((-2.3, 2.3)):     # the lanterns: an iron backplate and arm, a gold foot, an iron cap
+        span('Body', (x - 0.13, 3.55, 1.0), (x + 0.13, 4.35, back), 'iron')
         span('Body', (x - 0.05, 3.78, 0.6), (x + 0.05, 3.88, 1.0), 'iron')
         cyl('Body', (x, 3.83, 0.6), 0.17, 0.08, 'gold', n=6)
         cyl(f'Glow_Warm_{k + 2}', (x, 3.91, 0.6), 0.12, 0.4, 'flame', n=6)
-        cyl('Body', (x, 4.31, 0.6), 0.18, 0.16, 'iron', n=6, r_top=0.05)
-        sphere('Body', (x, 4.5, 0.6), 0.06, 'gold', n=6, rings=4)
+        cyl('Body', (x, 4.31, 0.6), 0.18, 0.2, 'iron', n=6, r_top=0.03)
     sdone('the aurora over the Frostfang peaks (Glow_Magic_1, _2 and a violet band), the Lodge\'s lit window '
           '(Glow_Warm_1) under the pines, in a moulded round-topped frame (log, log, gold) at eye level (2.4 to '
           '6.1); the crest (the gold wolf\'s head) on its crown; an iron lantern either side (Glow_Warm_2, _3)',
@@ -749,7 +779,7 @@ def d_lodge_rug():
     span('Body', (-hx + 0.62, 0.065, -hz + 0.62), (hx - 0.62, 0.08, hz - 0.62), 'navy')
     prism('Body', ellipse(0, 0, 2.1, 1.75, 24), 0.08, 0.095, 'ice', plane='xz')                    # the medallion
     prism('Body', ellipse(0, 0, 1.9, 1.55, 24), 0.095, 0.11, 'night', plane='xz')
-    emblem('Body', WOLF, 1.35, flat((0, 0.1175, -0.03)), depth=0.015, step=0.015)                 # 0.11 to 0.14
+    emblem('Body', WOLF, 1.35, flat((0, 0.1175, -0.03)), depth=0.015, step=0.01)                  # 0.11 to 0.145
     for s in (-1, 1):                                                                              # the aurora
         for x, col, ph in ((2.75, 'mint', 0.0), (3.25, 'violet', 1.4)):
             band = wave_band(-1.7, 1.7, 0.0, 0.18, 0.24, 1.0, ph)
@@ -775,45 +805,74 @@ def d_lodge_wolf():
     for y in (0.22, 1.3):
         lathe('Body', [(0.93, y), (0.93, y + 0.08)], 'gold', n=8)
     lathe('Body', [(1.0, 1.38), (1.04, 1.5), (0.97, 1.6)], 'stone_light', n=8)
+    # The cap's top a navy field in a gold ring (blind review 2026-10-21: from above the pale wolf on the light
+    # cap was a grey disc): the ice wolf stands out on it, its darker saddle and head showing its shape.
+    lathe('Body', [(0.9, 1.56), (0.9, 1.62)], 'gold', n=8)
+    lathe('Body', [(0.82, 1.58), (0.82, 1.64)], 'navy', n=8)
     emblem('Body', WOLF, 0.3, at((0, 0.82, -0.795 - 0.03)), depth=0.08)          # on the plinth's front face
-    y0 = 1.6
-    sphere('Body', (0, y0 + 0.55, 0.3), (0.62, 0.55, 0.62), 'ice', n=10, rings=6)                # haunches
+    # Blind review 2026-10-21: the first read as a seated cat or fox (a slim upright body, its laid-back ears a
+    # spike on the skull). A wolf now: a deep chest and heavy shoulders, a thick neck in a shaggy ruff, a broad
+    # head with a long, heavy muzzle raised in a howl (22 degrees up: steeper, from the front it stood over the
+    # skull as a spike), its jaw open under it, two upright ears set wide, a bushy tail round its feet; a darker
+    # saddle down its back and over its crown, as a wolf's coat.
+    y0 = 1.64
+    sphere('Body', (0, y0 + 0.5, 0.36), (0.62, 0.5, 0.56), 'ice', n=8, rings=5)                  # haunches
     for s in (-1, 1):
-        sphere('Body', (s * 0.36, y0 + 0.1, -0.08), (0.18, 0.1, 0.3), 'frost', n=6, rings=4)     # hind feet
-        rod('Body', (s * 0.22, y0 + 0.85, -0.3), (s * 0.22, y0 + 0.06, -0.4), 0.11, 'ice')      # forelegs
-        sphere('Body', (s * 0.22, y0 + 0.08, -0.47), (0.13, 0.08, 0.18), 'frost', n=6, rings=4)  # forepaws
-    sphere('Body', (0, 0, 0), (0.48, 0.75, 0.45), 'ice', n=10, rings=6, m=at((0, y0 + 1.15, 0.05), rx=15))
-    sphere('Body', (0, y0 + 1.35, -0.25), (0.36, 0.5, 0.25), 'snow', n=8, rings=5)               # the chest ruff
-    rod('Body', (0, y0 + 1.6, 0.05), (0, y0 + 2.15, -0.05), 0.28, 'ice', n=8)                    # the neck
-    lathe('Body', [(0.26, -0.05), (0.33, -0.05), (0.33, 0.05), (0.26, 0.05)], 'gold', n=10, closed=True,
-          m=at((0, y0 + 1.75, 0.03), rx=-10))                                                      # the collar
-    hc = Vector((0, y0 + 2.25, -0.08))
-    sphere('Body', hc, (0.3, 0.3, 0.32), 'ice', n=10, rings=6)                                    # the head
-    d = Vector((0, math.sin(math.radians(55)), -math.cos(math.radians(55))))
-    cone('Body', hc + 0.12 * d, hc + 0.72 * d, 0.18, 0.08, 'frost', n=8)                          # the muzzle, up
-    sphere('Body', hc + 0.74 * d, 0.075, 'ice_dark', n=6, rings=4)
-    for s in (-1, 1):
-        cone('Body', hc + Vector((s * 0.15, 0.15, 0.1)), hc + Vector((s * 0.23, 0.38, 0.26)), 0.11, 0.015, 'ice',
-             n=6)                                                                                  # ears, laid back
-    for p0, p1 in (((0.45, y0 + 0.16, 0.62), (0.72, y0 + 0.12, 0.2)), ((0.72, y0 + 0.12, 0.2), (0.6, y0 + 0.1, -0.25)),
-                   ((0.6, y0 + 0.1, -0.25), (0.4, y0 + 0.1, -0.5))):
-        rod('Body', p0, p1, 0.13, 'frost', n=6)                                                   # the tail
-    sphere('Body', (0.4, y0 + 0.1, -0.5), 0.14, 'snow', n=6, rings=4)
-    sdone('the Frostfang in ice: a wolf sitting and howling (haunches, a snow chest ruff, a gold collar, its muzzle '
-          'raised, ears laid back, a tail round its feet) on an octagonal stone plinth with two gold bands and a '
-          'light cap; the crest (the gold wolf\'s head) on the plinth\'s front', colour='ice')
+        sphere('Body', (s * 0.38, y0 + 0.1, -0.02), (0.18, 0.1, 0.3), 'frost', n=6, rings=3)     # hind feet
+        rod('Body', (s * 0.26, y0 + 1.05, -0.3), (s * 0.24, y0 + 0.06, -0.42), 0.13, 'ice')     # forelegs
+        sphere('Body', (s * 0.24, y0 + 0.08, -0.5), (0.15, 0.08, 0.19), 'frost', n=6, rings=3)   # forepaws
+        sphere('Body', (s * 0.3, y0 + 1.3, -0.12), (0.27, 0.34, 0.3), 'ice', n=7, rings=4)       # shoulders
+    sphere('Body', (0, 0, 0), (0.55, 0.78, 0.5), 'ice', n=8, rings=5, m=at((0, y0 + 1.1, 0.08), rx=18))
+    sphere('Body', (0, 0, 0), (0.42, 0.68, 0.4), 'ice_deep', n=8, rings=5,
+           m=at((0, y0 + 1.22, 0.2), rx=18))                                                      # the saddle
+    sphere('Body', (0, y0 + 1.2, -0.3), (0.46, 0.6, 0.3), 'snow', n=8, rings=5)                  # the deep chest
+    cone('Body', (0, y0 + 1.5, -0.02), (0, y0 + 2.0, -0.1), 0.36, 0.27, 'ice', n=8)              # the neck
+    for a in (-160, -120, -60, -20):                                                              # the ruff's tufts
+        ang = math.radians(a)
+        o = Vector((0, y0 + 1.86, -0.14))
+        cone('Body', o, o + Vector((0.44 * math.cos(ang), -0.26, 0.4 * math.sin(ang))), 0.16, 0.02, 'snow', n=5)
+    lathe('Body', [(0.52, -0.3), (0.48, 0.0), (0.3, 0.32)], 'snow', n=8,
+          m=at((0, y0 + 1.82, -0.12), rx=-12))                                                     # the ruff
+    lathe('Body', [(0.27, -0.04), (0.33, -0.04), (0.33, 0.04), (0.27, 0.04)], 'gold', n=10, closed=True,
+          m=at((0, y0 + 2.06, -0.1), rx=-14))                                                      # the collar
+    hc = Vector((0, y0 + 2.2, -0.1))
+    sphere('Body', hc, (0.38, 0.33, 0.38), 'ice', n=8, rings=6)                                   # the head
+    sphere('Body', hc + Vector((0, 0.11, 0.08)), (0.3, 0.25, 0.29), 'ice_deep', n=6, rings=4)    # its crown
+    d = Vector((0, math.sin(math.radians(22)), -math.cos(math.radians(22))))
+    cone('Body', hc + 0.12 * d, hc + 0.88 * d, 0.21, 0.12, 'frost', n=6)                         # the muzzle
+    cone('Body', hc + Vector((0, -0.13, -0.1)), hc + Vector((0, -0.15, -0.7)), 0.12, 0.06, 'snow', n=6)  # jaw
+    sphere('Body', hc + 0.9 * d, (0.1, 0.08, 0.08), 'ice_dark', n=6, rings=3)                    # the nose
+    for s in (-1, 1):                                                                             # ears, upright
+        ear = hc + Vector((s * 0.23, 0.22, 0.1))
+        cone('Body', ear, ear + Vector((s * 0.1, 0.36, 0.04)), 0.13, 0.01, 'ice_dark', n=4)
+    tail = [(0.5, 0.18, 0.62), (0.66, 0.15, 0.16), (0.48, 0.12, -0.32)]
+    for i, (x, y, z) in enumerate(tail):                                                          # the bushy tail
+        sphere('Body', (x, y0 + y, z), (0.21 - 0.02 * i, 0.15, 0.27), 'ice_deep' if i < 2 else 'snow', n=6, rings=3)
+    sdone('the Frostfang in ice: a wolf sitting and howling (a deep snow chest, heavy shoulders, a shaggy snow '
+          'ruff and a gold collar, a long muzzle raised, upright ears set wide, a darker saddle and crown, a '
+          'bushy tail round its feet) on an octagonal stone plinth with two gold bands, its cap a navy field in '
+          'a gold ring; the crest (the gold wolf\'s head) on the plinth\'s front', colour='ice')
 
 
 def d_lodge_telescope():
     sdecor('Telescope')
     # A brass telescope on a light wood tripod, aimed up at the aurora, on a round base: a gold rim, a navy
-    # star chart with the crest lying on it (in front of the tripod, clear of the tube from above).
+    # star chart with the crest lying on it. Blind review 2026-10-21: from above it was a dark disc (a navy
+    # tube over the navy chart, the crest small). Now the tube is brass with navy bands, longer, and aimed
+    # across the diagonal toward the back, +X +Z (from above a long gold bar corner to corner over the
+    # tripod); the chart has a snow ring and gold stars; the crest larger (0.72 across, was 0.64) in the front
+    # quarter at +X, which neither the tube nor a leg crosses.
     lathe('Body', [(1.05, 0.0), (1.05, 0.14)], 'wood_dark', n=16)
     lathe('Body', [(1.07, 0.03), (1.07, 0.11)], 'gold', n=16)
     lathe('Body', [(0.95, 0.13), (0.95, 0.16)], 'navy', n=16)
-    emblem('Body', WOLF, 0.32, flat((0, 0.1675, -0.58)), depth=0.015, step=0.015)
-    hub = Vector((-0.04, 3.5, 0.15))
-    feet = [Vector((-0.04, 0.14, 1.0)), Vector((-0.8, 0.16, -0.28)), Vector((0.72, 0.16, -0.28))]
+    lathe('Body', [(0.9, 0.14), (0.945, 0.14), (0.945, 0.17), (0.9, 0.17)], 'snow', n=16, closed=True)
+    emblem('Body', WOLF, 0.36, flat((0.36, 0.1675, -0.4)), depth=0.015, step=0.015)
+    for x, z, r in ((-0.6, 0.25, 0.13), (-0.2, 0.5, 0.1), (0.55, 0.3, 0.11), (-0.1, -0.7, 0.09)):
+        prism('Body', [(x + r * math.cos(math.pi / 4 * j) * (1 if j % 2 == 0 else 0.35),
+                        z + r * math.sin(math.pi / 4 * j) * (1 if j % 2 == 0 else 0.35)) for j in range(8)],
+              0.15, 0.17, 'gold', plane='xz')                                                       # the stars
+    hub = Vector((-0.14, 3.5, 0.09))         # off the middle toward -X +Z: the tube's line clear of the crest
+    feet = [Vector((0.85, 0.16, 0.12)), Vector((-0.42, 0.16, 0.72)), Vector((-0.6, 0.16, -0.6))]
     for f in feet:
         rod('Body', hub, f, 0.06, 'wood_light', n=6)
         sphere('Body', f + Vector((0, 0.04, 0)), 0.08, 'gold', n=6, rings=4)
@@ -821,22 +880,25 @@ def d_lodge_telescope():
     for i in range(3):
         rod('Body', mids[i], mids[(i + 1) % 3], 0.03, 'gold', n=4)                                # the spreaders
     cyl('Body', hub + Vector((0, -0.05, 0)), 0.16, 0.27, 'gold', n=8)
-    cyl('Body', hub + Vector((0, 0.2, 0)), 0.07, 0.3, 'gold', n=6)                                # the post
-    T = Matrix.Translation(hub + Vector((0, 0.6, 0))) @ Matrix.Rotation(math.radians(-60), 4, 'Z')  # 30 deg up, +X
-    lathe('Body', [(0.15, -0.85), (0.19, 0.68)], 'navy', n=10, m=T)                               # the tube
-    for y in (-0.75, 0.45):
-        rb = 0.15 + 0.04 * (y + 0.85) / 1.53 + 0.025
-        lathe('Body', [(rb, y - 0.05), (rb, y + 0.05)], 'gold', n=10, m=T)                       # its bands
-    lathe('Body', [(0.165, -0.07), (0.25, -0.07), (0.25, 0.07), (0.165, 0.07)], 'gold', n=10, closed=True,
+    cyl('Body', hub + Vector((0, 0.2, 0)), 0.07, 0.3, 'iron', n=6)                                # the post
+    # 30 degrees up, toward the back (+X, +Z): its local +Y turned 60 down about Z, then -45 about Y.
+    T = (Matrix.Translation(hub + Vector((0, 0.6, 0))) @ Matrix.Rotation(math.radians(-45), 4, 'Y')
+         @ Matrix.Rotation(math.radians(-60), 4, 'Z'))
+    lathe('Body', [(0.15, -1.0), (0.19, 0.76)], 'gold', n=10, m=T)                                # the tube
+    for y in (-0.88, 0.3):
+        rb = 0.15 + 0.04 * (y + 1.0) / 1.8 + 0.025
+        lathe('Body', [(rb, y - 0.06), (rb, y + 0.06)], 'navy', n=10, m=T)                       # its bands
+    lathe('Body', [(0.165, -0.07), (0.25, -0.07), (0.25, 0.07), (0.165, 0.07)], 'iron', n=10, closed=True,
           m=T)                                                                                     # the cradle
-    lathe('Body', [(0.185, 0.64), (0.25, 0.64), (0.25, 1.08), (0.185, 1.08)], 'gold', n=10, closed=True, m=T)
-    cyl('Body', (0, 0.9, 0), 0.205, 0.05, 'ice', n=10, m=T)                                       # the lens
-    cyl('Body', (0, -1.08, 0), 0.07, 0.25, 'black', n=8, m=T)                                     # the eyepiece
-    lathe('Body', [(0.1, -1.1), (0.1, -1.02)], 'gold', n=8, m=T)
-    cyl('Body', (-0.21, -0.35, 0), 0.045, 0.5, 'gold', n=6, m=T)                                  # the finder
-    sdone('a brass telescope aimed up at the aurora (a navy tube with gold bands, a gold cradle and dew cap, an '
-          'ice lens, a finder) on a light wood tripod with gold spreaders and feet, on a round base: a gold rim, '
-          'a navy star chart with the crest (the gold wolf\'s head) lying in front of the tripod', colour='gold')
+    lathe('Body', [(0.185, 0.72), (0.25, 0.72), (0.25, 1.1), (0.185, 1.1)], 'navy', n=10, closed=True, m=T)
+    cyl('Body', (0, 0.92, 0), 0.205, 0.05, 'ice', n=10, m=T)                                      # the lens
+    cyl('Body', (0, -1.25, 0), 0.07, 0.27, 'black', n=8, m=T)                                     # the eyepiece
+    lathe('Body', [(0.1, -1.24), (0.1, -1.16)], 'gold', n=8, m=T)
+    cyl('Body', (-0.22, -0.5, 0), 0.045, 0.5, 'navy', n=6, m=T)                                   # the finder
+    sdone('a brass telescope aimed up at the aurora across the diagonal (a long brass tube with navy bands, an '
+          'iron cradle, a navy dew cap, an ice lens, a finder) on a light wood tripod with gold spreaders and '
+          'feet, on a round base: a gold rim, a navy star chart with a snow ring and gold stars, the crest (the '
+          'gold wolf\'s head) lying in its front right quarter', colour='gold')
 
 
 SLEIGH = [(-1.55, 0.85), (1.75, 0.85), (2.0, 1.4), (2.1, 2.3), (2.0, 2.9), (1.75, 3.1), (1.5, 3.0), (1.5, 2.6),
@@ -857,16 +919,26 @@ def d_lodge_sleigh():
             prism('Body', stroke(line, 0.12), s * z0, s * z1, 'gold', plane='xy')
     for z in (-0.62, 0.62):
         prism('Body', stroke(RUNNER, 0.14), z - 0.05, z + 0.05, 'gold', plane='xy')
-        for x in (-1.3, 0.1, 1.5):
+        for x in (-1.3, 1.5):
             rod('Body', (x, 0.1, z), (x, 0.9, z), 0.04, 'gold', n=4)
     span('Body', (-0.85, 1.85, -0.9), (1.4, 2.0, 0.9), 'navy')                                    # the blanket
     for s in (-1, 1):
         span('Body', (-0.6, 1.62, min(s * 0.9, s * 0.85)), (1.15, 1.85, max(s * 0.9, s * 0.85)), 'navy')
         emblem('Body', WOLF, 0.26, at((0.25, 1.3, s * (0.8 + 0.03)), ry=0 if s < 0 else 180), depth=0.08)
     emblem('Body', WOLF, 0.42, flat((0.15, 2.01, 0)), depth=0.02, step=0.015)
-    span('Body', (1.2, 1.87, -0.62), (1.5, 2.75, 0.62), 'fur', bevel=0.06)                        # the cushion
-    rod('Body', (-1.85, 2.4, 0), (-1.85, 3.45, 0), 0.05, 'iron', n=6)                             # the lantern
-    rod('Body', (-1.85, 3.45, 0), (-2.2, 3.62, 0), 0.04, 'iron', n=6)
+    # The backrest (blind review 2026-10-21: a pale plain slab, unfinished): a red_dark upholstered back with
+    # a scroll top, a gold scroll curling in from each top corner across its face; a white fur bolster along
+    # its foot.
+    back = [(-0.62, 1.86), (0.62, 1.86), (0.66, 2.5), (0.6, 2.7), (0.4, 2.78), (0.18, 2.86), (0.0, 2.92)]
+    back = back + [(-u, v) for u, v in reversed(back[2:])]
+    prism('Body', back, 1.22, 1.48, 'red_dark', plane='zy')
+    for s in (-1, 1):
+        curl = [(s * (0.44 + 0.17 * (1 - 0.5 * a / (1.6 * math.pi)) * math.cos(a)),
+                 2.5 + 0.17 * (1 - 0.5 * a / (1.6 * math.pi)) * math.sin(a)) for a in np.linspace(0, 1.6 * math.pi, 5)]
+        prism('Body', stroke([(s * 0.3, 2.06)] + curl, 0.07), 1.19, 1.235, 'gold', plane='zy')
+    cyl('Body', (0, 0, 0), 0.13, 1.2, 'fur', n=6, m=at((1.12, 1.98, -0.6), rx=90))                 # the bolster
+    rod('Body', (-1.85, 2.4, 0), (-1.85, 3.45, 0), 0.05, 'iron', n=4)                             # the lantern
+    rod('Body', (-1.85, 3.45, 0), (-2.2, 3.62, 0), 0.04, 'iron', n=4)
     rod('Body', (-2.2, 3.64, 0), (-2.2, 3.44, 0), 0.02, 'iron', n=4)
     cyl('Body', (-2.2, 3.3, 0), 0.17, 0.15, 'gold', n=6, r_top=0.05)
     cyl('Glow_Warm_1', (-2.2, 2.95, 0), 0.12, 0.35, 'flame', n=6)
@@ -886,6 +958,24 @@ DF_BODY_R = [(0.0, 0.94), (0.09, 0.91), (0.14, 0.82), (0.12, 0.72), (0.08, 0.67)
              (0.08, 0.27), (0.075, -0.2), (0.065, -0.8), (0.04, -0.97), (0.0, -1.0)]
 DRAGONFLY = [(DF_FORE, 'moonstone', 0), (mirror(DF_FORE), 'moonstone', 0), (DF_HIND, 'moonstone', 0),
              (mirror(DF_HIND), 'moonstone', 0), (sym(DF_BODY_R), 'brass', 1)]
+# The crest outlined (blind review 2026-10-21: from above the set vanished in its low-contrast palette, the
+# dragonfly's pale wings and brass body on green and brass): the same dragonfly on a dark cypress silhouette
+# 0.07 wider all round, for a crest lying where it is seen from above on a ground of its own colours.
+DF_SIL_R = [(0.0, 0.94), (0.09, 0.91), (0.14, 0.82), (0.12, 0.72), (0.2, 0.67), (0.32, 0.69), (0.66, 0.74),
+            (0.96, 0.69), (0.98, 0.58), (0.66, 0.50), (0.5, 0.42), (0.78, 0.30), (0.96, 0.16), (0.86, 0.07),
+            (0.5, 0.14), (0.1, 0.27), (0.075, -0.2), (0.065, -0.8), (0.04, -0.97), (0.0, -1.0)]
+DRAGONFLY_LIT = ([(offset_poly(sym(DF_SIL_R), 0.07), 'cypress_dark', 0)]
+                 + [(pts, col, k + 1) for pts, col, k in DRAGONFLY])
+
+
+def grove_jar(glow, top, h=0.42, r=0.17):
+    """A firefly jar hanging from `top` (a hook's underside), its brass cap narrower than the glowing jar so
+    the jar's light shows round it from above (blind review 2026-10-21: firefly_lantern's cap hid it)."""
+    x, y, z = top
+    cyl('Body', (x, y - 0.18, z), 0.025, 0.22, 'iron', n=4)
+    cyl('Body', (x, y - 0.27, z), 0.1, 0.1, 'brass', n=8, r_top=0.04)
+    cyl(glow, (x, y - 0.27 - h, z), r, h, 'firefly', n=8)
+    cyl('Body', (x, y - 0.35 - h, z), r + 0.03, 0.08, 'brass', n=8)
 
 
 def pad_xy(cx, cy, r, notch, n=12):
@@ -899,7 +989,7 @@ def d_grove_glass():
     sdecor('StainedGlass')
     # A round stained-glass window at eye level (2.6 to 6.5): the dragonfly large over a dusk bayou (a plum sky,
     # the moon glowing, teal water, two lily pads and a lotus, two fireflies), in a moulded round frame
-    # (dark cypress, cypress, brass), Spanish moss draped over its top; a firefly jar hung either side.
+    # (dark cypress, cypress, brass), a moss trim along its top; a firefly jar hung either side.
     back, cy = 1.1, 4.55
     prism('Body', ellipse(0, cy, 1.89, 1.89, 18), 0.97, back, 'plum')                               # the glass
     rings = [(0.16, 0.80, 0.985, 'cypress_dark'), (0.18, 0.68, 0.99, 'cypress'), (0.10, 0.76, 0.995, 'brass')]
@@ -924,18 +1014,26 @@ def d_grove_glass():
         prism(f'Glow_Warm_{k + 1}', [(x, y - 0.08), (x + 0.07, y), (x, y + 0.08), (x - 0.07, y)], 0.944, 0.97,
               'firefly')
     emblem('Body', DRAGONFLY, 0.85, at((0.2, 4.55, 0.9465)), depth=0.057)                          # the crest
-    upper = [(2.02 * math.cos(math.radians(a)), cy + 2.02 * math.sin(math.radians(a))) for a in np.linspace(145, 35, 8)]
-    lower = [((1.7 if i % 2 == 0 else 1.86) * math.cos(math.radians(a)),
-              cy + (1.7 if i % 2 == 0 else 1.86) * math.sin(math.radians(a))) for i, a in enumerate(np.linspace(35, 145, 11))]
-    prism('Body', upper + lower, 0.66, 0.95, 'moss')                                                 # the moss
+    # The moss (blind review 2026-10-21: a lumpy blob over the frame): a trim lying on the frame's top, from
+    # 15 to 165 degrees, its outer edge on the frame's, its inner edge in tufts that stay on the frame (r 1.66
+    # to 1.8; the glass starts at 1.53), thinning to the frame's edge at both ends.
+    def moss_r(a, r):
+        return (r * math.cos(math.radians(a)), cy + r * math.sin(math.radians(a)))
+    upper = [moss_r(a, 1.99) for a in np.linspace(165, 15, 10)]
+    lower = []
+    for i, a in enumerate(np.linspace(15, 165, 13)):
+        env = math.sin(math.pi * i / 12) ** 0.6
+        lower.append(moss_r(a, 1.99 - env * (0.33 if i % 2 else 0.2)))
+    prism('Body', upper + lower[1:-1], 0.645, 0.83, 'moss')
     for k, x in enumerate((-2.3, 2.3)):
         span('Body', (x - 0.1, 4.95, 1.0), (x + 0.1, 5.5, back), 'brass', bevel=0.02)
         seg('Body', (x, 5.35, 1.0), (x, 5.35, 0.55), 0.04, 'brass')
         sphere('Body', (x, 5.35, 0.55), 0.06, 'brass', n=6, rings=4)
-        firefly_lantern(f'Glow_Warm_{k + 3}', (x, 5.3, 0.55))
+        grove_jar(f'Glow_Warm_{k + 3}', (x, 5.3, 0.55))
     sdone('a round stained-glass window at eye level (2.6 to 6.5): the crest (the dragonfly, pale wings and a '
           'brass body) large over a dusk bayou (a plum sky, the moon Glow_Cold_1, teal water, lily pads, a lotus, '
-          'fireflies Glow_Warm_1, _2) in a moulded round frame (dark cypress, cypress, brass) under draped moss; '
+          'fireflies Glow_Warm_1, _2) in a moulded round frame (dark cypress, cypress, brass), a moss trim on its '
+          'top; '
           'a firefly jar hung either side (Glow_Warm_3, _4)', colour='plum')
 
 
@@ -951,8 +1049,10 @@ def d_grove_rug():
     ro, ri = 2.45, 2.3                                                                              # the ripple
     for half in ring_halves(0.0, ro, ri, n=12):
         prism('Body', half, 0.07, 0.085, 'water_light', plane='xz')
-    lily_pad((0, 0.07, 0), 2.15, 0.015, 'lily', notch=-45, n=28)
-    emblem('Body', DRAGONFLY, 1.3, flat((0, 0.0925, -0.02)), depth=0.015, step=0.015)            # 0.085 to 0.115
+    # The pad's notch (blind review 2026-10-21: it ran into the dragonfly's tail) starts 0.95 out from the
+    # middle, toward the front right, clear of the tail and the hind wing; the crest outlined in dark cypress.
+    pad_notched((0, 0.07, 0), 2.15, 0.015, 'lily', notch=-45, apex=0.44, n=28)
+    emblem('Body', DRAGONFLY_LIT, 1.3, flat((0, 0.0925, -0.02)), depth=0.015, step=0.012)         # 0.085 to 0.124
     for sx in (-1, 1):
         for sz in (-1, 1):
             cx, cz = sx * 3.55, sz * 2.0
@@ -968,26 +1068,24 @@ def d_grove_rug():
 def d_grove_lamp():
     sdecor('Lamp')
     # A dragonfly floor lamp: a lily-pad foot, a brass reed stem with two leaves, an eight-sided shade of warm
-    # glass (Glow_Warm_1, all of it) with a brass dragonfly on four of its panels (heads up the slope: from above
-    # four crests round a lotus bud), a brass rim and cap.
+    # glass (Glow_Warm_1, all of it), a brass rim. Blind review 2026-10-21: four small dragonflies on the
+    # shade where every other piece has one crest, and the shade low in contrast from above. Now one crest,
+    # larger (1.0 across), lying on a plum lid in a raised brass rim on the shade's top: from above a pale
+    # dragonfly on dusk inside a ring of lamplight.
     lily_pad((0, 0, 0), 0.98, 0.1, 'lily_dark', notch=-60, n=14)
     lathe('Body', [(0.42, 0.08), (0.36, 0.2), (0.16, 0.4), (0.09, 0.62)], 'brass', n=10)
     cyl('Body', (0, 0.55, 0), 0.075, 4.1, 'brass', n=8)
     for i, ang in enumerate((25, 145)):
         prism('Body', [(-0.09, 0.0), (0.09, 0.0), (0.02, 1.7 - 0.3 * i)], -0.02, 0.02, 'lily', plane='xy',
               m=at((0, 0.42, 0), ry=ang, rz=8))
-    lathe('Glow_Warm_1', [(1.0, 4.55), (1.0, 4.85), (0.36, 5.35)], 'lamp', n=8)                    # the shade
+    lathe('Glow_Warm_1', [(1.0, 4.55), (1.0, 4.85), (0.68, 5.2)], 'lamp', n=8)                     # the shade
     lathe('Body', [(0.98, 4.5), (1.04, 4.5), (1.04, 4.6), (0.98, 4.6)], 'brass', n=8, closed=True)
-    lathe('Body', [(0.4, 5.32), (0.3, 5.45), (0.08, 5.52)], 'brass', n=8)
-    sphere('Body', (0, 5.64, 0), (0.12, 0.18, 0.12), 'lotus', n=8, rings=5)                         # a lotus bud
-    tilt, depth = math.degrees(math.atan2(0.763, 0.646)), 0.05
-    nrm = Vector((0, 0.763, -0.646))
-    pos = Vector((0, 5.1, -0.628)) + nrm * (depth / 2 - 0.01)
-    for ry in (0, 90, 180, 270):
-        emblem('Body', DRAGONFLY, 0.28, Matrix.Rotation(math.radians(ry), 4, 'Y') @ at(pos, rx=tilt), depth=depth)
+    lathe('Body', [(0.66, 5.14), (0.76, 5.14), (0.76, 5.3), (0.66, 5.3)], 'brass', n=8, closed=True)  # lid's rim
+    lathe('Body', [(0.7, 5.12), (0.7, 5.24)], 'plum', n=8)                                           # the lid
+    emblem('Body', DRAGONFLY, 0.5, flat((0, 5.2475, 0.015)), depth=0.015, step=0.015)               # 5.24 to 5.27
     sdone('a dragonfly floor lamp: a lily-pad foot, a brass reed stem with two leaves, an eight-sided shade of '
-          'warm glass (Glow_Warm_1) with the crest (a brass and pale dragonfly) on four panels, a brass rim, a '
-          'brass cap and a lotus bud', colour='lamp')
+          'warm glass (Glow_Warm_1), a brass rim; the crest (the dragonfly, pale wings and a brass body, 1.0 '
+          'across) lying on a plum lid in a raised brass rim on the shade\'s top', colour='lamp')
 
 
 HORN = [(0.1, 0.0), (0.14, 0.35), (0.24, 0.7), (0.42, 0.98), (0.68, 1.15), (0.86, 1.22),
@@ -1021,36 +1119,60 @@ def d_grove_gramophone():
     base = Vector((0, 3.3, 0.5))
     seg('Body', (0, 2.78, 0.68), base + 0.05 * d, 0.1, 'brass', n=8)                              # the neck
     hm = Matrix.Translation(base) @ Vector((0, 1, 0)).rotation_difference(d).to_matrix().to_4x4()
-    lathe_coloured('Body', HORN, ['brass'] * 6 + ['lotus_light'] * 5 + ['brass'], 14, hm)
+    # Blind review 2026-10-21 (the set low in contrast from above): the horn's mouth pale pink at the rim,
+    # deepening to velvet in its throat, and the crest on its rim larger (0.36, was 0.3) and outlined in dark
+    # cypress, so from above a pale ring round a dark throat with the dragonfly crisp on the rim.
+    lathe_coloured('Body', HORN, ['brass'] * 6 + ['lotus_light', 'lotus', 'velvet', 'velvet', 'velvet', 'brass'], 14, hm)
     lip = base + 1.22 * d + 0.86 * Vector((0, 0.57, 0.82)).normalized()
-    emblem('Body', DRAGONFLY, 0.3, flat(lip + Vector((0, 0.025, 0.15)), ry=180), depth=0.03, step=0.015)  # thorax on the lip
+    emblem('Body', DRAGONFLY_LIT, 0.36, flat(lip + Vector((0, 0.025, 0.17)), ry=180), depth=0.03,
+           step=0.012)                                                                     # thorax on the lip
     seg('Body', (0.8, 1.5, 0.0), (0.98, 1.5, 0.0), 0.035, 'brass')                                # the crank
     seg('Body', (0.98, 1.5, 0.0), (0.98, 1.2, 0.0), 0.03, 'brass')
     sphere('Body', (0.98, 1.16, 0.0), 0.06, 'cypress_dark', n=6, rings=4)
     sdone('a cypress gramophone on brass ball feet: a plum-velvet front in a dark frame with the crest (the '
           'dragonfly), a brass band under the lid, a brass turntable with a record and tonearm, a flower horn '
-          '(brass outside, lotus pink inside) with a brass dragonfly perched on its rim', colour='cypress')
+          '(brass outside, pink at the mouth deepening to a velvet throat) with the crest perched on its rim, '
+          'outlined in dark cypress', colour='cypress')
+
+
+PIROGUE_LIFT = 0.3     # the hull's keel above the floor, on its cradle
 
 
 def _boat(x):
     f = min(1.0, abs(x) / 2.45)
     w = 0.8 * max(0.005, 1 - f * f) ** 0.55
-    return w, 0.28 * f ** 3, 0.8 + 0.22 * f ** 3        # half-width at the top, the bottom's rise, the fill's top
+    return (w, PIROGUE_LIFT + 0.28 * f ** 3,           # half-width at the top, the bottom (rising to the ends)
+            PIROGUE_LIFT + 0.8 + 0.22 * f ** 3)         # and the fill's top
+
+
+def pad_notched(c, r, h, col, notch, apex=0.45, n=12):
+    """A lily pad lying on (x, y, z) whose V notch toward `notch` degrees (0 = +X) starts `apex` r out from
+    its middle, so a crest lying on the pad's middle keeps clear of it."""
+    x, y, z = c
+    a0 = math.radians(notch)
+    pts = [(x + apex * r * math.cos(a0), z + apex * r * math.sin(a0))] + [
+        (x + r * math.cos(a0 + math.radians(16 + 328 * i / n)), z + r * math.sin(a0 + math.radians(16 + 328 * i / n)))
+        for i in range(n + 1)]
+    prism('Body', pts, y, y + h, col, plane='xz')
 
 
 def d_grove_pirogue():
     sdecor('Pirogue')
     # A cypress pirogue (the bayou's flat-bottomed canoe) as a planter: moss to its gunwales, a lotus, two lily
-    # pads and a clump of cattails with a firefly; a lantern (a firefly jar) hung from a crooked pole over the
-    # bow (-X); the crest on both sides and on the bow's deck.
+    # pads and a clump of cattails with a firefly; a lantern (a firefly jar) hung from a crooked pole near the
+    # bow (-X); the crest on both sides and lying on a lily pad. Blind review 2026-10-21: the hull ended in a
+    # V on the floor with nothing holding it (now it rests 0.3 up on a cradle of two dark cypress stands), the
+    # jar's arm reached past the bow (now pole and jar stand well inside the hull, the jar's light showing
+    # round its cap from above), and from above it was dark and low in contrast (now light moss, two dark
+    # pads, the crest on the larger one, from the bow's narrow deck).
     secs = []
     for x in np.linspace(-2.45, 2.45, 11):
         w, b, t = _boat(x)
         secs.append([(x, b, -0.65 * w), (x, b, 0.65 * w), (x, t, w), (x, t, -w)])
-    loft('Body', secs, {'bottom': 'cypress_dark', 'side': 'cypress', 'top': 'moss_dark', 'cap': 'cypress'})
+    loft('Body', secs, {'bottom': 'cypress_dark', 'side': 'cypress', 'top': 'moss_light', 'cap': 'cypress'})
     for s, xe, lift in ((-1, 2.5, 0.0), (1, 2.47, 0.015)):          # the gunwales, one a hair over the other
         strip = []
-        for x in np.linspace(-xe, xe, 11):
+        for x in np.linspace(-xe, xe, 9):
             w, b, t = _boat(x)
             zi, zo = s * (w - 0.07), s * (w + 0.04)
             lo, hi = t - 0.12 - lift, t + 0.1 + lift
@@ -1064,11 +1186,10 @@ def d_grove_pirogue():
         deck.append([(x, t - 0.02, -hw), (x, t - 0.02, hw), (x, t + 0.05, hw), (x, t + 0.05, -hw)])
     loft('Body', deck, {'bottom': 'cypress_light', 'side': 'cypress_light', 'top': 'cypress_light',
                         'cap': 'cypress_light'})
-    x0, x1 = -1.9, -2.2
-    slope = math.atan2(_boat(x1)[2] - _boat(x0)[2], x0 - x1)       # the deck's rise toward the bow (-X)
-    yc = _boat(-2.05)[2] + 0.05 + 0.0075
-    emblem('Body', DRAGONFLY, 0.22, Matrix.Translation((-2.05, yc, 0)) @ Matrix.Rotation(-slope, 4, 'Z')
-           @ flat((0, 0, 0), ry=-90), depth=0.015, step=0.015)                                  # its head to the bow
+    stand = [(-0.72, 0.0), (0.72, 0.0), (0.72, 0.1), (0.6, 0.14), (0.62, 0.62), (0.5, 0.62), (0.43, 0.345),
+             (-0.43, 0.345), (-0.5, 0.62), (-0.62, 0.62), (-0.6, 0.14), (-0.72, 0.1)]
+    for xc in (-1.35, 1.35):                                        # the cradle, its saddles hugging the hull
+        prism('Body', stand, xc - 0.1, xc + 0.1, 'cypress_dark', plane='zy')
     w0, b0, t0 = _boat(0.25)
     for s in (-1, 1):              # on each side, leaning with the flare (the side faces out and a little down)
         flare = math.degrees(math.atan2(0.35 * w0, t0 - b0))
@@ -1076,18 +1197,22 @@ def d_grove_pirogue():
         nrm = Vector((0, -math.sin(math.radians(flare)), s * math.cos(math.radians(flare))))
         emblem('Body', DRAGONFLY, 0.34, Matrix.Translation(mid + nrm * 0.02)
                @ at((0, 0, 0), rx=-flare, ry=0 if s < 0 else 180), depth=0.06)
-    lotus((-0.85, _boat(-0.85)[2] - 0.02, -0.15), s=1.0)
-    lily_pad((-0.15, _boat(-0.15)[2] - 0.01, 0.25), 0.36, 0.04, 'lily', notch=200)
-    lily_pad((1.0, _boat(1.0)[2] - 0.01, -0.22), 0.32, 0.04, 'lily_light', notch=30)
+    lotus((-0.75, _boat(-0.75)[2] - 0.02, -0.2), s=1.0)
+    yp = _boat(0.3)[2] - 0.01
+    pad_notched((0.3, yp, 0.0), 0.6, 0.04, 'lily_dark', notch=60)
+    emblem('Body', DRAGONFLY, 0.42, flat((0.3, yp + 0.04 + 0.0075, 0.0), ry=-90), depth=0.015,
+           step=0.015)                                                                          # its head to the bow
+    lily_pad((1.25, _boat(1.25)[2] - 0.01, -0.25), 0.3, 0.04, 'lily_dark', notch=30)
     cattails(1.7, 0.1, y=_boat(1.7)[2] - 0.02, k=3, tall=2.0, firefly='Glow_Warm_2')
-    yb = _boat(-1.55)[2] - 0.05
-    seg('Body', (-1.55, yb, 0.05), (-1.62, 3.0, 0.05), 0.07, 'cypress_dark')                     # the pole
-    seg('Body', (-1.62, 3.0, 0.05), (-1.95, 3.55, 0.05), 0.06, 'cypress_dark')
-    seg('Body', (-1.95, 3.55, 0.05), (-2.12, 3.48, 0.05), 0.05, 'cypress_dark')
-    firefly_lantern('Glow_Warm_1', (-2.12, 3.47, 0.05))
-    sdone('a cypress pirogue as a planter: moss to its light gunwales, a lotus, two lily pads, cattails with a '
-          'firefly (Glow_Warm_2); a firefly jar (Glow_Warm_1) hung from a crooked pole over the bow; the crest (the '
-          'dragonfly) on both sides and on the bow\'s deck', colour='cypress')
+    yb = _boat(-1.3)[2] - 0.05
+    seg('Body', (-1.3, yb, 0.05), (-1.36, 3.05, 0.05), 0.07, 'cypress_dark', n=5)                # the pole
+    seg('Body', (-1.36, 3.05, 0.05), (-1.62, 3.5, 0.05), 0.06, 'cypress_dark', n=5)
+    seg('Body', (-1.62, 3.5, 0.05), (-1.74, 3.44, 0.05), 0.05, 'cypress_dark', n=5)
+    grove_jar('Glow_Warm_1', (-1.74, 3.43, 0.05))
+    sdone('a cypress pirogue as a planter, resting on a cradle of two dark cypress stands: light moss to its '
+          'gunwales, a lotus, two dark lily pads, cattails with a firefly (Glow_Warm_2); a firefly jar '
+          '(Glow_Warm_1) hung from a crooked pole inside the bow; the crest (the dragonfly) on both sides and '
+          'lying on the larger pad', colour='cypress')
 
 
 # --- The souvenir ---------------------------------------------------------------------------------------
