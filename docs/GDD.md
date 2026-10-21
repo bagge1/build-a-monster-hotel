@@ -1279,3 +1279,77 @@ All by the UTC clock, the same on every server:
   passes. Every one is drawn as a Luau blockout until its model exists
   (MODELS.md, "Cosmetics").
 
+### A.12 Built rooms: the rules (night draft 2026-10-21, his rulings in §5.4)
+
+Every number here is a PLACEHOLDER (`Constants.Rooms`); the shapes are his
+(§5.4, §18, 2026-10-21).
+
+**Units.** A **half cell** is 6 studs, so a cell is 2 × 2 half cells and a
+plot floor 24 × 24. Walls stand on half-cell edges. Build mode draws a wall
+along a whole cell edge (two half edges) by default; its **Half cells**
+toggle draws one half edge at a time. A half edge costs **$5**, a door **$10**
+(a door is a half edge whose wall has a door in it; it replaces the wall).
+A wall stands only inside the hotel: both half cells on its sides owned on
+that floor, neither in the entrance's mouth nor under a stair or its well.
+The facade is the hotel's outer wall; inner walls never stand on it.
+
+**Areas.** On each floor, the owned half cells fall into areas: flood fill
+across every half edge that has no wall (a door counts as a wall here, so a
+room is not part of the corridor outside its door). An area holding the
+entrance's mouth, a stair, its well or a front desk is **hallway**. Any other
+area with at least one door in its boundary may be made a **room**.
+
+**A room** is `{ type, floor, seed }`, `seed` one of its half cells: the
+player taps an area and chooses its type. After walls change, a room is the
+area holding its seed; a change that would put two rooms' seeds in one area
+is refused (`MergesRooms`), and one that leaves a room's area as hallway (a
+desk, stair or the mouth inside it) is refused (`RoomTaken`). Removing a
+room's last door is allowed: the room is kept, not ready.
+
+**Types.** Every room type and amenity of today (Pieces' Room and Amenity
+rows) is a type. Each has its **key furniture** (one of a list), its **minimum
+size** (its old footprint: a 2 × 2 room needs 4 cells, 16 half cells) and its
+**full size** (twice the minimum). The type list shows locked types with
+their unlock (Unlocks, as today), and each type's **tooltip** names the
+monsters who stay in it (Species whose room it is; for an amenity, the
+preference tags it gives) and its key furniture and minimum size.
+
+**Ready.** A room is ready for guests when its key furniture stands in it,
+its size is at least the minimum, and it has a door. A room that is not
+ready is never booked and says what it lacks.
+
+**Furniture** stands on the 3-stud decor grid like decor (`layer` Floor),
+inside a room or on hallway floor, and is bought and sold like decor. Each
+piece has points (its price × `PointsPerCash`, as decor's) and may be a
+key piece for one or more types. Decor is unchanged.
+
+**The three bars**, each 0–1:
+- **Size** = (cells − minimum) / (full − minimum), clamped; a room at its
+  minimum is 0 and at its full size 1.
+- **Furniture** = furniture points in the room / the type's target (its old
+  price × 2, at least 100), clamped.
+- **Decor** = decor points in the room / (T3's 300 points × cells / 4),
+  clamped (the old T3).
+
+**Their bonuses** (his yes to the mapping), each linear in its bar:
+- Size: pay × (1 + 0.5 × size), stay × (1 + 0.5 × size).
+- Furniture: pay × (1 + 0.5 × furniture), satisfaction + 15 × furniture.
+- Decor: satisfaction + 15 × decor, friendship per happy stay × (1 + decor).
+
+They replace the tiers' +50 % pay a tier.
+
+**Star progress** (his "no room deducts points"): Comfort's room part is the
+sum over ready rooms of (size + furniture + decor) / 3 × 12 points, to its
+cap of 60 (it was the mean tier's 60 %); Comfort's preferences part (40) is
+unchanged. Cleanliness counts ready rooms only. So a new room adds or does
+nothing; it never lowers the rating.
+
+**Guests** walk on the 3-stud squares of the floor: across every half edge
+without a wall, through doors, round furniture and decor that block their
+squares; a booked guest walks from the desk through the room's door to its
+key furniture.
+
+**What goes:** the Room and Amenity pieces as placed blocks, their models as
+whole rooms, the tiers T1–T3, Flip and `<PieceId>_Mirror`. The new models:
+inner walls, a door, and furniture, per location (`MODELS.md`).
+
