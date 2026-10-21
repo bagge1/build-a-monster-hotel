@@ -274,6 +274,56 @@ the game** (his words, 2026-10-19: "det ska vara mycket customizable, detta
 - **A forest round the street**, so the plot is not a bare lawn, and the
   Night Bus drives in round a bend out of the forest instead of appearing.
 
+**His rulings of 2026-10-21 (night, in chat): rooms are built, not placed.**
+"You should be able to build the rooms yourself instead of preplaced sizes.
+It fits in better with you anyway having to place the decor and such in
+each room." They replace the room and amenity pieces of fixed sizes, their
+tiers from decor points, Flip and the ready-made rooms:
+
+- **Walls and doors.** The player draws walls inside the hotel, on the owned
+  tiles of a floor, along the **cell edges by default (12 studs)**; a toggle
+  in build mode switches to **half cells (6 studs)** for finer shapes (his
+  "default cell edge but you can click to change to half cells"). A door is
+  a wall section with a door in it. The facade counts as a wall.
+- **A room is an enclosed area with a door.** Tap it and **choose its type**
+  from the location's room types and amenities (his "you should choose it"):
+  each type in the list has a tooltip with **which monsters stay in it** and
+  its **minimum requirements: its key furniture** (a bed for a Standard
+  Room, a coffin for the Coffin Suite, a counter for the Snack Bar …) and a
+  minimum size. An area with no type, and any open space, is hallway.
+  **Amenities are built the same way** (his yes).
+- **Furniture** is placed in the room on the decor grid (3 studs): the bed
+  or double bed, the nightstand, the key pieces and the rest. A room is
+  ready for guests when its key furniture stands in it and it has its
+  minimum size.
+- **No ready-made rooms** (his ruling): every room is walled and furnished
+  by the player. Flip goes (a built room has no left or right).
+- **Three bars per room, each with its own bonus** (his rulings: "each
+  should give its own bonus, they could give overlapping bonuses and unique
+  bonuses"; Claude's mapping, his yes):
+  - **Size** (its cells against the type's full size): **higher pay** and a
+    **longer stay**.
+  - **Furniture** (its furniture's points against the type's target):
+    **satisfaction** and **higher pay**.
+  - **Decor** (its decor's points, as tiers were): **satisfaction** and
+    **more friendship per stay**.
+  Pay and satisfaction overlap; stay length and friendship are each one
+  bar's own. Every amount PLACEHOLDER.
+- **Every room adds to the hotel's star progress, and none takes from it**
+  (his "no room deducts points however, so you dont create a room and it
+  brings your hotel down"): the rating counts what each ready room's bars
+  add, not their average.
+- **The room view:** tap a room in build mode and the camera flies in to it,
+  the wall toward the camera fades, and the room's type, its tooltip and its
+  three bars are shown, so it is easy to furnish one room at a time.
+- **The build camera is a free camera** confined to the hotel's area (his
+  words: "it shouldnt center around the midpoint of the plot"): W/S move
+  forward and back, A/D sideways, the wheel zooms, a right-drag turns it
+  side to side and tilts it from top view to near level, a button snaps to
+  top view; on a phone one finger moves it and two zoom and turn.
+
+The rest of the paragraph below stands where these do not replace it.
+
 **His rulings of 2026-10-20 replace the lobby strip and the areas** (from
 looking at the game: "When I said you can unlock tiles, the whole hotel
 shouldnt be build. It should only have walls where you have unlocked. I also
@@ -757,6 +807,7 @@ After the soft launch we apply for Kids/Select eligibility:
 | 2026-10-20 | **Rebirth** is a full reset that needs 5★ on all three hotels; loses cash, hotels and locations; keeps residents, Book, cosmetics, Moon Shards, Moon Tree, friendship; floors start at 2, odd rebirths unlock buying one more; Prestige Stars on even rebirths and after the cap (§6.4) | His rulings; the cap, the Prestige Star effect and the prices are open (WAITING §2) |
 | 2026-10-20 | Pacing targets: 5★ at location 1 in 30–60 min, 2 in 60–90, 3 in 90–120 (§6.3) | His targets |
 | 2026-10-20 | Endless content: VIP contracts, Expeditions, rare decor sets and souvenirs, the showcase with the like count, deeper mutations, resident levelling to a cap; not the weekly street league (§8.3) | His picks |
+| 2026-10-21 | **Rooms are built:** walls on cell edges (half cells by a toggle), a door, the player chooses the type (a tooltip with its monsters and key furniture); furniture placed; amenities the same; no ready-made rooms, no Flip; three bars per room (Size: pay and stay; Furniture: satisfaction and pay; Decor: satisfaction and friendship), each room adding to star progress and none subtracting; a room view; a free build camera (§5.4) | His ideas and answers in chat, the night of 2026-10-21; it goes before the world and endless content (his "This can come before yes") |
 | 2026-10-20 | **Haunted Manor's ten new decor** (§5.4, A.2): the Grandfather Clock a longcase (silhouette A), the Grand Piano a grand (A), the Armchair kept at 1 × 1, the tags and prices A.2 proposed; the ten models as rendered (`blender/hotel/haunted_manor/README.md`, 2026-10-20) | His picks from the grey silhouettes, then his yes to the renders after four blind reviews |
 
 ---

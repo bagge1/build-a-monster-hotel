@@ -755,9 +755,13 @@ Med Claudes skärmdump där det finns en. -->
    klossmodeller med PLACEHOLDER-värden (steg 6) så att platsen går att
    spela, och de byts när du valt.
 
-37. **Bygg rummen själv, rumsvyn och en fri kamera i Build** (dina idéer
-   2026-10-21 natt, i chatten; inget byggt än, designen går in i GDD §5.4
-   först). Claudes förslag:
+37. ~~**Bygg rummen själv, rumsvyn och en fri kamera i Build**~~ (besvarat
+   samma natt: du väljer rumstypen, med en tooltip om monstren och
+   nyckelmöblerna; varje stapel sin egen bonus, med min fördelning; inget
+   rum drar ner stjärnorna; väggar på rutkanter, halva rutor med en knapp;
+   inga färdiga rum; bekvämligheterna likadant; före världen och endless
+   content. Allt i GDD §5.4 och §18.) (dina idéer 2026-10-21 natt, i
+   chatten). Claudes förslag var:
    - **Rum av väggar:** du drar väggar längs rutornas kanter och sätter en
      dörr i en vägg; ett inneslutet område med en dörr är ett rum. Du
      möblerar det: en säng eller dubbelsäng, nattduksbord, sedan dekor.
