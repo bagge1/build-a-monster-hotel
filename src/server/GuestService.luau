@@ -103,6 +103,17 @@ local folder: Folder
 local rng = Random.new()
 local checkoutHandlers: { (Player, Guest, number) -> () } = {}
 local checkInHandlers: { (Player, Guest) -> () } = {}
+
+-- What each player's guests have paid this session (pay, tips, request tips):
+-- the hotel's own income, which the chain measures (`ChainService`, §6.4).
+local income: { [Player]: number } = {}
+local function countIncome(player: Player, amount: number)
+	income[player] = (income[player] or 0) + amount
+end
+
+function GuestService.income(player: Player): number
+	return income[player] or 0
+end
 local speedBonus: { [Player]: number } = {}
 
 local function publish(g: Guest)
@@ -682,6 +693,7 @@ local function checkout(g: Guest)
 		Stay.tip(g.payRate, stay, satisfaction) * (1 + GuestService.tipBonus(player, "Tips"))
 	)
 	PlayerData.addTill(player, tip)
+	countIncome(player, tip)
 	local stars = Stay.review(satisfaction)
 	HotelService.addReview(player, stars)
 	HotelService.recordStay(player, g.prefsMatched / math.max(1, #sp.prefs))
@@ -741,6 +753,7 @@ function GuestService.fulfil(player: Player, pieceId: string, byStaff: boolean):
 			g.payRate * S.RequestTipSeconds * (1 + GuestService.tipBonus(player, "RequestTips"))
 		)
 		PlayerData.addTill(player, bonus)
+		countIncome(player, bonus)
 		Net.fire(player, "Pop", bonus, here(g), "Tip")
 	end
 	HotelService.setRequest(player, pieceId, nil)
@@ -921,6 +934,7 @@ local function payTick()
 		end
 	end
 	for player, amount in owed do
+		countIncome(player, amount)
 		local data = PlayerData.get(player)
 		if data and data.passes.AutoCollect then
 			PlayerData.earn(player, amount)
@@ -941,6 +955,9 @@ function GuestService.Init()
 end
 
 function GuestService.Start()
+	Players.PlayerRemoving:Connect(function(player)
+		income[player] = nil
+	end)
 	DevGrant.register("guest", function(player, args)
 		-- Studio only: a guest of `args[1]` (a Slime by default) walks in from the pavement, as the tutorial's does.
 		local g = GuestService.spawnTutorial(player, args[1] or "Slime", { source = "Dev" })

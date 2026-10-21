@@ -1,9 +1,11 @@
 --!strict
 --[[
-	The long game's panel (GDD §6.4, §6.5): **Move** (rebirth: what it asks,
-	what is met, the Moon Shards it would give, where it goes) and the **Moon
-	Tree** (each node's level, effect and price in shards). Drawn from the
-	`progression` state section; the server checks every purchase again.
+	The long game's panel (GDD §6.4, §6.5, his rulings 2026-10-20): **your
+	hotels** (the chain: the one played, Travel to another, Open the next and
+	what each earns while not played), **Rebirth** (5★ on every hotel, what
+	it takes and gives) and the **Moon Tree** (each node's level, effect and
+	price in shards). Drawn from the `chain` and `progression` state
+	sections; the server checks every purchase and travel again.
 ]]
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -40,6 +42,68 @@ local function line(text: string, ok: boolean, order: number)
 	l.LayoutOrder = order
 end
 
+local function stars(r: number?): string
+	return if r then `{math.floor(r * 10 + 0.5) / 10}★` else "—"
+end
+
+local function drawChain(order: number): number
+	local c = State.data.chain
+	if not c then
+		return order
+	end
+	local title =
+		Ui.label(body, "ChainTitle", "Your hotels", UDim2.new(1, 0, 0, 30), 24, Ui.Colour.Gold)
+	title.LayoutOrder = order
+	for _, h in c.hotels do
+		order += 1
+		local row = Ui.frame(body, `Hotel_{h.id}`, UDim2.new(1, 0, 0, 52))
+		row.BackgroundTransparency = 1
+		row.LayoutOrder = order
+		local text = if h.here
+			then `{h.name}  ·  {stars(h.rating)}  ·  you are here`
+			elseif h.opened then `{h.name}  ·  {stars(h.rating)}  ·  earning {Format.cash(
+				h.perMinute or 0
+			)}/min`
+			else `{h.name}  ·  not opened`
+		local l = Ui.label(
+			row,
+			"Name",
+			text,
+			UDim2.new(1, -190, 1, 0),
+			18,
+			if h.here then Ui.Colour.Good else Ui.Colour.Text
+		)
+		l.TextXAlignment = Enum.TextXAlignment.Left
+		local label, colour, active
+		if h.here then
+			label, colour, active = "Playing", Ui.Colour.Ink, false
+		elseif h.opened then
+			label, colour, active = "Travel", Ui.Colour.Teal, true
+		elseif h.canOpen then
+			label, colour, active = `Open {Format.cash(h.cost or 0)}`, Ui.Colour.Pumpkin, true
+		else
+			label, colour, active = "Open the one before", Ui.Colour.Ink, false
+		end
+		local b = Ui.button(row, "Go", label, UDim2.fromOffset(180, 46), function()
+			if active then
+				Net.send("Travel", h.id)
+			end
+		end, colour)
+		b.Position = UDim2.new(1, -180, 0, 3)
+	end
+	order += 1
+	local note = Ui.label(
+		body,
+		"ChainNote",
+		`The hotels you are not playing earn {math.floor(c.share * 100 + 0.5)} % of what they earn while you play them, staffed by their own residents.`,
+		UDim2.new(1, 0, 0, 40),
+		15,
+		Ui.Colour.Muted
+	)
+	note.LayoutOrder = order
+	return order + 1
+end
+
 local function draw()
 	clear()
 	local p = State.data.progression
@@ -49,33 +113,42 @@ local function draw()
 	local head = Ui.label(
 		body,
 		"Head",
-		`{p.locationName}  ·  {Format.number(p.shards)} Moon Shards  ·  moves so far: {p.rebirths}`,
+		`{Format.number(p.shards)} Moon Shards  ·  rebirths: {p.rebirths}  ·  Prestige Stars: {p.prestige}`,
 		UDim2.new(1, 0, 0, 28),
 		20,
 		Ui.Colour.Moon
 	)
 	head.LayoutOrder = 1
+	local order = drawChain(2)
 	local r = p.req
 	local title =
-		Ui.label(body, "MoveTitle", `Move to {r.next}`, UDim2.new(1, 0, 0, 30), 24, Ui.Colour.Gold)
-	title.LayoutOrder = 2
-	line("Hotel rating 4★", r.rating, 3)
-	line(r.cashText, r.cash, 4)
-	line(`A {r.residentName} resident`, r.resident, 5)
+		Ui.label(body, "RebirthTitle", "Rebirth", UDim2.new(1, 0, 0, 30), 24, Ui.Colour.Gold)
+	title.LayoutOrder = order
+	for _, h in r.ratings do
+		order += 1
+		line(`{h.name} at {r.need}★ (now {stars(h.rating)})`, h.ok, order)
+	end
+	order += 1
+	local gain = if r.floor
+		then `Gives the right to buy floor {r.floorCap}`
+		elseif r.prestige then "Gives a Prestige Star (+income)"
+		else ""
 	local keeps = Ui.label(
 		body,
 		"Keeps",
-		"Keeps residents, the Monster Book, Moon Shards, the Moon Tree, friendship and unlocked room types. Resets cash, rooms and floors.",
+		"Keeps residents, the Monster Book, cosmetics, Moon Shards, the Moon Tree and friendship. Resets cash and every hotel: you start again at Haunted Manor. "
+			.. gain,
 		UDim2.new(1, 0, 0, 44),
 		15,
 		Ui.Colour.Muted
 	)
-	keeps.LayoutOrder = 6
+	keeps.LayoutOrder = order
+	order += 1
 	local move = Ui.button(
 		body,
 		"Move",
 		if r.ready
-			then `Move now: +{r.shards} Moon Shards`
+			then `Rebirth now: +{r.shards} Moon Shards`
 			else `Not yet (would give {r.shards} shards)`,
 		UDim2.new(1, 0, 0, 48),
 		function()
@@ -85,19 +158,21 @@ local function draw()
 		end,
 		if r.ready then Ui.Colour.Pumpkin else Ui.Colour.Ink
 	)
-	move.LayoutOrder = 7
+	move.LayoutOrder = order
+	order += 1
 	local treeTitle = Ui.label(
 		body,
 		"TreeTitle",
-		"Moon Tree: permanent, kept on every move",
+		"Moon Tree: permanent, kept on every rebirth",
 		UDim2.new(1, 0, 0, 30),
 		22,
 		Ui.Colour.Gold
 	)
-	treeTitle.LayoutOrder = 8
+	treeTitle.LayoutOrder = order
+	order += 1
 	local grid = Ui.frame(body, "Tree", UDim2.new(1, 0, 0, 200))
 	grid.BackgroundTransparency = 1
-	grid.LayoutOrder = 9
+	grid.LayoutOrder = order
 	local layout = Instance.new("UIGridLayout")
 	layout.CellSize = UDim2.new(0.33, -6, 0, 92)
 	layout.CellPadding = UDim2.fromOffset(6, 6)
@@ -122,7 +197,7 @@ function ProgressionPanel.Init()
 	window, body = Ui.window(
 		gui,
 		"ProgressionPanel",
-		"Move & Moon Tree",
+		"Hotels, Rebirth & Moon Tree",
 		UDim2.fromScale(0.6, 0.78),
 		nil,
 		true
@@ -137,6 +212,13 @@ function ProgressionPanel.Start()
 			draw()
 		end
 	end, 1)
+	-- The chain's Travel (§6.4): the same panel, opened at its hotels.
+	Hud.button("TravelButton", "🧳 Travel", "Right", function()
+		window.Visible = not window.Visible
+		if window.Visible then
+			draw()
+		end
+	end, 2)
 	State.changed:Connect(function()
 		if window.Visible then
 			draw()

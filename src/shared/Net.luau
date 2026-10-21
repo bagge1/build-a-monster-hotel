@@ -62,6 +62,7 @@ local DEFS: { [string]: Def } = {
 	Assign = { dir = "C2S", args = { "number", "string" }, rate = 0.25 }, -- resident id, role ("" = the Wing)
 	Release = { dir = "C2S", args = { "number" }, rate = 0.5 },
 	Rebirth = { dir = "C2S", rate = 2 },
+	Travel = { dir = "C2S", args = { "number" }, rate = 1 }, -- a location: travel to its hotel, or open it (§6.4)
 	MoonTree = { dir = "C2S", args = { "string" }, rate = 0.25 },
 	Like = { dir = "C2S", args = { "number" }, rate = 1 }, -- plot index
 	Tutorial = { dir = "C2S", args = { "string" }, rate = 0.25 }, -- "Skip" | "Next"

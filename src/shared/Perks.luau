@@ -36,6 +36,17 @@ Perks.BySpecies = {
 	SnowWitch = { kind = "RequestTips", amount = 0.05, text = "+5% request tips" },
 	IceWyrm = { kind = "Bus", amount = 0.05, text = "+5% bus score" },
 	AuroraSpirit = { kind = "Income", amount = 0.10, text = "+10% income" },
+	-- Bayou Spa: a draft with its species (WAITING §2.36), PLACEHOLDER
+	BogFrog = { kind = "Fun", amount = 5, text = "+5 Fun" },
+	Mossling = { kind = "Cleanliness", amount = 5, text = "+5 Cleanliness" },
+	FireflySprite = { kind = "Tips", amount = 0.05, text = "+5% tips" },
+	MudPuppy = { kind = "Speed", amount = 0.05, text = "+5% guest walking speed" },
+	GatorGhoul = { kind = "HunterIncome", amount = 0.10, text = "+10% income during Hunter Night" },
+	WillOWisp = { kind = "Service", amount = 5, text = "+5 Service" },
+	SwampHag = { kind = "RequestTips", amount = 0.05, text = "+5% request tips" },
+	BayouHydra = { kind = "ResidentIncome", amount = 0.05, text = "+5% resident income" },
+	CypressKing = { kind = "Bus", amount = 0.05, text = "+5% bus score" },
+	MoonHeron = { kind = "Income", amount = 0.10, text = "+10% income" },
 } :: { [string]: Perk }
 
 export type Resident = { species: string, campUntil: number }

@@ -1,11 +1,10 @@
 --!strict
 --[[
 	The long road (GDD §6.6): each location is a family of species, a facade
-	and a set of rooms. Rebirth moves a hotel to the next one (§6.4).
-
-	`rebirthResident` is the named monster §6.4 asks for ("a Vampire Count
-	resident"); Location 2's is a night draft (Appendix A.6). Locations 3–5 are
-	listed for the street's facades and the preview, with no family built yet
+	and a set of rooms, and a hotel of the player's chain (§6.4). Haunted
+	Manor, Frostfang Lodge and Bayou Spa are the launch chain (his ruling,
+	2026-10-20); Bayou Spa's family is a draft for his picks (WAITING §2.36).
+	Locations 4–5 are listed for the preview, with no family built yet
 	(`playable = false`).
 ]]
 
@@ -13,7 +12,6 @@ export type Location = {
 	id: number,
 	name: string,
 	family: string,
-	rebirthResident: string?,
 	playable: boolean,
 	ground: Color3,
 	facade: Color3,
@@ -27,7 +25,6 @@ local rows: { Location } = {
 		id = 1,
 		name = "Haunted Manor",
 		family = "Classic spooks",
-		rebirthResident = "VampireCount",
 		playable = true,
 		ground = Color3.fromRGB(60, 50, 70),
 		facade = Color3.fromRGB(90, 70, 110),
@@ -37,7 +34,6 @@ local rows: { Location } = {
 		id = 2,
 		name = "Frostfang Lodge",
 		family = "Ice and snow",
-		rebirthResident = "IceWyrm",
 		playable = true,
 		ground = Color3.fromRGB(200, 215, 230),
 		facade = Color3.fromRGB(120, 160, 200),
@@ -47,7 +43,7 @@ local rows: { Location } = {
 		id = 3,
 		name = "Bayou Spa",
 		family = "Swamp",
-		playable = false,
+		playable = true,
 		ground = Color3.fromRGB(60, 80, 50),
 		facade = Color3.fromRGB(80, 110, 70),
 		trim = Color3.fromRGB(200, 230, 120),

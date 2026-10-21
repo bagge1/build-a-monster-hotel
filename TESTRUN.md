@@ -680,6 +680,43 @@ from the start square. Specs only so far.
 - [x] The goal card's free tiles (`tutorial Goal`): fixed here, the windows
   commit had called `windowsOut` before it was defined (selene caught it).
 
+## The hotel chain (GDD §6.4, his rulings 2026-10-20)
+
+Built 2026-10-21 night: `Chain` (shared rules), `ChainService` (Travel, opening,
+background earnings from the guests' measured income), the new rebirth in
+`ProgressionService`, staff per hotel (`ResidentService`, `hotel`), Bayou Spa's
+draft rows (WAITING §2.36), schema 5 rebuilt. Every number PLACEHOLDER
+(WAITING §2.35). Played on test profile `Test_Chain1021`.
+
+- [x] A fresh profile: schema 5, Haunted Manor, the chain empty. The floor cap
+  2, +1 with the pass (the test account owns Extra Floor: floor 3 sold, as
+  it should).
+- [x] Opening in order: Travel 3 first refused `OpenInOrder`; Travel 2 opened
+  Frostfang Lodge for $250,000 (PLACEHOLDER), the plot drawn with Frostfang's
+  own facade; the Manor kept in the chain with its tiles, desk and floors.
+- [x] Background earnings: the Manor at $10/s earned +$16 in 6.3 s while
+  Frostfang was played (25 %); a $10M grant does not move the played hotel's
+  rate, a Snowball Sprite paying 84 in an Igloo Room moves it (4.6 $/s after
+  15 s, the 5-minute average).
+- [x] Travel back and forth: each hotel's tiles (16 and 17) and facade come
+  back; a resident on Frostfang's Front Desk has no slot at the Manor, the
+  Manor's Housekeeper has.
+- [x] Bayou Spa opened ($10M): the blockout hotel and Lily Pad Room; the bus
+  after the next brings Bayou guests (Mossling, Firefly Sprite: the bus is
+  drawn one ahead).
+- [x] Rebirth refused without 5★ everywhere; forced (`rebirth`): +20 Moon
+  Shards at $4M, the chain gone, Haunted Manor from the start square,
+  Frostfang's staff to the Wing, the Manor's kept; the second rebirth +1
+  Prestige Star, income multiplier 1.05; floors bought to 4 (3 by rebirth +
+  the pass), the 5th refused `FloorCap`.
+- [x] The panel by a real click on the HUD's Travel: your hotels (Playing,
+  Open $250K, Open the one before), the rebirth's three 5★ lines and what it
+  gives, the Moon Tree; Open clicked moved the player to Frostfang (−$250K).
+- [ ] With guests over a long run: whether a real player reaches 5★ at each
+  location in his times (`tools/balance_model.py`, WAITING §2.35).
+- [A] The values (share, prices, cap, Prestige effect) and Bayou Spa's species
+  (WAITING §2.35, §2.36).
+
 ## August keeps
 
 - How the street, the lobby and the rooms look (every look is a night draft).
@@ -723,3 +760,4 @@ from the start square. Specs only so far.
 - 2026-10-21 02:38 Facades in the game (Test_Facade1021): both kits' and the five packs' real pieces on a three-floor hotel, four window types, 432 rays out of the walls blocked, the arch 25/25 open, a walker through it; Frostfang after a rebirth. Two blind reviews triaged (`blender/facade/README.md`, "In the game"). No errors of the game's own.
 - 2026-10-21 02:38 Tiles per floor (Test_Tiles1021): every refusal by remote (TileAbove, NoTileBelow, NotNext, DoorBlocked), prices $100 and $103, floor 2 walled round its own tiles, a stair placed free; the goal card's block (24 to 36 tiles).
 - 2026-10-21 02:38 Real input with Studio in front (Test_Tiles1021): Windows (tab, card, hover, place, the window's menu) and Flip (the ghost's door, a flipped room built, Move with F mirrors its decor) by clicks and the F key; the build camera's right-drag fixed (injected moves carry no Delta; the turn now follows the cursor) and played: a drag turns, one from a button does not, a plain right-click stops placing. No errors of the game's own (one `ContentId 203785492` type warning, not in the repo).
+- 2026-10-21 02:57 The hotel chain (Test_Chain1021): opening in order, Travel and back (each hotel's tiles, facade and staff), background earnings measured from guests only, Bayou Spa's blockout hotel and guests, the new rebirth twice (shards, the chain gone, Prestige Star, the floor cap), the panel by real clicks. No errors of the game's own.

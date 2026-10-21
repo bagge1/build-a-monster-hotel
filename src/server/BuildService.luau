@@ -29,6 +29,7 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
 
+local Chain = require(ReplicatedStorage.Shared.Chain)
 local Constants = require(ReplicatedStorage.Shared.Constants)
 local Cosmetics = require(ReplicatedStorage.Shared.Cosmetics)
 local Economy = require(ReplicatedStorage.Shared.Economy)
@@ -197,8 +198,9 @@ function BuildService.refreshUnlocks(player: Player): { string }
 	return new
 end
 
+-- 2 floors, one more the right to buy per odd rebirth to a cap, +1 with the pass (§6.4).
 function BuildService.maxFloors(data: PlayerData.Data): number
-	return Constants.Economy.FloorCap + (if data.passes.ExtraFloor then 1 else 0)
+	return Chain.floorCap(data.rebirths) + (if data.passes.ExtraFloor then 1 else 0)
 end
 
 -- What placing `item` costs now: a stair owed for a new floor is free, a tutorial voucher too.

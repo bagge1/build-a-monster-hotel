@@ -9,7 +9,9 @@
 
 	WHAT IT HOLDS (§13.3): currencies; the layout (piece ids, plot-relative
 	cells, rotations, what each cost, floor finishes), the decor on its
-	squares, the tiles owned; residents (species, mutation, role);
+	squares, the tiles owned, of the hotel being played, and the chain's
+	other hotels in `chain` (§6.4); residents (species, mutation, role, the
+	hotel they staff);
 	friendship; the Monster Book; the Moon Tree; reviews; the tutorial; daily
 	and login state; codes; passes; boosts; settings; and the processed
 	PurchaseIds, so a receipt is never granted twice.
@@ -48,7 +50,7 @@ local PlayerData = {}
 --[[ Bump only when the shape changes in a way old data cannot satisfy, and add
 	the step to `migrate` in the same commit. The game is not live (CLAUDE.md),
 	so until it is, a shape change may simply start everyone over. ]]
-local SCHEMA_VERSION = 4
+local SCHEMA_VERSION = 5
 
 -- A new hotel's windows (A.1, his ruling): a Twin sash on each front wall beside the entrance, free.
 local function startWindows(): { [string]: WindowRecord }
@@ -90,15 +92,41 @@ export type DecorRecord = {
 	room: string,
 	paid: number,
 }
-export type ResidentRecord = { species: string, mutation: string, role: string, campUntil: number }
+-- `hotel` is the location of the hotel a resident staffs (§6.4: each hotel its own staff); nil in the Wing.
+export type ResidentRecord = {
+	species: string,
+	mutation: string,
+	role: string,
+	campUntil: number,
+	hotel: number?,
+}
+--[[ A hotel of the chain that is not being played (§6.4): its own fields as
+	the played hotel keeps them in `Data`, its rating when it was left, and
+	the rate it earned while played, for its background earnings. ]]
+export type HotelRecord = {
+	layout: { [string]: PieceRecord },
+	decor: { [string]: DecorRecord },
+	tiles: { [string]: boolean },
+	tilesBought: { [string]: number },
+	windows: { [string]: WindowRecord },
+	finishes: { [string]: string },
+	floors: number,
+	freeStairs: number,
+	reviews: { number }?,
+	rating: number,
+	rate: number,
+}
 export type Data = {
 	version: number,
 	cash: number,
 	till: number,
 	runCash: number, -- earned this run, for rebirth (§6.4)
 	lifetimeCash: number,
-	location: number,
+	location: number, -- the hotel being played (§6.4); its fields are `layout`, `tiles` … below
+	chain: { [string]: HotelRecord }, -- the chain's other hotels, by location id (§6.4)
+	rate: number, -- the played hotel's earning rate, $/s (Chain.updateRate)
 	rebirths: number,
+	prestige: number, -- Prestige Stars (§6.4)
 	shards: number,
 	candy: number, -- the season's event currency (§6.1), kept for the event's duration
 	candySeason: string,
@@ -147,7 +175,10 @@ local TEMPLATE: Data = {
 	runCash = 0,
 	lifetimeCash = 0,
 	location = 1,
+	chain = {},
+	rate = 0,
 	rebirths = 0,
+	prestige = 0,
 	shards = 0,
 	candy = 0,
 	candySeason = "",
@@ -242,6 +273,20 @@ local function migrate(data: Data)
 		PlayerData.resetHotel(data)
 		local old = data :: any
 		old.areas = nil
+	end
+	if data.version < 5 then
+		-- The hotel chain (§6.4, his rulings 2026-10-20): one hotel, at
+		-- Haunted Manor, from the start square; residents back in the Wing.
+		-- Not live (CLAUDE.md): rebuilt, not migrated.
+		PlayerData.resetHotel(data)
+		data.location = 1
+		data.chain = {}
+		data.rate = 0
+		data.prestige = 0
+		for _, r in data.residents do
+			r.role = ""
+			r.hotel = nil
+		end
 	end
 	ensureDesk(data)
 	data.version = SCHEMA_VERSION

@@ -32,7 +32,8 @@ local systems: { { Init: () -> (), Start: () -> () } } = {
 	require(Server.BusService) :: any, -- the Night Bus, which hands guests to GuestService
 	require(Server.ResidentService) :: any, -- friendship and residents, from guests' check-outs
 	require(Server.BookService) :: any, -- the Monster Book, from check-outs and move-ins
-	require(Server.ProgressionService) :: any, -- rebirth and the Moon Tree, over all of the above
+	require(Server.ChainService) :: any, -- the hotel chain: travel, opening, background earnings (§6.4)
+	require(Server.ProgressionService) :: any, -- rebirth and the Moon Tree, over all of the above and the chain
 	require(Server.StoreService) :: any, -- receipts, passes, boosts; after the systems it grants into
 	require(Server.DailyService) :: any, -- dailies, login, codes; pays by StoreService's income rate
 	require(Server.HunterService) :: any, -- Hunter Night, over guests, residents and the bus

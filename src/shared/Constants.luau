@@ -148,8 +148,7 @@ Constants.Economy = {
 	WindowCost = 100, -- PLACEHOLDER: a window on a facade wall (A.1); selling refunds what was paid
 	Milestones = { 5, 10, 25 }, -- each doubles that type's pay (§6.2)
 	SellRefund = 0.5, -- PLACEHOLDER
-	FloorCosts = { 0, 500, 5000, 50000 }, -- PLACEHOLDER: floor 1 free; floor 4 needs the pass
-	FloorCap = 3, -- floors 1–3 at start (§3)
+	FloorCosts = { 0, 500, 5000, 50000, 500000, 5000000, 50000000 }, -- PLACEHOLDER: floor 1 free; the cap is Chain.floorCap (§6.4)
 	TillCap = math.huge, -- PLACEHOLDER: no cap until one is designed
 }
 
@@ -272,10 +271,22 @@ Constants.Book = {
 
 -- §6.4, §6.5: rebirth and the Moon Tree.
 Constants.Rebirth = {
-	MinRating = 4, -- §6.4
-	RunCash = 1e6, -- $1M earned this run (§6.4), ×20 per location
 	ShardScale = 10, -- floor(10 × √(run cash / $1M)) (§6.4)
 	ShardDivisor = 1e6,
+}
+
+-- §6.4, his rulings 2026-10-20: the hotel chain, the new rebirth, floors and Prestige Stars.
+Constants.Chain = {
+	Locations = 3, -- Haunted Manor, Frostfang Lodge, Bayou Spa at launch (§6.6)
+	RebirthRating = 5, -- 5★ on every hotel of the chain (his ruling)
+	OpenCost = { [2] = 250000, [3] = 10000000 }, -- PLACEHOLDER (WAITING §2.35): opening each location
+	BackgroundShare = 0.25, -- PLACEHOLDER (WAITING §2.35): a hotel not played earns this share of its rate
+	RateWindow = 300, -- seconds the played hotel's earning rate is averaged over (an EMA's time constant)
+	StartFloorCap = 2, -- floors a hotel may have before any rebirth (his ruling)
+	FloorCapMax = 6, -- PLACEHOLDER (WAITING §2.35): the cap by rebirth, before the Extra Floor pass
+	PrestigeIncome = 0.05, -- PLACEHOLDER (WAITING §2.35): + income per Prestige Star
+	PrestigeRarity = 0.02, -- PLACEHOLDER (WAITING §2.35): + chance of a rarer guest per Prestige Star
+	PrestigeEffectCap = 10, -- PLACEHOLDER: stars past this add no more effect
 }
 
 Constants.MoonTree = {

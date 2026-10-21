@@ -127,11 +127,17 @@ function ResidentService.threshold(speciesId: string): number
 	return if sp then Constants.Rarity[sp.rarity].friendship else math.huge
 end
 
--- The staff on duty in a role, with each one's efficiency.
+-- Whether a resident on staff works at the hotel being played (§6.4: each hotel its own staff).
+local function here(data: PlayerData.Data, r: PlayerData.ResidentRecord): boolean
+	return (r.hotel or data.location) == data.location
+end
+ResidentService.here = here
+
+-- The staff on duty in a role at the hotel being played, with each one's efficiency.
 function ResidentService.staff(data: PlayerData.Data, role: string): { number }
 	local out = {}
 	for _, r in data.residents do
-		if r.role == role and r.campUntil <= os.time() then
+		if r.role == role and r.campUntil <= os.time() and here(data, r) then
 			local sp = Species.get(r.species)
 			table.insert(
 				out,
@@ -207,7 +213,8 @@ local function publish(player: Player)
 		c:SetAttribute("Mutation", if r.mutation ~= "" then r.mutation else nil)
 		c:SetAttribute("Role", r.role)
 		c:SetAttribute("Away", away)
-		if r.role ~= "" and not away then
+		c:SetAttribute("Hotel", if r.role ~= "" then r.hotel or data.location else nil)
+		if r.role ~= "" and not away and here(data, r) then
 			slots[r.role] = (slots[r.role] or 0) + 1
 			c:SetAttribute("Slot", slots[r.role])
 		end
@@ -315,6 +322,7 @@ local function assign(player: Player, idNumber: number, role: string)
 		return
 	end
 	rec.role = role
+	rec.hotel = if role ~= "" then data.location else nil -- staffs the hotel being played (§6.4)
 	publish(player)
 end
 
@@ -475,7 +483,11 @@ local function runErrands(
 	for id, e in mine do
 		local rec = data.residents[id]
 		-- Reassigned, released or away: it stands at its new post at once.
-		local stale = not rec or rec.role ~= e.role or rec.campUntil > os.time() or not plot
+		local stale = not rec
+			or rec.role ~= e.role
+			or rec.campUntil > os.time()
+			or not plot
+			or not here(data, rec)
 		if not stale and (e.phase == "Out" or e.phase == "Work") then
 			if not jobOpen(hotel, e.role, e.room) then
 				turnBack(player, id, e, "Back", now)
@@ -505,7 +517,12 @@ local function runErrands(
 	for role in Staff.Errands do
 		local free = {}
 		for id, rec in data.residents do
-			if rec.role == role and rec.campUntil <= os.time() and not mine[id] then
+			if
+				rec.role == role
+				and rec.campUntil <= os.time()
+				and not mine[id]
+				and here(data, rec)
+			then
 				table.insert(free, id)
 			end
 		end
@@ -656,6 +673,7 @@ function ResidentService.Start()
 				species = r.species,
 				mutation = r.mutation,
 				role = r.role,
+				hotel = if r.role ~= "" then r.hotel or data.location else nil,
 				away = r.campUntil > os.time(),
 				pay = if sp
 					then Economy.residentPay(

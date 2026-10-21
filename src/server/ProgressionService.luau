@@ -1,15 +1,16 @@
 --!strict
 --[[
-	The long game (GDD §6.4, §6.5): rebirth ("Move to a new location") and
-	the Moon Tree.
+	The long game (GDD §6.4, §6.5, his rulings 2026-10-20): rebirth and the
+	Moon Tree. Opening the next location is the chain's (`ChainService`).
 
-	REBIRTH asks for a rating of 4★, the run's earnings ($1M at Location 1,
-	×20 per location after, Appendix A.6) and a resident of the location's
-	named monster (a Vampire Count at the Haunted Manor). It resets cash,
-	rooms, amenities, decor and floors; it keeps residents, the Book,
+	REBIRTH asks for 5★ on every hotel of the chain (`Chain.rebirthReady`).
+	It takes the chain apart: cash, every hotel and the locations opened go,
+	and the player starts again at Haunted Manor from the start square. It
+	keeps residents (staff of a lost hotel back in the Wing), the Book,
 	cosmetics, Moon Shards, the Moon Tree, friendship and every room type
-	already unlocked; and it gives Moon Shards = floor(10 × √(run cash / $1M))
-	and the next location, with its family on the bus and its rooms to build.
+	already unlocked. It gives Moon Shards = floor(10 × √(run cash / $1M)),
+	and either the right to buy one more floor (odd rebirths, to the cap) or
+	a Prestige Star (`Chain.givesPrestige`), whose income bonus is paid here.
 
 	THE MOON TREE turns shards into permanent bonuses, each read by the system
 	it changes through that system's provider hook (`Income`, `ResidentService`,
@@ -20,22 +21,20 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
 
+local Chain = require(ReplicatedStorage.Shared.Chain)
 local Constants = require(ReplicatedStorage.Shared.Constants)
 local Economy = require(ReplicatedStorage.Shared.Economy)
 local Format = require(ReplicatedStorage.Shared.Format)
 local Locations = require(ReplicatedStorage.Shared.Locations)
 local MoonTree = require(ReplicatedStorage.Shared.MoonTree)
 local Net = require(ReplicatedStorage.Shared.Net)
-local Species = require(ReplicatedStorage.Shared.Species)
 local PlayerData = require(ServerScriptService.Server.PlayerData)
-local PlotService = require(ServerScriptService.Server.PlotService)
 local HotelService = require(ServerScriptService.Server.HotelService)
-local BuildService = require(ServerScriptService.Server.BuildService)
-local GuestService = require(ServerScriptService.Server.GuestService)
 local BusService = require(ServerScriptService.Server.BusService)
 local ResidentService = require(ServerScriptService.Server.ResidentService)
 local StateService = require(ServerScriptService.Server.StateService)
 local Income = require(ServerScriptService.Server.Income)
+local ChainService = require(ServerScriptService.Server.ChainService)
 local DevGrant = require(ServerScriptService.Server.DevGrant)
 
 local ProgressionService = {}
@@ -66,39 +65,33 @@ local function publishTree(player: Player, data: PlayerData.Data)
 end
 
 export type Requirements = {
-	rating: boolean,
-	cash: boolean,
-	resident: boolean,
-	cashNeed: number,
-	cashHave: number,
-	residentId: string?,
+	ratings: { { name: string, rating: number?, ok: boolean } },
 	ready: boolean,
 	shards: number,
-	next: string,
+	floor: boolean, -- this rebirth unlocks one more floor to buy
+	prestige: boolean, -- this rebirth gives a Prestige Star
+	floorCap: number, -- the floors a hotel may have after it (before the pass)
 }
 
 function ProgressionService.requirements(player: Player, data: PlayerData.Data): Requirements
-	local loc = Locations.get(data.location)
-	local need = Economy.rebirthCash(data.location)
-	local hasResident = false
-	for _, r in data.residents do
-		if r.species == loc.rebirthResident then
-			hasResident = true
-		end
+	local ratings = ChainService.ratings(player, data)
+	local list = {}
+	for id = 1, Constants.Chain.Locations do
+		local r = ratings[id]
+		table.insert(list, {
+			name = Locations.get(id).name,
+			rating = r,
+			ok = r ~= nil and r >= Constants.Chain.RebirthRating,
+		})
 	end
-	local rating = HotelService.rating(player) >= Constants.Rebirth.MinRating
-	local cash = data.runCash >= need
-	local nextLoc = Locations.get(math.min(data.location + 1, Locations.last()))
+	local n = data.rebirths + 1
 	return {
-		rating = rating,
-		cash = cash,
-		resident = hasResident,
-		cashNeed = need,
-		cashHave = data.runCash,
-		residentId = loc.rebirthResident,
-		ready = rating and cash and hasResident,
+		ratings = list,
+		ready = Chain.rebirthReady(ratings),
 		shards = Economy.rebirthShards(data.runCash),
-		next = nextLoc.name,
+		floor = Chain.floorCap(n) > Chain.floorCap(n - 1),
+		prestige = Chain.givesPrestige(n),
+		floorCap = Chain.floorCap(n),
 	}
 end
 
@@ -109,42 +102,39 @@ local function rebirth(player: Player, force: boolean?)
 	end
 	local req = ProgressionService.requirements(player, data)
 	if not req.ready and not force then
-		Net.fire(player, "Refused", "Rebirth", "Not ready to move yet")
+		Net.fire(player, "Refused", "Rebirth", "Every hotel needs 5★ first")
 		return
 	end
-	-- The guests of this hotel go home; the hotel is taken down.
-	for _, g in GuestService.of(player) do
-		GuestService.remove(g)
-	end
-	local hotel = HotelService.get(player)
-	if hotel then
-		table.clear(hotel.queue)
-	end
+	local from = data.location
 	PlayerData.addShards(player, req.shards)
 	data.cash = Constants.Economy.StartCash
 	data.till = 0
 	data.runCash = 0
-	PlayerData.resetHotel(data) -- the start area, the desk, one floor (§5.4)
+	-- The chain is taken apart: Haunted Manor again, from the start square.
+	data.chain = {}
+	data.location = 1
+	PlayerData.resetHotel(data)
 	data.reviews = {}
+	data.rate = 0
 	data.rebirths += 1
-	local from = data.location
-	data.location = math.min(data.location + 1, Locations.last())
-	PlayerData.publish(player)
-	PlotService.rebuild(player)
-	HotelService.sync(player)
-	HotelService.recompute(player)
-	BuildService.refreshUnlocks(player)
-	ResidentService.publish(player)
-	StateService.mark(player)
-	Net.fireAll(
-		"Announce",
-		`{player.DisplayName} moved to {Locations.get(data.location).name}!`,
-		"Rare"
-	)
+	if req.prestige then
+		data.prestige += 1
+	end
+	-- Staff of the hotels that are gone go back to the Wing.
+	for _, r in data.residents do
+		if r.role ~= "" and (r.hotel or 1) ~= 1 then
+			r.role = ""
+			r.hotel = nil
+		end
+	end
+	ChainService.redraw(player)
+	Net.fireAll("Announce", `{player.DisplayName} was reborn! Rebirth {data.rebirths}`, "Rare")
 	Net.fire(
 		player,
 		"Toast",
-		`+{req.shards} Moon Shards. Welcome to {Locations.get(data.location).name}!`,
+		`+{req.shards} Moon Shards. `
+			.. (if req.prestige then "+1 Prestige Star. " else "")
+			.. (if req.floor then `Hotels may now have {req.floorCap} floors.` else ""),
 		"Unlock"
 	)
 	PlayerData.stat(player, "rebirths")
@@ -189,6 +179,10 @@ function ProgressionService.Start()
 		local data = PlayerData.get(player)
 		return if data then MoonTree.effect("Cash", ProgressionService.level(data, "Cash")) else 0
 	end)
+	Income.addPermanent(function(player)
+		local data = PlayerData.get(player)
+		return if data then Chain.prestigeIncome(data.prestige) else 0
+	end)
 	ResidentService.addCapacity(function(player)
 		local data = PlayerData.get(player)
 		return if data then MoonTree.effect("Wing", ProgressionService.level(data, "Wing")) else 0
@@ -210,22 +204,22 @@ function ProgressionService.Start()
 			local level = ProgressionService.level(data, n.id)
 			table.insert(nodes, { id = n.id, level = level, cost = MoonTree.cost(n.id, level) })
 		end
-		local sp = req.residentId and Species.get(req.residentId)
 		return {
 			location = data.location,
 			locationName = Locations.get(data.location).name,
 			rebirths = data.rebirths,
+			prestige = data.prestige,
 			shards = data.shards,
 			nodes = nodes,
 			req = {
-				rating = req.rating,
-				cash = req.cash,
-				resident = req.resident,
-				cashText = `{Format.cash(req.cashHave)} / {Format.cash(req.cashNeed)} earned this run`,
-				residentName = sp and sp.name or "",
+				ratings = req.ratings,
+				need = Constants.Chain.RebirthRating,
 				ready = req.ready,
 				shards = req.shards,
-				next = req.next,
+				floor = req.floor,
+				prestige = req.prestige,
+				floorCap = req.floorCap,
+				cashText = `{Format.cash(data.runCash)} earned this run`,
 			},
 		}
 	end)

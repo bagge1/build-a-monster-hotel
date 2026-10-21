@@ -120,9 +120,4 @@ function Economy.rebirthShards(runCash: number): number
 	return math.floor(R.ShardScale * math.sqrt(math.max(runCash, 0) / R.ShardDivisor))
 end
 
--- What a rebirth from `location` asks to have earned this run (§6.4; ×20 per location is a PLACEHOLDER).
-function Economy.rebirthCash(location: number): number
-	return Constants.Rebirth.RunCash * E.LocationPayMultiplier ^ (location - 1)
-end
-
 return Economy

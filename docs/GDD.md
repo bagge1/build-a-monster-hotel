@@ -361,7 +361,7 @@ Appendix A.1 and A.2 now describe; every number there a PLACEHOLDER.
 **The chain** replaces "rebirth = move to a new location":
 
 - **Opening the next location does not wipe anything.** The player buys a new hotel at the next location (Haunted Manor → Frostfang Lodge → Bayou Spa), each **exponentially dearer** and **earning more** (prices PLACEHOLDER, WAITING §2). The new hotel starts as a new player's does (§5.4: the 4 × 4 start, the desk).
-- **One hotel is played at a time.** The **Travel** button switches which hotel the player plays and stands at. The others **keep earning in the background** at a share of what they earn while played (PLACEHOLDER, WAITING §2), staffed by **their own residents** (his "yes exactly"): each hotel keeps its own staff assignments.
+- **One hotel is played at a time.** The **Travel** button switches which hotel the player plays and stands at. The others **keep earning in the background** at a share of what they earn while played (PLACEHOLDER, WAITING §2), staffed by **their own residents** (his "yes exactly"): each hotel keeps its own staff assignments. The rate is what the hotel's guests paid while it was played (pay and tips, a moving average over 5 minutes), so a lump of cash never inflates it.
 - **All the hotels stand in the world** (§3): the old ones stay on their streets, so other players still in the first area see them, and the world never looks empty.
 - **Cash is one purse** for the whole chain; the rating, rooms, floors, tiles and staff are each hotel's own.
 - **Gained by opening one:** a new facade and biome, **a new family of 8–10 species**, its room types and amenities.
@@ -371,7 +371,7 @@ Appendix A.1 and A.2 now describe; every number there a PLACEHOLDER.
 - **Requirement: 5★ (the normal 1–5 rating, §5.3) on all three hotels.** The rating is tuned so 5★ is reachable.
 - **Loses:** cash, every hotel, the locations opened (back to Haunted Manor alone).
 - **Keeps:** residents, the Monster Book, cosmetics, Moon Shards, the Moon Tree, friendship progress.
-- **Floors:** a hotel starts with **2** floors. Rebirths **1, 3, 5, 7…** each unlock the **right to buy** one more floor (it is not free). The cap is open (WAITING §2): *6 by rebirth, 7 with the pass*, or *5 and 6*. The Extra Floor pass (§10.2) adds one on top.
+- **Floors:** a hotel may have **2** floors before any rebirth (floor 2 bought as before). Rebirths **1, 3, 5, 7…** each unlock the **right to buy** one more floor (it is not free). The cap is open (WAITING §2): *6 by rebirth, 7 with the pass*, or *5 and 6*. The Extra Floor pass (§10.2) adds one on top.
 - **Prestige Stars** on even rebirths (2, 4, 6…), and on every rebirth after the floor cap: a count apart from the 1–5 rating (rebirth still needs the normal 5★). Effect drafted: + income % and slightly rarer guests (values open, WAITING §2).
 - **Moon Shards = floor(10 × √(run cash / $1M))**, as before, a run now being the time between rebirths.
 - **Rebirth 10 takes very long**; more locations and content will exist by then (§6.6, §8.3).

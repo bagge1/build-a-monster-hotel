@@ -47,6 +47,9 @@ local REFUSALS: { [string]: string } = {
 	Busy = "A guest is using that room",
 	MaxTier = "Already the top tier",
 	FloorCap = "No more floors for now",
+	-- The hotel chain (§6.4)
+	OpenInOrder = "Open the locations in order",
+	NotEnoughCash = "Not enough cash to open it",
 	-- Free building (§5.4)
 	Tile = "Buy that tile of the plot first",
 	TileAbove = "Buy the tiles above it on the next floor first",
