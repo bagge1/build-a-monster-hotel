@@ -96,7 +96,7 @@ local function drawResidents()
 				Ui.frame(list, `R_{r.id}`, UDim2.new(1, -10, 0, 140), nil, Ui.Colour.PanelLight)
 			row.LayoutOrder = i
 			Ui.corner(row, 12)
-			local mutation = if r.mutation ~= "" then Mutations.ById[r.mutation].name .. " " else ""
+			local mutation = Mutations.prefix(r.size, if r.mutation ~= "" then r.mutation else nil)
 			local best = ROLE_NAMES[sp.staff]
 			local perk = Perks.BySpecies[sp.id]
 			local perkText = if perk then `  ·  {perk.text}` else ""
@@ -327,6 +327,23 @@ local function drawBook()
 			Ui.Colour.Gold
 		)
 		mutLine.Position = UDim2.fromOffset(10, 80)
+		-- A.11.5: the Seasons row (the season's and the month's looks found) and a stack's mark.
+		local seasons = {}
+		for _, m in Mutations.Seasonal do
+			if table.find(found, m.id) then
+				table.insert(seasons, m.name)
+			end
+		end
+		local seasonLine = Ui.label(
+			page,
+			"Seasons",
+			(if #seasons > 0 then "Seasons: " .. table.concat(seasons, " ") else "Seasons: ·")
+				.. (if table.find(found, "Stacked") then "  ·  stack ✓" else ""),
+			UDim2.new(1, -20, 0, 16),
+			12,
+			Ui.Colour.Moon
+		)
+		seasonLine.Position = UDim2.fromOffset(10, 100)
 		local f = c.friendship[sp.id] or { have = 0, need = 1 }
 		local bar = Ui.frame(
 			page,

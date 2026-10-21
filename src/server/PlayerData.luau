@@ -103,7 +103,8 @@ export type DecorRecord = {
 -- `hotel` is the location of the hotel a resident staffs (§6.4: each hotel its own staff); nil in the Wing.
 export type ResidentRecord = {
 	species: string,
-	mutation: string,
+	mutation: string, -- the look ("" none); a size is `size` (A.11.5: two fields, so `== "Golden"` keeps meaning the look)
+	size: string?, -- Tiny or Giant, stacked with the look (A.11.5)
 	role: string,
 	campUntil: number,
 	hotel: number?,

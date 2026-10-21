@@ -9,7 +9,9 @@
 	  - each family completed: a permanent +5 % income (an `Income` provider)
 	    and the family's cosmetic;
 	  - each mutation set completed (every species of a family found in that
-	    mutation): a title, "<Mutation> Host" (§4.6's "Golden Host").
+	    mutation): a title, "<Mutation> Host" (§4.6's "Golden Host");
+	  - a stacked mutation (A.11.5) fills its size's and its look's entries,
+	    and the first stack gives a title (`find`).
 
 	The Book is kept through rebirth (§6.4).
 ]]
@@ -63,24 +65,56 @@ local function mutationSetDone(data: PlayerData.Data, location: number, mutation
 	return true
 end
 
--- Records a find, paying what it earns. Returns whether it was new.
-function BookService.find(player: Player, speciesId: string, mutation: string?): boolean
+-- A guest or resident that is a stack (A.11.5): the page's mark, beside its two entries.
+local STACKED = "Stacked"
+
+--[[ Records a find, paying what it earns. Returns whether anything was new.
+	A STACK (a size and a look, A.11.5 decision 4a) fills both of its single
+	entries, marks the page `Stacked`, and the first stack of any kind gives
+	`Constants.Mutations.StackTitle`. A month's look is a Seasons entry
+	(`Mutations.Seasonal`, with the season's): it gives no mutation-set
+	title, so no title waits a year. ]]
+function BookService.find(
+	player: Player,
+	speciesId: string,
+	mutation: string?,
+	size: string?
+): boolean
 	local data = PlayerData.get(player)
 	local sp = Species.get(speciesId)
 	if not data or not sp then
 		return false
 	end
-	local key = mutation or NORMAL
+	local keys = {}
+	for _, id in { size, mutation } do
+		if id and Mutations.ById[id :: string] then
+			table.insert(keys, id :: string)
+		end
+	end
+	if #keys == 0 then
+		table.insert(keys, NORMAL)
+	end
 	local page = data.book[speciesId]
 	local newSpecies = page == nil
 	if not page then
 		page = {}
 		data.book[speciesId] = page
 	end
-	if page[key] then
+	local stacked = size ~= nil and mutation ~= nil
+	local fresh = {}
+	for _, key in keys do
+		if not page[key] then
+			page[key] = true
+			table.insert(fresh, key)
+		end
+	end
+	local newStack = stacked and not page[STACKED]
+	if newStack then
+		page[STACKED] = true
+	end
+	if #fresh == 0 and not newStack then
 		return false
 	end
-	page[key] = true
 	if newSpecies then
 		local bonus =
 			math.floor(Economy.speciesPay(speciesId) * Constants.Book.SpeciesFoundPaySeconds)
@@ -88,17 +122,18 @@ function BookService.find(player: Player, speciesId: string, mutation: string?):
 		Net.fire(
 			player,
 			"Toast",
-			`New in your Monster Book: {sp.name}! +{Format.cash(bonus)}`,
+			`New in your Monster Book: {Mutations.prefix(size, mutation)}{sp.name}! +{Format.cash(
+				bonus
+			)}`,
 			"Unlock"
 		)
 		PlayerData.stat(player, "speciesFound")
-	elseif mutation then
-		Net.fire(
-			player,
-			"Toast",
-			`Monster Book: {Mutations.ById[mutation].name} {sp.name}!`,
-			"Unlock"
-		)
+	elseif #fresh > 0 and fresh[1] ~= NORMAL then
+		local names = {}
+		for _, key in fresh do
+			table.insert(names, Mutations.ById[key].name)
+		end
+		Net.fire(player, "Toast", `Monster Book: {table.concat(names, " ")} {sp.name}!`, "Unlock")
 	end
 	local loc = sp.location
 	if not data.families[tostring(loc)] and familyDone(data, loc) then
@@ -111,12 +146,25 @@ function BookService.find(player: Player, speciesId: string, mutation: string?):
 			"Rare"
 		)
 	end
-	if mutation then
-		local title = `{Mutations.ById[mutation].name} Host`
-		if not data.titles[title] and mutationSetDone(data, loc, mutation) then
-			data.titles[title] = true
-			Net.fire(player, "Announce", `New title: {title}!`, "Rare")
+	for _, key in fresh do
+		local row = Mutations.ById[key]
+		if row and row.month == nil then -- a month's look gives no set title (A.11.5)
+			local title = `{row.name} Host`
+			if not data.titles[title] and mutationSetDone(data, loc, key) then
+				data.titles[title] = true
+				Net.fire(player, "Announce", `New title: {title}!`, "Rare")
+			end
 		end
+	end
+	local stackTitle = Constants.Mutations.StackTitle
+	if stacked and not data.titles[stackTitle] then
+		data.titles[stackTitle] = true
+		Net.fire(
+			player,
+			"Announce",
+			`Your first stacked mutation, a {Mutations.prefix(size, mutation)}{sp.name}! New title: {stackTitle}!`,
+			"Rare"
+		)
 	end
 	StateService.mark(player)
 	return true
@@ -139,10 +187,15 @@ function BookService.Start()
 		return n * Constants.Book.FamilyBonus
 	end)
 	GuestService.onCheckout(function(player, g)
-		BookService.find(player, g.species, g.mutation)
+		BookService.find(player, g.species, g.mutation, g.size)
 	end)
 	ResidentService.onMoveIn(function(player, _, rec)
-		BookService.find(player, rec.species, if rec.mutation ~= "" then rec.mutation else nil)
+		BookService.find(
+			player,
+			rec.species,
+			if rec.mutation ~= "" then rec.mutation else nil,
+			rec.size
+		)
 	end)
 	StateService.provide("book", function(_, data)
 		local pages = {}
@@ -169,7 +222,8 @@ function BookService.Start()
 		return { pages = pages, titles = titles, families = families }
 	end)
 	DevGrant.register("find", function(player, args)
-		return tostring(BookService.find(player, args[1] or "Slime", args[2]))
+		-- `find <species> [look] [size]`
+		return tostring(BookService.find(player, args[1] or "Slime", args[2], args[3]))
 	end)
 end
 

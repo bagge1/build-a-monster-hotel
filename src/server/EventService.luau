@@ -93,6 +93,7 @@ end
 local announcedParade = 0
 local startedHunt = 0
 local announcedSeason = ""
+local announcedMonthly = "" -- the mutation of the month announced (A.11.5)
 
 local function tick()
 	local t = EventService.now()
@@ -131,6 +132,13 @@ local function tick()
 			`{season.name} is here! Look out for {season.mutation} guests.`,
 			"Rare"
 		)
+	end
+	-- The mutation of the month (A.11.5), announced once per server as its month begins.
+	local monthly = Events.monthly(t)
+	workspace:SetAttribute("MonthlyMutation", monthly)
+	if monthly and announcedMonthly ~= monthly then
+		announcedMonthly = monthly
+		Net.fireAll("Announce", `This month's mutation: look out for {monthly} guests!`, "Rare")
 	end
 end
 
@@ -171,6 +179,7 @@ function EventService.Start()
 		return {
 			season = if s then s.name else nil,
 			mutation = if s then s.mutation else nil,
+			monthly = Events.monthly(t), -- the mutation of the month (A.11.5)
 			currency = s ~= nil and s.currency,
 			currencyName = if s then s.currencyName else nil,
 			icon = if s then s.icon else nil,

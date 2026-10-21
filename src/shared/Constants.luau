@@ -392,6 +392,15 @@ Constants.Social = {
 	LikesPerDay = 1, -- one like per hotel per day (§7)
 }
 
+--[[ A.11.5 deeper mutations (night brief step 9): a size and a look stack,
+	their pay added; a mutation of the month. Every value PLACEHOLDER. ]]
+Constants.Mutations = {
+	MonthlyChance = 0.03, -- PLACEHOLDER: the month's mutation, a row of the look table in its month (as Pumpkin's 3 %)
+	MonthlyPay = 4, -- PLACEHOLDER: ×4 pay, as Pumpkin
+	Monthly = { [3] = "Mossy", [5] = "Rainbow", [7] = "Sunburnt", [9] = "Moonlit" }, -- PLACEHOLDER: month → mutation id (Halloween and Winter as they are)
+	StackTitle = "Stacked Host", -- PLACEHOLDER: the title for a first stack of any kind (his to name)
+}
+
 --[[ A.11.4 the showcase, built street only (his call, WAITING §2.38: the
 	draft's recommendation, reversible). Every number PLACEHOLDER. ]]
 Constants.Showcase = {

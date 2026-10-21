@@ -83,27 +83,33 @@ function Economy.incomeMultiplier(b: Bonuses): number
 end
 
 --[[ What a guest pays per second while staying (§4.4): its species' rate,
-	the room's tier, its mutation, the milestones of that room type, and the
-	hotel's bonuses. ]]
+	the room's tier, its mutation (a look and a size, their pay added,
+	A.11.5), the milestones of that room type, and the hotel's bonuses. ]]
 function Economy.guestPay(
 	speciesId: string,
 	tier: number,
 	mutation: string?,
 	typeCount: number,
-	multiplier: number
+	multiplier: number,
+	size: string?
 ): number
 	return Economy.speciesPay(speciesId)
 		* Economy.tierPay(tier)
-		* Mutations.payMultiplier(mutation)
+		* Mutations.payMultiplier(size, mutation)
 		* Economy.milestoneMultiplier(typeCount)
 		* multiplier
 end
 
--- A resident's rate (§4.6): 25 % of its species' rate, times its mutation.
-function Economy.residentPay(speciesId: string, mutation: string?, multiplier: number): number
+-- A resident's rate (§4.6): 25 % of its species' rate, times its mutation (a look and a size, A.11.5).
+function Economy.residentPay(
+	speciesId: string,
+	mutation: string?,
+	multiplier: number,
+	size: string?
+): number
 	return Economy.speciesPay(speciesId)
 		* Constants.Residents.EarnFraction
-		* Mutations.payMultiplier(mutation)
+		* Mutations.payMultiplier(size, mutation)
 		* multiplier
 end
 

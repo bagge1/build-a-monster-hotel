@@ -963,6 +963,43 @@ PLACEHOLDER. Played by remotes and `execute_luau` only on `Test_Endless1021b`.
 - [A] The badge's and the row's look; whether levels go through a rebirth
   (WAITING §2.38).
 
+## Deeper mutations (GDD A.11.5)
+
+Built 2026-10-21 morning (night brief step 9, piece 3) on A.11.5's
+scrutinized recommendation: a size (Tiny, Giant) and a look stack, rolled
+independently; their pay added; two fields, `size` and `mutation` (the look,
+kept by name so `== "Golden"` holds); the month's mutation a row of the look
+table in its month (March Mossy, May Rainbow, July Sunburnt, September
+Moonlit); a stack fills both Book entries, marks the page and the first
+gives a title; the month's looks a Seasons row with no set title. Whether a
+missed month may come back off-season is his call (WAITING §2.38; not
+built). Every number `Constants.Mutations`, PLACEHOLDER. Played by remotes
+and `execute_luau` only on `Test_Endless1021c`.
+
+- [x] Specs: `mutations` (sizes and looks, independent rolls, added pay,
+  the month's row in its month only with Shadow and Golden still rolled,
+  the Seasons row, the stack's words), `data` and `events` updated to the
+  two rolls; all 151 green under Lune.
+- [x] Residents: a Giant Golden, a Giant and a Golden Slime; Wing rates
+  1.5, 0.5 and 1.25 /s (base 0.25: ×6 added, ×2, ×5); `Size` and `Mutation`
+  on their Configurations; drawn at scale 1.5 in Foil, 1.5 plain, 1.0 in Foil;
+  the Residents panel names "Giant Golden Slime".
+- [x] The Book on the stack's move-in: Slime's `Golden`, `Giant`, `Stacked`;
+  title "Stacked Host" announced; the page's Mutations line "· Giant Golden ·"
+  and Seasons line "· · stack ✓".
+- [x] The calendar at 2027-03-16 (`eventclock 3504`): `MonthlyMutation`
+  Mossy, the banner "This month's mutation: look out for Mossy guests!", the
+  Events panel's line; `find Ghost Mossy Tiny`: Tiny, Mossy, Stacked, and no
+  "Mossy Host" title.
+- [x] Six buses: a Tiny Slime off the bus with `Size` Tiny and no look,
+  drawn at scale 0.5 and labelled "Tiny Slime".
+- [ ] A stacked guest off a real bus and its check-in pay (0.29 % of
+  guests: by the spec and the residents' pay only); the announcement of a
+  stacked Legendary.
+- [A] The four monthly looks (Mossy grass, Rainbow glass, Sunburnt red,
+  Moonlit neon), their names and months, the title's name; whether a missed
+  month comes back off-season (WAITING §2.38).
+
 ## August keeps
 
 - How the street, the lobby and the rooms look (every look is a night draft).
@@ -1012,3 +1049,4 @@ PLACEHOLDER. Played by remotes and `execute_luau` only on `Test_Endless1021b`.
 - 2026-10-21 07:52 The world (Test_World1021a, by remotes, no window focus): three streets, Travel moving the live plot and the character, the chain drawn static on the other streets, a bus per street with its own family, Hunter Night on street 2, sightlines from street-end plots measured, parts and lights measured; fixed: guests stranded on a street left without a bus, far street lamps' lights. No pictures (Studio drew no frames). No errors of the game's own.
 - 2026-10-21 08:01 The showcase (A.11.4) played by remotes on Test_Endless1021a: likes, weekly count, milestone, favourite, panel, daily visits; two-player items open.
 - 2026-10-21 08:06 Residents level up (A.11.6) played by remotes on Test_Endless1021b: XP at work, refusals, two level-ups with the Wing rate and efficiency measured, panel and badge, levels through a rebirth.
+- 2026-10-21 08:12 Deeper mutations (A.11.5) played by remotes on Test_Endless1021c: stacked residents' pay, scale and tint, the Book's stack and title, the month's mutation in March by the event clock, a Tiny bus guest; balance_model's guards flag the pay lines.

@@ -135,16 +135,27 @@ function Events.weights(t: number): { [string]: number }
 	return w
 end
 
--- A mutation rolled at `t`: the season's own first (§4.5 "Seasonal: event only"), then the usual.
+-- The mutation of the month at `t` (A.11.5; Constants.Mutations.Monthly), or nil.
+function Events.monthly(t: number): string?
+	return Constants.Mutations.Monthly[parts(t).month]
+end
+
+--[[ The look rolled at `t`: the season's own or the month's mutation is a
+	row of the look table, taken first and the rest scaled (§4.5 "Seasonal:
+	event only", A.11.5), so Shadow, Golden and Glitched come in every month. ]]
 function Events.rollMutation(r: number, t: number): string?
 	local s = Events.season(t)
-	if s then
-		if r < s.chance then
-			return s.mutation
-		end
-		r = (r - s.chance) / (1 - s.chance)
-	end
-	return Mutations.roll(r)
+	local monthly = Events.monthly(t)
+	local extra = if s
+		then { id = s.mutation, chance = s.chance }
+		elseif monthly then { id = monthly, chance = Constants.Mutations.MonthlyChance }
+		else nil
+	return Mutations.rollLook(r, extra)
+end
+
+-- A guest's size and look at `t` (A.11.5 decision 1a): two independent rolls.
+function Events.rollMutations(rSize: number, rLook: number, t: number): (string?, string?)
+	return Mutations.rollSize(rSize), Events.rollMutation(rLook, t)
 end
 
 export type ShopItem = { key: string, name: string, cost: number, text: string }

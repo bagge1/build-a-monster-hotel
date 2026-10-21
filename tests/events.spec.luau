@@ -25,7 +25,11 @@ describe("Events", function()
 
 	it("outside a season the usual mutations keep their odds", function()
 		for i = 0, 999 do
-			expect.eq(Events.rollMutation(i / 1000, SUMMER), Mutations.roll(i / 1000), `roll {i}`)
+			expect.eq(
+				Events.rollMutation(i / 1000, SUMMER),
+				Mutations.rollLook(i / 1000),
+				`roll {i}`
+			)
 		end
 	end)
 

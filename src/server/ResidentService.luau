@@ -55,6 +55,7 @@ local GuestService = require(ServerScriptService.Server.GuestService)
 local StateService = require(ServerScriptService.Server.StateService)
 local Income = require(ServerScriptService.Server.Income)
 local BusService = require(ServerScriptService.Server.BusService)
+local Mutations = require(ReplicatedStorage.Shared.Mutations)
 local Perks = require(ReplicatedStorage.Shared.Perks)
 local ResidentLevels = require(ReplicatedStorage.Shared.ResidentLevels)
 local Staff = require(ReplicatedStorage.Shared.Staff)
@@ -170,7 +171,12 @@ end
 
 -- A resident's own Wing rate at level 1 and no income multiplier (A.11.6's price is in it).
 local function wingRate(rec: PlayerData.ResidentRecord): number
-	return Economy.residentPay(rec.species, if rec.mutation ~= "" then rec.mutation else nil, 1)
+	return Economy.residentPay(
+		rec.species,
+		if rec.mutation ~= "" then rec.mutation else nil,
+		1,
+		rec.size
+	)
 end
 
 -- An errand's attributes on its resident's Configuration, or none.
@@ -227,6 +233,7 @@ local function publish(player: Player)
 		c.Name = id
 		c:SetAttribute("Species", r.species)
 		c:SetAttribute("Mutation", if r.mutation ~= "" then r.mutation else nil)
+		c:SetAttribute("Size", r.size)
 		c:SetAttribute("Role", r.role)
 		c:SetAttribute("Level", ResidentLevels.level(r))
 		c:SetAttribute("Away", away)
@@ -265,7 +272,12 @@ end
 ResidentService.publish = publish
 
 -- Adds a resident, if the Wing has room. Returns its id.
-function ResidentService.add(player: Player, speciesId: string, mutation: string?): string?
+function ResidentService.add(
+	player: Player,
+	speciesId: string,
+	mutation: string?,
+	size: string?
+): string?
 	local data = PlayerData.get(player)
 	if not data or ResidentService.count(data) >= ResidentService.capacity(player, data) then
 		return nil
@@ -273,7 +285,7 @@ function ResidentService.add(player: Player, speciesId: string, mutation: string
 	local id = tostring(data.nextResident)
 	data.nextResident += 1
 	local rec: PlayerData.ResidentRecord =
-		{ species = speciesId, mutation = mutation or "", role = "", campUntil = 0 }
+		{ species = speciesId, mutation = mutation or "", size = size, role = "", campUntil = 0 }
 	data.residents[id] = rec
 	publish(player)
 	for _, h in moveInHandlers do
@@ -306,7 +318,7 @@ local function onCheckout(player: Player, g: GuestService.Guest, satisfaction: n
 		else ResidentService.threshold(g.species)
 	local early = rng:NextNumber() < Constants.Rarity[sp.rarity].moveInChance
 	if now >= threshold or early then
-		local mutationName = if g.mutation then g.mutation .. " " else ""
+		local mutationName = Mutations.prefix(g.size, g.mutation)
 		if ResidentService.count(data) >= ResidentService.capacity(player, data) then
 			Net.fire(
 				player,
@@ -315,14 +327,14 @@ local function onCheckout(player: Player, g: GuestService.Guest, satisfaction: n
 				"Bad"
 			)
 		else
-			ResidentService.add(player, g.species, g.mutation)
+			ResidentService.add(player, g.species, g.mutation, g.size)
 			data.friendship[g.species] = 0
-			Net.fire(
-				player,
-				"Moment",
-				"MoveIn",
-				{ species = g.species, mutation = g.mutation, early = early and now < threshold }
-			)
+			Net.fire(player, "Moment", "MoveIn", {
+				species = g.species,
+				mutation = g.mutation,
+				size = g.size,
+				early = early and now < threshold,
+			})
 			Net.fire(player, "Announce", `Your {mutationName}{sp.name} wants to move in!`, "Rare")
 			PlayerData.stat(player, "moveIns")
 		end
@@ -366,9 +378,12 @@ function ResidentService.rate(player: Player, data: PlayerData.Data): number
 	local total = 0
 	for _, r in data.residents do
 		if r.role == "" and r.campUntil <= os.time() then
-			total += Economy.residentPay(r.species, if r.mutation ~= "" then r.mutation else nil, m) * ResidentLevels.wing(
-				ResidentLevels.level(r)
-			)
+			total += Economy.residentPay(
+				r.species,
+				if r.mutation ~= "" then r.mutation else nil,
+				m,
+				r.size
+			) * ResidentLevels.wing(ResidentLevels.level(r))
 		end
 	end
 	return total
@@ -755,6 +770,7 @@ function ResidentService.Start()
 				id = tonumber(id),
 				species = r.species,
 				mutation = r.mutation,
+				size = r.size, -- Tiny or Giant, stacked with the look (A.11.5)
 				role = r.role,
 				hotel = if r.role ~= "" then r.hotel or data.location else nil,
 				away = r.campUntil > os.time(),
@@ -782,7 +798,12 @@ function ResidentService.Start()
 		}
 	end)
 	DevGrant.register("resident", function(player, args)
-		local id = ResidentService.add(player, args[1] or "Slime", args[2])
+		-- `resident <species> [look] [size]`; a size alone also works as the second word.
+		local look, size = args[2], args[3]
+		if Mutations.isSize(look) then
+			look, size = size, look
+		end
+		local id = ResidentService.add(player, args[1] or "Slime", look, size)
 		return if id then `resident {id}` else "Wing full or no data"
 	end)
 	-- `xp <id> <amount>`: XP for a resident (A.11.6), to see its bar fill without hours of play; `xp <id>` reads it.

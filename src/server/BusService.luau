@@ -68,7 +68,8 @@ local BusService = {}
 -- `street`: an extra guest's street (a booked one's is its hotel's; else its species' location's).
 type Passenger = {
 	species: string,
-	mutation: string?,
+	mutation: string?, -- the look (A.11.5)
+	size: string?, -- Tiny or Giant, stacked with the look (A.11.5)
 	booked: Player?,
 	happyFloor: number?,
 	tutorialFor: Player?,
@@ -201,7 +202,8 @@ local function drawIds(street: number, flags: Bus.Flags, n: number, at: number):
 	end, Events.weights(at))
 	local list = {}
 	for _, id in ids do
-		table.insert(list, { species = id, mutation = Events.rollMutation(rng:NextNumber(), at) })
+		local sz, look = Events.rollMutations(rng:NextNumber(), rng:NextNumber(), at)
+		table.insert(list, { species = id, mutation = look, size = sz })
 	end
 	return list
 end
@@ -267,7 +269,7 @@ local function announceNext(street: number, list: { Passenger })
 	local rank = table.find(Constants.RarityOrder, sp.rarity) or 0
 	if rank >= (table.find(Constants.RarityOrder, "Legendary") :: number) then
 		l.announced = p.species
-		local mutation = if p.mutation then Mutations.ById[p.mutation].name .. " " else ""
+		local mutation = Mutations.prefix(p.size, p.mutation)
 		fireStreet(
 			street,
 			"Announce",
@@ -343,7 +345,8 @@ local function stepOff(stop: StreetLayout.Stop, list: { Passenger }, first: numb
 				stop,
 				(first + i) % 4,
 				wishText(p),
-				decide
+				decide,
+				p.size
 			)
 			if p.tutorialFor then
 				tutorialGuests[g.id] = p.tutorialFor
@@ -573,7 +576,12 @@ function BusService.Start()
 			for _, p in l.nextList or {} do
 				table.insert(
 					names,
-					p.species .. (if p.mutation then "(" .. p.mutation .. ")" else "")
+					p.species
+						.. (
+							if p.size or p.mutation
+								then "(" .. Mutations.prefix(p.size, p.mutation) .. ")"
+								else ""
+						)
 				)
 			end
 			table.insert(out, `street {street}: {table.concat(names, ", ")}`)

@@ -61,7 +61,7 @@ local function labelText(c: Configuration): (string, Color3)
 	local state = c:GetAttribute("State")
 	local sp = Species.get(c:GetAttribute("Species") :: string)
 	local mutation = c:GetAttribute("Mutation") :: string?
-	local name = (if mutation then Mutations.ById[mutation].name .. " " else "")
+	local name = Mutations.prefix(c:GetAttribute("Size") :: string?, mutation)
 		.. (if sp then sp.name else "?")
 	if state == "Browsing" then
 		return `{name}\n{c:GetAttribute("Wish") or ""}`,
@@ -129,7 +129,8 @@ end
 local function spawnModel(d: Drawn)
 	local model = MonsterKit.build(
 		d.config:GetAttribute("Species") :: string,
-		d.config:GetAttribute("Mutation") :: string?
+		d.config:GetAttribute("Mutation") :: string?,
+		d.config:GetAttribute("Size") :: string?
 	)
 	if not model then
 		return

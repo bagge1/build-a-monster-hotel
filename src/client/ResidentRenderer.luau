@@ -200,7 +200,8 @@ local function frame(dt: number)
 		end
 		local plot = plotModel(d.plot)
 		local away = c:GetAttribute("Away") == true
-		local key = `{c:GetAttribute("Species")}|{c:GetAttribute("Mutation")}`
+		local key =
+			`{c:GetAttribute("Species")}|{c:GetAttribute("Mutation")}|{c:GetAttribute("Size")}`
 		if d.model and (d.key ~= key or away or not plot) then
 			d.model:Destroy()
 			d.model = nil
@@ -209,7 +210,8 @@ local function frame(dt: number)
 			if not d.model then
 				local m = MonsterKit.build(
 					c:GetAttribute("Species") :: string,
-					c:GetAttribute("Mutation") :: string?
+					c:GetAttribute("Mutation") :: string?,
+					c:GetAttribute("Size") :: string?
 				)
 				if m then
 					levelBadge(m, c:GetAttribute("Level") :: number? or 1)

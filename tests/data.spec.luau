@@ -70,12 +70,12 @@ describe("Data tables", function()
 
 	it("only event mutations are never rolled", function()
 		for i = 0, 999 do
-			local m = Mutations.roll(i / 1000)
-			if m then
+			for _, m in { Mutations.rollSize(i / 1000), Mutations.rollLook(i / 1000) } do
 				expect.truthy(not Mutations.ById[m].event, m)
 			end
 		end
-		expect.eq(Mutations.roll(0.9999), nil, "most guests are plain")
+		expect.eq(Mutations.rollSize(0.9999), nil, "most guests are plain")
+		expect.eq(Mutations.rollLook(0.9999), nil, "most guests are plain")
 	end)
 
 	it("money is written with at most one decimal and a suffix past a thousand", function()

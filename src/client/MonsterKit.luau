@@ -162,8 +162,10 @@ local function blockout(sp: Species.Species): Model
 	return model
 end
 
--- A monster of `speciesId` with its mutation applied (§4.5: colour, material, size).
-function MonsterKit.build(speciesId: string, mutation: string?): Model?
+--[[ A monster of `speciesId` with its mutation applied (§4.5: colour,
+	material, size): `mutation` the look, `size` Tiny or Giant, stacked (A.11.5:
+	the scale and the tint together; a size passed as `mutation` still scales). ]]
+function MonsterKit.build(speciesId: string, mutation: string?, size: string?): Model?
 	local sp = Species.get(speciesId)
 	if not sp then
 		return nil
@@ -190,9 +192,10 @@ function MonsterKit.build(speciesId: string, mutation: string?): Model?
 				end
 			end
 		end
-		if m.scale ~= 1 then
-			model:ScaleTo(m.scale)
-		end
+	end
+	local scale = (if m then m.scale else 1) * Mutations.scale(size)
+	if scale ~= 1 then
+		model:ScaleTo(scale)
 	end
 	return model
 end

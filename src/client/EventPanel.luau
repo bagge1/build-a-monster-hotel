@@ -40,6 +40,10 @@ local function draw()
 	if e.season then
 		line(`{e.season}! {e.mutation} guests can arrive on any bus.`, 1, Ui.Colour.Pumpkin)
 	end
+	if e.monthly then
+		-- The mutation of the month (A.11.5): a Seasons entry in the Book, back the same month next year.
+		line(`This month's mutation: {e.monthly} guests can arrive on any bus.`, 1, Ui.Colour.Moon)
+	end
 	if e.fullMoon then
 		line("Full Moon weekend: more Legendary and Epic guests.", 2, Ui.Colour.Moon)
 	end

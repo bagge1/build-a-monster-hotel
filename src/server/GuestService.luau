@@ -16,7 +16,7 @@
 	(his ruling, 2026-10-19: no walk-ins, nobody walks off the map's edge),
 	but the tutorial's first, who walks in before the first bus.
 
-	Published per guest: `Species`, `Mutation`, `State`, `Plot`, `Path`
+	Published per guest: `Species`, `Mutation` (the look), `Size` (A.11.5), `State`, `Plot`, `Path`
 	(`Walk.encode`: points, and seconds standing at some), `T0` (server time
 	the path starts), `Speed`, `Wish` (a bus guest's wish list), `Request`,
 	`Happy`.
@@ -48,6 +48,7 @@ local Stay = require(ReplicatedStorage.Shared.Stay)
 local StreetLayout = require(ReplicatedStorage.Shared.StreetLayout)
 local Walk = require(ReplicatedStorage.Shared.Walk)
 local Events = require(ReplicatedStorage.Shared.Events)
+local Mutations = require(ReplicatedStorage.Shared.Mutations)
 local PlayerData = require(ServerScriptService.Server.PlayerData)
 local PlotService = require(ServerScriptService.Server.PlotService)
 local HotelService = require(ServerScriptService.Server.HotelService)
@@ -70,7 +71,8 @@ export type State =
 export type Guest = {
 	id: number,
 	species: string,
-	mutation: string?,
+	mutation: string?, -- the look (A.11.5)
+	size: string?, -- Tiny or Giant, stacked with the look (A.11.5)
 	source: string, -- "Bus" | "Tutorial" | "Dev"
 	owner: Player?,
 	room: string?,
@@ -162,17 +164,19 @@ GuestService.positionOf = function(g: Guest): Vector3
 	return here(g)
 end
 
-local function newGuest(speciesId: string, mutation: string?, source: string): Guest
+local function newGuest(speciesId: string, mutation: string?, source: string, size: string?): Guest
 	local id = nextId
 	nextId += 1
 	local config = Instance.new("Configuration")
 	config.Name = tostring(id)
 	config:SetAttribute("Species", speciesId)
 	config:SetAttribute("Mutation", mutation)
+	config:SetAttribute("Size", size)
 	local g: Guest = {
 		id = id,
 		species = speciesId,
 		mutation = mutation,
+		size = size,
 		source = source,
 		owner = nil,
 		room = nil,
@@ -520,9 +524,13 @@ function GuestService.spawnTutorial(
 	if not plot or not offer then
 		return nil
 	end
-	local mutation = Events.rollMutation(rng:NextNumber(), os.time())
-	local g =
-		newGuest(speciesId, mutation, if opts and opts.source then opts.source else "Tutorial")
+	local size, mutation = Events.rollMutations(rng:NextNumber(), rng:NextNumber(), os.time())
+	local g = newGuest(
+		speciesId,
+		mutation,
+		if opts and opts.source then opts.source else "Tutorial",
+		size
+	)
 	g.happyFloor = opts and opts.happyFloor
 	g.tutorialFriend = opts ~= nil and opts.tutorialFriend == true
 	g.street = plot.street
@@ -546,10 +554,11 @@ function GuestService.spawnBrowsing(
 	stop: StreetLayout.Stop,
 	variant: number,
 	wish: string,
-	onDecide: (Guest) -> ()
+	onDecide: (Guest) -> (),
+	size: string?
 ): Guest
 	local B = Constants.Bus
-	local g = newGuest(speciesId, mutation, "Bus")
+	local g = newGuest(speciesId, mutation, "Bus", size)
 	g.state = "Browsing"
 	g.speed = B.BrowseSpeed
 	g.wish = wish
@@ -657,8 +666,14 @@ function GuestService.checkIn(player: Player, byStaff: boolean?, deskId: string?
 	g.satBonus = if bonus then bonus.satisfaction else 0
 	g.friendshipMult = if bonus then bonus.friendship else 1
 	local typeCount = HotelService.readyOfType(player, data, rec.type)
-	g.payRate = Economy.guestPay(g.species, 1, g.mutation, typeCount, Income.multiplier(player))
-		* (if bonus then bonus.pay else 1)
+	g.payRate = Economy.guestPay(
+		g.species,
+		1,
+		g.mutation,
+		typeCount,
+		Income.multiplier(player),
+		g.size
+	) * (if bonus then bonus.pay else 1)
 	leaveQueue(player, g)
 	HotelService.setRoom(player, g.room, "Occupied", g.id)
 	g.state = "ToRoom"
@@ -666,15 +681,16 @@ function GuestService.checkIn(player: Player, byStaff: boolean?, deskId: string?
 	publish(g)
 	PlayerData.stat(player, "checkIns")
 	local at = here(g)
-	Net.fire(
-		player,
-		"Moment",
-		"CheckIn",
-		{ species = g.species, mutation = g.mutation, byStaff = byStaff == true, at = at }
-	)
+	Net.fire(player, "Moment", "CheckIn", {
+		species = g.species,
+		mutation = g.mutation,
+		size = g.size,
+		byStaff = byStaff == true,
+		at = at,
+	})
 	-- A rare check-in is the street's moment (§11 "a flashy check-in, a street-wide announcement").
 	if sp.rarity == "Legendary" or sp.rarity == "Mythic" then
-		local mutationName = if g.mutation then g.mutation .. " " else ""
+		local mutationName = Mutations.prefix(g.size, g.mutation)
 		Net.fireAll(
 			"Announce",
 			`{player.DisplayName} checked in a {sp.rarity} {mutationName}{sp.name}!`,

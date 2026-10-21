@@ -143,3 +143,11 @@ its `Roles`, a `Level` row; the resident's model carries a `LevelBadge`.
 |---|---|---|
 | `Level` | `Value` ("Lv n", "(top)" at the cap), `Track` with `Fill` (the XP bar, gold when full), `Xp` ("x/y XP"), `LevelUp` ("Level up $price" when the bar is full, else "Working…" or "Top level") | `LevelUp` sends `LevelUp` with the resident's id; the server checks the bar, the cap and the cash |
 | `LevelBadge` | A BillboardGui over each resident in the Wing and at work: "Lv n", gold at the cap | `ResidentRenderer`, from the Configuration's `Level` |
+
+### Monster Book: stacks and Seasons (`Panels`, `BookPanel`, `src/client/CollectionPanels.luau`)
+
+GDD A.11.5. Each species page carries, under its `Mutations` line (the
+sizes and looks of the set, found or "·"), a `Seasons` line: the season's
+and the month's looks found (`Mutations.Seasonal`) and "stack ✓" once a
+stacked one (a size and a look) has been found. The Events panel names the
+month's mutation in a line of its own.
