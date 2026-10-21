@@ -13,7 +13,7 @@ sage, lily greens and lotus pinks, mud and still water, steam, warm lantern
 and firefly light (its own palette, `BS_PALETTE`, ending in the glows
 `flame`, `lamp`, `firefly` (Warm) and `moonglow` (Cold)).
 
-## What is in it (12 models)
+## What is in it (12 models, and the 23 location-0 pieces below)
 
 | Model | What | Use | Top | Triangles |
 |---|---|---|---|---|
@@ -139,3 +139,74 @@ In `blender/_import/` (the nine the blind review changed re-staged
 `BayouSpa_Wall_Door.fbx`, `BayouSpa_Wall_Post.fbx` (the names repeat the
 other kits'; rename to `Wall_*` on saving into `assets/HotelKit/BayouSpa/`),
 the nine furniture pieces unprefixed (`Furniture_LilyPadBed.fbx` …).
+
+## The location-0 furniture in the Spa's style (2026-10-21)
+
+`MODELS.md`: the location-0 ("every location") furniture is modelled in
+every kit in its style. These are the Spa's 23, by
+`tools/build_built_rooms_kits.py` (run by the main script): the Manor's
+footprints, `Use` points and Poses, so the code treats them alike. The
+style: weathered cypress on flared root feet, drift-grey tops, louvred
+two-tone rattan panels, moss hanging off the edges, copper and brass, lily
+pads, lotus flowers, frogs, firefly jars.
+
+| Model | What | Use |
+|---|---|---|
+| `Nightstand` | Cypress on root feet, rattan drawer and door, moss off the top, a firefly jar (`Glow_Warm_1`), a towel with a lotus | Stand |
+| `Wardrobe` (2 x 1) | Louvred rattan doors in dark frames, a round-arched top with a lily-pad medallion, Spanish moss off the cornice | Stand |
+| `WritingDesk` (2 x 1) | Root legs, a weathered top with moss off its corner, a lily-pad paperweight, a copper inkpot and reed pen, a pot of moss | Stand |
+| `DiningTable` (2 x 2) | Root legs, a woven rattan runner, plates on lily-pad mats, a lotus in a stone bowl | Stand |
+| `BreakfastBuffet` (3 x 1) | Rattan doors, moss off its end, beignets, a copper coffee pot, juice, berries | Stand |
+| `BarStool` | A cypress root pedestal, a copper foot ring at 1.42, a lotus-pink cushion at 2.6, a low rattan back | Sit (0, 2.6, -0.2) |
+| `PoolTable` (3 x 2) | Cypress on six root legs, moss off the apron, green felt, weathered rails, lotus sights | Stand |
+| `CardTable` (2 x 2) | Green felt in a cypress rim, a root pedestal, cards, chips, a firefly jar (`Glow_Warm_1`) | Stand |
+| `Bathtub` (2 x 1) | A copper soaking tub on four frogs, water with two lily pads, a brass tap, a frog on the rim | Lie (-0.3, 0.75, 0), waived |
+| `FloorLamp` | A crooked cypress branch on a stone, a lily-pad shade, a firefly jar hanging under it (`Glow_Warm_1`), cattails | Stand |
+| `DiningChair` | Root legs, a lotus cushion at 1.82 on a rattan seat, a peacock fan back of woven rattan | Sit (0, 1.82, -0.15) |
+| `SaladBar` (3 x 1) | Rattan panels, moss off the top, herbs, radishes, corn and berries in stone bowls, a `Glass` guard on brass posts | Stand |
+| `CoffeeUrn` | A copper tea urn, cups on saucers, an upstand with jars of chamomile, lavender and herbs, moss off its top | Stand |
+| `DessertTrolley` (2 x 1) | A lotus-pink layer cake with a lotus, a frog-green jelly, beignets; a pecan pie below | Stand |
+| `DartsBoard` (Wall) | On a round woven rattan backer with Spanish moss off its rim, lotus flights, a slate scoreboard | Stand |
+| `ArcadeCabinet` | Cypress with lily-green sides and a lily pad each, a moon-glow screen (`Glow_Cold_1`), a firefly marquee (`Glow_Warm_1`) with moss over it | Stand |
+| `PingPongTable` (3 x 2) | A deep water-green top on root legs, a reed-green net, lotus and lily bats | Stand |
+| `BoardGameShelf` (Wall, 2 x 1) | Cypress, a rattan back, lidded game boxes, moss off the cornice | Stand |
+| `ChessTable` | A linen and dark-cypress board on a root pedestal, linen and moss men | Stand |
+| `CoffeeTable` (2 x 1) | A live-edge cypress slab on two root stumps, a copper teapot, cups, a lotus bowl, a frog | Stand |
+| `Washstand` | A stone basin, a copper tap, an oval moonstone mirror in cypress with moss over it, a lotus | Stand |
+| `Toilet` | White bowl on an oval 2.0 x 1.2, cypress seat and lid at 1.72, a rattan-fronted cistern, a fern on top | Sit (0, 1.72, -0.35) |
+| `GardenBench` (2 x 1) | Weathered planks on root legs, a rattan back, moss and a frog on its top rail | Sit (0, 1.75, -0.25) |
+
+Validated by the build (`VALIDATED 35/35`; the set's walls and older
+pieces are unchanged, their manifest records identical to before; only the
+atlas gained 'berry' and 'felt', appended): footprint and 0.4 inset, layer and w/d
+against `Pieces.luau`, no coplanar faces, nothing floating (the darts board
+and the board-game shelf hang on the wall's plane), `Use` and its `Pose`,
+the seats by rule 6 (the stool's at 2.6), budgets (all under 1,500), and
+**every Sit piece held to the seated 5-stud person** (`sit_faults`, per
+piece: `sit_figure`): the seats end where the shins hang (0.4 ahead of
+`Use`), so they are 0.4-0.5 shallower in front than the Manor's, and the
+backs stand 0.3 behind the torso. The tub is waived as the Manor's (2 x 1
+holds a reclined guest; 3 x 2 is August's call). Fixed during the build:
+three coplanar pairs (a seat board's back face in the back legs', a tap's
+column top in its spout's, a trolley post's face in the push bar's), three
+pieces over budget (the aurora stripes' facets, the salad bar's bottles),
+the darts board's backer too wide for 1 x 1 (now 2.2 across), the bench's
+arms over the seat's 0.1 margin, three tops more than 0.3 over Pieces'
+height (an apple, a lotus, a reed pen).
+
+**Height findings** (Pieces' height against the model's top, not faults):
+only `BarStool` (3.34 vs 2.6, its back rail; the Manor's has the same).
+
+Review (Workbench on light grey, Studio running: no EEVEE or Cycles), in
+`review/every/`: `furniture_sheet.png` (on their squares beside the 5-stud
+person, `Use` in red), `top_sheet.png` (straight from above),
+`elevations_sheet.png` (floor level, front and side), `lying_sheet.png`
+(the tub with the person in it, waived), `sitting_sheet.png` (the stool at
+the Manor's Snack Counter (the Spa has no counter; its top is the Cocoa Bar's 3.75); the stool, chair, toilet and bench with the person seated: side
+as a section, front, three-quarter). Looked at by Claude; fixed from the
+sheets: none beyond the build's own refusals. **Not done**: a blind review of these sheets; anything
+in Studio.
+
+Staged 2026-10-21 in `blender/_import/` as `BayouSpa_Furniture_<Id>.fbx`
+(the 23; the names repeat the Manor's: rename to `Furniture_<Id>` on saving
+into `assets/HotelKit/BayouSpa/`), beside what was there.

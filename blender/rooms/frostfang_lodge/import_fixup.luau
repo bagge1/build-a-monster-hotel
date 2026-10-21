@@ -176,6 +176,344 @@ local SET = {
 		light = 12,
 		lightAll = false,
 	},
+	Furniture_Nightstand = {
+		pose = "Stand",
+		root = Vector3.new(0, 0.1, 0),
+		parts = {
+			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(3, 0.2, 3), collide = false },
+			Body = { c = Vector3.new(0, 1.23, -0.0203), s = Vector3.new(2.16, 2.46, 1.8006), collide = false },
+		},
+		att = {
+			{ "Use", Vector3.new(0, 0, -3), Vector3.new(0, 0, 1) },
+		},
+		precise = {  },
+		light = 12,
+		lightAll = false,
+	},
+	Furniture_Wardrobe = {
+		pose = "Stand",
+		root = Vector3.new(0, 0.1, 0),
+		parts = {
+			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(6, 0.2, 3), collide = false },
+			Body = { c = Vector3.new(0, 3.1, 0), s = Vector3.new(4.9, 6.2, 2.16), collide = false },
+			LOD_Proxy = { c = Vector3.new(0, 3.1, 0), s = Vector3.new(4.9, 6.2, 2.16), collide = false },
+		},
+		att = {
+			{ "Use", Vector3.new(0, 0, -3), Vector3.new(0, 0, 1) },
+		},
+		precise = {  },
+		light = 12,
+		lightAll = false,
+	},
+	Furniture_WritingDesk = {
+		pose = "Stand",
+		root = Vector3.new(0, 0.1, 0),
+		parts = {
+			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(6, 0.2, 3), collide = false },
+			Body = { c = Vector3.new(0, 1.4484, 0), s = Vector3.new(4.9, 2.8967, 2), collide = false },
+		},
+		att = {
+			{ "Use", Vector3.new(0, 0, -3), Vector3.new(0, 0, 1) },
+		},
+		precise = {  },
+		light = 12,
+		lightAll = false,
+	},
+	Furniture_DiningTable = {
+		pose = "Stand",
+		root = Vector3.new(0, 0.1, 0),
+		parts = {
+			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(6, 0.2, 6), collide = false },
+			Body = { c = Vector3.new(0, 1.44, 0), s = Vector3.new(5, 2.88, 5), collide = false },
+		},
+		att = {
+			{ "Use", Vector3.new(0, 0, -4.5), Vector3.new(0, 0, 1) },
+		},
+		precise = {  },
+		light = 12,
+		lightAll = false,
+	},
+	Furniture_BreakfastBuffet = {
+		pose = "Stand",
+		root = Vector3.new(0, 0.1, 0),
+		parts = {
+			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(9, 0.2, 3), collide = false },
+			Body = { c = Vector3.new(0, 1.54, 0), s = Vector3.new(8.2, 3.08, 2.1), collide = false },
+			LOD_Proxy = { c = Vector3.new(0, 1.54, 0), s = Vector3.new(8.2, 3.08, 2.1), collide = false },
+		},
+		att = {
+			{ "Use", Vector3.new(0, 0, -3), Vector3.new(0, 0, 1) },
+		},
+		precise = {  },
+		light = 12,
+		lightAll = false,
+	},
+	Furniture_BarStool = {
+		pose = "Sit",
+		root = Vector3.new(0, 0.1, 0),
+		parts = {
+			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(3, 0.2, 3), collide = false },
+			Body = { c = Vector3.new(0, 1.6154, 0.0581), s = Vector3.new(2.1, 3.2309, 1.6038), collide = false },
+		},
+		att = {
+			{ "Use", Vector3.new(0, 2.6, -0.2), Vector3.new(0, 0, -1) },
+		},
+		precise = {  },
+		light = 12,
+		lightAll = false,
+	},
+	Furniture_PoolTable = {
+		pose = "Stand",
+		root = Vector3.new(0, 0.1, 0),
+		parts = {
+			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(9, 0.2, 6), collide = false },
+			Body = { c = Vector3.new(0, 1.39, 0), s = Vector3.new(7.8, 2.78, 4.8), collide = false },
+			LOD_Proxy = { c = Vector3.new(0, 1.39, 0), s = Vector3.new(7.8, 2.78, 4.8), collide = false },
+		},
+		att = {
+			{ "Use", Vector3.new(0, 0, -4.5), Vector3.new(0, 0, 1) },
+		},
+		precise = {  },
+		light = 12,
+		lightAll = false,
+	},
+	Furniture_CardTable = {
+		pose = "Stand",
+		root = Vector3.new(0, 0.1, 0),
+		parts = {
+			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(6, 0.2, 6), collide = false },
+			Body = { c = Vector3.new(0, 1.4, 0), s = Vector3.new(4.8843, 2.8, 4.8843), collide = false },
+		},
+		att = {
+			{ "Use", Vector3.new(0, 0, -4.5), Vector3.new(0, 0, 1) },
+		},
+		precise = {  },
+		light = 12,
+		lightAll = false,
+	},
+	Furniture_Bathtub = {
+		pose = "Lie",
+		root = Vector3.new(0, 0.1, 0),
+		parts = {
+			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(6, 0.2, 3), collide = false },
+			Body = { c = Vector3.new(-0.0095, 1.15, 0), s = Vector3.new(5.0266, 2.3, 2.0445), collide = false },
+		},
+		att = {
+			{ "Use", Vector3.new(-0.3, 0.75, 0), Vector3.new(1, 0, 0) },
+		},
+		precise = {  },
+		light = 12,
+		lightAll = false,
+	},
+	Furniture_FloorLamp = {
+		pose = "Stand",
+		root = Vector3.new(0, 0.1, 0),
+		parts = {
+			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(3, 0.2, 3), collide = false },
+			Body = { c = Vector3.new(0, 2.76, 0), s = Vector3.new(2.0091, 5.52, 2.0091), collide = false },
+			Glow_Warm_1 = { c = Vector3.new(0, 4.05, 0), s = Vector3.new(0.4065, 0.52, 0.4065), collide = false },
+			LOD_Proxy = { c = Vector3.new(0, 2.76, 0), s = Vector3.new(2.0091, 5.52, 2.0091), collide = false },
+		},
+		att = {
+			{ "Use", Vector3.new(0, 0, -3), Vector3.new(0, 0, 1) },
+		},
+		precise = {  },
+		light = 12,
+		lightAll = false,
+	},
+	Furniture_DiningChair = {
+		pose = "Sit",
+		root = Vector3.new(0, 0.1, 0),
+		parts = {
+			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(3, 0.2, 3), collide = false },
+			Body = { c = Vector3.new(0, 2.18, 0.16), s = Vector3.new(2.12, 4.36, 1.42), collide = false },
+			LOD_Proxy = { c = Vector3.new(0, 2.18, 0.16), s = Vector3.new(2.12, 4.36, 1.42), collide = false },
+		},
+		att = {
+			{ "Use", Vector3.new(0, 1.82, -0.15), Vector3.new(0, 0, -1) },
+		},
+		precise = {  },
+		light = 12,
+		lightAll = false,
+	},
+	Furniture_SaladBar = {
+		pose = "Stand",
+		root = Vector3.new(0, 0.1, 0),
+		parts = {
+			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(9, 0.2, 3), collide = false },
+			Body = { c = Vector3.new(0, 2, 0), s = Vector3.new(8.2, 4, 2.1), collide = false },
+			Glass = { c = Vector3.new(0, 4.02, -0.25), s = Vector3.new(8, 0.04, 1.3), collide = false },
+			LOD_Proxy = { c = Vector3.new(0, 2.02, 0), s = Vector3.new(8.2, 4.04, 2.1), collide = false },
+		},
+		att = {
+			{ "Use", Vector3.new(0, 0, -3), Vector3.new(0, 0, 1) },
+		},
+		precise = {  },
+		light = 12,
+		lightAll = false,
+	},
+	Furniture_CoffeeUrn = {
+		pose = "Stand",
+		root = Vector3.new(0, 0.1, 0),
+		parts = {
+			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(3, 0.2, 3), collide = false },
+			Body = { c = Vector3.new(0, 2.265, 0.0147), s = Vector3.new(2.16, 4.53, 2.0906), collide = false },
+			LOD_Proxy = { c = Vector3.new(0, 2.265, 0.0147), s = Vector3.new(2.16, 4.53, 2.0906), collide = false },
+		},
+		att = {
+			{ "Use", Vector3.new(0, 0, -3), Vector3.new(0, 0, 1) },
+		},
+		precise = {  },
+		light = 12,
+		lightAll = false,
+	},
+	Furniture_DessertTrolley = {
+		pose = "Stand",
+		root = Vector3.new(0, 0.1, 0),
+		parts = {
+			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(6, 0.2, 3), collide = false },
+			Body = { c = Vector3.new(0, 1.69, 0), s = Vector3.new(4.94, 3.38, 1.9), collide = false },
+		},
+		att = {
+			{ "Use", Vector3.new(0, 0, -3), Vector3.new(0, 0, 1) },
+		},
+		precise = {  },
+		light = 12,
+		lightAll = false,
+	},
+	Furniture_DartsBoard = {
+		pose = "Stand",
+		root = Vector3.new(0, 0.1, 0),
+		parts = {
+			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(3, 0.2, 3), collide = false },
+			Body = { c = Vector3.new(0, 3.9, 0.67), s = Vector3.new(2.1729, 3.4, 0.86), collide = false },
+			LOD_Proxy = { c = Vector3.new(0, 3.9, 0.67), s = Vector3.new(2.1729, 3.4, 0.86), collide = false },
+		},
+		att = {
+			{ "Use", Vector3.new(0, 0, -3), Vector3.new(0, 0, 1) },
+		},
+		precise = {  },
+		light = 12,
+		lightAll = false,
+	},
+	Furniture_ArcadeCabinet = {
+		pose = "Stand",
+		root = Vector3.new(0, 0.1, 0),
+		parts = {
+			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(3, 0.2, 3), collide = false },
+			Body = { c = Vector3.new(0, 2.895, -0.025), s = Vector3.new(2.18, 5.79, 2.05), collide = false },
+			Glow_Cold_1 = { c = Vector3.new(0, 3.8289, -0.4946), s = Vector3.new(1.5, 1.0355, 0.2353), collide = false },
+			Glow_Magic_1 = { c = Vector3.new(0, 5.05, -0.725), s = Vector3.new(1.7, 0.6, 0.03), collide = false },
+			LOD_Proxy = { c = Vector3.new(0, 2.895, -0.025), s = Vector3.new(2.18, 5.79, 2.05), collide = false },
+		},
+		att = {
+			{ "Use", Vector3.new(0, 0, -3), Vector3.new(0, 0, 1) },
+		},
+		precise = {  },
+		light = 12,
+		lightAll = false,
+	},
+	Furniture_PingPongTable = {
+		pose = "Stand",
+		root = Vector3.new(0, 0.1, 0),
+		parts = {
+			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(9, 0.2, 6), collide = false },
+			Body = { c = Vector3.new(0, 1.525, 0), s = Vector3.new(8, 3.05, 5.12), collide = false },
+			LOD_Proxy = { c = Vector3.new(0, 1.525, 0), s = Vector3.new(8, 3.05, 5.12), collide = false },
+		},
+		att = {
+			{ "Use", Vector3.new(0, 0, -4.5), Vector3.new(0, 0, 1) },
+		},
+		precise = {  },
+		light = 12,
+		lightAll = false,
+	},
+	Furniture_BoardGameShelf = {
+		pose = "Stand",
+		root = Vector3.new(0, 0.1, 0),
+		parts = {
+			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(6, 0.2, 3), collide = false },
+			Body = { c = Vector3.new(0, 2.86, 0.03), s = Vector3.new(5.16, 5.72, 2.14), collide = false },
+			LOD_Proxy = { c = Vector3.new(0, 2.86, 0.03), s = Vector3.new(5.16, 5.72, 2.14), collide = false },
+		},
+		att = {
+			{ "Use", Vector3.new(0, 0, -3), Vector3.new(0, 0, 1) },
+		},
+		precise = {  },
+		light = 12,
+		lightAll = false,
+	},
+	Furniture_ChessTable = {
+		pose = "Stand",
+		root = Vector3.new(0, 0.1, 0),
+		parts = {
+			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(3, 0.2, 3), collide = false },
+			Body = { c = Vector3.new(0, 1.64, 0), s = Vector3.new(2.1, 3.28, 2.1), collide = false },
+		},
+		att = {
+			{ "Use", Vector3.new(0, 0, -3), Vector3.new(0, 0, 1) },
+		},
+		precise = {  },
+		light = 12,
+		lightAll = false,
+	},
+	Furniture_CoffeeTable = {
+		pose = "Stand",
+		root = Vector3.new(0, 0.1, 0),
+		parts = {
+			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(6, 0.2, 3), collide = false },
+			Body = { c = Vector3.new(0, 1, 0), s = Vector3.new(5, 2, 2.08), collide = false },
+		},
+		att = {
+			{ "Use", Vector3.new(0, 0, -3), Vector3.new(0, 0, 1) },
+		},
+		precise = {  },
+		light = 12,
+		lightAll = false,
+	},
+	Furniture_Washstand = {
+		pose = "Stand",
+		root = Vector3.new(0, 0.1, 0),
+		parts = {
+			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(3, 0.2, 3), collide = false },
+			Body = { c = Vector3.new(0, 2.675, 0.014), s = Vector3.new(2.16, 5.35, 1.972), collide = false },
+			LOD_Proxy = { c = Vector3.new(0, 2.675, 0.014), s = Vector3.new(2.16, 5.35, 1.972), collide = false },
+		},
+		att = {
+			{ "Use", Vector3.new(0, 0, -3), Vector3.new(0, 0, 1) },
+		},
+		precise = {  },
+		light = 12,
+		lightAll = false,
+	},
+	Furniture_Toilet = {
+		pose = "Sit",
+		root = Vector3.new(0, 0.1, 0),
+		parts = {
+			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(3, 0.2, 3), collide = false },
+			Body = { c = Vector3.new(0, 1.68, 0.1858), s = Vector3.new(1.9616, 3.36, 1.8285), collide = false },
+		},
+		att = {
+			{ "Use", Vector3.new(0, 1.72, -0.35), Vector3.new(0, 0, -1) },
+		},
+		precise = {  },
+		light = 12,
+		lightAll = false,
+	},
+	Furniture_GardenBench = {
+		pose = "Sit",
+		root = Vector3.new(0, 0.1, 0),
+		parts = {
+			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(6, 0.2, 3), collide = false },
+			Body = { c = Vector3.new(0, 1.71, 0.1724), s = Vector3.new(5.1402, 3.42, 1.5848), collide = false },
+		},
+		att = {
+			{ "Use", Vector3.new(0, 1.75, -0.25), Vector3.new(0, 0, -1) },
+		},
+		precise = {  },
+		light = 12,
+		lightAll = false,
+	},
 }
 
 local out = {}

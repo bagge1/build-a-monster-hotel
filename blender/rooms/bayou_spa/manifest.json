@@ -268,6 +268,16 @@
    205,
    225,
    255
+  ],
+  "berry": [
+   170,
+   52,
+   84
+  ],
+  "felt": [
+   60,
+   112,
+   84
   ]
  },
  "pieces": {
@@ -1655,6 +1665,2240 @@
     "pieces_height": 1.0,
     "model_top": 2.89,
     "height_finding": "Pieces.luau's height 1, the body's top 2.89"
+   }
+  },
+  "Furniture_Nightstand": {
+   "name": "Furniture_Nightstand",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      1.2332,
+      -0.0303
+     ],
+     "size": [
+      2.16,
+      2.4664,
+      1.8206
+     ],
+     "triangles": 808,
+     "collide": false
+    },
+    "Glow_Warm_1": {
+     "centre": [
+      0.5,
+      2.26,
+      0.3
+     ],
+     "size": [
+      0.2772,
+      0.22,
+      0.2772
+     ],
+     "triangles": 28,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -3.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 848,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a cypress bedside cabinet on root feet: woven rattan drawer and door, copper knobs, moss hanging off the weathered top, a firefly jar, a folded towel with a lotus on it",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ]
+   },
+   "furniture": {
+    "id": "Nightstand",
+    "pose": "Stand",
+    "keyFor": [],
+    "pieces_height": 2.2,
+    "model_top": 2.466,
+    "height_finding": null
+   }
+  },
+  "Furniture_Wardrobe": {
+   "name": "Furniture_Wardrobe",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     6.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      6.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      3.1,
+      -0.02
+     ],
+     "size": [
+      4.6,
+      6.2,
+      2.04
+     ],
+     "triangles": 1096,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      3.1,
+      -0.02
+     ],
+     "size": [
+      4.6,
+      6.2,
+      2.04
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -3.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 1108,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a cypress armoire on root feet: louvred rattan doors in dark frames, copper knobs, a round-arched top with a lily pad medallion, Spanish moss hanging off the cornice",
+   "decor": {
+    "fw": 2,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     6.0,
+     3.0
+    ]
+   },
+   "furniture": {
+    "id": "Wardrobe",
+    "pose": "Stand",
+    "keyFor": [],
+    "pieces_height": 6.0,
+    "model_top": 6.2,
+    "height_finding": null
+   }
+  },
+  "Furniture_WritingDesk": {
+   "name": "Furniture_WritingDesk",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     6.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      6.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      1.4314,
+      -0.02
+     ],
+     "size": [
+      4.9,
+      2.8629,
+      2.04
+     ],
+     "triangles": 548,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -3.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 560,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a writing desk on cypress root legs: a weathered top with moss hanging off its corner, a rattan drawer, a letter under a lily-pad paperweight, a copper inkpot with a reed pen, a pot of moss",
+   "decor": {
+    "fw": 2,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     6.0,
+     3.0
+    ]
+   },
+   "furniture": {
+    "id": "WritingDesk",
+    "pose": "Stand",
+    "keyFor": [],
+    "pieces_height": 2.6,
+    "model_top": 2.863,
+    "height_finding": null
+   }
+  },
+  "Furniture_DiningTable": {
+   "name": "Furniture_DiningTable",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     6.0,
+     0.2,
+     6.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      6.0,
+      0.2,
+      6.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      1.4455,
+      0.0
+     ],
+     "size": [
+      5.0,
+      2.8909,
+      5.0
+     ],
+     "triangles": 1058,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -4.5
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 1070,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a square table on cypress root legs: a weathered top, a woven rattan runner, white plates on lily-pad mats, a lotus floating in a stone bowl",
+   "decor": {
+    "fw": 2,
+    "fd": 2,
+    "layer": "Floor",
+    "footprint_studs": [
+     6.0,
+     6.0
+    ]
+   },
+   "furniture": {
+    "id": "DiningTable",
+    "pose": "Stand",
+    "keyFor": [],
+    "pieces_height": 2.6,
+    "model_top": 2.891,
+    "height_finding": null
+   }
+  },
+  "Furniture_BreakfastBuffet": {
+   "name": "Furniture_BreakfastBuffet",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     9.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      9.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      1.64,
+      -0.02
+     ],
+     "size": [
+      8.2,
+      3.28,
+      2.14
+     ],
+     "triangles": 1350,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      1.64,
+      -0.02
+     ],
+     "size": [
+      8.2,
+      3.28,
+      2.14
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -3.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 1362,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a cypress sideboard on root feet with three rattan doors and moss hanging off its end: a plate of beignets, a copper coffee pot, a jug of juice, a bowl of berries",
+   "decor": {
+    "fw": 3,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     9.0,
+     3.0
+    ]
+   },
+   "furniture": {
+    "id": "BreakfastBuffet",
+    "pose": "Stand",
+    "keyFor": [
+     "SnackBar",
+     "CocoaLounge"
+    ],
+    "pieces_height": 3.0,
+    "model_top": 3.28,
+    "height_finding": null
+   }
+  },
+  "Furniture_BarStool": {
+   "name": "Furniture_BarStool",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      1.67,
+      0.055
+     ],
+     "size": [
+      2.1,
+      3.34,
+      1.61
+     ],
+     "triangles": 460,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      2.6,
+      -0.2
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    }
+   },
+   "triangles": 472,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a bar stool on a cypress root pedestal with a copper foot ring, a lotus-pink cushion at 2.6 on a weathered seat, a low woven rattan back",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ],
+    "seats": [
+     {
+      "x": [
+       -1.0,
+       1.0
+      ],
+      "z": [
+       -0.6,
+       0.6
+      ],
+      "y": 2.6,
+      "people": 1,
+      "narrow": null,
+      "bar": true
+     }
+    ]
+   },
+   "furniture": {
+    "id": "BarStool",
+    "pose": "Sit",
+    "keyFor": [],
+    "pieces_height": 2.6,
+    "model_top": 3.34,
+    "height_finding": "Pieces.luau's height 2.6, the body's top 3.34"
+   }
+  },
+  "Furniture_PoolTable": {
+   "name": "Furniture_PoolTable",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     9.0,
+     0.2,
+     6.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      9.0,
+      0.2,
+      6.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      1.39,
+      -0.02
+     ],
+     "size": [
+      7.8,
+      2.78,
+      4.84
+     ],
+     "triangles": 1352,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      1.39,
+      -0.02
+     ],
+     "size": [
+      7.8,
+      2.78,
+      4.84
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -4.5
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 1364,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a pool table: a cypress body on six root legs, moss hanging off its apron, green felt, weathered rails with lotus-pink sights, black pockets, five balls",
+   "decor": {
+    "fw": 3,
+    "fd": 2,
+    "layer": "Floor",
+    "footprint_studs": [
+     9.0,
+     6.0
+    ]
+   },
+   "furniture": {
+    "id": "PoolTable",
+    "pose": "Stand",
+    "keyFor": [],
+    "pieces_height": 2.6,
+    "model_top": 2.78,
+    "height_finding": null
+   }
+  },
+  "Furniture_CardTable": {
+   "name": "Furniture_CardTable",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     6.0,
+     0.2,
+     6.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      6.0,
+      0.2,
+      6.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      1.44,
+      0.0
+     ],
+     "size": [
+      4.8058,
+      2.88,
+      4.8058
+     ],
+     "triangles": 424,
+     "collide": false
+    },
+    "Glow_Warm_1": {
+     "centre": [
+      -1.5,
+      2.73,
+      1.25
+     ],
+     "size": [
+      0.2402,
+      0.16,
+      0.2402
+     ],
+     "triangles": 28,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -4.5
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 464,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a round card table: green felt in a cypress rim on a root pedestal; cards dealt, stacks of chips, a firefly jar",
+   "decor": {
+    "fw": 2,
+    "fd": 2,
+    "layer": "Floor",
+    "footprint_studs": [
+     6.0,
+     6.0
+    ]
+   },
+   "furniture": {
+    "id": "CardTable",
+    "pose": "Stand",
+    "keyFor": [],
+    "pieces_height": 2.6,
+    "model_top": 2.88,
+    "height_finding": null
+   }
+  },
+  "Furniture_Bathtub": {
+   "name": "Furniture_Bathtub",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     6.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      6.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      -0.0067,
+      1.135,
+      0.0
+     ],
+     "size": [
+      5.0664,
+      2.27,
+      2.0871
+     ],
+     "triangles": 1308,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      -0.3,
+      0.75,
+      0.0
+     ],
+     "look": [
+      1.0,
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "triangles": 1320,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a copper soaking tub standing on four frogs, still water with two lily pads, a brass tap at its foot, a little frog on the rim",
+   "decor": {
+    "fw": 2,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     6.0,
+     3.0
+    ]
+   },
+   "furniture": {
+    "id": "Bathtub",
+    "pose": "Lie",
+    "keyFor": [],
+    "pieces_height": 2.0,
+    "model_top": 2.27,
+    "height_finding": null,
+    "lie": {
+     "person": 5.0,
+     "rise": [
+      0.45,
+      0.8
+     ],
+     "drop": 0.6,
+     "waived": "a tub is lain in reclining: its 2 x 1 squares (Pieces) hold 4.4 x 1.8 inside; a straight 5-stud person, arms at the sides, needs 5.2 x 3.9: 3 x 2 squares (August's call)"
+    }
+   }
+  },
+  "Furniture_FloorLamp": {
+   "name": "Furniture_FloorLamp",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      2.67,
+      0.0
+     ],
+     "size": [
+      1.9499,
+      5.34,
+      2.0
+     ],
+     "triangles": 428,
+     "collide": false
+    },
+    "Glow_Warm_1": {
+     "centre": [
+      0.55,
+      4.32,
+      0.0
+     ],
+     "size": [
+      0.2587,
+      0.36,
+      0.2587
+     ],
+     "triangles": 28,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      2.67,
+      0.0
+     ],
+     "size": [
+      1.9499,
+      5.34,
+      2.0
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -3.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 468,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a standing lamp: a crooked cypress branch on a smooth stone, a lily-pad shade, a firefly jar hanging under it, cattails at its foot",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ]
+   },
+   "furniture": {
+    "id": "FloorLamp",
+    "pose": "Stand",
+    "keyFor": [],
+    "pieces_height": 5.5,
+    "model_top": 5.34,
+    "height_finding": null
+   }
+  },
+  "Furniture_DiningChair": {
+   "name": "Furniture_DiningChair",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      2.24,
+      0.1788
+     ],
+     "size": [
+      2.12,
+      4.48,
+      1.4784
+     ],
+     "triangles": 604,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      2.24,
+      0.1788
+     ],
+     "size": [
+      2.12,
+      4.48,
+      1.4784
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      1.82,
+      -0.15
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    }
+   },
+   "triangles": 616,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a cypress dining chair on root legs: a lotus-pink cushion at 1.82 on a rattan seat, a peacock fan back of woven rattan in a light cypress rim, copper caps",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ],
+    "seats": [
+     {
+      "x": [
+       -1.0,
+       1.0
+      ],
+      "z": [
+       -0.55,
+       0.65
+      ],
+      "y": 1.82,
+      "people": 1,
+      "narrow": null
+     }
+    ]
+   },
+   "furniture": {
+    "id": "DiningChair",
+    "pose": "Sit",
+    "keyFor": [],
+    "pieces_height": 4.4,
+    "model_top": 4.48,
+    "height_finding": null
+   }
+  },
+  "Furniture_SaladBar": {
+   "name": "Furniture_SaladBar",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     9.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      9.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      2.0,
+      -0.02
+     ],
+     "size": [
+      8.2,
+      4.0,
+      2.14
+     ],
+     "triangles": 1392,
+     "collide": false
+    },
+    "Glass": {
+     "centre": [
+      0.0,
+      4.02,
+      -0.25
+     ],
+     "size": [
+      8.0,
+      0.04,
+      1.3
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      2.02,
+      -0.02
+     ],
+     "size": [
+      8.2,
+      4.04,
+      2.14
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -3.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 1416,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a cypress salad bar with rattan panels and moss off its edge: herbs, radishes, corn and berries in stone bowls, dressings on a step, a thin glass sneeze guard on brass posts",
+   "decor": {
+    "fw": 3,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     9.0,
+     3.0
+    ]
+   },
+   "furniture": {
+    "id": "SaladBar",
+    "pose": "Stand",
+    "keyFor": [],
+    "pieces_height": 4.2,
+    "model_top": 4.04,
+    "height_finding": null
+   }
+  },
+  "Furniture_CoffeeUrn": {
+   "name": "Furniture_CoffeeUrn",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      2.18,
+      0.0147
+     ],
+     "size": [
+      2.16,
+      4.36,
+      2.0906
+     ],
+     "triangles": 1114,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      2.18,
+      0.0147
+     ],
+     "size": [
+      2.16,
+      4.36,
+      2.0906
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -3.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 1126,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a tea station: a copper urn with a brass band, handles and tap over a drip tray on a cypress cabinet with a rattan door, cups on saucers, an upstand with jars of chamomile, lavender and herbs, moss off its top",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ]
+   },
+   "furniture": {
+    "id": "CoffeeUrn",
+    "pose": "Stand",
+    "keyFor": [],
+    "pieces_height": 4.6,
+    "model_top": 4.36,
+    "height_finding": null
+   }
+  },
+  "Furniture_DessertTrolley": {
+   "name": "Furniture_DessertTrolley",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     6.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      6.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      1.7405,
+      0.0
+     ],
+     "size": [
+      4.94,
+      3.481,
+      1.9
+     ],
+     "triangles": 1252,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -3.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 1264,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a two-tier dessert trolley of cypress on brass posts and wooden wheels: a lotus-pink layer cake with a lotus on top, a frog-green jelly, beignets; a pecan pie and plates below",
+   "decor": {
+    "fw": 2,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     6.0,
+     3.0
+    ]
+   },
+   "furniture": {
+    "id": "DessertTrolley",
+    "pose": "Stand",
+    "keyFor": [],
+    "pieces_height": 3.6,
+    "model_top": 3.481,
+    "height_finding": null
+   }
+  },
+  "Furniture_DartsBoard": {
+   "name": "Furniture_DartsBoard",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      3.8632,
+      0.67
+     ],
+     "size": [
+      2.1729,
+      3.3263,
+      0.86
+     ],
+     "triangles": 708,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      3.8632,
+      0.67
+     ],
+     "size": [
+      2.1729,
+      3.3263,
+      0.86
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -3.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 720,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a darts board on a round woven rattan backer hung on the wall, Spanish moss off its rim: black, linen, red and green rings, three darts with lotus flights, a slate scoreboard under it",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Wall",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ]
+   },
+   "furniture": {
+    "id": "DartsBoard",
+    "pose": "Stand",
+    "keyFor": [],
+    "pieces_height": 5.8,
+    "model_top": 5.526,
+    "height_finding": null
+   }
+  },
+  "Furniture_ArcadeCabinet": {
+   "name": "Furniture_ArcadeCabinet",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      2.81,
+      -0.025
+     ],
+     "size": [
+      2.18,
+      5.62,
+      2.05
+     ],
+     "triangles": 464,
+     "collide": false
+    },
+    "Glow_Cold_1": {
+     "centre": [
+      0.0,
+      3.8289,
+      -0.4946
+     ],
+     "size": [
+      1.5,
+      1.0355,
+      0.2353
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Glow_Warm_1": {
+     "centre": [
+      0.0,
+      5.05,
+      -0.725
+     ],
+     "size": [
+      1.7,
+      0.6,
+      0.03
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      2.81,
+      -0.025
+     ],
+     "size": [
+      2.18,
+      5.62,
+      2.05
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -3.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 500,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "an arcade cabinet: cypress with lily-green sides and a lily pad on each, a moon-glow screen, a firefly-glowing marquee with moss hanging over it, a joystick and three buttons, a copper coin door",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ]
+   },
+   "furniture": {
+    "id": "ArcadeCabinet",
+    "pose": "Stand",
+    "keyFor": [],
+    "pieces_height": 5.6,
+    "model_top": 5.62,
+    "height_finding": null
+   }
+  },
+  "Furniture_PingPongTable": {
+   "name": "Furniture_PingPongTable",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     9.0,
+     0.2,
+     6.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      9.0,
+      0.2,
+      6.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      1.525,
+      0.0
+     ],
+     "size": [
+      8.0,
+      3.05,
+      5.12
+     ],
+     "triangles": 560,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      1.525,
+      0.0
+     ],
+     "size": [
+      8.0,
+      3.05,
+      5.12
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -4.5
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 572,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a ping-pong table: a deep water-green top with linen lines on cypress root legs, a reed-green net between brass posts, a lotus and a lily bat, a ball",
+   "decor": {
+    "fw": 3,
+    "fd": 2,
+    "layer": "Floor",
+    "footprint_studs": [
+     9.0,
+     6.0
+    ]
+   },
+   "furniture": {
+    "id": "PingPongTable",
+    "pose": "Stand",
+    "keyFor": [],
+    "pieces_height": 3.0,
+    "model_top": 3.05,
+    "height_finding": null
+   }
+  },
+  "Furniture_BoardGameShelf": {
+   "name": "Furniture_BoardGameShelf",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     6.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      6.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      2.775,
+      0.03
+     ],
+     "size": [
+      5.16,
+      5.55,
+      2.14
+     ],
+     "triangles": 1248,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      2.775,
+      0.03
+     ],
+     "size": [
+      5.16,
+      5.55,
+      2.14
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -3.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 1260,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a shelf of board games on the wall: cypress sides, a woven rattan back, moss hanging off the cornice; wide game boxes with lids of another colour, stacked flat and stood up showing their pictures",
+   "decor": {
+    "fw": 2,
+    "fd": 1,
+    "layer": "Wall",
+    "footprint_studs": [
+     6.0,
+     3.0
+    ]
+   },
+   "furniture": {
+    "id": "BoardGameShelf",
+    "pose": "Stand",
+    "keyFor": [],
+    "pieces_height": 5.6,
+    "model_top": 5.55,
+    "height_finding": null
+   }
+  },
+  "Furniture_ChessTable": {
+   "name": "Furniture_ChessTable",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      1.64,
+      0.0
+     ],
+     "size": [
+      2.1,
+      3.28,
+      2.1
+     ],
+     "triangles": 1072,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -3.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 1084,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a chess table: a linen and dark-cypress board on a weathered top and root pedestal, linen and moss men, a game under way",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ]
+   },
+   "furniture": {
+    "id": "ChessTable",
+    "pose": "Stand",
+    "keyFor": [],
+    "pieces_height": 3.0,
+    "model_top": 3.28,
+    "height_finding": null
+   }
+  },
+  "Furniture_CoffeeTable": {
+   "name": "Furniture_CoffeeTable",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     6.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      6.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      0.98,
+      0.0047
+     ],
+     "size": [
+      5.0,
+      1.96,
+      2.0179
+     ],
+     "triangles": 984,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -3.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 996,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a low coffee table: a live-edge cypress slab, weathered on top, on two root stumps: a copper teapot, two cups on saucers, a lotus in a stone bowl, a frog on the corner",
+   "decor": {
+    "fw": 2,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     6.0,
+     3.0
+    ]
+   },
+   "furniture": {
+    "id": "CoffeeTable",
+    "pose": "Stand",
+    "keyFor": [],
+    "pieces_height": 2.0,
+    "model_top": 1.96,
+    "height_finding": null
+   }
+  },
+  "Furniture_Washstand": {
+   "name": "Furniture_Washstand",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      2.6297,
+      0.014
+     ],
+     "size": [
+      2.16,
+      5.2595,
+      1.972
+     ],
+     "triangles": 1002,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      2.6297,
+      0.014
+     ],
+     "size": [
+      2.16,
+      5.2595,
+      1.972
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -3.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 1014,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a washstand: a stone basin in a weathered top on a cypress cabinet with rattan doors, a copper tap, an oval moonstone mirror in a dark cypress frame with moss over it, a lotus",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ]
+   },
+   "furniture": {
+    "id": "Washstand",
+    "pose": "Stand",
+    "keyFor": [],
+    "pieces_height": 5.4,
+    "model_top": 5.259,
+    "height_finding": null
+   }
+  },
+  "Furniture_Toilet": {
+   "name": "Furniture_Toilet",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      1.8468,
+      0.1858
+     ],
+     "size": [
+      1.9616,
+      3.6936,
+      1.8285
+     ],
+     "triangles": 836,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      1.72,
+      -0.35
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    }
+   },
+   "triangles": 848,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a white pedestal toilet with a cypress seat and closed lid at 1.72, a cypress cistern on the bowl's back with a woven rattan front, a brass lever, a fern in a stone pot on top",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ],
+    "seats": [
+     {
+      "x": [
+       -1.0,
+       1.0
+      ],
+      "z": [
+       -0.74,
+       0.46
+      ],
+      "y": 1.72,
+      "people": 1,
+      "narrow": null
+     }
+    ]
+   },
+   "furniture": {
+    "id": "Toilet",
+    "pose": "Sit",
+    "keyFor": [],
+    "pieces_height": 3.6,
+    "model_top": 3.694,
+    "height_finding": null
+   }
+  },
+  "Furniture_GardenBench": {
+   "name": "Furniture_GardenBench",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     6.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      6.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      1.72,
+      0.157
+     ],
+     "size": [
+      5.1511,
+      3.44,
+      1.6139
+     ],
+     "triangles": 860,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      1.75,
+      -0.25
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    }
+   },
+   "triangles": 872,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a garden bench for two: weathered planks on cypress root legs, a woven rattan back with moss over its top rail and a frog sitting on it",
+   "decor": {
+    "fw": 2,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     6.0,
+     3.0
+    ],
+    "seats": [
+     {
+      "x": [
+       -2.4,
+       2.4
+      ],
+      "z": [
+       -0.62,
+       0.58
+      ],
+      "y": 1.75,
+      "people": 2,
+      "narrow": null
+     }
+    ]
+   },
+   "furniture": {
+    "id": "GardenBench",
+    "pose": "Sit",
+    "keyFor": [],
+    "pieces_height": 3.6,
+    "model_top": 3.44,
+    "height_finding": null
    }
   }
  },

@@ -7,7 +7,7 @@ rooms)". Built by `tools/build_built_rooms.py -- sets frostfang_lodge`; a
 night draft (2026-10-21) for his review. **Nothing here has been seen in
 Studio.**
 
-## What is in it (11 models)
+## What is in it (11 models, and the 23 location-0 pieces below)
 
 | Model | What | Triangles |
 |---|---|---|
@@ -17,9 +17,8 @@ Studio.**
 | 8 furniture, location 2 | `IceBed` (Igloo Room's bed), `IceSlab` (Ice Cave's slab under furs), `SnowNest` (Yeti Den's nest, a third larger), `GlacierCoil` (Glacier Suite's coiled bed, a third larger), `CocoaBar` (Cocoa Lounge's counter), new: `KnittingChair` (a rocking chair, a seat by rule 6, a yarn basket), `StarHammock` (navy with stars between snow-capped log posts), `SkyLounger` (a deck lounger) | 268-1,024 |
 
 `Use` Poses: Lie for the beds, nest, coil, hammock and lounger; Sit for the
-knitting chair; Stand for the cocoa bar. The location-0 furniture is only in
-Haunted Manor's style so far (`blender/rooms/haunted_manor/`); the contract
-lets the code take the Manor's until the Lodge has its own.
+knitting chair; Stand for the cocoa bar. The Lodge's own location-0 furniture is
+below (2026-10-21).
 
 ## Fixed after the blind review (2026-10-21)
 
@@ -116,3 +115,74 @@ repeat the Manor's; rename to `Wall_*` on saving into
 `assets/HotelKit/FrostfangLodge/`), the furniture unprefixed.
 
 Bayou Spa (location 3) is modelled since 2026-10-21 (`blender/rooms/bayou_spa/`), a draft.
+
+## The location-0 furniture in the Lodge's style (2026-10-21)
+
+`MODELS.md`: the location-0 ("every location") furniture is modelled in
+every kit in its style. These are the Lodge's 23, by
+`tools/build_built_rooms_kits.py` (run by the main script): the Manor's
+footprints, `Use` points and Poses, so the code treats them alike. The
+style: pale birch with log legs and edges, carved snowflakes on the
+panels, red and cream plaid, iron hardware, snow lying on the tall tops,
+aurora stripes (teal, mint, violet) as accents.
+
+| Model | What | Use |
+|---|---|---|
+| `Nightstand` | Birch on log feet, an aurora band on the drawer, a carved snowflake door, a mug and books | Stand |
+| `Wardrobe` (2 x 1) | Birch armoire between four log posts, snowflake doors with iron strap hinges, an aurora band, a little log cabin roof with snow on both slopes (top 6.2) | Stand |
+| `WritingDesk` (2 x 1) | Log legs and stretchers, aurora bands either side of the drawer, letter, inkpot, quill, mug | Stand |
+| `DiningTable` (2 x 2) | Log legs, a red plaid runner, plates with napkins in aurora colours, a bowl of apples | Stand |
+| `BreakfastBuffet` (3 x 1) | Snowflake doors, pancakes with syrup and butter, a bread basket, milk jug, jam | Stand |
+| `BarStool` | Four birch legs, an iron foot ring at 1.42, a red plaid cushion at 2.6, a log back rail | Sit (0, 2.6, -0.2) |
+| `PoolTable` (3 x 2) | Dark log body on six log legs, green felt, birch rails with aurora sights | Stand |
+| `CardTable` (2 x 2) | Green felt in a birch rim with an aurora-teal band, a log pedestal, cards and chips | Stand |
+| `Bathtub` (2 x 1) | Birch staves in two iron hoops, water with foam, a rolled plaid towel, an iron pump | Lie (-0.3, 0.75, 0), waived |
+| `FloorLamp` | A birch post with its dark marks on a log-slice foot, a cream shade with a red hem and a teal band, `Glow_Warm_1` | Stand |
+| `DiningChair` | Birch, a plaid cushion at 1.82, a round-topped back with a carved snowflake over an aurora band | Sit (0, 1.82, -0.15) |
+| `SaladBar` (3 x 1) | Snowflake panels, four foods in log bowls, dressings, a `Glass` sneeze guard (ice) on iron posts | Stand |
+| `CoffeeUrn` | A red enamel cocoa urn over a drip tray, mugs, a log upstand with mugs and snow on top | Stand |
+| `DessertTrolley` (2 x 1) | A Yule log cake with holly, a gingerbread house with a snowy roof, a jelly; a berry pie below | Stand |
+| `DartsBoard` (Wall) | On a log slice with snow on it, darts with aurora flights, a chalk scoreboard | Stand |
+| `ArcadeCabinet` | Navy sides with aurora waves, a frost-blue screen (`Glow_Cold_1`), an aurora marquee (`Glow_Magic_1`), snow on top | Stand |
+| `PingPongTable` (3 x 2) | A navy top on log legs, a frosted net, red and teal bats | Stand |
+| `BoardGameShelf` (Wall, 2 x 1) | Birch, lidded game boxes, a log cornice with an aurora band and snow | Stand |
+| `ChessTable` | A birch and dark-log board on a log pedestal, snow-white and navy men | Stand |
+| `CoffeeTable` (2 x 1) | A birch slab with bark edges on two log rounds, a cocoa pot, mugs, gingerbread stars, a book | Stand |
+| `Washstand` | A white basin in a stone top, an iron pump tap, a round-topped frosted mirror in a log frame | Stand |
+| `Toilet` | White bowl on an oval 2.0 x 1.2, birch seat and lid at 1.72, a log-clad cistern with a snowflake panel | Sit (0, 1.72, -0.35) |
+| `GardenBench` (2 x 1) | Birch planks on log legs and arms, two half-log back rails with snow along the top one | Sit (0, 1.75, -0.25) |
+
+Validated by the build (`VALIDATED 34/34`; the set's walls and older
+pieces are unchanged, their manifest records identical to before; only the
+atlas gained 'birch', 'birch_shade' and 'felt', appended): footprint and 0.4 inset, layer and w/d
+against `Pieces.luau`, no coplanar faces, nothing floating (the darts board
+and the board-game shelf hang on the wall's plane), `Use` and its `Pose`,
+the seats by rule 6 (the stool's at 2.6), budgets (all under 1,500), and
+**every Sit piece held to the seated 5-stud person** (`sit_faults`, per
+piece: `sit_figure`): the seats end where the shins hang (0.4 ahead of
+`Use`), so they are 0.4-0.5 shallower in front than the Manor's, and the
+backs stand 0.3 behind the torso. The tub is waived as the Manor's (2 x 1
+holds a reclined guest; 3 x 2 is August's call). Fixed during the build:
+three coplanar pairs (a seat board's back face in the back legs', a tap's
+column top in its spout's, a trolley post's face in the push bar's), three
+pieces over budget (the aurora stripes' facets, the salad bar's bottles),
+the darts board's backer too wide for 1 x 1 (now 2.2 across), the bench's
+arms over the seat's 0.1 margin, three tops more than 0.3 over Pieces'
+height (an apple, a lotus, a reed pen).
+
+**Height findings** (Pieces' height against the model's top, not faults):
+only `BarStool` (3.23 vs 2.6, its back rail; the Manor's has the same).
+
+Review (Workbench on light grey, Studio running: no EEVEE or Cycles), in
+`review/every/`: `furniture_sheet.png` (on their squares beside the 5-stud
+person, `Use` in red), `top_sheet.png` (straight from above),
+`elevations_sheet.png` (floor level, front and side), `lying_sheet.png`
+(the tub with the person in it, waived), `sitting_sheet.png` (the stool at
+its own Cocoa Bar; the stool, chair, toilet and bench with the person seated: side
+as a section, front, three-quarter). Looked at by Claude; fixed from the
+sheets: round snow lumps read as plates lying on the tops (now one long low drift), the wardrobe's gable ridge read as an open book (now a cabin roof running left to right). **Not done**: a blind review of these sheets; anything
+in Studio.
+
+Staged 2026-10-21 in `blender/_import/` as `FrostfangLodge_Furniture_<Id>.fbx`
+(the 23; the names repeat the Manor's: rename to `Furniture_<Id>` on saving
+into `assets/HotelKit/FrostfangLodge/`), beside what was there.

@@ -253,6 +253,21 @@
    130,
    255,
    190
+  ],
+  "birch": [
+   228,
+   210,
+   178
+  ],
+  "birch_shade": [
+   200,
+   178,
+   142
+  ],
+  "felt": [
+   44,
+   104,
+   96
   ]
  },
  "pieces": {
@@ -1381,6 +1396,2212 @@
      "drop": 0.6,
      "waived": null
     }
+   }
+  },
+  "Furniture_Nightstand": {
+   "name": "Furniture_Nightstand",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      1.23,
+      -0.0203
+     ],
+     "size": [
+      2.16,
+      2.46,
+      1.8006
+     ],
+     "triangles": 832,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -3.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 844,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a log-legged birch bedside cabinet: an aurora band across the drawer, a snowflake carved on the door, iron knobs, a mug of cocoa and two books on the log top",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ]
+   },
+   "furniture": {
+    "id": "Nightstand",
+    "pose": "Stand",
+    "keyFor": [],
+    "pieces_height": 2.2,
+    "model_top": 2.46,
+    "height_finding": null
+   }
+  },
+  "Furniture_Wardrobe": {
+   "name": "Furniture_Wardrobe",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     6.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      6.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      3.1,
+      0.0
+     ],
+     "size": [
+      4.9,
+      6.2,
+      2.16
+     ],
+     "triangles": 1048,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      3.1,
+      0.0
+     ],
+     "size": [
+      4.9,
+      6.2,
+      2.16
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -3.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 1060,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a tall birch armoire between four log posts: two doors with carved snowflakes and iron strap hinges, an aurora band under a dark log cornice, a little log cabin roof on top with snow on both slopes",
+   "decor": {
+    "fw": 2,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     6.0,
+     3.0
+    ]
+   },
+   "furniture": {
+    "id": "Wardrobe",
+    "pose": "Stand",
+    "keyFor": [],
+    "pieces_height": 6.0,
+    "model_top": 6.2,
+    "height_finding": null
+   }
+  },
+  "Furniture_WritingDesk": {
+   "name": "Furniture_WritingDesk",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     6.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      6.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      1.4484,
+      0.0
+     ],
+     "size": [
+      4.9,
+      2.8967,
+      2.0
+     ],
+     "triangles": 852,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -3.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 864,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a writing desk on log legs and stretchers: a log top, a birch drawer between two aurora bands, a letter, an inkpot, a quill and a mug of cocoa",
+   "decor": {
+    "fw": 2,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     6.0,
+     3.0
+    ]
+   },
+   "furniture": {
+    "id": "WritingDesk",
+    "pose": "Stand",
+    "keyFor": [],
+    "pieces_height": 2.6,
+    "model_top": 2.897,
+    "height_finding": null
+   }
+  },
+  "Furniture_DiningTable": {
+   "name": "Furniture_DiningTable",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     6.0,
+     0.2,
+     6.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      6.0,
+      0.2,
+      6.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      1.44,
+      0.0
+     ],
+     "size": [
+      5.0,
+      2.88,
+      5.0
+     ],
+     "triangles": 566,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -4.5
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 578,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a square log-legged table: a red plaid runner, four white plates with napkins in aurora colours, a bowl of red apples",
+   "decor": {
+    "fw": 2,
+    "fd": 2,
+    "layer": "Floor",
+    "footprint_studs": [
+     6.0,
+     6.0
+    ]
+   },
+   "furniture": {
+    "id": "DiningTable",
+    "pose": "Stand",
+    "keyFor": [],
+    "pieces_height": 2.6,
+    "model_top": 2.88,
+    "height_finding": null
+   }
+  },
+  "Furniture_BreakfastBuffet": {
+   "name": "Furniture_BreakfastBuffet",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     9.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      9.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      1.54,
+      0.0
+     ],
+     "size": [
+      8.2,
+      3.08,
+      2.1
+     ],
+     "triangles": 1300,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      1.54,
+      0.0
+     ],
+     "size": [
+      8.2,
+      3.08,
+      2.1
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -3.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 1312,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a birch sideboard on log feet, three doors with carved snowflakes: a stack of pancakes with syrup and butter, a basket of bread, a milk jug, jars of jam",
+   "decor": {
+    "fw": 3,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     9.0,
+     3.0
+    ]
+   },
+   "furniture": {
+    "id": "BreakfastBuffet",
+    "pose": "Stand",
+    "keyFor": [
+     "SnackBar",
+     "CocoaLounge"
+    ],
+    "pieces_height": 3.0,
+    "model_top": 3.08,
+    "height_finding": null
+   }
+  },
+  "Furniture_BarStool": {
+   "name": "Furniture_BarStool",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      1.6154,
+      0.0581
+     ],
+     "size": [
+      2.1,
+      3.2309,
+      1.6038
+     ],
+     "triangles": 380,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      2.6,
+      -0.2
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    }
+   },
+   "triangles": 392,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a bar stool on four birch legs with an iron foot ring, a red plaid cushion at 2.6 on a log seat, a low log back rail",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ],
+    "seats": [
+     {
+      "x": [
+       -1.0,
+       1.0
+      ],
+      "z": [
+       -0.6,
+       0.6
+      ],
+      "y": 2.6,
+      "people": 1,
+      "narrow": null,
+      "bar": true
+     }
+    ]
+   },
+   "furniture": {
+    "id": "BarStool",
+    "pose": "Sit",
+    "keyFor": [],
+    "pieces_height": 2.6,
+    "model_top": 3.231,
+    "height_finding": "Pieces.luau's height 2.6, the body's top 3.23"
+   }
+  },
+  "Furniture_PoolTable": {
+   "name": "Furniture_PoolTable",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     9.0,
+     0.2,
+     6.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      9.0,
+      0.2,
+      6.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      1.39,
+      0.0
+     ],
+     "size": [
+      7.8,
+      2.78,
+      4.8
+     ],
+     "triangles": 904,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      1.39,
+      0.0
+     ],
+     "size": [
+      7.8,
+      2.78,
+      4.8
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -4.5
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 916,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a pool table: dark log body on six log legs, deep green felt, birch rails with aurora-coloured sights, black pockets, five balls",
+   "decor": {
+    "fw": 3,
+    "fd": 2,
+    "layer": "Floor",
+    "footprint_studs": [
+     9.0,
+     6.0
+    ]
+   },
+   "furniture": {
+    "id": "PoolTable",
+    "pose": "Stand",
+    "keyFor": [],
+    "pieces_height": 2.6,
+    "model_top": 2.78,
+    "height_finding": null
+   }
+  },
+  "Furniture_CardTable": {
+   "name": "Furniture_CardTable",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     6.0,
+     0.2,
+     6.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      6.0,
+      0.2,
+      6.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      1.4,
+      0.0
+     ],
+     "size": [
+      4.8843,
+      2.8,
+      4.8843
+     ],
+     "triangles": 496,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -4.5
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 508,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a round card table: deep green felt in a birch rim with an aurora-teal band, on a log pedestal; cards dealt, stacks of chips",
+   "decor": {
+    "fw": 2,
+    "fd": 2,
+    "layer": "Floor",
+    "footprint_studs": [
+     6.0,
+     6.0
+    ]
+   },
+   "furniture": {
+    "id": "CardTable",
+    "pose": "Stand",
+    "keyFor": [],
+    "pieces_height": 2.6,
+    "model_top": 2.8,
+    "height_finding": null
+   }
+  },
+  "Furniture_Bathtub": {
+   "name": "Furniture_Bathtub",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     6.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      6.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      -0.0095,
+      1.15,
+      0.0
+     ],
+     "size": [
+      5.0266,
+      2.3,
+      2.0445
+     ],
+     "triangles": 828,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      -0.3,
+      0.75,
+      0.0
+     ],
+     "look": [
+      1.0,
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "triangles": 840,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a wooden tub of birch staves in two iron hoops, water to the middle with a little foam, a rolled red plaid towel across its head end, an iron pump at its foot",
+   "decor": {
+    "fw": 2,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     6.0,
+     3.0
+    ]
+   },
+   "furniture": {
+    "id": "Bathtub",
+    "pose": "Lie",
+    "keyFor": [],
+    "pieces_height": 2.0,
+    "model_top": 2.3,
+    "height_finding": null,
+    "lie": {
+     "person": 5.0,
+     "rise": [
+      0.45,
+      0.8
+     ],
+     "drop": 0.6,
+     "waived": "a tub is lain in reclining: its 2 x 1 squares (Pieces) hold 4.4 x 1.8 inside; a straight 5-stud person, arms at the sides, needs 5.2 x 3.9: 3 x 2 squares (August's call)"
+    }
+   }
+  },
+  "Furniture_FloorLamp": {
+   "name": "Furniture_FloorLamp",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      2.76,
+      0.0
+     ],
+     "size": [
+      2.0091,
+      5.52,
+      2.0091
+     ],
+     "triangles": 398,
+     "collide": false
+    },
+    "Glow_Warm_1": {
+     "centre": [
+      0.0,
+      4.05,
+      0.0
+     ],
+     "size": [
+      0.4065,
+      0.52,
+      0.4065
+     ],
+     "triangles": 48,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      2.76,
+      0.0
+     ],
+     "size": [
+      2.0091,
+      5.52,
+      2.0091
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -3.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 458,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a standing lamp: a birch post with its dark marks on a log-slice foot, a cream shade with a red hem and an aurora-teal band, a pine-cone finial, the bulb glowing",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ]
+   },
+   "furniture": {
+    "id": "FloorLamp",
+    "pose": "Stand",
+    "keyFor": [],
+    "pieces_height": 5.5,
+    "model_top": 5.52,
+    "height_finding": null
+   }
+  },
+  "Furniture_DiningChair": {
+   "name": "Furniture_DiningChair",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      2.18,
+      0.16
+     ],
+     "size": [
+      2.12,
+      4.36,
+      1.42
+     ],
+     "triangles": 756,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      2.18,
+      0.16
+     ],
+     "size": [
+      2.12,
+      4.36,
+      1.42
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      1.82,
+      -0.15
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    }
+   },
+   "triangles": 768,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a birch dining chair: a red plaid cushion at 1.82, a round-topped back with a carved snowflake over an aurora band, pine-cone finials",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ],
+    "seats": [
+     {
+      "x": [
+       -1.0,
+       1.0
+      ],
+      "z": [
+       -0.55,
+       0.65
+      ],
+      "y": 1.82,
+      "people": 1,
+      "narrow": null
+     }
+    ]
+   },
+   "furniture": {
+    "id": "DiningChair",
+    "pose": "Sit",
+    "keyFor": [],
+    "pieces_height": 4.4,
+    "model_top": 4.36,
+    "height_finding": null
+   }
+  },
+  "Furniture_SaladBar": {
+   "name": "Furniture_SaladBar",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     9.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      9.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      2.0,
+      0.0
+     ],
+     "size": [
+      8.2,
+      4.0,
+      2.1
+     ],
+     "triangles": 1312,
+     "collide": false
+    },
+    "Glass": {
+     "centre": [
+      0.0,
+      4.02,
+      -0.25
+     ],
+     "size": [
+      8.0,
+      0.04,
+      1.3
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      2.02,
+      0.0
+     ],
+     "size": [
+      8.2,
+      4.04,
+      2.1
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -3.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 1336,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a salad bar of birch with carved snowflake panels: greens, beets, carrots and corn in log bowls, dressings on a step, a thin glass sneeze guard on iron posts",
+   "decor": {
+    "fw": 3,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     9.0,
+     3.0
+    ]
+   },
+   "furniture": {
+    "id": "SaladBar",
+    "pose": "Stand",
+    "keyFor": [],
+    "pieces_height": 4.2,
+    "model_top": 4.04,
+    "height_finding": null
+   }
+  },
+  "Furniture_CoffeeUrn": {
+   "name": "Furniture_CoffeeUrn",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      2.265,
+      0.0147
+     ],
+     "size": [
+      2.16,
+      4.53,
+      2.0906
+     ],
+     "triangles": 1098,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      2.265,
+      0.0147
+     ],
+     "size": [
+      2.16,
+      4.53,
+      2.0906
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -3.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 1110,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a cocoa station: a red enamel urn with a cream band, iron handles and tap over a drip tray on a birch cabinet with a carved snowflake, two mugs, a dark log upstand with a shelf of mugs, snow on top",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ]
+   },
+   "furniture": {
+    "id": "CoffeeUrn",
+    "pose": "Stand",
+    "keyFor": [],
+    "pieces_height": 4.6,
+    "model_top": 4.53,
+    "height_finding": null
+   }
+  },
+  "Furniture_DessertTrolley": {
+   "name": "Furniture_DessertTrolley",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     6.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      6.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      1.69,
+      0.0
+     ],
+     "size": [
+      4.94,
+      3.38,
+      1.9
+     ],
+     "triangles": 954,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -3.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 966,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a two-tier dessert trolley of birch on log posts and iron wheels: a Yule log cake with snow icing and holly, a gingerbread house with a snowy roof, a pink jelly; a berry pie and plates below",
+   "decor": {
+    "fw": 2,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     6.0,
+     3.0
+    ]
+   },
+   "furniture": {
+    "id": "DessertTrolley",
+    "pose": "Stand",
+    "keyFor": [],
+    "pieces_height": 3.6,
+    "model_top": 3.38,
+    "height_finding": null
+   }
+  },
+  "Furniture_DartsBoard": {
+   "name": "Furniture_DartsBoard",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      3.9,
+      0.67
+     ],
+     "size": [
+      2.1729,
+      3.4,
+      0.86
+     ],
+     "triangles": 632,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      3.9,
+      0.67
+     ],
+     "size": [
+      2.1729,
+      3.4,
+      0.86
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -3.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 644,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a darts board on a log slice with snow on it, hung on the wall: black, cream, red and green rings, three darts with aurora-coloured flights, a chalk scoreboard under it",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Wall",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ]
+   },
+   "furniture": {
+    "id": "DartsBoard",
+    "pose": "Stand",
+    "keyFor": [],
+    "pieces_height": 5.8,
+    "model_top": 5.6,
+    "height_finding": null
+   }
+  },
+  "Furniture_ArcadeCabinet": {
+   "name": "Furniture_ArcadeCabinet",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      2.895,
+      -0.025
+     ],
+     "size": [
+      2.18,
+      5.79,
+      2.05
+     ],
+     "triangles": 684,
+     "collide": false
+    },
+    "Glow_Cold_1": {
+     "centre": [
+      0.0,
+      3.8289,
+      -0.4946
+     ],
+     "size": [
+      1.5,
+      1.0355,
+      0.2353
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Glow_Magic_1": {
+     "centre": [
+      0.0,
+      5.05,
+      -0.725
+     ],
+     "size": [
+      1.7,
+      0.6,
+      0.03
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      2.895,
+      -0.025
+     ],
+     "size": [
+      2.18,
+      5.79,
+      2.05
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -3.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 720,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "an arcade cabinet: navy sides painted with aurora waves, a dark log front, a frost-blue glowing screen, an aurora-glowing marquee, snow on top, a joystick and three buttons, a coin door",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ]
+   },
+   "furniture": {
+    "id": "ArcadeCabinet",
+    "pose": "Stand",
+    "keyFor": [],
+    "pieces_height": 5.6,
+    "model_top": 5.79,
+    "height_finding": null
+   }
+  },
+  "Furniture_PingPongTable": {
+   "name": "Furniture_PingPongTable",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     9.0,
+     0.2,
+     6.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      9.0,
+      0.2,
+      6.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      1.525,
+      0.0
+     ],
+     "size": [
+      8.0,
+      3.05,
+      5.12
+     ],
+     "triangles": 432,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      1.525,
+      0.0
+     ],
+     "size": [
+      8.0,
+      3.05,
+      5.12
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -4.5
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 444,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a ping-pong table: a navy top with white lines on log legs, a frosted net with a white band between iron posts, a red and a teal bat, a ball",
+   "decor": {
+    "fw": 3,
+    "fd": 2,
+    "layer": "Floor",
+    "footprint_studs": [
+     9.0,
+     6.0
+    ]
+   },
+   "furniture": {
+    "id": "PingPongTable",
+    "pose": "Stand",
+    "keyFor": [],
+    "pieces_height": 3.0,
+    "model_top": 3.05,
+    "height_finding": null
+   }
+  },
+  "Furniture_BoardGameShelf": {
+   "name": "Furniture_BoardGameShelf",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     6.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      6.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      2.86,
+      0.03
+     ],
+     "size": [
+      5.16,
+      5.72,
+      2.14
+     ],
+     "triangles": 1392,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      2.86,
+      0.03
+     ],
+     "size": [
+      5.16,
+      5.72,
+      2.14
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -3.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 1404,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a shelf of board games on the wall: birch sides, a log cornice with an aurora band and snow on it; wide game boxes with lids of another colour, stacked flat and stood up showing their pictures",
+   "decor": {
+    "fw": 2,
+    "fd": 1,
+    "layer": "Wall",
+    "footprint_studs": [
+     6.0,
+     3.0
+    ]
+   },
+   "furniture": {
+    "id": "BoardGameShelf",
+    "pose": "Stand",
+    "keyFor": [],
+    "pieces_height": 5.6,
+    "model_top": 5.72,
+    "height_finding": null
+   }
+  },
+  "Furniture_ChessTable": {
+   "name": "Furniture_ChessTable",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      1.64,
+      0.0
+     ],
+     "size": [
+      2.1,
+      3.28,
+      2.1
+     ],
+     "triangles": 1052,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -3.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 1064,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a chess table: a birch and dark-log board on a log pedestal, snow-white and navy men, a game under way",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ]
+   },
+   "furniture": {
+    "id": "ChessTable",
+    "pose": "Stand",
+    "keyFor": [],
+    "pieces_height": 3.0,
+    "model_top": 3.28,
+    "height_finding": null
+   }
+  },
+  "Furniture_CoffeeTable": {
+   "name": "Furniture_CoffeeTable",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     6.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      6.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      1.0,
+      0.0
+     ],
+     "size": [
+      5.0,
+      2.0,
+      2.08
+     ],
+     "triangles": 726,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -3.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 738,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a low coffee table: a thick birch slab with bark edges on two log rounds, a red cocoa pot, two mugs, a plate of gingerbread stars, a book",
+   "decor": {
+    "fw": 2,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     6.0,
+     3.0
+    ]
+   },
+   "furniture": {
+    "id": "CoffeeTable",
+    "pose": "Stand",
+    "keyFor": [],
+    "pieces_height": 2.0,
+    "model_top": 2.0,
+    "height_finding": null
+   }
+  },
+  "Furniture_Washstand": {
+   "name": "Furniture_Washstand",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      2.675,
+      0.014
+     ],
+     "size": [
+      2.16,
+      5.35,
+      1.972
+     ],
+     "triangles": 690,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      2.675,
+      0.014
+     ],
+     "size": [
+      2.16,
+      5.35,
+      1.972
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      0.0,
+      -3.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 702,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a washstand: a white basin in a stone top on a birch cabinet with carved snowflake doors, an iron pump tap, a round-topped frosted mirror in a dark log frame with snow on it",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ]
+   },
+   "furniture": {
+    "id": "Washstand",
+    "pose": "Stand",
+    "keyFor": [],
+    "pieces_height": 5.4,
+    "model_top": 5.35,
+    "height_finding": null
+   }
+  },
+  "Furniture_Toilet": {
+   "name": "Furniture_Toilet",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      1.68,
+      0.1858
+     ],
+     "size": [
+      1.9616,
+      3.36,
+      1.8285
+     ],
+     "triangles": 768,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      1.72,
+      -0.35
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    }
+   },
+   "triangles": 780,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a white pedestal toilet with a birch seat and closed lid at 1.72, a log-clad cistern on the bowl's back with a carved snowflake panel and an iron lever",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ],
+    "seats": [
+     {
+      "x": [
+       -1.0,
+       1.0
+      ],
+      "z": [
+       -0.74,
+       0.46
+      ],
+      "y": 1.72,
+      "people": 1,
+      "narrow": null
+     }
+    ]
+   },
+   "furniture": {
+    "id": "Toilet",
+    "pose": "Sit",
+    "keyFor": [],
+    "pieces_height": 3.6,
+    "model_top": 3.36,
+    "height_finding": null
+   }
+  },
+  "Furniture_GardenBench": {
+   "name": "Furniture_GardenBench",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     6.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      6.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      1.71,
+      0.1724
+     ],
+     "size": [
+      5.1402,
+      3.42,
+      1.5848
+     ],
+     "triangles": 444,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use": {
+     "pos": [
+      0.0,
+      1.75,
+      -0.25
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    }
+   },
+   "triangles": 456,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a garden bench of logs for two: a birch plank seat, log arms, two half-log back rails with snow lying on the top one and on the posts",
+   "decor": {
+    "fw": 2,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     6.0,
+     3.0
+    ],
+    "seats": [
+     {
+      "x": [
+       -2.4,
+       2.4
+      ],
+      "z": [
+       -0.62,
+       0.58
+      ],
+      "y": 1.75,
+      "people": 2,
+      "narrow": null
+     }
+    ]
+   },
+   "furniture": {
+    "id": "GardenBench",
+    "pose": "Sit",
+    "keyFor": [],
+    "pieces_height": 3.6,
+    "model_top": 3.42,
+    "height_finding": null
    }
   }
  },

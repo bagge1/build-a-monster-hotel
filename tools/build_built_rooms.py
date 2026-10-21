@@ -6,8 +6,9 @@ half-cell edges, puts a door in one and furnishes the room on the 3-stud grid. S
     Wall_Half           one 6-stud half edge, 0.4 thick centred on the edge, 17 tall, both faces alike
     Wall_Door           the same half edge with an open arched doorway (clear x -2..2, y 0..7.2), `Door`, `Sign`
     Wall_Post           the 0.6 square post the code puts on every joint that is not a straight run
-    Furniture_<Id>      every Pieces row with `furniture = true` of the location (and, in Haunted Manor, the
-                        location-0 rows, "for any room"), on its w x d 3-stud squares, with `Use` and its `Pose`
+    Furniture_<Id>      every Pieces row with `furniture = true` of the location and the location-0 rows ("for
+                        any room"), on its w x d 3-stud squares, with `Use` and its `Pose`; the Lodge's and the
+                        Spa's location-0 pieces are tools/build_built_rooms_kits.py (review/every/)
 
 Sets: blender/rooms/haunted_manor/ (location 1 and 0, the Manor's palette and dress),
 blender/rooms/frostfang_lodge/ (location 2, the Lodge's) and blender/rooms/bayou_spa/ (location 3, a draft: new
@@ -742,7 +743,7 @@ def use_check(piece, tris, stage):
         inside = [s for s in piece.seats if s['x'][0] <= pos.x <= s['x'][1] and s['z'][0] <= pos.z <= s['z'][1]]
         if not inside:
             f.append(f'{tag}: a Sit point not on a declared seat (rule 6)')
-        if SIT_FIGURE[0]:
+        if SIT_FIGURE[0] or getattr(piece, 'sit_figure', False):      # per style, or per piece (_kits.py)
             f += sit_faults(allt, pos, look, tag)
     if piece.pose == 'Lie' and not piece.lie['waived']:
         f += lie_faults(piece, allt, pos, look, tag)
@@ -1407,7 +1408,7 @@ def ff_bed(hw=1.95, frame='wood_light', quilt=('red', 'cream'), pillow='snow', h
 def ff_furniture():
     return {'IceBed': f_ice_bed, 'IceSlab': f_ice_slab, 'SnowNest': f_snow_nest, 'KnittingChair': f_knitting_chair,
             'GlacierCoil': f_glacier_coil, 'StarHammock': f_star_hammock, 'CocoaBar': f_cocoa_bar,
-            'SkyLounger': f_sky_lounger}
+            'SkyLounger': f_sky_lounger, **every_furniture('ff')}     # the location-0 pieces: _kits.py
 
 
 def f_ice_bed():
@@ -2015,7 +2016,8 @@ def f_lily_basin():
 def bs_furniture():
     return {'LilyPadBed': f_lily_pad_bed, 'WillowHammock': f_willow_hammock, 'MudTub': f_mud_tub,
             'HerbBed': f_herb_bed, 'SteamPool': f_steam_pool, 'CypressThrone': f_cypress_throne,
-            'LagoonPerch': f_lagoon_perch, 'JazzStage': f_jazz_stage, 'LilyBasin': f_lily_basin}
+            'LagoonPerch': f_lagoon_perch, 'JazzStage': f_jazz_stage, 'LilyBasin': f_lily_basin,
+            **every_furniture('bs')}        # the location-0 pieces: tools/build_built_rooms_kits.py
 
 
 # --- Styles -------------------------------------------------------------------------------------------
@@ -2045,7 +2047,7 @@ STYLES = {
         door_note='a round arch, dark log trim with a snow keystone, plinth blocks, both faces',
         post_note='banded as the walls meeting it (dark skirting and wainscot, light rails, the log courses, the '
                   'snow cornice), so their bands turn the corner on it',
-        furniture=ff_furniture, locations=(2,)),
+        furniture=ff_furniture, locations=(2, 0)),
     'bayou_spa': dict(
         title='Bayou Spa: inner walls, a door and furniture (built rooms)', location=3, palette=BS_PALETTE,
         body=[(0.0, 3.2, 'cypress'), (3.2, WALL, 'sage')], reveal='cypress_dark', skirting='cypress_dark',
@@ -2058,7 +2060,7 @@ STYLES = {
         post_note='banded as the walls meeting it (dark skirting, the cypress wainscot, light rails, sage, the moss '
                   'crown), so their bands turn the corner on it; its upright edges chamfered 0.08 (blind review '
                   '2026-10-21: its square edge 0.1 proud of the wainscot read as a dark slit at the joint)',
-        furniture=bs_furniture, locations=(3,)),
+        furniture=bs_furniture, locations=(3, 0)),
 }
 
 _HM = _lift(TOOLS / 'build_hotel_haunted_manor.py', ['pumpkin'], {'sphere': sphere, 'cyl': cyl})
@@ -2487,8 +2489,10 @@ def main():
         rows = [(['Wall_Half', 'Wall_Door', 'Wall_Post'], 2.0, 1.0)]
         for i in range(0, len(laid), 8):
             rows.append((laid[i:i + 8], 2.0, 1.0))
-        more = [n for n in built if n in MORE_NAMES]        # their own sheets (review/more/), below
-        furn_names = [n for n in furn_names if n not in MORE_NAMES]
+        more = [n for n in built if n in MORE_NAMES and style == 'haunted_manor']   # own sheets (review/more/)
+        # Another kit's own location-0 pieces (tools/build_built_rooms_kits.py): their sheets in review/every/.
+        every = [n for n in furn_names if style != 'haunted_manor' and ROWS[n[len('Furniture_'):]]['location'] == 0]
+        furn_names = [n for n in furn_names if n not in MORE_NAMES and n not in every]
         K.end_set(st['title'], rows, sheet=False)
         out = K.ROOT / 'blender' / set_dir
         manifest = json.loads((out / 'manifest.json').read_text())
@@ -2506,6 +2510,8 @@ def main():
             'a guest walking to Use, sitting or lying: no walker or animation has run']
         if more and not K.NOPREVIEW:
             print(f"SHEETS {review_more(out / 'review', out / 'fbx', more, manifest['pieces'])}", flush=True)
+        if every and not K.NOPREVIEW and (K.ONLY is None or 'every_sheets' in ARGS):
+            print(f"SHEETS {review_every(out / 'review', out / 'fbx', every, manifest['pieces'], style)}", flush=True)
         if K.ONLY is None and not K.NOPREVIEW:
             rev = out / 'review'
             faults, sheet = review_walls(rev, out / 'fbx')
@@ -2517,7 +2523,7 @@ def main():
             esheet = review_elevations(rev, out / 'fbx', furn_names, manifest['pieces'])
             lsheet = review_lying(rev, out / 'fbx', furn_names, manifest['pieces'])
             ssheet = review_sitting(rev, out / 'fbx', style,
-                                    {n: r for n, r in manifest['pieces'].items() if n not in MORE_NAMES})
+                                    {n: r for n, r in manifest['pieces'].items() if n not in MORE_NAMES and n not in every})
             print(f'SHEETS {sheet} {fsheet} {esheet} {lsheet} {ssheet}', flush=True)
             if faults:
                 refused.append(f'{style}/assembly: {faults[:4]}')
@@ -2531,5 +2537,9 @@ def main():
 # run in this namespace (it uses furn, use, stand, done and the kit's shapes as they are here).
 _MORE = TOOLS / 'build_built_rooms_more.py'
 exec(compile(_MORE.read_text(encoding='utf8'), str(_MORE), 'exec'))
+# The location-0 furniture in the Lodge's and the Spa's own styles (2026-10-21): tools/build_built_rooms_kits.py,
+# run here the same way.
+_KITS = TOOLS / 'build_built_rooms_kits.py'
+exec(compile(_KITS.read_text(encoding='utf8'), str(_KITS), 'exec'))
 
 main()

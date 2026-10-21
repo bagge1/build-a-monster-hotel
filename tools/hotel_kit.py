@@ -657,6 +657,8 @@ def pieces_decor():
             def get(k):
                 m = re.search(rf'^\t\t{k} = "?([^",\n]+)"?,', blk, re.M)
                 return m.group(1) if m else None
+            if get('w') is None:        # not a decor row (Pieces.Sets' rows follow the decor table, 2026-10-21)
+                continue
             _PIECES[get('id')] = {'w': int(get('w')), 'd': int(get('d')), 'layer': get('layer'),
                                   'height': float(get('height')), 'always': get('always') == 'true'}
     return _PIECES
