@@ -123,6 +123,13 @@ Connect: knappen under fliken Plugins i Studio. -->
    finns på alla platser (`FrostfangLodge_Furniture_*`, `BayouSpa_Furniture_*`). Importera **alla filer i
    `blender/_import/`** till **Workspace** i en dialog och skriv *importerat*
    (inte mitt i en playtest). Tills dess ritar spelet enkla klossar.
+   **Läget 2026-10-21 14:26:** Studio läste in alla 133 filer kl. 13:38
+   (en `.fbm`-mapp per fil finns), men ingen modell har kommit till
+   Workspace eller någon annanstans i spelet (kollat var 5:e minut i 48 min).
+   Väntar importfönstret kanske på knappen **Import** längst ner? Har det
+   hängt sig: stäng fönstret och importera samma filer igen. Femton av
+   Frostfangs och Bayous möbler rättas just nu efter en ny granskning; de
+   kommer som en liten egen import efteråt, så importera de 133 som de är.
 
 ## §1 Att titta på eller spela
 
