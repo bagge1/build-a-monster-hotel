@@ -300,69 +300,69 @@
     "Body": {
      "centre": [
       0.0,
-      1.16,
+      0.825,
       0.0
      ],
      "size": [
-      1.9,
-      2.32,
-      1.9
+      2.08,
+      1.65,
+      2.08
      ],
-     "triangles": 160,
+     "triangles": 112,
      "collide": false
     },
     "Trim": {
      "centre": [
       0.0,
-      1.47,
+      1.01,
       0.0
      ],
      "size": [
-      1.7654,
-      2.1,
-      1.7654
+      1.9616,
+      1.58,
+      1.9616
      ],
-     "triangles": 248,
+     "triangles": 212,
      "collide": false
     },
     "Badge": {
      "centre": [
       0.0,
-      1.25,
-      -0.64
+      0.87,
+      -0.83
      ],
      "size": [
-      0.8,
-      0.5,
+      1.08,
+      0.46,
       0.06
      ],
      "triangles": 12,
      "collide": false
     },
-    "Cushion": {
+    "Ribbon": {
      "centre": [
       0.0,
-      2.465,
-      0.0
+      1.535,
+      -0.1126
      ],
      "size": [
-      1.3731,
-      0.31,
-      1.3731
+      1.5597,
+      0.43,
+      1.9449
      ],
-     "triangles": 126,
+     "triangles": 244,
      "collide": false
     },
     "Medal": {
      "centre": [
       0.0,
-      2.62,
-      0.0
+      1.82,
+      0.08
      ],
      "size": [
-      0.7846,
-      0.1,
-      0.7846
+      1.1769,
+      0.12,
+      1.1769
      ],
      "triangles": 60,
      "collide": false
@@ -370,24 +370,24 @@
     "Glass": {
      "centre": [
       0.0,
-      2.995,
+      2.68,
       0.0
      ],
      "size": [
-      1.5496,
-      1.35,
-      1.5496
+      1.8831,
+      2.04,
+      1.8831
      ],
-     "triangles": 158,
+     "triangles": 126,
      "collide": false
     }
    },
    "attachments": {},
-   "triangles": 776,
+   "triangles": 778,
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "a keepsake on display: a dark wood pedestal with two bands (Trim), a gold-framed name plaque (Badge, its front for the name), under a glass cloche (Glass, no knob: it would hide the emblem from above) on a ring (Trim), a velvet cushion (Cushion) with four tassels (Trim) holding a medal (Medal, its top for the emblem)",
+   "note": "a keepsake on display: a prize rosette (Ribbon: 16 pleats and two tails folded over the front edge) with a gold rim (Trim) round a medal 1.2 across (Medal, its top for the emblem), under a tall bell jar (Glass, no knob: it would hide the emblem from above) on a foot ring (Trim), on a low dark wood plinth with two bands (Trim) and a gold-mounted name plaque (Badge, its front for the name)",
    "decor": {
     "fw": 1,
     "fd": 1,
@@ -402,8 +402,8 @@
     "w": 1,
     "d": 1,
     "layer": "Floor",
-    "height": 3.67,
-    "model_top": 3.67
+    "height": 3.7,
+    "model_top": 3.7
    }
   }
  },

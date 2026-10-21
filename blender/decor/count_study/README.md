@@ -15,18 +15,19 @@ set's crest, a gold bat with spread wings, on every piece**; glows on three.
 
 | Model | Squares, layer | What | Glows | Top | Triangles |
 |---|---|---|---|---|---|
-| `Decor_CountStudy_Portrait` | 2 x 1, Wall | The Count in a gold pointed-arch frame with a crimson slip: black cape, high crimson collar, widow's peak, a moon behind; the crest on a crimson roundel on the apex; two candle sconces | `Glow_Eyes_1`, `_2` (his eyes), `Glow_Warm_1`, `_2` | 6.92 | 1,152 |
-| `Decor_CountStudy_Globe` | 1 x 1, Floor | A night globe (gold continents on a night-blue sea) on a tilted axis in a gold meridian, a dark wood horizon ring on four struts, a turned stand; the crest on the meridian's top | — | 4.13 | 1,400 |
-| `Decor_CountStudy_Clock` | 1 x 1, Floor | A longcase clock shaped as a coffin standing up, on gold ball feet: crimson inlay, pendulum behind a pointed window, moonlit dial at five to midnight; the crest on the crown | `Glow_Cold_1` (the dial) | 6.73 | 824 |
-| `Decor_CountStudy_Bust` | 1 x 1, Floor | The Count's marble bust (black hair and cape, pointed ears) on a gold socle, a crimson column with gold bands; the crest on a black plaque; a raven on the capital | `Glow_Eyes_1`, `_2` | 4.89 | 1,132 |
-| `Decor_CountStudy_Rug` | 3 x 2, Rug | Crimson in a black and gold border, a gold medallion with the crest large (its head away from the door), gold corners and diamonds | — | 0.145 | 412 |
+| `Decor_CountStudy_Portrait` | 2 x 1, Wall | The Count at eye level (frame 2.5 to 6.58, centre 4.54) in a moulded gilt pointed-arch frame (three stepped rings: amber, honey, gold) with a crimson slip: black cape, high crimson collar, widow's peak, a moon behind; the crest standing on the apex; two candle sconces | `Glow_Eyes_1`, `_2` (his eyes), `Glow_Warm_1`, `_2` | 6.94 | 1,452 |
+| `Decor_CountStudy_Globe` | 1 x 1, Floor | A night globe (gold continents on a night-blue sea) on a tilted axis in a gold meridian, a dark wood horizon ring on four struts, a turned stand; the crest standing on the meridian's top, leaned back 30 degrees | — | 4.32 | 1,480 |
+| `Decor_CountStudy_Clock` | 1 x 1, Floor | A longcase clock shaped as a coffin standing up, on gold ball feet: crimson inlay, pendulum behind a pointed window, moonlit dial at five to midnight; a black cornice with a gold band under a crimson coffin-lid gable with a gold ridge; the crest standing on the ridge, leaned back 30 degrees | `Glow_Cold_1` (the dial) | 6.78 | 944 |
+| `Decor_CountStudy_Bust` | 1 x 1, Floor | The Count's bust, head and shoulders in white marble (shoulders 1.8 wide, head 0.72 by 0.9), black hair, pointed ears, a high crimson-lined collar framing the head; on a gold socle, a crimson column (capital 2.16) with gold bands; the crest on a black plaque | `Glow_Eyes_1`, `_2` | 4.17 | 1,214 |
+| `Decor_CountStudy_Rug` | 3 x 2, Rug | Crimson in a black and gold border, a gold medallion with the crest large (2.7 across, its head away from the door), gold corners and diamonds | — | 0.145 | 492 |
 
 Richer than the shop's decor by intent: more gold, a figure (the Count) on
 two pieces, glows, and the crest repeating. From above (`review/raised.png`,
 `topdown.png`) the rug carries the set; the others read by silhouette and
 colour at the build camera's raised angle. Straight down at a phone's size
-(`topdown_phone.png`, 360 px for a 24-stud room) the 1 x 1 pieces are dots
-with colour; the rug and the globe still read.
+(`topdown_phone.png`, 360 px for a 24-stud room) the rug and its bat, the
+globe, the clock's crimson top and the souvenirs' rosettes read; the bust is
+a white spot in its collar.
 
 **The `Pieces` rows the code session must add** (none exist; src/ was not
 touched): each `id` `CountStudy_<Piece>`, `set = "CountStudy"`,
@@ -50,9 +51,36 @@ bonus are his (A.11.3 Numbers).
 ## Not done
 
 - Anything in Studio: the import, `import_fixup.luau`, how the glows look.
-- A blind review (skill `blind-review`) of the sheets.
+- A second blind review of the fixes (below).
 - His look: the set, its theme, each piece and the crest are proposals.
 - The `Pieces` rows and any code (the Found tab, rolls, the set bonus).
+
+## Blind review 2026-10-21, and what changed
+
+A context-free reviewer saw the first sheets; the set's findings, all
+confirmed and fixed in `tools/build_rare_decor.py`:
+
+1. **The crest was not one mark** (a toothy jaw on the rug, a gem with
+   wings on the portrait, small wings elsewhere). Now one outline, `BAT_R`
+   (head between two tall ears, wings sweeping up to points, three rounded
+   membrane scallops, a round foot), gold, on every piece through `crest()`:
+   2.7 across on the rug, 1.24 on the clock, 1.1 on the portrait, 0.9 on the
+   globe, 0.64 on the bust's plaque. The crimson roundel behind it is gone.
+2. **The bust read as a bird on a post** (a 1-stud head on a 3.5 pedestal,
+   the collar bigger than the head, a raven). Column now to 2.16, marble
+   shoulders 1.8 wide under a 0.72-wide head (0.4 of the shoulders), the
+   collar two crimson-lined wings behind the head reaching 0.25 past it and
+   to its middle; the raven removed.
+3. **Clock and bust were dark boxes from above.** The clock's top is a
+   crimson gable with a gold ridge and the crest; the bust shows white
+   head and shoulders in a crimson collar.
+4. **The portrait hung too low** (frame from 1.4). Now 2.5 to 6.58, 0.8 of
+   its size (the crest keeps under the 7-stud top), sconces raised with it.
+5. **The frame was a flat band.** Three stepped rings, fronts at 0.82, 0.70
+   and 0.77 from the wall's 1.1, in three golds.
+
+Not changed (his call): the globe's plainness, the palette, the flat-colour
+style.
 
 ## Review (Workbench on light grey only: Studio was running)
 
@@ -67,5 +95,6 @@ their cloches hidden (the code makes them glass).
 ## Staged
 
 `blender/_import/`: `Decor_CountStudy_Portrait`, `_Globe`, `_Clock`,
-`_Bust`, `_Rug` (`.fbx`), beside the earlier batch (nothing removed). They
+`_Bust`, `_Rug` (`.fbx`), re-staged after the blind review's fixes
+(replacing the first draft's), beside the earlier batch. They
 go to `assets/HotelKit/HauntedManor/`.

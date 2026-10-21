@@ -17,12 +17,12 @@ local SET = {
 		root = Vector3.new(0, 0.1, 0),
 		parts = {
 			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(3, 0.2, 3), collide = false },
-			Body = { c = Vector3.new(0, 1.16, 0), s = Vector3.new(1.9, 2.32, 1.9), collide = false },
-			Trim = { c = Vector3.new(0, 1.47, 0), s = Vector3.new(1.7654, 2.1, 1.7654), collide = false },
-			Badge = { c = Vector3.new(0, 1.25, -0.64), s = Vector3.new(0.8, 0.5, 0.06), collide = false },
-			Cushion = { c = Vector3.new(0, 2.465, 0), s = Vector3.new(1.3731, 0.31, 1.3731), collide = false },
-			Medal = { c = Vector3.new(0, 2.62, 0), s = Vector3.new(0.7846, 0.1, 0.7846), collide = false },
-			Glass = { c = Vector3.new(0, 2.995, 0), s = Vector3.new(1.5496, 1.35, 1.5496), collide = false },
+			Body = { c = Vector3.new(0, 0.825, 0), s = Vector3.new(2.08, 1.65, 2.08), collide = false },
+			Trim = { c = Vector3.new(0, 1.01, 0), s = Vector3.new(1.9616, 1.58, 1.9616), collide = false },
+			Badge = { c = Vector3.new(0, 0.87, -0.83), s = Vector3.new(1.08, 0.46, 0.06), collide = false },
+			Ribbon = { c = Vector3.new(0, 1.535, -0.1126), s = Vector3.new(1.5597, 0.43, 1.9449), collide = false },
+			Medal = { c = Vector3.new(0, 1.82, 0.08), s = Vector3.new(1.1769, 0.12, 1.1769), collide = false },
+			Glass = { c = Vector3.new(0, 2.68, 0), s = Vector3.new(1.8831, 2.04, 1.8831), collide = false },
 		},
 		att = {
 		},

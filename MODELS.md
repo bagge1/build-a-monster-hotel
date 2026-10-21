@@ -685,14 +685,20 @@ location kit. `default.project.json` gains that folder when the first
 | Name | What | The code |
 |---|---|---|
 | `Root` | 3 × 0.2 × 3 at (0, 0.1, 0) | Placement on the decor grid |
-| `Body` | The plinth, its moulding and feet: fixed colours from the atlas | — |
-| `Cushion` | The velvet cushion under the cloche: **one part, one flat colour** | Clears its texture, sets `Color` to the species' `look.colour` (`Species.luau`) |
-| `Trim` | The plinth's bands, the cloche's foot ring and knob: one part, one flat colour | Clears its texture, sets `Color` to the species' second colour (PLACEHOLDER: `look.colour` darkened; a look, his) |
-| `Medal` | The keepsake: a thick round medal lying on the cushion, its **top face flat** and level | The species' **emblem** on its `Top` face (a `Decal` or `SurfaceGui`; drawn with its top toward −X, `DEVNOTES.md`) |
+| `Body` | The plinth (foot, shaft, top) and the plaque's gold mount: fixed colours from the atlas | — |
+| `Ribbon` | A prize rosette lying on the plinth's top: its pleated disc and two tails that fold over the front edge, **one part, one flat colour** | Clears its texture, sets `Color` to the species' `look.colour` (`Species.luau`) |
+| `Trim` | The plinth's bands, the bell jar's foot ring, the medal's rim: one part, one flat colour | Clears its texture, sets `Color` to the species' second colour (PLACEHOLDER: `look.colour` darkened; a look, his) |
+| `Medal` | The rosette's middle: a thick round medal, its **top face flat** and level, as large as the 1 × 1 allows (1.2 across) | The species' **emblem** on its `Top` face (a `Decal` or `SurfaceGui`; drawn with its top toward −X, `DEVNOTES.md`) |
 | `Badge` | A plaque on the plinth's front, its **front (−Z) face flat** and vertical | The species' **name** on its `Front` face (a `SurfaceGui`, as `RoomPlaque`'s `Face`) |
-| `Glass` | The cloche over the cushion, one closed part, not colliding | May make it glass (as decor's `Glass`) |
+| `Glass` | The tall bell jar over the rosette, one closed part, not colliding, no knob (it would cover the emblem from above) | May make it glass (as decor's `Glass`) |
 
-- Authored with `Cushion` crimson and `Trim` gold, so an untinted clone
+- **Read from above as a keepsake** (the blind review, 2026-10-21: a
+  cushion, a small medal and four tassels in a ring read as a loudspeaker):
+  the rosette's pleats and tails, not concentric rings of equal weight. The
+  medal's face stays level, not tilted to the camera: the importer loses a
+  part's rotation, so only a level face is one a `Top` decal lands on, and
+  a level face reads best from the build camera.
+- Authored with `Ribbon` crimson and `Trim` gold, so an untinted clone
   reads as finished (the Vampire Count's). The two tinted parts are kept
   apart from `Body` so a colour lands on them and nothing else (rule 7: a
   part the code changes earns its own).

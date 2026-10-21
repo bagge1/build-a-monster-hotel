@@ -6,9 +6,9 @@ Two sets, built in one run:
                                  Portrait (Wall 2 x 1), Globe, Clock, Bust (Floor 1 x 1), Rug (Rug 3 x 2).
                                  One look: crimson, black and gold, the set's crest (a gold bat) on every
                                  piece, a glow on three of them; each piece read from above.
-    blender/decor/souvenir/      Souvenir_Base: one 1 x 1 keepsake on a plinth under a cloche, for every
-                                 species: Cushion and Trim tinted by the code, the emblem on Medal's top, the
-                                 name on Badge's front, Glass the cloche.
+    blender/decor/souvenir/      Souvenir_Base: one 1 x 1 keepsake, a prize rosette under a bell jar on a
+                                 plinth, for every species: Ribbon and Trim tinted by the code, the emblem on
+                                 Medal's top, the name on Badge's front, Glass the jar.
 
 Every piece keeps MODELS.md's "Decor" rules through the kit (tools/hotel_kit.py): footprint and 0.4 inset,
 layer, nothing colliding, glows their own parts, no coplanar faces; plus nothing floating (a Wall piece may
@@ -76,7 +76,7 @@ SET_ROWS = {    # id: (w, d, layer); every row also set = "CountStudy", found = 
 }
 SOUVENIR_ROW = ('Souvenir_Base', (1, 1, 'Floor'))
 SOUVENIR_BUDGET = 800
-TINTED = ('Cushion', 'Trim')            # the parts the code colours per species
+TINTED = ('Ribbon', 'Trim')            # the parts the code colours per species
 # The palette: the Manor's, and the Eyes glow (the portrait's and the bust's eyes; import_fixup makes it Neon
 # in GLOW_COLOURS['Eyes']).
 PALETTE = list(K.PALETTE) + [('eyes', K.GLOW_COLOURS['Eyes'], 'Eyes')]
@@ -109,10 +109,10 @@ K.check_piece = check_piece
 
 
 def souvenir_check(piece, tris, stage):
-    """MODELS.md, "The souvenir": every contract part there; Cushion and Trim one flat colour each; Medal's
+    """MODELS.md, "The souvenir": every contract part there; Ribbon and Trim one flat colour each; Medal's
     top and Badge's front each one flat plane with nothing of another part over it."""
     f = []
-    need = ('Body', 'Cushion', 'Trim', 'Medal', 'Badge', 'Glass')
+    need = ('Body', 'Ribbon', 'Trim', 'Medal', 'Badge', 'Glass')
     missing = [n for n in need if n not in tris]
     if missing:
         return [f'souvenir ({stage}): missing {missing}']
@@ -186,16 +186,35 @@ def sdone(note):
 
 # --- Shapes -------------------------------------------------------------------------------------------
 
-BAT_R = [(0.0, 0.26), (0.07, 0.30), (0.11, 0.44), (0.16, 0.24), (0.3, 0.22), (0.55, 0.32), (0.82, 0.42),
-         (1.0, 0.46), (0.93, 0.18), (0.86, -0.02), (0.74, 0.06), (0.62, -0.12), (0.48, -0.02), (0.34, -0.24),
-         (0.2, -0.12), (0.08, -0.34), (0.0, -0.28)]     # the crest's right half: head, ear, wing, scallops, foot
+def _scallop(a, b, h, n=4):
+    """The points between finger tips a and b of a wing's membrane, bowed up by h (a quadratic curve)."""
+    mx, my = (a[0] + b[0]) / 2, (a[1] + b[1]) / 2 + 2 * h
+    return [((1 - t) ** 2 * a[0] + 2 * t * (1 - t) * mx + t * t * b[0],
+             (1 - t) ** 2 * a[1] + 2 * t * (1 - t) * my + t * t * b[1]) for t in [k / n for k in range(1, n)]]
+
+
+_F1, _F2, _F3, _HIP = (0.86, -0.06), (0.62, -0.2), (0.39, -0.25), (0.17, -0.1)
+# The crest's right half (blind review 2026-10-21: the first outline read as a toothy jaw, a gem with wings
+# and small wings; one bat everywhere now): the head between two tall ears, the wing's leading edge sweeping
+# up to a pointed tip, three rounded membrane scallops between the finger tips, the body's round foot.
+BAT_R = ([(0.0, 0.15), (0.05, 0.17), (0.10, 0.40), (0.15, 0.19), (0.17, 0.12), (0.24, 0.15), (0.40, 0.27),
+          (0.56, 0.38), (0.72, 0.47), (0.86, 0.54), (1.0, 0.62), _F1] + _scallop(_F1, _F2, 0.13) + [_F2]
+         + _scallop(_F2, _F3, 0.11) + [_F3] + _scallop(_F3, _HIP, 0.08, 3)
+         + [_HIP, (0.15, -0.2), (0.11, -0.3), (0.05, -0.37), (0.0, -0.38)])
 
 
 def bat(cx, cy, s):
-    """The set's crest, a bat with spread wings, 2s wide, as (u, v) points about (cx, cy); v up."""
-    half = [(x, y) for x, y in BAT_R]
-    pts = half + [(-x, y) for x, y in reversed(half[1:-1])]
+    """The set's crest, a bat with spread wings, 2s wide and s tall (v from -0.38s to 0.62s), as (u, v)
+    points about (cx, cy); v up."""
+    pts = BAT_R + [(-x, y) for x, y in reversed(BAT_R[1:-1])]
     return [(cx + x * s, cy + y * s) for x, y in pts]
+
+
+def crest(part, s, pos, tilt=0.0, depth=0.1, m=None):
+    """The crest standing up and facing -Z (toward the room), its middle at `pos`, leaned back `tilt`
+    degrees so a floor piece shows it to the raised build camera as well as from the front."""
+    M = at(pos, rx=tilt) if m is None else m
+    prism(part, bat(0.0, 0.0, s), -depth / 2, depth / 2, 'gold', plane='xy', m=M)
 
 
 def parc(x1, spring, apex, n=6):
@@ -248,52 +267,70 @@ def faces_coloured(part, verts, faces, cols, collide=False):
 
 # --- The Count's Study (Haunted Manor) ---------------------------------------------------------------
 
+PORTRAIT_SCALE, PORTRAIT_Y0 = 0.8, 2.5     # blind review 2026-10-21: it hung at 1.4 (read as leaning on the
+# floor); now its frame runs 2.5 to 6.58, centre 4.54, eye level for the 5-stud person, and 0.8 the size, so the
+# crest still keeps under the 7-stud top.
+
+
 def d_portrait():
     sdecor('Portrait')
     back = 1.1
-    y0, hw, spring, apex, t = 1.4, 2.1, 4.2, 6.5, 0.38       # the rise above the springing > the half width: pointed
-    # The canvas behind (night), the gold frame's two halves in front of it.
-    prism('Body', gothic(hw - 0.06, y0 + 0.04, spring, apex - 0.06), 0.97, back, 'night', plane='xy')
-    for half in frame_halves(hw, y0, spring, apex, t):
-        prism('Body', half, 0.72, 0.98, 'gold', plane='xy')
+    # Drawn in the first draft's frame (bottom at 1.4) and moved by PM: scaled 0.8 in x and y (not in depth),
+    # its bottom to PORTRAIT_Y0.
+    PM = (Matrix.Translation((0, PORTRAIT_Y0, 0))
+          @ Matrix.Diagonal((PORTRAIT_SCALE, PORTRAIT_SCALE, 1, 1)) @ Matrix.Translation((0, -1.4, 0)))
+
+    def pz(part, pts, a0, a1, col):
+        prism(part, pts, a0, a1, col, plane='xy', m=PM)
+    y0, hw, spring, apex = 1.4, 2.1, 4.2, 6.5       # the rise above the springing > the half width: pointed
+    # The canvas behind (night).
+    pz('Body', gothic(hw - 0.06, y0 + 0.04, spring, apex - 0.06), 0.97, back, 'night')
+    # The gilt frame, moulded (blind review: it read as a flat band): an outer fillet, a raised ridge, an inner
+    # step, three golds stepping in depth (fronts at 0.82, 0.70, 0.77); each ring overlaps the one outside it
+    # by 0.01 and buries its back at its own depth, so no two faces share a plane.
+    rings = [(0.12, 0.82, 0.985, 'amber'), (0.14, 0.70, 0.99, 'honey'), (0.12, 0.77, 0.995, 'gold')]
+    h, b, a = hw, y0, apex
+    for t, front, rear, col in rings:
+        for half in frame_halves(h, b, spring, a, t):
+            pz('Body', half, front, rear, col)
+        h, b, a = h - t + 0.01, b + t - 0.01, a - 1.4 * t + 0.014
     # A crimson velvet slip inside the frame, a step back from its face.
-    for half in frame_halves(hw - t + 0.01, y0 + t - 0.01, spring, apex - 1.4 * t + 0.01, 0.13):
-        prism('Body', half, 0.86, 0.975, 'crimson_dark', plane='xy')
+    for half in frame_halves(h, b, spring, a, 0.13):
+        pz('Body', half, 0.86, 0.975, 'crimson_dark')
     # The Count: each layer a step proud of the one it overlaps, the backs buried in the canvas.
-    prism('Body', ellipse(0.9, 5.05, 0.28, 0.28, 14), 0.955, 0.98, 'moon', plane='xy')              # the moon
-    prism('Body', [(-1.5, 1.7), (1.5, 1.7), (1.45, 2.9), (1.0, 3.45), (0.3, 3.7), (-0.3, 3.7), (-1.0, 3.45),
-                   (-1.45, 2.9)], 0.955, 0.98, 'black', plane='xy')                              # the cape
+    pz('Body', ellipse(0.9, 5.05, 0.28, 0.28, 14), 0.955, 0.98, 'moon')                         # the moon
+    pz('Body', [(-1.5, 1.7), (1.5, 1.7), (1.45, 2.9), (1.0, 3.45), (0.3, 3.7), (-0.3, 3.7), (-1.0, 3.45),
+                (-1.45, 2.9)], 0.955, 0.98, 'black')                                            # the cape
     for s in (-1, 1):                                                                             # the collar
-        prism('Body', [(s * 0.3, 3.62), (s * 1.05, 3.4), (s * 1.0, 4.75), (s * 0.42, 4.1)][::s], 0.96, 0.98,
-              'crimson', plane='xy')
-    prism('Body', [(-0.18, 3.55), (0.18, 3.55), (0.18, 3.9), (-0.18, 3.9)], 0.952, 0.98, 'bone', plane='xy')
-    prism('Body', [(-0.32, 3.7), (0.32, 3.7), (0.0, 2.6)], 0.948, 0.98, 'bone', plane='xy')      # the shirt
-    cyl('Body', (0, 0, 0), 0.15, 0.04, 'gold', n=10, m=facing((0, 3.05, 0.975)))                  # its crest pin
+        pz('Body', [(s * 0.3, 3.62), (s * 1.05, 3.4), (s * 1.0, 4.75), (s * 0.42, 4.1)][::s], 0.96, 0.98,
+           'crimson')
+    pz('Body', [(-0.18, 3.55), (0.18, 3.55), (0.18, 3.9), (-0.18, 3.9)], 0.952, 0.98, 'bone')
+    pz('Body', [(-0.32, 3.7), (0.32, 3.7), (0.0, 2.6)], 0.948, 0.98, 'bone')                     # the shirt
+    cyl('Body', (0, 0, 0), 0.15, 0.04, 'gold', n=10, m=PM @ facing((0, 3.05, 0.975)))             # a gold pin
     for s in (-1, 1):                                                                             # pointed ears
-        prism('Body', [(s * 0.36, 4.45), (s * 0.64, 4.8), (s * 0.4, 4.18)][::s], 0.95, 0.98, 'bone', plane='xy')
-    prism('Body', ellipse(0.0, 4.3, 0.4, 0.52, 16), 0.945, 0.98, 'bone', plane='xy')              # the face
-    prism('Body', [(-0.44, 4.35), (-0.42, 4.7), (-0.25, 4.9), (0.0, 4.96), (0.25, 4.9), (0.42, 4.7), (0.44, 4.35),
-                   (0.3, 4.62), (0.15, 4.66), (0.0, 4.5), (-0.15, 4.66), (-0.3, 4.62)], 0.94, 0.98, 'black',
-          plane='xy')                                                                             # widow's peak
-    for k, s in enumerate((-1, 1)):
-        prism(f'Glow_Eyes_{k + 1}', [(s * 0.08, 4.35), (s * 0.23, 4.35), (s * 0.22, 4.41), (s * 0.08, 4.43)][::s],
-              0.932, 0.96, 'eyes', plane='xy')
-        prism('Body', [(s * 0.06, 4.45), (s * 0.28, 4.5), (s * 0.28, 4.56), (s * 0.06, 4.5)][::s], 0.936, 0.96,
-              'black', plane='xy')                                                                # the brows
-    prism('Body', [(-0.14, 3.97), (0.14, 3.97), (0.1, 4.0), (-0.1, 4.0)], 0.938, 0.96, 'crimson', plane='xy')
-    # The crest on the apex: a crimson roundel, the gold bat over it.
-    cyl('Body', (0, 0, 0), 0.32, 0.15, 'crimson', n=14, m=facing((0, 6.6, 0.95)))
-    prism('Body', bat(0.0, 6.62, 0.46), 0.76, 0.85, 'gold', plane='xy')
-    # Two candle sconces either side, on gold backplates on the wall.
-    for k, x in enumerate((-2.35, 2.35)):
-        span('Body', (x - 0.12, 2.9, 1.0), (x + 0.12, 3.6, back), 'gold', bevel=0.02)
-        span('Body', (x - 0.05, 3.15, 0.55), (x + 0.05, 3.25, 1.0), 'gold')
-        cyl('Body', (x, 3.25, 0.66), 0.16, 0.1, 'gold', n=8)
-        cyl('Body', (x, 3.35, 0.66), 0.09, 0.45, 'cream', n=8)
-        sphere(f'Glow_Warm_{k + 1}', (x, 3.92, 0.66), (0.06, 0.14, 0.06), 'flame', n=6, rings=4)
-    sdone('the Count\'s portrait: a gold pointed-arch frame with a crimson slip, the Count in a black cape and '
-          'a high crimson collar, widow\'s peak, glowing eyes (Glow_Eyes_1, _2), a moon behind; the crest (a gold '
-          'bat on a crimson roundel) on the apex; two candle sconces (Glow_Warm_1, _2)')
+        pz('Body', [(s * 0.36, 4.45), (s * 0.64, 4.8), (s * 0.4, 4.18)][::s], 0.95, 0.98, 'bone')
+    pz('Body', ellipse(0.0, 4.3, 0.4, 0.52, 16), 0.945, 0.98, 'bone')                             # the face
+    pz('Body', [(-0.44, 4.35), (-0.42, 4.7), (-0.25, 4.9), (0.0, 4.96), (0.25, 4.9), (0.42, 4.7), (0.44, 4.35),
+                (0.3, 4.62), (0.15, 4.66), (0.0, 4.5), (-0.15, 4.66), (-0.3, 4.62)], 0.94, 0.98, 'black')
+    for k, s in enumerate((-1, 1)):                                                               # widow's peak ^
+        pz(f'Glow_Eyes_{k + 1}', [(s * 0.08, 4.35), (s * 0.23, 4.35), (s * 0.22, 4.41), (s * 0.08, 4.43)][::s],
+           0.932, 0.96, 'eyes')
+        pz('Body', [(s * 0.06, 4.45), (s * 0.28, 4.5), (s * 0.28, 4.56), (s * 0.06, 4.5)][::s], 0.936, 0.96,
+           'black')                                                                               # the brows
+    pz('Body', [(-0.14, 3.97), (0.14, 3.97), (0.1, 4.0), (-0.1, 4.0)], 0.938, 0.96, 'crimson')
+    # The crest standing on the apex (6.58), gold on the wall paper, its foot over the frame's point.
+    crest('Body', 0.55, (0, 6.6, 0.77), depth=0.18)
+    # Two candle sconces either side, on gold backplates on the wall, at the frame's middle.
+    for k, x in enumerate((-2.2, 2.2)):
+        span('Body', (x - 0.12, 3.8, 1.0), (x + 0.12, 4.5, back), 'gold', bevel=0.02)
+        span('Body', (x - 0.05, 4.05, 0.55), (x + 0.05, 4.15, 1.0), 'gold')
+        cyl('Body', (x, 4.15, 0.66), 0.16, 0.1, 'gold', n=8)
+        cyl('Body', (x, 4.25, 0.66), 0.09, 0.45, 'cream', n=8)
+        sphere(f'Glow_Warm_{k + 1}', (x, 4.82, 0.66), (0.06, 0.14, 0.06), 'flame', n=6, rings=4)
+    sdone('the Count\'s portrait at eye level (frame 2.5 to 6.58): a moulded gilt pointed-arch frame (three '
+          'stepped rings) with a crimson slip, the Count in a black cape and a high crimson collar, widow\'s '
+          'peak, glowing eyes (Glow_Eyes_1, _2), a moon behind; the crest (the gold bat) standing on the apex; '
+          'two candle sconces (Glow_Warm_1, _2)')
 
 
 LANDS = [   # (direction, angular radius): blobs that join into two continents and an island (a sea of single
@@ -354,10 +391,11 @@ def d_globe():
     for s in (-1, 1):                                                               # the axis's pins
         rod('Body', Vector((0, cy, 0)) + s * 0.74 * axis, Vector((0, cy, 0)) + s * 0.9 * axis, 0.05, 'gold')
     cyl('Body', (0, 1.86, 0), 0.07, 0.3, 'gold', n=8)                               # the meridian's post
-    prism('Body', bat(0.0, cy + 0.98, 0.32), -0.05, 0.05, 'gold', plane='xy')       # the crest on its top
+    # The crest standing on the meridian's top (cy + 0.92), leaned back 30 degrees to the raised camera.
+    crest('Body', 0.45, (0, cy + 1.05, 0.07), tilt=30)     # its foot (y 3.90, z -0.02) in the meridian
     sdone('the Count\'s night globe: a gilded globe (gold lands on a night sea) on a tilted axis in a gold '
-          'meridian, a dark wood horizon ring on four struts, a turned stand with gold bands; the crest (a gold '
-          'bat) on the meridian\'s top')
+          'meridian, a dark wood horizon ring on four struts, a turned stand with gold bands; the crest (the gold '
+          'bat) standing on the meridian\'s top, leaned back to the raised camera')
 
 
 def d_clock():
@@ -366,60 +404,71 @@ def d_clock():
         for z in (-0.53, 0.53):
             sphere('Body', (x, 0.16, z), 0.16, 'gold', n=8, rings=5)
     span('Body', (-0.85, 0.2, -0.7), (0.85, 0.45, 0.7), 'black', bevel=0.04)
-    case = [(-0.6, 0.45), (0.6, 0.45), (0.95, 4.3), (0.75, 6.05), (-0.75, 6.05), (-0.95, 4.3)]
+    case = [(-0.6, 0.45), (0.6, 0.45), (0.95, 4.1), (0.75, 5.7), (-0.75, 5.7), (-0.95, 4.1)]
     prism('Body', case, -0.55, 0.55, 'wood_dark', plane='xy')                       # a coffin standing up
-    prism('Body', [(-0.88, 6.05), (0.88, 6.05), (0.72, 6.35), (-0.72, 6.35)], -0.66, 0.66, 'black', plane='xy')
-    prism('Body', [(-0.45, 0.75), (0.45, 0.75), (0.75, 4.2), (0.58, 5.8), (-0.58, 5.8), (-0.75, 4.2)], -0.58, -0.5,
-          'crimson', plane='xy')                                                    # the velvet inlay
+    prism('Body', [(-0.45, 0.75), (0.45, 0.75), (0.75, 4.0), (0.58, 5.45), (-0.58, 5.45), (-0.75, 4.0)], -0.58,
+          -0.5, 'crimson', plane='xy')                                              # the velvet inlay
+    # The crown (blind review 2026-10-21: from above it was a dark box): a black cornice with a gold band, and
+    # on it a coffin lid's crimson gable, its ridge across in gold, so the top reads crimson and gold from
+    # above; the crest stands on the ridge, leaned back to the raised camera.
+    prism('Body', [(-0.88, 5.68), (0.88, 5.68), (0.86, 5.84), (-0.86, 5.84)], -0.68, 0.68, 'black', plane='xy')
+    span('Body', (-0.9, 5.74, -0.7), (0.9, 5.8, 0.7), 'gold')
+    prism('Body', [(-0.64, 5.83), (0.64, 5.83), (0.0, 6.28)], -0.82, 0.82, 'crimson', plane='zy')
+    rod('Body', (-0.86, 6.28, 0), (0.86, 6.28, 0), 0.06, 'gold', n=6)
+    crest('Body', 0.62, (0, 6.42, 0.0), tilt=30)           # its foot buried in the front slope
     # The pendulum behind a dark pointed window.
-    prism('Body', gothic(0.42, 1.25, 3.3, 3.9), -0.61, -0.56, 'black', plane='xy')
-    span('Body', (-0.03, 1.95, -0.63), (0.03, 3.6, -0.6), 'gold')
+    prism('Body', gothic(0.42, 1.25, 3.2, 3.8), -0.61, -0.56, 'black', plane='xy')
+    span('Body', (-0.03, 1.95, -0.63), (0.03, 3.5, -0.6), 'gold')
     cyl('Body', (0, 0, 0), 0.2, 0.045, 'gold', n=12, m=facing((0, 1.85, -0.6)))
     # The face: a gold bezel, the moonlit dial (Glow_Cold_1), the hands at five to midnight.
-    cyl('Body', (0, 0, 0), 0.5, 0.04, 'gold', n=16, m=facing((0, 4.85, -0.58)))
-    cyl('Glow_Cold_1', (0, 0, 0), 0.42, 0.04, 'moonglow', n=16, m=facing((0, 4.85, -0.6)))
-    box('Body', (0, 0, 0), (0.07, 0.26, 0.018), 'black', m=at((0, 4.97, -0.646)))
-    box('Body', (0, 0, 0), (0.045, 0.36, 0.023), 'black', m=at((-0.09, 4.85 + 0.156, -0.6485), rz=30))
+    dy = 4.65
+    cyl('Body', (0, 0, 0), 0.52, 0.04, 'gold', n=16, m=facing((0, dy, -0.58)))
+    cyl('Glow_Cold_1', (0, 0, 0), 0.44, 0.04, 'moonglow', n=16, m=facing((0, dy, -0.6)))
+    box('Body', (0, 0, 0), (0.07, 0.26, 0.018), 'black', m=at((0, dy + 0.12, -0.646)))
+    box('Body', (0, 0, 0), (0.045, 0.36, 0.023), 'black', m=at((-0.09, dy + 0.156, -0.6485), rz=30))
     for a in range(4):
-        x, y = 0.34 * math.sin(a * math.pi / 2), 4.85 + 0.34 * math.cos(a * math.pi / 2)
+        x, y = 0.34 * math.sin(a * math.pi / 2), dy + 0.34 * math.cos(a * math.pi / 2)
         cyl('Body', (0, 0, 0), 0.045, 0.016, 'black', n=6, m=facing((x, y, -0.636)))
-    prism('Body', bat(0.0, 6.5, 0.5), -0.06, 0.06, 'gold', plane='xy')              # the crest on the crown
     sdone('the Count\'s clock: a longcase clock shaped as a coffin standing up, dark wood on gold ball feet, a '
           'crimson inlay, the pendulum behind a pointed window, a moonlit dial (Glow_Cold_1) at five to midnight '
-          'in a gold bezel; the crest (a gold bat) on the crown')
+          'in a gold bezel; a crimson gable crown with a gold ridge, the crest (the gold bat) standing on it')
 
 
 def d_bust():
     sdecor('Bust')
+    # Blind review 2026-10-21: the first read as a bird on a post (a 1-stud head on a 3.5 pedestal, the
+    # collar bigger than the head, a raven beside it). Now a bust: a lower column (capital top 2.16), marble
+    # shoulders 1.8 wide and a head 0.72 wide and 0.9 tall on them (about the ratio of a real bust), the
+    # high collar two crimson-lined wings behind the head, reaching 0.25 past it each side and to its
+    # middle's height: it frames the head. No raven.
     span('Body', (-0.75, 0.0, -0.75), (0.75, 0.3, 0.75), 'black', bevel=0.04)
-    span('Body', (-0.45, 0.28, -0.45), (0.45, 2.97, 0.45), 'crimson_dark')   # its ends buried in base and capital
-    span('Body', (-0.49, 0.3, -0.49), (0.49, 0.44, 0.49), 'gold')
-    span('Body', (-0.49, 2.81, -0.49), (0.49, 2.95, 0.49), 'gold')
-    span('Body', (-0.65, 2.95, -0.65), (0.65, 3.15, 0.65), 'black', bevel=0.04)
-    span('Body', (-0.3, 1.3, -0.48), (0.3, 2.05, -0.44), 'black', bevel=0.02)      # the plaque
-    prism('Body', bat(0.0, 1.67, 0.26), -0.5, -0.46, 'gold', plane='xy')            # the crest on it
-    lathe('Body', [(0.36, 3.14), (0.36, 3.2), (0.22, 3.3), (0.25, 3.45)], 'gold', n=12)      # the socle
-    lathe('Body', [(0.22, 3.42), (0.55, 3.52), (0.7, 3.72), (0.62, 3.93), (0.3, 4.04), (0.0, 4.07)], 'black',
-          n=14, scale=(1, 0.6))                                                     # chest and shoulders in the cape
-    for s in (-1, 1):                                                               # the high collar
-        prism('Body', [(s * 0.2, 3.95), (s * 0.68, 3.9), (s * 0.62, 4.75), (s * 0.32, 4.35)][::s], 0.0, 0.16,
-              'black', plane='xy')
-    cyl('Body', (0, 3.9, 0), 0.15, 0.3, 'bone', n=8)
-    sphere('Body', (0, 4.45, 0), (0.3, 0.38, 0.32), 'bone', n=12, rings=7)          # the head, in marble
-    sphere('Body', (0, 4.62, 0.1), (0.31, 0.27, 0.3), 'black', n=12, rings=6)       # the hair, swept back
-    prism('Body', [(-0.14, 4.7), (0.14, 4.7), (0.0, 4.55)], -0.3, -0.1, 'black', plane='xy')     # widow's peak
-    for s in (-1, 1):
-        prism('Body', [(s * 0.27, 4.4), (s * 0.4, 4.62), (s * 0.28, 4.3)][::s], -0.05, 0.05, 'bone', plane='xy')
+    span('Body', (-0.42, 0.28, -0.42), (0.42, 2.0, 0.42), 'crimson_dark')   # its ends buried in base and capital
+    span('Body', (-0.46, 0.3, -0.46), (0.46, 0.42, 0.46), 'gold')
+    span('Body', (-0.46, 1.86, -0.46), (0.46, 1.98, 0.46), 'gold')
+    span('Body', (-0.64, 1.98, -0.64), (0.64, 2.16, 0.64), 'black', bevel=0.04)
+    span('Body', (-0.36, 0.72, -0.465), (0.36, 1.6, -0.4), 'black', bevel=0.02)    # the plaque
+    crest('Body', 0.32, (0, 1.17, -0.48), depth=0.06)                               # the crest on it
+    lathe('Body', [(0.4, 2.15), (0.4, 2.21), (0.24, 2.3), (0.28, 2.42)], 'gold', n=12)        # the socle
+    lathe('Body', [(0.26, 2.4), (0.6, 2.45), (0.84, 2.6), (0.9, 2.82), (0.84, 3.02), (0.6, 3.14), (0.3, 3.2),
+                   (0.0, 3.22)], 'bone', n=14, scale=(1, 0.42))                    # chest and shoulders, marble
+    for s in (-1, 1):                                                               # the high collar's wings
+        wing = [(0.0, 0.0), (0.5, -0.03), (0.54, 0.8), (0.06, 0.46)]
+        pts = [(s * x, y) for x, y in wing][::s]
+        M = at((s * 0.16, 3.05, 0.14), ry=-35 * s)
+        prism('Body', pts, 0.0, 0.035, 'crimson', plane='xy', m=M)                 # its lining, to the front
+        prism('Body', pts, 0.035, 0.09, 'black', plane='xy', m=M)       # face to face: no shared side planes
+    cyl('Body', (0, 3.05, 0), 0.19, 0.4, 'bone', n=10)                              # the neck
+    sphere('Body', (0, 3.68, -0.02), (0.36, 0.45, 0.4), 'bone', n=14, rings=8)      # the head, in marble
+    sphere('Body', (0, 3.84, 0.09), (0.37, 0.33, 0.36), 'black', n=14, rings=7)     # the hair, swept back
+    prism('Body', [(-0.17, 3.98), (0.17, 3.98), (0.0, 3.8)], -0.39, -0.2, 'black', plane='xy')   # widow's peak
+    for s in (-1, 1):                                                               # pointed ears
+        prism('Body', [(s * 0.32, 3.62), (s * 0.5, 3.92), (s * 0.34, 3.5)][::s], -0.06, 0.06, 'bone', plane='xy')
     for k, s in enumerate((-1, 1)):
-        sphere(f'Glow_Eyes_{k + 1}', (s * 0.11, 4.5, -0.288), (0.055, 0.035, 0.03), 'eyes', n=6, rings=4)
-    # A raven on the capital's front corner.
-    sphere('Body', (0.42, 3.31, -0.35), (0.15, 0.16, 0.24), 'black', n=10, rings=6)
-    sphere('Body', (0.42, 3.52, -0.5), 0.11, 'black', n=8, rings=5)
-    cyl('Body', (0, 0, 0), 0.045, 0.16, 'iron', r_top=0.0, n=6, m=facing((0.42, 3.5, -0.58)))
-    box('Body', (0, 0, 0), (0.16, 0.04, 0.3), 'black', m=at((0.42, 3.25, -0.05), rx=25))      # the tail, drooping
-    sdone('the Count\'s bust: his head in white marble with a black widow\'s peak, pointed ears and glowing '
-          'eyes (Glow_Eyes_1, _2), a high-collared cape, on a gold socle and a crimson column with gold bands '
-          'and black capital; the crest (a gold bat on a black plaque) on the column; a raven on the capital')
+        sphere(f'Glow_Eyes_{k + 1}', (s * 0.13, 3.72, -0.385), (0.065, 0.04, 0.03), 'eyes', n=6, rings=4)
+    sdone('the Count\'s bust: head and shoulders in white marble, black hair with a widow\'s peak, pointed '
+          'ears and glowing eyes (Glow_Eyes_1, _2), a high crimson-lined collar framing the head, on a gold '
+          'socle and a crimson column with gold bands and a black capital; the crest (the gold bat) on a black '
+          'plaque on the column')
 
 
 def d_rug():
@@ -430,7 +479,7 @@ def d_rug():
     span('Body', (-hx + 0.6, 0.08, -hz + 0.6), (hx - 0.6, 0.1, hz - 0.6), 'crimson')
     prism('Body', ellipse(0, 0, 2.0, 1.5, 24), 0.1, 0.115, 'gold', plane='xz')       # the medallion
     prism('Body', ellipse(0, 0, 1.75, 1.28, 24), 0.115, 0.13, 'crimson_dark', plane='xz')
-    prism('Body', bat(0.0, 0.0, 1.4), 0.13, 0.145, 'gold', plane='xz')              # the crest, head to +Z
+    prism('Body', bat(0.0, -0.15, 1.35), 0.13, 0.145, 'gold', plane='xz')     # the crest, head away from the door
     fx, fz = hx - 0.75, hz - 0.75
     for sx in (-1, 1):                                                              # the corners' gold
         for sz in (-1, 1):
@@ -445,34 +494,45 @@ def d_rug():
 # --- The souvenir ---------------------------------------------------------------------------------------
 
 def souvenir():
+    # Blind review 2026-10-21: the first (a cushion and a 0.8 medal in a ring of four tassels on a square
+    # top) read from above as a loudspeaker. Now a prize rosette under a tall bell jar on a low plinth: from
+    # above a scalloped ribbon disc with its two tails running to the front edge and folding over it (an
+    # award's sign, and no concentric rings of equal weight), the medal 1.2 across (the emblem's face, three
+    # times the first's area), and from the front and the raised camera the jar's dome and the name plaque.
     p = K.decor('Souvenir_Base', 1, 1, 'Floor')
     p.name = 'Souvenir_Base'
     p.checks.append(NS['grounded_check'])
     p.checks.append(no_use_check)
     p.checks.append(souvenir_check)
-    for n in ('Cushion', 'Trim', 'Medal', 'Badge', 'Glass'):
+    for n in ('Ribbon', 'Trim', 'Medal', 'Badge', 'Glass'):
         K.declare(n, False)
-    span('Body', (-0.95, 0.0, -0.95), (0.95, 0.28, 0.95), 'wood_dark', bevel=0.05)   # the pedestal's foot
-    span('Body', (-0.8, 0.28, -0.8), (0.8, 0.42, 0.8), 'wood_dark')
-    span('Body', (-0.62, 0.4, -0.62), (0.62, 2.12, 0.62), 'wood_dark')     # the shaft, its ends buried
-    span('Body', (-0.92, 2.1, -0.92), (0.92, 2.32, 0.92), 'wood_dark', bevel=0.04)   # the top
-    span('Trim', (-0.67, 0.42, -0.67), (0.67, 0.54, 0.67), 'gold')                   # its bands, tinted
-    span('Trim', (-0.67, 1.98, -0.67), (0.67, 2.1, 0.67), 'gold')
-    span('Badge', (-0.4, 1.0, -0.67), (0.4, 1.5, -0.61), 'bone')                     # the name plaque
-    for lo, hi in (((-0.5, 0.9), (0.5, 1.0)), ((-0.5, 1.5), (0.5, 1.6)), ((-0.5, 1.0), (-0.4, 1.5)),
-                   ((0.4, 1.0), (0.5, 1.5))):
-        span('Body', (lo[0], lo[1], -0.69), (hi[0], hi[1], -0.61), 'gold')          # its gold frame
-    lathe('Trim', [(0.8, 2.32), (0.9, 2.32), (0.9, 2.42), (0.8, 2.42)], 'gold', n=16, closed=True)
-    lathe('Cushion', [(0.6, 2.31), (0.7, 2.39), (0.68, 2.51), (0.45, 2.6), (0.0, 2.62)], 'crimson', n=16)
-    for k in range(4):                                                                 # tassels, tinted
-        a = math.pi / 4 + k * math.pi / 2
-        sphere('Trim', (0.7 * math.cos(a), 2.44, 0.7 * math.sin(a)), (0.06, 0.08, 0.06), 'gold', n=6, rings=3)
-    cyl('Medal', (0, 2.57, 0), 0.4, 0.1, 'gold', n=16)                                # its top flat at 2.67
-    lathe('Glass', [(0.79, 2.32), (0.79, 2.87), (0.74, 3.22), (0.6, 3.47), (0.36, 3.63), (0.0, 3.67)], 'moon',
-          n=16)
-    sdone('a keepsake on display: a dark wood pedestal with two bands (Trim), a gold-framed name plaque (Badge, '
-          'its front for the name), under a glass cloche (Glass, no knob: it would hide the emblem from above) on a ring (Trim), a velvet '
-          'cushion (Cushion) with four tassels (Trim) holding a medal (Medal, its top for the emblem)')
+    span('Body', (-1.0, 0.0, -1.0), (1.0, 0.22, 1.0), 'wood_dark', bevel=0.05)       # the plinth's foot
+    span('Body', (-0.8, 0.2, -0.8), (0.8, 1.47, 0.8), 'wood_dark')                   # its shaft, ends buried
+    span('Body', (-1.04, 1.45, -1.04), (1.04, 1.65, 1.04), 'wood_dark', bevel=0.04)  # its top
+    span('Trim', (-0.85, 0.22, -0.85), (0.85, 0.32, 0.85), 'gold')                   # its bands, tinted
+    span('Trim', (-0.85, 1.35, -0.85), (0.85, 1.45, 0.85), 'gold')
+    span('Body', (-0.62, 0.58, -0.84), (0.62, 1.16, -0.79), 'gold')                  # the plaque's gold mount
+    span('Badge', (-0.54, 0.64, -0.86), (0.54, 1.1, -0.8), 'bone')                   # the name plaque
+    lathe('Trim', [(0.92, 1.64), (1.0, 1.64), (1.0, 1.7), (0.92, 1.7)], 'gold', n=16, closed=True)  # jar's foot
+    # The rosette, its middle 0.08 behind the plinth's so the tails have room in front.
+    zc = 0.08
+    for s, top in ((-1, 1.685), (1, 1.69)):     # the tails: splayed 20 degrees, to the top's front edge
+        k = s * math.tan(math.radians(20))
+        x0, x1, z0, z1 = k * (zc + 0.1), k * (zc + 1.06), -0.1, -1.06
+        prism('Ribbon', [(x0 - 0.13, z0), (x0 + 0.13, z0), (x1 + 0.13, z1), (x1 - 0.13, z1)], 1.645, top,
+              'crimson', plane='xz')
+        prism('Ribbon', [(x1 - 0.13, top + 0.005), (x1 + 0.13, top + 0.005), (x1 + 0.13, 1.32), (x1, 1.42),
+                         (x1 - 0.13, 1.32)], -1.085, -1.035, 'crimson', plane='xy')   # folded over, notched
+    pleats = [(0.8 - 0.1 * (1 - abs(math.sin(8 * a))), a) for a in [2 * math.pi * i / 48 for i in range(48)]]
+    prism('Ribbon', [(r * math.cos(a), zc + r * math.sin(a)) for r, a in pleats], 1.645, 1.75, 'crimson',
+          plane='xz')                                                                 # 16 rounded pleats
+    cyl('Trim', (0, 1.72, zc), 0.66, 0.08, 'gold', n=16)                              # the medal's rim
+    cyl('Medal', (0, 1.76, zc), 0.6, 0.12, 'gold', n=16)                              # its top flat at 1.88
+    lathe('Glass', [(0.96, 1.66), (0.96, 2.8), (0.84, 3.28), (0.56, 3.58), (0.0, 3.7)], 'moon', n=16)
+    sdone('a keepsake on display: a prize rosette (Ribbon: 16 pleats and two tails folded over the front '
+          'edge) with a gold rim (Trim) round a medal 1.2 across (Medal, its top for the emblem), under a tall '
+          'bell jar (Glass, no knob: it would hide the emblem from above) on a foot ring (Trim), on a low dark '
+          'wood plinth with two bands (Trim) and a gold-mounted name plaque (Badge, its front for the name)')
 
 
 # --- Review (Workbench on light grey only: Studio runs) ----------------------------------------------
@@ -490,12 +550,12 @@ def squares(cx, cz, w, d, y=-0.06):
             _block('sq', (x0 + 0.03, y, z0 + 0.03), (x0 + 2.97, y + 0.05, z0 + 2.97), shade)
 
 
-def tint(objs, cushion, trim):
+def tint(objs, ribbon, trim):
     for ob in objs:
         base = ob.name.split('.')[0]
-        if base == 'Cushion':
+        if base == 'Ribbon':
             ob.data.materials.clear()
-            ob.data.materials.append(_flat(f'flat_{cushion}', cushion))
+            ob.data.materials.append(_flat(f'flat_{ribbon}', ribbon))
         elif base == 'Trim':
             ob.data.materials.clear()
             ob.data.materials.append(_flat(f'flat_{trim}', trim))

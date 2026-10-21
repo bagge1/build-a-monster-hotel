@@ -300,26 +300,26 @@
     "Body": {
      "centre": [
       0.0,
-      4.16,
+      4.7205,
       0.8061
      ],
      "size": [
-      4.9956,
-      5.52,
+      4.6956,
+      4.441,
       0.5878
      ],
-     "triangles": 1044,
+     "triangles": 1344,
      "collide": false
     },
     "Glow_Eyes_1": {
      "centre": [
-      -0.155,
-      4.39,
+      -0.124,
+      4.892,
       0.946
      ],
      "size": [
-      0.15,
-      0.08,
+      0.12,
+      0.064,
       0.028
      ],
      "triangles": 12,
@@ -327,13 +327,13 @@
     },
     "Glow_Eyes_2": {
      "centre": [
-      0.155,
-      4.39,
+      0.124,
+      4.892,
       0.946
      ],
      "size": [
-      0.15,
-      0.08,
+      0.12,
+      0.064,
       0.028
      ],
      "triangles": 12,
@@ -341,8 +341,8 @@
     },
     "Glow_Warm_1": {
      "centre": [
-      -2.35,
-      3.92,
+      -2.2,
+      4.82,
       0.66
      ],
      "size": [
@@ -355,8 +355,8 @@
     },
     "Glow_Warm_2": {
      "centre": [
-      2.35,
-      3.92,
+      2.2,
+      4.82,
       0.66
      ],
      "size": [
@@ -369,11 +369,11 @@
     }
    },
    "attachments": {},
-   "triangles": 1152,
+   "triangles": 1452,
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "the Count's portrait: a gold pointed-arch frame with a crimson slip, the Count in a black cape and a high crimson collar, widow's peak, glowing eyes (Glow_Eyes_1, _2), a moon behind; the crest (a gold bat on a crimson roundel) on the apex; two candle sconces (Glow_Warm_1, _2)",
+   "note": "the Count's portrait at eye level (frame 2.5 to 6.58): a moulded gilt pointed-arch frame (three stepped rings) with a crimson slip, the Count in a black cape and a high crimson collar, widow's peak, glowing eyes (Glow_Eyes_1, _2), a moon behind; the crest (the gold bat) standing on the apex; two candle sconces (Glow_Warm_1, _2)",
    "decor": {
     "fw": 2,
     "fd": 1,
@@ -388,8 +388,8 @@
     "w": 2,
     "d": 1,
     "layer": "Wall",
-    "height": 6.92,
-    "model_top": 6.92,
+    "height": 6.94,
+    "model_top": 6.941,
     "set": "CountStudy",
     "found": true,
     "location": 1
@@ -429,24 +429,24 @@
     "Body": {
      "centre": [
       0.0,
-      2.0636,
+      2.1583,
       0.0
      ],
      "size": [
       2.0741,
-      4.1272,
+      4.3166,
       2.0741
      ],
-     "triangles": 1388,
+     "triangles": 1468,
      "collide": false
     }
    },
    "attachments": {},
-   "triangles": 1400,
+   "triangles": 1480,
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "the Count's night globe: a gilded globe (gold lands on a night sea) on a tilted axis in a gold meridian, a dark wood horizon ring on four struts, a turned stand with gold bands; the crest (a gold bat) on the meridian's top",
+   "note": "the Count's night globe: a gilded globe (gold lands on a night sea) on a tilted axis in a gold meridian, a dark wood horizon ring on four struts, a turned stand with gold bands; the crest (the gold bat) standing on the meridian's top, leaned back to the raised camera",
    "decor": {
     "fw": 1,
     "fd": 1,
@@ -461,8 +461,8 @@
     "w": 1,
     "d": 1,
     "layer": "Floor",
-    "height": 4.13,
-    "model_top": 4.127,
+    "height": 4.32,
+    "model_top": 4.317,
     "set": "CountStudy",
     "found": true,
     "location": 1
@@ -502,26 +502,26 @@
     "Body": {
      "centre": [
       0.0,
-      3.365,
+      3.389,
       0.0
      ],
      "size": [
       1.9,
-      6.73,
+      6.7779,
       1.4
      ],
-     "triangles": 752,
+     "triangles": 872,
      "collide": false
     },
     "Glow_Cold_1": {
      "centre": [
       0.0,
-      4.85,
+      4.65,
       -0.62
      ],
      "size": [
-      0.8239,
-      0.8239,
+      0.8631,
+      0.8631,
       0.04
      ],
      "triangles": 60,
@@ -529,11 +529,11 @@
     }
    },
    "attachments": {},
-   "triangles": 824,
+   "triangles": 944,
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "the Count's clock: a longcase clock shaped as a coffin standing up, dark wood on gold ball feet, a crimson inlay, the pendulum behind a pointed window, a moonlit dial (Glow_Cold_1) at five to midnight in a gold bezel; the crest (a gold bat) on the crown",
+   "note": "the Count's clock: a longcase clock shaped as a coffin standing up, dark wood on gold ball feet, a crimson inlay, the pendulum behind a pointed window, a moonlit dial (Glow_Cold_1) at five to midnight in a gold bezel; a crimson gable crown with a gold ridge, the crest (the gold bat) standing on it",
    "decor": {
     "fw": 1,
     "fd": 1,
@@ -548,8 +548,8 @@
     "w": 1,
     "d": 1,
     "layer": "Floor",
-    "height": 6.73,
-    "model_top": 6.73,
+    "height": 6.78,
+    "model_top": 6.778,
     "set": "CountStudy",
     "found": true,
     "location": 1
@@ -589,26 +589,26 @@
     "Body": {
      "centre": [
       0.0,
-      2.445,
+      2.085,
       0.0
      ],
      "size": [
-      1.5,
-      4.89,
+      1.7549,
+      4.17,
       1.5
      ],
-     "triangles": 1048,
+     "triangles": 1130,
      "collide": false
     },
     "Glow_Eyes_1": {
      "centre": [
-      -0.11,
-      4.5,
-      -0.288
+      -0.13,
+      3.72,
+      -0.385
      ],
      "size": [
-      0.0953,
-      0.07,
+      0.1126,
+      0.08,
       0.06
      ],
      "triangles": 36,
@@ -616,13 +616,13 @@
     },
     "Glow_Eyes_2": {
      "centre": [
-      0.11,
-      4.5,
-      -0.288
+      0.13,
+      3.72,
+      -0.385
      ],
      "size": [
-      0.0953,
-      0.07,
+      0.1126,
+      0.08,
       0.06
      ],
      "triangles": 36,
@@ -630,11 +630,11 @@
     }
    },
    "attachments": {},
-   "triangles": 1132,
+   "triangles": 1214,
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "the Count's bust: his head in white marble with a black widow's peak, pointed ears and glowing eyes (Glow_Eyes_1, _2), a high-collared cape, on a gold socle and a crimson column with gold bands and black capital; the crest (a gold bat on a black plaque) on the column; a raven on the capital",
+   "note": "the Count's bust: head and shoulders in white marble, black hair with a widow's peak, pointed ears and glowing eyes (Glow_Eyes_1, _2), a high crimson-lined collar framing the head, on a gold socle and a crimson column with gold bands and a black capital; the crest (the gold bat) on a black plaque on the column",
    "decor": {
     "fw": 1,
     "fd": 1,
@@ -649,8 +649,8 @@
     "w": 1,
     "d": 1,
     "layer": "Floor",
-    "height": 4.89,
-    "model_top": 4.89,
+    "height": 4.17,
+    "model_top": 4.17,
     "set": "CountStudy",
     "found": true,
     "location": 1
@@ -698,12 +698,12 @@
       0.145,
       6.0
      ],
-     "triangles": 400,
+     "triangles": 480,
      "collide": false
     }
    },
    "attachments": {},
-   "triangles": 412,
+   "triangles": 492,
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
