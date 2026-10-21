@@ -1135,6 +1135,11 @@ Played by remotes and `execute_luau` only (no window focus) on
   (Studio drew no frames in the background).
 - [A] The look of the set and the souvenir after his import, the emblem
   disc, every number (WAITING §2.38).
+- [x] Frostfang Lodge's and Bayou Spa's sets (2026-10-21, `Test_Rare1021b`,
+  by remotes): after `chainopen 2`, `rare roll 41 0` gave `AuroraLodge_Rug`
+  by pity (40 misses, the 41st), a second run the Painting (the set's
+  order); after `chainopen 3`, the same gave `LanternGrove_Rug`, and nothing
+  of the other locations' sets. No models imported: blockouts.
 
 ## August keeps
 
@@ -1189,3 +1194,4 @@ Played by remotes and `execute_luau` only (no window focus) on
 - 2026-10-21 08:35 VIP contracts (A.11.1) played by remotes on Test_VIP1021a (two playtests): offered at 3★, accepted, a room furnished to the spec and held, the VIP an extra seat on the bus booked into room 2, completed with its reward; a missed one; the daily cap; Book requests and swaps. Two fixes (free offers pruned, the reward without the VIP's own pay). The desk prompt needs Studio in front.
 - 2026-10-21 09:27 Rare decor sets and souvenirs (A.11.3) played by remotes on Test_Rare1021a (two playtests): finds by pity, roll, a happy Rare stay and a defended Hunter Night; souvenirs by move-in no. 3 and a VIP contract; placing for cash and NotFound refusals; the set bonus once per set per hotel (0.567 → 0.817 in the older room only); a duplicate; rebirth and rejoin keep the finds. One fix (the duplicate's wording). Found: furniture can wall off a room's key spot (built rooms). No errors of the game's own.
 - 2026-10-21 09:39 Ready means the key furniture is reached (Test_Ready1021a, by remotes, no window focus): a row of decor refused at the piece that would wall the bed off (KeyCutOff), a guest booked and walked round the row to the bed; the row closed by force: not ready (KeyUnreached) and no guest booked into it. No errors of the game's own.
+- 2026-10-21 10:22 Rare decor at Frostfang Lodge and Bayou Spa (Test_Rare1021b, by remotes, no window focus): a find by pity at location 2 gave the Aurora Lodge's Rug, then its Painting; at location 3 the Lantern Grove's Rug. No errors of the game's own.
