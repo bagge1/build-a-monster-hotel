@@ -275,6 +275,92 @@ Review: `review/every/` re-rendered for all 23 with the new figure
 `review/sitting_sheet.png` (throne, perch) still shows the old figure. The
 set's `.blend` holds only the last partial build's pieces.
 
+### Blind review 2026-10-21 (second run)
+
+Two context-free reviewers (another model) looked at the rebuilt pieces'
+sheets. Each finding triaged, proved by the script's geometry; fixed in
+`tools/build_built_rooms_kits.py` (the shared shapes changed the Lodge's
+too), rebuilt alone (`-- sets bayou_spa only SaladBar,Toilet,FloorLamp,
+BoardGameShelf,BreakfastBuffet,BarStool,DiningChair`):
+
+1. **`SaladBar` an opaque slab from above, teal as the ping-pong table; the
+   guard under a stud over the trays** — Confirmed + fixed. Nothing makes
+   `Glass` see-through: `import_fixup.luau` sets only `Glow_*` (Neon),
+   `Root` and `LOD_Proxy`, and MODELS.md says the code only "may" make it
+   glass, so the water-teal lid over the whole top (y 4.0, z -0.9..0.4) hid
+   the pans in the game too; it was 0.97 over the food, the guest standing
+   at `Stand` (0, 0, -3.0), 1.95 in front of the counter. Now an open brass
+   frame on four posts, its top open, a glass pane (`moonstone`) hung in
+   front only, 4.1-4.38: 1.1 over the food's beds, 0.94 over the tallest
+   tomato, 1.32 over the counter, at a standing guest's chest, who reaches
+   in under it. The ice is crushed white (`steam`), not `water_light`, so
+   nothing from above is the ping-pong table's teal.
+2. **`Toilet` cistern floats; from above an oval side table with a plant** —
+   Confirmed as a read (the cistern stood on the bowl's back, a white block
+   0.84 wide; a fern in a pot stood on the cistern; the seat was an oval 2
+   wide and 1.4 deep). Now the cistern stands on a dark cypress casing down
+   to the floor (z 0.56-1.02); the bowl on a wide foot; the seat and lid
+   egg-shaped, narrowing to the front, the seat's rim showing round the
+   lid, two brass hinges to the cistern; the fern gone. `Use` and the seat
+   at 1.72 unchanged.
+3. **`BarStool` at the counter sits with its back to it in the front views**
+   — False. The stool's `Use` looks -Z and its back stands at z 0.68-0.84,
+   behind the sitter; at the counter it is turned 180°, so the back is at
+   z -3.62..-3.86, away from the counter (top edge -1.05), as the side view
+   shows. The row's "front" and three-quarter views look from -Z, from
+   behind the sitter, so the back stands between the camera and the person,
+   not between the person and the counter. (The knees short of the counter
+   are the Lodge's finding 3, the same for every kit: August's call.)
+4. **`FloorLamp` a honey pot; from above a potted plant** — Confirmed for
+   the top. The jar is `Glow_Warm_1`, which `import_fixup.luau` makes Neon
+   (warm 255, 200, 140) with a light, so its olive is the Workbench atlas
+   colour, not the game's; but the closed brass lid with a lily pad and a
+   lotus hid the glow from above. Now a lantern: six brass straps cage the
+   jar, its mouth an open brass ring (the glow showing inside it and round
+   it from above) under an arched bail handle; the lily pad and lotus sit on
+   the stone at its foot.
+5. **`BoardGameShelf` reads as a floor cabinet** — Confirmed. Measured: the
+   case's bottom at 1.25 (its apron 1.11), its brackets down to 0.3 on the
+   wall. Now it hangs from 2.6 (apron 2.46), two bays, the upper shelf at
+   4.0 in a 5-stud person's reach, the cornice at 5.55; short brackets from
+   the case to 1.75 on the wall. Every game a wide flat box lying in a stack
+   (plain base, bright lid with a picture and a title band), one open with a
+   four-colour board and a pawn.
+6. **`BreakfastBuffet`: the chafing dish a treasure chest, the egg tray a
+   sushi board** — Confirmed + fixed. No closed lid or cloche: shrimp and
+   grits and scrambled eggs heaped in two open copper chafing dishes, a
+   rattan basket and a plate of sugared beignets, a stone bowl of a peach, a
+   berry, a green apple and an orange, the copper coffee pot, a cup on its
+   saucer.
+7. **`DiningChair` and `BarStool` alike from above** — Confirmed (both a
+   square cushion). The stool's seat is now oval (2.1 x 1.52); the chair
+   keeps its square seat and its fan back.
+8. **`SaladBar` trays flat colours with a stick** — Confirmed + fixed: eight
+   pans heaped with leaves in two greens, tomatoes, carrot sticks, cucumber
+   slices, corn, eggs, beets, greens; tongs in the leaves.
+9. **`DiningChair` back post kinked, an orange nub** — Confirmed: the back
+   legs ran up to 3.0 inside the fan (z 0.64-0.82) and their copper caps (r
+   0.11 at 3.02) poked out of its rim (the rim at x 0.98 there, the caps to
+   1.01) and its back. The legs now end at 2.42, under the fan's lower edge,
+   the fan resting on them; no caps.
+10. **`GardenBench` rear plank another colour** — False: all three planks
+   are one `drift` loop; the rear one lies under the back's top rail and
+   its moss (z 0.62-0.92 at 3.0-3.16) and is in their shadow in the
+   Workbench render.
+
+Findings 11 and 12 are the Lodge's (its README).
+
+**Validated**: the 7 rebuilt `VALIDATED 7/7`, no faults; every Sit piece
+passes `sit_faults` (the stool's and the toilet's new seats included).
+Triangles: `SaladBar` 1,464, `BreakfastBuffet` 1,398, `FloorLamp` 1,178,
+`BoardGameShelf` 1,164, `Toilet` 726, `BarStool` 620, `DiningChair` 568
+(budget 1,500). Height findings as before (`BarStool` 4.5 vs 2.6); the salad
+bar 4.44 vs 4.2 is within 0.3, the lamp 5.26 vs 5.5 too.
+
+Review: `review/every/` re-rendered for all 23 (Workbench). **Not done**: a
+third blind review; restaging (`blender/_import/` holds the old ones);
+anything in Studio.
+
 Staged 2026-10-21 in `blender/_import/` as `BayouSpa_Furniture_<Id>.fbx`
 (the 23; the names repeat the Manor's: rename to `Furniture_<Id>` on saving
 into `assets/HotelKit/BayouSpa/`), beside what was there.

@@ -265,8 +265,8 @@ local SET = {
 		root = Vector3.new(0, 0.1, 0),
 		parts = {
 			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(9, 0.2, 3), collide = false },
-			Body = { c = Vector3.new(0, 1.64, -0.03), s = Vector3.new(8.16, 3.28, 2.14), collide = false },
-			LOD_Proxy = { c = Vector3.new(0, 1.64, -0.03), s = Vector3.new(8.16, 3.28, 2.14), collide = false },
+			Body = { c = Vector3.new(0, 1.615, -0.03), s = Vector3.new(8.16, 3.23, 2.14), collide = false },
+			LOD_Proxy = { c = Vector3.new(0, 1.615, -0.03), s = Vector3.new(8.16, 3.23, 2.14), collide = false },
 		},
 		att = {
 			{ "Use", Vector3.new(0, 0, -3), Vector3.new(0, 0, 1) },
@@ -280,8 +280,8 @@ local SET = {
 		root = Vector3.new(0, 0.1, 0),
 		parts = {
 			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(3, 0.2, 3), collide = false },
-			Body = { c = Vector3.new(0, 2.25, 0.03), s = Vector3.new(2.1, 4.5, 1.66), collide = false },
-			LOD_Proxy = { c = Vector3.new(0, 2.25, 0.03), s = Vector3.new(2.1, 4.5, 1.66), collide = false },
+			Body = { c = Vector3.new(0, 2.25, 0.0073), s = Vector3.new(2.0596, 4.5, 1.7054), collide = false },
+			LOD_Proxy = { c = Vector3.new(0, 2.25, 0.0073), s = Vector3.new(2.0596, 4.5, 1.7054), collide = false },
 		},
 		att = {
 			{ "Use", Vector3.new(0, 2.6, -0.2), Vector3.new(0, 0, -1) },
@@ -339,9 +339,9 @@ local SET = {
 		root = Vector3.new(0, 0.1, 0),
 		parts = {
 			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(3, 0.2, 3), collide = false },
-			Body = { c = Vector3.new(0.1468, 2.6306, -0.0142), s = Vector3.new(1.587, 5.2613, 1.2571), collide = false },
+			Body = { c = Vector3.new(0.1378, 2.63, -0.0142), s = Vector3.new(1.605, 5.26, 1.2571), collide = false },
 			Glow_Warm_1 = { c = Vector3.new(0, 4.27, 0), s = Vector3.new(1.1784, 1.14, 1.1784), collide = false },
-			LOD_Proxy = { c = Vector3.new(0.1468, 2.6306, -0.0142), s = Vector3.new(1.587, 5.2613, 1.2571), collide = false },
+			LOD_Proxy = { c = Vector3.new(0.1378, 2.63, -0.0142), s = Vector3.new(1.605, 5.26, 1.2571), collide = false },
 		},
 		att = {
 			{ "Use", Vector3.new(0, 0, -3), Vector3.new(0, 0, 1) },
@@ -370,9 +370,9 @@ local SET = {
 		root = Vector3.new(0, 0.1, 0),
 		parts = {
 			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(9, 0.2, 3), collide = false },
-			Body = { c = Vector3.new(0, 2, -0.02), s = Vector3.new(8.2, 4, 2.14), collide = false },
-			Glass = { c = Vector3.new(0, 4.02, -0.25), s = Vector3.new(8, 0.04, 1.3), collide = false },
-			LOD_Proxy = { c = Vector3.new(0, 2.02, -0.02), s = Vector3.new(8.2, 4.04, 2.14), collide = false },
+			Body = { c = Vector3.new(0, 2.22, -0.02), s = Vector3.new(8.2, 4.44, 2.14), collide = false },
+			Glass = { c = Vector3.new(0, 4.24, -0.9), s = Vector3.new(7.8, 0.28, 0.03), collide = false },
+			LOD_Proxy = { c = Vector3.new(0, 2.22, -0.02), s = Vector3.new(8.2, 4.44, 2.14), collide = false },
 		},
 		att = {
 			{ "Use", Vector3.new(0, 0, -3), Vector3.new(0, 0, 1) },
@@ -462,8 +462,8 @@ local SET = {
 		root = Vector3.new(0, 0.1, 0),
 		parts = {
 			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(6, 0.2, 3), collide = false },
-			Body = { c = Vector3.new(0, 2.925, 0.305), s = Vector3.new(5.16, 5.25, 1.59), collide = false },
-			LOD_Proxy = { c = Vector3.new(0, 2.925, 0.305), s = Vector3.new(5.16, 5.25, 1.59), collide = false },
+			Body = { c = Vector3.new(0, 3.65, 0.305), s = Vector3.new(5.16, 3.8, 1.59), collide = false },
+			LOD_Proxy = { c = Vector3.new(0, 3.65, 0.305), s = Vector3.new(5.16, 3.8, 1.59), collide = false },
 		},
 		att = {
 			{ "Use", Vector3.new(0, 0, -3), Vector3.new(0, 0, 1) },
@@ -520,7 +520,7 @@ local SET = {
 		root = Vector3.new(0, 0.1, 0),
 		parts = {
 			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(3, 0.2, 3), collide = false },
-			Body = { c = Vector3.new(0, 1.8468, 0.0842), s = Vector3.new(1.9616, 3.6936, 2.0315), collide = false },
+			Body = { c = Vector3.new(0, 1.68, 0.0891), s = Vector3.new(1.7685, 3.36, 2.0217), collide = false },
 		},
 		att = {
 			{ "Use", Vector3.new(0, 1.72, -0.35), Vector3.new(0, 0, -1) },

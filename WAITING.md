@@ -1047,6 +1047,18 @@ Med Claudes skärmdump där det finns en. -->
    - **Namnen** på seten (The Count's Study, Aurora Lodge, Lantern Grove) är
      arbetsnamn.
 
+45. **Glas och barpallar** (2026-10-21 eftermiddag):
+   - **Glaset:** ingen kod gjorde delarna som heter `Glass` (fönsterrutorna i
+     fasaderna, salladsbarens skydd, souvenirens glaskupa) genomskinliga, så
+     de var ogenomskinliga i spelet. Nu gör koden dem till glas, ljust
+     blåvitt och 55 % genomskinligt (min början). *Behåll*, *klarare* eller
+     *mer frostat*. **Rekommendation:** titta i spelet först.
+   - **Barpallen vid disken** (Frostfang): den sittandes knän slutar 0,55
+     framför diskens kant, så gästen sitter en bit ut från disken. Modellerna
+     kan inte rätta det (pallens `Use`-punkt och avstånden är kontraktets).
+     **Rekommendation:** koden flyttar en barpall 0,7 mot en disk den står
+     vänd mot.
+
 ## §3 Creator Hub och publicering
 
 1. ~~**Slå på Studio Access to API Services**~~ (gjort 2026-10-19: på i

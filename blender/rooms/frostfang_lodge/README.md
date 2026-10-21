@@ -241,6 +241,87 @@ Review: `review/every/` re-rendered for all 23 with the new figure
 `blender/_import/` are the old ones); anything in Studio. The set's
 `.blend` holds only the last partial build's pieces (rebuilt by the script).
 
+### Blind review 2026-10-21 (second run)
+
+Two context-free reviewers (another model) looked at the rebuilt pieces'
+sheets. Each finding triaged, proved by the script's geometry; fixed in
+`tools/build_built_rooms_kits.py` (the shared shapes changed Bayou's too),
+rebuilt alone (`-- sets frostfang_lodge only SaladBar,Toilet,BoardGameShelf,
+BreakfastBuffet,BarStool`):
+
+1. **`SaladBar` an opaque slab from above** — Confirmed + fixed. Nothing
+   makes `Glass` see-through: `import_fixup.luau` sets only `Glow_*` (Neon),
+   `Root` and `LOD_Proxy`, and MODELS.md says the code only "may" make it
+   glass, so the lid over the whole top (y 4.0, z -0.9..0.4) hid the pans in
+   the game too. Now an open iron frame on four posts, its top open, a glass
+   pane hung in front only (4.1-4.38: 1.1 over the food, 1.32 over the
+   counter, at a standing guest's chest). *The three objects on the guard*:
+   False by geometry (the dressings, tops at 3.92 under the guard at 4.0, at
+   z 0.6-0.9 behind its back rail); they and their step are gone (budget).
+   The pans now hold salad (finding 8, Bayou's): eight pans heaped with
+   leaves, tomatoes, carrot sticks, cucumber, corn, eggs, olives, greens.
+2. **`Toilet` cistern floats; the bowl reads as a goblet** — Confirmed as a
+   read (the cistern stood on the bowl's back, a white block 0.84 wide that
+   vanished against the floor). Now the cistern stands on a dark log casing
+   down to the floor (z 0.56-1.02); the bowl stands on a wide foot (0.66,
+   not a 0.44 stem under a flared bowl); the seat and lid are egg-shaped,
+   narrowing to the front, the seat's rim showing round the lid, two iron
+   hinges to the cistern. `Use` and the seat at 1.72 unchanged.
+3. **At the Cocoa Bar the knees end ~0.5 short of the overhang** —
+   Confirmed by geometry, not fixable in the model: on the square in front,
+   turned to the counter, the stool's `Use` (0, 2.6, -0.2, the contract's)
+   puts the knees at z -1.6 and the counter's top edge is at -1.05 (0.55
+   short; the thighs, top 3.2, would pass under the top at 3.5). The 0.4
+   inset on both pieces keeps their bodies 0.8 apart; even a seat to the
+   inset with `Use` at -0.5 leaves the knees 0.25 short. **August's call
+   (or the code's)**; recommendation: the code tucks a bar stool 0.7 toward
+   a counter it faces (knees under the top, nothing touching).
+4. (Bayou's lamp.)
+5. **`BoardGameShelf` reads as a floor cabinet; a dark wedge at its lower
+   right; the boxes read as speakers or safes** — Confirmed. Measured: the
+   case's bottom at 1.25 (its apron 1.11), its brackets down to 0.3 on the
+   wall; the dark wedge was the log bracket, not a missing bottom (the bottom
+   board is 1.25-1.45). Now the case hangs from 2.6 (apron 2.46), two bays,
+   the upper shelf at 4.0 in a 5-stud person's reach, the cornice at 5.55;
+   short brackets from the case to 1.75 on the wall. Every game a wide flat
+   box lying in a stack (plain base, bright lid with a picture on top and a
+   title band on its front), one game open on a stack with a four-colour
+   board and a pawn; no box on end.
+6. **`BreakfastBuffet` reads as a desk; red snowflakes as asterisks** —
+   Confirmed + fixed. Now sausages and scrambled eggs in two open steel
+   chafing dishes, a log basket of rolls and a croissant, a bowl of oranges,
+   an apple and a banana, orange juice in a jug and two glasses, pancakes
+   with syrup and butter (the closed dish, cloche and plate stack gone); one
+   white snowflake on a red roundel in the middle of the skirt.
+7. **`DiningChair` and `BarStool` alike from above** — Confirmed (both a
+   2.1 x 1.66 board under a square cushion). The stool's seat is now oval
+   (2.1 x 1.52, the cushion's plaid ending at its edge); the chair keeps its
+   square seat and its back.
+11. **`BarStool` three materials, a towel-rail back** — Confirmed + fixed:
+   one birch family with the dining chair (birch legs and seat, a log foot
+   ring like the chair's stretchers, a low round-topped birch back with a
+   carved white snowflake on two birch posts, 3.05-3.95).
+12. **Two tops unreadable in the top sheet** — identified from
+   `review_top`'s layout (by depth then name, four a row; the camera draws a
+   row right to left): row 2's first is `BoardGameShelf`, row 6's third
+   `Wardrobe`. Both are their snow from above (the shelf's snow cap on the
+   cornice, the wardrobe's snow on its cabin roof). **August's call**,
+   already `WAITING.md` §2.43 (snow on some pieces, white blocks from above);
+   recommendation as there: no snow indoors, frost instead. Not changed.
+
+Findings 4, 8 (the pans: fixed here too), 9 and 10 are Bayou's (its README).
+
+**Validated**: the 5 rebuilt `VALIDATED 5/5`, no faults; every Sit piece
+passes `sit_faults` (the stool's and the toilet's new seats included).
+Triangles: `SaladBar` 1,492, `BreakfastBuffet` 1,346, `BoardGameShelf`
+1,308, `Toilet` 806, `BarStool` 556 (budget 1,500). Height findings:
+`BarStool` 3.96 vs 2.6 (its back; was 3.23); the salad bar 4.44 vs 4.2 and
+the shelf 5.72 vs 5.6 are within 0.3.
+
+Review: `review/every/` re-rendered for all 23 (Workbench). **Not done**: a
+third blind review; restaging (`blender/_import/` holds the old ones);
+anything in Studio.
+
 Staged 2026-10-21 in `blender/_import/` as `FrostfangLodge_Furniture_<Id>.fbx`
 (the 23; the names repeat the Manor's: rename to `Furniture_<Id>` on saving
 into `assets/HotelKit/FrostfangLodge/`), beside what was there.

@@ -2061,26 +2061,26 @@
     "Body": {
      "centre": [
       0.0,
-      1.64,
+      1.615,
       -0.03
      ],
      "size": [
       8.16,
-      3.28,
+      3.23,
       2.14
      ],
-     "triangles": 1422,
+     "triangles": 1386,
      "collide": false
     },
     "LOD_Proxy": {
      "centre": [
       0.0,
-      1.64,
+      1.615,
       -0.03
      ],
      "size": [
       8.16,
-      3.28,
+      3.23,
       2.14
      ],
      "triangles": 12,
@@ -2101,11 +2101,11 @@
      ]
     }
    },
-   "triangles": 1434,
+   "triangles": 1398,
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "a buffet table under a linen cloth, its skirt pleated over a woven rattan hem band, moss off its end, root feet: a closed and an open copper chafing dish (beignets), a copper cloche, a copper coffee pot, plates and a bowl of berries",
+   "note": "a breakfast buffet under a linen cloth, its skirt pleated over a woven rattan hem band, moss off its end, root feet: shrimp and grits and scrambled eggs in open copper chafing dishes, a rattan basket and a plate of sugared beignets, a stone bowl of fruit, a copper coffee pot, a cup on its saucer",
    "decor": {
     "fw": 3,
     "fd": 1,
@@ -2123,7 +2123,7 @@
      "CocoaLounge"
     ],
     "pieces_height": 3.0,
-    "model_top": 3.28,
+    "model_top": 3.23,
     "height_finding": null
    }
   },
@@ -2162,26 +2162,26 @@
      "centre": [
       0.0,
       2.25,
-      0.03
+      0.0073
      ],
      "size": [
-      2.1,
+      2.0596,
       4.5,
-      1.66
+      1.7054
      ],
-     "triangles": 564,
+     "triangles": 608,
      "collide": false
     },
     "LOD_Proxy": {
      "centre": [
       0.0,
       2.25,
-      0.03
+      0.0073
      ],
      "size": [
-      2.1,
+      2.0596,
       4.5,
-      1.66
+      1.7054
      ],
      "triangles": 12,
      "collide": false
@@ -2201,11 +2201,11 @@
      ]
     }
    },
-   "triangles": 576,
+   "triangles": 620,
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "a bar stool on a cypress root pedestal with a copper foot ring, a lotus-pink cushion at 2.6 on a weathered seat, a woven rattan back up to the shoulders under a round-topped cypress crest with a lotus",
+   "note": "a bar stool on a cypress root pedestal with a copper foot ring, a lotus-pink cushion at 2.6 on a weathered seat, a woven rattan back up to the shoulders under a round-topped cypress crest with a lotus; its seat oval",
    "decor": {
     "fw": 1,
     "fd": 1,
@@ -2559,16 +2559,16 @@
     },
     "Body": {
      "centre": [
-      0.1468,
-      2.6306,
+      0.1378,
+      2.63,
       -0.0142
      ],
      "size": [
-      1.587,
-      5.2613,
+      1.605,
+      5.26,
       1.2571
      ],
-     "triangles": 738,
+     "triangles": 1046,
      "collide": false
     },
     "Glow_Warm_1": {
@@ -2587,13 +2587,13 @@
     },
     "LOD_Proxy": {
      "centre": [
-      0.1468,
-      2.6306,
+      0.1378,
+      2.63,
       -0.0142
      ],
      "size": [
-      1.587,
-      5.2613,
+      1.605,
+      5.26,
       1.2571
      ],
      "triangles": 12,
@@ -2614,11 +2614,11 @@
      ]
     }
    },
-   "triangles": 870,
+   "triangles": 1178,
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "a standing lamp: a big glowing jar of fireflies cradled in three prongs at the top of a crooked cypress branch on a smooth stone, a brass foot and lid, a small lily pad with a lotus on top, cattails at its foot",
+   "note": "a standing lantern: a big glowing jar of fireflies caged in brass straps, its mouth an open brass ring under a bail handle, cradled in three prongs at the top of a crooked cypress branch on a smooth stone with a lily pad and a lotus on it, cattails at its foot",
    "decor": {
     "fw": 1,
     "fd": 1,
@@ -2633,7 +2633,7 @@
     "pose": "Stand",
     "keyFor": [],
     "pieces_height": 5.5,
-    "model_top": 5.261,
+    "model_top": 5.26,
     "height_finding": null
    }
   },
@@ -2679,7 +2679,7 @@
       4.48,
       1.668
      ],
-     "triangles": 604,
+     "triangles": 556,
      "collide": false
     },
     "LOD_Proxy": {
@@ -2711,11 +2711,11 @@
      ]
     }
    },
-   "triangles": 616,
+   "triangles": 568,
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "a cypress dining chair on root legs: a lotus-pink cushion at 1.82 on a rattan seat, a peacock fan back of woven rattan in a light cypress rim, copper caps",
+   "note": "a cypress dining chair on root legs: a lotus-pink cushion at 1.82 on a rattan seat, a peacock fan back of woven rattan in a light cypress rim resting on the back legs",
    "decor": {
     "fw": 1,
     "fd": 1,
@@ -2783,27 +2783,27 @@
     "Body": {
      "centre": [
       0.0,
-      2.0,
+      2.22,
       -0.02
      ],
      "size": [
       8.2,
-      4.0,
+      4.44,
       2.14
      ],
-     "triangles": 1452,
+     "triangles": 1440,
      "collide": false
     },
     "Glass": {
      "centre": [
       0.0,
-      4.02,
-      -0.25
+      4.24,
+      -0.9
      ],
      "size": [
-      8.0,
-      0.04,
-      1.3
+      7.8,
+      0.28,
+      0.03
      ],
      "triangles": 12,
      "collide": false
@@ -2811,12 +2811,12 @@
     "LOD_Proxy": {
      "centre": [
       0.0,
-      2.02,
+      2.22,
       -0.02
      ],
      "size": [
       8.2,
-      4.04,
+      4.44,
       2.14
      ],
      "triangles": 12,
@@ -2837,11 +2837,11 @@
      ]
     }
    },
-   "triangles": 1476,
+   "triangles": 1464,
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "a salad bar: a cypress cabinet with rattan panels and moss off its edge, a well of ice on its top with ten brass pans of herbs, radishes, corn, berries and greens, tongs, dressings on a step, a thin glass sneeze guard on brass posts",
+   "note": "a salad bar: a cypress cabinet with rattan panels and moss off its edge, a well of crushed ice on its top with eight brass pans heaped with leaves, tomatoes, carrot sticks, cucumber, corn, eggs, beets and greens, tongs, under an open brass frame with a glass pane in front",
    "decor": {
     "fw": 3,
     "fd": 1,
@@ -2856,7 +2856,7 @@
     "pose": "Stand",
     "keyFor": [],
     "pieces_height": 4.2,
-    "model_top": 4.04,
+    "model_top": 4.44,
     "height_finding": null
    }
   },
@@ -3393,26 +3393,26 @@
     "Body": {
      "centre": [
       0.0,
-      2.925,
+      3.65,
       0.305
      ],
      "size": [
       5.16,
-      5.25,
+      3.8,
       1.59
      ],
-     "triangles": 1040,
+     "triangles": 1152,
      "collide": false
     },
     "LOD_Proxy": {
      "centre": [
       0.0,
-      2.925,
+      3.65,
       0.305
      ],
      "size": [
       5.16,
-      5.25,
+      3.8,
       1.59
      ],
      "triangles": 12,
@@ -3433,11 +3433,11 @@
      ]
     }
    },
-   "triangles": 1052,
+   "triangles": 1164,
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "a shelf of board games hung on the wall on two cypress brackets, off the floor: cypress sides, a woven rattan back, moss hanging off the cornice; wide game boxes with lids of another colour, stacked flat and stood up showing their pictures",
+   "note": "a shelf of board games hung on the wall well off the floor on two short cypress brackets: cypress sides, a woven rattan back, moss hanging off the cornice; wide flat game boxes stacked in two bays, bright lids with pictures and title bands, one game open with its board",
    "decor": {
     "fw": 2,
     "fd": 1,
@@ -3753,15 +3753,15 @@
     "Body": {
      "centre": [
       0.0,
-      1.8468,
-      0.0842
+      1.68,
+      0.0891
      ],
      "size": [
-      1.9616,
-      3.6936,
-      2.0315
+      1.7685,
+      3.36,
+      2.0217
      ],
-     "triangles": 836,
+     "triangles": 714,
      "collide": false
     }
    },
@@ -3779,11 +3779,11 @@
      ]
     }
    },
-   "triangles": 848,
+   "triangles": 726,
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "a white pedestal toilet with a cypress seat and closed lid at 1.72, a cypress cistern on the bowl's back with a woven rattan front, a brass lever, a fern in a stone pot on top",
+   "note": "a white toilet on a wide foot with an egg-shaped cypress seat and closed lid at 1.72, brass hinges, a cypress cistern with a woven rattan front on a dark cypress casing down to the floor, a brass lever",
    "decor": {
     "fw": 1,
     "fd": 1,
@@ -3813,7 +3813,7 @@
     "pose": "Sit",
     "keyFor": [],
     "pieces_height": 3.6,
-    "model_top": 3.694,
+    "model_top": 3.36,
     "height_finding": null
    }
   },

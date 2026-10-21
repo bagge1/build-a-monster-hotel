@@ -77,14 +77,36 @@ local function shell(name: string, size: Vector3, centre: Vector3): (Model, Part
 	return model, root
 end
 
+-- A pane's look (MODELS.md, `Glass`: "the code may make it glass"). Claude's
+-- starting look, his to judge (WAITING §2.45).
+local GLASS = { colour = Color3.fromRGB(220, 236, 245), transparency = 0.55 }
+
 -- A delivered model's clone with `Root` as its PrimaryPart. Rojo's live sync of a
 -- changed .rbxm can drop the reference (DEVNOTES.md, "Rojo's live sync drops
 -- PrimaryPart"); `Root` is the contract's (MODELS.md), so it is set again here.
+-- Every part called `Glass` (a window pane, a sneeze guard, a bell jar) is made
+-- see-through: the import leaves it an opaque textured mesh.
 local function rooted(found: Model): Model
 	local m = found:Clone()
 	local root = m:FindFirstChild("Root")
 	if not m.PrimaryPart and root and root:IsA("BasePart") then
 		m.PrimaryPart = root
+	end
+	for _, p in m:GetDescendants() do
+		if p.Name == "Glass" and p:IsA("BasePart") then
+			for _, c in p:GetChildren() do
+				if c:IsA("SurfaceAppearance") then
+					c:Destroy()
+				end
+			end
+			if p:IsA("MeshPart") then
+				p.TextureID = ""
+			end
+			p.Material = Enum.Material.Glass
+			p.Color = GLASS.colour
+			p.Transparency = GLASS.transparency
+			p.CastShadow = false
+		end
 	end
 	return m
 end
