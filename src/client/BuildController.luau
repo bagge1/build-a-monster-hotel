@@ -1,30 +1,40 @@
 --!strict
 --[[
 	Build mode (GDD §5, §5.4, §13.2 "Building": the client draws the ghost,
-	snaps, rotates and flips; the server validates). The client sends only an intent
-	(`{item, floor, cell, rotation}`, or squares for decor); `Grid`, `Furnish`
-	and `Layout` run here too, on the state's copy of the hotel, so the ghost
-	turns red before the server would refuse.
+	snaps and rotates; the server validates). The client sends only an intent
+	(`{item, floor, cell, rotation}`, squares for decor and furniture, half
+	edges for walls); `Grid`, `Rooms` and `Layout` run here too, on the
+	state's copy of the hotel, so the ghost turns red before the server would
+	refuse.
 
 	One thumb (§11): tap a card, tap the grid to put the ghost there, press
 	Place. With a mouse, the ghost follows the cursor and a click places; R
-	rotates, and F flips a room or amenity left to right, moving its door to
-	its other front cell (A.1, his ask 2026-10-20; ⇋ Flip on touch, L1 on a
-	gamepad). With nothing chosen, tapping a built piece or a piece of decor
-	opens its menu (move, sell; a room's tier, its decor points and its
-	floor), and tapping a gold tile beside the hotel buys it (§5.4, A.1, his
-	rulings 2026-10-20: the plot is bought a cell at a time, cheaply).
+	rotates. With nothing chosen, tapping a stair, a desk or a piece of decor
+	opens its menu (move, sell), tapping a built room opens the room view,
+	tapping a walled space with a door opens the type list, and tapping a gold
+	tile beside the hotel buys it (§5.4, A.1).
 
-	Tabs (§5.4, free building): Rooms, Amenities, Stairs and desks (a stair is
-	a 2×2 piece joining a floor to the one above, a new floor's first free;
-	a front desk the first free, another $500), Decor (on a grid
-	of 3-stud squares, in rooms and on hallway floor), Floors (a finish:
-	choose one, then tap a room or a hallway) and Windows (A.1: one of four
-	types, then tap an outer wall; a placed window is tapped to move, swap or
-	sell it).
+	BUILT ROOMS (§5.4, A.12, his rulings 2026-10-21): the Walls tab draws inner
+	walls along the cell edges, or the half cells with its "Half cells"
+	toggle: a tap puts up one edge, a drag a straight run (`WallRun`); Door
+	puts a door in a wall or takes it out (`Door`); Remove takes walls down. A
+	tap on an enclosed area with a door lists the location's room types and
+	amenities, each with its tooltip (who stays in it or what it gives, its
+	key furniture, its minimum and full size; locked ones with their unlock),
+	and choosing one makes it that room (`MakeRoom`). The Furniture tab
+	places furniture like decor. Tapping a room flies the camera into it (the
+	room view): the walls toward the camera fade, and a panel shows its type,
+	its tooltip, whether it is ready (or what it lacks) and its three bars
+	(Size, Furniture, Decor) with what each gives. No ready-made rooms, no
+	Flip.
 
-	The camera looks down on the plot while building, and floors above the
-	one being built on are hidden locally (`LocalTransparencyModifier`).
+	Tabs: Walls, Rooms (the rooms built; a tap on one is its view), Furniture,
+	Decor (on a grid of 3-stud squares, in rooms and on hallway floor), Stairs
+	and desks, Floors (a finish: choose one, then tap a room or a hallway) and
+	Windows (A.1).
+
+	The camera is free (his ruling 2026-10-21), and floors above the one being
+	built on are hidden locally (`LocalTransparencyModifier`).
 
 	The gamepad (§11, UI.md "Gamepad"): build mode opens on its cards (the
 	selection, ButtonY to and from them); a chosen card hands the left stick
@@ -50,6 +60,7 @@ local Layout = require(ReplicatedStorage.Shared.Layout)
 local Net = require(ReplicatedStorage.Shared.Net)
 local Pieces = require(ReplicatedStorage.Shared.Pieces)
 local Rooms = require(ReplicatedStorage.Shared.Rooms)
+local Species = require(ReplicatedStorage.Shared.Species)
 local Controls = require(script.Parent.Controls)
 local State = require(script.Parent.State)
 local Ui = require(script.Parent.Ui)
@@ -66,7 +77,16 @@ local camera = workspace.CurrentCamera
 local active = false
 local floor = 1
 local rotation = 0
-local mirror = false -- the piece being placed or moved is flipped (Flip, A.1)
+-- Built rooms (A.12): the Walls tab's tool ("Wall", "Door", "Remove"), its step, a drag's start.
+local wallMode: string? = nil
+local halfCells = false
+local wallFrom: Vector3? = nil -- the drag's start vertex, in half-cell units (x, 0, z)
+local wallGhost: Folder? = nil
+local roomView: number? = nil -- the room in the room view
+local openRoomView: (number) -> ()
+local closeRoomView: () -> ()
+local clearWallGhost: () -> ()
+local typesWindow: Frame
 local selected: string? = nil -- a piece id to place
 local selectedDecor: string? = nil -- a decor id to place
 local selectedFinish: string? = nil -- a finish to lay ("" the model's own)
@@ -95,11 +115,19 @@ local floorLabel: TextLabel
 local placeButton: TextButton
 local menu: Frame
 local menuBody: Frame
-local tab = "Room"
+local tab = "Wall"
+-- Each tab's button name (UI.md "Build mode").
+local tabNames: { [string]: string } = { Wall = "Walls", Room = "Rooms" }
 local paintTabs: () -> ()
 -- What the strip says while nothing is being placed: that a placed piece is
 -- tapped to change it (his report, 2026-10-19: no way to remove or replace a room).
 local function idleHint(): string
+	if tab == "Room" then
+		return Controls.hint(
+			"Tap a walled space with a door to choose its type, or a room to see it",
+			"A on a walled space or a room"
+		)
+	end
 	return Controls.hint(
 		"Choose something to build, tap a room or decor, or a gold tile to buy it",
 		"Y for the cards, or A on a room, decor or a gold tile"
@@ -115,7 +143,6 @@ end
 local hover: Highlight? = nil
 local outline: (Instance?) -> ()
 local stopPlacing: () -> ()
-local flip: () -> ()
 local rightDownAt: Vector2? = nil
 local rightDragX: number? = nil -- the cursor's last x in a right-drag
 local rightDragY: number? = nil -- and its last y: the drag tilts the camera too
@@ -480,7 +507,7 @@ local function drawGhost()
 	if piece then
 		local candidate = Layout.piece(
 			"",
-			{ item = piece.id, floor = floor, x = here.x, z = here.z, r = rotation, m = mirror }
+			{ item = piece.id, floor = floor, x = here.x, z = here.z, r = rotation }
 		) :: Grid.Placed
 		candidate.id = nil
 		local skip = if moving then Layout.find(w, tostring(moving)) else nil
@@ -528,10 +555,7 @@ local function drawGhost()
 	info.Text = if ok
 		then `{name}{if cost
 			then " · " .. (if cost == 0 then "free" else Format.cash(cost))
-			else " (move)"}  ·  {Controls.hint("R / ⟳ to rotate", "RB / ⟳ to rotate")}{if piece
-				and (piece.kind == "Room" or piece.kind == "Amenity")
-			then "  ·  " .. Controls.hint("F / ⇋ to flip", "LB / ⇋ to flip")
-			else ""}`
+			else " (move)"}  ·  {Controls.hint("R / ⟳ to rotate", "RB / ⟳ to rotate")}`
 		else `{name}: {Hud.refusal(why or "")}`
 	placeButton.Visible = ok == true
 end
@@ -829,33 +853,11 @@ local function actionRow(): Frame
 	return row
 end
 
--- The finishes of this location as a row of buttons; `pick` is called with the chosen id ("" the model's own).
-local function finishRow(current: string, pick: (string) -> ())
-	local row = Ui.frame(menuBody, "Finishes", UDim2.new(1, 0, 0, 50))
-	row.BackgroundTransparency = 1
-	row.AutomaticSize = Enum.AutomaticSize.Y
-	Ui.list(row, Enum.FillDirection.Horizontal, 6).Wraps = true
-	local own = Ui.button(row, "Own", "Its own", UDim2.fromOffset(110, 44), function()
-		pick("")
-	end, if current == "" then Ui.Colour.Pumpkin else Ui.Colour.PanelLight)
-	own.TextSize = 15
-	for i, f in Pieces.Finishes do
-		if f.location == build().location then
-			local b = Ui.button(row, f.id, f.name, UDim2.fromOffset(130, 44), function()
-				pick(f.id)
-			end, if current == f.id then Ui.Colour.Pumpkin else Ui.Colour.PanelLight)
-			b.TextSize = 15
-			b.LayoutOrder = i
-		end
-	end
-end
-
 local function startMoving(id: number, rec: any)
 	moving = id
 	movingDecor = nil
 	selected, selectedDecor, selectedFinish, selectedWindow, movingWindow = nil, nil, nil, nil, nil
 	rotation = rec.r
-	mirror = rec.m == true
 	floor = rec.floor
 	menu.Visible = false
 	floorLabel.Text = `Floor {floor}`
@@ -872,25 +874,8 @@ local function openMenu(id: number)
 	if not rec or not piece then
 		return
 	end
-	local title = piece.name
-	if piece.kind == "Room" then
-		title = `{piece.name} · T{rec.tier or 1}`
-	end
-	clearMenu(title)
-	if piece.kind == "Room" then
-		local nextText = if rec.nextAt
-			then `T{(rec.tier or 1) + 1} at {rec.nextAt} points`
-			else "the top tier"
-		local l = Ui.label(
-			menuBody,
-			"Tier",
-			`Decor points {rec.points or 0} · {nextText}. Place decor inside it to raise its tier (+50 % pay per tier).`,
-			UDim2.new(1, 0, 0, 44),
-			17,
-			Ui.Colour.Muted
-		)
-		l.LayoutOrder = 0
-	elseif piece.kind == "Stairs" then
+	clearMenu(piece.name)
+	if piece.kind == "Stairs" then
 		Ui.label(
 			menuBody,
 			"About",
@@ -913,25 +898,17 @@ local function openMenu(id: number)
 	Ui.button(row, "Move", "Move", UDim2.fromOffset(110, 46), function()
 		startMoving(id, rec)
 	end, Ui.Colour.Teal)
-	do
-		local refund = Economy.refund(rec.paid or 0)
-		for _, d in build().decor or {} do
-			if tostring(d.room) == tostring(id) then
-				refund += Economy.refund(d.paid or 0)
-			end
-		end
-		Ui.button(row, "Sell", `Sell +{Format.cash(refund)}`, UDim2.fromOffset(160, 46), function()
+	Ui.button(
+		row,
+		"Sell",
+		`Sell +{Format.cash(Economy.refund(rec.paid or 0))}`,
+		UDim2.fromOffset(160, 46),
+		function()
 			Net.send("Sell", id)
 			menu.Visible = false
-		end, Ui.Colour.Bad)
-	end
-	if piece.kind == "Room" or piece.kind == "Amenity" then
-		Ui.label(menuBody, "FloorTitle", "Its floor", UDim2.new(1, 0, 0, 24), 18, Ui.Colour.Muted)
-		finishRow(rec.finish or "", function(f)
-			Net.send("Finish", tostring(id), f)
-			menu.Visible = false
-		end)
-	end
+		end,
+		Ui.Colour.Bad
+	)
 	menu.Visible = true
 end
 
@@ -983,8 +960,19 @@ local function openDecorMenu(id: number)
 		return
 	end
 	clearMenu(d.name)
-	local where = if rec.room ~= ""
-		then "In a room: it counts toward the room's tier and tags."
+	local inRoom = false
+	local w: any = world()
+	local a = Rooms.areaAt(
+		w,
+		rec.floor,
+		rec.x // (G.Squares // Rooms.HalfCells),
+		rec.z // (G.Squares // Rooms.HalfCells)
+	)
+	inRoom = a ~= nil and not a.hallway and a.room ~= nil
+	local where = if inRoom
+		then (if d.furniture
+			then "In a room: it counts toward the room's Furniture bar and tags."
+			else "In a room: it counts toward the room's Decor bar and tags.")
 		else "On the hallway floor."
 	local tags = if #d.tags > 0 then table.concat(d.tags, ", ") else "no tags"
 	Ui.label(menuBody, "About", `{tags} · {where}`, UDim2.new(1, 0, 0, 44), 17, Ui.Colour.Muted)
@@ -1110,26 +1098,14 @@ end
 -- ===== The strip of cards =====
 
 -- Stops placing or moving: the ghost goes, and a tap opens a piece's menu again.
---[[ F, L1 or ⇋ Flip (A.1): the room or amenity being placed or moved,
-	mirrored left to right. Only where its kit has the mirror image, or it is
-	still a blockout (`mirrorable` from the server); Roblox cannot mirror a
-	mesh. ]]
-function flip()
-	local piece = pieceBeingPlaced()
-	if not piece or (piece.kind ~= "Room" and piece.kind ~= "Amenity") then
-		return
-	end
-	if not (build().mirrorable or {})[piece.id] then
-		info.Text = `{piece.name}: {Hud.refusal("NoMirror")}`
-		return
-	end
-	mirror = not mirror
-	drawGhost()
-end
-
 function stopPlacing()
 	selected, selectedDecor, selectedFinish, selectedWindow, movingWindow = nil, nil, nil, nil, nil
 	moving, movingDecor = nil, nil
+	wallMode, wallFrom = nil, nil
+	if wallGhost then
+		wallGhost:Destroy()
+		wallGhost = nil
+	end
 	clearGhost()
 	outline(nil)
 	placeButton.Visible = false
@@ -1156,8 +1132,7 @@ local function card(
 	c.LayoutOrder = order
 	c.TextSize = 16
 	-- The gamepad (§11): up from a card is its tab, not the HUD beside the strip.
-	c.NextSelectionUp =
-		tools:FindFirstChild(if tab == "Room" then "Rooms" else tab, true) :: GuiObject?
+	c.NextSelectionUp = tools:FindFirstChild(tabNames[tab] or tab, true) :: GuiObject?
 end
 
 -- The card the gamepad selects: the chosen one, else the first.
@@ -1185,11 +1160,82 @@ function redrawCards()
 		end
 	end
 	local b = build()
-	if tab == "Decor" then
+	if tab == "Wall" then
+		-- The wall tools (A.12): put up, a door, take down, and the half-cell toggle.
+		local tools3 = {
+			{ "Wall", `Walls\n{Format.cash(b.wallCost or 5)} a half edge` },
+			{ "Door", `Door\n{Format.cash(b.doorCost or 10)} · tap a wall` },
+			{ "Remove", "Remove\nwalls" },
+		}
+		for i, t in tools3 do
+			card(`Tool_{t[1]}`, t[2], i, wallMode == t[1], true, function()
+				if wallMode == t[1] then
+					stopPlacing()
+					return
+				end
+				stopPlacing()
+				wallMode = t[1]
+				info.Text = if t[1] == "Door"
+					then Controls.hint(
+						"Tap a wall to put a door in it, or take one out",
+						"A on a wall"
+					)
+					else Controls.hint(
+						"Tap an edge, or drag along the grid · tap the card again to stop",
+						"A on an edge · B to stop"
+					)
+				redrawCards()
+				toPlot()
+			end)
+		end
+		card(
+			"HalfCells",
+			`Half cells\n{if halfCells then "On" else "Off"}`,
+			9,
+			halfCells,
+			true,
+			function()
+				halfCells = not halfCells
+				redrawCards()
+			end
+		)
+	elseif tab == "Room" then
+		-- The rooms built on this floor (A.12): a tap flies to the room's view.
+		local list = {}
+		for _, rec in b.rooms or {} do
+			if rec.floor == floor then
+				table.insert(list, rec)
+			end
+		end
+		table.sort(list, function(x, y)
+			return x.id < y.id
+		end)
+		for i, rec in list do
+			local p = Pieces.get(rec.type)
+			card(
+				`Room_{rec.id}`,
+				`{if p then p.name else rec.type}\n{if rec.ready then "ready" else rec.missingText}`,
+				i,
+				roomView == rec.id,
+				true,
+				function()
+					openRoomView(rec.id)
+				end
+			)
+		end
+	elseif tab == "Decor" or tab == "Furniture" then
+		local furnitureTab = tab == "Furniture"
 		for i, d in Pieces.DecorList do
-			if (b.unlockedDecor or {})[d.id] then
-				local text = `{d.name}\n{d.w}×{d.d} · {if d.cost > 0
-					then Format.cash(d.cost)
+			if (b.unlockedDecor or {})[d.id] and (d.furniture == true) == furnitureTab then
+				local free = false
+				for _, t in d.keyFor or {} do
+					if (b.vouchers or {})[t] then
+						free = true
+					end
+				end
+				local text = `{d.name}\n{d.w}×{d.d} · {if free
+					then "free"
+					elseif d.cost > 0 then Format.cash(d.cost)
 					else "owned"}`
 				card(d.id, text, i, selectedDecor == d.id, true, function()
 					if selectedDecor == d.id then
@@ -1260,10 +1306,9 @@ function redrawCards()
 		end
 	else
 		for i, p in Pieces.List do
-			-- The Stairs tab holds the desks too (§5.4, A.1: one or more, anywhere on floor 1).
-			local shown = if tab == "Stairs"
-				then p.kind == "Stairs" or p.kind == "Desk"
-				else p.kind == tab
+			-- The Stairs tab holds the desks (§5.4, A.1: one or more, anywhere on floor 1);
+			-- rooms are built from walls now (A.12), never placed.
+			local shown = p.kind == "Stairs" or p.kind == "Desk"
 			if
 				shown
 				and (p.location == b.location or p.location == 0 or b.buildable[p.id] == true)
@@ -1287,7 +1332,6 @@ function redrawCards()
 					end
 					stopPlacing()
 					selected = p.id
-					mirror = false
 					showHover(nil)
 					info.Text = `{p.name}: {Controls.hint(
 						"tap the grid · tap the card again to stop",
@@ -1342,8 +1386,12 @@ local function setActive(on: boolean)
 		tutorial.Enabled = not on
 	end
 	menu.Visible = false
+	typesWindow.Visible = false
+	closeRoomView()
 	selected, selectedDecor, selectedFinish, selectedWindow, movingWindow = nil, nil, nil, nil, nil
 	moving, movingDecor, cell = nil, nil, nil
+	wallMode, wallFrom = nil, nil
+	clearWallGhost()
 	clearGhost()
 	showHover(nil)
 	buildKeys.Enabled = on
@@ -1360,7 +1408,7 @@ local function setActive(on: boolean)
 			task.defer(function()
 				if active then
 					Controls.select(
-						firstCard() or tools:FindFirstChild("Rooms", true) :: GuiObject?
+						firstCard() or tools:FindFirstChild("Walls", true) :: GuiObject?
 					)
 				end
 			end)
@@ -1389,6 +1437,603 @@ function BuildController.open()
 	setActive(true)
 end
 
+-- ===== Built rooms (GDD §5.4, A.12, his rulings 2026-10-21) =====
+
+local HALF = G.CellSize / Rooms.HalfCells -- a half edge, 6 studs
+
+-- A built room of the state, by id.
+local function roomRecord(id: number): any
+	for _, rec in build().rooms or {} do
+		if rec.id == id then
+			return rec
+		end
+	end
+	return nil
+end
+
+-- The walls' step: a cell edge by default, a half edge with "Half cells" on (his ruling).
+local function wallUnit(): number
+	return if halfCells then HALF else G.CellSize
+end
+
+-- The lattice vertex nearest a plot-local point, in half-cell units.
+local function vertexAt(l: Vector3): (number, number)
+	local u = wallUnit()
+	local k = u // HALF
+	return math.round(l.X / u) * k, math.round(l.Z / u) * k
+end
+
+--[[ The wall segment nearest a plot-local point, as a run (hx, hz, o,
+	count) of half edges: a cell edge (two), or one half edge with `half`. ]]
+local function edgeAt(l: Vector3, half: boolean?): (number, number, number, number)
+	local u = if half then HALF else wallUnit()
+	local k = u // HALF
+	local zLine, xLine = math.round(l.Z / u), math.round(l.X / u)
+	if math.abs(l.Z - zLine * u) <= math.abs(l.X - xLine * u) then
+		return math.floor(l.X / u) * k, zLine * k, 0, k
+	end
+	return xLine * k, math.floor(l.Z / u) * k, 1, k
+end
+
+local function runEdges(hx: number, hz: number, o: number, count: number): { string }
+	local out = {}
+	for i = 0, count - 1 do
+		table.insert(
+			out,
+			Rooms.edgeKey(floor, hx + (if o == 0 then i else 0), hz + (if o == 1 then i else 0), o)
+		)
+	end
+	return out
+end
+
+--[[ Each half edge of a run judged as the server will, one after another on
+	the hotel as the run leaves it (`on`: put up; else taken down): whether
+	it goes, and the first refusal. ]]
+local function judgeRun(edges: { string }, on: boolean): ({ boolean }, string?, number)
+	local w: any = world()
+	w.walls = table.clone(w.walls)
+	local oks, first, built = {}, nil, 0
+	for i, e in edges do
+		local ok, why
+		if on and w.walls[e] then
+			ok = true -- standing already: left as it is
+		elseif on then
+			ok, why = Rooms.canWall(w, e, false)
+			if ok then
+				w.walls[e] = { paid = 0 }
+				built += 1
+			end
+		else
+			ok, why = Rooms.canRemoveWall(w, e)
+			if ok then
+				w.walls[e] = nil
+				built += 1
+			end
+		end
+		oks[i] = ok == true
+		if not ok and not first then
+			first = why
+		end
+	end
+	return oks, first, built
+end
+
+function clearWallGhost()
+	if wallGhost then
+		wallGhost:Destroy()
+		wallGhost = nil
+	end
+end
+
+-- A ghost of each half edge of the run: green where it goes, red where it is refused.
+local function drawWallGhost(edges: { string }, oks: { boolean })
+	clearWallGhost()
+	local frame = plotFrame()
+	if not frame then
+		return
+	end
+	local folder = Instance.new("Folder")
+	folder.Name = "WallGhost"
+	for i, e in edges do
+		local f, hx, hz, o = Rooms.edgeOf(e)
+		local p = Instance.new("Part")
+		p.Anchored = true
+		p.CanCollide = false
+		p.CanQuery = false
+		p.CanTouch = false
+		p.CastShadow = false
+		p.Material = Enum.Material.SmoothPlastic
+		p.Transparency = 0.35
+		p.Color = if oks[i] then Ui.Colour.Good else Ui.Colour.Bad
+		p.Size = Vector3.new(HALF - 0.3, 6, 0.7)
+		local at = if o == 0
+			then Vector3.new(hx * HALF + HALF / 2, Grid.floorY(f) + 3, hz * HALF)
+			else Vector3.new(hx * HALF, Grid.floorY(f) + 3, hz * HALF + HALF / 2)
+		p.CFrame = frame * CFrame.new(at) * CFrame.Angles(0, if o == 1 then math.pi / 2 else 0, 0)
+		p.Parent = folder
+	end
+	folder.Parent = workspace
+	wallGhost = folder
+end
+
+-- What the run under the pointer would do: its ghost and its price or refusal in the strip.
+local function showRun(edges: { string })
+	local on = wallMode ~= "Remove"
+	local oks, why, n = judgeRun(edges, on)
+	drawWallGhost(edges, oks)
+	local cost = (build().wallCost or 5) * n
+	if why and n == 0 then
+		info.Text = Hud.refusal(why)
+	elseif on then
+		info.Text = `{n} wall{if n == 1 then "" else "s"} · {Format.cash(cost)}{if why
+			then " (" .. Hud.refusal(why) .. " for some)"
+			else ""}`
+	else
+		info.Text = `Take down {n} wall{if n == 1 then "" else "s"}`
+	end
+end
+
+-- The run from the drag's start vertex to the pointer's, along the longer axis; nil on the start vertex.
+local function dragRun(l: Vector3): (number?, number?, number?, number?)
+	local start = wallFrom
+	if not start then
+		return nil, nil, nil, nil
+	end
+	local bx, bz = vertexAt(l)
+	local ax, az = start.X, start.Z
+	if bx == ax and bz == az then
+		return nil, nil, nil, nil
+	end
+	if math.abs(bx - ax) >= math.abs(bz - az) then
+		return math.min(ax, bx), az, 0, math.abs(bx - ax)
+	end
+	return ax, math.min(az, bz), 1, math.abs(bz - az)
+end
+
+-- The pointer moved with the wall tool: the run being dragged, or the edge a tap would take.
+local function wallHover(x: number, y: number)
+	local l = pointerLocal(x, y)
+	if not l or not wallMode then
+		clearWallGhost()
+		return
+	end
+	if wallMode == "Door" then
+		local hx, hz, o = edgeAt(l, true)
+		drawWallGhost({ Rooms.edgeKey(floor, hx, hz, o) }, { true })
+		return
+	end
+	local hx, hz, o, count = dragRun(l)
+	if not hx then
+		hx, hz, o, count = edgeAt(l)
+	end
+	showRun(runEdges(hx :: number, hz :: number, o :: number, count :: number))
+end
+
+-- A tap (or the end of a drag) with the wall tool.
+local function wallRelease(x: number, y: number)
+	local l = pointerLocal(x, y)
+	if not l or not wallMode then
+		wallFrom = nil
+		return
+	end
+	if wallMode == "Door" then
+		local hx, hz, o = edgeAt(l, true)
+		local e = Rooms.edgeKey(floor, hx, hz, o)
+		local w: any = world()
+		local rec = w.walls[e]
+		local on = not (rec and rec.door)
+		local ok, why
+		if rec then
+			ok, why = Rooms.canDoor(w, e, on)
+		else
+			ok, why = Rooms.canWall(w, e, true)
+		end
+		if ok then
+			Net.send("Door", e, on)
+		else
+			info.Text = Hud.refusal(why or "")
+		end
+		wallFrom = nil
+		return
+	end
+	local hx, hz, o, count = dragRun(l)
+	if not hx then
+		hx, hz, o, count = edgeAt(l)
+	end
+	wallFrom = nil
+	Net.send("WallRun", floor, hx, hz, o, count, wallMode ~= "Remove")
+end
+
+local function wallPress(x: number, y: number)
+	local l = pointerLocal(x, y)
+	if not l then
+		return
+	end
+	local vx, vz = vertexAt(l)
+	wallFrom = Vector3.new(vx, 0, vz)
+end
+
+-- The half cell under the pointer on the floor in view, or nil off the plot.
+local function halfCellUnder(x: number, y: number): (number?, number?)
+	local l = pointerLocal(x, y)
+	if not l then
+		return nil, nil
+	end
+	local hx, hz = math.floor(l.X / HALF), math.floor(l.Z / HALF)
+	if hx < 0 or hz < 0 or hx >= Rooms.Size or hz >= Rooms.Size then
+		return nil, nil
+	end
+	return hx, hz
+end
+
+-- ===== The type list: an enclosed area's type (A.12, his "you should choose it") =====
+
+local typesBody: Frame
+local typeTarget: { floor: number, hx: number, hz: number }? = nil
+
+local function names(ids: { string }, getName: (string) -> string?): string
+	local out = {}
+	for _, id in ids do
+		table.insert(out, getName(id) or id)
+	end
+	return table.concat(out, ", ")
+end
+
+-- A type's tooltip (A.12): who stays in it or what it gives, its key furniture and its sizes.
+local function typeTooltip(t: any): string
+	local who = if t.kind == "Room"
+		then "Stays: " .. (if #t.species > 0
+			then names(t.species, function(id)
+				local sp = Species.get(id)
+				return sp and sp.name
+			end)
+			else "nobody yet")
+		else "Gives: " .. table.concat(t.tags, ", ")
+	local keys = names(t.keys, function(id)
+		local d = Pieces.decor(id)
+		return d and d.name
+	end)
+	return `{who}\nNeeds: {if keys ~= "" then keys else "nothing"} · at least {t.minCells} cells (full at {t.fullCells})`
+end
+
+--[[ Opens the list of types for the area holding half cell (hx, hz): every
+	type of the location with its tooltip, the locked ones with their unlock.
+	Choosing one makes the area that room (`MakeRoom`), or retypes it. ]]
+local function openTypes(f: number, hx: number, hz: number)
+	local w: any = world()
+	local a = Rooms.areaAt(w, f, hx, hz)
+	if not a then
+		return
+	end
+	if a.hallway then
+		info.Text = Hud.refusal("Hallway")
+		return
+	end
+	if #a.doors == 0 then
+		info.Text = Hud.refusal("NoDoor")
+		return
+	end
+	typeTarget = { floor = f, hx = hx, hz = hz }
+	for _, c in typesBody:GetChildren() do
+		if c:IsA("GuiObject") then
+			c:Destroy()
+		end
+	end
+	local title = typesWindow:FindFirstChild("Title") :: TextLabel
+	title.Text = `Choose a type · this space {a.size} cells`
+	for i, t in build().types or {} do
+		local row = Ui.frame(typesBody, t.id, UDim2.new(1, -8, 0, 84), nil, Ui.Colour.PanelLight)
+		row.LayoutOrder = i
+		Ui.corner(row, 10)
+		local nameLabel =
+			Ui.label(row, "Name", t.name, UDim2.new(1, -150, 0, 26), 20, Ui.Colour.Gold)
+		nameLabel.Position = UDim2.fromOffset(10, 4)
+		local tip =
+			Ui.label(row, "Tooltip", typeTooltip(t), UDim2.new(1, -150, 0, 50), 14, Ui.Colour.Muted)
+		tip.Position = UDim2.fromOffset(10, 30)
+		tip.TextYAlignment = Enum.TextYAlignment.Top
+		local small = a.size < t.minCells
+		local b = Ui.button(
+			row,
+			"Choose",
+			if t.locked then `🔒 {t.locked}` elseif small then "Choose\n(too small)" else "Choose",
+			UDim2.fromOffset(128, 64),
+			function()
+				if t.locked then
+					Hud.toast(`{t.name}: {t.locked}`, Ui.Colour.Bad)
+					return
+				end
+				local target = typeTarget
+				if target then
+					Net.send("MakeRoom", target.floor, target.hx, target.hz, t.id)
+				end
+				typesWindow.Visible = false
+			end,
+			if t.locked then Ui.Colour.Ink elseif small then Ui.Colour.Panel else Ui.Colour.Teal
+		)
+		b.Position = UDim2.new(1, -138, 0, 10)
+		b.TextSize = 15
+	end
+	menu.Visible = false
+	typesWindow.Visible = true
+end
+
+-- ===== The room view (A.12: the camera flies in, the near wall fades, the bars) =====
+
+local viewPanel: Frame
+local viewScale: UIScale
+
+--[[ Where the room view sits (UI.md "RoomView"): on the right on a tall
+	screen; on a short one (a phone in landscape) top-left under the HUD's
+	row, scaled to fit, the tools hidden while it is open and the strip moved
+	beside it, so the room, the panel and the cards are all in view. ]]
+local function layoutView()
+	if not viewPanel then
+		return
+	end
+	local h = gui.AbsoluteSize.Y
+	local short = h < 500
+	local scale = if short then math.clamp((h - 60) / 372, 0.55, 1) else 1
+	viewScale.Scale = scale
+	if short and roomView then
+		tools.Visible = false
+		viewPanel.AnchorPoint = Vector2.zero
+		viewPanel.Position = UDim2.fromOffset(8, 52)
+		strip.AnchorPoint = Vector2.new(0, 1)
+		strip.Position = UDim2.new(0, 16 + math.ceil(250 * scale), 1, -8)
+	else
+		tools.Visible = active
+		viewPanel.AnchorPoint = Vector2.new(1, 0.5)
+		viewPanel.Position = UDim2.new(1, -10, 0.5, 30)
+		strip.AnchorPoint = Vector2.new(0.5, 1)
+		strip.Position = UDim2.new(0.5, 0, 1, -8)
+	end
+end
+local faded: { [BasePart]: boolean } = {}
+local flight: { from: { Vector3 | number }, to: { Vector3 | number }, t0: number }? = nil
+local viewBounds: { lo: Vector3, hi: Vector3 }? = nil
+local savedView: { focus: Vector3?, zoom: number, pitch: number }? = nil
+
+local function unfade()
+	for p in faded do
+		if p.Parent then
+			p.LocalTransparencyModifier = 0
+		end
+	end
+	table.clear(faded)
+end
+
+--[[ Fades the walls between the camera and the room in view: inner walls,
+	doors, posts and facade pieces on its floor whose pivot lies on or inside
+	the room's bounds, on the camera's side of its middle. ]]
+local function fadeNearWalls()
+	local frame = plotFrame()
+	local b = viewBounds
+	local m = plotModel()
+	if not frame or not b or not m or not roomView then
+		unfade()
+		return
+	end
+	local centre = (b.lo + b.hi) / 2
+	local eye = frame:PointToObjectSpace(camera.CFrame.Position)
+	local toEye = Vector3.new(eye.X - centre.X, 0, eye.Z - centre.Z)
+	if toEye.Magnitude < 1e-3 then
+		unfade()
+		return
+	end
+	toEye = toEye.Unit
+	local keep: { [BasePart]: boolean } = {}
+	for _, folderName in { "Walls", "Facade" } do
+		local f = m:FindFirstChild(folderName)
+		for _, w in if f then f:GetChildren() else {} do
+			if w:IsA("Model") and w:GetAttribute("Floor") == floor then
+				local p = frame:PointToObjectSpace(w:GetPivot().Position)
+				local inside = p.X >= b.lo.X - 1.5
+					and p.X <= b.hi.X + 1.5
+					and p.Z >= b.lo.Z - 1.5
+					and p.Z <= b.hi.Z + 1.5
+				local rel = Vector3.new(p.X - centre.X, 0, p.Z - centre.Z)
+				if inside and rel:Dot(toEye) > 1 then
+					for _, part in w:GetDescendants() do
+						if part:IsA("BasePart") then
+							part.LocalTransparencyModifier = 0.85
+							keep[part] = true
+						end
+					end
+				end
+			end
+		end
+	end
+	for p in faded do
+		if not keep[p] and p.Parent then
+			p.LocalTransparencyModifier = 0
+		end
+	end
+	faded = keep
+end
+
+-- One bar of the room view: its fill and its words.
+local function paintBar(name: string, value: number, words: string)
+	local row = viewPanel:FindFirstChild(name, true)
+	if not row then
+		return
+	end
+	local fill = row:FindFirstChild("Fill", true) :: Frame?
+	local text = row:FindFirstChild("Value", true) :: TextLabel?
+	local bonus = row:FindFirstChild("Bonus", true) :: TextLabel?
+	if fill then
+		fill.Size = UDim2.fromScale(math.clamp(value, 0, 1), 1)
+	end
+	if text then
+		text.Text = `{math.floor(math.clamp(value, 0, 1) * 100 + 0.5)}%`
+	end
+	if bonus then
+		bonus.Text = words
+	end
+end
+
+-- Fills the room view from the state's copy of the room.
+local function paintRoomView()
+	local rec = roomView and roomRecord(roomView)
+	if not rec then
+		if roomView then
+			closeRoomView()
+		end
+		return
+	end
+	local p = Pieces.get(rec.type)
+	local t = nil
+	for _, ty in build().types or {} do
+		if ty.id == rec.type then
+			t = ty
+		end
+	end
+	local title = viewPanel:FindFirstChild("Title", true) :: TextLabel
+	title.Text = if p then p.name else rec.type
+	local tip = viewPanel:FindFirstChild("Tooltip", true) :: TextLabel
+	tip.Text = if t then typeTooltip(t) else ""
+	local status = viewPanel:FindFirstChild("Status", true) :: TextLabel
+	local state = if rec.state == "Dirty"
+		then " · needs cleaning"
+		elseif rec.state == "Occupied" then " · a guest is in"
+		elseif rec.state == "Reserved" then " · a guest is coming"
+		else ""
+	status.Text = if rec.ready
+		then `Ready for guests · {rec.size} cells{state}`
+		else `Not ready: {rec.missingText}`
+	status.TextColor3 = if rec.ready then Ui.Colour.Good else Ui.Colour.Bad
+	local R = Constants.Rooms
+	local bars = rec.bars or { size = 0, furniture = 0, decor = 0 }
+	local function pct(v: number): string
+		return `+{math.floor(v * 100 + 0.5)}%`
+	end
+	paintBar(
+		"SizeBar",
+		bars.size,
+		`{pct(R.SizePay * bars.size)} pay · {pct(R.SizeStay * bars.size)} stay`
+	)
+	paintBar(
+		"FurnitureBar",
+		bars.furniture,
+		`{pct(R.FurniturePay * bars.furniture)} pay · +{math.floor(
+			R.FurnitureSatisfaction * bars.furniture + 0.5
+		)} happiness`
+	)
+	paintBar(
+		"DecorBar",
+		bars.decor,
+		`+{math.floor(R.DecorSatisfaction * bars.decor + 0.5)} happiness · {pct(
+			R.DecorFriendship * bars.decor
+		)} friendship`
+	)
+end
+
+local function setCameraTarget(f: Vector3?, z: number, p: number)
+	local fromFocus = focus or Vector3.new(G.Cells * G.CellSize / 2, 0, G.Cells * G.CellSize / 2)
+	flight = {
+		from = { fromFocus, zoom, pitch },
+		to = { f or fromFocus, z, p },
+		t0 = os.clock(),
+	}
+end
+
+function closeRoomView()
+	if not roomView then
+		return
+	end
+	roomView = nil
+	viewBounds = nil
+	viewPanel.Visible = false
+	layoutView()
+	unfade()
+	local back = savedView
+	savedView = nil
+	if back then
+		setCameraTarget(back.focus, back.zoom, back.pitch)
+	end
+end
+
+--[[ Flies the camera to room `id` (A.12 "The room view"): it frames the
+	room from above at an angle, the walls toward the camera fade, and the
+	panel shows its type, its tooltip and its three bars. ]]
+function openRoomView(id: number)
+	local rec = roomRecord(id)
+	local w: any = world()
+	local a = rec and Rooms.roomArea(w, tostring(id))
+	if not rec or not a then
+		return
+	end
+	menu.Visible = false
+	typesWindow.Visible = false
+	if rec.floor ~= floor then
+		floor = rec.floor
+		setHidden()
+		drawTiles()
+	end
+	local lo = Vector3.new(math.huge, 0, math.huge)
+	local hi = Vector3.new(-math.huge, 0, -math.huge)
+	for _, k in a.cells do
+		local hx, hz = Rooms.halfOf(k)
+		lo = Vector3.new(math.min(lo.X, hx * HALF), 0, math.min(lo.Z, hz * HALF))
+		hi = Vector3.new(math.max(hi.X, (hx + 1) * HALF), 0, math.max(hi.Z, (hz + 1) * HALF))
+	end
+	viewBounds = { lo = lo, hi = hi }
+	if not roomView then
+		savedView = { focus = focus, zoom = zoom, pitch = pitch }
+	end
+	roomView = id
+	local size = G.Cells * G.CellSize
+	local extent = math.max(hi.X - lo.X, hi.Z - lo.Z)
+	setCameraTarget(
+		(lo + hi) / 2,
+		math.clamp(extent * 1.9 / (size * 1.109), 0.1, 1.4),
+		math.rad(58)
+	)
+	paintRoomView()
+	viewPanel.Visible = true
+	layoutView()
+	floorLabel.Text = `Floor {floor}/{build().floors}`
+end
+
+-- The built room (its id) whose area holds the point under the pointer, or nil.
+local function roomUnder(x: number, y: number): number?
+	local hx, hz = halfCellUnder(x, y)
+	if not hx or not hz then
+		return nil
+	end
+	local w: any = world()
+	local a = Rooms.areaAt(w, floor, hx, hz)
+	if a and not a.hallway and a.room then
+		return tonumber(a.room)
+	end
+	return nil
+end
+
+--[[ A tap on an area with nothing chosen (A.12): a room opens its room
+	view; a closed space with a door opens the type list; true when taken. ]]
+local function tapArea(x: number, y: number): boolean
+	local id = roomUnder(x, y)
+	if id then
+		openRoomView(id)
+		return true
+	end
+	local hx, hz = halfCellUnder(x, y)
+	if not hx or not hz then
+		return false
+	end
+	local w: any = world()
+	local a = Rooms.areaAt(w, floor, hx, hz)
+	if a and not a.hallway and #a.doors > 0 then
+		openTypes(floor, hx, hz)
+		return true
+	end
+	if tab == "Room" and a then
+		info.Text = Hud.refusal(if a.hallway then "Hallway" else "NoDoor")
+		return true
+	end
+	return false
+end
+
 -- A tap on the plot with no card chosen, or with a floor finish chosen.
 local function tapPlot(x: number, y: number)
 	if selectedWindow or movingWindow then
@@ -1412,13 +2057,10 @@ local function tapPlot(x: number, y: number)
 	local id, kind = underPointer(x, y)
 	if selectedFinish then
 		local f = selectedFinish :: string
-		if id and kind == "Piece" then
-			local rec = record(id)
-			local piece = rec and Pieces.get(rec.item)
-			if piece and (piece.kind == "Room" or piece.kind == "Amenity") then
-				Net.send("Finish", tostring(id), f)
-				return
-			end
+		local room = roomUnder(x, y)
+		if room then
+			Net.send("Finish", tostring(room), f)
+			return
 		end
 		if pointerLocal(x, y) then
 			Net.send("Finish", "Hallway", f)
@@ -1430,6 +2072,10 @@ local function tapPlot(x: number, y: number)
 		return
 	elseif id then
 		openMenu(id)
+		return
+	end
+	-- A built room, or a walled space to choose a type for (A.12).
+	if tapArea(x, y) then
 		return
 	end
 	-- A tile not owned: bought at once if it is next to the hotel (they are cheap, §5.4).
@@ -1504,19 +2150,21 @@ function BuildController.Init()
 		end
 	end
 	local function tabButton(parent: Frame, name: string, text: string, width: number)
-		tabs[name] = tool(parent, if name == "Room" then "Rooms" else name, text, width, function()
+		tabs[name] = tool(parent, tabNames[name] or name, text, width, function()
 			tab = name
 			stopPlacing()
 			paintTabs()
 		end)
 	end
+	-- Built rooms first (A.12): walls, the rooms, their furniture; then the rest.
 	local what = row()
-	tabButton(what, "Room", "Rooms", 114)
-	tabButton(what, "Amenity", "Amenities", 114)
-	tabButton(what, "Stairs", "Stairs, desks", 140)
+	tabButton(what, "Wall", "Walls", 90)
+	tabButton(what, "Room", "Rooms", 90)
+	tabButton(what, "Furniture", "Furniture", 104)
+	tabButton(what, "Decor", "Decor", 80)
 	local what2 = row()
-	tabButton(what2, "Decor", "Decor", 114)
-	tabButton(what2, "Floor", "Floors", 114)
+	tabButton(what2, "Stairs", "Stairs, desks", 140)
+	tabButton(what2, "Floor", "Floors", 104)
 	tabButton(what2, "Window", "Windows", 114)
 	paintTabs()
 
@@ -1549,7 +2197,6 @@ function BuildController.Init()
 		rotation = (rotation + 1) % 4
 		drawGhost()
 	end)
-	tool(placingRow, "Flip", "⇋ Flip", 114, flip)
 	-- A quarter turn (`dir` 1 or -1), to the next side square on.
 	function turnQuarter(dir: number)
 		yaw = (math.floor(yaw / (math.pi / 2) + 0.5) + dir) * math.pi / 2
@@ -1581,6 +2228,107 @@ function BuildController.Init()
 	menu, menuBody = Ui.window(gui, "PieceMenu", "Piece", UDim2.fromScale(0.5, 0.6))
 	Ui.list(menuBody, Enum.FillDirection.Vertical, 8)
 
+	-- The type list (A.12): a window of rows, each a type with its tooltip and Choose.
+	typesWindow, typesBody =
+		Ui.window(gui, "RoomTypes", "Choose a type", UDim2.fromScale(0.56, 0.72), nil, true)
+	Ui.list(typesBody, Enum.FillDirection.Vertical, 8)
+
+	--[[ The room view's panel (A.12): on the right, clear of the strip and the
+		tools, so the room stays in view; its type, tooltip, readiness, the
+		three bars with their bonuses, and what to do next. ]]
+	viewPanel = Ui.panel(
+		gui,
+		"RoomView",
+		UDim2.new(0.3, 0, 0, 372),
+		UDim2.new(1, -10, 0.5, 30),
+		Vector2.new(1, 0.5)
+	)
+	local viewCap = Instance.new("UISizeConstraint")
+	viewCap.MinSize = Vector2.new(250, 0)
+	viewCap.MaxSize = Vector2.new(340, 372)
+	viewCap.Parent = viewPanel
+	viewScale = Instance.new("UIScale")
+	viewScale.Parent = viewPanel
+	gui:GetPropertyChangedSignal("AbsoluteSize"):Connect(layoutView)
+	viewPanel.Visible = false
+	Ui.padding(viewPanel, 10)
+	Ui.list(viewPanel, Enum.FillDirection.Vertical, 6)
+	local top = Ui.frame(viewPanel, "Top", UDim2.new(1, 0, 0, 40))
+	top.BackgroundTransparency = 1
+	top.LayoutOrder = 1
+	local viewTitle = Ui.label(top, "Title", "", UDim2.new(1, -50, 1, 0), 22, Ui.Colour.Gold)
+	viewTitle.TextScaled = false
+	local closeView = Ui.button(top, "Close", "X", UDim2.fromOffset(40, 40), function()
+		closeRoomView()
+	end, Ui.Colour.Bad)
+	closeView.Position = UDim2.new(1, -40, 0, 0)
+	local tip = Ui.label(viewPanel, "Tooltip", "", UDim2.new(1, 0, 0, 52), 13, Ui.Colour.Muted)
+	tip.LayoutOrder = 2
+	tip.TextYAlignment = Enum.TextYAlignment.Top
+	local status = Ui.label(viewPanel, "Status", "", UDim2.new(1, 0, 0, 22), 15, Ui.Colour.Good)
+	status.LayoutOrder = 3
+	for i, bar in
+		{
+			{ "SizeBar", "Size", Ui.Colour.Moon },
+			{ "FurnitureBar", "Furniture", Ui.Colour.Pumpkin },
+			{ "DecorBar", "Decor", Ui.Colour.Teal },
+		}
+	do
+		local barRow = Ui.frame(viewPanel, bar[1], UDim2.new(1, 0, 0, 52))
+		barRow.BackgroundTransparency = 1
+		barRow.LayoutOrder = 3 + i
+		local name = Ui.label(barRow, "Name", bar[2], UDim2.fromOffset(90, 20), 16)
+		name.Position = UDim2.fromOffset(0, 0)
+		local value = Ui.label(barRow, "Value", "0%", UDim2.fromOffset(50, 20), 16, bar[3])
+		value.Position = UDim2.new(1, -50, 0, 0)
+		value.TextXAlignment = Enum.TextXAlignment.Right
+		local track = Ui.frame(
+			barRow,
+			"Track",
+			UDim2.new(1, 0, 0, 12),
+			UDim2.fromOffset(0, 22),
+			Ui.Colour.Ink
+		)
+		Ui.corner(track, 6)
+		local fill = Ui.frame(track, "Fill", UDim2.fromScale(0, 1), nil, bar[3])
+		Ui.corner(fill, 6)
+		local bonus = Ui.label(barRow, "Bonus", "", UDim2.new(1, 0, 0, 16), 13, Ui.Colour.Muted)
+		bonus.Position = UDim2.fromOffset(0, 36)
+	end
+	local actions = Ui.frame(viewPanel, "Actions", UDim2.new(1, 0, 0, 46))
+	actions.BackgroundTransparency = 1
+	actions.LayoutOrder = 10
+	Ui.list(actions, Enum.FillDirection.Horizontal, 6)
+	local function viewButton(
+		name: string,
+		text: string,
+		order: number,
+		fn: () -> (),
+		colour: Color3?
+	)
+		local b = Ui.button(actions, name, text, UDim2.new(0.33, -4, 1, 0), fn, colour)
+		b.LayoutOrder = order
+		b.TextSize = 15
+	end
+	viewButton("Retype", "Change type", 1, function()
+		local rec = roomView and roomRecord(roomView)
+		if rec then
+			openTypes(rec.floor, rec.hx, rec.hz)
+		end
+	end, Ui.Colour.Teal)
+	viewButton("Furnish", "Furnish", 2, function()
+		tab = "Furniture"
+		stopPlacing()
+		paintTabs()
+	end, Ui.Colour.Pumpkin)
+	viewButton("Hallway", "Make hallway", 3, function()
+		local id = roomView
+		if id then
+			Net.send("ClearRoom", id)
+			closeRoomView()
+		end
+	end, Ui.Colour.Bad)
+
 	-- The keys and the gamepad (§11, `Controls`): above the HUD's keys (B, R)
 	-- and the avatar's controls (the left stick, A), which they take while building.
 	buildKeys = Controls.context("BuildKeys", 2000, true, false)
@@ -1588,7 +2336,6 @@ function BuildController.Init()
 		rotation = (rotation + 1) % 4
 		drawGhost()
 	end)
-	Controls.press(buildKeys, "Flip", { Enum.KeyCode.F, Enum.KeyCode.ButtonL1 }, flip)
 	-- B opens build mode from the HUD (Hud's KEYS) and closes it here.
 	Controls.press(buildKeys, "Leave", { Enum.KeyCode.B }, function()
 		setActive(false)
@@ -1613,7 +2360,10 @@ function BuildController.Init()
 		if not active or not s or Controls.selectedRecently() then
 			return
 		end
-		if placing() then
+		if wallMode then
+			wallFrom = nil
+			wallRelease(s.X, s.Y)
+		elseif placing() then
 			local c = screenToAnchor(s.X, s.Y)
 			if c then
 				cell = c
@@ -1658,7 +2408,7 @@ function BuildController.Start()
 	-- zooms; the right mouse button dragged, a two-finger twist, or the , and .
 	-- keys turn the camera (E is the prompts' key); ↻ View still turns a quarter.
 	local function zoomBy(factor: number)
-		zoom = math.clamp(zoom * factor, 0.35, 1.4)
+		zoom = math.clamp(zoom * factor, math.min(0.35, zoom), 1.4)
 		updateCamera()
 	end
 	local function turnBy(radians: number)
@@ -1677,7 +2427,7 @@ function BuildController.Start()
 		updateCamera()
 	end)
 	UserInputService.TouchPan:Connect(function(touches, _, velocity, _, processed)
-		if not active or processed or #touches ~= 1 or placing() then
+		if not active or processed or #touches ~= 1 or placing() or wallMode then
 			return
 		end
 		local dt = 1 / 60
@@ -1697,9 +2447,28 @@ function BuildController.Start()
 	end)
 	-- The , and . keys and the right stick (`cameraAction`): its X turns, its Y zooms
 	-- (up is in); the left stick moves the gamepad's cursor while nothing is selected.
+	local lastFade = 0
 	RunService.RenderStepped:Connect(function(dt)
 		if not active then
 			return
+		end
+		-- The room view's flight (A.12): the free camera's focus, zoom and tilt eased to their targets.
+		local fl = flight
+		if fl then
+			local t = math.clamp((os.clock() - fl.t0) / 0.6, 0, 1)
+			local e = t * t * (3 - 2 * t)
+			focus = (fl.from[1] :: Vector3):Lerp(fl.to[1] :: Vector3, e)
+			zoom = (fl.from[2] :: number) + ((fl.to[2] :: number) - (fl.from[2] :: number)) * e
+			pitch = (fl.from[3] :: number) + ((fl.to[3] :: number) - (fl.from[3] :: number)) * e
+			updateCamera()
+			if t >= 1 then
+				flight = nil
+			end
+		end
+		if roomView and os.clock() - lastFade > 0.15 then
+			lastFade = os.clock()
+			fadeNearWalls()
+			paintRoomView()
 		end
 		local pan = Controls.read(panAction)
 		if pan ~= Vector2.zero then
@@ -1726,8 +2495,7 @@ function BuildController.Start()
 			return false
 		end
 		Controls.select(
-			firstCard()
-				or tools:FindFirstChild(if tab == "Room" then "Rooms" else tab, true) :: GuiObject?
+			firstCard() or tools:FindFirstChild(tabNames[tab] or tab, true) :: GuiObject?
 		)
 		return true
 	end)
@@ -1744,9 +2512,12 @@ function BuildController.Start()
 			or movingWindow
 			or moving
 			or movingDecor
+			or wallMode
 		then
 			stopPlacing()
 			padRefresh()
+		elseif roomView then
+			closeRoomView()
 		elseif Controls.selectedRecently() then
 			Controls.select(nil)
 			padRefresh()
@@ -1786,6 +2557,16 @@ function BuildController.Start()
 		end
 		if input.UserInputType == Enum.UserInputType.MouseWheel then
 			zoomBy(1 - 0.12 * input.Position.Z)
+			return
+		end
+		-- The wall tool (A.12): the edge a tap would take, or the run being dragged.
+		if
+			(
+				input.UserInputType == Enum.UserInputType.MouseMovement
+				or input.UserInputType == Enum.UserInputType.Touch
+			) and wallMode
+		then
+			wallHover(input.Position.X, input.Position.Y)
 			return
 		end
 		-- A window being placed or moved lights the wall it would go on.
@@ -1832,6 +2613,11 @@ function BuildController.Start()
 			if overUi(pos.X, pos.Y) then
 				return
 			end
+			if wallMode then
+				wallPress(pos.X, pos.Y)
+				wallHover(pos.X, pos.Y)
+				return
+			end
 			if placing() then
 				local c = screenToAnchor(pos.X, pos.Y)
 				if c then
@@ -1851,6 +2637,18 @@ function BuildController.Start()
 	end)
 	-- A right-click that did not drag the camera round stops placing.
 	UserInputService.InputEnded:Connect(function(input)
+		if
+			active
+			and wallMode
+			and wallFrom
+			and (
+				input.UserInputType == Enum.UserInputType.MouseButton1
+				or input.UserInputType == Enum.UserInputType.Touch
+			)
+		then
+			wallRelease(input.Position.X, input.Position.Y)
+			return
+		end
 		if not active or input.UserInputType ~= Enum.UserInputType.MouseButton2 then
 			return
 		end
@@ -1869,6 +2667,7 @@ function BuildController.Start()
 				or movingWindow
 				or moving
 				or movingDecor
+				or wallMode
 			)
 		then
 			stopPlacing()

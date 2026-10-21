@@ -92,17 +92,31 @@ of Name | What | The code. -->
 
 ### Build mode (`Build`, `src/client/BuildController.luau`)
 
-Built in code; free building (GDD §5.4, 2026-10-19). A designed one carries
-these names.
+Built in code; free building (GDD §5.4, 2026-10-19) and built rooms (A.12,
+his rulings 2026-10-21). A designed one carries these names. Mobile first:
+every button at least 44 × 44 (`Ui.MinTap`), the strip between a phone's
+thumbstick and jump button, the room view on the right clear of both.
 
 | Name | What | The code |
 |---|---|---|
-| `Strip` | The bottom strip: `Info` (what to do, or why the ghost is red) over `Cards` (a horizontal list of cards) | Fills the cards for the open tab |
-| `Tools` | Top-left, in rows: the tabs `Rooms`, `Amenity`, `Stairs` (shows "n free" when a new floor's stair is owed), `Decor`, `Floor`; `Down`, `FloorLabel`, `Up`, `BuyFloor`; `Rotate`, `Turn`, `Place`; `Traps`, `Style`, `Done` | Each button's action |
-| `PieceMenu` | A window: a room's tier, its decor points and what the next tier needs, Move, Sell, and its floor finish; a stair's or the desk's Move (the desk is never sold); a piece of decor's Move and Sell; a closed area's Buy | Opened by a tap on what it is for |
-| `AreaLabel` | A billboard over each closed area of the floor in view: its price, or "buy one next to it" | Drawn on the plot's `Areas` plates |
+| `Strip` | The bottom strip: `Info` (what to do, a run's price, or why the ghost is red) over `Cards` (a horizontal list of cards) | Fills the cards for the open tab |
+| `Tools` | Top-left, in rows: the tabs `Walls`, `Rooms`, `Furniture`, `Decor`; `Stairs` (shows "n free" when a new floor's stair is owed), `Floor`, `Window`; `Down`, `FloorLabel`, `Up`, `BuyFloor`; `Rotate`, `Turn`, `TopView`, `Place`; `Traps`, `Style`, `Done` | Each button's action |
+| `PieceMenu` | A window: a stair's or a desk's Move and Sell; a piece of decor's or furniture's Move and Sell (and whether it counts toward a room's Furniture or Decor bar); a window's Move, Sell and swap | Opened by a tap on what it is for |
+| `RoomTypes` | A window, its `Body` a scrolling list: one row per room type and amenity of the location, named by its id, each with `Name`, `Tooltip` (who stays in it or what it gives; its key furniture; its minimum and full size) and `Choose` (or 🔒 and its unlock; "too small" when the space is under its minimum). Its `Title` says the space's size | Opened by a tap on a walled space with a door, or the room view's Change type; `Choose` sends `MakeRoom` |
+| `RoomView` | A panel on the right: `Top` (`Title`, the type's name; `Close`), `Tooltip`, `Status` (ready, its size and its guest, or what it lacks), three bars `SizeBar`, `FurnitureBar`, `DecorBar` (each `Name`, `Value` in %, `Track` with `Fill` sized by the bar, `Bonus`: what the bar gives now), `Actions` (`Retype`, `Furnish`, `Hallway`) | Opened by a tap on a room or its card; the camera flies to the room and the walls toward it fade; Close flies back |
 
-Cards per tab: a piece's name, size and price ("free" for an owed stair);
-decor's name, size in squares and price; a floor finish's name and "Its own
-floor". With the Floors tab a chosen finish is laid by tapping a room, the
-lobby or a hallway.
+Cards per tab:
+
+- **Walls**: `Tool_Wall` (a tap puts up the cell edge under the pointer, a
+  drag a straight run along the grid; a ghost shows each half edge green or
+  red and the strip its price), `Tool_Door` (a tap puts a door in the half
+  edge under it or takes one out), `Tool_Remove` (as Walls, taking them
+  down), `HalfCells` (the toggle: half edges of 6 studs instead of cell
+  edges).
+- **Rooms**: `Room_<id>`, one per room built on the floor in view: its type
+  and "ready" or what it lacks; a tap opens its room view.
+- **Furniture** and **Decor**: one card per piece (`<DecorId>`): name, size
+  in squares, price ("free" while a tutorial voucher pays for it).
+- **Stairs, desks**: a piece's name, size and price ("free" for an owed stair).
+- **Floors**: a finish's name and "Its own floor"; tap a room or a hallway.
+- **Windows**: one per window type; tap an outer wall.

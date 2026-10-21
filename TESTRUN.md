@@ -785,6 +785,44 @@ bonuses in place of the tiers; Comfort from `Rooms.comfortPoints`. Played on
 - [ ] Collect: the test account owns Auto Collect (its till stays 0), so the
   step was jumped by `tutorial`.
 
+### Stage 3: the build mode (real mouse and keys, `Test_Rooms1021e`)
+
+- [x] Build opened by a click: tabs Walls, Rooms, Furniture, Decor / Stairs,
+  desks, Floors, Windows; no Rooms/Amenities cards, no Flip.
+- [x] Two gold tiles bought by clicks.
+- [x] Walls by a real drag along a cell row: the ghost showed each half edge
+  (green inside, the facade's refused, "2 walls · $10"); released, the two
+  inside half edges built ($5 each), the facade's refused (`NotInside`)
+  (picture `2026-10-21_rooms_wall_drag_ghost.jpg`).
+- [x] A tap on a cell edge built its two half edges; Door then a tap put a
+  door in the half edge under the pointer ($10).
+- [x] Half cells toggled on: a tap built one 6-stud half edge ($5); Remove
+  and a tap took it down (half back).
+- [x] Rooms tab, a tap inside the walled space: the type list, its title
+  the space's size (4 cells), every location-1 type and amenity with its
+  tooltip (who stays or what it gives, key furniture, minimum and full
+  size), the locked ones with their unlock (picture
+  `2026-10-21_rooms_type_list.jpg`); Choose on Standard Room made it.
+- [x] Furniture tab, the Bed card, the ghost in the room, a click placed it
+  ($50): the room ready, Comfort 2 → 4.
+- [x] The room view by a real click on the room: the camera flew in (looking
+  at the room's middle, 96, 36), the walls toward the camera faded, the
+  panel: type, tooltip, "Ready for guests · 4 cells", Size 0 %, Furniture
+  50 % (+25 % pay, +8 happiness), Decor 0 % (picture
+  `2026-10-21_rooms_room_view.jpg`); Close flew back; Change type opened the
+  list for the same space.
+- [x] A guest of the bus booked into the clicked room, checked in, walked in
+  and lay on its bed; the room view says "a guest is in" (picture
+  `2026-10-21_rooms_room_view_guest.jpg`).
+- [!] On a phone (iPhone 14, landscape) the room view's panel ran off the
+  top: on a short screen it now sits top-left, scaled to fit, the tools
+  hidden while it is open and the strip beside it; seen (picture
+  `2026-10-21_rooms_room_view_phone.jpg`).
+- [A] How the room view looks on a phone: the panel's text is small at its
+  scale and the HUD's right column covers part of the room (his look).
+- [ ] A gamepad's A on an edge and on a room (no controller here).
+- [ ] A two-finger pan while the wall tool is on (one finger draws walls).
+
 ## August keeps
 
 - How the street, the lobby and the rooms look (every look is a night draft).
