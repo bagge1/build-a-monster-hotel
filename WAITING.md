@@ -1022,6 +1022,12 @@ Med Claudes skärmdump där det finns en. -->
      hängande grenar i stället för kupoler.
    - **Poserna** (modellerarens val): man ligger i Mud Tub och Steam Pool och
      sitter på Lagoon Perch. Ok?
+   - **Frostfangs egna möbler har snö** på några (garderob, hylla, arkad,
+     lampa) men inte andra, och de snötäckta blir vita block uppifrån.
+     *Ingen snö inomhus* eller *snö på alla*. **Rekommendation:** ingen snö
+     inomhus, frost i stället.
+   - **Badkaren** (alla tre hotellen) är för korta för en gäst som ligger
+     rak: samma fråga som i §2.39 (2×1 eller 3×2).
 
 44. **De sällsynta seten: utseenden som är dina** (2026-10-21 förmiddag;
    `blender/decor/<set>/review/`; felen rättas i skriptet):
