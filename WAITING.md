@@ -747,6 +747,13 @@ Med Claudes skärmdump där det finns en. -->
      **Rekommendation:** plattor och våningar ×20 per plats (som rummen).
      Inget värde är ändrat. (Felet att ett nytt hotell ärvde det gamlas
      betygsunderlag är rättat samma natt: varje hotell har sitt eget.)
+   - **Mätt igen med byggda rum** (2026-10-21 morgon,
+     `archive/BALANCE-2026-10-21b.md`): med tutorial 5★ Haunted Manor 27 min
+     (3 under), Frostfang +67, Bayou +95, rebirth 3:15: inom målen utom det
+     första. Utan tutorial: 5★ 57 min, Frostfang +130 (40 över), rebirth 4:36
+     (6 över). Orsak: 5★ kommer med ett litet hotell (staplarna ger upp till
+     +30 i nöjdhet), så sparandet till öppningspriset tar längst tid. Inget
+     värde ändrat.
 36. **Bayou Spa: arterna och rummen** (ditt beslut 2026-10-20: plats 3 vid
    lansering, familjen är din att välja). Ett utkast att stryka i, alla
    namn egna; sällsyntheten följer Haunted Manors (3 vanliga, 2 ovanliga,
