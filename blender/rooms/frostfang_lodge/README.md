@@ -11,9 +11,9 @@ Studio.**
 
 | Model | What | Triangles |
 |---|---|---|
-| `Wall_Half` | 6-stud half edge, 0.4 thick, 17 tall: 13 log courses over a dark wainscot (the lodge rooms'), light wood rails, a snow cornice, both faces | 276 |
+| `Wall_Half` | 6-stud half edge, 0.4 thick, 17 tall: 13 log courses over a dark wainscot (the lodge rooms'), light wood rails, a snow cornice, both faces; its top face snow | 276 |
 | `Wall_Door` | The same with an open round-arched doorway, clear x -2..2, y 0..7.2; dark log trim, a snow keystone, capped plinth blocks in the trim's wood; `Door`, `Sign` | 1,172 |
-| `Wall_Post` | The 0.6 joint post: log, dark foot, snow cap | 48 |
+| `Wall_Post` | The 0.6 joint post, banded as the walls meeting it: dark skirting and wainscot, light rails, the log courses, the snow cornice | 160 |
 | 8 furniture, location 2 | `IceBed` (Igloo Room's bed), `IceSlab` (Ice Cave's slab under furs), `SnowNest` (Yeti Den's nest, a third larger), `GlacierCoil` (Glacier Suite's coiled bed, a third larger), `CocoaBar` (Cocoa Lounge's counter), new: `KnittingChair` (a rocking chair, a seat by rule 6, a yarn basket), `StarHammock` (navy with stars between snow-capped log posts), `SkyLounger` (a deck lounger) | 268-1,024 |
 
 `Use` Poses: Lie for the beds, nest, coil, hammock and lounger; Sit for the
@@ -40,19 +40,46 @@ lets the code take the Manor's until the Lodge has its own.
 - **Not a fault**: the bar behind the doorway is the room behind it (the
   Manor's README). `WillowHammock` is Bayou Spa's: not modelled.
 
+## Fixed after the second review (2026-10-21)
+
+Fit, not style (the Manor's README has the new checks: the lying person's
+whole width, the sitting sheet).
+
+- **`StarHammock`**: a parabola sagged 0.9 under a straight person, who
+  hung over it at the posts' height. The sling's bottom is now flat under
+  the body (a fourth-power curve) and rises steeply at the ends to the same
+  ropes: 0.4 under the head and feet, the guest lying in the cloth. `Use`
+  (0, 1.375, 0), centred; the pillow under the head; the sling's own rise
+  allowance dropped (the default holds).
+- **`SnowNest`**, **`GlacierCoil`**: the arms lay through the rim. Their
+  inside is now 4.8 x 5.8 (the rims' thickness as before, the oval 1.2
+  instead of 1.42/1.4), the guest inside; the coil's spires stand where they
+  stood.
+- **`SkyLounger`**: the guest lay flat with the raised back tilted behind
+  the head and the pillow at the hinge. A `Lie` pose is flat (`MODELS.md`),
+  so the lounger is laid flat: its back section down level with the seat,
+  two teal cushions meeting at the hinge, the pillow at the head end, the
+  blanket at the foot; `Use` (0, 1.05, 0.55).
+- **`CocoaBar`**: top 3.45 → **3.75**, the pot, mugs and jar with it (the
+  bar stool's seated guest has the thighs at 3.5).
+- **The walls and the post**: banded as the walls meeting it (dark skirting
+  and wainscot, light rails, the log courses, the snow cornice), each wall's
+  top face snow: the Manor's README.
+
 ## Validated (validation.json, by the build)
 
 As the Manor's set (its README): re-imported FBX checks, the walls' exact
 boxes, opening, attachments, 180-degree sameness and no coplanar faces; the
-assembled room (0 visible overlaps, 664 inside posts); furniture's decor
+assembled room (0 visible overlaps, 834 inside posts; a + joint since the
+second review); furniture's decor
 checks and `Use`, the lying fit and nothing floating (new, 2026-10-21).
 Budgets all under (the door 1,172 of 1,200; its rails lost their chamfer
 before; the Manor's rails the same).
 
 **Height findings** (Pieces' placeholder vs the model's top): `IceBed` 2.0 vs
 3.6 (the igloo-dome headboard), `IceSlab` 1.8 vs 3.87 (the rock headboard),
-`GlacierCoil` 2.4 vs 4.4 (the crystal pillars), `CocoaBar` 3.4 vs 4.8 (the
-cocoa pot).
+`GlacierCoil` 2.4 vs 4.4 (the crystal pillars), `CocoaBar` 3.4 vs 5.1 (the
+cocoa pot; its top at 3.75 now).
 
 ## Not validated
 
@@ -63,12 +90,19 @@ reviewed again.
 ## Review
 
 `review/walls_sheet.png`, `review/furniture_sheet.png`,
-`review/elevations_sheet.png`, `review/lying_sheet.png` (as the Manor's;
+`review/elevations_sheet.png`, `review/lying_sheet.png`,
+`review/sitting_sheet.png` (the knitting chair, and the Manor's bar stool at
+the Cocoa Bar) (as the Manor's;
 Workbench, light grey).
 
 ## Staged
 
-Re-staged after the fixes: `FrostfangLodge_Wall_Door.fbx`,
+Re-staged after the second review (2026-10-21): `FrostfangLodge_Wall_Half.fbx`,
+`FrostfangLodge_Wall_Door.fbx`, `FrostfangLodge_Wall_Post.fbx`,
+`Furniture_StarHammock.fbx`, `Furniture_SnowNest.fbx`,
+`Furniture_GlacierCoil.fbx`, `Furniture_SkyLounger.fbx`,
+`Furniture_CocoaBar.fbx`. Before, after the first review:
+`FrostfangLodge_Wall_Door.fbx`,
 `Furniture_CocoaBar.fbx`, `Furniture_KnittingChair.fbx`.
 
 In `blender/_import/`: the walls as `FrostfangLodge_Wall_Half.fbx`,

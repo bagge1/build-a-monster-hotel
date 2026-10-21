@@ -10,9 +10,9 @@ draft (2026-10-21) for his review. **Nothing here has been seen in Studio.**
 
 | Model | What | Triangles |
 |---|---|---|
-| `Wall_Half` | 6-stud half edge, 0.4 thick centred on the edge, 17 tall; plum wainscot, lilac paper (the Standard Room's), gold chair rail, picture rail and crown, dark skirting, on both faces | 132 |
+| `Wall_Half` | 6-stud half edge, 0.4 thick centred on the edge, 17 tall; plum wainscot, lilac paper (the Standard Room's), gold chair rail, picture rail and crown, dark skirting, on both faces; its top face gold | 132 |
 | `Wall_Door` | The same with an open pointed-arch doorway, clear x -2..2, y 0..7.2; dark wood trim, gold keystone, capped plinth blocks in the trim's wood; `Door`, `Sign` | 804 |
-| `Wall_Post` | The 0.6 joint post, 17.02 tall: plum, dark foot, gold cap | 48 |
+| `Wall_Post` | The 0.6 joint post, 17.02 tall, banded as the walls meeting it: dark skirting, plum wainscot, gold chair rail, lilac paper, gold picture rail and crown | 72 |
 | 14 furniture, location 1 | `Bed`, `DoubleBed`, `PlanterBed`, `FourPosterBed`, `Sarcophagus`, `WitchBed`, `DenNest`, `Coffin`, `OperaChaise`, `SnackCounter`, `Jukebox`, `Gravestone`, `ReadingDesk`, `PipeOrgan` | 140-1,080 |
 | 10 furniture, location 0 (in the Manor's style) | `Nightstand`, `Wardrobe`, `WritingDesk`, `DiningTable`, `BreakfastBuffet`, `BarStool`, `PoolTable`, `CardTable`, `Bathtub`, `FloorLamp` | 282-916 |
 
@@ -65,11 +65,59 @@ script, looks left for August:
   (`review/door_alone.png`) has nothing there. The buffet's cloches sit
   0.75 inside the counter's ends (elevation).
 - **Not fixed**: the `Bathtub` (2 x 1 squares) holds 4.4 inside; a straight
-  5-stud person needs 3 x 1 (`Pieces`, his call). Its `Use` is waived by
+  5-stud person needs 3 x 2 (`Pieces`, his call; second review, below). Its `Use` is waived by
   name in the build (a tub is lain in reclining). The reviewer's look
   remarks (the striped counters, the wardrobe's gold top, the organ's
   pipes, the nest's size, the coffin's closed lid, the doorway's width) are
   August's.
+
+## Fixed after the second review (2026-10-21)
+
+A second context-free review of the sheets; fit, not style (the approved
+looks kept). The lying check now covers the whole body, arms included
+(`lie_faults`: the 5-stud person's width, 3.8 across the arms; arms may lie
+past a bed's edge over nothing, never through a wall), and a new
+`review/sitting_sheet.png` seats the person on every seat.
+
+- **`Coffin`**: a solid box with velvet on top laid the guest on it. Now
+  open and hollow: dark wood walls 0.15 thick, a red velvet lining and
+  floor at 0.6, the rim at 1.5; `Use` (0, 0.6, 0.3), in it, the head on the
+  pillow. The arms went through the walls, so it is **1.36 times wider**
+  (5.16 across the shoulders, within its 2 squares' 5.2), the outline's
+  proportions kept; length 6.0 as before.
+- **`DenNest`**: the arms lay through the rim. The rim's inside is now
+  4.8 x 5.8 (the rim 0.6 thick as before, the oval 1.2 instead of 1.42), the
+  nest 6.15 x 7.38 on its 3 x 3; the guest lies on the cushion inside.
+- **`Bathtub`**: `Use` lowered from the water's top (1.3) to the tub's
+  floor (0.75), the guest in the water; the water is no surface to the
+  checks (`liquid`). Still waived: it holds 4.4 x 1.8 inside, and a straight
+  person with the arms at the sides needs about 5.2 x 3.9, **3 x 2
+  squares** (his call, below).
+- **`SnackCounter`**: top 3.45 → **3.75**, the jars and pie with it: a
+  guest on the bar stool (seat 2.6) has the thighs at 3.5, under the top
+  (the sitting sheet). `BreakfastBuffet` left at 2.65: it is stood at.
+- **`ReadingDesk`**: the rail standing up at the back read from the side
+  as a chair's back. The book stop is now along the low front edge, and a
+  level pen tray along the back holds the inkpot.
+- **The walls and the post**: the post's own dark foot ring and plum body
+  ended the walls' bands abruptly at a corner and a free end, and its gold
+  cap sat on the crowns like a small separate block. The post is now banded
+  as the walls meeting it (skirting, wainscot, chair rail, paper, picture
+  rail, crown), so every band turns the corner on it; each wall's top face
+  is the crown's gold, so the two crowns and the post read as one cap at a
+  crossing. The review room gained a + joint and a second free end.
+- **`OperaChaise`** `Use` z -0.4 → -0.65 (the arms were through its back);
+  **`WitchBed`**'s cat 0.3 to the right (the legs lay through its head).
+- **Found by the sitting sheet**: the `BarStool`'s foot ring was a stud
+  under a seated person's feet; now at 1.42. The `PipeOrgan`'s bench stood
+  0.4 from the console, a seated player's thighs in it; now 0.75 out, the
+  knees ending under the keys.
+
+**For August** (none decided here): the `Bathtub`'s size (2 x 1 stays a
+reclined tub, waived; 3 x 2 fits a guest lying straight); the coffin's and
+the nests' new width (fit, but a look change he has not seen); the
+`PipeOrgan` is a `Stand` piece by the contract, though it has a bench a
+guest could sit on (`MODELS.md`'s Pose list).
 
 ## Validated (validation.json, by the build)
 
@@ -81,12 +129,14 @@ script, looks left for August:
   0.28), each piece the same turned 180 degrees, no coplanar faces.
 - **Assembly**: the FBXs laid round a 2 x 2 cell room (L corners, two T
   joints, two free ends, two doors, straight runs): 0 visible coplanar
-  overlaps between pieces, 328 inside posts (where the contract puts them).
+  overlaps between pieces, 402 inside posts (where the contract puts them);
+  since the second review also a + joint and two free ends.
 - Furniture: the kit's decor checks (footprint and 0.4 inset, layer, w/d
   from Pieces, nothing colliding, no coplanar faces, the stool's seat by
   rule 6) and `Use`: Lie/Sit points on their surface (0.15) with nothing
   over them for 1.5, Stand points where the contract says.
-- **Lying** (new, `lie_faults`): the 5-stud person 5 long centred on each
+- **Lying** (`lie_faults`; across the whole body since the second review):
+  the 5-stud person 5 long centred on each
   `Lie` point, head toward -LookVector: in the footprint, on the piece
   (falls at most 0.6), nothing through it (at most 0.45 under the legs and
   torso, 0.8 under the head's last 1.2); on the built and the re-imported
@@ -103,7 +153,8 @@ script, looks left for August:
 **Height findings** (Pieces' `height` is the blockouts' placeholder; src/ was
 not touched): `Bed` 2.0 vs 5.0, `DoubleBed` 2.0 vs 5.0, `WitchBed` 2.2 vs
 5.0 (the approved gothic headboard), `SnackCounter` 3.4 vs 4.52 (its jars),
-`BarStool` 2.6 vs 3.2 (its back, over the seat at 2.6).
+`BarStool` 2.6 vs 3.2 (its back, over the seat at 2.6), `Coffin` 2.0 vs 1.5
+(open now: its rim), `SnackCounter` 3.4 vs 4.82 (its top at 3.75 now).
 The code session updates those rows or August rules the headboard lower.
 
 ## Not validated
@@ -119,12 +170,15 @@ The code session updates those rows or August rules the headboard lower.
 
 ## Review
 
-`review/walls_sheet.png` (the room from the street and from behind, a corner
+`review/walls_sheet.png` (the room from the street and from behind, a corner,
+a + joint, a free end, a corner's foot
 and a T close up, the door from outside and from inside as a cutaway, the
 door piece alone and its plinth close up), `review/furniture_sheet.png`
 (every piece on its 3-stud squares beside the 5-stud person, `Use` as a red
 mark with its facing), `review/elevations_sheet.png` (every piece level at
 floor height, from the front and from the side, on its squares),
+`review/sitting_sheet.png` (the 5-stud person on the bar stool at the Snack
+Counter, and on the organ's bench, from the side and three-quarters),
 `review/lying_sheet.png` (every `Lie` piece from above and from the side
 with the 5-stud person lying on its `Use`; the four-poster also from the
 raised camera). Workbench on light grey (Studio was running: no EEVEE or
@@ -133,6 +187,9 @@ Cycles).
 ## Staged
 
 All 27 FBX in `blender/_import/` (unprefixed; the Lodge's walls there are
-`FrostfangLodge_Wall_*`). Re-staged after the fixes: `Wall_Door`,
-`Furniture_FourPosterBed`, `Furniture_Coffin`, `Furniture_BarStool`,
-`Furniture_PipeOrgan`. The moved `Use` points live in `import_fixup.luau`.
+`FrostfangLodge_Wall_*`). Re-staged after the second review (2026-10-21):
+`Wall_Half`, `Wall_Door`, `Wall_Post`, `Furniture_Coffin`,
+`Furniture_DenNest`, `Furniture_SnackCounter`, `Furniture_ReadingDesk`,
+`Furniture_WitchBed`, `Furniture_BarStool`, `Furniture_PipeOrgan`. The
+`Bathtub`'s and `OperaChaise`'s moved `Use` points live in
+`import_fixup.luau` (their meshes are unchanged).

@@ -42,7 +42,7 @@
     "the atlas travels embedded in the FBX",
     "the contract re-checked on the re-imported boxes (Root, footprint, kind rules, budgets)"
    ],
-   "triangles": 48,
+   "triangles": 72,
    "budget": 200,
    "collision_precise": [],
    "attachments": []
@@ -193,7 +193,7 @@
     "the piece's own checks re-run on the re-imported triangles",
     "the contract re-checked on the re-imported boxes: Root 3fw x 0.2 x 3fd, the layer's envelope (Floor and Wall: inside the footprint inset 0.4, height <= 7; Rug: inside the footprint, height <= 0.15; Wall: its back on z = 3fd/2 - 0.4 +-0.05), nothing collides, budget; w, d, layer and height (to 0.3) as Pieces.luau says; each seat() on the triangles"
    ],
-   "triangles": 140,
+   "triangles": 168,
    "budget": 1500,
    "collision_precise": [],
    "attachments": [
@@ -278,7 +278,7 @@
     "the piece's own checks re-run on the re-imported triangles",
     "the contract re-checked on the re-imported boxes: Root 3fw x 0.2 x 3fd, the layer's envelope (Floor and Wall: inside the footprint inset 0.4, height <= 7; Rug: inside the footprint, height <= 0.15; Wall: its back on z = 3fd/2 - 0.4 +-0.05), nothing collides, budget; w, d, layer and height (to 0.3) as Pieces.luau says; each seat() on the triangles"
    ],
-   "triangles": 304,
+   "triangles": 380,
    "budget": 1500,
    "collision_precise": [],
    "attachments": [
@@ -505,9 +505,13 @@
    "pieces_height": 2.2,
    "model_top": 5.0
   },
+  "Furniture_Coffin": {
+   "pieces_height": 2.0,
+   "model_top": 1.5
+  },
   "Furniture_SnackCounter": {
    "pieces_height": 3.4,
-   "model_top": 4.52
+   "model_top": 4.82
   },
   "Furniture_BarStool": {
    "pieces_height": 2.6,
@@ -516,7 +520,7 @@
  },
  "height_note": "Pieces.luau's `height` (the blockouts' placeholder) against the model's top, more than 0.3 apart: a finding for the code session, not a fault (src/ untouched)",
  "assembly": {
-  "checked": "the FBXs assembled round a 2 x 2 cell room (an L corner, a T, a free end, two doors, a straight run): coplanar same-facing overlaps between pieces",
+  "checked": "the FBXs assembled round a 2 x 2 cell room (L corners, a T, a + joint, free ends, two doors, straight runs): coplanar same-facing overlaps between pieces",
   "faults": []
  }
 }

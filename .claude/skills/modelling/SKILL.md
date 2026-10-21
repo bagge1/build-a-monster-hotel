@@ -86,6 +86,10 @@ file.
   not show them.
 - **The importer loses part rotation** (`DEVNOTES.md`): any joint or direction
   the code needs is a marker or an attachment, never a part's orientation.
+- A piece a person uses is checked against the **whole 5-stud figure**, arms
+  included (3.8 across): lying in a vessel means inside its walls, on its
+  floor; sitting means a sheet with the person seated (thighs under a
+  counter, feet on a foot ring). A line down the body's middle missed both.
 - Anything meant to be seen in play is checked **from the game's own camera**,
   at its angle and its zooms, not only from the preview's.
 - A measurement that must hold to hundredths is taken on the exported

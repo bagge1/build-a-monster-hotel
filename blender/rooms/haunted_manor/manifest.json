@@ -526,16 +526,16 @@
       17.02,
       0.6
      ],
-     "triangles": 36,
+     "triangles": 60,
      "collide": true
     }
    },
    "attachments": {},
-   "triangles": 48,
+   "triangles": 72,
    "budget": 200,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "the joint post, 0.6 square, 17.02 tall: plum with a dark wood foot and a gold cap",
+   "note": "the joint post, 0.6 square, 17.02 tall: banded as the walls meeting it (dark skirting, plum wainscot, gold chair rail, lilac paper, gold picture rail and crown), so their bands turn the corner on it",
    "wall": {
     "frame": "origin the half edge middle on the walking surface, the edge along X (x -3..3), centred on it 0.4 thick, both faces alike (the same turned 180 degrees)",
     "dressing_max_proud": 0.08
@@ -576,12 +576,12 @@
      "centre": [
       0.0,
       3.45,
-      1.15
+      0.775
      ],
      "size": [
       3.6,
       6.9,
-      2.9
+      3.65
      ],
      "triangles": 554,
      "collide": false
@@ -590,12 +590,12 @@
      "centre": [
       0.0,
       3.45,
-      1.15
+      0.775
      ],
      "size": [
       3.6,
       6.9,
-      2.9
+      3.65
      ],
      "triangles": 12,
      "collide": false
@@ -1335,9 +1335,9 @@
       0.0
      ],
      "size": [
-      4.8972,
+      6.1529,
       1.35,
-      6.9541
+      7.3835
      ],
      "triangles": 372,
      "collide": false
@@ -1349,9 +1349,9 @@
       0.0
      ],
      "size": [
-      4.8972,
+      6.1529,
       1.35,
-      6.9541
+      7.3835
      ],
      "triangles": 12,
      "collide": false
@@ -1375,7 +1375,7 @@
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "the Den Room's round straw nest, a third larger for its 3 x 3: a brown cushion, a rose pillow, a bone",
+   "note": "the Den Room's round straw nest, larger for its 3 x 3 (inside 4.8 x 5.8, the lying person's arms inside its rim): a brown cushion, a rose pillow, a bone",
    "decor": {
     "fw": 3,
     "fd": 3,
@@ -1439,26 +1439,26 @@
     "Body": {
      "centre": [
       0.0,
-      1.0,
+      0.75,
       -0.02
      ],
      "size": [
-      3.8,
-      2.0,
+      5.16,
+      1.5,
       6.04
      ],
-     "triangles": 128,
+     "triangles": 156,
      "collide": false
     },
     "LOD_Proxy": {
      "centre": [
       0.0,
-      1.0,
+      0.75,
       -0.02
      ],
      "size": [
-      3.8,
-      2.0,
+      5.16,
+      1.5,
       6.04
      ],
      "triangles": 12,
@@ -1469,7 +1469,7 @@
     "Use": {
      "pos": [
       0.0,
-      1.62,
+      0.6,
       0.3
      ],
      "look": [
@@ -1479,11 +1479,11 @@
      ]
     }
    },
-   "triangles": 140,
+   "triangles": 168,
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "the Coffin Suite's coffin, 6.0 long: dark wood, red velvet, a cream pillow, the gold bat on its foot",
+   "note": "the Coffin Suite's coffin, open, 6.0 long and 5.16 wide: dark wood walls, a red velvet lining, a cream pillow, the gold bat on its foot",
    "decor": {
     "fw": 2,
     "fd": 3,
@@ -1500,8 +1500,8 @@
      "CoffinSuite"
     ],
     "pieces_height": 2.0,
-    "model_top": 2.0,
-    "height_finding": null,
+    "model_top": 1.5,
+    "height_finding": "Pieces.luau's height 2, the body's top 1.50",
     "lie": {
      "person": 5.0,
      "rise": [
@@ -1578,7 +1578,7 @@
      "pos": [
       0.6,
       1.6,
-      -0.4
+      -0.65
      ],
      "look": [
       1.0,
@@ -1655,12 +1655,12 @@
     "Body": {
      "centre": [
       0.0,
-      2.26,
+      2.41,
       0.025
      ],
      "size": [
       8.2,
-      4.52,
+      4.82,
       2.15
      ],
      "triangles": 554,
@@ -1669,12 +1669,12 @@
     "LOD_Proxy": {
      "centre": [
       0.0,
-      2.26,
+      2.41,
       0.025
      ],
      "size": [
       8.2,
-      4.52,
+      4.82,
       2.15
      ],
      "triangles": 12,
@@ -1716,8 +1716,8 @@
      "SnackBar"
     ],
     "pieces_height": 3.4,
-    "model_top": 4.52,
-    "height_finding": "Pieces.luau's height 3.4, the body's top 4.52"
+    "model_top": 4.82,
+    "height_finding": "Pieces.luau's height 3.4, the body's top 4.82"
    }
   },
   "Furniture_Jukebox": {
@@ -1952,15 +1952,15 @@
     "Body": {
      "centre": [
       0.0,
-      1.355,
-      0.0
+      1.365,
+      -0.02
      ],
      "size": [
       4.8,
-      2.71,
-      2.0
+      2.73,
+      2.08
      ],
-     "triangles": 292,
+     "triangles": 368,
      "collide": false
     }
    },
@@ -1978,11 +1978,11 @@
      ]
     }
    },
-   "triangles": 304,
+   "triangles": 380,
    "budget": 1500,
    "collision_precise": [],
    "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
-   "note": "the Quiet Library's reading desk: a sloped lectern top with an open book, dark legs and stretchers",
+   "note": "the Quiet Library's reading desk: a sloped lectern top with an open book against its front stop, an inkpot on the pen tray, dark legs and stretchers",
    "decor": {
     "fw": 2,
     "fd": 1,
@@ -1999,7 +1999,7 @@
      "QuietLibrary"
     ],
     "pieces_height": 2.6,
-    "model_top": 2.71,
+    "model_top": 2.73,
     "height_finding": null
    }
   },
@@ -2778,7 +2778,7 @@
     "Use": {
      "pos": [
       -0.3,
-      1.3,
+      0.75,
       0.0
      ],
      "look": [
@@ -2816,7 +2816,7 @@
       0.8
      ],
      "drop": 0.6,
-     "waived": "a tub is lain in reclining: its 2 x 1 squares (Pieces) hold 4.4 inside, a straight 5-stud person needs 3 x 1 (August's call)"
+     "waived": "a tub is lain in reclining: its 2 x 1 squares (Pieces) hold 4.4 x 1.8 inside; a straight 5-stud person, arms at the sides, needs 5.2 x 3.9: 3 x 2 squares (August's call)"
     }
    }
   },
