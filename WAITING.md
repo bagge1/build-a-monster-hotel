@@ -1021,6 +1021,17 @@ Med Claudes skärmdump där det finns en. -->
    - **Poserna** (modellerarens val): man ligger i Mud Tub och Steam Pool och
      sitter på Lagoon Perch. Ok?
 
+44. **De sällsynta seten: utseenden som är dina** (2026-10-21 förmiddag;
+   `blender/decor/<set>/review/`; felen rättas i skriptet):
+   - **Aurora Lodge** (Frostfang) läses mer som jul än islodge: den röda
+     slädan med guldmedar är tomtens. *Behåll* eller *en släde i ljust trä och
+     is*. **Rekommendation:** ljust trä och is.
+   - **Lantern Grove** (Bayou Spa): lampan och grammofonen ser ut som vanliga
+     möbler; kanoten och fönstret bär sällsyntheten. **Rekommendation:**
+     titta på dem i spelet först.
+   - **Namnen** på seten (The Count's Study, Aurora Lodge, Lantern Grove) är
+     arbetsnamn.
+
 ## §3 Creator Hub och publicering
 
 1. ~~**Slå på Studio Access to API Services**~~ (gjort 2026-10-19: på i
