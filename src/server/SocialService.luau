@@ -408,8 +408,25 @@ local function leaderstats(player: Player)
 	update()
 end
 
+-- The `Like` remote likes only from where the sign's prompt would (A.11.4: "likes it at the sign"), so no
+-- client can like every hotel on the server from anywhere.
+local function likeAtSign(player: Player, plotIndex: number)
+	local plot = PlotService.all()[plotIndex]
+	local board = plot and plot.sign and plot.sign:FindFirstChild("Board")
+	local prompt = board and board:FindFirstChild("Prompt_Like")
+	local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+	if
+		not (board and board:IsA("BasePart") and prompt and prompt:IsA("ProximityPrompt"))
+		or not (root and root:IsA("BasePart"))
+		or (root.Position - board.Position).Magnitude > prompt.MaxActivationDistance + 4
+	then
+		return
+	end
+	like(player, plotIndex)
+end
+
 function SocialService.Init()
-	Net.on("Like", like)
+	Net.on("Like", likeAtSign)
 	Net.on("Ping", ping)
 	Net.on("Visit", visit)
 end
@@ -433,10 +450,18 @@ function SocialService.Start()
 	-- Play time today (the like's rule) and the lobbies walked into (the daily visits), A.11.4.
 	task.spawn(function()
 		local last = os.clock()
+		local week = thisWeek()
 		while true do
 			task.wait(1)
 			local step = os.clock() - last
 			last = os.clock()
+			-- A new week starts every count at 0: last week's Street Favourite gives up its badge now, not at
+			-- the next like, join or leave.
+			if thisWeek() ~= week then
+				week = thisWeek()
+				refreshFavourite()
+				StateService.markAll()
+			end
 			for _, data in PlayerData.loaded() do
 				if data.played.day ~= today() then
 					data.played = { day = today(), seconds = 0 }

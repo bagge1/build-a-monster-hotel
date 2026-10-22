@@ -522,7 +522,15 @@ local function tickPlayer(player: Player, data: PlayerData.Data, dt: number)
 		elseif c.state == "Arriving" then
 			local guest = s and s.guest
 			if guest then
-				if not GuestService.get(guest) then
+				-- Gone, or sent home on the way in (no path to its room, the held room sold): a guest walking
+				-- back to the bus still exists, so its state says it is not coming.
+				local g = GuestService.get(guest)
+				if
+					not g
+					or g.state == "Leaving"
+					or g.state == "Waiting"
+					or g.state == "Boarding"
+				then
 					reopen(player, c, "Your VIP had to leave: tap Ready again")
 				end
 			elseif not s or os.clock() - (s.since or 0) > C.ArrivalGrace then

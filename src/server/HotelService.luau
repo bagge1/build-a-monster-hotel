@@ -285,6 +285,13 @@ function HotelService.setRequest(player: Player, pieceId: string, text: string?)
 	end
 end
 
+-- Whether a room is waiting to be cleaned: it may not be retyped or cleared, or it would come back clean.
+function HotelService.dirty(player: Player, pieceId: string): boolean
+	local hotel = hotels[player]
+	local room = hotel and hotel.rooms[pieceId]
+	return room ~= nil and room.state == "Dirty"
+end
+
 function HotelService.busy(player: Player, pieceId: string): boolean
 	local hotel = hotels[player]
 	local room = hotel and hotel.rooms[pieceId]

@@ -920,12 +920,14 @@ and `execute_luau` only (no window focus) on `Test_World1021a`.
   interrupted `fill` bought every tile on two floors; Bayou has no facade kit,
   so its walls are the blockout); a lamp in front of the door (picture 2
   shows the path between two lamps); no bus (between buses).
-  **Open, for the next session to prove by geometry:** snowy firs seen from
-  Creepy Lane (pictures 2, 3: the blend between streets reaching street 1's
-  plots?); trees standing inside buildable plots (picture 2 beside plot 3,
-  picture 4); the flat orange objects at each street's ends (picture 2, both
-  ends); gaps in the near side's curb (pictures 2, 4, 6, x 310–540, 1380–1600
-  of the frame).
+  **Checked by the code, all false:** "snowy firs" seen from Creepy Lane are
+  its dark firs tinted by the fog (FogEnd 900; `StreetLayout.blend` gives
+  location 1 out to `LaneEnd`); trees "inside buildable plots" stand in the
+  gaps between plots (`Forest.cleared` keeps every plot's whole grid and its
+  Wing clear, plus `Clearing`); the flat orange objects at the street ends are
+  the bus stops' shelters (`StreetService.shelter`, a Luau blockout: no model
+  yet); the near side's "curb gaps" are the gaps between plots (each
+  forecourt's `Edge_Left`/`Edge_Right` spans its own plot).
 - [ ] Two players on two streets at once (each street's bus and Hunter Night
   together): needs **Server and Clients**, his start.
 - [A] The looks: Frostfang's and Bayou's ground and lamps, the meadow between

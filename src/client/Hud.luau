@@ -45,6 +45,7 @@ local REFUSALS: { [string]: string } = {
 	CutsOff = "That would cut a door off from the entrance",
 	NoFloor = "Build that floor first",
 	Busy = "A guest is using that room",
+	Dirty = "Clean that room first",
 	MaxTier = "Already the top tier",
 	FloorCap = "No more floors for now",
 	-- The hotel chain (§6.4)

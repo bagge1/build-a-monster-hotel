@@ -649,8 +649,10 @@ local readyIn: (World, string, Walk, { [number]: number }) -> (boolean, { string
 	off, and no ready room's key furniture walled or furnished off from its
 	door (`KeyCutOff`: the room stays reached, only its key spot is lost).
 	Only what the change breaks is refused. The server may call it for any
-	change (a stair or desk placed, decor moved), not only walls. ]]
-function Rooms.check(before: World, after: World): (boolean, Refusal?)
+	change (a stair or desk placed, decor moved), not only walls. `gone` is a
+	piece the change takes away: its own queue, foot or head are not places
+	guests still need. ]]
+function Rooms.check(before: World, after: World, gone: Grid.Placed?): (boolean, Refusal?)
 	local was, now = trouble(before), trouble(after)
 	local ids = {}
 	for id in now do
@@ -664,6 +666,11 @@ function Rooms.check(before: World, after: World): (boolean, Refusal?)
 	end
 	local reachedBefore = reachedTargets(before)
 	local reachedAfter = reachedTargets(after)
+	if gone then
+		for _, s in Grid.doors(gone) do
+			reachedBefore[`{s.floor}:{s.x}:{s.z}`] = nil
+		end
+	end
 	for label in reachedBefore do
 		if not reachedAfter[label] then
 			return false, "CutsOff"
@@ -1195,7 +1202,7 @@ function Rooms.canRemovePiece(world: World, piece: Grid.Placed): (boolean, strin
 	if not ok then
 		return false, why
 	end
-	return Rooms.check(world, withoutPiece(world, piece))
+	return Rooms.check(world, withoutPiece(world, piece), piece)
 end
 
 -- The squares beside a door's half edge, on both sides: kept clear of anything but rugs.
@@ -1235,7 +1242,7 @@ function Rooms.canPlaceDecor(world: World, d: Grid.DecorPlaced, skip: string?): 
 	if d.floor < 1 or d.floor > world.floors or d.floor % 1 ~= 0 then
 		return false, "NoFloor"
 	end
-	if d.r < 0 or d.r > 3 or d.r % 1 ~= 0 then
+	if d.r < 0 or d.r > 3 or d.r % 1 ~= 0 or d.x % 1 ~= 0 or d.z % 1 ~= 0 then
 		return false, "OutOfBounds"
 	end
 	local m = marks(world)

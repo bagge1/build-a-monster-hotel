@@ -1133,6 +1133,30 @@ Med Claudes skärmdump där det finns en. -->
    **Rekommendation:** (b): det läses som cypress på avstånd och kostar inte
    fler trianglar. Den är inte lagd för import förrän du valt.
 
+48. **Buggar där rättningen är ett beslut** (2026-10-22 kväll, tre
+   kodgranskningar; det som var rena fel är rättat, se nedan). Fyra frågor:
+   - **Ett accepterat VIP-kontrakt efter en rebirth** stannar kvar för ett
+     hotell som kedjan inte längre har; dess klocka går aldrig, så det tar en
+     plats i ledgern (och en av dagens tre) tills hotellet öppnas igen, kanske
+     i timmar. Gamla erbjudanden från ett högre betyg finns också kvar (en
+     Mythic vid 2★). **Rekommendation:** en rebirth avslutar kontrakten och
+     erbjudandena för hotell som kedjan inte har kvar, utan straff.
+   - **Personal räknas två gånger:** flyttar man en resident från ett hotell
+     man lämnat till det man spelar, fortsätter det lämnade hotellet tjäna som
+     om det hade personalen kvar (dess takt fryses när man åker). **Rekommendation:**
+     en resident som är personal på ett annat hotell kan inte flyttas förrän
+     man är där, eller så räknas det lämnade hotellets takt om när den flyttas.
+   - **Offline-inkomsten** får vänbonusen (+10 %) om en vän råkar vara online
+     när man kommer tillbaka, för hela tiden man var borta. **Rekommendation:**
+     ingen vänbonus på offline-inkomst.
+   - **Personal på ett hotell man inte spelar** får ingen XP, residenter i
+     Wing får (A.11.6 säger "i samma takt i Wing och vid en personalpost ...
+     medan spelaren spelar"). **Rekommendation:** samma XP för personal på
+     kedjans andra hotell, som för Wing.
+   - **Eventdekor** (sålda en gång) kan ställas ut i hur många kopior som
+     helst gratis, och varje kopia ger full Decor. **Rekommendation:** en
+     kopia per köp, som de andra.
+
 ## §3 Creator Hub och publicering
 
 1. ~~**Slå på Studio Access to API Services**~~ (gjort 2026-10-19: på i

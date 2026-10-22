@@ -98,6 +98,35 @@ describe("Built rooms in the game", function()
 		expect.truthy(not ok2, "the last desk stays")
 	end)
 
+	it("a second desk guests reach may be sold again (its own queue is not cut off)", function()
+		local w = startHotel()
+		for z = 0, Constants.Grid.Cells - 1 do -- the whole floor bought, so there is room for it
+			for x = 0, Constants.Grid.Cells - 1 do
+				w.tiles[Grid.tileKey(1, x, z)] = true
+			end
+		end
+		local second
+		for z = 0, Constants.Grid.Cells - 1 do
+			for x = 0, Constants.Grid.Cells - 1 do
+				local d = placed("FrontDesk", 1, x, z, 0)
+				if not second and Rooms.canPlacePiece(w, d) then
+					second = d
+				end
+			end
+		end
+		expect.truthy(second ~= nil, "somewhere for a second desk")
+		table.insert(w.pieces, second)
+		local ok, why = Rooms.canRemovePiece(w, second)
+		expect.truthy(ok, `sold: {tostring(why)}`)
+	end)
+
+	it("decor stands on whole squares only", function()
+		local w = startHotel()
+		local ok, why = Rooms.canPlaceDecor(w, decor("Nightstand", 1, 4.5, 2, 0))
+		expect.truthy(not ok, "half a square")
+		expect.eq(why, "OutOfBounds", "why")
+	end)
+
 	it("decor never stands across a wall or in a doorway; a rug may", function()
 		local w = startHotel()
 		local S = Constants.Rooms.Start

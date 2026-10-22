@@ -568,6 +568,10 @@ local function makeRoom(player: Player, floor: number, hx: number, hz: number, t
 		refuse(player, "MakeRoom", "Busy")
 		return
 	end
+	if existing and HotelService.dirty(player, existing) then
+		refuse(player, "MakeRoom", "Dirty")
+		return
+	end
 	local ok, why = Rooms.canMakeRoom(world, floor, hx, hz, typeId, existing)
 	if not ok then
 		refuse(player, "MakeRoom", why or "Blocked")
@@ -596,6 +600,10 @@ local function clearRoom(player: Player, idNumber: number)
 	end
 	if HotelService.busy(player, id) then
 		refuse(player, "ClearRoom", "Busy")
+		return
+	end
+	if HotelService.dirty(player, id) then
+		refuse(player, "ClearRoom", "Dirty")
 		return
 	end
 	data.rooms[id] = nil
@@ -825,6 +833,11 @@ local function finish(player: Player, target: string, finishId: string)
 	if not data then
 		return
 	end
+	-- The room first, so a finish is never paid for a room that is not there.
+	local rec = if target == "Hallway" then nil else data.rooms[target]
+	if target ~= "Hallway" and not rec then
+		return
+	end
 	if finishId ~= "" then
 		local f = Pieces.finish(finishId)
 		if not f or f.location ~= data.location then
@@ -839,11 +852,7 @@ local function finish(player: Player, target: string, finishId: string)
 	if target == "Hallway" then
 		data.finishes[target] = finishId
 		PlotService.rebuild(player)
-	else
-		local rec = data.rooms[target]
-		if not rec then
-			return
-		end
+	elseif rec then
 		rec.finish = finishId
 		PlotService.refreshRooms(player)
 	end
