@@ -47,3 +47,6 @@ src/server/TestBundle.luau
 # Secrets, never in git
 .env
 .DS_Store
+
+# Session locks for Blender and Studio (LAUNCH.md, "How the work runs")
+/.locks/

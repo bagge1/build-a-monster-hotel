@@ -1203,6 +1203,22 @@ Med Claudes skärmdump där det finns en. -->
 
 ## §4 Före release
 
+**Lanseringen (dina beslut 2026-10-23, planen i `LAUNCH.md`):** soft launch så
+fort allt är klart, målet den här helgen. Inget testet med vänner: du och
+Claude testar. Det som är ditt, i ordning:
+
+1. **Importen av de 136 filerna** (§0.12): påbörjad 2026-10-23; säg
+   *importerat*.
+2. **Din manuella reset** av veckokvoten när Claude skickar en notis.
+3. **Notifikationernas nyckel och hemlighet** (§3.3 steg 1–2), 5 minuter.
+4. **Bayou, VIP-loungen och de fyra facade-paketen:** ett ja eller nej per
+   modell, i en enda omgång.
+5. **Balanskörningens sammanfattning:** ditt ja innan värdena gäller.
+6. **Ikon och thumbnails:** välj av tre.
+7. **Frågeformuläret** (Maturity & Compliance): läs Claudes svar innan de
+   skickas.
+8. **Publish**, en kvart på **din egen telefon**, och att göra spelet publikt.
+
 <!-- Checklistan till en release. Först ett test med vänner (privat), sedan
 den publika. Claude bockar av sitt; det som är ditt står med menyn. -->
 
