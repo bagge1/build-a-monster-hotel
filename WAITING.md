@@ -1184,9 +1184,9 @@ Med Claudes skärmdump där det finns en. -->
       tonight". Claude kan göra det om du säger till; deras id skrivs sedan in
       i `NotifyService.Messages`.
    Claude kollar de exakta menynamnen i Robloxs dokumentation när du är där.
-4. **Översättning** (GDD §9: engelska, spanska, portugisiska, japanska): slå på
-   **Automatic translation** för experiencen i Creator Hub (Localization).
-   Spelets texter är engelska och kan översättas automatiskt.
+4. ~~**Översättning**~~ (påslagen av dig; Claude lade till koreanska,
+   indonesiska och turkiska 2026-10-23: 14 språk, alla med Strings & Products
+   och Information på; Audience → Localization → Languages).
 5. **Grupp-belöningen** (GDD §9: gratis decor och +5 % cash för den som går med
    i gruppen): vilken grupp? Säg dess id så byggs belöningen.
 
@@ -1217,11 +1217,10 @@ den publika. Claude bockar av sitt; det som är ditt står med menyn. -->
    (`StudioProfile`) fungerar bara i Studio; på en publicerad server finns
    inga kommandon alls (2026-10-20). Claudes; inte provat på en riktig
    server än.
-2. **Serverstorlek 10** (ändrat natten 2026-10-21: gatan har nu tio tomter,
-   PLACEHOLDER i dina 8–12, §2.35). Den elfte spelaren får inget hotell.
-   Ställ in **Server Size** till samma tal som tomterna i platsens
-   inställningar (Creator Hub, **Places**) när du valt det. I dag är den
-   **60** (servern varnar om det i Output).
+2. ~~**Serverstorlek 10**~~ (ditt ja 2026-10-23; satt av Claude samma dag:
+   Places → startplatsen → Access → Maximum Visitor Count, var 6). Private
+   servers på för 100 Robux i månaden (Audience → Advanced settings); **priset
+   kan bara ändras var 60:e dag.**
 3. ~~**Tempot och tutorialens svit**~~ (§2.27, §2.28): byggt och spelat i
    Studio 2026-10-20 (`TESTRUN.md`, "Pacing and the tutorial's free area").
 4. **Spela på en riktig telefon** (§1.9) och **spela första kvarten** (§1.1).
