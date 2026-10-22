@@ -96,3 +96,7 @@ in git; rebuilt by the script.
 go to `assets/HotelKit/BayouSpa/`, which does not exist yet: nor does its
 mapping in `default.project.json` (only `HauntedManor` and `FrostfangLodge`
 are mapped), so saving them needs that mapping and a Rojo restart (his).
+
+## Imported
+
+All five imported 2026-10-23, fixed up by `import_fixup.luau` (Box, read back) and saved as `assets/HotelKit/BayouSpa/Decor_LanternGrove_<Piece>.rbxm` (the kit's folder and mapping exist now); the synced templates match the import. Not yet seen in a playtest.

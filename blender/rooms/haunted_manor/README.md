@@ -342,3 +342,7 @@ too small for a phone (2 × 3, larger). **False:** the post's two tones
 (shading). **His call:** the machine reads modern beside the manor (gold trim
 its only manor cue), the flap at a real machine's knee height. Not re-reviewed
 after the fixes; not seen in Studio.
+
+## Imported
+
+All 51 (the three walls, 45 furniture and decor pieces, `VendingMachine`, `PopcornCart`, `BarTable`) imported 2026-10-23, fixed up by `import_fixup.luau` (Box on every mesh, no Precise; `LOD_Proxy` hidden), read back and saved as `assets/HotelKit/HauntedManor/<Name>.rbxm`; the synced templates match the import (mesh ids, sizes, collision), none empty. Not yet seen in a playtest.

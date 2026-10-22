@@ -70,3 +70,7 @@ and `raised.png` show four in a study.
 `blender/_import/Souvenir_Base.fbx` (re-staged, the redesign); it goes to `assets/Souvenirs/`
 (`ServerStorage.Souvenirs`, a folder `default.project.json` gains at its
 save, so Rojo restarts).
+
+## Imported
+
+Imported 2026-10-23, fixed up by `import_fixup.luau` (Box, read back) and saved as `assets/Cosmetics/Souvenir_Base.rbxm` (`ServerStorage.Cosmetics`, as `MODELS.md` and `HotelKit.souvenir` have it, not the `assets/Souvenirs/` above: no project change); the synced template matches the import. Not yet seen in a playtest.

@@ -399,3 +399,7 @@ The sixth run's findings are now mostly the opposites of earlier rounds' (the sk
 9. The bar stool's seat narrower than the seated hips: Roblox-typical, left.
 
 Restaged 2026-10-21 15:57: the pieces changed since the import was staged, copied over their `blender/_import/` copies (Frostfang 9, Bayou 9).
+
+## Imported
+
+All 34 (the three walls, the eight furniture, the 23 location-0 pieces) imported 2026-10-23, fixed up by `import_fixup.luau` (Box on every mesh, `LOD_Proxy` hidden), read back and saved as `assets/HotelKit/FrostfangLodge/<Name>.rbxm`, the prefixed `FrostfangLodge_Wall_*` and `FrostfangLodge_Furniture_*` under their unprefixed names; the synced templates match the import, none empty. Not yet seen in a playtest.

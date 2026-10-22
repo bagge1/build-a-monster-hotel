@@ -111,26 +111,15 @@ Connect: knappen under fliken Plugins i Studio. -->
    **Connect** (fliken **Plugins** i Studio). Utan det sparas inte Bayou Spas
    väggar, möbler och sällsynta set.
 
-12. **Importera 136 modeller: väggarna, dörren, möblerna, de sällsynta seten,
-   souveniren och tre nya möbler (godisautomat, barbord, popcornvagn, 2026-10-22)** (efter omstarten i punkt 13) (natten och morgonen 2026-10-21; byggda, validerade och
-   granskade, felen rättade, se README i `blender/rooms/<hotell>/` och
-   `blender/decor/`). Haunted Manor: väggen, dörrväggen, stolpen och 45
-   möbler och dekorbitar; Frostfang Lodge: sina tre väggbitar
-   (`FrostfangLodge_Wall_*`) och åtta möbler; Bayou Spa: sina tre väggbitar
-   (`BayouSpa_Wall_*`) och nio möbler; de sällsynta seten "The Count's Study",
-   "Aurora Lodge" och "Lantern Grove" (fem bitar var) och `Souvenir_Base`.
-   Dessutom Frostfangs och Bayou Spas egna versioner av de 23 möblerna som
-   finns på alla platser (`FrostfangLodge_Furniture_*`, `BayouSpa_Furniture_*`). Importera **alla filer i
-   `blender/_import/`** till **Workspace** i en dialog och skriv *importerat*
-   (inte mitt i en playtest). Tills dess ritar spelet enkla klossar.
-   **Läget 2026-10-21 14:26:** Studio läste in alla 133 filer kl. 13:38
-   (en `.fbm`-mapp per fil finns), men ingen modell har kommit till
-   Workspace eller någon annanstans i spelet (kollat var 5:e minut i 48 min).
-   Väntar importfönstret kanske på knappen **Import** längst ner? Har det
-   hängt sig: stäng fönstret och importera samma filer igen. Arton av
-   Frostfangs och Bayous möbler, rättade efter sex granskningar, ligger nu i
-   `blender/_import/` över de gamla (kl. 16), så en ny import av alla 136
-   filer tar med dem.
+12. ~~**Importera 136 modeller: väggarna, dörren, möblerna, de sällsynta seten,
+   souveniren och tre nya möbler**~~ (gjort 2026-10-23: alla 136 inställda
+   (Box överallt, `LOD_Proxy` dold), kontrollerade och sparade. Haunted Manor
+   51 och "The Count's Study" 5 i `assets/HotelKit/HauntedManor/`, Frostfang
+   Lodge 34 och "Aurora Lodge" 5 i `assets/HotelKit/FrostfangLodge/`, Bayou
+   Spa 35 och "Lantern Grove" 5 i `assets/HotelKit/BayouSpa/`,
+   `Souvenir_Base` i `assets/Cosmetics/`; de prefixade (`FrostfangLodge_*`,
+   `BayouSpa_*`) sparade utan prefix i sitt kits mapp. `blender/_import/` är
+   tom.)
 
 ## §1 Att titta på eller spela
 
@@ -1207,8 +1196,8 @@ Med Claudes skärmdump där det finns en. -->
 fort allt är klart, målet den här helgen. Inget testet med vänner: du och
 Claude testar. Det som är ditt, i ordning:
 
-1. **Importen av de 136 filerna** (§0.12): påbörjad 2026-10-23; säg
-   *importerat*.
+1. ~~**Importen av de 136 filerna**~~ (§0.12): gjord och sparad
+   2026-10-23.
 2. **Din manuella reset** av veckokvoten när Claude skickar en notis.
 3. **Notifikationernas nyckel och hemlighet** (§3.3 steg 1–2), 5 minuter.
 4. **Bayou, VIP-loungen och de fyra facade-paketen:** ett ja eller nej per

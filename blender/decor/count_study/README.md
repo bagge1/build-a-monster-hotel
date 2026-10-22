@@ -98,3 +98,7 @@ their cloches hidden (the code makes them glass).
 `_Bust`, `_Rug` (`.fbx`), re-staged after the blind review's fixes
 (replacing the first draft's), beside the earlier batch. They
 go to `assets/HotelKit/HauntedManor/`.
+
+## Imported
+
+All five imported 2026-10-23, fixed up by `import_fixup.luau` (Box, read back) and saved as `assets/HotelKit/HauntedManor/Decor_CountStudy_<Piece>.rbxm`; the synced templates match the import. Not yet seen in a playtest.

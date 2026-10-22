@@ -110,3 +110,7 @@ rebuilt by the script.
 `blender/_import/`: `Decor_AuroraLodge_Painting`, `_WolfStatue`,
 `_Telescope`, `_Sleigh`, `_Rug` (`.fbx`), beside the earlier batch. They go
 to `assets/HotelKit/FrostfangLodge/`.
+
+## Imported
+
+All five imported 2026-10-23, fixed up by `import_fixup.luau` (Box, read back) and saved as `assets/HotelKit/FrostfangLodge/Decor_AuroraLodge_<Piece>.rbxm`; the synced templates match the import. Not yet seen in a playtest.
