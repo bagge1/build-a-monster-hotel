@@ -707,4 +707,28 @@ describe("Rooms", function()
 			expect.eq(t.locked, nil, t.id)
 		end
 	end)
+	it("moving the only stair never strands a ready room upstairs", function()
+		local wd = stairWorld()
+		-- Floor 2 cut in two at cell column 5: the stair's head (2, 5) on the west side.
+		for hz = 0, N * HC - 1 do
+			wall(wd, Rooms.edgeKey(2, 5 * HC, hz, 1))
+		end
+		-- A ready room on the west side, its door onto row 0.
+		box(wd, 2, 1, 1, 2, 2, true)
+		local ok, why = Rooms.canMakeRoom(wd, 2, 1 * HC, 1 * HC, "StandardRoom")
+		expect.truthy(ok, `room: {why}`)
+		wd.rooms.r = { type = "StandardRoom", floor = 2, hx = 1 * HC, hz = 1 * HC }
+		table.insert(wd.decor, decor("Bed", 2, 1 * Q + 1, 1 * Q + 5, 0))
+		expect.truthy(Rooms.ready(wd, "r"), "ready")
+		local stair = wd.pieces[2]
+		-- Moved east, its head lands beyond the wall: the room is cut off.
+		local east = placed("Stairs", 1, 8, 6, 0)
+		ok, why = Rooms.canPlacePiece(wd, east, stair)
+		expect.truthy(not ok, "the stair moved away from the room")
+		expect.eq(why, "CutsOff")
+		-- Moved along the west side, it still serves the room.
+		local west = placed("Stairs", 1, 1, 8, 0)
+		ok, why = Rooms.canPlacePiece(wd, west, stair)
+		expect.truthy(ok, `moved on the west side: {tostring(why)}`)
+	end)
 end)

@@ -345,6 +345,14 @@ of 0. Use `UseJumpPower` and `JumpPower`, which is the speed itself.
 
 ## Data
 
+### Studio and the published game save to different stores
+
+Studio's DataStores are the published experience's own: a playtest writes
+the very store players save to. `src/server/StoreNames.luau` names every
+store apart (`MonsterHotel_Live_*` on a published server, the old
+`MonsterHotel_*` in Studio, 2026-10-23), so test profiles and Studio
+leaderboard scores never reach players. A new store is named through it.
+
 ### DataStores need a published place, and ProfileStore fails by succeeding
 
 A never-published place has `PlaceId = 0` and no DataStore, and Studio API

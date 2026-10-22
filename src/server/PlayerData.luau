@@ -38,6 +38,7 @@ local Finds = require(ReplicatedStorage.Shared.Finds)
 local Grid = require(ReplicatedStorage.Shared.Grid)
 local Pieces = require(ReplicatedStorage.Shared.Pieces)
 local Rooms = require(ReplicatedStorage.Shared.Rooms)
+local StoreNames = require(script.Parent.StoreNames)
 
 local packages = ServerScriptService:FindFirstChild("ServerPackages")
 if not packages or not packages:FindFirstChild("ProfileStore") then
@@ -249,7 +250,7 @@ local TEMPLATE: Data = {
 	finds = Finds.newRecord(),
 }
 
-local store = ProfileStore.New("MonsterHotel_Players_v1", TEMPLATE)
+local store = ProfileStore.New(StoreNames.of("Players_v1"), TEMPLATE)
 
 local profiles: { [Player]: any } = {}
 local loadedCallbacks: { (Player, Data) -> () } = {}
@@ -408,8 +409,9 @@ end)
 
 --[[ STUDIO ONLY: a test profile in place of the player's own, so a playtest
 	can start fresh without touching August's. Set ServerStorage's
-	`StudioProfile` attribute to a name beginning `Test_` before Play. Off
-	before release (memory phase-status). ]]
+	`StudioProfile` attribute to a name beginning `Test_` before Play. Studio
+	saves to its own store (`StoreNames`), so a test profile never reaches the
+	one players save to. ]]
 local function profileKey(player: Player): string
 	if RunService:IsStudio() and player.UserId > 0 then
 		local test = ServerStorage:GetAttribute("StudioProfile")

@@ -1216,10 +1216,11 @@ function Rooms.canPlacePiece(
 	if wallTouches(world, mine) then
 		return false, "Wall"
 	end
-	local before = withoutPiece(world, skip)
+	-- "Before" is the world as it stands, the moved piece where it was: a room only its old place served
+	-- is cut off by the move. Its old spots are `gone`, not places guests still need.
 	local after = withoutPiece(world, skip)
 	table.insert(after.pieces, piece)
-	local fine, refusal = Rooms.check(before, after)
+	local fine, refusal = Rooms.check(world, after, skip)
 	if not fine then
 		return false, refusal
 	end

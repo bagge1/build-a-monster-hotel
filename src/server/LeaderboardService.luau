@@ -21,6 +21,7 @@ local ServerScriptService = game:GetService("ServerScriptService")
 local Format = require(ReplicatedStorage.Shared.Format)
 local StreetLayout = require(ReplicatedStorage.Shared.StreetLayout)
 local PlayerData = require(ServerScriptService.Server.PlayerData)
+local StoreNames = require(ServerScriptService.Server.StoreNames)
 
 local LeaderboardService = {}
 
@@ -44,7 +45,7 @@ local BOARDS: { Board } = {
 		key = "Book",
 		title = "Monster Book",
 		store = function()
-			return DataStoreService:GetOrderedDataStore("MonsterHotel_Book_v1")
+			return DataStoreService:GetOrderedDataStore(StoreNames.of("Book_v1"))
 		end,
 		score = function(d)
 			local n = 0
@@ -58,7 +59,7 @@ local BOARDS: { Board } = {
 		key = "Guests",
 		title = "Lifetime guests",
 		store = function()
-			return DataStoreService:GetOrderedDataStore("MonsterHotel_Guests_v1")
+			return DataStoreService:GetOrderedDataStore(StoreNames.of("Guests_v1"))
 		end,
 		score = function(d)
 			return d.stats.stays or 0
@@ -68,7 +69,7 @@ local BOARDS: { Board } = {
 		key = "Week",
 		title = "Happy stays this week",
 		store = function()
-			return DataStoreService:GetOrderedDataStore(`MonsterHotel_Week_{week()}`)
+			return DataStoreService:GetOrderedDataStore(StoreNames.of(`Week_{week()}`))
 		end,
 		score = function(d)
 			if (d.stats.weekId or -1) ~= week() then
