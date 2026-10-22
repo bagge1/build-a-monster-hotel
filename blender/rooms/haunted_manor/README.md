@@ -320,3 +320,25 @@ earlier files: `Furniture_Toilet`, `Furniture_SaladBar`,
 `Furniture_GardenBench`, `Furniture_CoffeeUrn`, `Decor_Fireplace`,
 `Decor_TowelRack`, `Decor_Fountain` (and the Lodge's
 `Furniture_CocoaBar`).
+
+## Three more to stand at (2026-10-22 night)
+
+His ask ("buffet bord, vinylspelare, automat, barbord osv"; the buffet, record
+player and jukebox already exist): `Furniture_VendingMachine` (a plum snack
+machine, a glass bay of snacks on a lit back, amber buttons, a pick-up flap),
+`Furniture_PopcornCart` (a crimson cart, glass cabinet heaped with popcorn, a
+tipped kettle, a striped canopy), `Furniture_BarTable` (a round standing table
+at elbow height, a candle and two drinks). Every location (`location = 0`,
+the other kits fall back to these), tags `snacks` (the cart also `fun`),
+prices PLACEHOLDER (450, 350, 150). Built by `build_built_rooms_more.py`,
+validated by the build (624, 840, 396 triangles), staged.
+**Blind review 2026-10-22. Confirmed and fixed:** the cart read as a claw
+machine (a grey heap under a hanging block: now yellow popcorn spilling from a
+tipped kettle on a post, a striped canopy); no way into the cabinet (a gold
+handle on its door); the bar table's top chest-high (3.3 → 3.0, the elbow);
+drinks and candles alike (coloured drinks with straws, the candle in a red
+cup); the name board and the bay on two front planes (one plane now); buttons
+too small for a phone (2 × 3, larger). **False:** the post's two tones
+(shading). **His call:** the machine reads modern beside the manor (gold trim
+its only manor cue), the flap at a real machine's knee height. Not re-reviewed
+after the fixes; not seen in Studio.

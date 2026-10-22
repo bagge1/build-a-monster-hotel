@@ -111,8 +111,8 @@ Connect: knappen under fliken Plugins i Studio. -->
    **Connect** (fliken **Plugins** i Studio). Utan det sparas inte Bayou Spas
    väggar, möbler och sällsynta set.
 
-12. **Importera 133 modeller: väggarna, dörren, möblerna, de sällsynta seten
-   och souveniren** (efter omstarten i punkt 13) (natten och morgonen 2026-10-21; byggda, validerade och
+12. **Importera 136 modeller: väggarna, dörren, möblerna, de sällsynta seten,
+   souveniren och tre nya möbler (godisautomat, barbord, popcornvagn, 2026-10-22)** (efter omstarten i punkt 13) (natten och morgonen 2026-10-21; byggda, validerade och
    granskade, felen rättade, se README i `blender/rooms/<hotell>/` och
    `blender/decor/`). Haunted Manor: väggen, dörrväggen, stolpen och 45
    möbler och dekorbitar; Frostfang Lodge: sina tre väggbitar
@@ -129,7 +129,7 @@ Connect: knappen under fliken Plugins i Studio. -->
    Väntar importfönstret kanske på knappen **Import** längst ner? Har det
    hängt sig: stäng fönstret och importera samma filer igen. Arton av
    Frostfangs och Bayous möbler, rättade efter sex granskningar, ligger nu i
-   `blender/_import/` över de gamla (kl. 16), så en ny import av alla 133
+   `blender/_import/` över de gamla (kl. 16), så en ny import av alla 136
    filer tar med dem.
 
 ## §1 Att titta på eller spela

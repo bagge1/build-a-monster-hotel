@@ -797,6 +797,57 @@
    "budget": 1500,
    "collision_precise": [],
    "attachments": []
+  },
+  "Furniture_VendingMachine": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "6 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the piece's own checks re-run on the re-imported triangles",
+    "the contract re-checked on the re-imported boxes: Root 3fw x 0.2 x 3fd, the layer's envelope (Floor and Wall: inside the footprint inset 0.4, height <= 7; Rug: inside the footprint, height <= 0.15; Wall: its back on z = 3fd/2 - 0.4 +-0.05), nothing collides, budget; w, d, layer and height (to 0.3) as Pieces.luau says; each seat() on the triangles"
+   ],
+   "triangles": 624,
+   "budget": 1500,
+   "collision_precise": [],
+   "attachments": [
+    "Use"
+   ]
+  },
+  "Furniture_BarTable": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "3 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the piece's own checks re-run on the re-imported triangles",
+    "the contract re-checked on the re-imported boxes: Root 3fw x 0.2 x 3fd, the layer's envelope (Floor and Wall: inside the footprint inset 0.4, height <= 7; Rug: inside the footprint, height <= 0.15; Wall: its back on z = 3fd/2 - 0.4 +-0.05), nothing collides, budget; w, d, layer and height (to 0.3) as Pieces.luau says; each seat() on the triangles"
+   ],
+   "triangles": 396,
+   "budget": 1500,
+   "collision_precise": [],
+   "attachments": [
+    "Use"
+   ]
+  },
+  "Furniture_PopcornCart": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "5 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the piece's own checks re-run on the re-imported triangles",
+    "the contract re-checked on the re-imported boxes: Root 3fw x 0.2 x 3fd, the layer's envelope (Floor and Wall: inside the footprint inset 0.4, height <= 7; Rug: inside the footprint, height <= 0.15; Wall: its back on z = 3fd/2 - 0.4 +-0.05), nothing collides, budget; w, d, layer and height (to 0.3) as Pieces.luau says; each seat() on the triangles"
+   ],
+   "triangles": 840,
+   "budget": 1500,
+   "collision_precise": [],
+   "attachments": [
+    "Use"
+   ]
   }
  },
  "collision_precise": {
@@ -847,7 +898,10 @@
   "Decor_Fireplace": [],
   "Decor_TowelRack": [],
   "Decor_Fountain": [],
-  "Decor_Candelabra": []
+  "Decor_Candelabra": [],
+  "Furniture_VendingMachine": [],
+  "Furniture_BarTable": [],
+  "Furniture_PopcornCart": []
  },
  "mirrors": {},
  "not_validated": [
@@ -882,9 +936,5 @@
    "model_top": 3.2
   }
  },
- "height_note": "Pieces.luau's `height` (the blockouts' placeholder) against the model's top, more than 0.3 apart: a finding for the code session, not a fault (src/ untouched)",
- "assembly": {
-  "checked": "the FBXs assembled round a 2 x 2 cell room (L corners, a T, a + joint, free ends, two doors, straight runs): coplanar same-facing overlaps between pieces",
-  "faults": []
- }
+ "height_note": "Pieces.luau's `height` (the blockouts' placeholder) against the model's top, more than 0.3 apart: a finding for the code session, not a fault (src/ untouched)"
 }

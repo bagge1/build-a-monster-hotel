@@ -644,6 +644,32 @@ end
 -- Rooms.ready with the walk and the flood given (defined below, with `keySpot`).
 local readyIn: (World, string, Walk, { [number]: number }) -> (boolean, { string }?)
 
+-- Whether a key piece of room `id` before the change stands unchanged after it (same record, same place).
+local function keyStillStands(before: World, after: World, id: string): boolean
+	local r = before.rooms[id]
+	local req = if r then Rooms.requirement(r.type) else nil
+	if not req then
+		return false
+	end
+	for _, d in Rooms.contents(before, id).furniture do
+		if table.find(req.keys, d.item) then
+			for _, e in after.decor do
+				if
+					e.item == d.item
+					and e.floor == d.floor
+					and e.x == d.x
+					and e.z == d.z
+					and e.r == d.r
+					and (e.id == nil or e.id == d.id)
+				then
+					return true
+				end
+			end
+		end
+	end
+	return false
+end
+
 --[[ Whether the change from `before` to `after` keeps the rooms' rules: no
 	two rooms in one area, no room's area hallway, nothing guests reached cut
 	off, and no ready room's key furniture walled or furnished off from its
@@ -688,8 +714,19 @@ function Rooms.check(before: World, after: World, gone: Grid.Placed?): (boolean,
 	for _, id in rooms do
 		if readyIn(before, id, wb, rb) then
 			local ok, missing = readyIn(after, id, wa, ra)
-			if not ok and missing and #missing == 1 and missing[1] == "KeyUnreached" then
-				return false, "KeyCutOff"
+			if not ok and missing then
+				-- Cut off from the entrance (a wall or a piece across the corridor to its door).
+				if table.find(missing, "Unreached") then
+					return false, "CutsOff"
+				end
+				if #missing == 1 and missing[1] == "KeyUnreached" then
+					return false, "KeyCutOff"
+				end
+				-- Its key furniture where it stood, but no longer in the room: a wall split it off into a
+				-- pocket of its own. (A key piece moved or sold is the player's choice, not a cut-off.)
+				if table.find(missing, "KeyFurniture") and keyStillStands(before, after, id) then
+					return false, "KeyCutOff"
+				end
 			end
 		end
 	end

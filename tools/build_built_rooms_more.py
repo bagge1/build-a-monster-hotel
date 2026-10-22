@@ -21,7 +21,7 @@ stands on the floor (hung_check; MODELS.md, "Furniture", "Nothing floats").
 
 MORE_FURNITURE_IDS = ('DiningChair', 'SaladBar', 'CoffeeUrn', 'DessertTrolley', 'DartsBoard', 'ArcadeCabinet',
                       'PingPongTable', 'BoardGameShelf', 'ChessTable', 'CoffeeTable', 'Washstand', 'Toilet',
-                      'GardenBench', 'CrystalBallTable')
+                      'GardenBench', 'CrystalBallTable', 'VendingMachine', 'BarTable', 'PopcornCart')
 MORE_DECOR_IDS = ('PlantStand', 'HallStand', 'LuggageCart', 'Fireplace', 'TowelRack', 'Fountain', 'Candelabra')
 MORE_NAMES = {f'Furniture_{i}' for i in MORE_FURNITURE_IDS} | {f'Decor_{i}' for i in MORE_DECOR_IDS}
 
@@ -653,12 +653,101 @@ def f_crystal_ball_table():
          "candles and three cards dealt")
 
 
+def f_vending_machine():
+    # His ask (2026-10-22: "buffet bord, vinylspelare, automat, barbord osv"): a snack machine a guest walks up to.
+    mfurn('VendingMachine')
+    span('Body', (-1.0, 0.12, -0.75), (1.0, 5.3, 1.0), 'plum_dark', bevel=0.06)
+    for x in (-0.85, 0.85):
+        for z in (-0.55, 0.85):
+            cyl('Body', (x, 0, z), 0.12, 0.14, 'iron', n=6)
+    span('Body', (-1.08, 5.3, -0.82), (1.08, 5.46, 1.08), 'gold', bevel=0.03)
+    span('Body', (-0.95, 4.82, -0.9), (0.95, 5.26, -0.74), 'gold')                   # the name board, on the bay's plane
+    span('Glow_Warm_1', (-0.88, 4.88, -0.94), (0.88, 5.2, -0.88), 'lamp')
+    # The window bay standing a little out of the front: a lit back, four shelves of snacks, glass over them.
+    span('Body', (-0.92, 1.75, -0.9), (0.3, 4.75, -0.74), 'gold')
+    span('Glow_Cold_1', (-0.84, 1.85, -0.95), (0.22, 4.65, -0.88), 'moonglow')
+    snacks = ('crimson', 'amber', 'slime', 'rose', 'sky', 'pumpkin')
+    for k, y in enumerate((1.95, 2.65, 3.35, 4.05)):
+        span('Body', (-0.84, y, -1.03), (0.22, y + 0.05, -0.94), 'iron')
+        for j, x in enumerate((-0.7, -0.43, -0.16, 0.09)):
+            colr = snacks[(k * 4 + j) % len(snacks)]
+            span('Body', (x - 0.1, y + 0.05, -1.0), (x + 0.1, y + 0.48, -0.93), colr)
+    declare('Glass', False)
+    span('Glass', (-0.9, 1.77, -1.07), (0.28, 4.73, -1.04), 'moon')
+    for x0, x1 in ((-0.95, -0.89), (0.27, 0.33)):                                      # the bay's gold sides
+        span('Body', (x0, 1.72, -1.08), (x1, 4.78, -0.74), 'gold')
+    # The column of buttons and the coin slot to the right of the window, the pick-up flap under it.
+    span('Body', (0.42, 2.6, -0.81), (0.9, 4.5, -0.74), 'black')
+    for r in range(3):
+        for c in range(2):
+            span('Body', (0.48 + c * 0.22, 3.1 + r * 0.42, -0.86), (0.66 + c * 0.22, 3.4 + r * 0.42, -0.8), 'amber')
+    span('Body', (0.58, 2.72, -0.85), (0.76, 2.9, -0.8), 'gold')
+    span('Body', (-0.8, 0.55, -0.83), (0.25, 1.35, -0.74), 'black')
+    span('Body', (-0.7, 0.65, -0.87), (0.15, 0.8, -0.82), 'iron')
+    stand()
+    done('a snack vending machine: a plum cabinet with a gold top, a lit name board, a glass window bay with '
+         'four shelves of colourful snacks on a pale lit back, a column of amber buttons and a coin slot, a '
+         'pick-up flap at the bottom')
+
+
+def f_bar_table():
+    mfurn('BarTable')
+    cyl('Body', (0, 0, 0), 0.9, 0.16, 'iron', n=12)
+    # The top at a standing person's elbow (blind review 2026-10-22: at 3.3 it was chest-high).
+    cyl('Body', (0, 0.16, 0), 0.16, 2.7, 'iron', n=8)
+    cyl('Body', (0, 0.95, 0), 0.55, 0.08, 'gold', n=10)                               # a foot rest
+    cyl('Body', (0, 2.78, 0), 1.1, 0.08, 'gold', n=14)
+    cyl('Body', (0, 2.86, 0), 1.05, 0.14, 'wood_dark', n=14)
+    candle('Glow_Warm_1', 0.0, 3.0, 0.0, cup='crimson')
+    for x, z, colr in ((-0.6, -0.3, 'wine'), (0.55, 0.4, 'slime')):                   # two drinks, a straw each
+        cyl('Body', (x, 3.0, z), 0.18, 0.4, colr, n=8)
+        cyl('Body', (x + 0.06, 3.4, z), 0.03, 0.3, 'white', n=4)
+    stand()
+    done('a tall bar table to stand at: a round dark top with a gold edge on an iron column and base, a gold '
+         'foot rest, a candle in a cup and two drinks')
+
+
+def f_popcorn_cart():
+    mfurn('PopcornCart')
+    for x in (-0.88, 0.88):
+        for z in (-0.6, 0.6):
+            cyl('Body', (x, 0.18, z), 0.08, 0.5, 'gold', n=6)
+            sphere('Body', (x, 0.14, z), 0.14, 'black', n=6, rings=4)
+    span('Body', (-1.05, 0.66, -0.8), (1.05, 2.4, 0.8), 'crimson', bevel=0.06)
+    for x0 in (-0.9, 0.1):
+        span('Body', (x0, 0.9, -0.86), (x0 + 0.8, 2.15, -0.79), 'crimson_dark', bevel=0.03)
+    span('Body', (-1.08, 2.4, -0.86), (1.08, 2.55, 0.86), 'gold', bevel=0.03)
+    # The glass cabinet with a heap of popcorn and the kettle over it, under a crimson roof with a lamp.
+    # Popcorn heaped high and yellow, spilling from a tipped kettle on the cabinet's back post (blind review
+    # 2026-10-22: a grey heap under a hanging block read as a claw machine).
+    sphere('Body', (0, 2.55, 0), (0.8, 0.7, 0.52), 'honey', n=10, rings=4)
+    for x, y, z in ((-0.45, 3.05, -0.2), (0.3, 3.1, -0.25), (0.05, 3.2, 0.1), (0.5, 2.95, 0.2)):
+        sphere('Body', (x, y, z), 0.16, 'cream', n=6, rings=3)
+    lathe('Body', [(0.0, 0.0), (0.32, 0.04), (0.36, 0.32), (0.0, 0.36)], 'iron', n=8, m=at((0.45, 3.3, 0.35), rz=25))
+    cyl('Body', (0.6, 2.55, 0.5), 0.05, 0.8, 'iron', n=6)
+    declare('Glass', False)
+    span('Glass', (-0.88, 2.56, -0.7), (0.88, 4.39, 0.7), 'moon')
+    for x in (-0.93, 0.93):
+        for z in (-0.75, 0.75):
+            cyl('Body', (x, 2.55, z), 0.05, 1.85, 'gold', n=6)
+    span('Body', (-0.9, 3.4, -0.75), (-0.84, 3.7, -0.71), 'gold')                     # the door's handle
+    span('Body', (-1.02, 4.4, -0.85), (1.02, 4.5, 0.85), 'crimson', bevel=0.03)
+    for k in range(5):                                                                  # a striped canopy
+        x0 = -1.0 + k * 0.4
+        span('Body', (x0, 4.5, -0.84), (x0 + 0.4, 4.78 - 0.1 * abs(k - 2), 0.84), ('crimson', 'cream')[k % 2])
+    span('Glow_Warm_1', (-0.4, 4.25, -0.3), (0.4, 4.38, 0.3), 'lamp')                 # a lamp under the roof
+    stand()
+    done('a popcorn cart: a crimson cart on gold legs and little black casters, a glass cabinet on gold posts '
+         'with a heap of popcorn and an iron kettle, a crimson roof with a small lamp on top')
+
+
 def more_furniture():
     return {'DiningChair': f_dining_chair, 'SaladBar': f_salad_bar, 'CoffeeUrn': f_coffee_urn,
             'DessertTrolley': f_dessert_trolley, 'DartsBoard': f_darts_board, 'ArcadeCabinet': f_arcade_cabinet,
             'PingPongTable': f_ping_pong_table, 'BoardGameShelf': f_board_game_shelf, 'ChessTable': f_chess_table,
             'CoffeeTable': f_coffee_table, 'Washstand': f_washstand, 'Toilet': f_toilet,
-            'GardenBench': f_garden_bench, 'CrystalBallTable': f_crystal_ball_table}
+            'GardenBench': f_garden_bench, 'CrystalBallTable': f_crystal_ball_table,
+            'VendingMachine': f_vending_machine, 'BarTable': f_bar_table, 'PopcornCart': f_popcorn_cart}
 
 
 def more_decor():

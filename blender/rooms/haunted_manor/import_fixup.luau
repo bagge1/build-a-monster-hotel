@@ -717,6 +717,56 @@ local SET = {
 		light = 12,
 		lightAll = false,
 	},
+	Furniture_VendingMachine = {
+		pose = "Stand",
+		root = Vector3.new(0, 0.1, 0),
+		parts = {
+			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(3, 0.2, 3), collide = false },
+			Body = { c = Vector3.new(0, 2.73, 0), s = Vector3.new(2.16, 5.46, 2.16), collide = false },
+			Glow_Warm_1 = { c = Vector3.new(0, 5.04, -0.91), s = Vector3.new(1.76, 0.32, 0.06), collide = false },
+			Glow_Cold_1 = { c = Vector3.new(-0.31, 3.25, -0.915), s = Vector3.new(1.06, 2.8, 0.07), collide = false },
+			Glass = { c = Vector3.new(-0.31, 3.25, -1.055), s = Vector3.new(1.18, 2.96, 0.03), collide = false },
+			LOD_Proxy = { c = Vector3.new(0, 2.73, 0), s = Vector3.new(2.16, 5.46, 2.16), collide = false },
+		},
+		att = {
+			{ "Use", Vector3.new(0, 0, -3), Vector3.new(0, 0, 1) },
+		},
+		precise = {  },
+		light = 12,
+		lightAll = false,
+	},
+	Furniture_BarTable = {
+		pose = "Stand",
+		root = Vector3.new(0, 0.1, 0),
+		parts = {
+			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(3, 0.2, 3), collide = false },
+			Body = { c = Vector3.new(0, 1.85, 0), s = Vector3.new(2.1448, 3.7, 2.2), collide = false },
+			Glow_Warm_1 = { c = Vector3.new(0, 3.67, 0), s = Vector3.new(0.1039, 0.28, 0.12), collide = false },
+		},
+		att = {
+			{ "Use", Vector3.new(0, 0, -3), Vector3.new(0, 0, 1) },
+		},
+		precise = {  },
+		light = 12,
+		lightAll = false,
+	},
+	Furniture_PopcornCart = {
+		pose = "Stand",
+		root = Vector3.new(0, 0.1, 0),
+		parts = {
+			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(3, 0.2, 3), collide = false },
+			Body = { c = Vector3.new(0, 2.39, 0), s = Vector3.new(2.16, 4.78, 1.72), collide = false },
+			Glass = { c = Vector3.new(0, 3.475, 0), s = Vector3.new(1.76, 1.83, 1.4), collide = false },
+			Glow_Warm_1 = { c = Vector3.new(0, 4.315, 0), s = Vector3.new(0.8, 0.13, 0.6), collide = false },
+			LOD_Proxy = { c = Vector3.new(0, 2.39, 0), s = Vector3.new(2.16, 4.78, 1.72), collide = false },
+		},
+		att = {
+			{ "Use", Vector3.new(0, 0, -3), Vector3.new(0, 0, 1) },
+		},
+		precise = {  },
+		light = 12,
+		lightAll = false,
+	},
 }
 
 local out = {}
