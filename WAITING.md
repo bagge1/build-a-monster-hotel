@@ -132,6 +132,16 @@ Connect: knappen under fliken Plugins i Studio. -->
    `blender/_import/` över de gamla (kl. 16), så en ny import av alla 136
    filer tar med dem.
 
+14. **Importera en (1) modell: Skeleton med skelett, provet för riktiga
+   animationer** (2026-10-23, LAUNCH.md #6). Skeleton byggd igen med ett
+   skelett (benen `Hips`, `Spine`, `Head`, armar, lår och smalben) som alla
+   färgdelar följer; i Blender syns det rätt i en provpose. Nu ska det visas i
+   Studio att varje färgdel böjer sig med benen, att Tiny och Giant skalar
+   skelettet, och vad det kostar. Gör det **efter** importen i punkt 12, inte
+   under den: importera den enda filen i `blender/_import/` (orkestreraren
+   lägger den där) till **Workspace**, och i importfönstret, under **Rig
+   General**, välj **Rig Type: Custom**. Skriv *importerat*; resten är vårt.
+
 ## §1 Att titta på eller spela
 
 <!-- Det bara en människa kan bedöma: hur det känns, hur det ser ut.

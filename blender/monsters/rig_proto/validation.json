@@ -1,0 +1,40 @@
+{
+  "set": "monsters/rig_proto",
+  "models": {
+    "Skeleton": {
+      "checks": [
+        "part names round-trip (9 parts)",
+        "MODELS.md names present: Root, Body, Glow_Eyes_1/2, Nameplate, Hand, LOD_Proxy",
+        "every other part an allowed name (Skin/Trim/Dark/Light/Glow_<Colour>_n)",
+        "triangle counts as built",
+        "one material and one UV layer per part",
+        "closed geometry (all but the proxy)",
+        "3692 triangles within 4000",
+        "LOD_Proxy 273 within 300",
+        "height 4.90 studs against 5.0 (+/- 10 %)",
+        "nothing under the floor",
+        "Root 2 x 5.0 x 2, bottom at 0, centred on the origin",
+        "Nameplate and Hand markers where the manifest says",
+        "eyes on the front (-Y, Roblox -Z), Glow_Eyes_1 on the left",
+        "one armature (1)",
+        "bones round-trip: RigRoot, Hips, Spine, Head, Arm_L, Arm_R, Thigh_L, Shin_L, Thigh_R, Shin_R",
+        "RigRoot at the origin",
+        "every visible part skinned: 1-4 influences a vertex, summing to 1, none on RigRoot; Root, LOD_Proxy and the markers not skinned"
+      ],
+      "triangles": 3692,
+      "triangles_proxy": 273,
+      "height": 4.9,
+      "height_target": 5.0
+    }
+  },
+  "collision_precise": {
+    "Skeleton": []
+  },
+  "collision_note": "Monsters collide with nothing (MonsterKit: CanCollide/CanQuery/CanTouch off): Box on every mesh, PreciseConvexDecomposition on none.",
+  "not_validated": [
+    "nothing in Studio: the import, the axis conversion, the marker positions there, the colours arriving",
+    "whether the importer carries a material's plain colour to MeshPart.Color (manifest has every colour)",
+    "the look at the game's camera and at Tiny 0.5 / Giant 1.5 scale",
+    "the rig in Studio: Rig Type Custom, every colour part deforming, Model:ScaleTo moving the bones"
+  ]
+}

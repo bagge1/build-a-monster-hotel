@@ -1,0 +1,346 @@
+{
+  "set": "monsters/rig_proto",
+  "frame": "Blender -Y front, +Z up, +X the monster's left; Roblox (x, y, z) = Blender (-x, z, y)",
+  "models": [
+    {
+      "species": "Skeleton",
+      "shape": "Biped",
+      "fbx": "fbx/Skeleton.fbx",
+      "height_target": 5.0,
+      "height": 4.9,
+      "bounds_blender": [
+        [
+          -1.15,
+          -1.021,
+          0.0
+        ],
+        [
+          1.15,
+          0.88,
+          4.9
+        ]
+      ],
+      "triangles": 3692,
+      "triangles_proxy": 273,
+      "budget": {
+        "model": 4000,
+        "proxy": 300,
+        "mesh_cap": 20000
+      },
+      "parts": [
+        {
+          "part": "Body",
+          "triangles": 2504,
+          "colour": [
+            235,
+            230,
+            215
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Dark",
+          "triangles": 608,
+          "colour": [
+            45,
+            32,
+            60
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Glow_Eyes_1",
+          "triangles": 168,
+          "colour": [
+            150,
+            225,
+            255
+          ],
+          "material": "Neon"
+        },
+        {
+          "part": "Glow_Eyes_2",
+          "triangles": 168,
+          "colour": [
+            150,
+            225,
+            255
+          ],
+          "material": "Neon"
+        },
+        {
+          "part": "Trim",
+          "triangles": 208,
+          "colour": [
+            40,
+            170,
+            170
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Hand",
+          "triangles": 12,
+          "colour": [
+            255,
+            0,
+            255
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Nameplate",
+          "triangles": 12,
+          "colour": [
+            255,
+            0,
+            255
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Root",
+          "triangles": 12,
+          "colour": [
+            128,
+            128,
+            128
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "LOD_Proxy",
+          "triangles": 273,
+          "colour": [
+            235,
+            230,
+            215
+          ],
+          "material": "SmoothPlastic"
+        }
+      ],
+      "markers_blender": {
+        "Hand": [
+          -0.95,
+          -0.4,
+          1.6
+        ],
+        "Nameplate": [
+          0.0,
+          0.0,
+          5.9
+        ]
+      },
+      "markers_roblox": {
+        "Hand": [
+          0.95,
+          1.6,
+          -0.4
+        ],
+        "Nameplate": [
+          -0.0,
+          5.9,
+          0.0
+        ]
+      },
+      "markers_roblox_from_root": {
+        "Hand": [
+          0.95,
+          -0.9,
+          -0.4
+        ],
+        "Nameplate": [
+          -0.0,
+          3.4,
+          0.0
+        ]
+      },
+      "coplanar_overlaps": "none",
+      "rig": {
+        "shape": "Biped",
+        "object": "Rig",
+        "root_bone": "RigRoot",
+        "bones": [
+          {
+            "name": "RigRoot",
+            "parent": null,
+            "head_roblox": [
+              -0.0,
+              0.0,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.0,
+              0.5,
+              0.0
+            ],
+            "radius": 0.0,
+            "vertices": 0
+          },
+          {
+            "name": "Hips",
+            "parent": "RigRoot",
+            "head_roblox": [
+              -0.0,
+              1.5,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.0,
+              2.325,
+              0.0
+            ],
+            "radius": 0.6,
+            "vertices": 172
+          },
+          {
+            "name": "Spine",
+            "parent": "Hips",
+            "head_roblox": [
+              -0.0,
+              2.325,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.0,
+              3.15,
+              0.0
+            ],
+            "radius": 0.75,
+            "vertices": 282
+          },
+          {
+            "name": "Head",
+            "parent": "Spine",
+            "head_roblox": [
+              -0.0,
+              3.15,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.0,
+              5.0,
+              0.0
+            ],
+            "radius": 0.9,
+            "vertices": 1026
+          },
+          {
+            "name": "Arm_L",
+            "parent": "Spine",
+            "head_roblox": [
+              -0.8,
+              2.95,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.95,
+              1.6,
+              -0.4
+            ],
+            "radius": 0.225,
+            "vertices": 214
+          },
+          {
+            "name": "Arm_R",
+            "parent": "Spine",
+            "head_roblox": [
+              0.8,
+              2.95,
+              0.0
+            ],
+            "tail_roblox": [
+              0.95,
+              1.6,
+              -0.4
+            ],
+            "radius": 0.225,
+            "vertices": 214
+          },
+          {
+            "name": "Thigh_L",
+            "parent": "Hips",
+            "head_roblox": [
+              -0.37,
+              1.5,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.37,
+              0.92,
+              0.0
+            ],
+            "radius": 0.25,
+            "vertices": 110
+          },
+          {
+            "name": "Shin_L",
+            "parent": "Thigh_L",
+            "head_roblox": [
+              -0.37,
+              0.92,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.37,
+              0.1,
+              0.0
+            ],
+            "radius": 0.25,
+            "vertices": 168
+          },
+          {
+            "name": "Thigh_R",
+            "parent": "Hips",
+            "head_roblox": [
+              0.37,
+              1.5,
+              0.0
+            ],
+            "tail_roblox": [
+              0.37,
+              0.92,
+              0.0
+            ],
+            "radius": 0.25,
+            "vertices": 110
+          },
+          {
+            "name": "Shin_R",
+            "parent": "Thigh_R",
+            "head_roblox": [
+              0.37,
+              0.92,
+              0.0
+            ],
+            "tail_roblox": [
+              0.37,
+              0.1,
+              0.0
+            ],
+            "radius": 0.25,
+            "vertices": 168
+          }
+        ],
+        "landmarks": {
+          "hip_z": 1.5,
+          "knee_z": 0.92,
+          "hip_x": 0.37,
+          "neck_z": 3.15,
+          "shoulder": [
+            0.8,
+            0,
+            2.95
+          ],
+          "hand": [
+            -0.95,
+            -0.4,
+            1.6
+          ]
+        },
+        "max_influences": 4
+      },
+      "note": "Biped; a teal bow tie for the Front Desk."
+    }
+  ]
+}

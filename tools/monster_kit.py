@@ -690,7 +690,228 @@ def _proxy(parts, lo, hi):
     return px
 
 
-def finish(note=''):
+# --- The rig (MODELS.md, "The rig") -----------------------------------------------------
+# One armature per body shape. A template gives each bone its parent, head, tail and
+# capsule radius from landmarks (studs, Blender frame); a landmark's default is a
+# fraction of the height or read from the model (the Hand marker, the eyes, the
+# bounds), and a species overrides any of them with finish(rig={...}). The weights
+# are computed, never painted: see _skin().
+RIG_ROOT = 'RigRoot'
+RIG_OBJECT = 'Rig'              # the armature object's name, the FBX node the importer reads
+MAX_INFLUENCES = 4              # Roblox: at most 4 bones a vertex
+RIG_OWN = 0.15                  # a bone owns a piece when it is nearest to this share of its vertices
+RIG_RIGID = 0.8                 # ... and a piece goes rigidly to one bone owning this share
+RIG_BLEND = 0.05                # the soft blend's width across a piece's owners, x height
+RIG_FLOOR = 0.04                # a weight under this is dropped (then the rest renormalised)
+RIG_SHAPES = ('Biped', 'Quadruped', 'Blob', 'Float', 'Serpent')
+
+
+def _landmarks(shape, h, lo, hi, given, parts):
+    """The template's landmarks: `given` (finish(rig=...)) over the defaults."""
+    hand = m.markers.get('Hand', Vector((-0.2 * h, -0.05 * h, 0.4 * h)))
+    eye = _bounds([parts['Glow_Eyes_1']]) if 'Glow_Eyes_1' in parts else None
+    eye_z = (eye[0].z + eye[1].z) / 2 if eye else 0.85 * h
+    L = {}
+    if shape == 'Biped':
+        neck = min(0.72 * h, eye_z - 0.12 * h)
+        L = {'hip_z': 0.32 * h, 'knee_z': 0.16 * h, 'hip_x': 0.075 * h, 'neck_z': neck,
+             'shoulder': (0.16 * h, 0.0, neck - 0.05 * h), 'hand': tuple(hand)}
+    elif shape == 'Quadruped':
+        L = {'body_z': 0.5 * h, 'front_y': 0.55 * lo.y, 'back_y': 0.55 * hi.y, 'leg_x': 0.55 * hi.x,
+             'nose': (0.0, 0.9 * lo.y, 0.8 * h), 'tail': (0.0, hi.y, 0.6 * h)}
+    elif shape == 'Blob':
+        L = {'middle_z': 0.35 * h, 'top_z': 0.7 * h, 'side': (0.42 * max(hi.x, -lo.x), 0.0, 0.4 * h)}
+    elif shape == 'Float':
+        L = {'body_z': 0.4 * h, 'neck_z': 0.7 * h, 'tail_z': lo.z + 0.02 * h,
+             'shoulder': (0.15 * h, 0.0, 0.6 * h), 'hand': tuple(hand)}
+    elif shape == 'Serpent':
+        L = {'coil_top': (0.0, 0.0, 0.2 * h), 'neck_base': (0.0, 0.08 * h, 0.25 * h),
+             'head_base': (0.0, -0.06 * h, 0.78 * h), 'tail_mid': (0.2 * h, -0.15 * h, 0.06 * h),
+             'tail_tip': (0.3 * h, -0.3 * h, 0.06 * h)}
+    unknown = set(given) - set(L) - {'radius'}
+    assert not unknown, f'{m.id}: rig landmarks {sorted(unknown)} are not {shape}\'s ({sorted(L)})'
+    L.update({k_: v for k_, v in given.items() if k_ != 'radius'})
+    return L
+
+
+def _rig_bones(shape, h, L):
+    """[(name, parent, head, tail, radius)] in Blender studs, RigRoot first."""
+    V = lambda *p: Vector(p[0] if len(p) == 1 else p)
+    mir = lambda p: Vector((-p[0], p[1], p[2]))
+    b = [(RIG_ROOT, None, V(0, 0, 0), V(0, 0, 0.1 * h), 0.0)]
+    if shape == 'Biped':
+        hz, kz, hx, nz = L['hip_z'], L['knee_z'], L['hip_x'], L['neck_z']
+        waist = (hz + nz) / 2
+        sh_l = V(L['shoulder']) if L['shoulder'][0] > 0 else mir(L['shoulder'])
+        hand_r = V(L['hand'])
+        b += [('Hips', RIG_ROOT, V(0, 0, hz), V(0, 0, waist), 0.12 * h),
+              ('Spine', 'Hips', V(0, 0, waist), V(0, 0, nz), 0.15 * h),
+              ('Head', 'Spine', V(0, 0, nz), V(0, 0, h), 0.18 * h),
+              ('Arm_L', 'Spine', sh_l, mir(hand_r), 0.045 * h),
+              ('Arm_R', 'Spine', mir(sh_l), hand_r, 0.045 * h)]
+        for side, s in (('L', 1), ('R', -1)):
+            b += [(f'Thigh_{side}', 'Hips', V(s * hx, 0, hz), V(s * hx, 0, kz), 0.05 * h),
+                  (f'Shin_{side}', f'Thigh_{side}', V(s * hx, 0, kz), V(s * hx, 0, 0.02 * h), 0.05 * h)]
+    elif shape == 'Quadruped':
+        z, fy, by, lx = L['body_z'], L['front_y'], L['back_y'], L['leg_x']
+        b += [('Hips', RIG_ROOT, V(0, by, z), V(0, 0, z), 0.2 * h),
+              ('Spine', 'Hips', V(0, 0, z), V(0, fy, z), 0.2 * h),
+              ('Head', 'Spine', V(0, fy, z), V(L['nose']), 0.2 * h),
+              ('Tail', 'Hips', V(0, by, z), V(L['tail']), 0.06 * h)]
+        for name, parent, y in (('Leg_F', 'Spine', fy), ('Leg_B', 'Hips', by)):
+            for side, s in (('L', 1), ('R', -1)):
+                b.append((f'{name}{side}', parent, V(s * lx, y, z), V(s * lx, y, 0.02 * h), 0.08 * h))
+    elif shape == 'Blob':
+        mz, tz, sd = L['middle_z'], L['top_z'], V(L['side'])
+        b += [('Base', RIG_ROOT, V(0, 0, 0.02 * h), V(0, 0, mz), 0.45 * h),
+              ('Middle', 'Base', V(0, 0, mz), V(0, 0, tz), 0.45 * h),
+              ('Top', 'Middle', V(0, 0, tz), V(0, 0, h), 0.35 * h),
+              ('Side_L', 'Middle', V(0.2 * sd.x, 0, sd.z), sd, 0.15 * h),
+              ('Side_R', 'Middle', mir(V(0.2 * sd.x, 0, sd.z)), mir(sd), 0.15 * h)]
+    elif shape == 'Float':
+        bz, nz, tz = L['body_z'], L['neck_z'], L['tail_z']
+        sh_l = V(L['shoulder']) if L['shoulder'][0] > 0 else mir(L['shoulder'])
+        hand_r = V(L['hand'])
+        mid = (bz + tz) / 2
+        b += [('Body', RIG_ROOT, V(0, 0, bz), V(0, 0, nz), 0.25 * h),
+              ('Head', 'Body', V(0, 0, nz), V(0, 0, h), 0.25 * h),
+              ('Arm_L', 'Body', sh_l, mir(hand_r), 0.06 * h),
+              ('Arm_R', 'Body', mir(sh_l), hand_r, 0.06 * h),
+              ('Tail_1', 'Body', V(0, 0, bz), V(0, 0, mid), 0.25 * h),
+              ('Tail_2', 'Tail_1', V(0, 0, mid), V(0, 0, tz), 0.25 * h)]
+    elif shape == 'Serpent':
+        ct, nb, hb = V(L['coil_top']), V(L['neck_base']), V(L['head_base'])
+        b += [('Coil', RIG_ROOT, V(0, 0, 0.02 * h), ct, 0.3 * h),
+              ('Neck', 'Coil', nb, hb, 0.1 * h),
+              ('Head', 'Neck', hb, V(hb.x, hb.y, h), 0.15 * h),
+              ('Tail_1', 'Coil', ct, V(L['tail_mid']), 0.06 * h),
+              ('Tail_2', 'Tail_1', V(L['tail_mid']), V(L['tail_tip']), 0.06 * h)]
+    else:
+        raise AssertionError(f'{m.id}: no rig for the shape {shape} (MODELS.md, "The rig": {RIG_SHAPES})')
+    return b
+
+
+def _armature(bones):
+    """The armature object at the origin, rotation 0, scale 1 (Roblox's rule)."""
+    arm = bpy.data.armatures.new(f'{m.id}_Rig')
+    ob = bpy.data.objects.new(f'{m.id}.{RIG_OBJECT}', arm)
+    m.coll.objects.link(ob)
+    bpy.ops.object.select_all(action='DESELECT')
+    bpy.context.view_layer.objects.active = ob
+    ob.select_set(True)
+    bpy.ops.object.mode_set(mode='EDIT')
+    made = {}
+    for name, parent, head, tail, _r in bones:
+        eb = arm.edit_bones.new(name)
+        eb.head, eb.tail = head, tail
+        if (tail - head).length < 1e-3:
+            eb.tail = head + Vector((0, 0, 0.1))
+        eb.roll = 0.0
+        eb.use_deform = True
+        if parent:
+            eb.parent = made[parent]
+            eb.use_connect = False
+        made[name] = eb
+    bpy.ops.object.mode_set(mode='OBJECT')
+    return ob
+
+
+def _seg_dist(P, a, b):
+    a, b = np.array(a), np.array(b)
+    ab = b - a
+    t = np.clip(((P - a) @ ab) / max(ab @ ab, 1e-9), 0, 1)
+    return np.linalg.norm(P - (a + t[:, None] * ab), axis=1)
+
+
+def _islands(me):
+    """Each vertex's connected piece (union-find over the edges)."""
+    parent = list(range(len(me.vertices)))
+
+    def find(i):
+        while parent[i] != i:
+            parent[i] = parent[parent[i]]
+            i = parent[i]
+        return i
+    for e in me.edges:
+        a, b = find(e.vertices[0]), find(e.vertices[1])
+        if a != b:
+            parent[a] = b
+    return np.array([find(i) for i in range(len(me.vertices))])
+
+
+def _skin(ob, bones, h):
+    """Vertex groups for one part: each piece rigid to the bone owning almost all
+    of it, else blended across its owners by distance to each bone's capsule.
+    Returns {bone: vertices weighted} for the manifest."""
+    deform = [b for b in bones if b[0] != RIG_ROOT]
+    P = np.array([v.co[:] for v in ob.data.vertices])
+    D = np.stack([_seg_dist(P, b[2], b[3]) - b[4] for b in deform], axis=1)    # n x B, to each capsule
+    W = np.zeros_like(D)
+    isl = _islands(ob.data)
+    for key in np.unique(isl):
+        idx = np.nonzero(isl == key)[0]
+        d = D[idx]
+        share = np.bincount(d.argmin(axis=1), minlength=len(deform)) / len(idx)
+        top = int(share.argmax())
+        if share[top] >= RIG_RIGID:
+            W[idx, top] = 1.0
+            continue
+        owners = np.nonzero(share >= RIG_OWN)[0]
+        do = d[:, owners]
+        w = np.exp(-(do - do.min(axis=1, keepdims=True)) / (RIG_BLEND * h))
+        w /= w.sum(axis=1, keepdims=True)
+        w[w < RIG_FLOOR] = 0
+        if len(owners) > MAX_INFLUENCES:
+            cut = np.sort(w, axis=1)[:, -MAX_INFLUENCES][:, None]
+            w[w < cut] = 0
+        w /= w.sum(axis=1, keepdims=True)
+        W[np.ix_(idx, owners)] = w
+    assert np.allclose(W.sum(axis=1), 1, atol=1e-4), f'{m.id}/{ob.name}: a vertex unweighted'
+    assert ((W > 0).sum(axis=1) <= MAX_INFLUENCES).all(), f'{m.id}/{ob.name}: over {MAX_INFLUENCES} influences'
+    used = {}
+    for j, b in enumerate(deform):
+        nz = np.nonzero(W[:, j])[0]
+        if len(nz):
+            g = ob.vertex_groups.new(name=b[0])
+            for i in nz:
+                g.add([int(i)], float(W[i, j]), 'REPLACE')
+            used[b[0]] = int(len(nz))
+    return used
+
+
+def _rig(parts, lo, hi, given):
+    """The armature for this monster's shape, every visible part skinned and
+    parented to it; returns (armature object, the manifest's rig record)."""
+    shape = m.target['shape']
+    h = m.target['height']
+    L = _landmarks(shape, h, lo, hi, given or {}, parts)
+    bones = _rig_bones(shape, h, L)
+    radius = (given or {}).get('radius', {})
+    assert set(radius) <= {b[0] for b in bones}, f'{m.id}: radius for bones not in {shape}: {sorted(radius)}'
+    bones = [(n, p, hd, tl, radius.get(n, r)) for n, p, hd, tl, r in bones]
+    rig = _armature(bones)
+    weighted = {}
+    for name, ob in parts.items():
+        if name in ALL_MARKERS or name in ('Root', 'LOD_Proxy'):
+            continue
+        for bname, n in _skin(ob, bones, h).items():
+            weighted[bname] = weighted.get(bname, 0) + n
+        ob.parent = rig
+        ob.matrix_parent_inverse = Matrix.Identity(4)
+        mod = ob.modifiers.new('Armature', 'ARMATURE')
+        mod.object = rig
+    unused = [b[0] for b in bones if b[0] != RIG_ROOT and b[0] not in weighted]
+    assert not unused, f'{m.id}: bones moving nothing: {unused} (a landmark is off the model)'
+    rec = {'shape': shape, 'object': RIG_OBJECT, 'root_bone': RIG_ROOT,
+           'bones': [{'name': n, 'parent': p, 'head_roblox': roblox(hd), 'tail_roblox': roblox(tl),
+                      'radius': round(r, 3), 'vertices': weighted.get(n, 0)} for n, p, hd, tl, r in bones],
+           'landmarks': {k_: (round(v, 3) if isinstance(v, (int, float)) else [round(c, 3) for c in v])
+                         for k_, v in L.items()},
+           'max_influences': MAX_INFLUENCES}
+    return rig, rec
+
+
+def finish(note='', rig=None):
     """Everything after the shapes; REFUSES (AssertionError) a model breaking the
     MODELS.md "Monsters" contract. In order: the names (Body, two Glow_Eyes, the
     Nameplate and Hand markers, nothing outside the allowed names), no coplanar
@@ -803,21 +1024,29 @@ def finish(note=''):
     assert tris <= m.budget, f'{tag}: {tris} triangles > {m.budget}'
     assert ptris <= m.proxy_budget, f'{tag}: LOD_Proxy {ptris} > {m.proxy_budget}'
     assert max(r['triangles'] for r in records) <= MESH_TRIANGLE_CAP
+    # The rig (MODELS.md, "The rig"): a monster's armature, every visible part skinned to it.
+    armature, rig_rec = (_rig(parts, lo, hi, rig) if monster else (None, None))
+    assert monster or rig is None, f'{tag}: only a monster is rigged'
+    exported = dict(parts)
+    if armature is not None:
+        exported[RIG_OBJECT] = armature
     # Names in the FBX are the part names: Blender keeps one object per name, so
     # each model's parts are renamed to the bare names only while it exports.
-    for p, ob in parts.items():
+    for p, ob in exported.items():
         other = bpy.data.objects.get(p)
         if other is not None and other is not ob:
             other.name = f'_held_{other.name}'
         ob.name = p
     bpy.ops.object.select_all(action='DESELECT')
-    for ob in parts.values():
+    for ob in exported.values():
         ob.select_set(True)
     bpy.ops.export_scene.fbx(filepath=str(m.out / 'fbx' / f'{tag}.fbx'), use_selection=True,
-                             object_types={'MESH'}, apply_unit_scale=True, apply_scale_options='FBX_SCALE_UNITS',
+                             object_types={'MESH', 'ARMATURE'} if armature else {'MESH'},
+                             apply_unit_scale=True, apply_scale_options='FBX_SCALE_UNITS',
                              axis_forward='-Z', axis_up='Y', bake_anim=False, add_leaf_bones=False,
+                             use_armature_deform_only=False, primary_bone_axis='Y', secondary_bone_axis='X',
                              mesh_smooth_type='OFF', use_tspace=False, path_mode='STRIP', embed_textures=False)
-    for p, ob in parts.items():
+    for p, ob in exported.items():
         ob.name = f'{tag}.{p}'
     rec = {
         'species': tag, 'shape': t['shape'], 'fbx': f'fbx/{tag}.fbx',
@@ -830,7 +1059,7 @@ def finish(note=''):
         'markers_roblox': {k: roblox(v) for k, v in m.markers.items()},
         'markers_roblox_from_root': {k: roblox(v - Vector((0, 0, root_size[2] / 2))) for k, v in m.markers.items()},
         'coplanar_overlaps': 'none',
-        'rig': 'none: static meshes, no bones, no Animations folder (the client bobs them)',
+        'rig': rig_rec or 'none: static meshes, no bones, no Animations folder (the client bobs them)',
         'note': note,
     }
     if not monster:
@@ -842,11 +1071,12 @@ def finish(note=''):
         rec['facing_blender'] = list(t['facing']) if t['facing'] else None
         rec['facing_roblox'] = roblox(Vector(t['facing'])) if t['facing'] else None
         rec['need'] = list(t['need'])
-        rec['rig'] = rec['rig'].replace('the client bobs them', 'the client moves it whole')
+        rec['rig'] = 'none: static meshes, no bones (the client moves it whole)'
     if m.looks:
         rec['markers_look_roblox'] = {k_: roblox(v) for k_, v in m.looks.items()}
     _done.append(rec)
-    print(f'{tag}: {tris} triangles + proxy {ptris}, {top:.2f} of {h} studs, parts {sorted(parts)}', flush=True)
+    print(f'{tag}: {tris} triangles + proxy {ptris}, {top:.2f} of {h} studs, parts {sorted(parts)}'
+          + (f', rig {rig_rec["shape"]} {[b["name"] for b in rig_rec["bones"]]}' if rig_rec else ''), flush=True)
     return rec
 
 
@@ -876,6 +1106,8 @@ def finish_set(set_dir, offsets=4.2, sheet=True, cols=5, place=None, frame=None)
         for ob in list(coll.objects):
             if ob.get('part') in ('Root', 'LOD_Proxy') + ALL_MARKERS:
                 ob.hide_render = True
+            if ob.parent is not None:
+                continue          # a skinned part moves with its armature
             if place:
                 base = ob.matrix_world.copy()
                 ob.matrix_world = view(views[0]) @ base
@@ -918,6 +1150,49 @@ def finish_set(set_dir, offsets=4.2, sheet=True, cols=5, place=None, frame=None)
         else:
             _sheet(out / 'review' / 'sheet.png', px - 1.5, (min(cols, len(_done)) - 1) * offsets + 1.8,
                    -(rows - 1) * row_h - 0.6, max(7.6, max(r['height'] for r in _done) + 0.5))
+        if 'pose' in ARGS and any(isinstance(r['rig'], dict) for r in _done):
+            # The rig's proof: every armature in a test pose, the same sheet again.
+            for rec in _done:
+                if isinstance(rec['rig'], dict):
+                    _test_pose(bpy.data.objects[f'{rec["species"]}.{RIG_OBJECT}'], rec['rig']['shape'],
+                               rec['height_target'])
+            _sheet(out / 'review' / 'pose.png', px - 1.5, (min(cols, len(_done)) - 1) * offsets + 1.8,
+                   -(rows - 1) * row_h - 0.6, max(7.6, max(r['height'] for r in _done) + 0.5))
+            for rec in _done:
+                if isinstance(rec['rig'], dict):
+                    for pb in bpy.data.objects[f'{rec["species"]}.{RIG_OBJECT}'].pose.bones:
+                        pb.matrix_basis = Matrix.Identity(4)
+
+
+# A pose far out on every bone, to see in one picture that each part follows its
+# bone (the clips themselves are Luau: src/shared/MonsterMotion.luau). Degrees about
+# the model's axes at rest, Blender frame (+X the monster's left, -Y front, +Z up);
+# offsets x height.
+TEST_POSES = {
+    'Biped': {'Thigh_L': (-30, 0, 0), 'Shin_L': (35, 0, 0), 'Thigh_R': (30, 0, 0), 'Arm_L': (35, 0, 0),
+              'Arm_R': (-40, 0, -35), 'Spine': (-8, 0, 10), 'Head': (10, 0, 25)},
+    'Quadruped': {'Leg_FL': (-25, 0, 0), 'Leg_BR': (-25, 0, 0), 'Leg_FR': (25, 0, 0), 'Leg_BL': (25, 0, 0),
+                  'Head': (15, 0, 25), 'Tail': (0, 0, 40)},
+    'Blob': {'Top': ((0, 0, 0), (0, 0, -0.15)), 'Side_L': ((0, 0, 0), (0.1, 0, 0)),
+             'Side_R': ((0, 0, 0), (-0.1, 0, 0)), 'Middle': (0, 12, 0)},
+    'Float': {'Body': (-10, 0, 0), 'Tail_1': (25, 0, 0), 'Tail_2': (30, 0, 0), 'Arm_R': (0, -60, 0),
+              'Arm_L': (0, 30, 0), 'Head': (0, 0, 25)},
+    'Serpent': {'Neck': (15, 15, 0), 'Head': (10, 0, 30), 'Tail_1': (0, 0, 25), 'Tail_2': (0, 0, 30)},
+}
+
+
+def _test_pose(rig, shape, h):
+    for name, pose in TEST_POSES[shape].items():
+        rot, off = (pose, (0, 0, 0)) if isinstance(pose[0], (int, float)) else pose
+        pb = rig.pose.bones[name]
+        q = pb.bone.matrix_local.to_3x3()
+        r = Matrix.Identity(3)
+        for axis, deg in zip('XYZ', rot):
+            if deg:
+                r = Matrix.Rotation(math.radians(deg), 3, axis) @ r
+        basis = (q.inverted() @ r @ q).to_4x4()
+        basis.translation = q.inverted() @ (Vector(off) * h)
+        pb.matrix_basis = basis
 
 
 def import_luau(records):
@@ -977,9 +1252,24 @@ for id, parts in colours do
 {looks_set}			p:Destroy()
 		end
 	end
+	-- A rigged model (MODELS.md, "The rig"): any part the importer made that is not
+	-- the manifest's (the armature's node) is hidden like Root; the bones are reported.
+	local bones, homes, extra = 0, {{}}, {{}}
+	for _, b in m:GetDescendants() do
+		if b:IsA("Bone") then
+			bones += 1
+			homes[b.Parent.Name] = true
+		elseif b:IsA("BasePart") and b ~= root and not parts[b.Name] and b.Name ~= "Root" then
+			b.Transparency = 1
+			table.insert(extra, b.Name)
+		end
+	end
 	for _, p in m:GetDescendants() do
 		if p:IsA("SurfaceAppearance") then
 			p:Destroy()
+		elseif p:IsA("BasePart") and table.find(extra, p.Name) then
+			p.Anchored = true
+			p.CanCollide, p.CanQuery, p.CanTouch = false, false, false
 		elseif p:IsA("MeshPart") then
 			p.Anchored = true
 			p.CanCollide, p.CanQuery, p.CanTouch = false, false, false
@@ -994,7 +1284,13 @@ for id, parts in colours do
 			end
 		end
 	end
-	table.insert(out, id .. ": set")
+	local where = {{}}
+	for n in homes do
+		table.insert(where, n)
+	end
+	table.insert(out, id .. ": set" .. (if bones > 0
+		then ` ({{bones}} bones under {{table.concat(where, "/")}}; extra parts {{table.concat(extra, "/")}})`
+		else ""))
 end
 return table.concat(out, ", ")
 '''
@@ -1129,6 +1425,26 @@ def validate(set_dir, species):
             fc = sum(fp, Vector()) / len(fp)
             bc = (Vector([min(p[i] for p in bp) for i in range(3)]) + Vector([max(p[i] for p in bp) for i in range(3)])) / 2
             check(fc.dot(f) > bc.dot(f), f'{rec["front"]} ahead of the Body: faces Roblox {rec["facing_roblox"]}')
+        if isinstance(rec.get('rig'), dict):
+            # The rig round-trips: its bones by name, RigRoot at the origin, every visible
+            # part skinned (at most 4 influences, summing to 1, none on RigRoot), nothing else.
+            arms = [o for o in bpy.context.scene.objects if o.type == 'ARMATURE']
+            check(len(arms) == 1, f'one armature ({len(arms)})')
+            arm = arms[0]
+            names = [b['name'] for b in rec['rig']['bones']]
+            check(sorted(b.name for b in arm.data.bones) == sorted(names), f'bones round-trip: {", ".join(names)}')
+            check((arm.matrix_world @ arm.data.bones[RIG_ROOT].head_local).length < 1e-3, f'{RIG_ROOT} at the origin')
+            for n_, o in meshes.items():
+                groups = {g.index: g.name for g in o.vertex_groups}
+                if n_ in ('Root', 'LOD_Proxy') + ALL_MARKERS:
+                    assert not groups, (sid, n_, 'skinned')
+                    continue
+                assert RIG_ROOT not in groups.values(), (sid, n_, 'weights on RigRoot')
+                for v in o.data.vertices:
+                    ws = [g.weight for g in v.groups if g.weight > 1e-6]
+                    assert 1 <= len(ws) <= MAX_INFLUENCES and abs(sum(ws) - 1) < 1e-3, (sid, n_, v.index, ws)
+            check(True, f'every visible part skinned: 1-{MAX_INFLUENCES} influences a vertex, summing to 1, '
+                        f'none on {RIG_ROOT}; Root, LOD_Proxy and the markers not skinned')
         report['models'][sid] = {'checks': checks, 'triangles': total, 'triangles_proxy': rec['triangles_proxy'],
                                  'height': round(top, 3), 'height_target': h}
         report['collision_precise'][sid] = []
@@ -1136,7 +1452,8 @@ def validate(set_dir, species):
         'nothing in Studio: the import, the axis conversion, the marker positions there, the colours arriving',
         'whether the importer carries a material\'s plain colour to MeshPart.Color (manifest has every colour)',
         'the look at the game\'s camera and at Tiny 0.5 / Giant 1.5 scale',
-        'animations: none exist (no rig)']
+        'the rig in Studio: Rig Type Custom, every colour part deforming, Model:ScaleTo moving the bones'
+        if any(isinstance(recs[s].get('rig'), dict) for s in species) else 'animations: none exist (no rig)']
     if any(recs[s].get('kind') == 'tree' for s in species):
         report['collision_note'] = ('A tree\'s Root is its only collider (MODELS.md, "Street scenery: trees"): '
                                     'ForestRenderer sets CanCollide on Root at runtime, so a person walks into '

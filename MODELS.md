@@ -736,10 +736,48 @@ between its feet (or under its body). Heights against the 5-stud person:
 | `Glow_Eyes_1`… | Eyes, their own parts | Lit; the Shadow mutation's "glowing eyes" |
 | `Nameplate` (attachment) | Above the head | The guest's wish list (§4.3), the request bubble (§4.4) |
 | `Hand` (attachment) | The hand that holds a staff prop | Staff roles (§4.6) |
-| `Animations` (folder) | `Walk`, `Idle`, `Happy`, `Sad`, `CheckIn`, `Staff` (GDD §12) | Played by the client |
+| Bones (the rig, below) | One armature per body shape, skinning every visible part | Posed by the client every frame: the six clips of GDD §12 |
 
 A mutation's scale is the client's `Model:ScaleTo` (Tiny 0.5, Giant 1.5), so a
 model must look right at both.
+
+### The rig (GDD §18, 2026-10-23)
+
+Every monster carries **one armature for its body shape** (`look.shape` in
+`Species.luau`, recorded as `shape` and `rig` in the set's manifest), made by
+`monster_kit.finish()` and imported with **Rig Type: Custom**. Nothing is
+uploaded and there is no `Animations` folder: the clips are code
+(`src/shared/MonsterMotion.luau`), and `src/client/MonsterAnimator.luau` sets
+each `Bone.Transform` on the client. A model with no bones still bobs as before.
+
+| Shape | Bones (parent → children) |
+|---|---|
+| `Biped` | `RigRoot` → `Hips` → `Spine` → `Head`; `Spine` → `Arm_L`, `Arm_R`; `Hips` → `Thigh_L` → `Shin_L`, `Thigh_R` → `Shin_R` |
+| `Quadruped` | `RigRoot` → `Hips` → `Spine` → `Head`; `Hips` → `Tail`, `Leg_BL`, `Leg_BR`; `Spine` → `Leg_FL`, `Leg_FR` |
+| `Blob` | `RigRoot` → `Base` → `Middle` → `Top`; `Middle` → `Side_L`, `Side_R` |
+| `Float` | `RigRoot` → `Body` → `Head`; `Body` → `Arm_L`, `Arm_R`, `Tail_1` → `Tail_2` |
+| `Serpent` | `RigRoot` → `Coil` → `Neck` → `Head`; `Coil` → `Tail_1` → `Tail_2` |
+
+- `_L` is the monster's left (Blender +X, Roblox −X); `Arm_R` is the arm the
+  `Hand` marker is on.
+- **`RigRoot`** sits at the origin, carries no weights and is never posed by a
+  clip (Roblox: the root bone at the origin, no influences on it). The
+  armature object at the origin, rotation 0, scale 1.
+- **Every visible part is skinned** to the armature (`Body`, the colour parts,
+  `Glow_*`): at most **4 influences** a vertex, weights summing to 1, none on
+  `RigRoot`. `Root`, `LOD_Proxy` and the marker parts are not skinned.
+- The weights are the kit's, not hand-painted: each separate piece of a part
+  goes rigidly to the bone that owns almost all of it (an eye to `Head`, a
+  shin to `Shin_L`), and a piece spanning bones (a torso, a blob) is blended
+  across the bones that own it. Each bone owns a capsule round it (its radius
+  in the shape's template, a species may override it).
+- A clip states rotations in the model's axes at rest and offsets in the
+  species' heights, so it plays the same on every species of a shape, at
+  every mutation's scale. A bone a clip names that the model lacks is skipped.
+- The **Quadruped** shape was added to the four ruled (the Mud Puppy's,
+  `Species.luau`), the same way.
+
+The clips (GDD §12), one line each, are in `MonsterMotion.luau`'s header.
 
 **How markers travel** (the first set, 2026-10-19). FBX carries no
 attachments: `Nameplate` and `Hand` (the right hand) arrive as 0.2-stud marker

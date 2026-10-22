@@ -90,7 +90,8 @@ def skeleton():
     ball('Trim', (0, -0.5, 3.08), (0.08, 0.06, 0.08), n=8, k=4)
     marker('Hand', (-0.95, -0.4, 1.6))
     marker('Nameplate', (0, 0, 5.9))
-    return k.finish('Biped; a teal bow tie for the Front Desk.')
+    return k.finish('Biped; a teal bow tie for the Front Desk.',
+                    rig=dict(hip_z=1.5, knee_z=0.92, hip_x=0.37, neck_z=3.15, shoulder=(0.8, 0, 2.95)))
 
 
 def pumpkin_head():

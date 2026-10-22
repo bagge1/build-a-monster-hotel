@@ -17,6 +17,7 @@ local systems: { { Init: () -> (), Start: () -> () } } = {
 	require(Client.ForestRenderer) :: any, -- the trees round the street, client-only
 	require(Client.RatingPanel) :: any,
 	require(Client.ResidentRenderer) :: any,
+	require(Client.MonsterAnimator) :: any, -- the rigged monsters' bones (GDD §12)
 	require(Client.CollectionPanels) :: any,
 	require(Client.ProgressionPanel) :: any,
 	require(Client.LivePanels) :: any,
