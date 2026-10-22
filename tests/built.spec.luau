@@ -120,6 +120,10 @@ describe("Built rooms in the game", function()
 		expect.truthy(ok, `sold: {tostring(why)}`)
 	end)
 
+	it("a half edge sent as -0 is the same half edge as 0", function()
+		expect.eq(Rooms.edgeKey(1, -0, 3, 0), "1:0:3:0", "-0 normalised")
+	end)
+
 	it("decor stands on whole squares only", function()
 		local w = startHotel()
 		local ok, why = Rooms.canPlaceDecor(w, decor("Nightstand", 1, 4.5, 2, 0))

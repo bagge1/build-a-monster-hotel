@@ -139,6 +139,35 @@ local function sample(player: Player)
 	samples[player] = { at = os.clock(), income = GuestService.income(player) }
 end
 
+-- A fresh sample (a rebirth: guest income from before it must not count toward the new hotel's rate).
+function ChainService.resample(player: Player)
+	sample(player)
+end
+
+-- One tick for a player: pay the chain's other hotels and measure the played one.
+local function tick(player: Player)
+	local data = PlayerData.get(player)
+	local s = samples[player]
+	if not data or not s then
+		return
+	end
+	local now = os.clock()
+	local dt = now - s.at
+	if dt <= 0 then
+		return
+	end
+	data.rate = Chain.updateRate(data.rate, GuestService.income(player) - s.income, dt)
+	local pay = 0
+	for _, rec in data.chain do
+		pay += Chain.background(rec.rate, dt)
+	end
+	pay = math.floor(pay)
+	sample(player)
+	if pay > 0 then
+		PlayerData.earn(player, pay)
+	end
+end
+
 local function travel(player: Player, location: number)
 	local data = PlayerData.get(player)
 	if not data or location == data.location then
@@ -163,6 +192,9 @@ local function travel(player: Player, location: number)
 		end
 		data.cash -= cost
 	end
+	-- Settle the time since the last tick first: the hotels in the background earn it, the played one's rate
+	-- counts it (the sample is reset below, which would throw it away).
+	tick(player)
 	putAway(player, data)
 	takeOut(data, location)
 	HotelService.switchSamples(player, from, location)
@@ -178,30 +210,6 @@ local function travel(player: Player, location: number)
 	PlayerData.save(player)
 	for _, h in travelHandlers do
 		task.spawn(h, player, from)
-	end
-end
-
--- One tick for a player: pay the chain's other hotels and measure the played one.
-local function tick(player: Player)
-	local data = PlayerData.get(player)
-	local s = samples[player]
-	if not data or not s then
-		return
-	end
-	local now = os.clock()
-	local dt = now - s.at
-	if dt <= 0 then
-		return
-	end
-	data.rate = Chain.updateRate(data.rate, GuestService.income(player) - s.income, dt)
-	local pay = 0
-	for _, rec in data.chain do
-		pay += Chain.background(rec.rate, dt)
-	end
-	pay = math.floor(pay)
-	sample(player)
-	if pay > 0 then
-		PlayerData.earn(player, pay)
 	end
 end
 

@@ -116,6 +116,7 @@ local function rebirth(player: Player, force: boolean?)
 	PlayerData.resetHotel(data)
 	data.reviews = {}
 	data.rate = 0
+	ChainService.resample(player)
 	data.rebirths += 1
 	if req.prestige then
 		data.prestige += 1

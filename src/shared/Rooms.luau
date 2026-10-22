@@ -128,7 +128,8 @@ function Rooms.halfOf(k: number): (number, number)
 end
 
 function Rooms.edgeKey(floor: number, hx: number, hz: number, o: number): Edge
-	return `{floor}:{hx}:{hz}:{o}`
+	-- `+ 0` turns -0 into 0, so "-0" from a client is the same half edge as "0".
+	return `{floor + 0}:{hx + 0}:{hz + 0}:{o + 0}`
 end
 
 function Rooms.edgeOf(e: Edge): (number, number, number, number)
