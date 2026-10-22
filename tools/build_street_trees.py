@@ -13,9 +13,13 @@ most 800 triangles beside a 100-triangle proxy, one flat colour a part.
   fat and gnarled, a dark hollow with a pair of glowing eyes; rare).
 - Both: `Tree_Fir` (dark, five drooping tiers).
 - Frostfang Lodge: `Tree_SnowFir` (frostier tiers under caps of snow).
+- Bayou Spa: `Tree_Cypress` (a fluted trunk flaring into a low foot with knees round it, level limbs under broad
+  clumps, a flat-topped crown, Spanish moss in tasselled curtains). `-- grey variants` builds the three cypress
+  silhouettes (`Tree_Cypress`, `_CypressLean`, `_CypressTwin`) into review/silhouettes.png; only `Tree_Cypress`
+  is built otherwise.
 
 Run headless only:
-    blender -b --python-exit-code 1 -P tools/build_street_trees.py [-- norender] [-- grey] [-- only Tree_Fir]
+    blender -b --python-exit-code 1 -P tools/build_street_trees.py [-- norender] [-- grey [variants]] [-- only Tree_Fir]
 `-- grey` builds the silhouettes (every part one grey) and writes the sheet as
 review/silhouettes.png; the FBX it writes are overwritten by the next full build.
 """
@@ -31,7 +35,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import monster_kit as k  # noqa: E402
-from monster_kit import ball, lathe, rings, tube  # noqa: E402
+from monster_kit import ball, lathe, prism, rings, tube  # noqa: E402
 
 SET = 'street/trees'
 ORDER = ['Tree_Crooked', 'Tree_Bare', 'Tree_Hollow', 'Tree_Fir', 'Tree_SnowFir']
@@ -209,8 +213,126 @@ def tree_snowfir():
                     'Frostfang Lodge.')
 
 
+CYBARK = (104, 90, 78)
+CROWN = (74, 108, 66)
+MOSS = (154, 166, 132)
+
+
+def buttress(rt, flutes=5):
+    """A swamp tree's bell-bottomed foot (the silhouette variants'): fluted ridges spreading out at the waterline."""
+    ridge = lambda t: 1 + 0.24 * math.cos(flutes * t)  # noqa: E731
+    rings('Body', [(0, 0, 0, 2.5 * rt), (0, 0, 0.7, 2.0 * rt), (0, 0, 2.0, 1.45 * rt), (0, 0, 3.8, 1.1 * rt),
+                   (0, 0, 5.2, 0)], n=10, radial=ridge)
+
+
+def cypress_trunk(profile, flutes=5):
+    """The whole trunk as one fluted shape, from a wide flare at the waterline up to its tip, so the foot is the
+    trunk spreading into roots, never a trunk standing in a cup; the flutes uneven, not a star. `profile`
+    [(cx, cy, z, r)]. (A 3-lobe term keeps the foot's centroid on the axis with 2 x `flutes` sides.)"""
+    ridge = lambda t: 1 + 0.16 * math.cos(flutes * t) + 0.07 * math.sin(3 * t + 1)  # noqa: E731
+    rings('Body', profile, n=2 * flutes, radial=ridge)
+
+
+def knees(turn, heights, r=5.0):
+    """Cypress knees: rounded knobs poking out of the ground round the foot, evenly round it from angle `turn`
+    (so the foot's centroid stays on the origin), one per height."""
+    for i, h in enumerate(heights):
+        a = math.radians(turn) + 2 * math.pi * i / len(heights)
+        x, y = r * math.cos(a), r * math.sin(a)
+        rings('Body', [(x, y, 0, 0.55), (x, y, 0.65 * h, 0.42), (x, y, h, 0.16)], n=5)
+
+
+def pad(at, r, phase=0.0):
+    """A clump of needles: the cypress's crown, broad and level with a lumpy outline, never a coin."""
+    lumpy = lambda t: 1 + 0.14 * math.sin(3 * t + phase) + 0.06 * math.sin(5 * t + 2 * phase)  # noqa: E731
+    ball('Dark', at, (r, 0.85 * r, 0.4 * r), n=8, k=3, radial=lumpy)
+
+
+def moss(at, length, w=1.1, phase=0.0, turn=0.0):
+    """Spanish moss hanging from a limb or out of a clump's underside: a thin flat curtain, narrow where it hangs
+    from, widening, and ending in three ragged tassels of unequal length (never one point: a point is an icicle).
+    `turn` degrees about the vertical, so the curtains of one tree do not all face one way."""
+    x, y, z = at
+    L = length
+    j = 0.08 * L * math.sin(phase)      # each curtain's tassels a little different
+    outline = [(-0.3 * w, 0), (0.3 * w, 0), (0.85 * w, -0.45 * L), (0.6 * w, -0.78 * L - j),
+               (0.35 * w, -0.7 * L), (0.05 * w, -L + j), (-0.25 * w, -0.8 * L), (-0.55 * w, -0.93 * L - j),
+               (-0.8 * w, -0.5 * L)]
+    prism('Trim', [(x + ox, z + oz) for ox, oz in outline], y - 0.12, 0.24, rot=(0, 0, turn), pivot=(x, y, z))
+
+
+def limb(base, mid, tip, r, n=4):
+    """A near-level limb reaching out to carry a clump, thinning to the tip."""
+    tube('Body', [base, mid, tip], [r, 0.7 * r, 0.45 * r], n=n)
+
+
+def tree_cypress():
+    """Bayou Spa's swamp cypress: one fluted trunk flaring into a tall uneven foot, rounded knees close round it, a
+    dense flat-topped crown of overlapping clumps over a lower tier of two on short limbs, Spanish moss in long
+    ragged curtains hanging from the limbs and out of the clumps' undersides."""
+    begin('Tree_Cypress', {'Body': CYBARK, 'Dark': CROWN, 'Trim': MOSS})
+    cypress_trunk([(0, 0, 0, 3.4), (0, 0, 0.8, 2.8), (0, 0, 2.2, 2.1), (0, 0, 4.2, 1.6), (0.05, 0.05, 6.5, 1.35),
+                   (0.2, 0.1, 15, 1.1), (0.25, 0.15, 27.5, 0.45), (0.3, 0.2, 29, 0)])
+    knees(30, (1.6, 2.2, 1.3, 1.9), r=4.5)
+    # The lower tier: two short limbs, each under a broad clump reaching in to the trunk, so no stick shows bare.
+    limb((0.2, 0, 16), (2.4, 0.5, 17), (4.4, 1.0, 18), 0.9, n=5)
+    limb((0, 0, 18.5), (-2.2, -0.8, 19.4), (-4.2, -1.5, 20), 0.85, n=5)
+    # The crown: three clumps overlapping round the trunk's top into one flat-topped mass.
+    limb((0.15, 0.1, 23.5), (-1.2, 0.6, 25.4), (-2.4, 1.2, 26.6), 0.7)
+    limb((0.2, 0.1, 24.5), (1.4, -0.5, 26.2), (2.6, -1.0, 27.0), 0.65)
+    for i, (at, r) in enumerate((((4.6, 1.0, 18.6), 4.6), ((-4.4, -1.6, 20.4), 4.4), ((-2.4, 1.2, 27.1), 5.2),
+                                 ((2.6, -1.0, 27.5), 5.2), ((0.2, 2.6, 28.1), 4.4))):
+        pad(at, r, phase=1.3 * i)
+    for i, (x, y, z, length) in enumerate(((2.4, 0.5, 16.8, 7.0), (5.8, 2.6, 17.6, 6.0), (-2.2, -0.8, 19.2, 7.5),
+                                           (-5.6, -0.2, 19.6, 6.0), (3.6, -2.6, 26.2, 8.0))):
+        moss((x, y, z), length, w=0.75, phase=i, turn=(37 * i) % 120 - 60)
+    return k.finish('A swamp cypress: one fluted trunk flaring into a tall uneven foot with rounded knees close round '
+                    'it, a dense flat-topped crown of overlapping clumps of needles over a lower tier of two, and pale '
+                    'Spanish moss hanging in long ragged curtains from the limbs and the clumps. Bayou Spa.')
+
+
+def tree_cypress_lean():
+    """Silhouette variant B: the trunk leaning out over the water, one broad umbrella crown, heavy moss."""
+    begin('Tree_CypressLean', {'Body': CYBARK, 'Dark': CROWN, 'Trim': MOSS})
+    buttress(1.3)
+    tube('Body', [(0, 0, 3.6), (1.6, 0, 12), (4.2, 0.2, 20), (5.6, 0.2, 26)], [1.4, 1.05, 0.75, 0.4], n=7)
+    knees(150, (1.6, 2.0, 1.3))
+    for at, r in (((5.6, 0.2, 27.2), 6.2), ((0.6, 1.6, 25.0), 4.0), ((9.4, -1.2, 25.2), 3.8)):
+        pad(at, r)
+    limb((4.2, 0.2, 20), (2.0, 1.2, 22.6), (0.8, 1.6, 24.4), 0.5)
+    limb((4.6, 0.2, 21.5), (7.6, -0.8, 23.2), (9.2, -1.2, 24.6), 0.45)
+    for x, y, z, length in ((1.0, 2.6, 24.4, 7.0), (3.2, -2.6, 25.8, 8.0), (8.0, 2.6, 25.6, 7.5),
+                            (10.6, -2.2, 24.6, 6.0), (6.0, 4.6, 26.0, 6.5), (-0.8, -0.6, 24.2, 6.0)):
+        moss((x, y, z), length)
+    return k.finish('Silhouette B: a cypress leaning out, one broad umbrella crown, heavy moss.')
+
+
+def tree_cypress_twin():
+    """Silhouette variant C: two trunks rising from one fluted foot, each with its own stack of pads."""
+    begin('Tree_CypressTwin', {'Body': CYBARK, 'Dark': CROWN, 'Trim': MOSS})
+    buttress(1.5, flutes=6)
+    for s, top in ((1, 31.0), (-1, 26.0)):
+        tube('Body', [(0, 0, 3.6), (s * 1.6, 0.2, 11), (s * 2.6, 0.3, 20), (s * 3.0, 0.3, top)],
+             [1.2, 0.9, 0.65, 0.3], n=6)
+        for z, dx, r in ((top - 9, 4.2, 3.4), (top - 4, -3.0, 3.0), (top + 0.6, 0.4, 2.4)):
+            pad((s * (3.0 + dx), 0.6 * dx, z), r)
+            moss((s * (3.0 + dx * 0.9), 0.5 * dx, z - 0.4), 4.5)
+    knees(80, (1.8, 1.5, 1.3), r=5.6)
+    return k.finish('Silhouette C: twin cypress trunks from one foot, pads in tiers, moss.')
+
+
+k.scenery('Tree_Cypress', 32.0, 5.0, need=('Body', 'Dark', 'Trim'), proxy_colour=CROWN)
+VARIANTS = 'variants' in k.ARGS
+if VARIANTS:
+    k.scenery('Tree_CypressLean', 30.0, 5.0, need=('Body', 'Dark', 'Trim'), proxy_colour=CROWN)
+    k.scenery('Tree_CypressTwin', 32.0, 5.5, need=('Body', 'Dark', 'Trim'), proxy_colour=CROWN)
+    ORDER = ['Tree_Cypress', 'Tree_CypressLean', 'Tree_CypressTwin']
+else:
+    ORDER.append('Tree_Cypress')
+
 BUILDERS = {'Tree_Crooked': tree_crooked, 'Tree_Bare': tree_bare, 'Tree_Hollow': tree_hollow,
-            'Tree_Fir': tree_fir, 'Tree_SnowFir': tree_snowfir}
+            'Tree_Fir': tree_fir, 'Tree_SnowFir': tree_snowfir, 'Tree_Cypress': tree_cypress,
+            'Tree_CypressLean': tree_cypress_lean, 'Tree_CypressTwin': tree_cypress_twin}
 
 if __name__ == '__main__':
     names = [n for n in ORDER if not ONLY or n in ONLY]

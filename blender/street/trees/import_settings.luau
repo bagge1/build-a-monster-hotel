@@ -6,6 +6,7 @@ local colours = {
 	Tree_Hollow = { Body = {104, 82, 88}, Dark = {22, 14, 26}, Glow_Eyes_1 = {255, 214, 92}, Glow_Eyes_2 = {255, 214, 92}, LOD_Proxy = {104, 82, 88} },
 	Tree_Fir = { Body = {96, 76, 88}, Trim = {50, 92, 84}, LOD_Proxy = {50, 92, 84} },
 	Tree_SnowFir = { Body = {96, 76, 88}, Trim = {62, 104, 98}, Light = {226, 236, 246}, LOD_Proxy = {150, 172, 176} },
+	Tree_Cypress = { Body = {104, 90, 78}, Dark = {74, 108, 66}, Trim = {154, 166, 132}, LOD_Proxy = {74, 108, 66} },
 }
 local out = {}
 for id, parts in colours do

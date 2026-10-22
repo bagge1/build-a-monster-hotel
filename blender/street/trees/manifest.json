@@ -472,6 +472,109 @@
         "Trim",
         "Light"
       ]
+    },
+    {
+      "species": "Tree_Cypress",
+      "shape": "Tree",
+      "fbx": "fbx/Tree_Cypress.fbx",
+      "height_target": 32.0,
+      "height": 29.86,
+      "bounds_blender": [
+        [
+          -7.58,
+          -5.127,
+          0.0
+        ],
+        [
+          8.584,
+          5.595,
+          29.86
+        ]
+      ],
+      "triangles": 754,
+      "triangles_proxy": 67,
+      "budget": {
+        "model": 800,
+        "proxy": 100,
+        "mesh_cap": 20000
+      },
+      "parts": [
+        {
+          "part": "Body",
+          "triangles": 422,
+          "colour": [
+            104,
+            90,
+            78
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Dark",
+          "triangles": 160,
+          "colour": [
+            74,
+            108,
+            66
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Trim",
+          "triangles": 160,
+          "colour": [
+            154,
+            166,
+            132
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "Root",
+          "triangles": 12,
+          "colour": [
+            128,
+            128,
+            128
+          ],
+          "material": "SmoothPlastic"
+        },
+        {
+          "part": "LOD_Proxy",
+          "triangles": 67,
+          "colour": [
+            74,
+            108,
+            66
+          ],
+          "material": "SmoothPlastic"
+        }
+      ],
+      "markers_blender": {},
+      "markers_roblox": {},
+      "markers_roblox_from_root": {},
+      "coplanar_overlaps": "none",
+      "rig": "none: static meshes, no bones, no Animations folder (the client moves it whole)",
+      "note": "A swamp cypress: one fluted trunk flaring into a tall uneven foot with rounded knees close round it, a dense flat-topped crown of overlapping clumps of needles over a lower tier of two, and pale Spanish moss hanging in long ragged curtains from the limbs and the clumps. Bayou Spa.",
+      "kind": "tree",
+      "root_size_blender": [
+        5.0,
+        5.0,
+        32.0
+      ],
+      "root_size_roblox": [
+        5.0,
+        32.0,
+        5.0
+      ],
+      "front": null,
+      "facing_blender": null,
+      "facing_roblox": null,
+      "need": [
+        "Body",
+        "Dark",
+        "Trim"
+      ]
     }
   ]
 }

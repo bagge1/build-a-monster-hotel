@@ -908,9 +908,24 @@ and `execute_luau` only (no window focus) on `Test_World1021a`.
   `Forest.DrawDistance`, about as many as one street's forest drew before),
   far plots streamed out (Bayou's 2,038-part hotel not on the client), lights
   110 → 63 after the lamps' light was limited to 500 studs (`Lod`).
-- [?] Pictures from a plot toward the next street, and of each street's look:
-  Studio drew no frames this morning (RenderStepped 0, every `screen_capture`
-  timed out, in Edit too; the display asleep?). For a run with Studio drawing.
+- [x] Pictures from a plot toward the next street, and of each street's look
+  (2026-10-22 evening, Studio in front, `Test_World1021a`, `chainopen 2`, `3`):
+  seven views in `archive/screens/2026-10-22_world_*.jpg`; Studio draws frames
+  when it is in front. **Blind review** (one reviewer, 17 findings), triage:
+  *his call* (WAITING §2.46): no roof from the raised camera, the black
+  unowned-tile plate, Bayou not reading as a swamp and its lime curb glow,
+  Frostfang's box facade, lamps too dense, three pavings at the entrance, the
+  rectangular clearings, the dark square-cornered road between streets.
+  *False:* the Bayou hotel as a two-floor slab (the test profile's
+  interrupted `fill` bought every tile on two floors; Bayou has no facade kit,
+  so its walls are the blockout); a lamp in front of the door (picture 2
+  shows the path between two lamps); no bus (between buses).
+  **Open, for the next session to prove by geometry:** snowy firs seen from
+  Creepy Lane (pictures 2, 3: the blend between streets reaching street 1's
+  plots?); trees standing inside buildable plots (picture 2 beside plot 3,
+  picture 4); the flat orange objects at each street's ends (picture 2, both
+  ends); gaps in the near side's curb (pictures 2, 4, 6, x 310–540, 1380–1600
+  of the frame).
 - [ ] Two players on two streets at once (each street's bus and Hunter Night
   together): needs **Server and Clients**, his start.
 - [A] The looks: Frostfang's and Bayou's ground and lamps, the meadow between
@@ -1195,3 +1210,4 @@ Played by remotes and `execute_luau` only (no window focus) on
 - 2026-10-21 09:27 Rare decor sets and souvenirs (A.11.3) played by remotes on Test_Rare1021a (two playtests): finds by pity, roll, a happy Rare stay and a defended Hunter Night; souvenirs by move-in no. 3 and a VIP contract; placing for cash and NotFound refusals; the set bonus once per set per hotel (0.567 → 0.817 in the older room only); a duplicate; rebirth and rejoin keep the finds. One fix (the duplicate's wording). Found: furniture can wall off a room's key spot (built rooms). No errors of the game's own.
 - 2026-10-21 09:39 Ready means the key furniture is reached (Test_Ready1021a, by remotes, no window focus): a row of decor refused at the piece that would wall the bed off (KeyCutOff), a guest booked and walked round the row to the bed; the row closed by force: not ready (KeyUnreached) and no guest booked into it. No errors of the game's own.
 - 2026-10-21 10:22 Rare decor at Frostfang Lodge and Bayou Spa (Test_Rare1021b, by remotes, no window focus): a find by pity at location 2 gave the Aurora Lodge's Rug, then its Painting; at location 3 the Lantern Grove's Rug. No errors of the game's own.
+- 2026-10-22 23:45 The world's pictures (Test_World1021a, Studio in front): seven views of the three streets, a blind review triaged (WAITING §2.46, four geometry checks open). No errors of the game's own.

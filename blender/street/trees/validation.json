@@ -100,6 +100,26 @@
       "triangles_proxy": 80,
       "height": 33.2,
       "height_target": 33.0
+    },
+    "Tree_Cypress": {
+      "checks": [
+        "part names round-trip (5 parts)",
+        "MODELS.md names present: Body, Dark, LOD_Proxy, Root, Trim",
+        "every other part an allowed name (Skin/Trim/Dark/Light/Wheel_n/Glow_<Colour>_n)",
+        "triangle counts as built",
+        "one material and one UV layer per part",
+        "closed geometry (all but the proxy)",
+        "754 triangles within 800",
+        "LOD_Proxy 67 within 100",
+        "height 29.86 studs against 32.0 (+/- 10 %)",
+        "nothing under the floor",
+        "Root [5.0, 32.0, 5.0] (Roblox x, y, z), bottom at 0, centred on the origin",
+        " markers where the manifest says"
+      ],
+      "triangles": 754,
+      "triangles_proxy": 67,
+      "height": 29.86,
+      "height_target": 32.0
     }
   },
   "collision_precise": {
@@ -107,7 +127,8 @@
     "Tree_Bare": [],
     "Tree_Hollow": [],
     "Tree_Fir": [],
-    "Tree_SnowFir": []
+    "Tree_SnowFir": [],
+    "Tree_Cypress": []
   },
   "collision_note": "A tree's Root is its only collider (MODELS.md, \"Street scenery: trees\"): ForestRenderer sets CanCollide on Root at runtime, so a person walks into the trunk; Box on every mesh, PreciseConvexDecomposition on none.",
   "not_validated": [

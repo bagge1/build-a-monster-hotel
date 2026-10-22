@@ -1090,6 +1090,49 @@ Med Claudes skärmdump där det finns en. -->
      Frostfangs buffé (läses som en byrå), Bayous golvlampa (fågelbur).
      **Rekommendation:** bedöm dem i spelet efter importen.
 
+46. **Världen sedd i spelet: det granskaren såg som är ditt** (2026-10-22
+   kväll; de första bilderna av de tre gatorna, blind granskning, `TESTRUN.md`
+   "The world"). Bilderna ligger i `archive/screens/2026-10-22_world_*.jpg`.
+   Det som är kodfel tar nästa session (se nedan). Det här är utseende:
+   - **Hotellen har inget tak** sett från spelets höjda kamera; man ser ner
+     i en öppen låda (som i §2.13). **Rekommendation:** ett platt tak med
+     list över varje köpt ruta på översta våningen, i fasadens stil.
+   - **Tomtens oköpta rutor är en svart platta** som i snön läses som asfalt
+     (som i §2.24). **Rekommendation:** samma mark som platsens värld, med
+     en svag kant, i stället för svart.
+   - **Bayou Spa läses inte som träsk:** limegrön mark, samma kala träd som
+     Creepy Lane, inget vatten, vass eller dimma; hotellet, kanterna och
+     marken har samma gröna. Kantstenen lyser limegrönt längs hela gatan.
+     **Rekommendation:** mörkare, gråare grön mark, vass och ett par
+     vattenpölar mellan träden, kantstenen inte lysande. (Cypressen, §0,
+     ersätter klossträden.)
+   - **Frostfangs hotell läses som ett kontor:** platt blå låda med vita
+     band. **Rekommendation:** vänta på taket; timmer och snö på listen sedan.
+   - **Gatlyktorna:** 13–14 per sida, tätt, "en landningsbana".
+     **Rekommendation:** hälften så många, varannan borttagen.
+   - **Tre beläggningar på tio studs** framför entrén (rosa tegel, orange
+     kullersten, mörkt grus) och två olika kantstenar. **Rekommendation:**
+     forecourtens gång i trottoarens tegel.
+   - **Gatorna är skarpa rektanglar** med skogen i en rak linje och tomma
+     tomter ("en parkeringsplats"). **Rekommendation:** låt skogskanten gå
+     ojämnt in mot tomternas baksida.
+   - **Vägen mellan gatorna** går genom mörker utan lyktor eller kant och
+     svänger i rät vinkel vid gatans ände. **Rekommendation:** några lyktor
+     längs den och en rundad sväng.
+
+47. **Bayou Spas cypress: kronan** (2026-10-22 kväll; `blender/street/trees/`,
+   bilderna i `review/blind/`, silhuetterna i `review/silhouettes_cypress.png`).
+   Byggd och validerad: en räfflad stam som vidgar sig till en hög fot, fyra
+   knän, mossa i långa trasiga draperier och en krona av breda klumpar. Tre
+   blinda granskningar i rad läser kronan som "en akacia eller paraplytall
+   på en pinne", inte en cypress, hur tät den än görs. Stammen, foten och
+   mossan är rättade. **Alternativ:** (a) behåll klumparna, det är leksaksstilen;
+   (b) en kon av hängande, fransiga våningar som granarnas men platta och
+   olivgröna, med mossan draperad över grenarna (en sumpcypress är ett
+   barrträd med smal topp); (c) silhuett B, lutande med ett paraply.
+   **Rekommendation:** (b): det läses som cypress på avstånd och kostar inte
+   fler trianglar. Den är inte lagd för import förrän du valt.
+
 ## §3 Creator Hub och publicering
 
 1. ~~**Slå på Studio Access to API Services**~~ (gjort 2026-10-19: på i

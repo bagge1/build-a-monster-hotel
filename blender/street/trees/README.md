@@ -27,6 +27,7 @@ silhouettes; `review/blind/` the review pictures.
 | Tree_Hollow | 784 | 75 | 21.9 | 5 × 22 × 5 | Body, Dark, Glow_Eyes_1, Glow_Eyes_2 | Haunted Manor, rare; turned to face the street |
 | Tree_Fir | 260 | 80 | 36.0 | 10 × 36 × 10 | Body, Trim (needles) | both |
 | Tree_SnowFir | 350 | 80 | 33.2 | 9.5 × 33 × 9.5 | Body, Trim, Light (snow) | Frostfang Lodge |
+| Tree_Cypress | 780 | 66 | 30.8 | 5 × 32 × 5 | Body, Dark (clumps), Trim (moss) | Bayou Spa |
 
 Which trees stand where, and how many, is the code's (`src/shared/Forest.luau`,
 GDD Appendix A.1): a seeded scatter of about 650–700 round the street, each
@@ -119,3 +120,73 @@ with every mesh id). **Not synced yet:** `ReplicatedStorage.Scenery` does
 not exist in Studio until August restarts `rojo serve`, so the synced copies
 are not read back and the forest still draws its blockouts; the Workspace
 copies are deleted (the files are the source). Not seen in the game.
+
+## Tree_Cypress, Bayou Spa (2026-10-22)
+
+His word, 2026-10-22 ("kör på i den ordningen", the list's "Bayou Spas träd
+`Tree_Cypress`"), on the recommendation in WAITING §2.42: a cypress with
+moss. Built by the same script; it replaces `ForestRenderer`'s Luau blockout
+by name. **The look in one line:** a swamp cypress, a fluted grey-brown
+trunk flaring into a low wide foot with three rounded knees round it, two
+long level limbs low down under broad lumpy clumps of needles, a flat-topped
+crown of three clumps, and pale Spanish moss hanging from limbs and clumps in
+flat curtains ending in three ragged tassels.
+
+**Silhouettes.** Three grey variants (`review/silhouettes_cypress.png`, not
+in git; rebuilt by `-- grey variants`): A, straight with clumps in tiers
+(built); B, leaning with one broad umbrella crown; C, twin trunks from one
+foot. A was taken as the closest to his "layered, busy silhouettes"
+(`taste.md`); B and C stay for him to pick instead (WAITING §2.42).
+
+**Validated in Blender** as the other trees (`validation.json`, 6/6): 780
+triangles + a 66-triangle proxy, five parts, closed, no coplanar faces, the
+foot's centroid on the origin (the knees evenly round it), 30.8 of 32 studs.
+Nothing hangs lower than about 8 studs (the moss's lowest tassel), so a
+person walks under every limb; `Root` (5 × 32 × 5) is the only collider, so
+the knees and the flare never snag a foot.
+
+### Blind review 2026-10-22, round 1
+
+Views in `review/blind/` (front and side at 75 studs, the game's camera, the
+foot, a grove at the game's 0.8–1.25 scale, under the crown), rendered by a
+scratch script from `trees.blend`.
+**Confirmed and fixed:** the trunk standing in a separate pale "cup" (a
+buttress shape and a trunk tube overlapping: now one fluted shape from the
+ground to the tip); the moss reading as icicles or fangs (wedges to a point:
+now flat curtains ending in three unequal tassels, turned each its own way);
+moss bases showing through clumps (now every curtain starts inside the clump
+or limb it hangs from); the crown reading as stacked pucks, bonsai or acacia
+(now lumpy single clumps, two low and broad, three forming a flat top); the
+clumps' two lobes intersecting with a kink (one lumpy lobe each); branches too
+thin to see at distance (the low limbs 0.9, the crown's 0.55–0.7); knees as
+spikes (rounded knobs); the bell chest-high (the flare now low, 3.6 studs);
+the crown near-black (a lighter green).
+**False:** collision at the knees and flare (only `Root` collides, by
+contract); a ~30-stud tree under a three-floor hotel (MODELS.md sets trees at
+22–40 beside a 54-stud hotel, as every other tree).
+
+### Blind review 2026-10-22, rounds 2 and 3
+
+**Round 2 (new reviewer, new pictures). Confirmed and fixed:** the moss as
+claws or paws (now long narrow curtains, w 0.75, 6–8 studs, uneven tassels);
+the foot a short four-pointed star (now flaring over 6.5 studs, the flutes
+uneven); knees too far out (now 4.5 from the axis, four of them); the crown
+open with sky between pads on sticks (now three clumps overlapping round the
+trunk's top over a lower tier of two on short limbs). **False:** seams from
+smooth shading (the renders shade smoothly; the kit exports with smoothing
+off, and the game draws every face flat, as the firs in
+`archive/screens/2026-10-22_world_*.jpg`); the trunk's pale side (the render's
+light); square branches seen from below (four-sided limbs, the budget).
+**Round 3 (new reviewer). Still:** the crown reads as "a hex-pad acacia /
+umbrella pine on a stick", the third round running: **his call** (WAITING
+§2.47), not iterated further. Also seen: knees as cones on a compass (their
+tops still narrow); a moss curtain from the crown passing through a low clump
+(confirmed: (3.6, −2.6) hangs 8 studs through the clump at (4.6, 1.0) —
+fix with the crown); the crown lopsided seen from one side (false for the
+forest, which turns every tree at random; true for one hero tree); the clumps
+dark at night (a lighter green already; judge in the game). **False:**
+collision at knees and moss (only `Root` collides).
+
+**Not staged.** `Tree_Cypress` is built and validated (754 triangles + a
+67-triangle proxy, 6/6), but waits on his call on the crown before it goes to
+`blender/_import/`; the forest keeps its Luau blockout until then.
