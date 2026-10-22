@@ -191,3 +191,17 @@ without it ProfileStore quietly uses a mock (`DEVNOTES.md`). Open the
 published experience, never a local `.rbxl`. Check that a sync actually landed
 before trusting a playtest: Studio will run a stale copy of every script while
 the repository is correct. Never start a playtest while August is importing.
+
+## Agent skills
+
+### Issue tracker
+
+Issues and specs are local markdown files under `.scratch/`. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+The five default roles, each label its own name, recorded as a `Status:` line in the issue file. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: `GLOSSARY.md` at the root; decisions are August's dated rulings in `docs/GDD.md` §18, not `docs/adr/`. See `docs/agents/domain.md`.
