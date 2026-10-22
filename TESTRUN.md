@@ -1213,3 +1213,15 @@ Played by remotes and `execute_luau` only (no window focus) on
 - 2026-10-21 09:39 Ready means the key furniture is reached (Test_Ready1021a, by remotes, no window focus): a row of decor refused at the piece that would wall the bed off (KeyCutOff), a guest booked and walked round the row to the bed; the row closed by force: not ready (KeyUnreached) and no guest booked into it. No errors of the game's own.
 - 2026-10-21 10:22 Rare decor at Frostfang Lodge and Bayou Spa (Test_Rare1021b, by remotes, no window focus): a find by pity at location 2 gave the Aurora Lodge's Rug, then its Painting; at location 3 the Lantern Grove's Rug. No errors of the game's own.
 - 2026-10-22 23:45 The world's pictures (Test_World1021a, Studio in front): seven views of the three streets, a blind review triaged (WAITING §2.46, four geometry checks open). No errors of the game's own.
+
+## Launch import (2026-10-23)
+
+Played by remotes on the published place, profile `Test_Launch1023a`, Studio not in front (no pictures).
+
+- [x] The 136 saved models synced: no empty MeshPart, a PrimaryPart on each, scripts match the repo.
+- [x] Haunted Manor: the start hotel's walls, door, posts and Bed are kit clones (MeshIds match); nine placed decor and furniture pieces too.
+- [x] Glass: 0.55 and material Glass on the vending machine, popcorn cart, salad bar (all three locations) and the facade windows.
+- [x] Frostfang Lodge and Bayou Spa (`chainopen 2`, `3`): walls, door, posts and furniture are kit clones. Bayou's FrontDesk is still a blockout (no desk in its kit yet: launch #5).
+- [x] No game errors; plot parts 184 / 152 / 147.
+- [ ] Bookshelf and Wardrobe were not placed by the test's positions (no refusal came back): look into it.
+- [ ] Pictures of the placed models, with Studio in front.

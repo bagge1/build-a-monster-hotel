@@ -44,9 +44,9 @@ in `docs/GDD.md` §18 (2026-10-23), what waits on him in `WAITING.md` §4.
 
 | # | Work | Who | Needs | State |
 |---|---|---|---|---|
-| 1 | Bugs: a moved or placed stair can strand a booked floor (`BuildService` move/place, `Rooms.canPlacePiece`); a spec for CutsOff/KeyCutOff; Glass seen in Studio | orchestrator | Studio for Glass | stair fixed with a spec (2026-10-23); Glass not yet seen |
+| 1 | Bugs: a moved or placed stair can strand a booked floor (`BuildService` move/place, `Rooms.canPlacePiece`); a spec for CutsOff/KeyCutOff; Glass seen in Studio | orchestrator | Studio for Glass | done 2026-10-23: stair fixed with a spec; Glass 0.55 seen in a playtest |
 | 2 | Live and Studio DataStores apart (ProfileStore and leaderboards; no `Test_` keys in the live store) | orchestrator | — | built (`StoreNames`), not yet run on a published server |
-| 3 | The 136-FBX import (WAITING §0.12): settings, save, sync check, seen in the game (skill `import`) | August imports, orchestrator the rest | Studio | imported and saved 2026-10-23 (136 .rbxm); not yet seen in a playtest |
+| 3 | The 136-FBX import (WAITING §0.12): settings, save, sync check, seen in the game (skill `import`) | August imports, orchestrator the rest | Studio | done 2026-10-23: saved, and seen as kit clones in a playtest at all three locations (TESTRUN "Launch import"); no pictures yet |
 | 4 | Bayou Spa's 10 monsters (`Species.luau` rows), with the rig of #6 | session | Blender | open |
 | 5 | Bayou Spa's kit (walls, door, post, desk, furniture, decor, stairs, facade) and the VIP lounge decor set the VIP Lobby pass promises (§10.2) | session | Blender | open |
 | 6 | Real animations: an armature per body shape (Blob, Biped, Float, Serpent) in the build scripts, imported as Rig Type Custom; the six clips of §12 (walk, idle, happy, sad, check-in, staff) played on the client by `Bone.Transform`, nothing uploaded. Proved on one species first (every colour part deforms, Tiny/Giant scale, phone cost), then all 27 rebuilt | session | Blender, Studio | open |
