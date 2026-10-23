@@ -116,10 +116,6 @@ corners, the five sections outside and in) and its parts `layout.png`,
 `entrance.png`, `convex.png`, `concave.png`, `windows.png`,
 `windows_inside.png`.
 
-## Not staged
+## Imported
 
-Not in `blender/_import/` (August's import is using it). The FBXs are in
-the worktree that built them,
-`D:\Roblox\build-a-monster-hotel\.claude\worktrees\free-building-4b66e3\blender\facade\bayou_spa\fbx\`,
-or rebuilt after the merge (`-- styles bayou_spa`); stage them prefixed
-`BayouSpa_` as the other styles were, renamed on saving.
+Imported 2026-10-23 (WAITING §0.15): all 7 fixed up by `import_fixup.luau` (Box everywhere, `LOD_Proxy` hidden, Root the hidden PrimaryPart, the entrance's `Entrance` attachment and its lantern lit), read back in a separate call and saved unprefixed to `assets/HotelKit/BayouSpa/Facade_*.rbxm`; the synced copies match the import part for part (mesh ids, sizes, collision, no empty MeshPart). The live sync dropped `PrimaryPart`; set back to `Root` in Studio (the files have it). Not yet seen in a playtest.

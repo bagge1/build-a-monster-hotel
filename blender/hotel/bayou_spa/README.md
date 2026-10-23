@@ -141,10 +141,6 @@ on the stairs in this set's FBX. Studio runtime is not tested.
   (`tools/review_pieces.py`); the tiles in `review/pieces/`.
 - `review/contact_sheet.png`: the set laid out (the kit's sheet).
 
-## Not staged
+## Imported
 
-Not in `blender/_import/` (August's 136-model import is using it,
-2026-10-23). The FBXs are not in git: they are in the worktree that built
-them, `D:\Roblox\build-a-monster-hotel\.claude\worktrees\free-building-4b66e3\blender\hotel\bayou_spa\fbx\`,
-or rebuilt by the script after the merge, for the orchestrating session to
-stage (skill `import`; file names are the contract names, `Decor_*` included).
+Imported 2026-10-23 (WAITING §0.15): all 15 fixed up by `import_fixup.luau` (Box everywhere, `LOD_Proxy` hidden, Root the hidden PrimaryPart, the desk's 7 and each stair's 4 attachments, the glows lit), read back in a separate call and saved to `assets/HotelKit/BayouSpa/<Name>.rbxm`; the synced copies under `ServerStorage.HotelKit.BayouSpa` match the import part for part (mesh ids, sizes, collision, no empty MeshPart). The live sync dropped `PrimaryPart` on most; set back to `Root` in Studio (the files have it). Not yet seen in a playtest.

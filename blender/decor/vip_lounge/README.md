@@ -89,10 +89,6 @@ is not tested.
 `review/pieces_sheet.png` (each piece close up beside the 5-stud person,
 the sign on a wall), the tiles in `review/pieces/`; `review/contact_sheet.png`.
 
-## Not staged
+## Imported
 
-Not in `blender/_import/` (August's import is using it). The FBXs are in
-the worktree that built them,
-`D:\Roblox\build-a-monster-hotel\.claude\worktrees\free-building-4b66e3\blender\decor\vip_lounge\fbx\`,
-or rebuilt by the script after the merge; they save into
-`assets/HotelKit/HauntedManor/`.
+Imported 2026-10-23 (WAITING §0.15): all 5 fixed up by `import_fixup.luau` (Box everywhere, Root the hidden PrimaryPart, the sign's bulbs lit), read back in a separate call and saved to `assets/HotelKit/HauntedManor/Decor_Vip*.rbxm`; the synced copies under `ServerStorage.HotelKit.HauntedManor` match the import part for part (mesh ids, sizes, collision, no empty MeshPart). The live sync dropped `PrimaryPart`; set back to `Root` in Studio (the files have it). Not yet seen in a playtest.

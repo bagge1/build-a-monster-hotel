@@ -131,7 +131,12 @@ Connect: knappen under fliken Plugins i Studio. -->
    **Workspace**, och i importfönstret, under **Rig General**, välj **Rig
    Type: Custom**. Skriv *importerat*; resten är vårt.
 
-15. **Importera 27 modeller: Bayou Spas kit, fasad och VIP-loungen**
+15. ~~**Importera 27 modeller: Bayou Spas kit, fasad och VIP-loungen**~~
+   (gjort 2026-10-23: alla 27 inställda (Box överallt, `LOD_Proxy` dold,
+   `import_fixup.luau` för varje set), kontrollerade och sparade. Bayou Spas
+   kit 15 och fasad 7 utan prefix i `assets/HotelKit/BayouSpa/`, VIP-loungens
+   5 `Decor_Vip*` i `assets/HotelKit/HauntedManor/`; de synkade kopiorna
+   stämmer del för del. `blender/_import/` är tom. Setens `README.md`.)
    (2026-10-23, ditt ja samma dag). Alla filer i `blender/_import/` till
    **Workspace** i en dialog, med vanliga inställningar (inte Custom rig),
    och skriv *importerat*. Gärna en import i taget: först punkt 14 eller
