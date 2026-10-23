@@ -17,8 +17,9 @@
 
 	The clips, by how they should feel (what August judges):
 	- Walk: a bouncy toy stride (Biped and Quadruped), a squishy hop (Blob), a
-	  forward-leaning glide with a trailing tail (Float), an S-slither of the
-	  tail with the head held level (Serpent); its pace follows the speed.
+	  forward-leaning glide with a trailing tail (Float), a sway of the coil
+	  with the tail tip flicking and the head held level (Serpent); its pace
+	  follows the speed.
 	- Idle: breathing, a slow look around, a tail or hem that drifts.
 	- Happy: little hops with arms up in a V and a head wobble; a Blob bounces
 	  and wiggles, a Serpent sways its neck.
@@ -346,21 +347,21 @@ function shapes.Serpent(clip, t)
 			Coil = move(0, 0.01 * math.abs(math.sin(TAU * t)), 0, 0, 0.08 * math.sin(TAU * t), 0),
 			Neck = rot(0, 0, 0.15 * math.sin(TAU * t + 0.5)),
 			Head = rot(0, 0, -0.12 * math.sin(TAU * t + 1)),
-			Tail_1 = rot(0, 0.35 * math.sin(TAU * t + 1.5), 0),
-			Tail_2 = rot(0, 0.45 * math.sin(TAU * t + 2.5), 0),
+			Tail_1 = rot(0, 0.12 * math.sin(TAU * t + 1.5), 0),
+			Tail_2 = rot(0, 0.3 * math.sin(TAU * t + 2.5), 0),
 		}
 	elseif clip == "Idle" then
 		return {
 			Neck = rot(0.04 * wave(t, 3), 0, 0.06 * wave(t, 4)),
 			Head = rot(0, 0.2 * wave(t, 6), 0),
-			Tail_2 = rot(0, 0.3 * wave(t, 2), 0),
+			Tail_2 = rot(0, 0.2 * wave(t, 2), 0),
 		}
 	elseif clip == "Happy" then
 		return {
 			Coil = move(0, 0.04 * math.abs(wave(t, 1.4)), 0),
 			Neck = rot(0, 0, 0.3 * wave(t, 0.7)),
 			Head = rot(0.1, 0, -0.3 * wave(t, 0.7)),
-			Tail_2 = rot(0, 0.6 * wave(t, 0.35), 0),
+			Tail_2 = rot(0, 0.35 * wave(t, 0.35), 0),
 		}
 	elseif clip == "Sad" then
 		return {
@@ -373,7 +374,7 @@ function shapes.Serpent(clip, t)
 		return {
 			Neck = rot(0.2 * bump(u, 0, 0.4) - 0.5 * bow, 0, 0),
 			Head = rot(-0.4 * bow, 0, 0),
-			Tail_2 = rot(0, 0.6 * bump(u, 0, 0.5), 0),
+			Tail_2 = rot(0, 0.35 * bump(u, 0, 0.5), 0),
 		}
 	elseif clip == "Staff" then
 		local k = math.max(0, wave(t, 0.8))

@@ -699,8 +699,8 @@ def _proxy(parts, lo, hi):
 RIG_ROOT = 'RigRoot'
 RIG_OBJECT = 'Rig'              # the armature object's name, the FBX node the importer reads
 MAX_INFLUENCES = 4              # Roblox: at most 4 bones a vertex
-RIG_OWN = 0.15                  # a bone owns a piece when it is nearest to this share of its vertices
-RIG_RIGID = 0.8                 # ... and a piece goes rigidly to one bone owning this share
+RIG_OWN = 0.05                  # a bone owns a piece holding this share of its soft weight
+RIG_RIGID = 0.97                # ... and rigidly to one bone holding this share (else it bends with the surface under it)
 RIG_BLEND = 0.05                # the soft blend's width across a piece's owners, x height
 RIG_FLOOR = 0.04                # a weight under this is dropped (then the rest renormalised)
 RIG_SHAPES = ('Biped', 'Quadruped', 'Blob', 'Float', 'Serpent')
@@ -715,23 +715,31 @@ def _landmarks(shape, h, lo, hi, given, parts):
     if shape == 'Biped':
         neck = min(0.72 * h, eye_z - 0.12 * h)
         L = {'hip_z': 0.32 * h, 'knee_z': 0.16 * h, 'hip_x': 0.075 * h, 'neck_z': neck,
-             'shoulder': (0.16 * h, 0.0, neck - 0.05 * h), 'hand': tuple(hand)}
+             'shoulder': (0.16 * h, 0.0, neck - 0.05 * h), 'hand': tuple(hand), 'hand_l': None}
     elif shape == 'Quadruped':
         L = {'body_z': 0.5 * h, 'front_y': 0.55 * lo.y, 'back_y': 0.55 * hi.y, 'leg_x': 0.55 * hi.x,
              'nose': (0.0, 0.9 * lo.y, 0.8 * h), 'tail': (0.0, hi.y, 0.6 * h)}
     elif shape == 'Blob':
-        L = {'middle_z': 0.35 * h, 'top_z': 0.7 * h, 'side': (0.42 * max(hi.x, -lo.x), 0.0, 0.4 * h)}
+        L = {'middle_z': 0.35 * h, 'top_z': 0.7 * h, 'side': (0.9 * max(hi.x, -lo.x), 0.0, 0.4 * h)}
     elif shape == 'Float':
         L = {'body_z': 0.4 * h, 'neck_z': 0.7 * h, 'tail_z': lo.z + 0.02 * h,
-             'shoulder': (0.15 * h, 0.0, 0.6 * h), 'hand': tuple(hand)}
+             'shoulder': (0.15 * h, 0.0, 0.6 * h), 'hand': tuple(hand), 'hand_l': None}
     elif shape == 'Serpent':
         L = {'coil_top': (0.0, 0.0, 0.2 * h), 'neck_base': (0.0, 0.08 * h, 0.25 * h),
-             'head_base': (0.0, -0.06 * h, 0.78 * h), 'tail_mid': (0.2 * h, -0.15 * h, 0.06 * h),
-             'tail_tip': (0.3 * h, -0.3 * h, 0.06 * h)}
+             'head_base': (0.0, -0.06 * h, 0.78 * h), 'tail_base': None,
+             'tail_mid': (0.2 * h, -0.15 * h, 0.06 * h), 'tail_tip': (0.3 * h, -0.3 * h, 0.06 * h),
+             # A hydra's side necks: Tail_2 on Coil from its own base, not on Tail_1's tip.
+             'tail_2_base': None, 'tail_2_parent': 'Tail_1', 'tail_radius': 0.06 * h}
     unknown = set(given) - set(L) - {'radius'}
     assert not unknown, f'{m.id}: rig landmarks {sorted(unknown)} are not {shape}\'s ({sorted(L)})'
     L.update({k_: v for k_, v in given.items() if k_ != 'radius'})
     return L
+
+
+def _plain(L):
+    """The landmarks as the manifest writes them (None left out)."""
+    return {k_: (round(v, 3) if isinstance(v, (int, float)) else v if isinstance(v, str) else [round(c, 3) for c in v])
+            for k_, v in L.items() if v is not None}
 
 
 def _rig_bones(shape, h, L):
@@ -744,10 +752,11 @@ def _rig_bones(shape, h, L):
         waist = (hz + nz) / 2
         sh_l = V(L['shoulder']) if L['shoulder'][0] > 0 else mir(L['shoulder'])
         hand_r = V(L['hand'])
+        hand_l = V(L['hand_l']) if L['hand_l'] else mir(hand_r)    # a pose that is not mirrored
         b += [('Hips', RIG_ROOT, V(0, 0, hz), V(0, 0, waist), 0.12 * h),
               ('Spine', 'Hips', V(0, 0, waist), V(0, 0, nz), 0.15 * h),
               ('Head', 'Spine', V(0, 0, nz), V(0, 0, h), 0.18 * h),
-              ('Arm_L', 'Spine', sh_l, mir(hand_r), 0.045 * h),
+              ('Arm_L', 'Spine', sh_l, hand_l, 0.045 * h),
               ('Arm_R', 'Spine', mir(sh_l), hand_r, 0.045 * h)]
         for side, s in (('L', 1), ('R', -1)):
             b += [(f'Thigh_{side}', 'Hips', V(s * hx, 0, hz), V(s * hx, 0, kz), 0.05 * h),
@@ -763,19 +772,20 @@ def _rig_bones(shape, h, L):
                 b.append((f'{name}{side}', parent, V(s * lx, y, z), V(s * lx, y, 0.02 * h), 0.08 * h))
     elif shape == 'Blob':
         mz, tz, sd = L['middle_z'], L['top_z'], V(L['side'])
-        b += [('Base', RIG_ROOT, V(0, 0, 0.02 * h), V(0, 0, mz), 0.45 * h),
-              ('Middle', 'Base', V(0, 0, mz), V(0, 0, tz), 0.45 * h),
+        b += [('Base', RIG_ROOT, V(0, 0, 0.02 * h), V(0, 0, mz), 0.3 * h),
+              ('Middle', 'Base', V(0, 0, mz), V(0, 0, tz), 0.3 * h),
               ('Top', 'Middle', V(0, 0, tz), V(0, 0, h), 0.35 * h),
-              ('Side_L', 'Middle', V(0.2 * sd.x, 0, sd.z), sd, 0.15 * h),
-              ('Side_R', 'Middle', mir(V(0.2 * sd.x, 0, sd.z)), mir(sd), 0.15 * h)]
+              ('Side_L', 'Middle', V(0.4 * sd.x, 0, sd.z), sd, 0.2 * h),
+              ('Side_R', 'Middle', mir(V(0.4 * sd.x, 0, sd.z)), mir(sd), 0.2 * h)]
     elif shape == 'Float':
         bz, nz, tz = L['body_z'], L['neck_z'], L['tail_z']
         sh_l = V(L['shoulder']) if L['shoulder'][0] > 0 else mir(L['shoulder'])
         hand_r = V(L['hand'])
+        hand_l = V(L['hand_l']) if L['hand_l'] else mir(hand_r)
         mid = (bz + tz) / 2
         b += [('Body', RIG_ROOT, V(0, 0, bz), V(0, 0, nz), 0.25 * h),
               ('Head', 'Body', V(0, 0, nz), V(0, 0, h), 0.25 * h),
-              ('Arm_L', 'Body', sh_l, mir(hand_r), 0.06 * h),
+              ('Arm_L', 'Body', sh_l, hand_l, 0.06 * h),
               ('Arm_R', 'Body', mir(sh_l), hand_r, 0.06 * h),
               ('Tail_1', 'Body', V(0, 0, bz), V(0, 0, mid), 0.25 * h),
               ('Tail_2', 'Tail_1', V(0, 0, mid), V(0, 0, tz), 0.25 * h)]
@@ -784,8 +794,9 @@ def _rig_bones(shape, h, L):
         b += [('Coil', RIG_ROOT, V(0, 0, 0.02 * h), ct, 0.3 * h),
               ('Neck', 'Coil', nb, hb, 0.1 * h),
               ('Head', 'Neck', hb, V(hb.x, hb.y, h), 0.15 * h),
-              ('Tail_1', 'Coil', ct, V(L['tail_mid']), 0.06 * h),
-              ('Tail_2', 'Tail_1', V(L['tail_mid']), V(L['tail_tip']), 0.06 * h)]
+              ('Tail_1', 'Coil', V(L['tail_base']) if L['tail_base'] else ct, V(L['tail_mid']), L['tail_radius']),
+              ('Tail_2', L['tail_2_parent'], V(L['tail_2_base']) if L['tail_2_base'] else V(L['tail_mid']),
+               V(L['tail_tip']), L['tail_radius'])]
     else:
         raise AssertionError(f'{m.id}: no rig for the shape {shape} (MODELS.md, "The rig": {RIG_SHAPES})')
     return b
@@ -851,7 +862,10 @@ def _skin(ob, bones, h):
     for key in np.unique(isl):
         idx = np.nonzero(isl == key)[0]
         d = D[idx]
-        share = np.bincount(d.argmin(axis=1), minlength=len(deform)) / len(idx)
+        # A bone's share of the piece: its soft weight over all bones, averaged (a ring
+        # of vertices halfway between two bones counts for both, not for the first).
+        soft = np.exp(-(d - d.min(axis=1, keepdims=True)) / (RIG_BLEND * h))
+        share = (soft / soft.sum(axis=1, keepdims=True)).mean(axis=0)
         top = int(share.argmax())
         if share[top] >= RIG_RIGID:
             W[idx, top] = 1.0
@@ -862,8 +876,9 @@ def _skin(ob, bones, h):
         w /= w.sum(axis=1, keepdims=True)
         w[w < RIG_FLOOR] = 0
         if len(owners) > MAX_INFLUENCES:
-            cut = np.sort(w, axis=1)[:, -MAX_INFLUENCES][:, None]
-            w[w < cut] = 0
+            # Exactly the four largest a vertex (a tie must not let a fifth through).
+            drop = np.argsort(w, axis=1)[:, :-MAX_INFLUENCES]
+            np.put_along_axis(w, drop, 0, axis=1)
         w /= w.sum(axis=1, keepdims=True)
         W[np.ix_(idx, owners)] = w
     assert np.allclose(W.sum(axis=1), 1, atol=1e-4), f'{m.id}/{ob.name}: a vertex unweighted'
@@ -905,8 +920,7 @@ def _rig(parts, lo, hi, given):
     rec = {'shape': shape, 'object': RIG_OBJECT, 'root_bone': RIG_ROOT,
            'bones': [{'name': n, 'parent': p, 'head_roblox': roblox(hd), 'tail_roblox': roblox(tl),
                       'radius': round(r, 3), 'vertices': weighted.get(n, 0)} for n, p, hd, tl, r in bones],
-           'landmarks': {k_: (round(v, 3) if isinstance(v, (int, float)) else [round(c, 3) for c in v])
-                         for k_, v in L.items()},
+           'landmarks': _plain(L),
            'max_influences': MAX_INFLUENCES}
     return rig, rec
 
@@ -1177,7 +1191,7 @@ TEST_POSES = {
              'Side_R': ((0, 0, 0), (-0.1, 0, 0)), 'Middle': (0, 12, 0)},
     'Float': {'Body': (-10, 0, 0), 'Tail_1': (25, 0, 0), 'Tail_2': (30, 0, 0), 'Arm_R': (0, -60, 0),
               'Arm_L': (0, 30, 0), 'Head': (0, 0, 25)},
-    'Serpent': {'Neck': (15, 15, 0), 'Head': (10, 0, 30), 'Tail_1': (0, 0, 25), 'Tail_2': (0, 0, 30)},
+    'Serpent': {'Neck': (15, 15, 0), 'Head': (10, 0, 30), 'Tail_1': (0, 0, 8), 'Tail_2': (0, 0, 20)},
 }
 
 

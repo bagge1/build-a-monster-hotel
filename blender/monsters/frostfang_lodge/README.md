@@ -39,8 +39,10 @@ yellow) and written to the manifest.
 As the Haunted Manor set (`blender/monsters/haunted_manor/README.md`): the
 same frame (standing on the floor, facing Roblox −Z, origin between the feet,
 under the body for the AuroraSpirit, between the coil's floor contacts for the
-IceWyrm), one flat-coloured part per colour, no textures, static (no rig, no
-Animations folder), `Nameplate` and `Hand` as 0.2-stud marker parts the import
+IceWyrm), one flat-coloured part per colour, no textures, rigged (2026-10-23:
+an armature per body shape, MODELS.md "The rig"; `review/pose.png` a test pose;
+the IceWyrm's tail bones on the last third of a turn of its coil, the Aurora
+Spirit's raised arm its own landmarks), `Nameplate` and `Hand` as 0.2-stud marker parts the import
 step turns into attachments. New in the kit for this set: `tube()`, a swept
 tube (the wyrm's coil, the halo), used by the street set too.
 

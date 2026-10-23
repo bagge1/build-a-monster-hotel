@@ -35,7 +35,7 @@ All with the grey 5-stud person at the start of each row:
 | BogFrog | Blob | 3,488 | 271 | 2.90 / 3 | Dark, Light, Skin, Trim | Squat frog on its haunches, eye domes, wide grin, puffed throat sac (croaks a chord), black bow tie, lily-pad cap with a pink flower |
 | Mossling | Blob | 2,984 | 272 | 3.06 / 3 | Dark, Light, Skin, Trim | Soft moss ball, light-green tufts, a two-leaf sprout and a pink bud on top (sprouts grow where it sits) |
 | FireflySprite | Float | 2,644 | 274 | 3.00 / 3 | Dark, Light, Skin, Trim, Glow_Warm_1..2 | A long glowing amber lantern tail (`Glow_Warm_1`), a dark hood, dark wing cases and two pale wings, glowing antenna tips (`Glow_Warm_2`) |
-| MudPuppy | **Biped** (Species says Quadruped) | 3,780 | 273 | 2.84 / 3 | Dark, Light, Skin, Trim | Chubby pup dipped in mud to its middle with a drippy edge, muddy socks, mud on its head, cream muzzle, floppy ears, red pillbox bellhop cap with a cream band |
+| MudPuppy | Quadruped | 3,780 | 273 | 2.84 / 3 | Dark, Light, Skin, Trim | Chubby pup dipped in mud to its middle with a drippy edge, muddy socks, mud on its head, cream muzzle, floppy ears, red pillbox bellhop cap with a cream band |
 | GatorGhoul | Biped | 3,878 | 260 | 5.00 / 5 | Dark, Light, Skin, Trim | Upright gator, a far-too-wide grin with a row of round teeth, ghoul-green eyes on eye bumps, pale belly, Security vest, cap and gold badge, tail swept aside off the floor |
 | WillOWisp | Float | 2,162 | 278 | 3.95 / 4 | Dark, Light, Trim, Glow_Cold_1 | Pale-blue spirit under a glowing mint three-tongued flame and three motes (`Glow_Cold_1`), a shy "o" mouth and blush, little arms, wispy tail |
 | SwampHag | Biped | 3,898 | 270 | 4.86 / 5 | Dark, Light, Skin, Trim, Glow_Magic_1 | Hunched kindly hag: sage robe with a ragged hem, purple shawl, wild grey hair, a droopy witch hat tilted back, big round nose and one tooth, a teapot puffing mint fog (`Glow_Magic_1`) |
@@ -59,12 +59,12 @@ checks.
 
 ## Rigs (LAUNCH.md #6)
 
-Static meshes from the kit's export, like the other sets; the armature comes
-with the `animations` session's kit change. Each manifest record carries
-`rig_shape`, one of Blob, Biped, Float, Serpent. It equals Species.luau's
-`look.shape` except the MudPuppy (`Quadruped` there, no rig of its own): its
-front legs take the Biped's arms. If the rig is read from Species.luau, it
-needs that mapping.
+Rigged (2026-10-23): the kit gives each model the armature of its
+Species.luau `look.shape` (MODELS.md, "The rig"), `review/pose.png` a test
+pose. The MudPuppy takes the fifth, Quadruped rig made for it (it stands on
+four legs; its landmarks are its own). The BayouHydra's middle neck takes
+`Neck` and `Head` and its two side necks the Serpent's two tail bones, both
+hung on `Coil`, so the side heads look about on their own.
 
 ## What a model is made of
 
@@ -119,7 +119,7 @@ The final round's fixes were not re-reviewed by a fourth reviewer.
 ## His calls (for the approval round, LAUNCH.md "Looks")
 
 - **FireflySprite's colour.** Its Body is Species.luau's yellow (250, 230, 110), which keeps reading as a bee to two reviewers. *Keep yellow* or *a firefly's dark brown body*. **Recommendation:** dark brown (a Species.luau colour change, one line).
-- **MudPuppy's rig.** Species.luau says Quadruped; there are four rigs and no Quadruped. *Biped with the front legs as arms* (built) or *a fifth, Quadruped rig*. **Recommendation:** Biped for launch.
+- ~~**MudPuppy's rig.**~~ Answered by the build (2026-10-23): a fifth, Quadruped rig was made, so it takes Species.luau's own shape (Rigs, above).
 - **GatorGhoul, how ghoulish.** A cheerful gator in a Security cap; nothing says ghoul. *Keep cozy* or *paler and drooping, a tattered edge*. **Recommendation:** keep cozy for launch.
 - **WillOWisp's glow.** Its Body cannot be Neon (a mutation tints and re-materials it); the flame and motes glow. *As it is* or *a PointLight on it in the code*. **Recommendation:** a PointLight, after launch.
 - **MoonHeron's moon floats** behind its head, unattached, like the AuroraSpirit's halo. **Recommendation:** keep.

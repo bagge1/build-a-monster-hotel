@@ -315,7 +315,8 @@ def grand_banshee():
         ball('Trim', (x, front_y(G, 4.85 - abs(x) * 0.5, x, out=0.02), 4.85 - abs(x) * 0.5), 0.08, n=8, k=4)
     marker('Hand', (-1.0, -0.45, 4.3))
     marker('Nameplate', (0, 0, 8.0))
-    return k.finish('Float: an opera diva, one arm raised mid-song; gown hem 0.25 over the floor.')
+    return k.finish('Float: an opera diva, one arm raised mid-song; gown hem 0.25 over the floor.',
+                    rig=dict(neck_z=5.0, shoulder=(0.5, 0, 4.9), hand_l=(1.27, -0.15, 6.35)))
 
 
 BUILDERS = {'Slime': slime, 'Skeleton': skeleton, 'PumpkinHead': pumpkin_head, 'Ghost': ghost,

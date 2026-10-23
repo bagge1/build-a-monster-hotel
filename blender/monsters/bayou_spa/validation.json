@@ -15,7 +15,11 @@
         "nothing under the floor",
         "Root 2 x 3.0 x 2, bottom at 0, centred on the origin",
         "Nameplate and Hand markers where the manifest says",
-        "eyes on the front (-Y, Roblox -Z), Glow_Eyes_1 on the left"
+        "eyes on the front (-Y, Roblox -Z), Glow_Eyes_1 on the left",
+        "one armature (1)",
+        "bones round-trip: RigRoot, Base, Middle, Top, Side_L, Side_R",
+        "RigRoot at the origin",
+        "every visible part skinned: 1-4 influences a vertex, summing to 1, none on RigRoot; Root, LOD_Proxy and the markers not skinned"
       ],
       "triangles": 3488,
       "triangles_proxy": 271,
@@ -36,7 +40,11 @@
         "nothing under the floor",
         "Root 2 x 3.0 x 2, bottom at 0, centred on the origin",
         "Nameplate and Hand markers where the manifest says",
-        "eyes on the front (-Y, Roblox -Z), Glow_Eyes_1 on the left"
+        "eyes on the front (-Y, Roblox -Z), Glow_Eyes_1 on the left",
+        "one armature (1)",
+        "bones round-trip: RigRoot, Base, Middle, Top, Side_L, Side_R",
+        "RigRoot at the origin",
+        "every visible part skinned: 1-4 influences a vertex, summing to 1, none on RigRoot; Root, LOD_Proxy and the markers not skinned"
       ],
       "triangles": 2984,
       "triangles_proxy": 272,
@@ -57,7 +65,11 @@
         "nothing under the floor",
         "Root 2 x 3.0 x 2, bottom at 0, centred on the origin",
         "Nameplate and Hand markers where the manifest says",
-        "eyes on the front (-Y, Roblox -Z), Glow_Eyes_1 on the left"
+        "eyes on the front (-Y, Roblox -Z), Glow_Eyes_1 on the left",
+        "one armature (1)",
+        "bones round-trip: RigRoot, Body, Head, Arm_L, Arm_R, Tail_1, Tail_2",
+        "RigRoot at the origin",
+        "every visible part skinned: 1-4 influences a vertex, summing to 1, none on RigRoot; Root, LOD_Proxy and the markers not skinned"
       ],
       "triangles": 2644,
       "triangles_proxy": 274,
@@ -78,7 +90,11 @@
         "nothing under the floor",
         "Root 2 x 3.0 x 2, bottom at 0, centred on the origin",
         "Nameplate and Hand markers where the manifest says",
-        "eyes on the front (-Y, Roblox -Z), Glow_Eyes_1 on the left"
+        "eyes on the front (-Y, Roblox -Z), Glow_Eyes_1 on the left",
+        "one armature (1)",
+        "bones round-trip: RigRoot, Hips, Spine, Head, Tail, Leg_FL, Leg_FR, Leg_BL, Leg_BR",
+        "RigRoot at the origin",
+        "every visible part skinned: 1-4 influences a vertex, summing to 1, none on RigRoot; Root, LOD_Proxy and the markers not skinned"
       ],
       "triangles": 3780,
       "triangles_proxy": 273,
@@ -99,7 +115,11 @@
         "nothing under the floor",
         "Root 2 x 5.0 x 2, bottom at 0, centred on the origin",
         "Nameplate and Hand markers where the manifest says",
-        "eyes on the front (-Y, Roblox -Z), Glow_Eyes_1 on the left"
+        "eyes on the front (-Y, Roblox -Z), Glow_Eyes_1 on the left",
+        "one armature (1)",
+        "bones round-trip: RigRoot, Hips, Spine, Head, Arm_L, Arm_R, Thigh_L, Shin_L, Thigh_R, Shin_R",
+        "RigRoot at the origin",
+        "every visible part skinned: 1-4 influences a vertex, summing to 1, none on RigRoot; Root, LOD_Proxy and the markers not skinned"
       ],
       "triangles": 3878,
       "triangles_proxy": 260,
@@ -120,7 +140,11 @@
         "nothing under the floor",
         "Root 2 x 4.0 x 2, bottom at 0, centred on the origin",
         "Nameplate and Hand markers where the manifest says",
-        "eyes on the front (-Y, Roblox -Z), Glow_Eyes_1 on the left"
+        "eyes on the front (-Y, Roblox -Z), Glow_Eyes_1 on the left",
+        "one armature (1)",
+        "bones round-trip: RigRoot, Body, Head, Arm_L, Arm_R, Tail_1, Tail_2",
+        "RigRoot at the origin",
+        "every visible part skinned: 1-4 influences a vertex, summing to 1, none on RigRoot; Root, LOD_Proxy and the markers not skinned"
       ],
       "triangles": 2162,
       "triangles_proxy": 278,
@@ -141,7 +165,11 @@
         "nothing under the floor",
         "Root 2 x 5.0 x 2, bottom at 0, centred on the origin",
         "Nameplate and Hand markers where the manifest says",
-        "eyes on the front (-Y, Roblox -Z), Glow_Eyes_1 on the left"
+        "eyes on the front (-Y, Roblox -Z), Glow_Eyes_1 on the left",
+        "one armature (1)",
+        "bones round-trip: RigRoot, Hips, Spine, Head, Arm_L, Arm_R, Thigh_L, Shin_L, Thigh_R, Shin_R",
+        "RigRoot at the origin",
+        "every visible part skinned: 1-4 influences a vertex, summing to 1, none on RigRoot; Root, LOD_Proxy and the markers not skinned"
       ],
       "triangles": 3898,
       "triangles_proxy": 270,
@@ -162,7 +190,11 @@
         "nothing under the floor",
         "Root 2 x 6.0 x 2, bottom at 0, centred on the origin",
         "Nameplate and Hand markers where the manifest says",
-        "eyes on the front (-Y, Roblox -Z), Glow_Eyes_1 on the left"
+        "eyes on the front (-Y, Roblox -Z), Glow_Eyes_1 on the left",
+        "one armature (1)",
+        "bones round-trip: RigRoot, Coil, Neck, Head, Tail_1, Tail_2",
+        "RigRoot at the origin",
+        "every visible part skinned: 1-4 influences a vertex, summing to 1, none on RigRoot; Root, LOD_Proxy and the markers not skinned"
       ],
       "triangles": 3864,
       "triangles_proxy": 241,
@@ -183,7 +215,11 @@
         "nothing under the floor",
         "Root 2 x 6.0 x 2, bottom at 0, centred on the origin",
         "Nameplate and Hand markers where the manifest says",
-        "eyes on the front (-Y, Roblox -Z), Glow_Eyes_1 on the left"
+        "eyes on the front (-Y, Roblox -Z), Glow_Eyes_1 on the left",
+        "one armature (1)",
+        "bones round-trip: RigRoot, Hips, Spine, Head, Arm_L, Arm_R, Thigh_L, Shin_L, Thigh_R, Shin_R",
+        "RigRoot at the origin",
+        "every visible part skinned: 1-4 influences a vertex, summing to 1, none on RigRoot; Root, LOD_Proxy and the markers not skinned"
       ],
       "triangles": 3656,
       "triangles_proxy": 240,
@@ -204,7 +240,11 @@
         "nothing under the floor",
         "Root 2 x 7.0 x 2, bottom at 0, centred on the origin",
         "Nameplate and Hand markers where the manifest says",
-        "eyes on the front (-Y, Roblox -Z), Glow_Eyes_1 on the left"
+        "eyes on the front (-Y, Roblox -Z), Glow_Eyes_1 on the left",
+        "one armature (1)",
+        "bones round-trip: RigRoot, Hips, Spine, Head, Arm_L, Arm_R, Thigh_L, Shin_L, Thigh_R, Shin_R",
+        "RigRoot at the origin",
+        "every visible part skinned: 1-4 influences a vertex, summing to 1, none on RigRoot; Root, LOD_Proxy and the markers not skinned"
       ],
       "triangles": 3044,
       "triangles_proxy": 269,
@@ -229,6 +269,6 @@
     "nothing in Studio: the import, the axis conversion, the marker positions there, the colours arriving",
     "whether the importer carries a material's plain colour to MeshPart.Color (manifest has every colour)",
     "the look at the game's camera and at Tiny 0.5 / Giant 1.5 scale",
-    "animations: none exist (no rig)"
+    "the rig in Studio: Rig Type Custom, every colour part deforming, Model:ScaleTo moving the bones"
   ]
 }

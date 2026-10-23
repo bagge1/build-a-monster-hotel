@@ -43,8 +43,12 @@ attachment position are in `manifest.json`.
   `look.colour`; `Skin`, `Trim`, `Dark`, `Light` are the other flat colours.
   No `SurfaceAppearance`, so a mutation's `Color` and `Material` land
   (MonsterKit tints every part but `Root` and `Glow_*`).
-- **Static.** No rig, no bones, no `Animations` folder: the client bobs them.
-  GDD §12's six animations need rigs; not tonight's work.
+- **Rigged** (2026-10-23, LAUNCH.md #6): one armature per body shape, every
+  visible part skinned to it (MODELS.md, "The rig"); the six clips are code
+  (`MonsterMotion.luau`), no `Animations` folder. `review/pose.png` shows all
+  ten in a test pose (every part following its bone). The Skeleton was the
+  prototype, proved in Studio (`blender/monsters/rig_proto/README.md`); the
+  Grand Banshee's raised arm has its own landmarks (`hand_l`).
 - **Markers.** `Nameplate` (1 stud over the head, ~0.9 for the ghost) and
   `Hand` (the right hand; Slime's right side, Ghost's right nub) arrive as
   0.2-stud parts; `import_settings.luau` turns them into Attachments under

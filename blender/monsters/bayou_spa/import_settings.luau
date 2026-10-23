@@ -33,11 +33,38 @@ for id, parts in colours do
 			p:Destroy()
 		end
 	end
+	-- A rigged model (MODELS.md, "The rig"): the importer (Rig Type Custom) hangs every
+	-- part on a `RootPart` holding the bones, by Motor6D. Those joints stay, unanchored,
+	-- and Root anchors the whole; `RootPart` (not the manifest's) is hidden like Root;
+	-- the animation editor's `InitialPoses` and the AnimationController go (the clips
+	-- are code). The bones are reported.
+	for _, junk in { "InitialPoses", "AnimationController" } do
+		local j = m:FindFirstChild(junk)
+		if j then
+			j:Destroy()
+		end
+	end
+	local bones, homes, extra = 0, {}, {}
+	for _, b in m:GetDescendants() do
+		if b:IsA("Bone") then
+			bones += 1
+			homes[b.Parent.Name] = true
+		elseif b:IsA("BasePart") and b ~= root and not parts[b.Name] and b.Name ~= "Root" then
+			b.Transparency = 1
+			table.insert(extra, b.Name)
+		end
+	end
 	for _, p in m:GetDescendants() do
 		if p:IsA("SurfaceAppearance") then
 			p:Destroy()
+		elseif p:IsA("BasePart") and table.find(extra, p.Name) then
+			p.Anchored = false
+			p.Massless = true
+			p.CanCollide, p.CanQuery, p.CanTouch = false, false, false
 		elseif p:IsA("MeshPart") then
-			p.Anchored = true
+			-- Jointed (rigged): only Root anchors, the rest ride on their Motor6Ds.
+			p.Anchored = p == root or bones == 0
+			p.Massless = p ~= root and bones > 0
 			p.CanCollide, p.CanQuery, p.CanTouch = false, false, false
 			p.CollisionFidelity = Enum.CollisionFidelity.Box
 			local c = parts[p.Name]
@@ -50,6 +77,12 @@ for id, parts in colours do
 			end
 		end
 	end
-	table.insert(out, id .. ": set")
+	local where = {}
+	for n in homes do
+		table.insert(where, n)
+	end
+	table.insert(out, id .. ": set" .. (if bones > 0
+		then ` ({bones} bones under {table.concat(where, "/")}; extra parts {table.concat(extra, "/")})`
+		else ""))
 end
 return table.concat(out, ", ")

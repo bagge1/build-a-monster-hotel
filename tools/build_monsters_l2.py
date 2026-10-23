@@ -259,7 +259,10 @@ def ice_wyrm():
     marker('Hand', tuple(pts[0]))                                                              # the curled tail tip
     marker('Nameplate', (0, -0.2, 6.4))
     return k.finish('Serpent, a chubby ice wyrm coiled 1.5 turns on the floor (quirk "coils around the desk"), '
-                    'round horns, pale snout and belly, back fins, tiny wing nubs. Hand is the curled tail tip.')
+                    'round horns, pale snout and belly, back fins, tiny wing nubs. Hand is the curled tail tip.',
+                    # The tail: the last third of a turn, from the tip at the front round the -X side.
+                    rig=dict(neck_base=(0.4, 0.6, 1.6), head_base=(0, -0.2, 4.3), tail_base=(-1.58, 0.43, 0.26),
+                             tail_mid=(-1.57, -0.6, 0.37), tail_tip=(-0.91, -1.43, 0.7), radius={'Coil': 1.2}))
 
 
 def aurora_spirit():
@@ -293,7 +296,8 @@ def aurora_spirit():
     marker('Hand', (-1.0, -0.4, 4.25))
     marker('Nameplate', (0, 0, 7.4))
     return k.finish('Float: a serene mint spirit with teal hair and a gold halo, aurora curtains (teal and violet) '
-                    'hanging from its back, a paintbrush with a green glowing tip (quirk "paints the sky green").')
+                    'hanging from its back, a paintbrush with a green glowing tip (quirk "paints the sky green").',
+                    rig=dict(neck_z=5.0, shoulder=(0.48, 0, 4.85), hand_l=(1.0, -0.3, 5.6)))
 
 
 BUILDERS = {'SnowballSprite': snowball_sprite, 'IceImp': ice_imp, 'FrostTroll': frost_troll, 'Yeti': yeti,

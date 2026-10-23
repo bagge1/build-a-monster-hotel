@@ -147,6 +147,14 @@ Connect: knappen under fliken Plugins i Studio. -->
    och skriv *importerat*. Gärna en import i taget: först punkt 14 eller
    den här, sedan den andra.
 
+16. **Importera 27 monster med skelett: alla som finns** (2026-10-23, LAUNCH.md
+   #6). Haunted Manors 10, Frostfangs 7 och Bayou Spas 10, byggda igen med
+   skelett (samma utseende som de du har sagt ja till; nu böjer de sig).
+   Skeleton-provet i punkt 14 höll, så nu alla. Alla filer i
+   `blender/_import/` (orkestreraren lägger dem där) till **Workspace** i en
+   dialog, och under **Rig General** välj **Rig Type: Custom**. Skriv
+   *importerat*; resten är vårt. Inte mitt i en annan import.
+
 ## §1 Att titta på eller spela
 
 <!-- Det bara en människa kan bedöma: hur det känns, hur det ser ut.
