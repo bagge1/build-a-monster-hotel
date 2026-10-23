@@ -12,6 +12,10 @@
 	"Done") a "✓" rises at the `Door`. The server publishes them in
 	`ReplicatedStorage.Residents`; this draws and moves them locally. Read by
 	nothing.
+
+	A rigged model plays its clips (GDD §12, `MonsterAnimator`): Walk on the
+	move, Staff at the door, Happy for an entertainer and for a moment when a
+	job is done, Idle at its post. A model with no bones bobs whole, as before.
 ]]
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -19,8 +23,10 @@ local RunService = game:GetService("RunService")
 
 local Constants = require(ReplicatedStorage.Shared.Constants)
 local HotelPoints = require(ReplicatedStorage.Shared.HotelPoints)
+local Species = require(ReplicatedStorage.Shared.Species)
 local Staff = require(ReplicatedStorage.Shared.Staff)
 local MonsterKit = require(script.Parent.MonsterKit)
+local MonsterAnimator = require(script.Parent.MonsterAnimator)
 local Hud = require(script.Parent.Hud)
 local Ui = require(script.Parent.Ui)
 
@@ -41,6 +47,7 @@ type Drawn = {
 	errand: { Vector3 }, -- the leg being walked, decoded from `Path`
 	errandCode: string?,
 	connections: { RBXScriptConnection },
+	anim: MonsterAnimator.Animator?,
 }
 
 local drawn: { [Configuration]: Drawn } = {}
@@ -94,6 +101,7 @@ local function add(c: Instance, plotIndex: number)
 		errand = {},
 		errandCode = nil,
 		connections = {},
+		anim = nil,
 	}
 	drawn[c] = d
 	table.insert(
@@ -101,6 +109,9 @@ local function add(c: Instance, plotIndex: number)
 		c:GetAttributeChangedSignal("Phase"):Connect(function()
 			if c:GetAttribute("Phase") == "Done" then
 				popDone(c)
+				if d.anim then
+					MonsterAnimator.play(d.anim, "Happy", 1.2) -- the job done (§12)
+				end
 			end
 		end)
 	)
@@ -142,6 +153,7 @@ local function remove(c: Instance)
 		if d.model then
 			d.model:Destroy()
 		end
+		MonsterAnimator.release(d.anim)
 		for _, conn in d.connections do
 			conn:Disconnect()
 		end
@@ -205,6 +217,8 @@ local function frame(dt: number)
 		if d.model and (d.key ~= key or away or not plot) then
 			d.model:Destroy()
 			d.model = nil
+			MonsterAnimator.release(d.anim)
+			d.anim = nil
 		end
 		if plot and not away then
 			if not d.model then
@@ -217,6 +231,10 @@ local function frame(dt: number)
 					levelBadge(m, c:GetAttribute("Level") :: number? or 1)
 					m.Parent = workspace:FindFirstChild("ClientGuests") or workspace
 					d.model = m
+					local sp = Species.get(c:GetAttribute("Species") :: string)
+					d.anim = if sp
+						then MonsterAnimator.attach(m, sp.look.shape, sp.look.height)
+						else nil
 					d.key = key
 					d.pos = wingPoint(plot) or Vector3.zero
 					d.target = d.pos
@@ -258,8 +276,31 @@ local function frame(dt: number)
 				local flat = Vector3.new(dir.X, 0, dir.Z)
 				local look = if flat.Magnitude > 0.01 then flat.Unit else Vector3.new(0, 0, -1)
 				local phase = c:GetAttribute("Phase")
-				local bob = if walking and errandPos
-					then math.abs(math.sin(now * 8)) * 0.25 -- a guest's stride (GuestRenderer)
+				local anim = d.anim
+				if anim then
+					local camera = workspace.CurrentCamera
+					anim.dist = if camera then (camera.CFrame.Position - d.pos).Magnitude else 0
+					if walking then
+						MonsterAnimator.set(
+							anim,
+							"Walk",
+							if errandPos
+								then c:GetAttribute("Speed") :: number? or Constants.Staff.WalkSpeed
+								elseif role ~= "" then 12
+								else 3
+						)
+					elseif phase == "Work" then
+						MonsterAnimator.set(anim, "Staff")
+					elseif role == "Entertainment" then
+						MonsterAnimator.set(anim, "Happy")
+					else
+						MonsterAnimator.set(anim, "Idle")
+					end
+				end
+				local bob = if anim
+					then 0 -- its clips carry the motion
+					elseif walking and errandPos then math.abs(math.sin(now * 8))
+						* 0.25 -- a guest's stride (GuestRenderer)
 					elseif phase == "Work" then math.abs(math.sin(now * 5)) * 0.4 -- knocking
 					elseif role == "Entertainment" then math.abs(math.sin(now * 6)) * 0.6
 					else 0

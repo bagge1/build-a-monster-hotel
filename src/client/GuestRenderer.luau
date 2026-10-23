@@ -11,6 +11,11 @@
 	(§4.3: "press E, tap, or a gamepad button").
 
 	The render budget (§13.4): at most `MAX_DRAWN` guests, the nearest first.
+
+	A rigged model plays its clips (GDD §12, `MonsterAnimator`): Walk while it
+	moves, a happy or sad walk out after its stay, CheckIn when the desk sends
+	it to its room, Sad while its request waits, Idle otherwise. A model with no
+	bones bobs whole, as before.
 ]]
 
 local Players = game:GetService("Players")
@@ -22,6 +27,7 @@ local Species = require(ReplicatedStorage.Shared.Species)
 local Walk = require(ReplicatedStorage.Shared.Walk)
 local Mutations = require(ReplicatedStorage.Shared.Mutations)
 local MonsterKit = require(script.Parent.MonsterKit)
+local MonsterAnimator = require(script.Parent.MonsterAnimator)
 local Ui = require(script.Parent.Ui)
 
 local GuestRenderer = {}
@@ -39,6 +45,8 @@ type Drawn = {
 	label: TextLabel?,
 	prompt: ProximityPrompt?,
 	phase: number,
+	anim: MonsterAnimator.Animator?,
+	state: string?,
 }
 
 local drawn: { [Configuration]: Drawn } = {}
@@ -152,6 +160,8 @@ local function spawnModel(d: Drawn)
 		return
 	end
 	d.model = model
+	local sp = Species.get(d.config:GetAttribute("Species") :: string)
+	d.anim = if sp then MonsterAnimator.attach(model, sp.look.shape, sp.look.height) else nil
 	d.label = makeLabel(model)
 	model.Parent = workspace:FindFirstChild("ClientGuests")
 		or (function()
@@ -177,6 +187,8 @@ local function add(c: Instance)
 		label = nil,
 		prompt = nil,
 		phase = math.random() * 10,
+		anim = nil,
+		state = c:GetAttribute("State") :: string?,
 	}
 	drawn[c] = d
 	readPath(d)
@@ -185,6 +197,14 @@ local function add(c: Instance)
 	end)
 	c:GetAttributeChangedSignal("T0"):Connect(function()
 		readPath(d)
+	end)
+	c:GetAttributeChangedSignal("State"):Connect(function()
+		local state = c:GetAttribute("State") :: string?
+		-- The desk sends it to its room: the check-in flourish (§12).
+		if d.anim and state == "ToRoom" and d.state == "Queued" then
+			MonsterAnimator.play(d.anim, "CheckIn")
+		end
+		d.state = state
 	end)
 	for _, a in { "State", "Request", "Wish", "Queue", "VipFor" } do
 		c:GetAttributeChangedSignal(a):Connect(function()
@@ -199,6 +219,7 @@ local function remove(c: Instance)
 		if d.model then
 			d.model:Destroy()
 		end
+		MonsterAnimator.release(d.anim)
 		drawn[c :: Configuration] = nil
 	end
 end
@@ -230,14 +251,33 @@ local function frame()
 		elseif not show and d.model then
 			d.model:Destroy()
 			d.model = nil
+			MonsterAnimator.release(d.anim)
+			d.anim = nil
 			d.label = nil
 			d.prompt = nil
 		end
 		if d.model then
 			local pos, dir, moving = at(d, now)
-			local bob = if moving
-				then math.abs(math.sin((now + d.phase) * 8)) * 0.25
+			local anim = d.anim
+			local bob = if anim
+				then 0 -- its clips carry the bounce
+				elseif moving then math.abs(math.sin((now + d.phase) * 8)) * 0.25
 				else math.sin((now + d.phase) * 2) * 0.05
+			if anim then
+				anim.dist = entry.dist
+				local c = d.config
+				local mood = if c:GetAttribute("State") == "Leaving"
+						and c:GetAttribute("Happy") ~= nil
+					then (if c:GetAttribute("Happy") then "Happy" else "Sad")
+					else nil
+				if moving then
+					MonsterAnimator.set(anim, "Walk", d.speed, mood, if mood then 0.35 else 0)
+				elseif c:GetAttribute("Request") then
+					MonsterAnimator.set(anim, "Sad")
+				else
+					MonsterAnimator.set(anim, mood or "Idle")
+				end
+			end
 			local flat = Vector3.new(dir.X, 0, dir.Z)
 			local look = if flat.Magnitude > 0.01 then flat.Unit else Vector3.new(0, 0, -1)
 			d.model:PivotTo(
