@@ -1,0 +1,234 @@
+{
+  "set": "monsters/bayou_spa",
+  "models": {
+    "BogFrog": {
+      "checks": [
+        "part names round-trip (11 parts)",
+        "MODELS.md names present: Root, Body, Glow_Eyes_1/2, Nameplate, Hand, LOD_Proxy",
+        "every other part an allowed name (Skin/Trim/Dark/Light/Glow_<Colour>_n)",
+        "triangle counts as built",
+        "one material and one UV layer per part",
+        "closed geometry (all but the proxy)",
+        "3488 triangles within 4000",
+        "LOD_Proxy 271 within 300",
+        "height 2.90 studs against 3.0 (+/- 10 %)",
+        "nothing under the floor",
+        "Root 2 x 3.0 x 2, bottom at 0, centred on the origin",
+        "Nameplate and Hand markers where the manifest says",
+        "eyes on the front (-Y, Roblox -Z), Glow_Eyes_1 on the left"
+      ],
+      "triangles": 3488,
+      "triangles_proxy": 271,
+      "height": 2.9,
+      "height_target": 3.0
+    },
+    "Mossling": {
+      "checks": [
+        "part names round-trip (11 parts)",
+        "MODELS.md names present: Root, Body, Glow_Eyes_1/2, Nameplate, Hand, LOD_Proxy",
+        "every other part an allowed name (Skin/Trim/Dark/Light/Glow_<Colour>_n)",
+        "triangle counts as built",
+        "one material and one UV layer per part",
+        "closed geometry (all but the proxy)",
+        "2984 triangles within 4000",
+        "LOD_Proxy 272 within 300",
+        "height 3.06 studs against 3.0 (+/- 10 %)",
+        "nothing under the floor",
+        "Root 2 x 3.0 x 2, bottom at 0, centred on the origin",
+        "Nameplate and Hand markers where the manifest says",
+        "eyes on the front (-Y, Roblox -Z), Glow_Eyes_1 on the left"
+      ],
+      "triangles": 2984,
+      "triangles_proxy": 272,
+      "height": 3.056,
+      "height_target": 3.0
+    },
+    "FireflySprite": {
+      "checks": [
+        "part names round-trip (13 parts)",
+        "MODELS.md names present: Root, Body, Glow_Eyes_1/2, Nameplate, Hand, LOD_Proxy",
+        "every other part an allowed name (Skin/Trim/Dark/Light/Glow_<Colour>_n)",
+        "triangle counts as built",
+        "one material and one UV layer per part",
+        "closed geometry (all but the proxy)",
+        "2644 triangles within 4000",
+        "LOD_Proxy 274 within 300",
+        "height 3.00 studs against 3.0 (+/- 10 %)",
+        "nothing under the floor",
+        "Root 2 x 3.0 x 2, bottom at 0, centred on the origin",
+        "Nameplate and Hand markers where the manifest says",
+        "eyes on the front (-Y, Roblox -Z), Glow_Eyes_1 on the left"
+      ],
+      "triangles": 2644,
+      "triangles_proxy": 274,
+      "height": 3.0,
+      "height_target": 3.0
+    },
+    "MudPuppy": {
+      "checks": [
+        "part names round-trip (11 parts)",
+        "MODELS.md names present: Root, Body, Glow_Eyes_1/2, Nameplate, Hand, LOD_Proxy",
+        "every other part an allowed name (Skin/Trim/Dark/Light/Glow_<Colour>_n)",
+        "triangle counts as built",
+        "one material and one UV layer per part",
+        "closed geometry (all but the proxy)",
+        "3780 triangles within 4000",
+        "LOD_Proxy 273 within 300",
+        "height 2.84 studs against 3.0 (+/- 10 %)",
+        "nothing under the floor",
+        "Root 2 x 3.0 x 2, bottom at 0, centred on the origin",
+        "Nameplate and Hand markers where the manifest says",
+        "eyes on the front (-Y, Roblox -Z), Glow_Eyes_1 on the left"
+      ],
+      "triangles": 3780,
+      "triangles_proxy": 273,
+      "height": 2.837,
+      "height_target": 3.0
+    },
+    "GatorGhoul": {
+      "checks": [
+        "part names round-trip (11 parts)",
+        "MODELS.md names present: Root, Body, Glow_Eyes_1/2, Nameplate, Hand, LOD_Proxy",
+        "every other part an allowed name (Skin/Trim/Dark/Light/Glow_<Colour>_n)",
+        "triangle counts as built",
+        "one material and one UV layer per part",
+        "closed geometry (all but the proxy)",
+        "3878 triangles within 4000",
+        "LOD_Proxy 260 within 300",
+        "height 5.00 studs against 5.0 (+/- 10 %)",
+        "nothing under the floor",
+        "Root 2 x 5.0 x 2, bottom at 0, centred on the origin",
+        "Nameplate and Hand markers where the manifest says",
+        "eyes on the front (-Y, Roblox -Z), Glow_Eyes_1 on the left"
+      ],
+      "triangles": 3878,
+      "triangles_proxy": 260,
+      "height": 4.995,
+      "height_target": 5.0
+    },
+    "WillOWisp": {
+      "checks": [
+        "part names round-trip (11 parts)",
+        "MODELS.md names present: Root, Body, Glow_Eyes_1/2, Nameplate, Hand, LOD_Proxy",
+        "every other part an allowed name (Skin/Trim/Dark/Light/Glow_<Colour>_n)",
+        "triangle counts as built",
+        "one material and one UV layer per part",
+        "closed geometry (all but the proxy)",
+        "2162 triangles within 4000",
+        "LOD_Proxy 278 within 300",
+        "height 3.95 studs against 4.0 (+/- 10 %)",
+        "nothing under the floor",
+        "Root 2 x 4.0 x 2, bottom at 0, centred on the origin",
+        "Nameplate and Hand markers where the manifest says",
+        "eyes on the front (-Y, Roblox -Z), Glow_Eyes_1 on the left"
+      ],
+      "triangles": 2162,
+      "triangles_proxy": 278,
+      "height": 3.95,
+      "height_target": 4.0
+    },
+    "SwampHag": {
+      "checks": [
+        "part names round-trip (12 parts)",
+        "MODELS.md names present: Root, Body, Glow_Eyes_1/2, Nameplate, Hand, LOD_Proxy",
+        "every other part an allowed name (Skin/Trim/Dark/Light/Glow_<Colour>_n)",
+        "triangle counts as built",
+        "one material and one UV layer per part",
+        "closed geometry (all but the proxy)",
+        "3898 triangles within 4000",
+        "LOD_Proxy 270 within 300",
+        "height 4.86 studs against 5.0 (+/- 10 %)",
+        "nothing under the floor",
+        "Root 2 x 5.0 x 2, bottom at 0, centred on the origin",
+        "Nameplate and Hand markers where the manifest says",
+        "eyes on the front (-Y, Roblox -Z), Glow_Eyes_1 on the left"
+      ],
+      "triangles": 3898,
+      "triangles_proxy": 270,
+      "height": 4.855,
+      "height_target": 5.0
+    },
+    "BayouHydra": {
+      "checks": [
+        "part names round-trip (11 parts)",
+        "MODELS.md names present: Root, Body, Glow_Eyes_1/2, Nameplate, Hand, LOD_Proxy",
+        "every other part an allowed name (Skin/Trim/Dark/Light/Glow_<Colour>_n)",
+        "triangle counts as built",
+        "one material and one UV layer per part",
+        "closed geometry (all but the proxy)",
+        "3864 triangles within 4000",
+        "LOD_Proxy 241 within 300",
+        "height 6.11 studs against 6.0 (+/- 10 %)",
+        "nothing under the floor",
+        "Root 2 x 6.0 x 2, bottom at 0, centred on the origin",
+        "Nameplate and Hand markers where the manifest says",
+        "eyes on the front (-Y, Roblox -Z), Glow_Eyes_1 on the left"
+      ],
+      "triangles": 3864,
+      "triangles_proxy": 241,
+      "height": 6.107,
+      "height_target": 6.0
+    },
+    "CypressKing": {
+      "checks": [
+        "part names round-trip (12 parts)",
+        "MODELS.md names present: Root, Body, Glow_Eyes_1/2, Nameplate, Hand, LOD_Proxy",
+        "every other part an allowed name (Skin/Trim/Dark/Light/Glow_<Colour>_n)",
+        "triangle counts as built",
+        "one material and one UV layer per part",
+        "closed geometry (all but the proxy)",
+        "3656 triangles within 4000",
+        "LOD_Proxy 240 within 300",
+        "height 6.17 studs against 6.0 (+/- 10 %)",
+        "nothing under the floor",
+        "Root 2 x 6.0 x 2, bottom at 0, centred on the origin",
+        "Nameplate and Hand markers where the manifest says",
+        "eyes on the front (-Y, Roblox -Z), Glow_Eyes_1 on the left"
+      ],
+      "triangles": 3656,
+      "triangles_proxy": 240,
+      "height": 6.17,
+      "height_target": 6.0
+    },
+    "MoonHeron": {
+      "checks": [
+        "part names round-trip (12 parts)",
+        "MODELS.md names present: Root, Body, Glow_Eyes_1/2, Nameplate, Hand, LOD_Proxy",
+        "every other part an allowed name (Skin/Trim/Dark/Light/Glow_<Colour>_n)",
+        "triangle counts as built",
+        "one material and one UV layer per part",
+        "closed geometry (all but the proxy)",
+        "3044 triangles within 4000",
+        "LOD_Proxy 269 within 300",
+        "height 7.30 studs against 7.0 (+/- 10 %)",
+        "nothing under the floor",
+        "Root 2 x 7.0 x 2, bottom at 0, centred on the origin",
+        "Nameplate and Hand markers where the manifest says",
+        "eyes on the front (-Y, Roblox -Z), Glow_Eyes_1 on the left"
+      ],
+      "triangles": 3044,
+      "triangles_proxy": 269,
+      "height": 7.298,
+      "height_target": 7.0
+    }
+  },
+  "collision_precise": {
+    "BogFrog": [],
+    "Mossling": [],
+    "FireflySprite": [],
+    "MudPuppy": [],
+    "GatorGhoul": [],
+    "WillOWisp": [],
+    "SwampHag": [],
+    "BayouHydra": [],
+    "CypressKing": [],
+    "MoonHeron": []
+  },
+  "collision_note": "Monsters collide with nothing (MonsterKit: CanCollide/CanQuery/CanTouch off): Box on every mesh, PreciseConvexDecomposition on none.",
+  "not_validated": [
+    "nothing in Studio: the import, the axis conversion, the marker positions there, the colours arriving",
+    "whether the importer carries a material's plain colour to MeshPart.Color (manifest has every colour)",
+    "the look at the game's camera and at Tiny 0.5 / Giant 1.5 scale",
+    "animations: none exist (no rig)"
+  ]
+}

@@ -63,6 +63,15 @@ Location 2's seven monsters (Frostfang Lodge), one function per species;
 output `blender/monsters/frostfang_lodge/`. `-- only Yeti,IceImp` builds a
 subset (it rewrites the set's manifest with only those).
 
+## build_monsters_l3.py
+
+Location 3's ten monsters (Bayou Spa), one function per species; output
+`blender/monsters/bayou_spa/`. Adds `rig_shape` to each manifest record (the
+armature it takes, LAUNCH.md #6). Renders its own review pictures, not the
+kit: `review/silhouettes.png` (grey Workbench) always, and with `-- final` the
+finished sheets (`review/final_*.png`, Cycles on the CPU, 4 threads).
+Local helpers: `smile()`, `eye()` (one eye at any centre), `recentre_y()`.
+
 ## build_street_npcs.py
 
 `Hunter` and `NightBus` on monster_kit's `NPCS` targets; output
