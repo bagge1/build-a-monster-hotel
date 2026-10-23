@@ -1247,8 +1247,9 @@ Med Claudes skärmdump där det finns en. -->
    2. **Hemligheten (din):** Creator Hub → experiencen → **Secrets** → skapa
       en som heter exakt `OpenCloudKey`, klistra in nyckeln, domän
       `apis.roblox.com`.
-   3. **HTTP:** Studio → File → **Experience Settings** → **Security** →
-      **Allow HTTP Requests** på. Sedan Publish.
+   3. ~~**HTTP:** Studio → File → **Experience Settings** → **Security** →
+      **Allow HTTP Requests** på.~~ (gjort av dig 2026-10-23; når den
+      publicerade servern med nästa Publish, LAUNCH #11.)
    4. **De två texterna** skapas i Creator Hub (experiencen → **Engagement** →
       **Notifications**): "Your residents' till is full" och "Full Moon
       tonight". Claude kan göra det om du säger till; deras id skrivs sedan in
