@@ -155,7 +155,13 @@ Studio MCP".
   `Players.LocalPlayer` in each `Client` datamodel (UserId −1, −2, changing
   every session).
 - **Their profiles are new** (keyed −1, −2) on the real DataStores; grant on
-  those players.
+  those players. **`DevCommand` acts on the first player only**: grant the
+  second by a Script parented in the running server that calls the services
+  on that player.
+- **Nothing may end the session by accident**: while it runs, never
+  `start_stop_play`, and never load a playing player's profile from another
+  datamodel (ProfileStore's session lock kicks that player). The unattended
+  order is `TESTRUN.md`, "Launch run".
 - **Keys go to the focused window**; remotes from each client's `execute_luau`
   need no focus. A logger on each client recording every `OnClientEvent` in `_G`
   with the server time, and a server Script hooked to the game's damage or

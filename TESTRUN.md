@@ -12,6 +12,162 @@ Start at the first unmarked item. Marks: `[x]` pass, `[!]` failed and fixed
   August turned Studio API access on). Persistence tests use a Studio test
   profile (`ServerStorage.StudioProfile = "Test_..."`), never his own save.
 
+## Launch run (LAUNCH.md #11, his ask 2026-10-23)
+
+**Until launch this section is the order**: run it before anything below. It
+gathers every open item below into what can run unattended, by what a session
+needs set up. Each line names its original by section; mark both the same way,
+one log line. Three parts, in order: two players (he starts it), alone (Claude
+restarts freely), after Publish (a real server, him awake). Looks and values
+that are his are not in the night: they stay `[A]` where they stand below.
+
+### The night guard
+
+Read before the first call, and again after any error.
+
+- **Studio has one user.** Take `.locks/studio` (LAUNCH.md, "How the work
+  runs") before the first MCP call. While another session holds it, he does
+  not start Server and Clients and nothing here starts. Never while he is
+  importing.
+- **The two-player session is started by him and cannot be started again
+  tonight** (`start_stop_play` cannot start it; only he can add a client).
+  While its windows are open:
+  - never `start_stop_play`, in any window;
+  - never touch a playing player's profile from another datamodel (an Edit
+    `execute_luau` loading ProfileStore, another Studio): the session lock
+    kicks the player ("Your save data was opened elsewhere", `PlayerData`);
+  - a fix found here is committed but not re-run here: its re-run goes to
+    part 2, or to the morning as `[A]` if it needs two players;
+  - the one leave (`Player:Kick`) is the part's last item.
+- **`DevCommand` acts on the first player only** (`DevGrant`:
+  `Players:GetPlayers()[1]`). Player 2 gets cash, guests and residents from a
+  Script parented in the running server that calls the services on that player
+  (it shares the game's modules), or does things itself by its own remotes
+  from its client's `execute_luau`. Each client is its own Studio in
+  `list_roblox_studios`: tell them apart by `Players.LocalPlayer.UserId`.
+- **Closing the two-player session**: stopping play leaves the windows. Close
+  the `Server` and client windows by their process titles and keep the edit
+  window (skill `playtest`, "Two players"); then part 2.
+- **Alone, restarts are free**: `start_stop_play` as often as an item needs, a
+  fresh profile per group (`ServerStorage.StudioProfile = "Test_Launch<date><x>"`
+  before Play), the device simulator set before Play and stopped after. A stop
+  is a logout: grant again after it.
+- **When Studio dies, hangs, or needs a Connect or a Rojo restart**: retry the
+  call once; then log it, write it in `WAITING.md` §0 (in Swedish), release
+  the lock, and go on with work that needs no Studio. Never restart Rojo,
+  never Publish, never change a value to make an item pass (a number that
+  disagrees is a finding for `WAITING.md`).
+- **An item that cannot run this way** is marked `[?]` with why, and the run
+  goes on. Nothing here waits on him.
+- **Studio in front** only while he sleeps (`CLAUDE.md`); items marked
+  *front* need it. No heavy renders while Studio runs.
+- **Commit and push after each group**, so a session that dies is picked up at
+  the first unmarked line here. Usage and the 5-hour window: skill
+  `night-sprint`.
+
+### 1. Two players (his start: Test → Start Test Session → Server and Clients, 2 clients)
+
+Same street first, then two streets, then the leave.
+
+- [ ] T0 for this session: both clients and the server answer
+  `execute_luau`, the sync landed (`tools/sync_sizes.py`), the console is
+  clean; player 2 has cash from a server Script (the guard).
+- [ ] Gifting to a second player (Phase 8).
+- [ ] Liking another hotel (Phase 7). The friend bonus only if the test
+  players count as friends; otherwise that half is `[?]`.
+- [ ] A second player visiting sees the staff walk and the "✓" (Staff at work).
+- [ ] The showcase with two (The showcase): a real like and the 10-minute
+  rule's refusal, the giver's toast, **Visit**, walking into the other lobby
+  counting toward the daily, the weekly favourite moving between the hotels.
+- [ ] Two players seeing another's VIP (VIP contracts, the room view's item).
+- [ ] Two players on two streets at once, each street's bus and Hunter Night
+  (The world).
+- [ ] **Last:** player 2 leaves (`Player:Kick` from the server): its hotel
+  leaves the street, the plot is free, its profile is saved and released (read
+  on the Server after the kick). The rejoin is not tried (his click): part 2
+  proves persistence.
+- [ ] The windows closed (the guard).
+
+### 2. Alone (Claude starts and stops)
+
+**a. Launch's own**
+
+- [ ] Persistence: build, earn, stop, Play again on the same profile: the
+  hotel, cash and residents are back.
+- [ ] No "server size" warning on Play (Pacing; Server Size is 10).
+- [ ] Bayou Spa's kit and facade and the VIP lounge set in the game (LAUNCH
+  #5): at `chainopen 3`, Bayou's walls, door, posts, desk, furniture, decor,
+  stairs and facade are kit clones; the VIP lounge decor placed (`pass`).
+- [ ] Each facade pack's facade on the hotel when owned (`cosmetic`).
+- [ ] F on the imported kit rooms and amenities: each has its `_Mirror` (Flip).
+- [ ] Bookshelf and Wardrobe placed (Launch import): why the test's positions
+  placed nothing.
+- [ ] Notifications: `notify` queues and logs "would send" (the real send is
+  part 3).
+- [ ] The rigged monsters (LAUNCH #6), once imported, not before: each body
+  shape walks, idles, is happy and sad, checks in and works as staff; a Tiny
+  and a Giant; no error.
+
+**b. Build mode on a fresh hotel** (*front* where a click or key is real)
+
+- [ ] Phase 13, its eight open items: the tabs and refusals, areas, a floor
+  and its stairs, a guest to floors 2 and 3, decor, hallway decor, floors, rays
+  and walkers over placed stairs (`fill`).
+- [ ] Phase 11: rays out through every door, on a profile without a door onto
+  the stair core.
+- [ ] Gamepad navigation: the keyboard item (B, R, `,` `.`, the chat;
+  *front*), every window's selection, build mode with the gamepad last.
+- [ ] Built rooms, stage 3: a gamepad's A and a two-finger pan cannot be sent:
+  mark both `[?]`.
+
+**c. Rating**
+
+- [ ] Rating: staff coverage and cleaning on time, its five open items.
+
+**d. A new player**
+
+- [ ] Phase 12: no walk-ins without a bus; the tutorial's Slime and Vampire
+  Count.
+- [ ] Tutorial Commons: the weighting's stops; the ping menu's three cases.
+- [ ] Built rooms, stage 1–2: Collect, on a profile without Auto Collect.
+
+**e. Phone** (simulator before Play: `iphone_14` landscape, then
+`ipad_10th_generation`)
+
+- [ ] Phase 12: frame time with the forest and a full bus, against phase 11's.
+- [ ] The free build camera: one finger pans (pinch cannot be sent: `[?]`).
+- [ ] VIP contracts: the room view's layout on a phone.
+
+**f. Pictures** (*front*; each set to a blind review before he sees it)
+
+- [ ] Launch import: the placed models.
+- [ ] Phase 8: the cosmetics with their models.
+- [ ] Phase 12: the in-game blind review of the street. It replaces Phase
+  10's, which waited on the scale (answered 2026-10-19): mark that one with it.
+- [ ] Phase 12, the forest: low graphics, a Frostfang plot's band.
+- [ ] Rare decor: the Decor tab's cards, the set line, **Place it**, the Book's
+  mark, clicked.
+- [ ] VIP contracts: the desk's "VIP ledger" prompt by F.
+- [ ] Phase 6: Boo! from about 35 studs, by a real key.
+
+**g. Long runs, last, as the night allows**
+
+- [ ] The hotel chain: a real run toward 5★ against his times.
+- [ ] Residents level up: the cap in a real run, a level's staff effect.
+- [ ] Deeper mutations: a stacked guest off a real bus, its pay and
+  announcement.
+
+### 3. After Publish (his Publish; a real server, him awake)
+
+- [ ] `DevCommand` does nothing on a published server: no command
+  registered, `DevResult` never set.
+- [ ] The live store: a published server writes `MonsterHotel_Live_*`
+  (`StoreNames`), and no `Test_` key is there.
+- [ ] A notification really sent (after his key, `WAITING.md` §3.3).
+- [ ] A real purchase and a real rewarded ad (Phase 5, his click).
+- [ ] His 15 minutes on his own phone (`WAITING.md` §4).
+- [ ] A real controller, if he has one (Gamepad navigation's three `[A]`).
+
 ## Phase 1 (M1, greybox core)
 
 Run with Studio in front (a background Studio stops `RenderStepped` and prompts).
