@@ -68,18 +68,21 @@ function MonsterAnimator.attach(model: Model, shape: string, height: number): An
 	if not any then
 		return nil
 	end
-	-- The meshes ride on Root (CLAUDE.md, "The art handoff"): welded, massless, never colliding.
+	-- The meshes ride on Root (CLAUDE.md, "The art handoff"): the import keeps the
+	-- importer's Motor6Ds to its `RootPart`; a part with no joint is welded to Root.
 	local root = model.PrimaryPart
 	if root then
 		for _, p in model:GetDescendants() do
 			if p:IsA("BasePart") and p ~= root then
-				p.Anchored = false
-				p.Massless = true
 				p.CanCollide, p.CanQuery, p.CanTouch = false, false, false
-				local w = Instance.new("WeldConstraint")
-				w.Part0 = root
-				w.Part1 = p
-				w.Parent = p
+				if #p:GetJoints() == 0 then
+					p.Anchored = false
+					p.Massless = true
+					local w = Instance.new("WeldConstraint")
+					w.Part0 = root
+					w.Part1 = p
+					w.Parent = p
+				end
 			end
 		end
 	end

@@ -782,6 +782,13 @@ each `Bone.Transform` on the client. A model with no bones still bobs as before.
   every mutation's scale. A bone a clip names that the model lacks is skipped.
 - The **Quadruped** shape was added to the four ruled (the Mud Puppy's,
   `Species.luau`), the same way.
+- **What the importer makes of it** (Rig Type Custom, seen 2026-10-23 on the
+  Skeleton): a Part `RootPart` holding the bones (`RigRoot` first), every
+  MeshPart hung on `RootPart` by a Motor6D, an `AnimationController` and an
+  `InitialPoses` folder. The import step keeps the Motor6Ds (unanchored,
+  massless) and anchors `Root` alone, hides `RootPart`, and deletes the
+  `AnimationController` and `InitialPoses` (the clips are code); `ScaleTo`
+  moves the bones with the meshes.
 
 The clips (GDD §12), one line each, are in `MonsterMotion.luau`'s header.
 

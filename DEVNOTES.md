@@ -442,4 +442,28 @@ How to drive a playtest with it (keys, clicks, walking, captures) is skill
 
 ## This game's notes
 
+### A rigged FBX: what the importer builds, and how to check the skin without looking (2026-10-23)
+
+Imported with Rig Type **Custom**, an FBX with one armature arrives as a
+`RootPart` (a plain Part, the importer's `PrimaryPart`) holding the bones,
+every MeshPart joined to it by a Motor6D, nothing anchored, plus an
+`AnimationController` and an `InitialPoses` folder of three CFrameValues per
+part and bone (the animation editor's; 60 on a monster, deleted at import).
+Every skinned part reads `HasSkinnedMesh = true`. `Model:ScaleTo` moves the
+bones exactly with the meshes.
+
+A background Studio draws no new frames, so a capture cannot show a mesh
+bending. The skin can still be read:
+`AssetService:CreateEditableMeshAsync(Content.fromUri(part.MeshId))`, then per
+vertex `GetVertexBones` and `GetVertexBoneWeights` and `GetBoneName`.
+`GetVertexBones` pads to four entries, so count only weights above zero.
+`Bone.TransformedWorldCFrame` shows a pose landing.
+
+**`require` from `execute_luau` is a second copy of a module.** The MCP runs
+in its own script context: a ModuleScript required there is a fresh
+instance, with its own tables and none of the game's `Init`/`Start` run. A
+module that keeps a registry and connects in `Start` (`MonsterAnimator`)
+does nothing for objects attached through that copy until the test calls
+its `Start` itself.
+
 <!-- New entries below, dated: what happened, why it was quiet, the rule. -->
