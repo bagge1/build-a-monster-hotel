@@ -1,0 +1,445 @@
+{
+ "set": "decor/vip_lounge",
+ "title": "The VIP lounge set (every location; the VIP Lobby pass), a draft",
+ "frame": "Roblox studs, piece frame: X right, Y up, door/front toward -Z, origin per MODELS.md; Blender holds them as (-x, z, y)",
+ "atlas": "textures/HotelAtlas.png (embedded in every FBX)",
+ "palette": {
+  "grey": [
+   110,
+   110,
+   120
+  ],
+  "gold": [
+   226,
+   182,
+   78
+  ],
+  "gold_dark": [
+   170,
+   128,
+   46
+  ],
+  "gold_light": [
+   246,
+   214,
+   128
+  ],
+  "velvet": [
+   168,
+   28,
+   48
+  ],
+  "velvet_dark": [
+   116,
+   16,
+   34
+  ],
+  "velvet_light": [
+   200,
+   56,
+   72
+  ],
+  "lacquer": [
+   30,
+   28,
+   34
+  ],
+  "lacquer_light": [
+   58,
+   54,
+   64
+  ],
+  "cream": [
+   248,
+   240,
+   222
+  ],
+  "white": [
+   246,
+   246,
+   250
+  ],
+  "icing_pink": [
+   246,
+   160,
+   196
+  ],
+  "icing_mint": [
+   164,
+   232,
+   204
+  ],
+  "icing_cream": [
+   252,
+   236,
+   206
+  ],
+  "choc": [
+   110,
+   66,
+   44
+  ],
+  "cherry": [
+   210,
+   30,
+   50
+  ],
+  "wrapper": [
+   236,
+   200,
+   112
+  ],
+  "flame": [
+   255,
+   205,
+   120
+  ],
+  "bulb": [
+   255,
+   226,
+   160
+  ]
+ },
+ "pieces": {
+  "Decor_VipRope": {
+   "name": "Decor_VipRope",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     9.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      9.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      1.45,
+      0.0
+     ],
+     "size": [
+      8.0174,
+      2.9,
+      1.28
+     ],
+     "triangles": 1296,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 1308,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "two gold stanchions on domed feet, a red velvet rope swagged between them on gold clips",
+   "decor": {
+    "fw": 3,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     9.0,
+     3.0
+    ]
+   }
+  },
+  "Decor_VipSofa": {
+   "name": "Decor_VipSofa",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     6.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      6.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      1.925,
+      0.0
+     ],
+     "size": [
+      5.2,
+      3.85,
+      2.2
+     ],
+     "triangles": 744,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 756,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a red velvet sofa for two on a black lacquer plinth with gold ball feet, rolled arms, a gold crest with a black inset and a gold star",
+   "decor": {
+    "fw": 2,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     6.0,
+     3.0
+    ],
+    "seats": [
+     {
+      "x": [
+       -2.05,
+       2.05
+      ],
+      "z": [
+       -1.1,
+       0.4
+      ],
+      "y": 1.8,
+      "people": 2,
+      "narrow": null
+     }
+    ]
+   }
+  },
+  "Decor_VipCupcakes": {
+   "name": "Decor_VipCupcakes",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      1.97,
+      0.0
+     ],
+     "size": [
+      2.0989,
+      3.94,
+      2.0989
+     ],
+     "triangles": 1450,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 1462,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a gold three-tier stand of cupcakes in chocolate, cream and red velvet icing, cherries on the top tier, a gold ball on its pole",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ]
+   }
+  },
+  "Decor_VipCarpet": {
+   "name": "Decor_VipCarpet",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     12.0,
+     0.2,
+     6.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      12.0,
+      0.2,
+      6.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      0.06,
+      0.0
+     ],
+     "size": [
+      12.0,
+      0.12,
+      6.0
+     ],
+     "triangles": 144,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 156,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a red carpet runner with gold borders, a pin line and gold diamonds; its ends open, so two join",
+   "decor": {
+    "fw": 4,
+    "fd": 2,
+    "layer": "Rug",
+    "footprint_studs": [
+     12.0,
+     6.0
+    ]
+   }
+  },
+  "Decor_VipSign": {
+   "name": "Decor_VipSign",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     6.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      6.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      5.175,
+      0.875
+     ],
+     "size": [
+      5.16,
+      3.39,
+      0.45
+     ],
+     "triangles": 116,
+     "collide": false
+    },
+    "Glow_Warm_1": {
+     "centre": [
+      -0.005,
+      5.18,
+      0.6814
+     ],
+     "size": [
+      5.014,
+      3.28,
+      0.176
+     ],
+     "triangles": 1352,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 1480,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a black marquee in a gold frame with a shallow arched top, \"VIP\" in lit bulbs, a border of small bulbs all round the frame, a gold star on its crown",
+   "decor": {
+    "fw": 2,
+    "fd": 1,
+    "layer": "Wall",
+    "footprint_studs": [
+     6.0,
+     3.0
+    ]
+   }
+  }
+ },
+ "mirrors": {}
+}

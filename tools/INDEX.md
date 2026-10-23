@@ -219,7 +219,8 @@ per style, `Facade_Wall` (plain), `Facade_Window_<Type>` (`TwinSash`,
 `Arched`, `Round`, `Wide`), `Facade_Entrance`, `Facade_Corner`, in seven
 styles, each its own set `blender/facade/<style>/` (the names repeat):
 `haunted_manor`, `frostfang_lodge` (the Lobby front wall and arch carried
-over) and the five facade cosmetics `gothic`, `neon`, `candy`, `pirate`,
+over), `bayou_spa` (2026-10-23, a draft: sage clapboard, green
+shutters by `bs_shutters`, a round cypress arch) and the five facade cosmetics `gothic`, `neon`, `candy`, `pirate`,
 `slime`. On hotel_kit, extended from the script, not in the kit: kind
 `Facade` through a wrapped `check_piece` (the kit's generic rules via kind
 Cosmetic, then `facade_boxes`), `Piece.checks` += `facade_tris`, glow keys
@@ -289,3 +290,36 @@ garden, lobby, spooky) for the Manor: `mfurn()`, `mdecor()` (a `Decor_<Id>`
 in this set, `STYLES`' `decor`), `hung_check` (a `Wall` piece may hang on
 the wall's plane), `gothic()` and `ellipse()` outlines, `candle()`, and
 `review_more` (their sheets in `review/more/`).
+
+## build_hotel_bayou_spa.py
+
+Location 3's hotel kit (Bayou Spa, 2026-10-23, LAUNCH.md workstream 5):
+FrontDesk, StairCore, StairCoreTop, HotelSign, RoomPlaque and 10
+`Decor_<Id>` (the five of Pieces' location 3, then every kit's five), one
+function each, on hotel_kit; output `blender/hotel/bayou_spa/`. No rooms (built
+from walls, A.12, in `blender/rooms/bayou_spa/`) and no Lobby (retired into
+`Facade_Entrance`). Its palette is the built rooms' `BS_PALETTE` plus the
+Locations colours, lifted by `_lift` (ast, without running the script) with
+the Bayou shapes `seg`, `firefly_lantern`, `lotus`, `frog`, `lily_pad`,
+`cattails`, `boulder`. Helpers: `into(part, fn, ...)` runs a lifted shape
+(they draw into `Body`) and moves it into `part`; `tuft` one short light moss
+tuft. `-- only A,B`, `-- nopreview`.
+
+## build_vip_lounge.py
+
+The VIP lounge set (GDD A.2, the VIP Lobby pass): five `Decor_Vip<Id>` of
+every location, one model for all kits (MODELS.md "Decor"); output
+`blender/decor/vip_lounge/`, its own black, gold and velvet palette. Helpers:
+`rod`, `stanchion`, `star` (a five-point star on a -Z face), `cupcake`,
+`arched` (a panel outline under a shallow round arch), `LETTERS` (the sign's
+bulb positions, drawn at -x so they read from the front). `-- only A,B`,
+`-- nopreview`.
+
+## review_pieces.py
+
+Review sheets for any set built on hotel_kit: each FBX re-imported alone
+(Root and LOD_Proxy left out), from the front three-quarters a little above,
+the 5-stud person to its right, a grey wall behind a `Wall` decor piece,
+tiled five a row into `review/pieces_sheet.png` (`top`: straight down,
+`pieces_top.png`); the tiles in `review/pieces/`. `-- <set dir> [only A,B]
+[top]`. The render helpers are build_cosmetics_hotel's, lifted.

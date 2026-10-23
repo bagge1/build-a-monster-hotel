@@ -998,6 +998,24 @@ Every number below is a **placeholder** (tagged `PLACEHOLDER` in
   (garden, damp, $70), Armchair (antique furniture, $200), Velvet Sofa (quiet,
   $350), Bookshelf (quiet, antique furniture, $500), Side Table (candles, $60),
   Grand Piano (music, slow music, $2,500).
+- **The VIP lounge set** (§10.2: the VIP Lobby pass promises "a VIP lounge
+  decor set"; draft 2026-10-23, every pick, tag and cost PLACEHOLDER, his to
+  change): five decor pieces of every location (location 0, one model for all
+  three hotels: black lacquer, gold and red velvet, no location's own look), in
+  the build shop's Decor tab for whoever owns the pass, **bought with cash as
+  any decor** (unlike event decor, which is free to place once bought: a
+  piece's cost is its decor points, so a free one would be points for Robux):
+
+  | Decor | Footprint | Layer | Tags | Cost (PLACEHOLDER) |
+  |---|---|---|---|---|
+  | Velvet Rope | 3×1 | Floor | quiet | $300 |
+  | VIP Sofa | 2×1 | Floor | quiet | $600 |
+  | Cupcake Tower | 1×1 | Floor | snacks | $400 |
+  | Red Carpet | 4×2 | Rug | — | $200 |
+  | VIP Sign | 2×1 | Wall | — | $500 |
+
+  The Red Carpet is a runner (its ends open, so two join end to end); the VIP
+  Sign is a gold marquee with "VIP" in lit bulbs, hung on a wall.
 - **Floor finishes** (§5.4): a material and a colour, chosen per room, for
   the lobby and for the hallways, from the kit's set (Haunted Manor: Oak
   Boards, Dark Boards, Flagstones, Plum Carpet, Black Marble, Cobbles;

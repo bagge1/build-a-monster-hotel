@@ -63,6 +63,9 @@ export type Decor = {
 	found: boolean?,
 	set: string?,
 	souvenir: string?,
+	-- A pass's decor (GDD A.2, the VIP lounge set): placed only by a player who owns `pass`
+	-- (a `Store` pass key), and bought with cash as any decor.
+	pass: string?,
 }
 -- A rare decor set (A.11.3): its display name, its location, its pieces in the pity's order.
 export type DecorSet = { id: string, name: string, location: number, pieces: { string } }
@@ -647,6 +650,74 @@ local decor: { Decor } = {
 		layer = "Floor",
 		height = 4.5,
 		colour = Color3.fromRGB(240, 248, 255),
+	},
+	--[[ The VIP lounge set (GDD A.2, §10.2: the VIP Lobby pass's "VIP lounge decor set"; draft
+		2026-10-23, every pick, tag and cost PLACEHOLDER): decor of every location, one model for
+		all (MODELS.md "Decor"), placed by whoever owns the pass, bought with cash. ]]
+	{
+		id = "VipRope",
+		name = "Velvet Rope",
+		tags = { "quiet" },
+		cost = 300,
+		location = 0,
+		w = 3,
+		d = 1,
+		layer = "Floor",
+		height = 2.9,
+		pass = "VIPLobby",
+		colour = Color3.fromRGB(170, 30, 50),
+	},
+	{
+		id = "VipSofa",
+		name = "VIP Sofa",
+		tags = { "quiet" },
+		cost = 600,
+		location = 0,
+		w = 2,
+		d = 1,
+		layer = "Floor",
+		height = 4.0,
+		pass = "VIPLobby",
+		colour = Color3.fromRGB(150, 25, 45),
+	},
+	{
+		id = "VipCupcakes",
+		name = "Cupcake Tower",
+		tags = { "snacks" },
+		cost = 400,
+		location = 0,
+		w = 1,
+		d = 1,
+		layer = "Floor",
+		height = 3.9,
+		pass = "VIPLobby",
+		colour = Color3.fromRGB(230, 190, 90),
+	},
+	{
+		id = "VipCarpet",
+		name = "Red Carpet",
+		tags = {},
+		cost = 200,
+		location = 0,
+		w = 4,
+		d = 2,
+		layer = "Rug",
+		height = 0.12,
+		pass = "VIPLobby",
+		colour = Color3.fromRGB(180, 30, 45),
+	},
+	{
+		id = "VipSign",
+		name = "VIP Sign",
+		tags = {},
+		cost = 500,
+		location = 0,
+		w = 2,
+		d = 1,
+		layer = "Wall",
+		height = 6.6,
+		pass = "VIPLobby",
+		colour = Color3.fromRGB(230, 190, 90),
 	},
 	-- Location 2 (night draft, Appendix A.6)
 	{
@@ -2245,15 +2316,19 @@ end
 -- Whether a player at `location` may place this decor (event decor once bought: `unlocked`;
 -- furniture of every location, location 0, always, A.12). Rare decor (A.11.3) once found
 -- (`found`, the profile's `finds.found` by decor id): a set's piece at its own location, a
--- souvenir at any.
+-- souvenir at any. A pass's decor (A.2, the VIP lounge set) at any, while `passes` has its pass.
 function Pieces.decorHere(
 	d: Decor,
 	location: number,
 	unlocked: { [string]: boolean },
-	found: { [string]: any }?
+	found: { [string]: any }?,
+	passes: { [string]: boolean }?
 ): boolean
 	if d.found then
 		return found ~= nil and found[d.id] ~= nil and (d.souvenir ~= nil or d.location == location)
+	end
+	if d.pass then
+		return passes ~= nil and passes[d.pass] == true
 	end
 	return d.always == true
 		or d.location == location
