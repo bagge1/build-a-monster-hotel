@@ -1278,9 +1278,13 @@ Claude testar. Det som är ditt, i ordning:
    beslut, GDD §18, PLACEHOLDER struket på dem; sammanfattningen i
    `archive/BALANCE-2026-10-23.md`.)
 6. **Ikon och thumbnails:** välj av tre.
-7. **Frågeformuläret** (Maturity & Compliance): läs Claudes svar innan de
-   skickas.
-8. **Publish**, en kvart på **din egen telefon**, och att göra spelet publikt.
+7. ~~**Frågeformuläret** (Maturity & Compliance)~~: redan ifyllt (ditt
+   besked 2026-10-23).
+8. **Titel och beskrivning:** titeln "Build A Monster Hotel!" (din,
+   2026-10-23); Claudes nya beskrivning (989 tecken, med en Halloween-rad som
+   ska bort efter 3 november) står i `docs/STORE_PAGE.md`. Du klistrar in
+   den, eller säger till så lägger Claude in den i Creator Hub.
+9. **Publish**, en kvart på **din egen telefon**, och att göra spelet publikt.
 
 <!-- Checklistan till en release. Först ett test med vänner (privat), sedan
 den publika. Claude bockar av sitt; det som är ditt står med menyn. -->
