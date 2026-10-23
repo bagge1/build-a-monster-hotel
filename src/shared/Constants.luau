@@ -149,9 +149,9 @@ Constants.Rarity = {
 Constants.Economy = {
 	StartCash = 100, -- §6.3
 	BasePay = 1, -- $1/s for a Common at Location 1 (§4.2)
-	-- PLACEHOLDER (balance run 2026-10-23, `archive/BALANCE-2026-10-23.md`): ×5 per later location, from
-	-- §4.2's ×20. The pieces' rows stay ×20 a location, so a later hotel's rooms cost more minutes of income
-	-- than the Manor's: with pay ×20 as well, Frostfang Lodge was built out in 20 minutes and Bayou Spa in 10.
+	-- His yes 2026-10-23 (the balance run, `archive/BALANCE-2026-10-23.md`, GDD §18): ×5 per later location,
+	-- from §4.2's ×20. The pieces' rows stay ×20 a location, so a later hotel's rooms cost more minutes of
+	-- income than the Manor's: with pay ×20 as well, Frostfang Lodge was built out in 20 minutes and Bayou Spa in 10.
 	LocationPayMultiplier = 5,
 	RoomCostGrowth = 1.15, -- base × 1.15^n (§6.2)
 	TierPayBonus = 0.5, -- +50 % pay per tier (§5.2; kept by his yes, §5.4)
@@ -170,9 +170,9 @@ Constants.Economy = {
 	SellRefund = 0.5, -- PLACEHOLDER
 	FloorCosts = { 0, 500, 5000, 50000, 500000, 5000000, 50000000 }, -- PLACEHOLDER: floor 1 free; the cap is Chain.floorCap (§6.4)
 	TillCap = math.huge, -- PLACEHOLDER: no cap until one is designed
-	-- PLACEHOLDER (balance run 2026-10-23, Fable's review; was BasePay × 10 in two places): the floor under every
-	-- reward that is "minutes of income" (the login calendar, a daily request, a VIP contract, Hunter Night, the
-	-- Starter Pack), × BasePay. At × 10 the first login paid ten times what the first room earned.
+	-- His yes 2026-10-23 (the balance run; was BasePay × 10 in two places): the floor under every reward that
+	-- is "minutes of income" (the login calendar, a daily request, a VIP contract, Hunter Night, the Starter
+	-- Pack), × BasePay. At × 10 the first login paid ten times what the first room earned.
 	RewardFloor = 2,
 }
 
@@ -315,7 +315,7 @@ Constants.Rooms = {
 	FurnitureSatisfaction = 15, -- satisfaction points × Furniture
 	DecorSatisfaction = 15, -- satisfaction points × Decor
 	DecorFriendship = 1, -- friendship per happy stay × (1 + this × Decor)
-	-- PLACEHOLDER (balance run 2026-10-23): 2.5 Comfort points per ready room at full bars, from 12, so the
+	-- His yes 2026-10-23 (the balance run): 2.5 Comfort points per ready room at full bars, from 12, so the
 	-- cap takes about 24 full rooms instead of 5 and 5★ waits for a hotel, not for five furnished rooms
 	ComfortPerRoom = 2.5,
 	ComfortRoomsCap = 60, -- … summed, to this (it was the mean tier's 60 %)
@@ -343,8 +343,8 @@ Constants.Rebirth = {
 Constants.Chain = {
 	Locations = 3, -- Haunted Manor, Frostfang Lodge, Bayou Spa at launch (§6.6)
 	RebirthRating = 5, -- 5★ on every hotel of the chain (his ruling)
-	-- PLACEHOLDER (WAITING §2.35; balance run 2026-10-23, Fable's review): opening each location, from $250k
-	-- and $10M. Bayou Spa at $1M keeps his "each exponentially dearer" (×2.5) at the cost of 3 minutes on its
+	-- His yes 2026-10-23 (the balance run; WAITING §2.35 answered): opening each location, from $250k and
+	-- $10M. Bayou Spa at $1M keeps his "each exponentially dearer" (×2.5) at the cost of 3 minutes on its
 	-- leg: the third hotel's time is its rooms (the rows ×400 the Manor's at pay ×25), not its price.
 	OpenCost = { [2] = 400000, [3] = 1000000 },
 	BackgroundShare = 0.25, -- PLACEHOLDER (WAITING §2.35): a hotel not played earns this share of its rate
@@ -432,7 +432,7 @@ Constants.Contracts = {
 	Swaps = 1, -- PLACEHOLDER: free swaps of an offer a UTC day (+1 with VIP Lobby, as the daily reroll); a Book request costs one
 	Deadline = 45 * 60, -- PLACEHOLDER: seconds of play at the contract's own hotel (decision 3a)
 	DailyCap = 3, -- PLACEHOLDER: contracts completed per UTC day, all hotels together; none accepted past it
-	-- PLACEHOLDER (balance run 2026-10-23): minutes of income, from 15: three contracts a day at 15 paid
+	-- His yes 2026-10-23 (the balance run): minutes of income, from 15: three contracts a day at 15 paid
 	-- a hotel's opening price on their own …
 	RewardMinutes = 4,
 	RarityReward = { Common = 1, Uncommon = 1.5, Rare = 2, Epic = 3, Legendary = 4, Mythic = 6 }, -- … × this by the VIP's rarity
