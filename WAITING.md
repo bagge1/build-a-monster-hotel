@@ -121,8 +121,13 @@ Connect: knappen under fliken Plugins i Studio. -->
    `BayouSpa_*`) sparade utan prefix i sitt kits mapp. `blender/_import/` är
    tom.)
 
-14. **Importera en (1) modell: Skeleton med skelett, provet för riktiga
-   animationer** (2026-10-23, LAUNCH.md #6). Skeleton byggd igen med ett
+14. ~~**Importera en (1) modell: Skeleton med skelett, provet för riktiga
+   animationer**~~ (gjort 2026-10-23 02:52: inställd, sparad i
+   `assets/Monsters/Skeleton.rbxm` på grenen `claude/monster-animations-6c1d3c`,
+   provad i Studio: varje färgdel bär sin skinning, Tiny och Giant skalar
+   skelettet, de sex rörelserna vrider benen som de ska, och kostnaden är liten;
+   se `blender/monsters/rig_proto/README.md`. Kvar: att se det med egna ögon,
+   §1.13.) (2026-10-23, LAUNCH.md #6). Skeleton byggd igen med ett
    skelett (benen `Hips`, `Spine`, `Head`, armar, lår och smalben) som alla
    färgdelar följer; i Blender syns det rätt i en provpose. Nu ska det visas i
    Studio att varje färgdel böjer sig med benen, att Tiny och Giant skalar
@@ -141,6 +146,14 @@ Connect: knappen under fliken Plugins i Studio. -->
    **Workspace** i en dialog, med vanliga inställningar (inte Custom rig),
    och skriv *importerat*. Gärna en import i taget: först punkt 14 eller
    den här, sedan den andra.
+
+16. **Importera 27 monster med skelett: alla som finns** (2026-10-23, LAUNCH.md
+   #6). Haunted Manors 10, Frostfangs 7 och Bayou Spas 10, byggda igen med
+   skelett (samma utseende som de du har sagt ja till; nu böjer de sig).
+   Skeleton-provet i punkt 14 höll, så nu alla. Alla filer i
+   `blender/_import/` (orkestreraren lägger dem där) till **Workspace** i en
+   dialog, och under **Rig General** välj **Rig Type: Custom**. Skriv
+   *importerat*; resten är vårt. Inte mitt i en annan import.
 
 ## §1 Att titta på eller spela
 
@@ -237,6 +250,21 @@ Med Claudes skärmdump där det finns en. -->
    väderbitna plankor med förskjutna skarvar, mässingsventiler, rep runt
    fönstren, lyktor på hörnen; Slime gröna väggar, slem som samlas på
    fönsterbrädorna och droppar.
+
+13. **Se monstren röra sig** (2026-10-23, LAUNCH.md #6). Allt som går att
+   mäta utan att titta är provat (§0.14), men ingen har sett ett monster böja
+   sig. Det kan bara ses med Studio framme. När alla 27 är importerade med
+   skelett: spela och titta på gästerna. Hur ska det kännas:
+   - **Walk**: ett studsigt leksakssteg (Biped), ett mjukt hopp (Blob), en
+     framåtlutad glidning med släpande svans (Float), en S-slingring (Serpent).
+   - **Idle**: andas, ser sig långsamt omkring.
+   - **Happy**: små hopp med armarna upp i ett V; går glad ut efter en bra
+     vistelse.
+   - **Sad**: hänger med huvudet, sjunkna axlar; när en önskan väntar.
+   - **CheckIn**: en gång vid disken: armen svepande ut och en bugning (Blob
+     och Float snurrar).
+   - **Staff**: höger hand i arbete (knackar, torkar) vid dörren.
+   Säg vad som känns fel med dina ord ("för hoppigt", "armarna för höga").
 
 ## §2 Beslut
 

@@ -166,7 +166,119 @@
         ]
       },
       "coplanar_overlaps": "none",
-      "rig": "none: static meshes, no bones, no Animations folder (the client bobs them)",
+      "rig": {
+        "shape": "Blob",
+        "object": "Rig",
+        "root_bone": "RigRoot",
+        "bones": [
+          {
+            "name": "RigRoot",
+            "parent": null,
+            "head_roblox": [
+              -0.0,
+              0.0,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.0,
+              0.3,
+              0.0
+            ],
+            "radius": 0.0,
+            "vertices": 0
+          },
+          {
+            "name": "Base",
+            "parent": "RigRoot",
+            "head_roblox": [
+              -0.0,
+              0.06,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.0,
+              1.05,
+              0.0
+            ],
+            "radius": 0.9,
+            "vertices": 757
+          },
+          {
+            "name": "Middle",
+            "parent": "Base",
+            "head_roblox": [
+              -0.0,
+              1.05,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.0,
+              2.1,
+              0.0
+            ],
+            "radius": 0.9,
+            "vertices": 938
+          },
+          {
+            "name": "Top",
+            "parent": "Middle",
+            "head_roblox": [
+              -0.0,
+              2.1,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.0,
+              3.0,
+              0.0
+            ],
+            "radius": 1.05,
+            "vertices": 726
+          },
+          {
+            "name": "Side_L",
+            "parent": "Middle",
+            "head_roblox": [
+              -0.6446,
+              1.2,
+              0.0
+            ],
+            "tail_roblox": [
+              -1.6115,
+              1.2,
+              0.0
+            ],
+            "radius": 0.6,
+            "vertices": 183
+          },
+          {
+            "name": "Side_R",
+            "parent": "Middle",
+            "head_roblox": [
+              0.6446,
+              1.2,
+              0.0
+            ],
+            "tail_roblox": [
+              1.6115,
+              1.2,
+              0.0
+            ],
+            "radius": 0.6,
+            "vertices": 216
+          }
+        ],
+        "landmarks": {
+          "middle_z": 1.05,
+          "top_z": 2.1,
+          "side": [
+            1.612,
+            0.0,
+            1.2
+          ]
+        },
+        "max_influences": 4
+      },
       "note": "Blob; the client bobs and wobbles it. Hand is the right side of the body (no arms)."
     },
     {
@@ -323,7 +435,190 @@
         ]
       },
       "coplanar_overlaps": "none",
-      "rig": "none: static meshes, no bones, no Animations folder (the client bobs them)",
+      "rig": {
+        "shape": "Biped",
+        "object": "Rig",
+        "root_bone": "RigRoot",
+        "bones": [
+          {
+            "name": "RigRoot",
+            "parent": null,
+            "head_roblox": [
+              -0.0,
+              0.0,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.0,
+              0.5,
+              0.0
+            ],
+            "radius": 0.0,
+            "vertices": 0
+          },
+          {
+            "name": "Hips",
+            "parent": "RigRoot",
+            "head_roblox": [
+              -0.0,
+              1.5,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.0,
+              2.325,
+              0.0
+            ],
+            "radius": 0.6,
+            "vertices": 891
+          },
+          {
+            "name": "Spine",
+            "parent": "Hips",
+            "head_roblox": [
+              -0.0,
+              2.325,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.0,
+              3.15,
+              0.0
+            ],
+            "radius": 0.75,
+            "vertices": 1529
+          },
+          {
+            "name": "Head",
+            "parent": "Spine",
+            "head_roblox": [
+              -0.0,
+              3.15,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.0,
+              5.0,
+              0.0
+            ],
+            "radius": 0.9,
+            "vertices": 1251
+          },
+          {
+            "name": "Arm_L",
+            "parent": "Spine",
+            "head_roblox": [
+              -0.8,
+              2.95,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.95,
+              1.6,
+              -0.4
+            ],
+            "radius": 0.225,
+            "vertices": 265
+          },
+          {
+            "name": "Arm_R",
+            "parent": "Spine",
+            "head_roblox": [
+              0.8,
+              2.95,
+              0.0
+            ],
+            "tail_roblox": [
+              0.95,
+              1.6,
+              -0.4
+            ],
+            "radius": 0.225,
+            "vertices": 265
+          },
+          {
+            "name": "Thigh_L",
+            "parent": "Hips",
+            "head_roblox": [
+              -0.37,
+              1.5,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.37,
+              0.92,
+              0.0
+            ],
+            "radius": 0.25,
+            "vertices": 275
+          },
+          {
+            "name": "Shin_L",
+            "parent": "Thigh_L",
+            "head_roblox": [
+              -0.37,
+              0.92,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.37,
+              0.1,
+              0.0
+            ],
+            "radius": 0.25,
+            "vertices": 224
+          },
+          {
+            "name": "Thigh_R",
+            "parent": "Hips",
+            "head_roblox": [
+              0.37,
+              1.5,
+              0.0
+            ],
+            "tail_roblox": [
+              0.37,
+              0.92,
+              0.0
+            ],
+            "radius": 0.25,
+            "vertices": 275
+          },
+          {
+            "name": "Shin_R",
+            "parent": "Thigh_R",
+            "head_roblox": [
+              0.37,
+              0.92,
+              0.0
+            ],
+            "tail_roblox": [
+              0.37,
+              0.1,
+              0.0
+            ],
+            "radius": 0.25,
+            "vertices": 224
+          }
+        ],
+        "landmarks": {
+          "hip_z": 1.5,
+          "knee_z": 0.92,
+          "hip_x": 0.37,
+          "neck_z": 3.15,
+          "shoulder": [
+            0.8,
+            0,
+            2.95
+          ],
+          "hand": [
+            -0.95,
+            -0.4,
+            1.6
+          ]
+        },
+        "max_influences": 4
+      },
       "note": "Biped; a teal bow tie for the Front Desk."
     },
     {
@@ -490,7 +785,190 @@
         ]
       },
       "coplanar_overlaps": "none",
-      "rig": "none: static meshes, no bones, no Animations folder (the client bobs them)",
+      "rig": {
+        "shape": "Biped",
+        "object": "Rig",
+        "root_bone": "RigRoot",
+        "bones": [
+          {
+            "name": "RigRoot",
+            "parent": null,
+            "head_roblox": [
+              -0.0,
+              0.0,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.0,
+              0.45,
+              0.0
+            ],
+            "radius": 0.0,
+            "vertices": 0
+          },
+          {
+            "name": "Hips",
+            "parent": "RigRoot",
+            "head_roblox": [
+              -0.0,
+              1.44,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.0,
+              2.145,
+              0.0
+            ],
+            "radius": 0.54,
+            "vertices": 675
+          },
+          {
+            "name": "Spine",
+            "parent": "Hips",
+            "head_roblox": [
+              -0.0,
+              2.145,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.0,
+              2.85,
+              0.0
+            ],
+            "radius": 0.675,
+            "vertices": 712
+          },
+          {
+            "name": "Head",
+            "parent": "Spine",
+            "head_roblox": [
+              -0.0,
+              2.85,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.0,
+              4.5,
+              0.0
+            ],
+            "radius": 0.81,
+            "vertices": 671
+          },
+          {
+            "name": "Arm_L",
+            "parent": "Spine",
+            "head_roblox": [
+              -0.72,
+              2.625,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.86,
+              1.45,
+              -0.22
+            ],
+            "radius": 0.202,
+            "vertices": 104
+          },
+          {
+            "name": "Arm_R",
+            "parent": "Spine",
+            "head_roblox": [
+              0.72,
+              2.625,
+              0.0
+            ],
+            "tail_roblox": [
+              0.86,
+              1.45,
+              -0.22
+            ],
+            "radius": 0.202,
+            "vertices": 104
+          },
+          {
+            "name": "Thigh_L",
+            "parent": "Hips",
+            "head_roblox": [
+              -0.3375,
+              1.44,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.3375,
+              0.72,
+              0.0
+            ],
+            "radius": 0.225,
+            "vertices": 219
+          },
+          {
+            "name": "Shin_L",
+            "parent": "Thigh_L",
+            "head_roblox": [
+              -0.3375,
+              0.72,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.3375,
+              0.09,
+              0.0
+            ],
+            "radius": 0.225,
+            "vertices": 195
+          },
+          {
+            "name": "Thigh_R",
+            "parent": "Hips",
+            "head_roblox": [
+              0.3375,
+              1.44,
+              0.0
+            ],
+            "tail_roblox": [
+              0.3375,
+              0.72,
+              0.0
+            ],
+            "radius": 0.225,
+            "vertices": 219
+          },
+          {
+            "name": "Shin_R",
+            "parent": "Thigh_R",
+            "head_roblox": [
+              0.3375,
+              0.72,
+              0.0
+            ],
+            "tail_roblox": [
+              0.3375,
+              0.09,
+              0.0
+            ],
+            "radius": 0.225,
+            "vertices": 195
+          }
+        ],
+        "landmarks": {
+          "hip_z": 1.44,
+          "knee_z": 0.72,
+          "hip_x": 0.337,
+          "neck_z": 2.85,
+          "shoulder": [
+            0.72,
+            0.0,
+            2.625
+          ],
+          "hand": [
+            -0.86,
+            -0.22,
+            1.45
+          ]
+        },
+        "max_influences": 4
+      },
       "note": "Biped; carved face lit warm: Glow_Eyes_1/2 and the mouth Glow_Warm_1 (quirk: \"head glows brighter when happy\")."
     },
     {
@@ -657,7 +1135,141 @@
         ]
       },
       "coplanar_overlaps": "none",
-      "rig": "none: static meshes, no bones, no Animations folder (the client bobs them)",
+      "rig": {
+        "shape": "Float",
+        "object": "Rig",
+        "root_bone": "RigRoot",
+        "bones": [
+          {
+            "name": "RigRoot",
+            "parent": null,
+            "head_roblox": [
+              -0.0,
+              0.0,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.0,
+              0.45,
+              0.0
+            ],
+            "radius": 0.0,
+            "vertices": 0
+          },
+          {
+            "name": "Body",
+            "parent": "RigRoot",
+            "head_roblox": [
+              -0.0,
+              1.8,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.0,
+              3.15,
+              0.0
+            ],
+            "radius": 1.125,
+            "vertices": 826
+          },
+          {
+            "name": "Head",
+            "parent": "Body",
+            "head_roblox": [
+              -0.0,
+              3.15,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.0,
+              4.5,
+              0.0
+            ],
+            "radius": 1.125,
+            "vertices": 763
+          },
+          {
+            "name": "Arm_L",
+            "parent": "Body",
+            "head_roblox": [
+              -0.675,
+              2.7,
+              0.0
+            ],
+            "tail_roblox": [
+              -1.4,
+              2.35,
+              -0.1
+            ],
+            "radius": 0.27,
+            "vertices": 62
+          },
+          {
+            "name": "Arm_R",
+            "parent": "Body",
+            "head_roblox": [
+              0.675,
+              2.7,
+              0.0
+            ],
+            "tail_roblox": [
+              1.4,
+              2.35,
+              -0.1
+            ],
+            "radius": 0.27,
+            "vertices": 62
+          },
+          {
+            "name": "Tail_1",
+            "parent": "Body",
+            "head_roblox": [
+              -0.0,
+              1.8,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.0,
+              1.115,
+              0.0
+            ],
+            "radius": 1.125,
+            "vertices": 407
+          },
+          {
+            "name": "Tail_2",
+            "parent": "Tail_1",
+            "head_roblox": [
+              -0.0,
+              1.115,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.0,
+              0.43,
+              0.0
+            ],
+            "radius": 1.125,
+            "vertices": 73
+          }
+        ],
+        "landmarks": {
+          "body_z": 1.8,
+          "neck_z": 3.15,
+          "tail_z": 0.43,
+          "shoulder": [
+            0.675,
+            0.0,
+            2.7
+          ],
+          "hand": [
+            -1.4,
+            -0.1,
+            2.35
+          ]
+        },
+        "max_influences": 4
+      },
       "note": "Float: the sheet hovers, its wavy hem 0.34 over the floor at its lowest. Hand is the right arm nub."
     },
     {
@@ -824,7 +1436,190 @@
         ]
       },
       "coplanar_overlaps": "none",
-      "rig": "none: static meshes, no bones, no Animations folder (the client bobs them)",
+      "rig": {
+        "shape": "Biped",
+        "object": "Rig",
+        "root_bone": "RigRoot",
+        "bones": [
+          {
+            "name": "RigRoot",
+            "parent": null,
+            "head_roblox": [
+              -0.0,
+              0.0,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.0,
+              0.55,
+              0.0
+            ],
+            "radius": 0.0,
+            "vertices": 0
+          },
+          {
+            "name": "Hips",
+            "parent": "RigRoot",
+            "head_roblox": [
+              -0.0,
+              1.76,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.0,
+              2.85,
+              0.0
+            ],
+            "radius": 0.66,
+            "vertices": 449
+          },
+          {
+            "name": "Spine",
+            "parent": "Hips",
+            "head_roblox": [
+              -0.0,
+              2.85,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.0,
+              3.94,
+              0.0
+            ],
+            "radius": 0.825,
+            "vertices": 949
+          },
+          {
+            "name": "Head",
+            "parent": "Spine",
+            "head_roblox": [
+              -0.0,
+              3.94,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.0,
+              5.5,
+              0.0
+            ],
+            "radius": 0.99,
+            "vertices": 893
+          },
+          {
+            "name": "Arm_L",
+            "parent": "Spine",
+            "head_roblox": [
+              -0.88,
+              3.665,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.75,
+              2.95,
+              -1.05
+            ],
+            "radius": 0.247,
+            "vertices": 116
+          },
+          {
+            "name": "Arm_R",
+            "parent": "Spine",
+            "head_roblox": [
+              0.88,
+              3.665,
+              0.0
+            ],
+            "tail_roblox": [
+              0.75,
+              2.95,
+              -1.05
+            ],
+            "radius": 0.247,
+            "vertices": 116
+          },
+          {
+            "name": "Thigh_L",
+            "parent": "Hips",
+            "head_roblox": [
+              -0.4125,
+              1.76,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.4125,
+              0.88,
+              0.0
+            ],
+            "radius": 0.275,
+            "vertices": 207
+          },
+          {
+            "name": "Shin_L",
+            "parent": "Thigh_L",
+            "head_roblox": [
+              -0.4125,
+              0.88,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.4125,
+              0.11,
+              0.0
+            ],
+            "radius": 0.275,
+            "vertices": 217
+          },
+          {
+            "name": "Thigh_R",
+            "parent": "Hips",
+            "head_roblox": [
+              0.4125,
+              1.76,
+              0.0
+            ],
+            "tail_roblox": [
+              0.4125,
+              0.88,
+              0.0
+            ],
+            "radius": 0.275,
+            "vertices": 165
+          },
+          {
+            "name": "Shin_R",
+            "parent": "Thigh_R",
+            "head_roblox": [
+              0.4125,
+              0.88,
+              0.0
+            ],
+            "tail_roblox": [
+              0.4125,
+              0.11,
+              0.0
+            ],
+            "radius": 0.275,
+            "vertices": 203
+          }
+        ],
+        "landmarks": {
+          "hip_z": 1.76,
+          "knee_z": 0.88,
+          "hip_x": 0.412,
+          "neck_z": 3.94,
+          "shoulder": [
+            0.88,
+            0.0,
+            3.665
+          ],
+          "hand": [
+            -0.75,
+            -1.05,
+            2.95
+          ]
+        },
+        "max_influences": 4
+      },
       "note": "Biped, arms forward; one bandage end hanging behind (quirk \"trails bandages\")."
     },
     {
@@ -991,7 +1786,190 @@
         ]
       },
       "coplanar_overlaps": "none",
-      "rig": "none: static meshes, no bones, no Animations folder (the client bobs them)",
+      "rig": {
+        "shape": "Biped",
+        "object": "Rig",
+        "root_bone": "RigRoot",
+        "bones": [
+          {
+            "name": "RigRoot",
+            "parent": null,
+            "head_roblox": [
+              -0.0,
+              0.0,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.0,
+              0.55,
+              0.0
+            ],
+            "radius": 0.0,
+            "vertices": 0
+          },
+          {
+            "name": "Hips",
+            "parent": "RigRoot",
+            "head_roblox": [
+              -0.0,
+              1.76,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.0,
+              2.8,
+              0.0
+            ],
+            "radius": 0.66,
+            "vertices": 474
+          },
+          {
+            "name": "Spine",
+            "parent": "Hips",
+            "head_roblox": [
+              -0.0,
+              2.8,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.0,
+              3.84,
+              0.0
+            ],
+            "radius": 0.825,
+            "vertices": 1049
+          },
+          {
+            "name": "Head",
+            "parent": "Spine",
+            "head_roblox": [
+              -0.0,
+              3.84,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.0,
+              5.5,
+              0.0
+            ],
+            "radius": 0.99,
+            "vertices": 1119
+          },
+          {
+            "name": "Arm_L",
+            "parent": "Spine",
+            "head_roblox": [
+              -0.88,
+              3.565,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.7,
+              2.93,
+              -1.05
+            ],
+            "radius": 0.247,
+            "vertices": 146
+          },
+          {
+            "name": "Arm_R",
+            "parent": "Spine",
+            "head_roblox": [
+              0.88,
+              3.565,
+              0.0
+            ],
+            "tail_roblox": [
+              0.7,
+              2.93,
+              -1.05
+            ],
+            "radius": 0.247,
+            "vertices": 146
+          },
+          {
+            "name": "Thigh_L",
+            "parent": "Hips",
+            "head_roblox": [
+              -0.4125,
+              1.76,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.4125,
+              0.88,
+              0.0
+            ],
+            "radius": 0.275,
+            "vertices": 177
+          },
+          {
+            "name": "Shin_L",
+            "parent": "Thigh_L",
+            "head_roblox": [
+              -0.4125,
+              0.88,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.4125,
+              0.11,
+              0.0
+            ],
+            "radius": 0.275,
+            "vertices": 175
+          },
+          {
+            "name": "Thigh_R",
+            "parent": "Hips",
+            "head_roblox": [
+              0.4125,
+              1.76,
+              0.0
+            ],
+            "tail_roblox": [
+              0.4125,
+              0.88,
+              0.0
+            ],
+            "radius": 0.275,
+            "vertices": 177
+          },
+          {
+            "name": "Shin_R",
+            "parent": "Thigh_R",
+            "head_roblox": [
+              0.4125,
+              0.88,
+              0.0
+            ],
+            "tail_roblox": [
+              0.4125,
+              0.11,
+              0.0
+            ],
+            "radius": 0.275,
+            "vertices": 175
+          }
+        ],
+        "landmarks": {
+          "hip_z": 1.76,
+          "knee_z": 0.88,
+          "hip_x": 0.412,
+          "neck_z": 3.84,
+          "shoulder": [
+            0.88,
+            0.0,
+            3.565
+          ],
+          "hand": [
+            -0.7,
+            -1.05,
+            2.93
+          ]
+        },
+        "max_influences": 4
+      },
       "note": "Biped, arms forward; a torn purple shirt and one tooth."
     },
     {
@@ -1168,7 +2146,190 @@
         ]
       },
       "coplanar_overlaps": "none",
-      "rig": "none: static meshes, no bones, no Animations folder (the client bobs them)",
+      "rig": {
+        "shape": "Biped",
+        "object": "Rig",
+        "root_bone": "RigRoot",
+        "bones": [
+          {
+            "name": "RigRoot",
+            "parent": null,
+            "head_roblox": [
+              -0.0,
+              0.0,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.0,
+              0.55,
+              0.0
+            ],
+            "radius": 0.0,
+            "vertices": 0
+          },
+          {
+            "name": "Hips",
+            "parent": "RigRoot",
+            "head_roblox": [
+              -0.0,
+              1.76,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.0,
+              2.41,
+              0.0
+            ],
+            "radius": 0.66,
+            "vertices": 366
+          },
+          {
+            "name": "Spine",
+            "parent": "Hips",
+            "head_roblox": [
+              -0.0,
+              2.41,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.0,
+              3.06,
+              0.0
+            ],
+            "radius": 0.825,
+            "vertices": 1100
+          },
+          {
+            "name": "Head",
+            "parent": "Spine",
+            "head_roblox": [
+              -0.0,
+              3.06,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.0,
+              5.5,
+              0.0
+            ],
+            "radius": 0.99,
+            "vertices": 1112
+          },
+          {
+            "name": "Arm_L",
+            "parent": "Spine",
+            "head_roblox": [
+              -0.88,
+              2.785,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.85,
+              2.0,
+              -0.25
+            ],
+            "radius": 0.247,
+            "vertices": 91
+          },
+          {
+            "name": "Arm_R",
+            "parent": "Spine",
+            "head_roblox": [
+              0.88,
+              2.785,
+              0.0
+            ],
+            "tail_roblox": [
+              0.85,
+              2.0,
+              -0.25
+            ],
+            "radius": 0.247,
+            "vertices": 91
+          },
+          {
+            "name": "Thigh_L",
+            "parent": "Hips",
+            "head_roblox": [
+              -0.4125,
+              1.76,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.4125,
+              0.88,
+              0.0
+            ],
+            "radius": 0.275,
+            "vertices": 172
+          },
+          {
+            "name": "Shin_L",
+            "parent": "Thigh_L",
+            "head_roblox": [
+              -0.4125,
+              0.88,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.4125,
+              0.11,
+              0.0
+            ],
+            "radius": 0.275,
+            "vertices": 176
+          },
+          {
+            "name": "Thigh_R",
+            "parent": "Hips",
+            "head_roblox": [
+              0.4125,
+              1.76,
+              0.0
+            ],
+            "tail_roblox": [
+              0.4125,
+              0.88,
+              0.0
+            ],
+            "radius": 0.275,
+            "vertices": 172
+          },
+          {
+            "name": "Shin_R",
+            "parent": "Thigh_R",
+            "head_roblox": [
+              0.4125,
+              0.88,
+              0.0
+            ],
+            "tail_roblox": [
+              0.4125,
+              0.11,
+              0.0
+            ],
+            "radius": 0.275,
+            "vertices": 176
+          }
+        ],
+        "landmarks": {
+          "hip_z": 1.76,
+          "knee_z": 0.88,
+          "hip_x": 0.412,
+          "neck_z": 3.06,
+          "shoulder": [
+            0.88,
+            0.0,
+            2.785
+          ],
+          "hand": [
+            -0.85,
+            -0.25,
+            2.0
+          ]
+        },
+        "max_influences": 4
+      },
       "note": "Biped; mint skin, orange hair, a bent hat. No cauldron or broom (props are the code's)."
     },
     {
@@ -1335,7 +2496,190 @@
         ]
       },
       "coplanar_overlaps": "none",
-      "rig": "none: static meshes, no bones, no Animations folder (the client bobs them)",
+      "rig": {
+        "shape": "Biped",
+        "object": "Rig",
+        "root_bone": "RigRoot",
+        "bones": [
+          {
+            "name": "RigRoot",
+            "parent": null,
+            "head_roblox": [
+              -0.0,
+              0.0,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.0,
+              0.65,
+              0.0
+            ],
+            "radius": 0.0,
+            "vertices": 0
+          },
+          {
+            "name": "Hips",
+            "parent": "RigRoot",
+            "head_roblox": [
+              -0.0,
+              2.08,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.0,
+              3.38,
+              0.0
+            ],
+            "radius": 0.78,
+            "vertices": 693
+          },
+          {
+            "name": "Spine",
+            "parent": "Hips",
+            "head_roblox": [
+              -0.0,
+              3.38,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.0,
+              4.68,
+              0.0
+            ],
+            "radius": 0.975,
+            "vertices": 882
+          },
+          {
+            "name": "Head",
+            "parent": "Spine",
+            "head_roblox": [
+              -0.0,
+              4.68,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.0,
+              6.5,
+              0.0
+            ],
+            "radius": 1.17,
+            "vertices": 779
+          },
+          {
+            "name": "Arm_L",
+            "parent": "Spine",
+            "head_roblox": [
+              -1.04,
+              4.355,
+              0.0
+            ],
+            "tail_roblox": [
+              -1.15,
+              2.0,
+              -0.45
+            ],
+            "radius": 0.292,
+            "vertices": 253
+          },
+          {
+            "name": "Arm_R",
+            "parent": "Spine",
+            "head_roblox": [
+              1.04,
+              4.355,
+              0.0
+            ],
+            "tail_roblox": [
+              1.15,
+              2.0,
+              -0.45
+            ],
+            "radius": 0.292,
+            "vertices": 253
+          },
+          {
+            "name": "Thigh_L",
+            "parent": "Hips",
+            "head_roblox": [
+              -0.4875,
+              2.08,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.4875,
+              1.04,
+              0.0
+            ],
+            "radius": 0.325,
+            "vertices": 393
+          },
+          {
+            "name": "Shin_L",
+            "parent": "Thigh_L",
+            "head_roblox": [
+              -0.4875,
+              1.04,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.4875,
+              0.13,
+              0.0
+            ],
+            "radius": 0.325,
+            "vertices": 213
+          },
+          {
+            "name": "Thigh_R",
+            "parent": "Hips",
+            "head_roblox": [
+              0.4875,
+              2.08,
+              0.0
+            ],
+            "tail_roblox": [
+              0.4875,
+              1.04,
+              0.0
+            ],
+            "radius": 0.325,
+            "vertices": 393
+          },
+          {
+            "name": "Shin_R",
+            "parent": "Thigh_R",
+            "head_roblox": [
+              0.4875,
+              1.04,
+              0.0
+            ],
+            "tail_roblox": [
+              0.4875,
+              0.13,
+              0.0
+            ],
+            "radius": 0.325,
+            "vertices": 222
+          }
+        ],
+        "landmarks": {
+          "hip_z": 2.08,
+          "knee_z": 1.04,
+          "hip_x": 0.487,
+          "neck_z": 4.68,
+          "shoulder": [
+            1.04,
+            0.0,
+            4.355
+          ],
+          "hand": [
+            -1.15,
+            -0.45,
+            2.0
+          ]
+        },
+        "max_influences": 4
+      },
       "note": "Biped, a big fluffy wolf; blunt round claws, nothing sharp."
     },
     {
@@ -1512,7 +2856,190 @@
         ]
       },
       "coplanar_overlaps": "none",
-      "rig": "none: static meshes, no bones, no Animations folder (the client bobs them)",
+      "rig": {
+        "shape": "Biped",
+        "object": "Rig",
+        "root_bone": "RigRoot",
+        "bones": [
+          {
+            "name": "RigRoot",
+            "parent": null,
+            "head_roblox": [
+              -0.0,
+              0.0,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.0,
+              0.6,
+              0.0
+            ],
+            "radius": 0.0,
+            "vertices": 0
+          },
+          {
+            "name": "Hips",
+            "parent": "RigRoot",
+            "head_roblox": [
+              -0.0,
+              1.92,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.0,
+              3.025,
+              0.0
+            ],
+            "radius": 0.72,
+            "vertices": 731
+          },
+          {
+            "name": "Spine",
+            "parent": "Hips",
+            "head_roblox": [
+              -0.0,
+              3.025,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.0,
+              4.13,
+              0.0
+            ],
+            "radius": 0.9,
+            "vertices": 1339
+          },
+          {
+            "name": "Head",
+            "parent": "Spine",
+            "head_roblox": [
+              -0.0,
+              4.13,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.0,
+              6.0,
+              0.0
+            ],
+            "radius": 1.08,
+            "vertices": 1399
+          },
+          {
+            "name": "Arm_L",
+            "parent": "Spine",
+            "head_roblox": [
+              -0.96,
+              3.83,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.95,
+              1.78,
+              -0.5
+            ],
+            "radius": 0.27,
+            "vertices": 229
+          },
+          {
+            "name": "Arm_R",
+            "parent": "Spine",
+            "head_roblox": [
+              0.96,
+              3.83,
+              0.0
+            ],
+            "tail_roblox": [
+              0.95,
+              1.78,
+              -0.5
+            ],
+            "radius": 0.27,
+            "vertices": 229
+          },
+          {
+            "name": "Thigh_L",
+            "parent": "Hips",
+            "head_roblox": [
+              -0.45,
+              1.92,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.45,
+              0.96,
+              0.0
+            ],
+            "radius": 0.3,
+            "vertices": 303
+          },
+          {
+            "name": "Shin_L",
+            "parent": "Thigh_L",
+            "head_roblox": [
+              -0.45,
+              0.96,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.45,
+              0.12,
+              0.0
+            ],
+            "radius": 0.3,
+            "vertices": 252
+          },
+          {
+            "name": "Thigh_R",
+            "parent": "Hips",
+            "head_roblox": [
+              0.45,
+              1.92,
+              0.0
+            ],
+            "tail_roblox": [
+              0.45,
+              0.96,
+              0.0
+            ],
+            "radius": 0.3,
+            "vertices": 303
+          },
+          {
+            "name": "Shin_R",
+            "parent": "Thigh_R",
+            "head_roblox": [
+              0.45,
+              0.96,
+              0.0
+            ],
+            "tail_roblox": [
+              0.45,
+              0.12,
+              0.0
+            ],
+            "radius": 0.3,
+            "vertices": 255
+          }
+        ],
+        "landmarks": {
+          "hip_z": 1.92,
+          "knee_z": 0.96,
+          "hip_x": 0.45,
+          "neck_z": 4.13,
+          "shoulder": [
+            0.96,
+            0.0,
+            3.83
+          ],
+          "hand": [
+            -0.95,
+            -0.5,
+            1.78
+          ]
+        },
+        "max_influences": 4
+      },
       "note": "Biped; cape with a red lining and a tall collar, two tiny fangs, red eyes (Species.luau look.eyes)."
     },
     {
@@ -1689,7 +3216,146 @@
         ]
       },
       "coplanar_overlaps": "none",
-      "rig": "none: static meshes, no bones, no Animations folder (the client bobs them)",
+      "rig": {
+        "shape": "Float",
+        "object": "Rig",
+        "root_bone": "RigRoot",
+        "bones": [
+          {
+            "name": "RigRoot",
+            "parent": null,
+            "head_roblox": [
+              -0.0,
+              0.0,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.0,
+              0.7,
+              0.0
+            ],
+            "radius": 0.0,
+            "vertices": 0
+          },
+          {
+            "name": "Body",
+            "parent": "RigRoot",
+            "head_roblox": [
+              -0.0,
+              2.8,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.0,
+              5.0,
+              0.0
+            ],
+            "radius": 1.75,
+            "vertices": 1162
+          },
+          {
+            "name": "Head",
+            "parent": "Body",
+            "head_roblox": [
+              -0.0,
+              5.0,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.0,
+              7.0,
+              0.0
+            ],
+            "radius": 1.75,
+            "vertices": 1247
+          },
+          {
+            "name": "Arm_L",
+            "parent": "Body",
+            "head_roblox": [
+              -0.5,
+              4.9,
+              0.0
+            ],
+            "tail_roblox": [
+              -1.27,
+              6.35,
+              -0.15
+            ],
+            "radius": 0.42,
+            "vertices": 128
+          },
+          {
+            "name": "Arm_R",
+            "parent": "Body",
+            "head_roblox": [
+              0.5,
+              4.9,
+              0.0
+            ],
+            "tail_roblox": [
+              1.0,
+              4.3,
+              -0.45
+            ],
+            "radius": 0.42,
+            "vertices": 85
+          },
+          {
+            "name": "Tail_1",
+            "parent": "Body",
+            "head_roblox": [
+              -0.0,
+              2.8,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.0,
+              1.595,
+              0.0
+            ],
+            "radius": 1.75,
+            "vertices": 198
+          },
+          {
+            "name": "Tail_2",
+            "parent": "Tail_1",
+            "head_roblox": [
+              -0.0,
+              1.595,
+              0.0
+            ],
+            "tail_roblox": [
+              -0.0,
+              0.39,
+              0.0
+            ],
+            "radius": 1.75,
+            "vertices": 97
+          }
+        ],
+        "landmarks": {
+          "body_z": 2.8,
+          "neck_z": 5.0,
+          "tail_z": 0.39,
+          "shoulder": [
+            0.5,
+            0,
+            4.9
+          ],
+          "hand": [
+            -1.0,
+            -0.45,
+            4.3
+          ],
+          "hand_l": [
+            1.27,
+            -0.15,
+            6.35
+          ]
+        },
+        "max_influences": 4
+      },
       "note": "Float: an opera diva, one arm raised mid-song; gown hem 0.25 over the floor."
     }
   ]

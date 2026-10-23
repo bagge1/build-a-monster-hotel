@@ -37,10 +37,9 @@ ONLY = next((a.split(',') for a in k.ARGS[k.ARGS.index('only') + 1:k.ARGS.index(
     if 'only' in k.ARGS else None
 FINAL = 'final' in k.ARGS
 
-# The armature each species takes (LAUNCH.md #6 has four). Species.luau's shape
-# says the same except the Mud Puppy's "Quadruped": its front legs take the
-# Biped's arms (README, an open point for August).
-RIG = {'BogFrog': 'Blob', 'Mossling': 'Blob', 'FireflySprite': 'Float', 'MudPuppy': 'Biped',
+# The armature each species takes: Species.luau's shape (MODELS.md, "The rig";
+# the Quadruped rig was added for the Mud Puppy, 2026-10-23).
+RIG = {'BogFrog': 'Blob', 'Mossling': 'Blob', 'FireflySprite': 'Float', 'MudPuppy': 'Quadruped',
        'GatorGhoul': 'Biped', 'WillOWisp': 'Float', 'SwampHag': 'Biped', 'BayouHydra': 'Serpent',
        'CypressKing': 'Biped', 'MoonHeron': 'Biped'}
 
@@ -91,9 +90,9 @@ def recentre_y():
     return cy
 
 
-def finished(note):
+def finished(note, rig=None):
     sid = k.m.id
-    rec = k.finish(note)
+    rec = k.finish(note, rig=rig)
     rec['rig_shape'] = RIG[sid]
     return rec
 
@@ -228,9 +227,11 @@ def mud_puppy():
     lathe('Light', [(0.02, 0.345), (0.1, 0.345)], at=(0.12, -0.8, 2.45), n=16, rot=(0, -12, 0))  # its band
     marker('Hand', (0, -1.66, 1.5))
     marker('Nameplate', (0, -0.3, 3.5))
-    return finished('Quadruped (rig Biped: the front legs take the arms), a chubby brown pup dipped in mud to its middle '
+    return finished('Quadruped, a chubby brown pup dipped in mud to its middle '
                     'with a drippy edge, muddy socks and splats (quirk "shakes mud on the doorman"), a cream muzzle, floppy ears, a red bellhop '
-                    'pillbox cap with a cream band. Hand is the mouth: a pup carries in its mouth.')
+                    'pillbox cap with a cream band. Hand is the mouth: a pup carries in its mouth.',
+                    rig=dict(body_z=1.05, front_y=-0.5, back_y=0.78, leg_x=0.43, nose=(0, -1.6, 1.9),
+                             tail=(0, 1.48, 2.05)))
 
 
 def gator_ghoul():
@@ -408,7 +409,13 @@ def bayou_hydra():
     return finished('Serpent, a tubby teal body sitting on the floor on two stubby front legs, with three S-curved necks; the heads differ (quirk '
                     '"every head orders something different"): the middle one smiles under a crest, the left one '
                     'says "ooh" with a lily behind its ear, the right one sticks its tongue out. A curled tail; '
-                    'Hand is its tip.')
+                    'Hand is its tip.',
+                    # One Neck and Head for the middle neck; the side necks take the two tail
+                    # bones, each on Coil (its curled tail rides on Coil).
+                    rig=dict(coil_top=(0, 0, 1.9), neck_base=(0, -0.1, 1.7), head_base=(0, -0.55, 5.0),
+                             tail_base=(0.6, -0.05, 1.6), tail_mid=(1.62, -0.5, 4.35),
+                             tail_2_base=(-0.6, -0.05, 1.6), tail_tip=(-1.62, -0.5, 4.35), tail_2_parent='Coil',
+                             tail_radius=0.35, radius={'Coil': 1.4, 'Neck': 0.35}))
 
 
 def cypress_king():
