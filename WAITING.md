@@ -757,7 +757,9 @@ Med Claudes skärmdump där det finns en. -->
    - **Prestige Stars effekt**: förslaget är + inkomst och lite ovanligare
      gäster. **Rekommendation:** +5 % inkomst per stjärna och +2 % chans
      till en högre sällsynthet per stjärna, båda med tak vid 10 stjärnor.
-   - **Platsernas pris**: vad Frostfang Lodge och Bayou Spa kostar att
+   - ~~**Platsernas pris**~~ (besvarat 2026-10-23 med balanskörningen:
+     $400 000 och $1 000 000, betalning ×5 per plats; GDD §18,
+     `archive/BALANCE-2026-10-23.md`): vad Frostfang Lodge och Bayou Spa kostar att
      öppna. **Rekommendation:** Frostfang $250 000, Bayou Spa $10M, och
      att varje plats tjänar ×20 den förra (som Frostfangs rum redan gör);
      `tools/balance_model.py` prövar dem mot dina tider (steg 6).
@@ -1265,7 +1267,10 @@ Claude testar. Det som är ditt, i ordning:
 3. **Notifikationernas nyckel och hemlighet** (§3.3 steg 1–2), 5 minuter.
 4. ~~**Bayou, VIP-loungen och de fyra facade-paketen**~~: ja till allt
    2026-10-23.
-5. **Balanskörningens sammanfattning:** ditt ja innan värdena gäller.
+5. ~~**Balanskörningens sammanfattning:** ditt ja innan värdena gäller.~~
+   (besvarat 2026-10-23: "ja till balanskörningen"; de sju värdena är dina
+   beslut, GDD §18, PLACEHOLDER struket på dem; sammanfattningen i
+   `archive/BALANCE-2026-10-23.md`.)
 6. **Ikon och thumbnails:** välj av tre.
 7. **Frågeformuläret** (Maturity & Compliance): läs Claudes svar innan de
    skickas.

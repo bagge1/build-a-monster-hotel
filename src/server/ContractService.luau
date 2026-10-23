@@ -250,7 +250,7 @@ local function baseRate(player: Player): number
 			rate -= g.payRate
 		end
 	end
-	return math.max(Constants.Economy.BasePay * 10, rate)
+	return math.max(Constants.Economy.BasePay * Constants.Economy.RewardFloor, rate)
 end
 
 -- ===== The player's intents =====

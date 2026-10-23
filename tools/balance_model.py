@@ -153,11 +153,45 @@ WHAT IS SIMULATED (as the code implements it, 2026-10-21: built rooms, GDD 5.4, 
     the rest is hallway (the corridors to the rooms' doors). Shapes are not
     packed: cells are counted.
 
+THE SYSTEMS OF THE BALANCE RUN OF 2026-10-23 (EXTRAS; --no-extras leaves them out)
+  - The UTC day from a random phase at the join: the login calendar
+    (LOGIN_MINUTES of StoreService.incomeRate, claimed once the tutorial is
+    done), three daily requests (DailyService.draw: a kind at random, its
+    target counted from the draw; "Visit" needs company and "Pitch" is not
+    modelled, a reroll swaps it), REWARD_MINUTES each. incomeRate is the
+    in-room guests' pay rates plus the Wing, floored at BasePay x
+    Economy.RewardFloor (StoreService.incomeRate, ContractService.baseRate).
+  - VIP contracts (Contracts, ContractService): from UnlockStars, one running
+    (two from ActiveFromStars), an offer drawn as Contracts.spec does (a
+    species up to RarityByStars by RarityWeights, a room type buildable, one
+    bar above the best room's, a second from SecondBarStars), the clock
+    play time at its own hotel; the player meets it with a vacant room of
+    the type or builds/fills one when that costs <= VIP_SPEND minutes of
+    income (else cancels), holds the room (Reserved), the VIP rides the next
+    bus as an extra seat, pays VipPay x, and a happy stay pays RewardMinutes
+    x the rarity factor of the income without the VIP's own pay; DailyCap a
+    day. The efficient player takes the dearest offer, the casual one any.
+  - Hunter Night every Interval from a random phase (the tutorial done):
+    defended with the player's `hunter` chance, RewardIncomeSeconds of income.
+  - Residents level up (A.11.6): XP a minute at work while the player plays,
+    bought at ResidentLevels.price when it costs <= 2 min of income; +LevelWing
+    a level in the Wing, +LevelEfficiency on staff.
+  - --player: PLAYERS above. The casual player plays 45 min a day: at the
+    end of a session the guests leave with the server, the residents' offline
+    till pays OfflineFraction x the Wing to the cap (Economy.offline), and
+    the next day's bus comes at a random phase; the day's dailies and login
+    come round. The payer owns the passes named (AutoCollect: the till goes
+    straight to cash; ResidentWingPlus; ExtraFloor; VIPLobby: +1 reroll;
+    NightManager: the 8 h cap); "payer+starter" also buys the Starter Pack
+    (cash and a 2x Cash boost, Income.multiplier, on guests at check-in and
+    on the Wing).
+  - --season halloween: Pumpkin first in the look roll (Events.rollMutation);
+    --codes: every code's cash at the start.
+
 WHAT IS NOT SIMULATED (stated so the numbers are read honestly)
-  Hunter Night (its reward is +5 min of income every 90 min), events and
-  seasonal mutations, daily rewards, likes/friends bonus, passes, the Moon
-  Tree, Prestige Stars (none before the first rebirth), Book family bonuses
-  (+5 %), offline earnings, other players on the street (they split the bus),
+  Events and seasonal mutations (but --season), likes/friends bonus, the
+  Moon Tree, Prestige Stars (none before the first rebirth), Book family
+  bonuses (+5 %), other players on the street (they split the bus),
   pitching, Front Desk / Housekeeping / Bellhop / Entertainment staff,
   selling, enlarging, moving or retyping a room, replacing decor, hallway
   decor and furniture, floor finishes, windows, residents' perks, travelling
@@ -325,6 +359,31 @@ FILL_SHARE = 0.5  # ASSUMPTION: furniture and decor cover at most half of a room
 BAR_FILL_S = 120  # policy: a room's Furniture or Decor bar is filled when the fill costs <= 2 min of income
 SIZE_POLICY = "roi"  # rule 6's new rooms: "roi" (min or full, by return on cost), "min" or "full" (--size)
 START_CELLS = 4  # Constants.Rooms.Start is "an L of four cells" (its comment; the model does not flood-fill walls)
+
+# ------------------------------------------- the players (--player; the balance run of 2026-10-23)
+# "efficient" is the player every earlier run modelled (the constants above). The others differ only where
+# named. think: s between the policy's looks at the shop (one purchase a look). session: (play, away) s of a
+# day, or None for one sitting (the run inside one UTC day unless the day's phase crosses midnight).
+# hunter: the chance a Hunter Night is defended (the traps are not bought in the model).
+PLAYERS = {
+    "efficient": dict(checkin=CHECKIN_DELAY, clean=CLEAN_DELAY, collect=COLLECT_EVERY, p_req=P_REQUEST_PLAYER,
+                      think=1, staff=STAFF_ASSIGN_DELAY, hunter=0.8, session=None, passes=(), starter=False),
+    # plays 45 minutes a day, slower at the desk (12 s: past WaitFree), cleans after ~25 s, collects every
+    # 2 minutes, answers 3 requests in 10, looks at the shop every 20 s, puts a resident on staff after 2 min
+    "casual": dict(checkin=12, clean=25, collect=120, p_req=0.3, think=20, staff=120, hunter=0.5,
+                   session=(45 * 60, 24 * 3600 - 45 * 60), passes=(), starter=False),
+    # the efficient player with every pass that moves pace (§10.2: "tune assuming payers own the capacity passes")
+    "payer": dict(checkin=CHECKIN_DELAY, clean=CLEAN_DELAY, collect=COLLECT_EVERY, p_req=P_REQUEST_PLAYER,
+                  think=1, staff=STAFF_ASSIGN_DELAY, hunter=0.8, session=None,
+                  passes=("AutoCollect", "ResidentWingPlus", "ExtraFloor", "VIPLobby", "NightManager"), starter=False),
+}
+# ... and with the Starter Pack (a product: cash and a 30-minute 2x Cash boost) once the tutorial is done
+PLAYERS["payer+starter"] = dict(PLAYERS["payer"], starter=True)
+EXTRAS = True  # --no-extras: leave out the systems added 2026-10-23 (dailies, VIP contracts, Hunter Night, levels)
+VIP_SPEND = 15  # policy: the player builds or fills for a VIP contract when it costs <= 15 min of income
+RARITY_ORDER = ["Common", "Uncommon", "Rare", "Epic", "Legendary", "Mythic"]
+SEASON = None  # --season halloween: the season's look first (Events.rollMutation), as at launch (1 Oct - 3 Nov)
+CODES_ON = False  # --codes: the player redeems every code at the start (DailyService CODES)
 
 # ------------------------------------------------- the Expeditions what-if (--expeditions)
 EXPEDITIONS = False  # set by --expeditions: record the Wing during the run and report the what-if
@@ -523,6 +582,13 @@ def assignment(rel: str, lhs_pattern: str):
     return LuauParser(src, m.end(), f"{rel} {lhs_pattern}").expr()
 
 
+def need_re(pattern: str, src: str, what: str):
+    m = re.search(pattern, src, re.M)
+    if not m:
+        raise ParseError(f"no {what} ({pattern!r})")
+    return m.group(1)
+
+
 def need(d: dict, key: str, where: str):
     if key not in d:
         raise ParseError(f"{where}: missing key {key!r}")
@@ -645,6 +711,23 @@ FORMULA_GUARDS = [
     ("src/server/ResidentService.luau", "local threshold = if g.tutorialFriend"),
     ("src/server/BookService.luau", "math.floor(Economy.speciesPay(speciesId) * Constants.Book.SpeciesFoundPaySeconds)"),
     ("src/server/BusService.luau", "l.nextList, l.nextGuaranteed = draw(street, busIndex + 1, now, now + interval)"),  # each street's bus a bus ahead (one world, 2026-10-21)
+    # the systems the balance run of 2026-10-23 added to the model (EXTRAS): what pays a lump of "minutes of income"
+    ("src/server/StoreService.luau", "if g.state == \"InRoom\" then rate += g.payRate"),
+    ("src/server/DailyService.luau", "local amount = math.floor(StoreService.incomeRate(player) * REWARD_MINUTES * 60)"),
+    ("src/server/DailyService.luau", "local amount = math.floor(StoreService.incomeRate(player) * LOGIN_MINUTES[day] * 60)"),
+    ("src/server/DailyService.luau", "local kind = kinds[rng:NextInteger(1, #kinds)]"),
+    ("src/shared/Contracts.luau", "return math.floor(math.max(0, rate) * C.RewardMinutes * 60 * factor)"),
+    ("src/server/ContractService.luau", "local rate = StoreService.incomeRate(player)"),
+    ("src/server/ContractService.luau", "return math.max(Constants.Economy.BasePay * Constants.Economy.RewardFloor, rate)"),
+    ("src/server/StoreService.luau", "return math.max(rate, Constants.Economy.BasePay * Constants.Economy.RewardFloor)"),
+    ("src/server/HunterService.luau", "local amount = math.floor(StoreService.incomeRate(player) * H.RewardIncomeSeconds)"),
+    ("src/shared/ResidentLevels.luau", "return math.ceil(R.LevelPriceMinutes * level * 60 * wingRate * ResidentLevels.wing(level))"),
+    ("src/shared/ResidentLevels.luau", "return 1 + R.LevelWing * (level - 1)"),
+    ("src/shared/ResidentLevels.luau", "return math.min(need, xp + R.LevelXpPerMinute * seconds / 60)"),
+    ("src/server/ResidentService.luau", ") * ResidentLevels.wing(ResidentLevels.level(r))"),
+    ("src/shared/Economy.luau", "return math.floor(rate * Constants.Residents.OfflineFraction * t)"),
+    ("src/shared/Events.luau", "then { id = s.mutation, chance = s.chance }"),
+    ("src/server/StoreService.luau", "math.max(s.minCash, math.floor(StoreService.incomeRate(player) * s.cashMinutes * 60))"),
 ]
 
 
@@ -676,7 +759,7 @@ def load_game() -> dict:
             need(need(G["Rarity"], r, C), k, f"{C} Rarity.{r}")
     for sect, keys in {
         "Economy": ["StartCash", "BasePay", "LocationPayMultiplier", "PointsPerCash",
-                    "TileCost", "TileGrowth", "TileFloorFactor", "Milestones", "FloorCosts"],
+                    "TileCost", "TileGrowth", "TileFloorFactor", "Milestones", "FloorCosts", "RewardFloor"],
         "Chain": ["Locations", "RebirthRating", "OpenCost", "BackgroundShare", "RateWindow", "StartFloorCap", "FloorCapMax"],
         "Grid": ["StartTiles", "TutorialTiles", "Cells", "Squares"],
         "Rooms": ["HalfCells", "WallCost", "DoorCost", "FullSizeFactor", "FurnitureTargetFactor", "FurnitureTargetMin", "DecorTargetPer4Cells",
@@ -689,7 +772,8 @@ def load_game() -> dict:
         "Rating": ["Min", "Max", "FunPerAmenity", "StylePerDecor", "StylePerRoomType",
                    "ServicePerDeskCoverage", "ServicePerRoomServiceCoverage", "CleanPerHousekeepingCoverage",
                    "CleanPerOnTime", "DesksCovered", "RoomsPerStaff", "CleanOnTime", "CleanSampleSize", "ServiceWaitPerPoint", "ServiceSampleSize", "CategoryCurve"],
-        "Residents": ["EarnFraction", "WingCapacity", "TutorialFriendship"],
+        "Residents": ["EarnFraction", "WingCapacity", "WingPassSlots", "TutorialFriendship", "OfflineFraction", "OfflineCap", "NightManagerCap",
+                      "LevelCap", "LevelWing", "LevelEfficiency", "LevelXpPerMinute", "LevelXpBar", "LevelPriceMinutes"],
         "Staff": ["BestEfficiency", "OtherEfficiency", "RoomServiceDelay"],
         "Book": ["SpeciesFoundPaySeconds"],
     }.items():
@@ -698,6 +782,15 @@ def load_game() -> dict:
     G["LaneHalfLength"] = need(assignment(C, r"^Constants\.Street"), "LaneHalfLength", C)
     for loc_id in range(2, G["Chain"]["Locations"] + 1):
         need(G["Chain"]["OpenCost"], loc_id, f"{C} Constants.Chain.OpenCost")
+    for key in ["Contracts", "HunterNight"]:
+        G[key] = assignment(C, rf"^Constants\.{key}")
+    daily = read("src/server/DailyService.luau")
+    num = lambda name: float(need_re(rf"^local {name} = ([\d.]+)", daily, name))
+    G["Daily"] = {"RewardMinutes": num("REWARD_MINUTES"), "PerDay": int(num("REQUESTS_PER_DAY")),
+                  "Rerolls": int(num("BASE_REROLLS")),
+                  "Login": assignment("src/server/DailyService.luau", r"^local LOGIN_MINUTES"),
+                  "Codes": assignment("src/server/DailyService.luau", r"^local CODES\s*:[^=]*")}
+    G["StarterPack"] = assignment("src/shared/Store.luau", r"^Store\.StarterPack")
     tick = re.search(r"^local TICK = (\d+)", read("src/server/ChainService.luau"), re.M)
     if not tick:
         raise ParseError("src/server/ChainService.luau: no `local TICK = <seconds>`")
@@ -712,6 +805,7 @@ def load_game() -> dict:
     # the month's or season's own row (`event`) is not simulated.
     G["Mutations"] = [(m["id"], m["chance"], m["pay"], m.get("group", "Look")) for m in muts
                       if m.get("chance", 0) > 0 and not m.get("event")]
+    G["MutPay"] = {m["id"]: m["pay"] for m in muts}  # the season's rows (Pumpkin) for --season
     G["AllSpecies"] = {s["id"]: s for s in species}
     G["AllDecor"] = {d["id"]: d for d in decor}
     start = G["Rooms"]["Start"]
@@ -948,7 +1042,7 @@ FILL_CACHE: dict = {}
 
 
 class Sim:
-    def __init__(self, G, seed, tutorial=True, hours=6.0):
+    def __init__(self, G, seed, tutorial=True, hours=6.0, player="efficient"):
         self.G0 = G
         self.seed = seed
         self.rng = random.Random(seed)
@@ -959,7 +1053,8 @@ class Sim:
         self.cash = E["StartCash"]
         self.till = 0.0
         self.run_cash = 0.0
-        self.floor_cap_max = floor_cap(G, 0)
+        self.P = PLAYERS[player]
+        self.floor_cap_max = floor_cap(G, 0) + (1 if "ExtraFloor" in self.P["passes"] else 0)
         self.metrics_checkins = []  # (t, rarity) of every check-in
         self.occ_log = []  # per minute: (t, room-seconds, paying room-seconds, not-vacant room-seconds)
         self._occ_pay = self._occ_busy = self._occ_rooms = 0
@@ -997,6 +1092,26 @@ class Sim:
         self.rebirth_ready = None
         self.wing_log: list = []  # --expeditions: per minute (t, location, the Wing's rates $/s, income $/s)
         self.rare_happy: dict = {}  # --expeditions: location -> happy stays of Rare-or-better guests
+        # the systems of 2026-10-23 (EXTRAS): the UTC day, dailies, VIP contracts, Hunter Night, boosts
+        self.real = 0  # real seconds since the join: play, plus the time away between a casual player's sessions
+        self.day0 = self.rng.uniform(0, 86400)  # the UTC day's phase at the join
+        self.day = None
+        self.login_due = False
+        self.streak = 0
+        self.daily: list = []  # [kind, target, base, claimed, species]
+        self.rerolls_used = 0
+        self.stat = {"happy": 0, "checkins": 0, "cleaned": 0, "requests": 0, "collects": 0, "served": {}}
+        self.vip_today = 0  # completed this UTC day
+        self.contracts: list = []  # running: {sid, type, needs, factor, state, clock, room}
+        self.vips_done = []  # (t, location, rarity, reward)
+        self.hunt_next = self.rng.uniform(0, G["HunterNight"]["Interval"])  # the server's next Hunter Night
+        self.boost_until = 0
+        self.extra = {k: 0.0 for k in ("login", "daily", "vip", "hunter", "offline", "starter", "codes", "levels")}
+        self.session_left = self.P["session"][0] if self.P["session"] else None
+        if CODES_ON:
+            for c in G["Daily"]["Codes"].values():
+                self.cash += c.get("cash", 0)
+                self.extra["codes"] += c.get("cash", 0)
         self.start_hotel(1, 0)
 
     def start_hotel(self, loc, t):
@@ -1051,6 +1166,7 @@ class Sim:
         self.cash -= cost
         self.purchases.append((t, "open", nxt, cost, self.income_rate() * 60, True, self.loc))
         self.chain[self.loc] = {"rate": self.rate, "rating": self.rating, "left": t}
+        self.contracts = [c for c in self.contracts if c["state"] == "Staying"]  # the player cancels the rest
         self.mark(f"open_{nxt}", t)
         self.start_hotel(nxt, t)
         self.snap(f"open_{nxt}", t)
@@ -1300,6 +1416,12 @@ class Sim:
         got, extra = [], 0.0
         for group in ("Size", "Look"):
             x, at = self.rng.random(), 0.0
+            if group == "Look" and SEASON == "halloween":  # Events.rollMutation: the season's row first, 3 %
+                if x < 0.03:
+                    got.append("Pumpkin")
+                    extra += self.G0["MutPay"]["Pumpkin"] - 1
+                    continue
+                x -= 0.03
             for mid, ch, pay, g in self.G["Mutations"]:
                 if g != group:
                     continue
@@ -1326,7 +1448,8 @@ class Sim:
 
     def staff_eff(self):
         best, other = self.G["Staff"]["BestEfficiency"], self.G["Staff"]["OtherEfficiency"]
-        return sum(best if self.G["AllSpecies"][r["sid"]]["staff"] == "RoomService" else other
+        lv = self.G["Residents"]["LevelEfficiency"] if EXTRAS else 0
+        return sum((best if self.G["AllSpecies"][r["sid"]]["staff"] == "RoomService" else other) * (1 + lv * (r.get("level", 1) - 1))
                    for r in self.residents if r["role"] == "RoomService" and r.get("hotel") == self.loc)
 
     def check_in(self, t, g):
@@ -1336,7 +1459,10 @@ class Sim:
         g.prefs = self.matched(g.sid, self.room_tags(r))
         g.amen = self.amen_on(r.floor)
         pay, g.stay_mult, g.sat_bonus, g.fr_mult = self.rules.bonuses(self.room_bars(r))
-        g.rate = self.rules.species_pay(g.sid) * g.mut_pay * self.rules.milestone(self.type_count(r.type)) * pay
+        g.rate = self.rules.species_pay(g.sid) * g.mut_pay * self.rules.milestone(self.type_count(r.type)) * pay * self.mult(t)
+        if getattr(g, "vip", None):
+            g.rate *= self.G0["Contracts"]["VipPay"]
+        self.stat["checkins"] += 1
         self.observed_pay.setdefault(r.type, deque(maxlen=20)).append(self.rules.species_pay(g.sid) * g.mut_pay)
         r.state = "Occupied"
         g.state = "ToRoom"
@@ -1363,7 +1489,20 @@ class Sim:
             bonus = math.floor(R.species_pay(g.sid) * self.G["Book"]["SpeciesFoundPaySeconds"])
             self.cash += bonus
             self.run_cash += bonus
+        self.stat["served"][g.sid] = self.stat["served"].get(g.sid, 0) + 1
+        vip = getattr(g, "vip", None)
+        if vip is not None:
+            self.contracts = [c for c in self.contracts if c is not vip]
+            if sat >= self.G["Stay"]["Happy"]:  # Contracts.reward: RewardMinutes of income without the VIP's own pay
+                C = self.G0["Contracts"]
+                amt = math.floor(self.income_now(t, without=g) * C["RewardMinutes"] * 60 * C["RarityReward"][sp["rarity"]])
+                self.cash += amt
+                self.run_cash += amt
+                self.extra["vip"] += amt
+                self.vip_today += 1
+                self.vips_done.append((t, self.loc, sp["rarity"], amt))
         if sat >= self.G["Stay"]["Happy"]:
+            self.stat["happy"] += 1
             self.mark("first_happy_stay", t)
             if EXPEDITIONS and sp["rarity"] not in ("Common", "Uncommon"):
                 self.rare_happy[self.loc] = self.rare_happy.get(self.loc, 0) + 1
@@ -1374,12 +1513,27 @@ class Sim:
             if now >= thr or early:
                 self.move_in(t, g)
 
-    def resident_pay(self, r):
-        return self.rules.species_pay(r["sid"]) * self.G["Residents"]["EarnFraction"] * r["mp"]
+    def resident_pay(self, r, t=None):
+        """Economy.residentPay x ResidentLevels.wing(level) x the boost (ResidentService.rate)."""
+        R = self.G["Residents"]
+        lvl = 1 + R["LevelWing"] * (r.get("level", 1) - 1) if EXTRAS else 1
+        return self.rules.species_pay(r["sid"]) * R["EarnFraction"] * r["mp"] * lvl * (self.mult(t) if t is not None else 1)
+
+    def mult(self, t):
+        """Income.multiplier: the 2x Cash boost only (no Moon Tree, Book family or friends in a first run)."""
+        return 2 if t is not None and t < self.boost_until else 1
+
+    def wing_rate(self, t=None):
+        return sum(self.resident_pay(r, t) for r in self.residents if r["role"] == "")
+
+    def income_now(self, t, without=None):
+        """StoreService.incomeRate: the in-room guests' pay rates and the Wing, at least BasePay x 10."""
+        rate = sum(g.rate for g in self.guests if g.state == "InRoom" and g is not without) + self.wing_rate(t)
+        return max(rate, self.G0["Economy"]["BasePay"] * self.G0["Economy"]["RewardFloor"])
 
     def move_in(self, t, g):
-        cap = self.G["Residents"]["WingCapacity"]
-        new = {"sid": g.sid, "mp": g.mut_pay, "role": "", "hotel": None}
+        cap = self.G["Residents"]["WingCapacity"] + (self.G["Residents"]["WingPassSlots"] if "ResidentWingPlus" in self.P["passes"] else 0)
+        new = {"sid": g.sid, "mp": g.mut_pay, "role": "", "hotel": None, "level": 1, "xp": 0.0}
         if len(self.residents) >= cap:
             # The Wing is full: no move-in (ResidentService). A player releases the lowest earner first
             # when a better one is coming; modelled as: the lowest idle earner was released in time.
@@ -1404,7 +1558,7 @@ class Sim:
         for g in self.guests:
             if g.state == "ToHotel" and t >= g.at:
                 g.state, g.desk_since = "Queued", t
-            if g.state == "Queued" and t - g.desk_since >= CHECKIN_DELAY:
+            if g.state == "Queued" and t - g.desk_since >= self.P["checkin"]:
                 self.check_in(t, g)
             if g.state == "ToRoom" and t >= g.at:
                 g.state = "InRoom"
@@ -1416,12 +1570,13 @@ class Sim:
                 self.earn_till(g.rate)
                 if g.req_at is not None and t >= g.req_at:
                     g.req_at, g.req_open = None, t
-                    g.req_player_at = t + self.rng.randint(*REQ_PLAYER_TIME) if self.rng.random() < P_REQUEST_PLAYER else None
+                    g.req_player_at = t + self.rng.randint(*REQ_PLAYER_TIME) if self.rng.random() < self.P["p_req"] else None
                 if g.req_open is not None:
                     walk = ROOM_WALK + ROOM_WALK_PER_FLOOR * (g.room.floor - 1) + 2
                     staff_at = max(g.req_open + self.G["Staff"]["RoomServiceDelay"] / eff, g.req_open + walk) if eff > 0 else math.inf
                     if g.req_player_at is not None and t >= g.req_player_at and g.req_player_at <= staff_at:
                         g.rp += 1
+                        self.stat["requests"] += 1
                         self.earn_till(math.floor(g.rate * S["RequestTipSeconds"]))
                         self.req_asked += 1
                         self.req_done += 1
@@ -1486,6 +1641,12 @@ class Sim:
             self.pending_bus.append((t + int(off + B["BrowseTime"]), sid))
             if sid == self.G["RebirthResident"]:
                 self.mark("first_vampire_on_bus", t)
+        for c in self.contracts:  # ContractService: a Ready VIP rides as an extra seat, booked into its held room
+            if c["state"] == "Booked" and c["loc"] == self.loc:
+                g = Guest(c["sid"], None, 1.0, "VIP", c["room"], "ToHotel", t + BUS_TO_HOTEL)
+                g.vip = c
+                c["state"] = "Staying"
+                self.guests.append(g)
         # a booked guest (the tutorial's Vampire Count) skips browsing
         for sid, hf in self.booked:
             g = self.spawn_direct(t, sid, "Tutorial", BUS_TO_HOTEL, hf)
@@ -1703,8 +1864,12 @@ class Sim:
         return base * (dpay + pay * S["TipFraction"] * dsat / 100)
 
     def policy(self, t):
+        if t % self.P["think"]:
+            return  # the player looks at the shop every `think` s
         inc = max(self.income_rate(), 0.25)
         P = self.G["Pieces"]
+        if EXTRAS and self.tstep == "Done" and self.vip_work(t, inc):
+            return
         # 0. the chain: at 5 stars, save for the next location and open it once it is affordable
         saving = None
         price = self.open_price()
@@ -1946,11 +2111,224 @@ class Sim:
         if not idle:
             return
         if self.staff_assigned_at is None:
-            self.staff_assigned_at = t + STAFF_ASSIGN_DELAY
+            self.staff_assigned_at = t + self.P["staff"]
         if t >= self.staff_assigned_at:
             best = [r for r in idle if self.G["AllSpecies"][r["sid"]]["staff"] == "RoomService"]
             pick = best[0] if best else min(idle, key=self.resident_pay)
             pick["role"], pick["hotel"] = "RoomService", self.loc
+
+    # ---- the systems of 2026-10-23 (EXTRAS)
+    DAILY_KINDS = ["Stays", "CheckIns", "Clean", "Pitch", "Requests", "Collect", "Rating", "Serve"]  # "Visit" needs company
+
+    def daily_count(self, kind, sid):
+        return {"Stays": self.stat["happy"], "CheckIns": self.stat["checkins"], "Clean": self.stat["cleaned"],
+                "Requests": self.stat["requests"], "Collect": self.stat["collects"],
+                "Serve": self.stat["served"].get(sid, 0)}.get(kind)
+
+    def daily_progress(self, r):
+        kind, target, base, claimed, sid = r
+        if kind == "Rating":
+            return self.rating >= target
+        now = self.daily_count(kind, sid)
+        if now is None:
+            return False  # Pitch: pitching is not modelled
+        return now - base >= target
+
+    def daily_draw(self):
+        """DailyService.draw: a kind at random (with repeats), its target, progress counted from now."""
+        kind = self.DAILY_KINDS[int(self.rng.random() * len(self.DAILY_KINDS))]
+        sid = None
+        if kind == "Serve":
+            pool = [k for k, sp in self.G["Species"].items() if sp["rarity"] in ("Common", "Uncommon")]
+            sid = pool[int(self.rng.random() * len(pool))]
+        target = {"Stays": 5, "CheckIns": 10, "Clean": 5, "Pitch": 3, "Requests": 4, "Collect": 6, "Serve": 3,
+                  "Rating": min(5, math.floor(self.rating) + 1)}[kind]
+        return [kind, target, self.daily_count(kind, sid) or 0, False, sid]
+
+    def new_day(self):
+        self.login_due = True
+        self.daily = [self.daily_draw() for _ in range(self.G0["Daily"]["PerDay"])]
+        self.rerolls_used = 0
+        self.vip_today = 0
+
+    def pay_extra(self, what, amt):
+        self.cash += amt
+        self.run_cash += amt
+        self.extra[what] += amt
+
+    def extras_tick(self, t):
+        D = self.G0["Daily"]
+        day = int((self.day0 + self.real) // 86400)
+        if day != self.day:
+            self.day = day
+            self.new_day()
+        if self.tstep != "Done":
+            return
+        if self.login_due:  # claimed once the tutorial is done (the HUD's calendar)
+            self.login_due = False
+            self.streak = self.streak % 7 + 1
+            self.pay_extra("login", math.floor(self.income_now(t) * D["Login"][self.streak - 1] * 60))
+        if self.P["starter"] and not self.extra["starter"]:
+            S = self.G0["StarterPack"]
+            self.pay_extra("starter", max(S["minCash"], math.floor(self.income_now(t) * S["cashMinutes"] * 60)))
+            self.boost_until = max(self.boost_until, t) + S["seconds"]
+        rerolls = D["Rerolls"] + (1 if "VIPLobby" in self.P["passes"] else 0)
+        for i, r in enumerate(self.daily):
+            if r[3]:
+                continue
+            stuck = r[0] == "Pitch" or (r[0] == "Collect" and "AutoCollect" in self.P["passes"])
+            if stuck and self.rerolls_used < rerolls:
+                self.rerolls_used += 1
+                self.daily[i] = r = self.daily_draw()
+            if self.daily_progress(r):
+                r[3] = True
+                self.pay_extra("daily", math.floor(self.income_now(t) * D["RewardMinutes"] * 60))
+        # Hunter Night (HunterService): the street defended pays RewardIncomeSeconds of income
+        H = self.G0["HunterNight"]
+        if t >= self.hunt_next:
+            self.hunt_next = t + H["Interval"]
+            if self.rng.random() < self.P["hunter"]:
+                self.pay_extra("hunter", math.floor(self.income_now(t) * H["RewardIncomeSeconds"]))
+        # residents level up (A.11.6): XP while the player plays, at work (the Wing, or staff here)
+        R = self.G["Residents"]
+        for r in self.residents:
+            if r["role"] != "" and r.get("hotel") != self.loc:
+                continue
+            lvl = r.get("level", 1)
+            if lvl >= R["LevelCap"]:
+                continue
+            need = R["LevelXpBar"] * lvl
+            r["xp"] = min(need, r.get("xp", 0) + R["LevelXpPerMinute"] / 60)
+            if r["xp"] >= need:
+                base = self.rules.species_pay(r["sid"]) * R["EarnFraction"] * r["mp"]
+                price = math.ceil(R["LevelPriceMinutes"] * lvl * 60 * base * (1 + R["LevelWing"] * (lvl - 1)))
+                if price <= self.cash and price <= 120 * max(self.income_rate(), 0.25):
+                    self.cash -= price
+                    self.extra["levels"] -= price
+                    r["level"], r["xp"] = lvl + 1, 0.0
+
+    # VIP contracts (Contracts, ContractService): drawn from 2 stars, built to, held, ridden in, paid on a happy stay
+    def best_bars(self, pid):
+        mine = [self.room_bars(r) for r in self.rooms if r.type == pid]
+        return tuple(max(b[i] for b in mine) for i in range(3)) if mine else None
+
+    def vip_offer(self):
+        C = self.G0["Contracts"]
+        whole = int(self.rating)
+        top = C["RarityByStars"].get(min(whole, 5)) if whole >= C["UnlockStars"] else None
+        if not top:
+            return None
+        order = RARITY_ORDER
+        pool = []
+        for sid, sp in self.G["Species"].items():
+            if order.index(sp["rarity"]) <= order.index(top) and self.buildable(sp["room"]):
+                pool.append((sid, C["RarityWeights"][sp["rarity"]]))
+        if not pool:
+            return None
+        x, at = self.rng.random() * sum(w for _, w in pool), 0.0
+        sid = pool[-1][0]
+        for k, w in pool:
+            at += w
+            if x < at:
+                sid = k
+                break
+        pid = self.G["Species"][sid]["room"]
+        best = self.best_bars(pid)
+        th = C["Thresholds"]
+        open_ = [i for i in range(3) if any(v > (best[i] if best else -1) + 1e-6 for v in th)]
+        if not open_:
+            return None
+        first = open_[int(self.rng.random() * len(open_))]
+        opts = [v for v in th if v > (best[first] if best else -1) + 1e-6]
+        needs = {first: opts[int(self.rng.random() * len(opts))]}
+        if self.rating >= C["SecondBarStars"]:
+            others = [i for i in range(3) if i != first]
+            needs[others[int(self.rng.random() * 2)]] = C["SecondThreshold"]
+        return {"sid": sid, "type": pid, "needs": needs, "factor": C["RarityReward"][self.G["Species"][sid]["rarity"]],
+                "state": "Accepted", "clock": 0, "room": None, "loc": self.loc}
+
+    def vip_tick(self, t):
+        C = self.G0["Contracts"]
+        if self.tstep != "Done" or self.rating < C["UnlockStars"]:
+            return
+        for c in list(self.contracts):  # the clock: play time at its own hotel, stopped from Ready
+            if c["state"] == "Accepted" and c["loc"] == self.loc:
+                c["clock"] += 1
+                if c["clock"] > C["Deadline"]:
+                    self.contracts.remove(c)
+        active = C["ActiveMore"] if self.rating >= C["ActiveFromStars"] else C["Active"]
+        if len(self.contracts) < active and self.vip_today + len(self.contracts) < C["DailyCap"]:
+            offers = [o for o in (self.vip_offer() for _ in range(C["Offers"])) if o]
+            if offers:
+                pick = offers[int(self.rng.random() * len(offers))] if self.P["think"] > 1 else max(offers, key=lambda o: o["factor"])
+                self.contracts.append(pick)
+
+    def vip_meets(self, c, r):
+        b = self.room_bars(r)
+        return r.type == c["type"] and all(b[i] + 1e-6 >= v for i, v in c["needs"].items())
+
+    def vip_work(self, t, inc):
+        """Policy rule 1b: a contract is met by a room of its type at its bars, then held for the next bus.
+        The player builds or fills for it when that costs at most VIP_SPEND minutes of income; else cancels it."""
+        for c in list(self.contracts):
+            if c["state"] != "Accepted" or c["loc"] != self.loc:
+                continue
+            for r in self.rooms:
+                if r.state == "Vacant" and self.vip_meets(c, r):
+                    r.state = "Reserved"  # ContractService: held, Reserved with no guest
+                    c["state"], c["room"] = "Booked", r
+                    return True
+            mine = [r for r in self.rooms if r.type == c["type"]]
+            if any(self.vip_meets(c, r) for r in mine):
+                continue  # met, but its room is not vacant: wait for the check-out
+            mine = [r for r in mine if self.room_bars(r)[0] + 1e-6 >= c["needs"].get(0, 0)]  # big enough already
+            if not mine:
+                lo, hi = self.rules.min_cells(c["type"]), self.rules.full_cells(c["type"])
+                cells = math.ceil(lo + c["needs"].get(0, 0) * (hi - lo) - 1e-9)
+                cost = self.rules.build_cost(c["type"], cells)
+                if self.floor_for(cells) is None:
+                    o = self.expand_option(cells)
+                    if o is None or o[0] + cost > VIP_SPEND * 60 * inc:
+                        self.contracts.remove(c)
+                        continue
+                    self.expand(t, cells)
+                    return True
+                if cost > VIP_SPEND * 60 * inc:
+                    self.contracts.remove(c)
+                    continue
+                if self.place_room(t, c["type"], cells):
+                    return True
+                return False  # saving for it
+            target = max(mine, key=lambda r: sum(1 for i, v in c["needs"].items() if self.room_bars(r)[i] + 1e-6 >= v))
+            for i, kind in ((1, "furniture"), (2, "decor")):
+                if i in c["needs"] and self.room_bars(target)[i] + 1e-6 < c["needs"][i]:
+                    plan = self.fill_plan(target, kind)
+                    if not plan[0] or plan[1] > VIP_SPEND * 60 * inc:
+                        self.contracts.remove(c)
+                        break
+                    if self.fill(t, target, kind, plan):
+                        return True
+                    return False
+        return False
+
+    def end_session(self, t):
+        """A casual player's day: away until tomorrow. The hotel's guests leave with the server; on the return the
+        residents' offline till (welcomeBack) and a server's bus at a random phase; contracts back to Accepted."""
+        play, away = self.P["session"]
+        R = self.G["Residents"]
+        cap = R["NightManagerCap"] if "NightManager" in self.P["passes"] else R["OfflineCap"]
+        amt = math.floor(self.wing_rate() * R["OfflineFraction"] * min(away, cap))
+        self.till += amt
+        self.extra["offline"] += amt
+        for r in self.rooms:
+            r.state = "Vacant"
+        self.guests, self.pending_bus, self.booked = [], [], []
+        for c in self.contracts:
+            c["state"], c["room"] = "Accepted", None
+        self.real += away
+        self.next_bus = t + int(self.rng.uniform(1, self.G["Bus"]["Interval"]))
+        self.hunt_next = t + self.rng.uniform(0, self.G0["HunterNight"]["Interval"])
+        self.session_left = play
 
     # ---- the run
     def run(self):
@@ -1959,6 +2337,14 @@ class Sim:
         C = self.G0["Chain"]
         for t in range(0, self.T + 1):
             self.this_second = 0.0
+            self.real += 1
+            if self.session_left is not None:
+                self.session_left -= 1
+                if self.session_left <= 0:
+                    self.end_session(t)
+            if EXTRAS:
+                self.extras_tick(t)
+                self.vip_tick(t)
             if self.tutorial:
                 self.tutorial_tick(t)
             if t >= self.next_bus:
@@ -1971,22 +2357,24 @@ class Sim:
             self._occ_busy += sum(1 for r in self.rooms if r.state != "Vacant")
             self._occ_rooms += len(self.rooms)
             # residents into the till
-            self.earn_till(sum(self.resident_pay(r) for r in self.residents if r["role"] == ""), guest=False)
+            self.earn_till(self.wing_rate(t), guest=False)
             self.assign_staff(t)
             if t > 0 and t % self.G0["ChainTick"] == 0:
                 self.chain_tick(t)
             # the player: clean, collect, buy
             for r in self.rooms:
-                if r.state == "Dirty" and t - r.dirty_since >= CLEAN_DELAY + self.G["Stay"]["CleanHold"]:
+                if r.state == "Dirty" and t - r.dirty_since >= self.P["clean"] + self.G["Stay"]["CleanHold"]:
                     r.state = "Vacant"
                     self.cleaned += 1
+                    self.stat["cleaned"] += 1
                     self.clean_times.append(t - r.dirty_since)
                 r.occ += ((r.state != "Vacant") - r.occ) / 120
-            if self.till > 0 and (t % COLLECT_EVERY == 0 or self.tstep == "Collect"):
+            if self.till > 0 and (t % self.P["collect"] == 0 or self.tstep == "Collect" or "AutoCollect" in self.P["passes"]):
                 self.cash += math.floor(self.till)
                 self.run_cash += math.floor(self.till)
                 self.till -= math.floor(self.till)
                 self.collects += 1
+                self.stat["collects"] += 1
             if self.tutorial and self.tstep == "SecondRoom":
                 self.place_room(t, self.G["StartRoom"][0])  # a Standard Room at its minimum, its Bed
             elif self.tstep not in ("CheckIn", "Collect"):
@@ -2405,12 +2793,21 @@ def main():
                     help="the player's size policy for new rooms in rule 6 (a policy what-if, not a value)")
     ap.add_argument("--expeditions", action="store_true",
                     help="the Expeditions what-if (GDD A.11.2, not built): (a) the Wing offline against (b) trips, and the finds' pace")
+    ap.add_argument("--player", choices=tuple(PLAYERS), default="efficient",
+                    help="the player profile (PLAYERS): efficient (every earlier run), casual (45 min a day, slower), payer (the passes)")
+    ap.add_argument("--no-extras", action="store_true",
+                    help="leave out the dailies, VIP contracts, Hunter Night and resident levels (the model before 2026-10-23)")
+    ap.add_argument("--season", choices=("halloween",), default=None, help="the season's look mutation first, as at launch")
+    ap.add_argument("--codes", action="store_true", help="the player redeems every code at the start")
     ap.add_argument("--exp-set", action="append", default=[], metavar="Key=value",
                     help="with --expeditions: override one of EXP's PLACEHOLDER numbers in memory (e.g. Pay=0.75)")
     a = ap.parse_args()
-    global SIZE_POLICY, EXPEDITIONS
+    global SIZE_POLICY, EXPEDITIONS, EXTRAS, SEASON, CODES_ON
     SIZE_POLICY = a.size
     EXPEDITIONS = a.expeditions
+    EXTRAS = not a.no_extras
+    SEASON = a.season
+    CODES_ON = a.codes
     G = load_game()
     if EXPEDITIONS:
         exp_check(G)
@@ -2435,7 +2832,7 @@ def main():
     for tut in ((True, False) if a.skip_tutorial else (True,)):
         sims = []
         for i in range(a.seeds):
-            sims.append(Sim(G, 1000 + i, tutorial=tut, hours=a.hours).run())
+            sims.append(Sim(G, 1000 + i, tutorial=tut, hours=a.hours, player=a.player).run())
             print(f"  seed {1000 + i} ({'tutorial' if tut else 'skipped'}): rebirth-ready {fmt(sims[-1].rebirth_ready)}", file=sys.stderr)
         results.append(summarize(G, sims, "with tutorial" if tut else "tutorial skipped"))
     lines = render(G, results, a)
@@ -2477,6 +2874,32 @@ def chain_row(s, G):
         out[f"save{L}"] = o - a if o is not None and a is not None else None
     out["in1"] = out.get("five_star_1")
     out["rebirth_ready"] = s.rebirth_ready
+    return out
+
+
+def extras_lines(sims):
+    """What the systems of 2026-10-23 paid in the run (medians over seeds), and the VIP contracts done."""
+    L_ = ["", "Lumps of income in the run (medians; EXTRAS, the balance run of 2026-10-23):", ""]
+    keys = ["login", "daily", "vip", "hunter", "offline", "starter", "codes", "levels"]
+    L_.append("| " + " | ".join(keys) + " | VIP contracts done | of run cash |")
+    L_.append("|" + "---|" * (len(keys) + 2))
+    tot = statistics.median(sum(v for k, v in s.extra.items() if k != "levels") / max(1, s.run_cash) for s in sims)
+    L_.append("| " + " | ".join(money(statistics.median(s.extra[k] for s in sims)) for k in keys)
+              + f" | {statistics.median(len(s.vips_done) for s in sims):.0f} | {tot:.0%} |")
+    return L_
+
+
+def bundles(s, L):
+    """§6.2 as a player sees it: purchases within a few seconds of each other are one purchase (a room with
+    its tiles and its fills); returns [(t, cost, income/min at its start)] for location L's meaningful buys."""
+    ps = [p for p in s.purchases if p[6] == L and p[5] and p[1] != "open"]
+    out, gap = [], max(5, s.P["think"] + 1)
+    for p in ps:
+        if out and p[0] - out[-1][3] <= gap:
+            out[-1][1] += p[3]
+            out[-1][3] = p[0]
+        else:
+            out.append([p[0], p[3], p[4], p[0]])
     return out
 
 
@@ -2581,27 +3004,32 @@ def render(G, results, a):
                       f"{md(lambda x: x['rating']):.1f}★ | {cats} | {md(lambda x: x['reviews']):.2f} | {md(lambda x: x['sat']):.0f} | "
                       + "/".join(f"{md(lambda x, i=i: x['bars'][i]):.2f}" for i in range(3)) + f" | {md(lambda x: x['cells']):.2f} |")
         L_.append("")
-        L_.append("§6.2 rule of thumb per location (meaningful purchases after its first 5 minutes; minutes of income each; "
-                  "longest gap between meaningful purchases, median over seeds):")
+        L_.append("§6.2 rule of thumb per location, purchases as a player sees them (buys within a few seconds of each other "
+                  "are one: a room with its tiles and fills), after its first 5 minutes: minutes of income each; the gaps "
+                  "between them (the opening price counted as a purchase), medians over seeds:")
         L_.append("")
         for L in range(1, nL + 1):
-            mins, gaps = [], []
+            mins, gaps, over, overs = [], [], [], []
             for s in sims:
                 t0 = 0 if L == 1 else s.events.get(f"open_{L}")
                 if t0 is None:
                     continue
                 t1 = s.events.get(f"open_{L + 1}", s.end)
-                ps = [p for p in s.purchases if p[6] == L and p[5] and p[1] != "open"]
-                mins += [p[3] / p[4] for p in ps if p[4] > 0 and p[0] >= t0 + 300]
-                ts = [p[0] for p in ps]
+                bs = bundles(s, L)
+                mins += [b[1] / b[2] for b in bs if b[2] > 0 and b[0] >= t0 + 300]
+                ts = [b[0] for b in bs]
                 g = [b - a_ for a_, b in zip([t0] + ts, ts + [t1])]
                 gaps.append(max(g) if g else None)
+                over.append(sum(x for x in g if x > 600))
+                overs.append(sum(1 for x in g if x > 600))
             m = sorted(mins)
             if m:
                 q = lambda p: m[min(len(m) - 1, int(p * len(m)))]
                 in_band = sum(1 for x in m if 2 <= x <= 5) / len(m)
                 L_.append(f"- L{L}: n={len(m)}, median {q(.5):.2f} min (p10 {q(.1):.2f}, p90 {q(.9):.2f}, max {m[-1]:.1f}); "
-                          f"in the 2–5 min band {in_band:.0%}; longest gap {fmt(med(gaps))}.")
+                          f"in the 2–5 min band {in_band:.0%}, over 10 min {sum(1 for x in m if x > 10) / len(m):.0%}; "
+                          f"longest gap {fmt(med(gaps))}; gaps over 10 min: {statistics.median(overs):.0f}, {fmt(statistics.median(over))} in all.")
+        L_ += extras_lines(sims)
         L_.append("")
         L_.append("Timeline (medians over the seeds still running; the location column lists each seed's):")
         L_.append("")

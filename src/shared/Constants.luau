@@ -149,7 +149,10 @@ Constants.Rarity = {
 Constants.Economy = {
 	StartCash = 100, -- §6.3
 	BasePay = 1, -- $1/s for a Common at Location 1 (§4.2)
-	LocationPayMultiplier = 20, -- ×20 per later location (§4.2)
+	-- His yes 2026-10-23 (the balance run, `archive/BALANCE-2026-10-23.md`, GDD §18): ×5 per later location,
+	-- from §4.2's ×20. The pieces' rows stay ×20 a location, so a later hotel's rooms cost more minutes of
+	-- income than the Manor's: with pay ×20 as well, Frostfang Lodge was built out in 20 minutes and Bayou Spa in 10.
+	LocationPayMultiplier = 5,
 	RoomCostGrowth = 1.15, -- base × 1.15^n (§6.2)
 	TierPayBonus = 0.5, -- +50 % pay per tier (§5.2; kept by his yes, §5.4)
 	MaxTier = 3, -- T1..T3, reached by furnishing (§5.4, his yes 2026-10-19)
@@ -167,6 +170,10 @@ Constants.Economy = {
 	SellRefund = 0.5, -- PLACEHOLDER
 	FloorCosts = { 0, 500, 5000, 50000, 500000, 5000000, 50000000 }, -- PLACEHOLDER: floor 1 free; the cap is Chain.floorCap (§6.4)
 	TillCap = math.huge, -- PLACEHOLDER: no cap until one is designed
+	-- His yes 2026-10-23 (the balance run; was BasePay × 10 in two places): the floor under every reward that
+	-- is "minutes of income" (the login calendar, a daily request, a VIP contract, Hunter Night, the Starter
+	-- Pack), × BasePay. At × 10 the first login paid ten times what the first room earned.
+	RewardFloor = 2,
 }
 
 -- §4.3: the Night Bus and how a guest picks a hotel.
@@ -308,7 +315,9 @@ Constants.Rooms = {
 	FurnitureSatisfaction = 15, -- satisfaction points × Furniture
 	DecorSatisfaction = 15, -- satisfaction points × Decor
 	DecorFriendship = 1, -- friendship per happy stay × (1 + this × Decor)
-	ComfortPerRoom = 12, -- Comfort points per ready room at full bars …
+	-- His yes 2026-10-23 (the balance run): 2.5 Comfort points per ready room at full bars, from 12, so the
+	-- cap takes about 24 full rooms instead of 5 and 5★ waits for a hotel, not for five furnished rooms
+	ComfortPerRoom = 2.5,
 	ComfortRoomsCap = 60, -- … summed, to this (it was the mean tier's 60 %)
 	-- A new hotel's one room (his ruling 2026-10-20: "the reception in the middle and one
 	-- room to its right", as a guest sees it from the street, the −x side; built from walls
@@ -334,7 +343,10 @@ Constants.Rebirth = {
 Constants.Chain = {
 	Locations = 3, -- Haunted Manor, Frostfang Lodge, Bayou Spa at launch (§6.6)
 	RebirthRating = 5, -- 5★ on every hotel of the chain (his ruling)
-	OpenCost = { [2] = 250000, [3] = 10000000 }, -- PLACEHOLDER (WAITING §2.35): opening each location
+	-- His yes 2026-10-23 (the balance run; WAITING §2.35 answered): opening each location, from $250k and
+	-- $10M. Bayou Spa at $1M keeps his "each exponentially dearer" (×2.5) at the cost of 3 minutes on its
+	-- leg: the third hotel's time is its rooms (the rows ×400 the Manor's at pay ×25), not its price.
+	OpenCost = { [2] = 400000, [3] = 1000000 },
 	BackgroundShare = 0.25, -- PLACEHOLDER (WAITING §2.35): a hotel not played earns this share of its rate
 	RateWindow = 300, -- seconds the played hotel's earning rate is averaged over (an EMA's time constant)
 	StartFloorCap = 2, -- floors a hotel may have before any rebirth (his ruling)
@@ -420,7 +432,9 @@ Constants.Contracts = {
 	Swaps = 1, -- PLACEHOLDER: free swaps of an offer a UTC day (+1 with VIP Lobby, as the daily reroll); a Book request costs one
 	Deadline = 45 * 60, -- PLACEHOLDER: seconds of play at the contract's own hotel (decision 3a)
 	DailyCap = 3, -- PLACEHOLDER: contracts completed per UTC day, all hotels together; none accepted past it
-	RewardMinutes = 15, -- PLACEHOLDER: minutes of income …
+	-- His yes 2026-10-23 (the balance run): minutes of income, from 15: three contracts a day at 15 paid
+	-- a hotel's opening price on their own …
+	RewardMinutes = 4,
 	RarityReward = { Common = 1, Uncommon = 1.5, Rare = 2, Epic = 3, Legendary = 4, Mythic = 6 }, -- … × this by the VIP's rarity
 	-- PLACEHOLDER: the rarest VIP drawn at a rating (its whole stars); none below UnlockStars.
 	RarityByStars = { [2] = "Rare", [3] = "Epic", [4] = "Legendary", [5] = "Mythic" },
@@ -445,7 +459,7 @@ Constants.Finds = {
 	SetBonus = 0.25, -- PLACEHOLDER: a whole set in one room adds this to its Decor bar, once per set per hotel
 	DuplicateMinutes = 5, -- PLACEHOLDER: a find once a location's sets are all found: minutes of income in cash (at least the piece's price)
 	SouvenirMoveIns = 3, -- PLACEHOLDER: a species' souvenir on its 3rd move-in, or its first VIP contract, whichever first
-	SouvenirCost = { 200, 4000, 80000 }, -- PLACEHOLDER: placing a souvenir, by its species' location (×20 a location, as pay)
+	SouvenirCost = { 200, 4000, 80000 }, -- PLACEHOLDER: placing a souvenir, by its species' location (×20 a location, as the pieces' rows)
 	KeepThroughRebirth = true, -- PLACEHOLDER (decision 4a, his call with §6.4): found stays found; placed copies go with the hotel
 }
 

@@ -1,0 +1,85 @@
+**WHAT-IF, values changed in memory only (nothing in src/):** Economy.LocationPayMultiplier=20, Chain.OpenCost.2=250000, Chain.OpenCost.3=10000000, Rooms.ComfortPerRoom=12, Contracts.RewardMinutes=15, Daily.RewardMinutes=8, RewardFloor=10
+
+Model: 8 seeds per scenario, up to 8 h of play; medians over seeds ('—' = not reached in most seeds). Floor cap Chain.floorCap(0) = 2; opening Frostfang Lodge $250.0k, Bayou Spa $10.0M; background share 25%; rebirth needs 5★ on all 3.
+
+### The chain, with tutorial
+
+| Seed | 5★ L1 | L2 affordable | Open L2 | 5★ L2 | L3 affordable | Open L3 | 5★ L3 | Rebirth-ready |
+|---|---|---|---|---|---|---|---|---|
+| 1000 | 39:50 | 34:40 | 40:00 | 50:30 | 1:30:00 | 1:30:00 | 1:37:50 | 1:37:50 |
+| 1001 | 35:15 | 19:20 | 38:00 | 50:00 | 1:16:00 | 1:16:00 | 1:22:10 | 1:22:10 |
+| 1002 | 19:15 | 34:00 | 34:00 | 41:40 | 1:39:20 | 1:39:20 | 1:48:20 | 1:48:20 |
+| 1003 | 43:55 | 25:20 | 59:00 | 1:07:20 | 1:47:40 | 1:47:40 | 1:53:40 | 1:53:40 |
+| 1004 | 30:50 | 37:20 | 37:20 | 46:00 | 1:27:00 | 1:27:00 | 1:35:20 | 1:35:20 |
+| 1005 | 36:50 | 23:00 | 37:00 | 46:00 | 1:40:00 | 1:40:00 | 1:49:00 | 1:49:00 |
+| 1006 | 37:15 | 55:00 | 55:00 | 1:02:30 | 2:22:20 | 2:22:20 | 2:31:00 | 2:31:00 |
+| 1007 | 36:50 | 56:20 | 56:20 | 1:05:00 | 1:54:00 | 1:54:00 | 2:06:00 | 2:06:00 |
+| **median** | **36:50** | **34:20** | **39:00** | **50:15** | **1:39:40** | **1:39:40** | **1:48:40** | **1:48:40** |
+
+| §6.3 target | Target | Median | Per seed | Meets? |
+|---|---|---|---|---|
+| 5★ at Haunted Manor (from the start) | 30–60 min | 36:50 | 39:50, 35:15, 19:15, 43:55, 30:50, 36:50, 37:15, 36:50 | yes |
+| 5★ at Frostfang Lodge (after 5★ at Haunted Manor) | 60–90 min | 18:47 | 10:40, 14:45, 22:25, 23:25, 15:10, 9:10, 25:15, 28:10 | no, 41 min under |
+| 5★ at Bayou Spa (after 5★ at Frostfang Lodge) | 90–120 min | 55:10 | 47:20, 32:10, 1:06:40, 46:20, 49:20, 1:03:00, 1:28:30, 1:01:00 | no, 35 min under |
+| Rebirth available (5★ on all three) | 180–270 min | 1:48:40 | 1:37:50, 1:22:10, 1:48:20, 1:53:40, 1:35:20, 1:49:00, 2:31:00, 2:06:00 | no, 71 min under |
+
+Where the time goes, per location (medians): **saving** = from 5★ at the hotel before to the opening (the open price); **in the hotel** = from its opening to its 5★.
+
+| Location | Saving for it | In the hotel to 5★ | 3★ / 4★ / 4.5★ after opening | Last to reach 95: categories, reviews ≥ 4.5 (after opening) |
+|---|---|---|---|---|
+| 1 Haunted Manor | — | 36:50 | 3:50 / 11:10 / 17:20 | Comfort —, Service —, reviews ≥ 4.5 25:22 |
+| 2 Frostfang Lodge | 10:37 | 8:40 | 1:40 / 3:20 / 6:20 | reviews ≥ 4.5 23:12, Comfort 13:50, Style 8:00 |
+| 3 Bayou Spa | 45:00 | 8:30 | 2:10 / 4:30 / 5:52 | Comfort —, Service —, Fun — |
+
+Snapshots (medians over seeds): cash and income at each moment. Income is all of it per minute (guests, tips, Wing, background); 'measured' is the played hotel's ChainService rate, 'background' what the hotels left pay.
+
+| Moment | Time | Cash | Run cash | Income/min | Measured rate/min | Background/min | Rooms | Floors | Tiles (floor 1 / 2) | Rating | Categories (C/S/Cl/F/St) | Mean review | Mean satisfaction | Rooms' bars Size/Furniture/Decor | Cells / minimum |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| five_star_1 | 36:50 | $200.0k | $423.4k | $4.7k | $5.1k | $0 | 16 | 2 | 142 / 100 | 5.0★ | 94/90/100/100/100 | 4.72 | 96 | 0.22/0.95/1.00 | 1.22 |
+| afford_open_2 | 34:20 | $388.7k | $708.0k | $14.4k | $9.5k | $0 | 12 | 2 | 117 / 66 | 4.8★ | 90/90/100/100/100 | 4.65 | 96 | 0.27/0.95/0.97 | 1.27 |
+| leave_1 | 39:00 | $336.7k | $836.9k | $14.3k | $11.2k | $0 | 18 | 2 | 142 / 100 | 5.0★ | 95/89/100/100/100 | 4.81 | 97 | 0.26/0.95/1.00 | 1.26 |
+| open_2 | 39:00 | $86.7k | $836.9k | $0 | $0 | $2.8k | 1 | 1 | 16 / 0 | 1.0★ | 0/0/0/0/0 | 0.00 | 0 | 0.00/0.50/0.00 | 1.00 |
+| five_star_2 | 50:15 | $81.3k | $882.4k | $9.5k | $2.2k | $2.8k | 4 | 1 | 78 / 0 | 5.0★ | 72/96/100/100/98 | 5.00 | 100 | 0.25/0.89/0.90 | 1.25 |
+| afford_open_3 | 1:39:40 | $10.5M | $14.8M | $183.2k | $232.6k | $2.8k | 20 | 2 | 142 / 140 | 5.0★ | 100/87/100/100/100 | 5.00 | 100 | 0.33/1.00/1.00 | 1.33 |
+| leave_2 | 1:39:40 | $10.5M | $14.8M | $183.2k | $232.6k | $2.8k | 20 | 2 | 142 / 140 | 5.0★ | 100/87/100/100/100 | 5.00 | 100 | 0.33/1.00/1.00 | 1.33 |
+| open_3 | 1:39:40 | $467.4k | $14.8M | $0 | $0 | $59.9k | 1 | 1 | 16 / 0 | 1.0★ | 0/0/0/0/0 | 0.00 | 0 | 0.00/0.50/0.00 | 1.00 |
+| five_star_3 | 1:48:40 | $2.5M | $17.4M | $292.3k | $121.8k | $59.9k | 4 | 1 | 67 / 0 | 5.0★ | 87/93/100/90/100 | 5.00 | 100 | 0.25/1.00/1.00 | 1.25 |
+| rebirth_ready | 1:48:40 | $2.5M | $17.4M | $292.3k | $121.8k | $59.9k | 4 | 1 | 67 / 0 | 5.0★ | 87/93/100/90/100 | 5.00 | 100 | 0.25/1.00/1.00 | 1.25 |
+
+§6.2 rule of thumb per location, purchases as a player sees them (buys within a few seconds of each other are one: a room with its tiles and fills), after its first 5 minutes: minutes of income each; the gaps between them (the opening price counted as a purchase), medians over seeds:
+
+- L1: n=124, median 3.72 min (p10 0.46, p90 28.08, max 379.6); in the 2–5 min band 26%, over 10 min 21%; longest gap 7:00; gaps over 10 min: 0, 0:00 in all.
+- L2: n=138, median 1.45 min (p10 0.03, p90 8.74, max 30.4); in the 2–5 min band 17%, over 10 min 9%; longest gap 10:50; gaps over 10 min: 0, 8:00 in all.
+- L3: n=16, median 1.96 min (p10 0.15, p90 4.79, max 8.7); in the 2–5 min band 38%, over 10 min 0%; longest gap 4:00; gaps over 10 min: 0, 0:00 in all.
+
+Lumps of income in the run (medians; EXTRAS, the balance run of 2026-10-23):
+
+| login | daily | vip | hunter | offline | starter | codes | levels | VIP contracts done | of run cash |
+|---|---|---|---|---|---|---|---|---|---|
+| $42.3k | $4.0M | $3.1M | $18.8k | $470.6k | $0 | $0 | $-64.4k | 7 | 52% |
+
+Timeline (medians over the seeds still running; the location column lists each seed's):
+
+| Minute | Location | Rating | Rooms | Income/min | Background/min | Cash |
+|---|---|---|---|---|---|---|
+| 5 | 1,1,1,1,1,1,1,1 | 3.0★ | 3 | $109 | $0 | $31 |
+| 15 | 1,1,1,1,1,1,1,1 | 4.0★ | 6 | $4.9k | $0 | $57.8k |
+| 30 | 1,1,1,1,1,1,1,1 | 4.5★ | 12 | $5.6k | $0 | $213.3k |
+| 45 | 1,1,1,2,2,2,2,2 | 4.8★ | 5 | $6.6k | $2.0k | $58.6k |
+| 60 | 2,2,2,2,2,2,2,2 | 5.0★ | 10 | $46.7k | $2.8k | $1.3M |
+| 75 | 2,2,2,2,2,2,2,2 | 5.0★ | 18 | $166.9k | $2.8k | $1.6M |
+| 90 | 2,2,2,2,2,3,3 | 5.0★ | 16 | $109.2k | $4.1k | $835.8k |
+| 105 | 2,2,2,3,3 | 5.0★ | 20 | $224.7k | $4.1k | $3.1M |
+
+### The first minutes at Haunted Manor (§6.3)
+
+| §6.3 moment | Target | with tutorial |
+|---|---|---|
+| First room bought (the start room stands from 0:00, free) | 0:10–0:30 | 2:00 (the second room) |
+| First guest pays | by 1:00 | 0:50 |
+| First bus | by 2:00 | 1:45 (first bus guest at the desk 2:45) |
+| 3–5 purchases | by 5:00 | 7 (2 meaningful) |
+| First resident | 3:00–5:00 | 3:50 |
+| First rare: Vampire Count checks in | 10:00–15:00 | 11:27 |
+| … Vampire Count resident | (no longer a rebirth condition) | — |
+| Mean bus size |  | 3.8 |

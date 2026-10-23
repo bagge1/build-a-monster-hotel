@@ -59,7 +59,7 @@ function StoreService.incomeRate(player: Player): number
 	if data then
 		rate += ResidentService.rate(player, data)
 	end
-	return math.max(rate, Constants.Economy.BasePay * 10)
+	return math.max(rate, Constants.Economy.BasePay * Constants.Economy.RewardFloor)
 end
 
 local function addBoost(data: PlayerData.Data, name: string, seconds: number)

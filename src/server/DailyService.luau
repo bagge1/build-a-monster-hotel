@@ -7,8 +7,9 @@
 
 	A day is the UTC day (`os.time() // 86400`), the same on every server.
 	Request progress is a profile stat counted from where it stood when the
-	request was drawn, so it survives a rejoin. Every reward amount is a
-	PLACEHOLDER (GDD Appendix A.9).
+	request was drawn, so it survives a rejoin. Every reward amount but the
+	request's minutes and the codes (his yes 2026-10-23) is a PLACEHOLDER
+	(GDD Appendix A.9).
 
 	Codes live here, on the server only, so no client can read the list.
 ]]
@@ -32,7 +33,7 @@ local DailyService = {}
 local DAY = 86400
 local REQUESTS_PER_DAY = 3 -- §8.2
 local BASE_REROLLS = 1 -- PLACEHOLDER
-local REWARD_MINUTES = 8 -- PLACEHOLDER: each request pays 8 minutes of income
+local REWARD_MINUTES = 4 -- his yes 2026-10-23 (the balance run, from 8): each request pays 4 minutes of income
 local LOGIN_MINUTES = { 3, 4, 5, 6, 8, 10, 15 } -- PLACEHOLDER: days 1–7
 local LOGIN_COSMETIC = "Cosmetic_LanternSign" -- day 7's cosmetic (§8.2; Cosmetics.luau)
 
@@ -132,9 +133,12 @@ local KINDS: { Kind } = {
 }
 
 local CODES: { [string]: { cash: number?, shards: number? } } = {
-	-- PLACEHOLDER codes for the social channels (§9); August names the real ones.
+	-- The launch codes (§9; his picks 2026-10-23, GDD §18), the amounts his yes the same day on the balance
+	-- run (`archive/BALANCE-2026-10-23.md`): WELCOME is about 5 minutes of a new hotel's income; SPOOKY
+	-- buys one Moon Tree level (a node's first level costs 5 shards); HALLOWEEN, the season's, both.
 	WELCOME = { cash = 500 },
-	SPOOKY = { shards = 3 },
+	SPOOKY = { shards = 5 },
+	HALLOWEEN = { cash = 1000, shards = 5 },
 }
 
 function DailyService.today(): number
