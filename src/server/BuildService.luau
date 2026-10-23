@@ -765,7 +765,15 @@ local function placeDecor(
 		refuse(player, "PlaceDecor", "NotFound")
 		return
 	end
-	if not Pieces.decorHere(d, data.location, data.unlocked, data.finds and data.finds.found) then
+	if
+		not Pieces.decorHere(
+			d,
+			data.location,
+			data.unlocked,
+			data.finds and data.finds.found,
+			data.passes
+		)
+	then
 		refuse(player, "PlaceDecor", "Location")
 		return
 	end
@@ -773,7 +781,13 @@ local function placeDecor(
 		return
 	end
 	-- Event decor (location 0, not `always`, not furniture) is owned once bought in its shop: placing it is free.
-	local cost = if d.location == 0 and not d.always and not d.furniture then 0 else d.cost
+	-- A pass's decor is bought with cash (A.2): its cost is its decor points.
+	local cost = if d.location == 0
+			and not d.always
+			and not d.furniture
+			and not d.pass
+		then 0
+		else d.cost
 	local voucher = voucherFor(data, d)
 	if voucher then
 		cost = 0
@@ -1225,7 +1239,13 @@ function BuildService.Start()
 		local unlockedDecor = {}
 		for _, d in Pieces.DecorList do
 			if
-				Pieces.decorHere(d, data.location, data.unlocked, data.finds and data.finds.found)
+				Pieces.decorHere(
+					d,
+					data.location,
+					data.unlocked,
+					data.finds and data.finds.found,
+					data.passes
+				)
 			then
 				unlockedDecor[d.id] = true
 			end

@@ -494,6 +494,12 @@ Placed by the player **on a grid of 3 studs** (a quarter cell), turned in
   a fountain's falling streams are `Jet_<n>`, one part each, to which the
   code may add a water effect. Neither collides; until the code does
   anything with them they show as built.
+- **Decor of every location** (location 0, not `always`: event decor and
+  the VIP lounge set, GDD A.2) is **one model for every kit**, built in its
+  own set (`blender/decor/vip_lounge/`, `tools/build_vip_lounge.py`) and saved
+  into Haunted Manor's folder (`assets/HotelKit/HauntedManor/Decor_<Id>.rbxm`):
+  the code looks in the location's kit first, then in Haunted Manor's, as it
+  does for location-0 furniture. Its colours are its own, none a location's.
 - **The model agrees with `Pieces`**: its footprint and layer are its
   entry's `w`, `d` and `layer`, and the entry's `height` is the body's top
   to 0.3 (the build mode's ghost and the stand-in block are drawn from it).

@@ -1,0 +1,959 @@
+{
+ "set": "facade/bayou_spa",
+ "title": "Bayou Spa facade (the kit's own), a draft: the facade pieces (sage clapboard on a cypress skirting, green louvred shutters, a round cypress arch with moss and fireflies)",
+ "frame": "Roblox studs, piece frame: X right, Y up, door/front toward -Z, origin per MODELS.md; Blender holds them as (-x, z, y)",
+ "atlas": "textures/HotelAtlas.png (embedded in every FBX)",
+ "palette": {
+  "moss": [
+   92,
+   132,
+   70
+  ],
+  "moss_dark": [
+   62,
+   94,
+   52
+  ],
+  "moss_light": [
+   140,
+   176,
+   96
+  ],
+  "lily": [
+   108,
+   168,
+   88
+  ],
+  "lily_dark": [
+   70,
+   124,
+   68
+  ],
+  "lily_light": [
+   160,
+   204,
+   118
+  ],
+  "lotus": [
+   238,
+   148,
+   178
+  ],
+  "lotus_light": [
+   250,
+   206,
+   222
+  ],
+  "lotus_heart": [
+   250,
+   214,
+   110
+  ],
+  "cypress": [
+   128,
+   96,
+   66
+  ],
+  "cypress_dark": [
+   86,
+   63,
+   45
+  ],
+  "cypress_light": [
+   172,
+   136,
+   96
+  ],
+  "drift": [
+   152,
+   140,
+   120
+  ],
+  "drift_dark": [
+   112,
+   102,
+   88
+  ],
+  "drift_light": [
+   188,
+   176,
+   152
+  ],
+  "mud": [
+   122,
+   86,
+   56
+  ],
+  "mud_dark": [
+   86,
+   60,
+   40
+  ],
+  "mud_light": [
+   162,
+   122,
+   82
+  ],
+  "water": [
+   72,
+   142,
+   132
+  ],
+  "water_deep": [
+   42,
+   96,
+   96
+  ],
+  "water_light": [
+   132,
+   192,
+   178
+  ],
+  "steam": [
+   228,
+   234,
+   232
+  ],
+  "stone": [
+   130,
+   136,
+   120
+  ],
+  "stone_dark": [
+   90,
+   96,
+   84
+  ],
+  "stone_light": [
+   178,
+   182,
+   166
+  ],
+  "reed": [
+   120,
+   140,
+   70
+  ],
+  "cattail": [
+   110,
+   72,
+   44
+  ],
+  "rattan": [
+   206,
+   170,
+   106
+  ],
+  "rattan_dark": [
+   162,
+   122,
+   72
+  ],
+  "linen": [
+   238,
+   230,
+   210
+  ],
+  "towel": [
+   246,
+   243,
+   234
+  ],
+  "sage": [
+   152,
+   176,
+   132
+  ],
+  "sage_light": [
+   196,
+   212,
+   176
+  ],
+  "lavender": [
+   176,
+   150,
+   206
+  ],
+  "herb": [
+   96,
+   150,
+   80
+  ],
+  "chamomile": [
+   246,
+   236,
+   172
+  ],
+  "copper": [
+   192,
+   116,
+   72
+  ],
+  "copper_dark": [
+   142,
+   82,
+   52
+  ],
+  "brass": [
+   216,
+   176,
+   92
+  ],
+  "plum": [
+   92,
+   72,
+   112
+  ],
+  "velvet": [
+   132,
+   42,
+   62
+  ],
+  "iron": [
+   60,
+   62,
+   68
+  ],
+  "black": [
+   32,
+   34,
+   36
+  ],
+  "white": [
+   244,
+   244,
+   240
+  ],
+  "grey": [
+   120,
+   122,
+   118
+  ],
+  "moonstone": [
+   200,
+   218,
+   240
+  ],
+  "moonstone_dark": [
+   150,
+   170,
+   200
+  ],
+  "frog": [
+   118,
+   188,
+   80
+  ],
+  "frog_belly": [
+   222,
+   230,
+   164
+  ],
+  "flame": [
+   255,
+   205,
+   120
+  ],
+  "lamp": [
+   255,
+   185,
+   110
+  ],
+  "firefly": [
+   246,
+   240,
+   140
+  ],
+  "moonglow": [
+   205,
+   225,
+   255
+  ],
+  "sage_mid": [
+   140,
+   164,
+   122
+  ]
+ },
+ "pieces": {
+  "Facade_Wall": {
+   "name": "Facade_Wall",
+   "kind": "Facade",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     -0.32
+    ],
+    "size": [
+     12.0,
+     0.2,
+     0.6
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      0.2,
+      0.6
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Wall": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 324,
+     "collide": true
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 336,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a plain wall: sage clapboard in two close sages over a dark cypress skirting and a stone plinth, a light cypress course at 12, a cypress wainscot and sage inside"
+  },
+  "Facade_Window_TwinSash": {
+   "name": "Facade_Window_TwinSash",
+   "kind": "Facade",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     -0.32
+    ],
+    "size": [
+     12.0,
+     0.2,
+     0.6
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      0.2,
+      0.6
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Wall": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 624,
+     "collide": true
+    },
+    "Glass": {
+     "centre": [
+      0.0,
+      7.3,
+      -0.32
+     ],
+     "size": [
+      7.3,
+      8.7,
+      0.06
+     ],
+     "triangles": 24,
+     "collide": false
+    },
+    "Dressing": {
+     "centre": [
+      0.0,
+      7.3,
+      -0.305
+     ],
+     "size": [
+      10.54,
+      9.24,
+      0.97
+     ],
+     "triangles": 936,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 60,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 1596,
+   "budget": 2500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "sage clapboard in two close sages over a dark cypress skirting and a stone plinth, a light cypress course at 12, a cypress wainscot and sage inside; a TwinSash window: light cypress frames, bars and sill, green louvred shutters folded back (none by the round); the arched one round-headed, lotus, lavender and chamomile in the box"
+  },
+  "Facade_Window_Arched": {
+   "name": "Facade_Window_Arched",
+   "kind": "Facade",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     -0.32
+    ],
+    "size": [
+     12.0,
+     0.2,
+     0.6
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      0.2,
+      0.6
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Wall": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 520,
+     "collide": true
+    },
+    "Glass": {
+     "centre": [
+      0.0,
+      7.3,
+      -0.32
+     ],
+     "size": [
+      5.1,
+      8.7,
+      0.06
+     ],
+     "triangles": 40,
+     "collide": false
+    },
+    "Dressing": {
+     "centre": [
+      0.0,
+      7.3,
+      -0.305
+     ],
+     "size": [
+      8.64,
+      9.24,
+      0.97
+     ],
+     "triangles": 840,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 48,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 1412,
+   "budget": 2500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "sage clapboard in two close sages over a dark cypress skirting and a stone plinth, a light cypress course at 12, a cypress wainscot and sage inside; a Arched window: light cypress frames, bars and sill, green louvred shutters folded back (none by the round); the arched one round-headed, lotus, lavender and chamomile in the box"
+  },
+  "Facade_Window_Round": {
+   "name": "Facade_Window_Round",
+   "kind": "Facade",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     -0.32
+    ],
+    "size": [
+     12.0,
+     0.2,
+     0.6
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      0.2,
+      0.6
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Wall": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 556,
+     "collide": true
+    },
+    "Glass": {
+     "centre": [
+      0.0,
+      7.4,
+      -0.32
+     ],
+     "size": [
+      6.9,
+      6.9,
+      0.06
+     ],
+     "triangles": 92,
+     "collide": false
+    },
+    "Dressing": {
+     "centre": [
+      0.0,
+      7.4,
+      -0.325
+     ],
+     "size": [
+      7.44,
+      7.44,
+      0.65
+     ],
+     "triangles": 432,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 48,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 1092,
+   "budget": 2500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "sage clapboard in two close sages over a dark cypress skirting and a stone plinth, a light cypress course at 12, a cypress wainscot and sage inside; a Round window: light cypress frames, bars and sill, green louvred shutters folded back (none by the round); the arched one round-headed, lotus, lavender and chamomile in the box"
+  },
+  "Facade_Window_Wide": {
+   "name": "Facade_Window_Wide",
+   "kind": "Facade",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     -0.32
+    ],
+    "size": [
+     12.0,
+     0.2,
+     0.6
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      0.2,
+      0.6
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Wall": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 480,
+     "collide": true
+    },
+    "Glass": {
+     "centre": [
+      0.0,
+      7.6,
+      -0.32
+     ],
+     "size": [
+      8.1,
+      8.1,
+      0.06
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Dressing": {
+     "centre": [
+      0.0,
+      6.675,
+      -0.57
+     ],
+     "size": [
+      10.54,
+      10.49,
+      1.5
+     ],
+     "triangles": 1344,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      12.0,
+      17.0,
+      0.6
+     ],
+     "triangles": 48,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 1848,
+   "budget": 2500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "sage clapboard in two close sages over a dark cypress skirting and a stone plinth, a light cypress course at 12, a cypress wainscot and sage inside; a Wide window: light cypress frames, bars and sill, green louvred shutters folded back (none by the round); the arched one round-headed, lotus, lavender and chamomile in the box"
+  },
+  "Facade_Entrance": {
+   "name": "Facade_Entrance",
+   "kind": "Facade",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     -0.32
+    ],
+    "size": [
+     24.0,
+     0.2,
+     0.6
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      -0.32
+     ],
+     "size": [
+      24.0,
+      0.2,
+      0.6
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Wall_Left": {
+     "centre": [
+      -8.75,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      6.5,
+      17.0,
+      0.6
+     ],
+     "triangles": 300,
+     "collide": true
+    },
+    "Wall_Right": {
+     "centre": [
+      8.75,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      6.5,
+      17.0,
+      0.6
+     ],
+     "triangles": 300,
+     "collide": true
+    },
+    "ArchLeft": {
+     "centre": [
+      -5.0,
+      4.5,
+      -0.42
+     ],
+     "size": [
+      1.0,
+      9.0,
+      0.8
+     ],
+     "triangles": 132,
+     "collide": true
+    },
+    "ArchRight": {
+     "centre": [
+      5.0,
+      4.5,
+      -0.42
+     ],
+     "size": [
+      1.0,
+      9.0,
+      0.8
+     ],
+     "triangles": 132,
+     "collide": true
+    },
+    "ArchTop": {
+     "centre": [
+      0.0,
+      13.0,
+      -0.42
+     ],
+     "size": [
+      11.0,
+      8.0,
+      0.8
+     ],
+     "triangles": 324,
+     "collide": true
+    },
+    "Dressing": {
+     "centre": [
+      -0.0193,
+      11.745,
+      -0.5067
+     ],
+     "size": [
+      7.3408,
+      3.87,
+      0.9733
+     ],
+     "triangles": 424,
+     "collide": false
+    },
+    "Glow_Warm_1": {
+     "centre": [
+      0.0,
+      10.93,
+      -0.5
+     ],
+     "size": [
+      0.5322,
+      0.96,
+      0.5322
+     ],
+     "triangles": 48,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      8.5,
+      -0.42
+     ],
+     "size": [
+      24.0,
+      17.0,
+      0.8
+     ],
+     "triangles": 60,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Entrance": {
+     "pos": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    }
+   },
+   "triangles": 1672,
+   "budget": 3000,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "square cypress posts on stone under a round arch of cypress voussoirs, a lily cypress keystone with a lotus, two light tufts of moss, a firefly lantern hung in it"
+  },
+  "Facade_Corner": {
+   "name": "Facade_Corner",
+   "kind": "Facade",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     -0.32,
+     0.1,
+     -0.32
+    ],
+    "size": [
+     0.64,
+     0.2,
+     0.64
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      -0.32,
+      0.1,
+      -0.32
+     ],
+     "size": [
+      0.64,
+      0.2,
+      0.64
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Post": {
+     "centre": [
+      -0.32,
+      8.5,
+      -0.32
+     ],
+     "size": [
+      0.64,
+      17.0,
+      0.64
+     ],
+     "triangles": 48,
+     "collide": true
+    },
+    "Dressing": {
+     "centre": [
+      -0.66,
+      8.5,
+      -0.66
+     ],
+     "size": [
+      0.1848,
+      15.76,
+      0.1848
+     ],
+     "triangles": 28,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 88,
+   "budget": 800,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a dark cypress post with the wall's stone plinth and light cypress course"
+  }
+ },
+ "mirrors": {}
+}

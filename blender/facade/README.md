@@ -18,6 +18,7 @@ Seven pieces in every set: `Facade_Wall` (plain), `Facade_Window_TwinSash`,
 |---|---|---|
 | `haunted_manor/` | Haunted Manor's kit facade | The approved `Lobby` front wall and arch, carried over |
 | `frostfang_lodge/` | Frostfang Lodge's kit facade | The approved `Lobby` front wall and arch, carried over |
+| `bayou_spa/` | Bayou Spa's kit facade (2026-10-23, a draft; `assets/HotelKit/BayouSpa/` once imported) | Sage clapboard on a cypress skirting, green louvred shutters, a round cypress arch with a lotus keystone, moss tufts and a firefly lantern |
 | `gothic/` | `Cosmetic_GothicFacade` (pass FacadeGothic) | Dark slate, pointed windows, red stained-glass trim, small gargoyles on the corners |
 | `neon/` | `Cosmetic_NeonFacade` (pass FacadeNeon) | Dark panels with glowing cyan and magenta tubes round the windows |
 | `candy/` | `Cosmetic_CandyFacade` (pass FacadeCandy) | Pink wafer walls, white icing dripping from the top, striped posts |

@@ -13,9 +13,9 @@ surface, the owned cell toward +Z, the wall outside the edge from z -0.62 to -0.
     Facade_Entrance         24 x 17, the arch (9 x 9 clear) between solid walls, its lantern, `Entrance`
     Facade_Corner           the 0.64 post at a corner, in the -X -Z quadrant of its origin
 
-Seven styles, each its own set in blender/facade/<style>/ (the names are the same in every set):
-the two hotel kits' own (haunted_manor, frostfang_lodge: the approved Lobby front wall's bands,
-windows and arch carried over into the new frame) and the five facade cosmetics of
+Eight styles, each its own set in blender/facade/<style>/ (the names are the same in every set):
+the three hotel kits' own (haunted_manor, frostfang_lodge: the approved Lobby front wall's bands,
+windows and arch carried over into the new frame; bayou_spa, a draft of 2026-10-23) and the five facade cosmetics of
 Cosmetics.luau (gothic, neon, candy, pirate, slime: drafts from the one-line looks he said yes
 to, GDD decision log 2026-10-20).
 
@@ -1294,6 +1294,110 @@ def slime_entrance():
 
 # --- The styles ---------------------------------------------------------------------------------------
 
+# --- Bayou Spa (Location 3): the kit's own, a draft (2026-10-23, LAUNCH.md workstream 5) ------------------
+# A Creole cottage on the bayou: sage clapboard over a dark cypress skirting and a stone plinth, light cypress
+# courses, green louvred shutters beside the windows, the built rooms' palette (tools/build_built_rooms.py).
+# Moss only on the entrance, two light tufts (the kits' fourth blind review, finding 9: fewer and lighter).
+
+BS_PALETTE = list(_lift(TOOLS / 'build_built_rooms.py', ['BS_PALETTE'], {})['BS_PALETTE']) + [
+    ('sage_mid', (140, 164, 122))]
+_BS_CUTS = (0.6, 1.6, 3.0, 12.0, 12.5, 16.6)
+
+
+def _bs_bands():
+    """Clapboards 0.8 tall in two close sages (no two neighbours alike), between the plinth, the skirting,
+    the course at 12 and the cap; inside, a cypress wainscot under sage_light."""
+    out = [(0.0, 0.6, 'stone_dark'), (0.6, 1.6, 'cypress_dark')]
+    for y0, y1 in ((1.6, 12.0), (12.5, 16.6)):
+        y, k = y0, 0
+        while y < y1 - 1e-6:
+            y2 = min(y1, round(y + 0.8, 4))
+            if y1 - y2 < 0.3:
+                y2 = y1
+            out.append((y, y2, ('sage', 'sage_mid')[k % 2]))
+            y, k = y2, k + 1
+    out += [(12.0, 12.5, 'cypress_light'), (16.6, 17.0, 'cypress_dark')]
+    out.sort()
+    bands = []
+    for y0, y1, o in out:
+        ys = [y0] + [c for c in (0.6, 3.0) if y0 < c < y1] + [y1]
+        for a, b in zip(ys, ys[1:]):
+            inner = 'cypress_dark' if b <= 0.6 + 1e-9 else 'cypress' if b <= 3.0 + 1e-9 else 'sage_light'
+            bands.append((a, b, o, inner))
+    return bands
+
+
+BS_BANDS = _bs_bands()
+BS_POST = [(0, 0.6, 'stone_dark'), (0.6, 12.0, 'cypress_dark'), (12.0, 12.5, 'cypress_light'),
+           (12.5, 17.0, 'cypress_dark')]
+
+
+def bs_shutters(wtype, shapes, sill):
+    """A green louvred shutter folded back beside each side of a window, up to its head (an arch's
+    springing); none beside a round one. Kept 0.72 from the piece's ends (a detail 0.08 proud)."""
+    if wtype == 'Round':
+        return
+    x0 = min(s['bbox'][0] for s in shapes)
+    x1 = max(s['bbox'][1] for s in shapes)
+    y0 = min(s['bbox'][2] for s in shapes)
+    y1 = max(s.get('spring', s['bbox'][3]) for s in shapes)
+    for sx in (-1, 1):
+        a = (x1 if sx > 0 else -x0) + 0.32
+        b = min(a + 1.5, 6.0 - 0.62 - 0.08 - 0.02 - 0.01)
+        if b - a < 0.8:
+            continue
+        lo, hi = sorted((sx * a, sx * b))
+        ya, yb = y0 + 0.07, y1 - 0.07                     # off the wall's band edges at the window's foot and head
+        span('Dressing', (lo, ya, OUT_Z - 0.06), (hi, yb, OUT_Z + 0.01), 'lily_dark')
+        y = ya + 0.2
+        while y + 0.16 < yb - 0.15:
+            span('Dressing', (lo + 0.1, y, OUT_Z - 0.08), (hi - 0.1, y + 0.16, OUT_Z - 0.05), 'lily')
+            y += 0.3
+
+
+def bs_entrance():
+    piece('Facade_Entrance')
+    wall_body('Wall_Left', -12, -PIER, BS_BANDS, ends=(True, False))
+    wall_body('Wall_Right', PIER, 12, BS_BANDS, ends=(False, True))
+    # Square cypress posts on stone (round shafts read as metal poles: the blind review, 2026-10-23), under a
+    # round arch of cypress voussoirs.
+    for name, x in (('ArchLeft', -5), ('ArchRight', 5)):
+        span(name, (x - 0.5, 0, zm(0)), (x + 0.5, 0.6, zm(1)), 'stone_dark', bevel=0.08)
+        span(name, (x - 0.42, 0.6, zm(0.08)), (x + 0.42, 8.4, zm(0.92)), {'front': 'cypress', 'rest': 'cypress_dark'},
+             bevel=0.1)
+        span(name, (x - 0.5, 8.4, zm(0)), (x + 0.5, ARCH_Y, zm(1)), 'cypress_light', bevel=0.08)
+    inner = round_arch_points(-4.5, 4.5, ARCH_Y, 12.6, n=8)
+    outer = round_arch_points(-5.5, 5.5, ARCH_Y, 13.6, n=8)
+    arch_band('ArchTop', outer, inner, zm(0), zm(0.95), ('cypress', 'cypress_light'), split=1.5)
+    over_arch_bands('ArchTop', BS_BANDS, outer, WALL)
+    # The keystone: a light cypress block with a lotus on its face (a lily pad under it read as a potted tulip).
+    zf = zm(0)
+    span('Dressing', (-0.5, 12.55, zf - 0.04), (0.5, 13.65, zf + 0.02), 'cypress_light', bevel=0.05)
+    for k in range(5):
+        a = math.radians(-60 + 30 * k)
+        sphere('Dressing', (0.38 * math.sin(a), 13.1 + 0.28 * math.cos(a), zf - 0.07 - 0.01 * k), (0.15, 0.3, 0.05),
+               'lotus' if k % 2 == 0 else 'lotus_light', n=6, rings=3)
+    sphere('Dressing', (0, 13.1, zf - 0.13), (0.14, 0.11, 0.05), 'lotus_heart', n=6, rings=3)
+    # Two light tufts of Spanish moss off the arch's shoulders.
+    for sx in (-1, 1):
+        x = sx * 3.3
+        y = ARCH_Y + 4.6 * math.sqrt(1 - (3.3 / 5.5) ** 2)
+        sphere('Dressing', (x, y - 0.1, zf - 0.08), (0.45, 0.16, 0.1), 'moss_light', n=7, rings=3)
+        sphere('Dressing', (x + sx * 0.12, y - 0.55, zf - 0.1), (0.16, 0.42, 0.07), 'moss_light', n=6, rings=3)
+        sphere('Dressing', (x - sx * 0.2, y - 0.42, zf - 0.11), (0.12, 0.3, 0.06), 'moss', n=6, rings=3)
+    hanging_lantern(0, 12.6, zm(0.5) - 0.08, 'brass', cap='copper', k=1.6, chain=0.55, flame='firefly')
+    entrance_proxy()
+    finish(proxy=False, note='square cypress posts on stone under a round arch of cypress voussoirs, a lily '
+                             'cypress keystone with a lotus, two light tufts of moss, a firefly lantern hung in it')
+
+
+def bs_corner():
+    piece('Facade_Corner')
+    post(BS_POST)
+    bead('cypress_dark')    # a light bead read as a seam at both corners (the blind review, 2026-10-23)
+    finish(proxy=False, note="a dark cypress post with the wall's stone plinth and light cypress course")
+
+
 STYLES = {
     'haunted_manor': dict(
         title="Haunted Manor facade (the kit's own)", palette=HM_PALETTE, look="the Lobby front wall's, carried over",
@@ -1310,6 +1414,22 @@ STYLES = {
         flowers=dict(box='log', soil='wood_dark', flowers=('snow', 'pine', 'red'), leaf='pine_dark'),
         wall_note="the Lobby front wall's lodge blue with snow courses, logs inside",
         window_note='dark log frames and bars, a snowy sill; the arched one round-headed'),
+    'bayou_spa': dict(
+        title="Bayou Spa facade (the kit's own), a draft", palette=BS_PALETTE,
+        look='sage clapboard on a cypress skirting, green louvred shutters, a round cypress arch with moss and fireflies',
+        bands=BS_BANDS, post=BS_POST, entrance=bs_entrance, corner=bs_corner,
+        infill={'front': 'sage', 'back': 'sage_light', 'rest': 'sage'},
+        # Off the clapboards' edges (every 0.8 from 1.6): the arch springs at 9.5, the wide sill's foot at 3.3;
+        # every head but the round one's at 11.6, its frame clear of the course at 12 (the blind review, 2026-10-23).
+        shapes={'TwinSash': [rect(-3.6, -0.4, 3.0, 11.6), rect(0.4, 3.6, 3.0, 11.6)],
+                'Arched': [lancet(-2.5, 2.5, 3.0, 9.5, 11.6, round_top=True)], 'Wide': [rect(-4.0, 4.0, 3.6, 11.6)]},
+        glass='water_deep', frame=('cypress_light', 0.25, 0.03), inner_frame='cypress',
+        sill=('cypress_light', 'cypress_light'), bars='cypress_light', extra=bs_shutters,
+        flowers=dict(box='cypress', soil='mud_dark', flowers=('lotus', 'lavender', 'chamomile'), leaf='herb'),
+        wall_note='sage clapboard in two close sages over a dark cypress skirting and a stone plinth, a light '
+                  'cypress course at 12, a cypress wainscot and sage inside',
+        window_note='light cypress frames, bars and sill, green louvred shutters folded back (none by the '
+                    'round); the arched one round-headed, lotus, lavender and chamomile in the box'),
     'gothic': dict(
         title='Cosmetic_GothicFacade', palette=GOTHIC_PALETTE,
         look='dark slate, pointed windows, red stained-glass trim, small gargoyles on the corners',

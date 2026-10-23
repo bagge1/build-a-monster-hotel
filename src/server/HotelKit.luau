@@ -236,7 +236,9 @@ function HotelKit.decor(id: string, location: number): Model
 			return found
 		end
 	else
+		-- Decor of every location (MODELS.md "Decor"): one model, in Haunted Manor's kit.
 		local found = template(location, `Decor_{id}`)
+			or (if d.location == 0 and not d.always then template(1, `Decor_{id}`) else nil)
 		if found then
 			return found
 		end

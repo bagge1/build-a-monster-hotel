@@ -1156,6 +1156,53 @@ Med Claudes skärmdump där det finns en. -->
      helst gratis, och varje kopia ger full Decor. **Rekommendation:** en
      kopia per köp, som de andra.
 
+49. **Bayou Spas kit och fasad: det som är ditt** (2026-10-23, LAUNCH.md
+   arbete 5; `blender/hotel/bayou_spa/`, `blender/facade/bayou_spa/`, bilderna
+   i deras `review/`; tre blinda rundor, resten är rättat, se README:erna).
+   Byggt: disken, trappan (två), skylten, dörrskylten, de fem Bayou-dekorerna
+   och de fem alla kit har, och fasadens sju delar. **Ditt ja eller nej per
+   modell** i godkännanderundan. Det granskarna såg som är ditt:
+   - **Fasaden läses som "en grön lada"** på avstånd: salviagrön panel,
+     gröna fönsterluckor, ett cypressvalv med lotus, mossa och en
+     eldflugelykta. *Behåll* eller *mer träsk på väggarna*.
+     **Rekommendation:** se den i spelet först (Workbenchs platta ljus gör
+     salvian mörk); är den fortfarande en lada, mossa längs taklisten och en
+     fris av näckrosblad på listen vid 12.
+   - **Steam Vent** läses som en snögubbe av vita bollar: ånga som inte kan
+     vara genomskinlig blir alltid bollar. *Behåll* eller *ta bort ångan*
+     (en het pöl med galler). **Rekommendation:** behåll.
+   - **Mud Pot** läses som en gryta. **Rekommendation:** behåll (en kruka
+     med lera är vad namnet säger).
+   - **Fasadens fönsterluckor** är 1–1,5 studs breda (mer får inte plats
+     bredvid ett 8 studs brett fönster på en 12-studsdel) och gröna mot
+     salvian; granskarna läste dem som stuprör. *Behåll*, *en annan färg*
+     (lotusrosa eller mörk cypress) eller *inga luckor*. **Rekommendation:**
+     behåll och se dem i spelet.
+   - **Tredje rundan** (bara utseenden kvar): Moss Mound läses som en slime
+     (de rosa svamparna som en tunga), Firefly Jar som en lykta (glaset är en
+     bur av ribbor eftersom inget kan vara genomskinligt; den glödande kärnan
+     syns mellan dem), Herb Rack som en stege med pärlband. **Rekommendation:**
+     se dem i spelet med glöden tänd först; svamparna kan bli bruna.
+   - Inte ändrat, gemensamt för alla kit: diskens layout (nyckelskåpet vid
+     bakkanten), trappans boxar, mattans hörnbit, bänken, blomlådan.
+
+50. **VIP-loungesetet** (2026-10-23; GDD A.2, §10.2; `blender/decor/vip_lounge/`,
+   `review/pieces_sheet.png`): fem dekorbitar för alla platser, en modell för
+   alla tre hotellen (svart lack, guld, röd sammet): **Velvet Rope** (3×1,
+   quiet, $300), **VIP Sofa** (2×1, två sittplatser, quiet, $600), **Cupcake
+   Tower** (1×1, snacks, $400), **Red Carpet** (4×2 matta, $200), **VIP Sign**
+   (2×1 på väggen, "VIP" i glödlampor, $500). Allt PLACEHOLDER. Frågor:
+   - **Bitarna, taggarna och priserna.** *Stryk, byt eller sätt priser*.
+   - **Köps för pengar** som annan dekor (passet låser upp dem); eventdekor är
+     gratis att ställa ut, men en VIP-bit gratis vore Decor-poäng för Robux.
+     *Pengar* eller *gratis*. **Rekommendation:** pengar (byggt så).
+   - **Cupcake Tower** står på golvet till 3,9 studs; granskarna läste den
+     som en julgran. *Behåll* eller *mindre, på ett bord*.
+     **Rekommendation:** behåll till du sett den i spelet.
+   - **Mattan** är kitens gemensamma löpare i rött och guld; granskarna
+     ville ha mer mönster. **Rekommendation:** behåll, så att den passar ihop
+     med de andra löparna.
+
 ## §3 Creator Hub och publicering
 
 1. ~~**Slå på Studio Access to API Services**~~ (gjort 2026-10-19: på i
