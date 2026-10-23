@@ -127,9 +127,15 @@ Connect: knappen under fliken Plugins i Studio. -->
    färgdelar följer; i Blender syns det rätt i en provpose. Nu ska det visas i
    Studio att varje färgdel böjer sig med benen, att Tiny och Giant skalar
    skelettet, och vad det kostar. Gör det **efter** importen i punkt 12, inte
-   under den: importera den enda filen i `blender/_import/` (orkestreraren
-   lägger den där) till **Workspace**, och i importfönstret, under **Rig
-   General**, välj **Rig Type: Custom**. Skriv *importerat*; resten är vårt.
+   under den: importera den enda filen i `blender/_import_rig/` till
+   **Workspace**, och i importfönstret, under **Rig General**, välj **Rig
+   Type: Custom**. Skriv *importerat*; resten är vårt.
+
+15. **Importera 27 modeller: Bayou Spas kit, fasad och VIP-loungen**
+   (2026-10-23, ditt ja samma dag). Alla filer i `blender/_import/` till
+   **Workspace** i en dialog, med vanliga inställningar (inte Custom rig),
+   och skriv *importerat*. Gärna en import i taget: först punkt 14 eller
+   den här, sedan den andra.
 
 ## §1 Att titta på eller spela
 
@@ -197,7 +203,7 @@ Med Claudes skärmdump där det finns en. -->
    är ditt att känna på (`TESTRUN.md`, "Gamepad navigation"). Tangentbordet
    och musen fungerar som förut (provat).
 
-12. **Fasaderna: titta och säg ja eller vad som ska ändras** (2026-10-20,
+12. ~~**Fasaderna: titta och säg ja eller vad som ska ändras**~~ (ditt ja 2026-10-23 till alla sju stilar; GDD §18) (2026-10-20,
    utkast från dina ja till en rad per stil; granskade blint i tre rundor).
    Alla sju från gatan: `blender/facade/review/overview.png` (överst Haunted
    Manor, Frostfang, Gothic, Neon; nederst Candy, Pirate, Slime). Varje stil
@@ -1156,7 +1162,7 @@ Med Claudes skärmdump där det finns en. -->
      helst gratis, och varje kopia ger full Decor. **Rekommendation:** en
      kopia per köp, som de andra.
 
-49. **Bayou Spas kit och fasad: det som är ditt** (2026-10-23, LAUNCH.md
+49. ~~**Bayou Spas kit och fasad: det som är ditt**~~ (ditt ja 2026-10-23 till alla modeller, med rekommendationerna nedan; GDD §18) (2026-10-23, LAUNCH.md
    arbete 5; `blender/hotel/bayou_spa/`, `blender/facade/bayou_spa/`, bilderna
    i deras `review/`; tre blinda rundor, resten är rättat, se README:erna).
    Byggt: disken, trappan (två), skylten, dörrskylten, de fem Bayou-dekorerna
@@ -1186,7 +1192,7 @@ Med Claudes skärmdump där det finns en. -->
    - Inte ändrat, gemensamt för alla kit: diskens layout (nyckelskåpet vid
      bakkanten), trappans boxar, mattans hörnbit, bänken, blomlådan.
 
-50. **VIP-loungesetet** (2026-10-23; GDD A.2, §10.2; `blender/decor/vip_lounge/`,
+50. ~~**VIP-loungesetet**~~ (ditt ja 2026-10-23 till bitarna, priserna som PLACEHOLDER, pengar och rekommendationerna nedan; GDD §18) (2026-10-23; GDD A.2, §10.2; `blender/decor/vip_lounge/`,
    `review/pieces_sheet.png`): fem dekorbitar för alla platser, en modell för
    alla tre hotellen (svart lack, guld, röd sammet): **Velvet Rope** (3×1,
    quiet, $300), **VIP Sofa** (2×1, två sittplatser, quiet, $600), **Cupcake
@@ -1257,8 +1263,8 @@ Claude testar. Det som är ditt, i ordning:
    2026-10-23.
 2. **Din manuella reset** av veckokvoten när Claude skickar en notis.
 3. **Notifikationernas nyckel och hemlighet** (§3.3 steg 1–2), 5 minuter.
-4. **Bayou, VIP-loungen och de fyra facade-paketen:** ett ja eller nej per
-   modell, i en enda omgång.
+4. ~~**Bayou, VIP-loungen och de fyra facade-paketen**~~: ja till allt
+   2026-10-23.
 5. **Balanskörningens sammanfattning:** ditt ja innan värdena gäller.
 6. **Ikon och thumbnails:** välj av tre.
 7. **Frågeformuläret** (Maturity & Compliance): läs Claudes svar innan de

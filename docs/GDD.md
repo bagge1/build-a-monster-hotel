@@ -813,6 +813,7 @@ After the soft launch we apply for Kids/Select eligibility:
 | 2026-10-23 | **Monsters get real animations** for launch: an armature per body shape, the six clips of §12 played by code on the client, nothing uploaded | His pick of "real animations" over code-only motion, then of the code-driven skeleton over 162 uploaded clips |
 | 2026-10-23 | **A balance run by Fable sets the economy and pacing values** against §6.3, his yes on its summary; Robux prices, server size and looks stay his | His proposal |
 | 2026-10-23 | Server size **10** (the plots); private servers **100 Robux/month**; codes `WELCOME`, `SPOOKY` and `HALLOWEEN`; the VIP lounge set and the four facade packs built for launch; Bayou, the lounge and the packs approved in one round | His yeses to Claude's recommendations |
+| 2026-10-23 | **The approval round:** Bayou Spa's ten monsters, its kit (desk, two stairs, sign, plaque, ten decor) and facade, the VIP lounge set (Velvet Rope, VIP Sofa, Cupcake Tower, Red Carpet, VIP Sign; bought with cash once the pass unlocks them, prices PLACEHOLDER) and all seven facade styles, the four packs included, as rendered (`blender/monsters/bayou_spa/`, `blender/hotel/bayou_spa/`, `blender/facade/`, `blender/decor/vip_lounge/` READMEs) | His "ja till alla modeller", with Claude's recommendations in WAITING §2.49–2.50 (keep the Steam Vent, the shutters and the Cupcake Tower; the facade seen in the game before any swampier frieze) |
 
 ---
 
