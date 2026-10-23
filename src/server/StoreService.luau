@@ -59,9 +59,7 @@ function StoreService.incomeRate(player: Player): number
 	if data then
 		rate += ResidentService.rate(player, data)
 	end
-	-- PLACEHOLDER (balance run 2026-10-23, from BasePay × 10): the floor under every "minutes of income"
-	-- reward; at × 10 the first login and daily paid ten times what the first room earned.
-	return math.max(rate, Constants.Economy.BasePay * 2)
+	return math.max(rate, Constants.Economy.BasePay * Constants.Economy.RewardFloor)
 end
 
 local function addBoost(data: PlayerData.Data, name: string, seconds: number)

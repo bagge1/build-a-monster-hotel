@@ -170,6 +170,10 @@ Constants.Economy = {
 	SellRefund = 0.5, -- PLACEHOLDER
 	FloorCosts = { 0, 500, 5000, 50000, 500000, 5000000, 50000000 }, -- PLACEHOLDER: floor 1 free; the cap is Chain.floorCap (§6.4)
 	TillCap = math.huge, -- PLACEHOLDER: no cap until one is designed
+	-- PLACEHOLDER (balance run 2026-10-23, Fable's review; was BasePay × 10 in two places): the floor under every
+	-- reward that is "minutes of income" (the login calendar, a daily request, a VIP contract, Hunter Night, the
+	-- Starter Pack), × BasePay. At × 10 the first login paid ten times what the first room earned.
+	RewardFloor = 2,
 }
 
 -- §4.3: the Night Bus and how a guest picks a hotel.
@@ -339,10 +343,10 @@ Constants.Rebirth = {
 Constants.Chain = {
 	Locations = 3, -- Haunted Manor, Frostfang Lodge, Bayou Spa at launch (§6.6)
 	RebirthRating = 5, -- 5★ on every hotel of the chain (his ruling)
-	-- PLACEHOLDER (WAITING §2.35; balance run 2026-10-23): opening each location, from $250k and $10M.
-	-- Bayou Spa's price is small beside its rooms (the rows ×400 the Manor's at pay ×25): the rooms are
-	-- what makes the third hotel dearer.
-	OpenCost = { [2] = 400000, [3] = 550000 },
+	-- PLACEHOLDER (WAITING §2.35; balance run 2026-10-23, Fable's review): opening each location, from $250k
+	-- and $10M. Bayou Spa at $1M keeps his "each exponentially dearer" (×2.5) at the cost of 3 minutes on its
+	-- leg: the third hotel's time is its rooms (the rows ×400 the Manor's at pay ×25), not its price.
+	OpenCost = { [2] = 400000, [3] = 1000000 },
 	BackgroundShare = 0.25, -- PLACEHOLDER (WAITING §2.35): a hotel not played earns this share of its rate
 	RateWindow = 300, -- seconds the played hotel's earning rate is averaged over (an EMA's time constant)
 	StartFloorCap = 2, -- floors a hotel may have before any rebirth (his ruling)
@@ -455,7 +459,7 @@ Constants.Finds = {
 	SetBonus = 0.25, -- PLACEHOLDER: a whole set in one room adds this to its Decor bar, once per set per hotel
 	DuplicateMinutes = 5, -- PLACEHOLDER: a find once a location's sets are all found: minutes of income in cash (at least the piece's price)
 	SouvenirMoveIns = 3, -- PLACEHOLDER: a species' souvenir on its 3rd move-in, or its first VIP contract, whichever first
-	SouvenirCost = { 200, 4000, 80000 }, -- PLACEHOLDER: placing a souvenir, by its species' location (×20 a location, as pay)
+	SouvenirCost = { 200, 4000, 80000 }, -- PLACEHOLDER: placing a souvenir, by its species' location (×20 a location, as the pieces' rows)
 	KeepThroughRebirth = true, -- PLACEHOLDER (decision 4a, his call with §6.4): found stays found; placed copies go with the hotel
 }
 

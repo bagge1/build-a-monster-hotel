@@ -159,8 +159,8 @@ THE SYSTEMS OF THE BALANCE RUN OF 2026-10-23 (EXTRAS; --no-extras leaves them ou
     done), three daily requests (DailyService.draw: a kind at random, its
     target counted from the draw; "Visit" needs company and "Pitch" is not
     modelled, a reroll swaps it), REWARD_MINUTES each. incomeRate is the
-    in-room guests' pay rates plus the Wing, floored at BasePay x the floor
-    StoreService reads (RewardFloor).
+    in-room guests' pay rates plus the Wing, floored at BasePay x
+    Economy.RewardFloor (StoreService.incomeRate, ContractService.baseRate).
   - VIP contracts (Contracts, ContractService): from UnlockStars, one running
     (two from ActiveFromStars), an offer drawn as Contracts.spec does (a
     species up to RarityByStars by RarityWeights, a room type buildable, one
@@ -718,6 +718,8 @@ FORMULA_GUARDS = [
     ("src/server/DailyService.luau", "local kind = kinds[rng:NextInteger(1, #kinds)]"),
     ("src/shared/Contracts.luau", "return math.floor(math.max(0, rate) * C.RewardMinutes * 60 * factor)"),
     ("src/server/ContractService.luau", "local rate = StoreService.incomeRate(player)"),
+    ("src/server/ContractService.luau", "return math.max(Constants.Economy.BasePay * Constants.Economy.RewardFloor, rate)"),
+    ("src/server/StoreService.luau", "return math.max(rate, Constants.Economy.BasePay * Constants.Economy.RewardFloor)"),
     ("src/server/HunterService.luau", "local amount = math.floor(StoreService.incomeRate(player) * H.RewardIncomeSeconds)"),
     ("src/shared/ResidentLevels.luau", "return math.ceil(R.LevelPriceMinutes * level * 60 * wingRate * ResidentLevels.wing(level))"),
     ("src/shared/ResidentLevels.luau", "return 1 + R.LevelWing * (level - 1)"),
@@ -757,7 +759,7 @@ def load_game() -> dict:
             need(need(G["Rarity"], r, C), k, f"{C} Rarity.{r}")
     for sect, keys in {
         "Economy": ["StartCash", "BasePay", "LocationPayMultiplier", "PointsPerCash",
-                    "TileCost", "TileGrowth", "TileFloorFactor", "Milestones", "FloorCosts"],
+                    "TileCost", "TileGrowth", "TileFloorFactor", "Milestones", "FloorCosts", "RewardFloor"],
         "Chain": ["Locations", "RebirthRating", "OpenCost", "BackgroundShare", "RateWindow", "StartFloorCap", "FloorCapMax"],
         "Grid": ["StartTiles", "TutorialTiles", "Cells", "Squares"],
         "Rooms": ["HalfCells", "WallCost", "DoorCost", "FullSizeFactor", "FurnitureTargetFactor", "FurnitureTargetMin", "DecorTargetPer4Cells",
@@ -789,7 +791,6 @@ def load_game() -> dict:
                   "Login": assignment("src/server/DailyService.luau", r"^local LOGIN_MINUTES"),
                   "Codes": assignment("src/server/DailyService.luau", r"^local CODES\s*:[^=]*")}
     G["StarterPack"] = assignment("src/shared/Store.luau", r"^Store\.StarterPack")
-    G["RewardFloor"] = float(need_re(r"return math\.max\(rate, Constants\.Economy\.BasePay \* (\d+)\)", read("src/server/StoreService.luau"), "the reward floor"))
     tick = re.search(r"^local TICK = (\d+)", read("src/server/ChainService.luau"), re.M)
     if not tick:
         raise ParseError("src/server/ChainService.luau: no `local TICK = <seconds>`")
@@ -1528,7 +1529,7 @@ class Sim:
     def income_now(self, t, without=None):
         """StoreService.incomeRate: the in-room guests' pay rates and the Wing, at least BasePay x 10."""
         rate = sum(g.rate for g in self.guests if g.state == "InRoom" and g is not without) + self.wing_rate(t)
-        return max(rate, self.G0["Economy"]["BasePay"] * self.G0["RewardFloor"])
+        return max(rate, self.G0["Economy"]["BasePay"] * self.G0["Economy"]["RewardFloor"])
 
     def move_in(self, t, g):
         cap = self.G["Residents"]["WingCapacity"] + (self.G["Residents"]["WingPassSlots"] if "ResidentWingPlus" in self.P["passes"] else 0)

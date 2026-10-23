@@ -1216,7 +1216,8 @@ Claude testar. Det som är ditt, i ordning:
 5. **Balanskörningens sammanfattning:** ditt ja innan värdena gäller.
    Körd 2026-10-23: sammanfattningen på svenska överst i
    `archive/BALANCE-2026-10-23.md` (sju värden ändrade, alla kvar som
-   PLACEHOLDER tills ditt ja; koderna `WELCOME`, `SPOOKY`, `HALLOWEEN`).
+   PLACEHOLDER tills ditt ja; koderna `WELCOME`, `SPOOKY`, `HALLOWEEN`;
+   granskad av Fable samma natt, Bayou Spas pris $1M).
 6. **Ikon och thumbnails:** välj av tre.
 7. **Frågeformuläret** (Maturity & Compliance): läs Claudes svar innan de
    skickas.
