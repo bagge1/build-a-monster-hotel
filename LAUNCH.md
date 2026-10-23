@@ -29,9 +29,12 @@ in `docs/GDD.md` §18 (2026-10-23), what waits on him in `WAITING.md` §4.
   the time; if the file exists, do other work and try later; delete it when
   done. Blender stays at below-normal priority with `-t 4` (CLAUDE.md).
   Never use Studio while August is importing.
-- **Usage:** the 90 % weekly stop is lifted until launch (his ruling). August
-  has a manual reset: the orchestrator sends him a push notification when the
-  weekly limit nears 100 %, and when an import is staged.
+- **Usage:** the 90 % weekly stop is lifted until launch (his ruling). There
+  is **no manual reset** after all (his word, 2026-10-23): the weekly limit
+  resets Sunday 25 October 16:00. Until then only what **blocks the launch**
+  is done (the open bugs, saving his imports, the facade passes, the icon he
+  picks, the questionnaire, the launch run); everything else waits for the
+  reset. The orchestrator notifies him when an import is staged.
 - **When August is AFK or asleep nobody waits on him:** take other work, write
   the assumption down, carry on. Playtests that need Studio in front run only
   then.
