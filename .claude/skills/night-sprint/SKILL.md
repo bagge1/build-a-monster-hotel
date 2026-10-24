@@ -89,6 +89,12 @@ Unattended night session (`/loop`, self-paced) while August sleeps. His brief, i
   with the next thing that does not need him; it never becomes a question
   that ends the turn without a `ScheduleWakeup`. (2026-10-19: the session
   stopped at 04:31 with work left in the GDD and sat idle for 10 hours.)
+- **"Until the limit" means the limit** (his words, 2026-10-24 evening: "men
+  försjutton bad dig använda hela limit"). The loop stopped at 92 % because
+  the brief's items were done. When he says to work until the weekly limit,
+  a finished list is the start of the next one: hunt bugs by playing,
+  write the specs a rule lacks, check every panel on a phone and a tablet,
+  sweep the console at every location. Stop only at the usage gate.
 - **No question ends a night, and a fault in structure is never put to
   him as a choice** (his words, 2026-10-24: "Hur kan du ställa en så dum
   fråga i en nattloop..."). The night closed with A/B/C buttons on build
