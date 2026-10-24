@@ -162,6 +162,34 @@ describe("Built rooms in the game", function()
 		)
 	end)
 
+	it(
+		"hallway decor in a cell's corner keeps everything reached; only a rug in the entrance's mouth",
+		function()
+			local w = startHotel()
+			-- A nightstand in the corner of the hallway cell (4, 1), beside the desk's row.
+			local corner = decor("Nightstand", 1, 4 * Q, 1 * Q, 0)
+			local ok, why = Rooms.canPlaceDecor(w, corner)
+			expect.truthy(ok, `a corner of the hallway: {tostring(why)}`)
+			table.insert(w.decor, corner)
+			expect.truthy(Rooms.ready(w, "2"), "the start room still ready")
+			-- The entrance's mouth: nothing but a rug.
+			local m = Grid.entrance()[1]
+			local ok2, why2 =
+				Rooms.canPlaceDecor(w, decor("Nightstand", 1, m.x * Q + 1, m.z * Q + 1, 0))
+			expect.truthy(not ok2, "a nightstand in the mouth")
+			expect.eq(why2, "Entrance", "why")
+			for _, d in Pieces.DecorList do
+				if d.layer == "Rug" and d.w == 1 and d.d == 1 then
+					expect.truthy(
+						Rooms.canPlaceDecor(w, decor(d.id, 1, m.x * Q + 1, m.z * Q + 1, 0)),
+						"a rug in the mouth"
+					)
+					break
+				end
+			end
+		end
+	)
+
 	it("a wall piece needs a wall or the facade behind it", function()
 		local w = startHotel()
 		local hung

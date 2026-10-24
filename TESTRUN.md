@@ -667,9 +667,13 @@ WAITING §0.9): what needs the new models or the build menu's clicks stays open.
   rug under an armchair; the room's plaque shows T2 at 100 points (T3 at 300
   for a 2×2); its tags meet a guest's preferences; a room moved carries its
   decor; a room sold sells its decor.
-- [ ] Hallway decor: a bench in a cell's corner leaves the cell walkable; one
+- [x] Hallway decor: a bench in a cell's corner leaves the cell walkable; one
   across a cell's middle that would cut a door off refused; nothing in the
-  entrance's mouth but a rug.
+  entrance's mouth but a rug. (2026-10-25 01:55, as specs, not a playtest:
+  `built` "hallway decor in a cell's corner keeps everything reached; only a
+  rug in the entrance's mouth"; the cut-off half is `rooms`' CutsOff and
+  KeyCutOff rules, the decor row across a room among them. The night's
+  server fuzz saw `PlaceDecor:Entrance` refused 6 times.)
 - [ ] (Oak Boards on a room and the hallways, Dark Boards on the lobby,
   accepted; not looked at.) Floors: a finish laid on a room, the lobby and the hallways; "Its own
   floor" brings the model's back.
@@ -733,7 +737,7 @@ tutorial's first steps by the game's own prompts and remotes.
   2) and on Skip; it never starts while the step is Build or CheckIn (the
   Slime keeps its room); a hotel with only a Coffin Suite vacant gets none.
 - [x] (With a Vampire Count announced: "Need a Coffin Suite!" over the head.
-  2026-10-25 01:55, `Test_Launch1024q`, by the `Ping` remote: the street
+  2026-10-25 01:52, `Test_Launch1024q`, by the `Ping` remote: the street
   empty, "Need a room for that guest!"; a bus browsing a Witch (Rare), a
   Ghost (Uncommon), a Pumpkin Head and a Skeleton, "Need a Potion Loft!",
   the Witch's.) The ping menu's "Need a room": with a Vampire Count announced
