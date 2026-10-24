@@ -207,8 +207,9 @@ Same street first, then two streets, then the leave.
 - [x] Residents level up: the cap in a real run, a level's staff effect.
   (2026-10-24 evening: the cap and the coverage effect by the remote, see
   "Residents level up"; not a real run of 900 minutes.)
-- [ ] Deeper mutations: a stacked guest off a real bus, its pay and
-  announcement.
+- [x] Deeper mutations: a stacked guest off a real bus, its pay and
+  announcement. (2026-10-24 evening, the roll forced for one draw: see
+  "Deeper mutations".)
 
 ### 3. After Publish (his Publish; a real server, him awake)
 
@@ -1258,9 +1259,14 @@ and `execute_luau` only on `Test_Endless1021c`.
   "Mossy Host" title.
 - [x] Six buses: a Tiny Slime off the bus with `Size` Tiny and no look,
   drawn at scale 0.5 and labelled "Tiny Slime".
-- [ ] A stacked guest off a real bus and its check-in pay (0.29 % of
+- [x] A stacked guest off a real bus and its check-in pay (0.29 % of
   guests: by the spec and the residents' pay only); the announcement of a
-  stacked Legendary.
+  stacked Legendary. (2026-10-24 evening, `Test_Launch1024c`: the roll forced
+  for one draw by a test Script replacing `Events.rollMutations` in the
+  running game (nothing in the code changed); the next bus drew a Giant Golden
+  Vampire Count, Werewolf and Skeleton; the Vampire Count chose the hotel,
+  was checked in at pay 450 (`payMultiplier` 6.00) and the street was told
+  "oden checked in a Legendary Giant Golden Vampire Count!".)
 - [A] The four monthly looks (Mossy grass, Rainbow glass, Sunburnt red,
   Moonlit neon), their names and months, the title's name; whether a missed
   month comes back off-season (WAITING §2.38).
