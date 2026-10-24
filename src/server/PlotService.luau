@@ -587,6 +587,7 @@ function drawRooms(plot: Plot, data: PlayerData.Data)
 	local inRoom: { [string]: string } = {}
 	local areas: { [string]: Rooms.Area } = {}
 	local keySpots: { [string]: Rooms.Spot } = {}
+	local furniture: { [string]: { Grid.DecorPlaced } } = {}
 	Rooms.withAreas(world, function()
 		for id in data.rooms do
 			local a = Rooms.roomArea(world, id)
@@ -599,6 +600,9 @@ function drawRooms(plot: Plot, data: PlayerData.Data)
 		end
 		-- Every room's key spot at once: one by one a full hotel's took half a second (2026-10-24 evening).
 		keySpots = Rooms.keySpots(world)
+		for id in data.rooms do
+			furniture[id] = Rooms.contents(world, id).furniture
+		end
 	end)
 	local drawn: { HotelKit.DrawnWall } = {}
 	for edge, rec in data.walls do
@@ -696,7 +700,7 @@ function drawRooms(plot: Plot, data: PlayerData.Data)
 			-- Where the guest ends up: the key furniture's `Use`, else beside it.
 			local use: CFrame? = nil
 			local req = Rooms.requirement(rec.type)
-			for _, d in Rooms.contents(world, id).furniture do
+			for _, d in furniture[id] or {} do
 				local dm = d.id and plot.decor[d.id]
 				if not use and req and table.find(req.keys, d.item) and dm then
 					local r = dm.PrimaryPart
