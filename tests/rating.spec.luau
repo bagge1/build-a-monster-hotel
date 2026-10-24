@@ -121,6 +121,26 @@ describe("Rating", function()
 		end
 	end)
 
+	it("one Room Service or Housekeeping covers half as much in twice the rooms", function()
+		local n = require(Shared.Constants).Rating.RoomsPerStaff
+		for role, category in { roomService = "Service", housekeeping = "Cleanliness" } do
+			local function gain(rooms)
+				-- Low enough before the staff that nothing is clamped at 100.
+				local base = { meanWait = 60, requestShare = 0, rooms = rooms, dirtyRooms = rooms }
+				local with = table.clone(base)
+				with[role] = 1
+				return Rating.categories(inputs(with))[category]
+					- Rating.categories(inputs(base))[category]
+			end
+			local small, big = gain(n), gain(2 * n)
+			expect.truthy(small > 0, `{role} gives something`)
+			expect.truthy(
+				math.abs(small - 2 * big) < 1e-9,
+				`{role}: {small} in {n} rooms, {big} in {2 * n}`
+			)
+		end
+	end)
+
 	it("on-time cleaning never scores below late cleaning", function()
 		for _, over in { {}, { dirtyRooms = 1 }, { dirtyRooms = 2 }, { housekeeping = 1 } } do
 			local prev = -1

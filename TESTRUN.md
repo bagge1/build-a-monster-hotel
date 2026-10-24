@@ -699,7 +699,7 @@ stay economy`). Merged 2026-10-19 20:50 and played (test profile
   same as before the merge (nothing added without staff or cleanings).
 - [x] (Skeleton at 100 %: 64.4 → 74.4; back to the Wing: 64.4.) Assign a Front Desk resident: Service rises by up to 10 (6 for a
   resident at 60 %) within 5 s; unassign it and it falls back.
-- [ ] (Two rooms: a Slime added +10, 74.4 → 84.4; the 8-room half not tried.) Room Service in a hotel of 4 rooms: up to +10 Service; with 8 rooms the
+- [x] (Two rooms: a Slime added +10, 74.4 → 84.4; the 8-room half not tried. 2026-10-25: the half as a spec, `rating` "one Room Service or Housekeeping covers half as much in twice the rooms".) Room Service in a hotel of 4 rooms: up to +10 Service; with 8 rooms the
   same resident gives half of that.
 - [x] (2026-10-24 night, `Test_Launch1024c`, 3 rooms, one dirty: a Slime as Housekeeping 66.7 → 72.7, Service 59.42 unchanged; it then cleaned the room in 34 s.) Housekeeping in a hotel of 4 rooms: up to +10 Cleanliness; Service and
   the other categories unchanged by it.
