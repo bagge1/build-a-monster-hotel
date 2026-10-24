@@ -26,6 +26,11 @@ Studio MCP".
   the Edit copy by plain `string.find(s, old, 1, true)` replacement, checked
   by byte count; never other sessions' files.
 - **Never while August is importing.**
+- **A `Test_` profile, set before Play**: the attribute
+  `ServerStorage:SetAttribute("StudioProfile", "Test_...")` in Edit (an
+  attribute, not a child). Without it the playtest loads his own Studio
+  save (2026-10-24 evening: one did). Read `[playerdata] STUDIO TEST
+  PROFILE` in the console before anything else.
 - **T0, proof first:** a synthetic key, a click and a walk are seen to act in
   the game before anything else counts.
 
@@ -182,6 +187,14 @@ misses by the safe inset (47 px on the iPhone 14): click at the element's
 `AbsolutePosition` centre plus the inset in x. Pinch cannot be sent. A real
 device's memory and frame rate are only known on the real device: that run is
 August's, early.
+
+**Pressing a button in the simulator**: a click arrives as two touches, one
+of them shifted (2026-10-24: a click on Rating pressed Store). Select the
+button instead (`GuiService.SelectedObject` from a Client `execute_luau`)
+and press Return with Studio in front: that is the button's own
+`Activated`. Measure each panel open with AbsolutePosition (off the
+screen, `TextFits`, under 44 px, buttons over each other in one ScreenGui,
+over `TouchGui`'s `JumpButton` and `ThumbstickStart`).
 
 ## Data in a playtest
 
