@@ -731,4 +731,49 @@ describe("Rooms", function()
 		ok, why = Rooms.canPlacePiece(wd, west, stair)
 		expect.truthy(ok, `moved on the west side: {tostring(why)}`)
 	end)
+
+	-- A ready Standard Room at cells (3..4, 4..5), its door on row 4's front, its Bed in the back row.
+	local function readyRoomWorld()
+		local wd = world(1)
+		room(wd, "r", "StandardRoom", 3, 4, 2, 2)
+		table.insert(wd.decor, decor("Bed", 1, 3 * Q + 1, 5 * Q, 0))
+		expect.truthy(Rooms.ready(wd, "r"), "ready")
+		return wd
+	end
+
+	it(
+		"a wall across the corridor to a ready room is refused (CutsOff), a door in it is not",
+		function()
+			local wd = readyRoomWorld()
+			-- A wall the floor's width at half row 6 (cell row 3's front), between the entrance and the room.
+			local last = Rooms.edgeKey(1, N * HC - 1, 3 * HC, 0)
+			for hx = 0, N * HC - 2 do
+				wall(wd, Rooms.edgeKey(1, hx, 3 * HC, 0))
+			end
+			expect.truthy(Rooms.ready(wd, "r"), "still reached round the wall's open end")
+			local ok, why = Rooms.canWall(wd, last, false)
+			expect.truthy(not ok, "the wall closing the corridor")
+			expect.eq(why, "CutsOff")
+			ok, why = Rooms.canWall(wd, last, true)
+			expect.truthy(ok, `a door closing it: {tostring(why)}`)
+			-- The same cut made by taking the door out again.
+			wall(wd, last, true)
+			ok, why = Rooms.canDoor(wd, last, false)
+			expect.truthy(not ok, "the door taken out of the corridor wall")
+			expect.eq(why, "CutsOff")
+		end
+	)
+
+	it("a wall splitting a ready room's Bed off into a pocket is refused (KeyCutOff)", function()
+		local wd = readyRoomWorld()
+		-- Across the room at half row 10, between the door's half (rows 8..9) and the Bed's (10..11).
+		local first, last = 3 * HC, 5 * HC - 1
+		for hx = first, last - 1 do
+			wall(wd, Rooms.edgeKey(1, hx, 5 * HC, 0))
+		end
+		expect.truthy(Rooms.ready(wd, "r"), "still ready round the wall's open end")
+		local ok, why = Rooms.canWall(wd, Rooms.edgeKey(1, last, 5 * HC, 0), false)
+		expect.truthy(not ok, "the wall closing the pocket")
+		expect.eq(why, "KeyCutOff")
+	end)
 end)

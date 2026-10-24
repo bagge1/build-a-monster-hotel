@@ -47,7 +47,7 @@ in `docs/GDD.md` §18 (2026-10-23), what waits on him in `WAITING.md` §4.
 
 | # | Work | Who | Needs | State |
 |---|---|---|---|---|
-| 1 | Bugs: a moved or placed stair can strand a booked floor (`BuildService` move/place, `Rooms.canPlacePiece`); a spec for CutsOff/KeyCutOff; Glass seen in Studio | orchestrator | Studio for Glass | done 2026-10-23: stair fixed with a spec; Glass 0.55 seen in a playtest. 2026-10-24 night: his two reports fixed and seen in play (a guest never left in a room not ready; a door only in a wall, outlined), specs `busy`, `doors` |
+| 1 | Bugs: a moved or placed stair can strand a booked floor (`BuildService` move/place, `Rooms.canPlacePiece`); a spec for CutsOff/KeyCutOff; Glass seen in Studio | orchestrator | Studio for Glass | done 2026-10-23: stair fixed with a spec; Glass 0.55 seen in a playtest. 2026-10-24 night: his two reports fixed and seen in play (a guest never left in a room not ready; a door only in a wall, outlined), specs `busy`, `doors`. 2026-10-24 evening: the CutsOff/KeyCutOff spec (`rooms`) |
 | 2 | Live and Studio DataStores apart (ProfileStore and leaderboards; no `Test_` keys in the live store) | orchestrator | — | built (`StoreNames`), not yet run on a published server |
 | 3 | The 136-FBX import (WAITING §0.12): settings, save, sync check, seen in the game (skill `import`) | August imports, orchestrator the rest | Studio | done 2026-10-23: saved, and seen as kit clones in a playtest at all three locations (TESTRUN "Launch import"); no pictures yet |
 | 4 | Bayou Spa's 10 monsters (`Species.luau` rows), with the rig of #6 | session | Blender | done 2026-10-24 night: imported rigged with the other 17 and saved |
