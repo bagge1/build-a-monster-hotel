@@ -126,9 +126,13 @@ Same street first, then two streets, then the leave.
 
 **b. Build mode on a fresh hotel** (*front* where a click or key is real)
 
-- [ ] Phase 13, its eight open items: the tabs and refusals, areas, a floor
+- [?] Phase 13, its eight open items: the tabs and refusals, areas, a floor
   and its stairs, a guest to floors 2 and 3, decor, hallway decor, floors, rays
-  and walkers over placed stairs (`fill`).
+  and walkers over placed stairs (`fill`). (2026-10-24 evening: the guest to
+  floor 2 passes (Phase 13 below). The tabs, areas and room-tier items were
+  written for building before built rooms and are replaced by Built rooms'
+  stages; `fill` exceeds the script time limit (a dev command only); a
+  wall is refused against a stair's well on floor 2, as A.12 says.)
 - [x] Phase 11: rays out through every door, on a profile without a door onto
   the stair core. (2026-10-24 night, `Test_Launch1024e`, built rooms: no stair
   core any more; at each location a person-sized box (3 × 6.5) through the
@@ -617,8 +621,12 @@ WAITING §0.9): what needs the new models or the build menu's clicks stays open.
   down; a second stair costs; the last stair to a floor with a room refused
   for sale (`CutsOff`); a stair stacked on another continues it (StairCore
   below, StairCoreTop above).
-- [ ] (Floor 2: two Skeletons' paths up the placed stair's glide to their
-  doors at y 19, and one to floor 1. Floor 3 not built.) A guest to a room on floor 2 and floor 3: up the placed stairs (glide
+- [x] (Floor 2: two Skeletons' paths up the placed stair's glide to their
+  doors at y 19, and one to floor 1. Floor 3 not built. 2026-10-24 evening,
+  built rooms, Bayou: a Bog Frog booked into a Lily Pad Room on floor 2 went
+  up Bayou's stair (y 1 → 19 in 7 s), along floor 2 and into the bed
+  (y 19.8); at checkout back down (y 19 → 1) and out to the pavement. Floor 3
+  needs a rebirth's floor cap: not run.) A guest to a room on floor 2 and floor 3: up the placed stairs (glide
   Bottom → Path_n → Top), to the door, to the bed; and back out at checkout.
 - [x] (By the remote, `Move` to (10, 0) r3: Clerk (56, 60), Queue_1 (46, 60),
   Desk (50, 60) followed; the tap and the arrow not seen.) The desk moved (tap it, Move): the queue, the prompts, the clerk and
