@@ -190,8 +190,14 @@ Same street first, then two streets, then the leave.
   player's feet" stood where Claude put the player), the looks to WAITING
   §2.52. Phase 10's not found as its own line.)
 - [ ] Phase 12, the forest: low graphics, a Frostfang plot's band.
-- [ ] Rare decor: the Decor tab's cards, the set line, **Place it**, the Book's
-  mark, clicked.
+- [x] Rare decor: the Decor tab's cards, the set line, **Place it**, the Book's
+  mark, clicked. (2026-10-24 evening, `Test_Launch1024c`: a roll found the
+  Coffin Clock and a dev grant the Slime Souvenir; the pop-up's **Place it**
+  clicked opened build mode on the Decor tab with the souvenir chosen ("tap
+  a room or a hallway"), its Found cards first (CountStudy_Clock,
+  Souvenir_Slime) then the unfound; the Book clicked open shows the Slime's
+  "souvenir ★", the others 0/3. The room view's set line not opened.
+  `archive/screens/2026-10-24_found_popup.jpg`.)
 - [x] VIP contracts: the desk's "VIP ledger" prompt by F. (2026-10-24 night, Studio in front: the prompt shown with Check in (E), a real F opened the VIP ledger, "opens at 2★" at 1.5★.)
 - [!] Phase 6: Boo! from about 35 studs, by a real key. (2026-10-24 night: no Boo! prompt at all at first: the synced `Hunter` template had lost its PrimaryPart (Rojo's live sync, after the night's save into `assets/Monsters/`), so the prompt had no parent; `HunterRenderer` and `BusRenderer` now set it to `Root`. After: shown from 32–33 studs (range 40), a real E at 12 studs sent the hunter Fleeing; one E at ~33 studs did not trigger, the hunter walking off: how it feels at the edge is his.)
 
