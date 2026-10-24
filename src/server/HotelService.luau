@@ -516,13 +516,13 @@ function HotelService.inputs(player: Player): Rating.Inputs?
 	end
 	local bars, types, decor, amenities, rooms, dirty = {}, {}, 0, 0, 0, 0
 	local overdue, now = 0, os.clock()
-	local w = world(data)
 	-- Ready rooms only (A.12: Comfort and Cleanliness count what each ready room adds).
 	for id, rec in data.rooms do
 		local p = Pieces.get(rec.type)
 		local ok = HotelService.ready(player, id)
-		if p and ok then
-			table.insert(bars, Rooms.bars(w, id))
+		local info = if p and ok then HotelService.roomInfo(data, id) else nil
+		if info then
+			table.insert(bars, info.bars)
 		end
 		if p and ok and p.kind == "Room" then
 			rooms += 1
