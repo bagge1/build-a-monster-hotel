@@ -55,6 +55,12 @@ local function company(player: Player): boolean
 	end
 	return false
 end
+
+-- The till fills at all: Auto-Collect pays straight into the wallet, so its owner never collects.
+local function tillFills(player: Player): boolean
+	local data = PlayerData.get(player)
+	return not (data and data.passes.AutoCollect)
+end
 local KINDS: { Kind } = {
 	{
 		id = "Stays",
@@ -103,6 +109,7 @@ local KINDS: { Kind } = {
 		target = function(_)
 			return 6
 		end,
+		when = tillFills,
 	},
 	{
 		id = "Rating",

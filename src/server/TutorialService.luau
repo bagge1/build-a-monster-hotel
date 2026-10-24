@@ -56,7 +56,7 @@ TutorialService.Steps = {
 }
 
 local stepStarted: { [Player]: number } = {}
-local slimeSent: { [Player]: boolean } = {}
+local slimeSent: { [Player]: number } = {} -- when this session last sent the tutorial Slime
 local nextPressed: { [Player]: boolean } = {}
 
 local function rooms(data: PlayerData.Data): number
@@ -91,11 +91,33 @@ local function step(data: PlayerData.Data): string
 	return if data.tutorial == "Start" or data.tutorial == "Build" then "CheckIn" else data.tutorial
 end
 
+-- The steps the tutorial Slime is needed through: checked in, then moving in.
+local WAITS_FOR_SLIME = {
+	CheckIn = true,
+	Collect = true,
+	SecondRoom = true,
+	Furnish = true,
+	Bus = true,
+	MoveIn = true,
+}
+local SLIME_RETRY = 30 -- seconds: a Slime sent with no room for it is tried again after this
+
+-- Whether this player's tutorial Slime is a guest now (walking in, queued or staying).
+local function slimeHere(player: Player): boolean
+	for _, g in GuestService.of(player) do
+		if g.tutorialFriend then
+			return true
+		end
+	end
+	return false
+end
+
 local function satisfied(player: Player, data: PlayerData.Data, s: string, since: number): boolean
 	if s == "CheckIn" then
 		return stat(data, "checkIns") >= 1
 	elseif s == "Collect" then
-		return stat(data, "collects") >= 1
+		-- With Auto-Collect the till never fills (GuestService pays the wallet): nothing to collect.
+		return stat(data, "collects") >= 1 or data.passes.AutoCollect == true
 	elseif s == "SecondRoom" then
 		return rooms(data) >= 2
 	elseif s == "Furnish" then
@@ -170,16 +192,27 @@ local function tick(player: Player, data: PlayerData.Data)
 		return
 	end
 	-- The tutorial Slime: the one guest that walks in instead of riding the bus.
-	if s == "CheckIn" and not slimeSent[player] then
-		slimeSent[player] = true
+	-- A guest lives only in this session, so a player who left before it moved
+	-- in finds a new one on coming back, or MoveIn would wait for a friend that
+	-- never comes (2026-10-24 evening: a rejoin mid-tutorial). Sent again only
+	-- when none is on its way and the last one has had time to walk in.
+	if
+		WAITS_FOR_SLIME[s]
+		and next(data.residents) == nil
+		and os.clock() - (slimeSent[player] or -math.huge) > SLIME_RETRY
+		and not slimeHere(player)
+	then
+		slimeSent[player] = os.clock()
 		task.delay(Constants.Tutorial.FirstGuestDelay, function()
 			if PlayerData.get(player) then
-				GuestService.spawnTutorial(player, "Slime", {
+				local g = GuestService.spawnTutorial(player, "Slime", {
 					source = "Tutorial",
 					happyFloor = Constants.Stay.Happy,
 					tutorialFriend = true,
 				})
-				Net.fire(player, "Announce", "A Slime is checking in!", "Bus")
+				if g then
+					Net.fire(player, "Announce", "A Slime is checking in!", "Bus")
+				end
 			end
 		end)
 	end
