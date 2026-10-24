@@ -60,7 +60,13 @@ local function build(): Model
 	local folder = ReplicatedStorage:FindFirstChild("Monsters")
 	local t = folder and folder:FindFirstChild("Hunter")
 	if t and t:IsA("Model") then
-		return t:Clone()
+		local m = t:Clone()
+		-- Rojo's live sync can drop a template's PrimaryPart (DEVNOTES.md); `Root` is the contract's.
+		local root = m:FindFirstChild("Root")
+		if not m.PrimaryPart and root and root:IsA("BasePart") then
+			m.PrimaryPart = root
+		end
+		return m
 	end
 	local m = Instance.new("Model")
 	m.Name = "Hunter"

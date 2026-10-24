@@ -183,8 +183,8 @@ Same street first, then two streets, then the leave.
 - [ ] Phase 12, the forest: low graphics, a Frostfang plot's band.
 - [ ] Rare decor: the Decor tab's cards, the set line, **Place it**, the Book's
   mark, clicked.
-- [ ] VIP contracts: the desk's "VIP ledger" prompt by F.
-- [ ] Phase 6: Boo! from about 35 studs, by a real key.
+- [x] VIP contracts: the desk's "VIP ledger" prompt by F. (2026-10-24 night, Studio in front: the prompt shown with Check in (E), a real F opened the VIP ledger, "opens at 2★" at 1.5★.)
+- [!] Phase 6: Boo! from about 35 studs, by a real key. (2026-10-24 night: no Boo! prompt at all at first: the synced `Hunter` template had lost its PrimaryPart (Rojo's live sync, after the night's save into `assets/Monsters/`), so the prompt had no parent; `HunterRenderer` and `BusRenderer` now set it to `Root`. After: shown from 32–33 studs (range 40), a real E at 12 studs sent the hunter Fleeing; one E at ~33 studs did not trigger, the hunter walking off: how it feels at the edge is his.)
 
 **g. Long runs, last, as the night allows**
 
@@ -1424,3 +1424,4 @@ Played by remotes on the published place, profile `Test_Launch1023a`, Studio not
 - [x] 2026-10-24 night, blind review of the rigged monsters in the game (three shots of Bayou's garden, a Fable reviewer, ten findings). False: the Skeleton "pitched 45°" (still: hips 0°, spine at most 2° over 6 s; a walking frame not measured), the Hydra "missing" (89 studs off, out of frame), the garden's black back edge (the plot at night). His call (WAITING §2.51): blinding eyes, the troll, werewolf and pup read from behind, the ghost 0.34 studs off the grass, small dark monsters at the game's camera.
 - [x] 2026-10-24 night, part 2c (Rating): Room Service +10.0 Service with 3 rooms, Housekeeping +6.0 Cleanliness and Service unchanged, Service 0 before any stay, an overdue room counting late at once (66.67 + 5); the 8-room half not tried.
 - [x] 2026-10-24 night, part 2f: the street's in-game blind review run and triaged (WAITING §2.52); the rigged monsters' too (§2.51).
+- [!] 2026-10-24 night, part 2f by real keys: the VIP ledger by F passes; Boo! had no prompt (the Hunter template's PrimaryPart lost to live sync), fixed in `HunterRenderer` and `BusRenderer`, then a real E sent a hunter fleeing.

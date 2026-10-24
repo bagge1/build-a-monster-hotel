@@ -58,6 +58,11 @@ local function build(): Model
 	local template = folder and folder:FindFirstChild("NightBus")
 	if template and template:IsA("Model") then
 		local clone = template:Clone()
+		-- Rojo's live sync can drop a template's PrimaryPart (DEVNOTES.md); `Root` is the contract's.
+		local named = clone:FindFirstChild("Root")
+		if not clone.PrimaryPart and named and named:IsA("BasePart") then
+			clone.PrimaryPart = named
+		end
 		local root = clone.PrimaryPart
 		local door = root and root:FindFirstChild("Door")
 		doorAhead = if door and door:IsA("Attachment") then door.Position.X else 0
