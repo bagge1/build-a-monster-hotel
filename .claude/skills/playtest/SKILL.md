@@ -83,6 +83,11 @@ Studio MCP".
   in `WAITING.md` for a night run, or ask him in chat first ("Studio comes to
   the front for about 30 s, ok?") and do every such item in one batch on his
   yes. In a night sprint he is away, and the rules below apply as they are.
+- **Look before taking the focus, even on a night his brief allows it**: list
+  the windows (`Get-Process | ? MainWindowTitle`). A game running (2026-10-24
+  night: Europa Universalis V, the focus taken back 36 times in 30 s) means
+  he is at the computer: no focus, no keys, no clicks, and no frame timing
+  (Studio renders in the background at 15 fps).
 - **Studio must have the focus**, or every key returns *Success* and nothing
   reaches the game. Bring it forward from PowerShell with
   `SetForegroundWindow` on `RobloxStudioBeta`'s `MainWindowHandle` (a tap of
