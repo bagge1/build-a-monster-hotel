@@ -1263,6 +1263,26 @@ Med Claudes skärmdump där det finns en. -->
      ville ha mer mönster. **Rekommendation:** behåll, så att den passar ihop
      med de andra löparna.
 
+51. **De riggade monstren i spelet: en blind granskares intryck** (natten
+   2026-10-24; tre nattbilder från trädgården bakom Bayou-hotellet, i
+   scratchpad, en av dem i `archive/screens/2026-10-24_rigged_residents.jpg`).
+   Allt nedan är utseenden du redan sagt ja till; inget är ändrat. Det
+   granskaren såg, med Claudes förslag:
+   - **Ögonen bländar** (Slime, Mud Puppy): de lysande ögonen läses som
+     lampor, "en vit prick" på en telefon. Förslag: titta i spelet först
+     (§1.13); dämpas de, är det en ändring i `Glow_Eyes` för alla.
+   - **Frost Troll läses som en marshmallow bakifrån**, Werewolf som en björn
+     bakifrån, Mud Puppys röda tofs som en mössa. Förslag: behåll (bara
+     ryggar syntes; ditt ja gällde framsidan).
+   - **Ghost sitter på gräset** i stället för att sväva: uppmätt 0,34 studs
+     luft under. Förslag: behåll till du sett den röra sig (§1.13).
+   - **Slime och Mud Puppy syns dåligt** på håll i spelets kamera (små, mörk
+     brun mot mörkgrönt). Förslag: behåll; storlekarna är dina (`Species.luau`, dina ja).
+   - Falskt eller utrett: Skeleton "lutad 45°" (stilla: höfterna 0°, ryggen
+     högst 2° på 6 s; en gångbild inte mätt, så lita på dina ögon i §1.13);
+     Hydran "saknas" (den stod 89 studs bort, utanför bild); trädgårdens svarta
+     bakkant är hotellets mark i natten.
+
 ## §3 Creator Hub och publicering
 
 1. ~~**Slå på Studio Access to API Services**~~ (gjort 2026-10-19: på i
