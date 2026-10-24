@@ -283,6 +283,19 @@ Med Claudes skärmdump där det finns en. -->
    efter: `archive/screens/2026-10-24_phone_build_fixed.jpg`. Hur det ser ut
    är ditt att säga.
 
+15. **Titta på gränssnittet på telefonen** (kvällssprinten 2026-10-24/25).
+   Åtta fel i layouten rättades (mätta och sedda i Studios simulator på
+   iPhone 14 och iPad 10), och tre av dem syns: **HUD:ens vänsterkolumn är
+   två knappar bred på en telefon** (som högerkolumnen; förut gick VIP under
+   skärmkanten), **Ping-menyn öppnas vänster om högerkolumnen** (förut låg
+   den över själva Ping-knappen), och **rumsvyn är inte nedskalad på en
+   telefon** (knapparna 44 px, mitten rullar). Bilder:
+   `archive/screens/2026-10-24_phone_hud_before.jpg`,
+   `2026-10-24_phone_ping_fixed.jpg`, `2026-10-24_phone_roomview_fixed.jpg`,
+   `2026-10-24_ipad_roomview_fixed.jpg`. På din telefon: säg om något känns
+   trångt eller fel. Och bildtiden med ett fullt hotell gick inte att mäta i
+   natt (datorn användes); den riktiga siffran är din telefons (§4).
+
 ## §2 Beslut
 
 <!-- En fråga i taget, med alternativen och Claudes rekommendation. -->
