@@ -181,7 +181,13 @@ Same street first, then two streets, then the leave.
 
 **f. Pictures** (*front*; each set to a blind review before he sees it)
 
-- [ ] Launch import: the placed models.
+- [A] Launch import: the placed models. (2026-10-24 evening, Haunted
+  Manor, `Test_Launch1024c`: geometry proved instead of a picture: every
+  placed piece (two Beds, Wardrobe, Bookshelf, Coffin, the desk) stands on
+  the floor (bottom 1.02) and no visible part of any lies inside a wall or
+  post; from the game's raised camera a 2-cell room shows mostly wall, so
+  how they look is his in play. Bayou's are pictured in
+  `archive/screens/2026-10-24_bayou_stairs_vip.jpg`.)
 - [ ] Phase 8: the cosmetics with their models.
 - [x] Phase 12: the in-game blind review of the street. It replaces Phase
   10's, which waited on the scale (answered 2026-10-19): mark that one with it.
@@ -1456,7 +1462,7 @@ Played by remotes on the published place, profile `Test_Launch1023a`, Studio not
 - [x] Frostfang Lodge and Bayou Spa (`chainopen 2`, `3`): walls, door, posts and furniture are kit clones. Bayou's FrontDesk is still a blockout (no desk in its kit yet: launch #5).
 - [x] No game errors; plot parts 184 / 152 / 147.
 - [x] Bookshelf and Wardrobe were not placed by the test's positions (no refusal came back): look into it. (2026-10-24: the test sent model names, not `Pieces` ids; both place by id.)
-- [ ] Pictures of the placed models, with Studio in front.
+- [A] Pictures of the placed models, with Studio in front. (2026-10-24: geometry proved, see the Launch run's 2f; the look is his.)
 - [x] 2026-10-24 night, Launch run part 2a: persistence, Bayou's kit and the VIP lounge, the four facade packs, notifications and the rigged monsters pass; server size `[A]`, Flip `[?]`. Also run: a booked room that stops being ready sends its guest back (the night's fix), a door only in a wall with its outline on the wall pointed at (the night's fix, by a real mouse).
 - [x] 2026-10-24 night, part 2d: no walk-ins, the tutorial's Slime and its Vampire Count pass; Collect `[?]` (the test profile owns Auto Collect); Tutorial Commons not run.
 - [x] 2026-10-24 night, part 2e: frame time (PC simulation) and the one-finger pan pass; build mode's phone layout overlaps (WAITING §1.14); the VIP room view on a phone `[A]`.
