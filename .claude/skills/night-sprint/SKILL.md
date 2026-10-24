@@ -89,6 +89,12 @@ Unattended night session (`/loop`, self-paced) while August sleeps. His brief, i
   with the next thing that does not need him; it never becomes a question
   that ends the turn without a `ScheduleWakeup`. (2026-10-19: the session
   stopped at 04:31 with work left in the GDD and sat idle for 10 hours.)
+- **No question ends a night, and a fault in structure is never put to
+  him as a choice** (his words, 2026-10-24: "Hur kan du ställa en så dum
+  fråga i en nattloop..."). The night closed with A/B/C buttons on build
+  mode covering itself on a phone: an overlap is a bug (Claude's to fix),
+  not a look. Fix what is broken, take the reversible option, and let him
+  judge the result; the morning summary reports, it does not ask.
 - **Every turn of the night ends with a `ScheduleWakeup` call**, the last
   tool call of the turn, with no closing text after it that reads as a
   finish. A turn that would end any other way (a step done, a fork, a

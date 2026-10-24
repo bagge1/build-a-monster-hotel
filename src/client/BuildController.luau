@@ -111,7 +111,7 @@ local gui: ScreenGui
 local strip: Frame
 local cards: ScrollingFrame
 local info: TextLabel
-local tools: Frame
+local tools: ScrollingFrame
 local floorLabel: TextLabel
 local placeButton: TextButton
 local menu: Frame
@@ -408,6 +408,7 @@ end
 -- The cell under the pointer on the floor in view, or nil off the plot.
 local pointerLocal: (number, number) -> Vector3?
 local judgeDoor: (number, number) -> (string?, boolean, boolean, string?)
+local fitTools: () -> ()
 local showDoor: (number, number) -> ()
 local function cellUnder(x: number, y: number): Grid.Cell?
 	local l = pointerLocal(x, y)
@@ -1433,14 +1434,42 @@ local function updatePad()
 	padKeys.Enabled = active and GuiService.SelectedObject == nil
 end
 
+-- A phone in landscape (Ui's and Hud's rule for a short screen).
+local function shortScreen(): boolean
+	return camera.ViewportSize.Y < 500
+end
+
+--[[ The tools' height: on a short screen they end 8 px above the strip and
+	scroll, so no row covers the strip's cards; elsewhere all five rows. ]]
+function fitTools()
+	if not tools or not strip then
+		return
+	end
+	local height = 260
+	if shortScreen() then
+		local top = tools.AbsolutePosition.Y
+		local stripTop = strip.AbsolutePosition.Y
+		if stripTop > top then
+			height = math.clamp(stripTop - top - 8, 98, 260)
+		end
+	end
+	tools.Size = UDim2.fromOffset(380, height)
+end
+
 local function setActive(on: boolean)
 	active = on
 	strip.Visible = on
 	tools.Visible = on
+	fitTools()
 	local hud = me.PlayerGui:FindFirstChild("Hud")
 	local leftColumn = hud and hud:FindFirstChild("Left")
 	if leftColumn and leftColumn:IsA("GuiObject") then
 		leftColumn.Visible = not on
+	end
+	-- On a phone the right menu would lie over the strip too: it steps aside while building.
+	local rightColumn = hud and hud:FindFirstChild("Right")
+	if rightColumn and rightColumn:IsA("GuiObject") then
+		rightColumn.Visible = not (on and shortScreen())
 	end
 	-- Gloom steps aside while building: the strip says what to do.
 	local tutorial = me.PlayerGui:FindFirstChild("Tutorial")
@@ -2271,8 +2300,8 @@ function BuildController.Init()
 	-- each group its own colour (his report, 2026-10-19: "the same colour on
 	-- nearly all, group them better"): what to build, which floor, the camera
 	-- and placing, the extras and leaving.
-	tools = Ui.frame(gui, "Tools", UDim2.fromOffset(380, 260), UDim2.fromOffset(10, 56))
-	tools.BackgroundTransparency = 1
+	-- On a short screen (a phone in landscape) the rows end above the strip and scroll (2026-10-24: they covered it).
+	tools = Ui.scroll(gui, "Tools", UDim2.fromOffset(380, 260), UDim2.fromOffset(10, 56))
 	tools.Visible = false
 	Ui.list(tools, Enum.FillDirection.Vertical, 10)
 	local FLOOR_BLUE = Color3.fromRGB(58, 78, 150)
@@ -2380,7 +2409,9 @@ function BuildController.Init()
 	-- Where the HUD's menu column starts (Hud's `placeTop`).
 	Ui.onTopRow(function(up: boolean)
 		tools.Position = UDim2.fromOffset(10, if up then 6 else 56)
+		fitTools()
 	end)
+	camera:GetPropertyChangedSignal("ViewportSize"):Connect(fitTools)
 
 	menu, menuBody = Ui.window(gui, "PieceMenu", "Piece", UDim2.fromScale(0.5, 0.6))
 	Ui.list(menuBody, Enum.FillDirection.Vertical, 8)

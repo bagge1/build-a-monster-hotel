@@ -95,7 +95,10 @@ of Name | What | The code. -->
 Built in code; free building (GDD §5.4, 2026-10-19) and built rooms (A.12,
 his rulings 2026-10-21). A designed one carries these names. Mobile first:
 every button at least 44 × 44 (`Ui.MinTap`), the strip between a phone's
-thumbstick and jump button, the room view on the right clear of both.
+thumbstick and jump button, the room view on the right clear of both. On a
+short screen (under 500 px high) `Tools` ends 8 px above the strip and
+scrolls, and the HUD's right column is hidden while building, as its left
+one always is (2026-10-24: both covered the strip on a phone).
 
 | Name | What | The code |
 |---|---|---|

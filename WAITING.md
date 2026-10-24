@@ -272,18 +272,13 @@ Med Claudes skärmdump där det finns en. -->
    alla fem kroppsformer benen, Tiny och Giant också. Bild:
    `archive/screens/2026-10-24_rigged_residents.jpg`. Nu kan du titta.)
 
-14. **Byggläget på en telefon täcker sig självt** (natten 2026-10-24, iPhone
-   14 liggande i Studios simulator). Bild:
-   `archive/screens/2026-10-24_phone_build_overlap.jpg`. Verktygsraderna uppe
-   till vänster (fem rader, 260 px höga) går ner över remsan med Walls/Door/
-   Remove längst ner, och högermenyn (Moon, Travel, Store …) ligger kvar
-   ovanpå remsan; tomten syns knappt. På en dator är det inget problem. Det
-   är en fråga om utseende, så inget är ändrat i natt. Claudes förslag, på
-   korta skärmar (under 520 px höga) och bara i byggläget: **A** göm
-   högermenyn som vänstermenyn redan göms, och flytta de två sista raderna
-   (Rotate/View/Top och Traps/Style/Done) upp till höger där menyn stod, så
-   att vänsterkolumnen slutar ovanför remsan (rekommenderas); **B** en knapp
-   "Mer" som fäller ut raderna; **C** som det är. Säg A, B eller C.
+14. ~~**Byggläget på en telefon täcker sig självt**~~ (rättat 2026-10-24 på
+   morgonen, ditt "hur kan du ställa en så dum fråga i en nattloop": ett
+   överlapp är ett fel, inte ett val). På korta skärmar slutar
+   verktygsraderna 8 px ovanför remsan och rullar, och högermenyn göms medan
+   du bygger, som vänstermenyn redan gjorde; på en dator är allt som förut.
+   **Inte sett i Studio än** (Studio var inte anslutet). Bilden före:
+   `archive/screens/2026-10-24_phone_build_overlap.jpg`.
 
 ## §2 Beslut
 
