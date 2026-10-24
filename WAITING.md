@@ -1260,7 +1260,11 @@ Med Claudes skärmdump där det finns en. -->
      gratis produkt. Ingen betalar den (annonsen ger den, och Store visar den
      inte), men priset syns i Creator Hub.
    - **Facade packs** (fyra pass och deras presenter) skapas när fasaderna är
-     modellerade och har bilder; tills dess står de som "Soon".
+     modellerade och har bilder; tills dess står de som "Soon". Fasaderna och
+     ikonerna finns nu (grenen `claude/store-art-87789a`: pass- och
+     presentikoner i `ui/`, `Store.luau` med id 0). Kvar: passen och
+     presenterna skapas i Creator Hub (orkestreraren i webbläsaren, LAUNCH #9)
+     och id:na skrivs in; grenen mergas inte förrän dess (natten 2026-10-24).
    - **Managed Pricing** (§10.1) är inte påslaget: Creator Hub →
      experiencen → **Monetization** → **Passes**, knappen **Get started**
      under "Earn more with Managed Pricing". Ditt val; Claude kan göra det
