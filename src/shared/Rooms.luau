@@ -363,22 +363,22 @@ function Rooms.areas(world: World, floor: number): { Area }
 	return areas
 end
 
--- While `Rooms.readiness` runs (one world, unchanged), each floor's areas are worked out once.
-local areaMemo: { world: World, floors: { [number]: { areas: { Area }, of: { [number]: number } } } }? =
-	nil
+-- Inside `Rooms.withAreas` (worlds that do not change meanwhile), each floor's areas are worked out once.
+type FloorAreas = { areas: { Area }, of: { [number]: number } }
+local areaMemo: { [World]: { [number]: FloorAreas } }? = nil
 
 function Rooms.areaAt(world: World, floor: number, hx: number, hz: number): Area?
 	if not ownedHalf(world, floor, hx, hz) then
 		return nil
 	end
 	local areas, of
-	local memo = areaMemo
-	if memo and memo.world == world then
-		local f = memo.floors[floor]
+	local floors = areaMemo and areaMemo[world]
+	if floors then
+		local f = floors[floor]
 		if not f then
 			local a, o = computeAreas(world, floor, indexWalls(world.walls), marks(world))
 			f = { areas = a, of = o }
-			memo.floors[floor] = f
+			floors[floor] = f
 		end
 		areas, of = f.areas, f.of
 	else
@@ -660,6 +660,8 @@ end
 
 -- Rooms.ready with the walk and the flood given (defined below, with `keySpot`).
 local readyIn: (World, string, Walk, { [number]: number }) -> (boolean, { string }?)
+-- Rooms.check's body, run with both worlds' areas kept (defined below it).
+local checkIn: (World, World, Grid.Placed?) -> (boolean, Refusal?)
 
 -- Whether a key piece of room `id` before the change stands unchanged after it (same record, same place).
 local function keyStillStands(before: World, after: World, id: string): boolean
@@ -696,6 +698,17 @@ end
 	piece the change takes away: its own queue, foot or head are not places
 	guests still need. ]]
 function Rooms.check(before: World, after: World, gone: Grid.Placed?): (boolean, Refusal?)
+	-- Each world's floor areas once, however many rooms are asked about (a full hotel's 44 took 340 ms).
+	local ok: boolean, why: Refusal? = true, nil
+	Rooms.withAreas(before, function()
+		Rooms.withAreas(after, function()
+			ok, why = checkIn(before, after, gone)
+		end)
+	end)
+	return ok, why
+end
+
+function checkIn(before: World, after: World, gone: Grid.Placed?): (boolean, Refusal?)
 	local was, now = trouble(before), trouble(after)
 	local ids = {}
 	for id in now do
@@ -1202,12 +1215,15 @@ end
 	over every room (`readiness`, every room's bars). ]]
 function Rooms.withAreas(world: World, fn: () -> ())
 	local outer = areaMemo
-	if outer and outer.world == world then
+	if outer and outer[world] then
 		fn()
 		return
 	end
-	areaMemo = { world = world, floors = {} }
+	local memo = outer or {}
+	memo[world] = {}
+	areaMemo = memo
 	local fine, err = pcall(fn)
+	memo[world] = nil
 	areaMemo = outer
 	if not fine then
 		error(err, 0)
