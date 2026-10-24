@@ -101,6 +101,14 @@ Studio MCP".
   bar. Click by `instance_path` wherever there is one; scroll a row into its
   list first. Nothing in Roblox's own top bar can be clicked.
 - **Text boxes**: click, then `textInput`.
+- **A held key is released early** (2026-10-24: `keyDown` E, wait 3 s,
+  `keyUp`, and `InputEnded` came after 0.72 s): a prompt with a
+  `HoldDuration` over ~0.5 s is held by `InputHoldBegin`/`InputHoldEnd`.
+- **A click on a GUI button can arrive and not press it** (2026-10-24 night,
+  on foot: `InputBegan` MouseButton1 with `gameProcessed` true over the
+  button, no `Activated`, HUD and windows alike; the build cards clicked
+  fine minutes before). Check `Activated` with a connection, and fall back
+  to the remote the button sends.
 - **A ProximityPrompt only shows on screen**: turn the camera to it before E,
   hold for its `HoldDuration` (`keyDown`, wait, `keyUp`), or trigger it without
   the focus by `prompt:InputHoldBegin()`, wait, `InputHoldEnd()` from a Client

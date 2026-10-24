@@ -1328,6 +1328,19 @@ Med Claudes skärmdump där det finns en. -->
    Claudes förslag: titta på dem i spelet (Store → kosmetika) och säg vilka
    som ska göras om efter lanseringen.
 
+54. **Tutorialens andra rum bakom hotellet** (kvällssprinten 2026-10-24,
+   tutorialen spelad som ny spelare med riktig mus, `Test_Launch1024g`).
+   Startrummet täcker hela bakre raden av startkvadraten, så fyra plattor
+   köpta rakt bakom hotellet (det naturliga stället) blir en ficka utan
+   väg till hallen: köpet sätter väggar mot startrummet av sig självt, och
+   enda dörren som går är **genom startrummet**. Spelet godtar det (rummet
+   blir färdigt och gästerna går genom startrummet till det), så ingen
+   fastnar, men Gloom säger "draw Walls round them, put in a Door" och
+   väggarna finns redan. Frågan är din: får ett rum nås bara genom ett
+   annat rum? Förslag: **ja, behåll** för lanseringen (inget fastnar);
+   efteråt kan guldplattorna i SecondRoom visa bara de som gränsar till
+   hallen, eller Gloom säga "beside the hallway".
+
 ## §3 Creator Hub och publicering
 
 1. ~~**Slå på Studio Access to API Services**~~ (gjort 2026-10-19: på i
