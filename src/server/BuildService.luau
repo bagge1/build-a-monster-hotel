@@ -1099,9 +1099,12 @@ local function fill(player: Player, args: { string }): string
 			end
 		end
 	end
+	-- It yields a frame per row: a whole hotel at once ran past Roblox's script
+	-- timeout (2026-10-24 evening, and took a ProfileStore thread with it).
 	for floor = 1, data.floors - 1 do
 		local done = false
 		for z = N - 2, 0, -1 do
+			task.wait()
 			for x = 0, N - 2 do
 				if not done then
 					local p = Layout.piece(
@@ -1129,6 +1132,7 @@ local function fill(player: Player, args: { string }): string
 	for floor = 1, data.floors do
 		for _, z in { 2, 5, 8 } do
 			for x = 0, N - 2, 2 do
+				task.wait()
 				if buildBox(data, item, floor, x, z, 2, 2) then
 					n += 1
 				end
@@ -1231,17 +1235,15 @@ function BuildService.Start()
 		end
 		-- Each built room with what the room view shows (A.12): ready or what it lacks, its bars and bonuses.
 		local rooms = {}
+		local all = HotelService.readiness(player) or Rooms.readiness(world)
 		for id, rec in data.rooms do
-			local ok, missing = Rooms.ready(world, id)
-			local bars = Rooms.bars(world, id)
-			local a = Rooms.roomArea(world, id)
+			local r = all[id] or { ok = false, missing = nil }
+			local ok, missing = r.ok, r.missing
+			local info = assert(HotelService.roomInfo(data, id))
+			local bars = info.bars
 			-- A.11.3: the rare sets standing in it (pieces of each), and whether it has the set's bonus.
-			local items = {}
-			for _, d in Rooms.contents(world, id).decor do
-				table.insert(items, d.item)
-			end
 			local sets = {}
-			for setId, n in Finds.progress(items) do
+			for setId, n in Finds.progress(info.decor) do
 				table.insert(sets, {
 					id = setId,
 					have = n,
@@ -1260,7 +1262,7 @@ function BuildService.Start()
 				ready = ok,
 				missing = missing or {},
 				missingText = if ok then "" else HotelService.missingText(rec.type, missing or {}),
-				size = if a then a.size else 0,
+				size = info.size,
 				bars = bars,
 				bonuses = Rooms.bonuses(bars),
 				state = (function()

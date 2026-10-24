@@ -1149,6 +1149,23 @@ function Rooms.ready(world: World, roomId: string): (boolean, { string }?)
 	return readyIn(world, roomId, w, fromEntrance(w))
 end
 
+export type Readiness = { [string]: { ok: boolean, missing: { string }? } }
+
+--[[ Every room's `Rooms.ready` at once, the walk and the flood from the
+	entrance built once for all of them: room by room a full hotel of 44
+	rooms took half a second on the server (2026-10-24 evening, a hitch every
+	time the build state was sent). ]]
+function Rooms.readiness(world: World): Readiness
+	local w = walkOf(world)
+	local reach = fromEntrance(w)
+	local out: Readiness = {}
+	for id in world.rooms do
+		local ok, missing = readyIn(world, id, w, reach)
+		out[id] = { ok = ok, missing = missing }
+	end
+	return out
+end
+
 --[[ Whether a change keeps every room in `busy` (a guest in it or due at it,
 	§5.4, A.12) as it was for its guest: still ready and the same size. The
 	server asks it of every change to the hotel before making it. ]]

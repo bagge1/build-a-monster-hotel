@@ -134,6 +134,14 @@ end
 --[[ Each built room's readiness (A.12), by id: a room is booked only while
 	ready. Asked often, so cached per change of the hotel (`sync`). ]]
 local readyCache: { [Player]: { [string]: boolean } } = {}
+local readinessCache: { [Player]: Rooms.Readiness } = {} -- with what each room lacks, for the build panel
+
+--[[ Each built room's bars, area size and decor, by profile and room id,
+	kept until the hotel next changes (`sync` drops them): the build and VIP
+	panels ask for every room's every 15 s, and a full hotel's 44 took a
+	third of a second each time (2026-10-24 evening, a server hitch). ]]
+export type RoomInfo = { bars: Rooms.Bars, size: number, decor: { string } }
+local infoCache: { [PlayerData.Data]: { [string]: RoomInfo } } = setmetatable({}, { __mode = "k" }) :: any
 
 function HotelService.ready(player: Player, roomId: string): boolean
 	local cache = readyCache[player]
@@ -149,11 +157,13 @@ function HotelService.sync(player: Player)
 	if not hotel or not data then
 		return
 	end
-	local w = world(data)
+	infoCache[data] = nil
+	local all = Rooms.readiness(world(data))
+	readinessCache[player] = all
 	local cache = {}
 	for id, rec in data.rooms do
 		local p = Pieces.get(rec.type)
-		local ok = p ~= nil and (Rooms.ready(w, id))
+		local ok = p ~= nil and all[id].ok
 		cache[id] = ok
 		-- Amenities are rooms too (their tags and Fun), but no guest is booked into one.
 		if ok and p and p.kind == "Room" and not hotel.rooms[id] then
@@ -179,11 +189,40 @@ end
 
 -- A room's three bars and what they give (A.12); nil for a room that is not there.
 function HotelService.roomBars(data: PlayerData.Data, roomId: string): (Rooms.Bars?, Rooms.Bonuses?)
-	if not data.rooms[roomId] then
+	local info = HotelService.roomInfo(data, roomId)
+	if not info then
 		return nil, nil
 	end
-	local bars = Rooms.bars(world(data), roomId)
-	return bars, Rooms.bonuses(bars)
+	return info.bars, Rooms.bonuses(info.bars)
+end
+
+-- Every built room's readiness and what it lacks, as of the last `sync` (nil before the first).
+function HotelService.readiness(player: Player): Rooms.Readiness?
+	return readinessCache[player]
+end
+
+-- A room's bars, its area's size and the decor in it (nil for a room that is not there), kept until `sync`.
+function HotelService.roomInfo(data: PlayerData.Data, roomId: string): RoomInfo?
+	if not data.rooms[roomId] then
+		return nil
+	end
+	local cache = infoCache[data]
+	if not cache then
+		cache = {}
+		infoCache[data] = cache
+	end
+	local info = cache[roomId]
+	if not info then
+		local w = world(data)
+		local a = Rooms.roomArea(w, roomId)
+		local decor = {}
+		for _, d in Rooms.contents(w, roomId).decor do
+			table.insert(decor, d.item)
+		end
+		info = { bars = Rooms.bars(w, roomId), size = if a then a.size else 0, decor = decor }
+		cache[roomId] = info
+	end
+	return info
 end
 
 --[[ The tags a room has (§5.4, A.12): its furniture's and decor's, and every
@@ -339,13 +378,19 @@ function HotelService.refreshPrompts(player: Player, only: string?)
 	end
 	-- Every built room's plaque: its name, and its state or what it lacks (A.12 "Ready").
 	local w = world(data)
+	local all = if only == nil then Rooms.readiness(w) else nil
 	for id, rec in data.rooms do
 		if only == nil or only == id then
 			local model = plot.pieces[id]
 			local piece = Pieces.get(rec.type)
 			if model and piece then
 				local room = hotel.rooms[id]
-				local ok, missing = Rooms.ready(w, id)
+				local ok, missing
+				if all then
+					ok, missing = all[id].ok, all[id].missing
+				else
+					ok, missing = Rooms.ready(w, id)
+				end
 				model:SetAttribute("State", if room then room.state else nil)
 				model:SetAttribute("Request", if room then room.request else nil)
 				model:SetAttribute("Ready", ok)
@@ -630,6 +675,7 @@ function HotelService.Start()
 		hotels[player] = nil
 		away[player] = nil
 		readyCache[player] = nil
+		readinessCache[player] = nil
 	end)
 	-- A full rebuild makes new prompts: put the room states back on them.
 	PlotService.onBuilt(function(plot)
