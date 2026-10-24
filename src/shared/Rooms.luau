@@ -363,11 +363,27 @@ function Rooms.areas(world: World, floor: number): { Area }
 	return areas
 end
 
+-- While `Rooms.readiness` runs (one world, unchanged), each floor's areas are worked out once.
+local areaMemo: { world: World, floors: { [number]: { areas: { Area }, of: { [number]: number } } } }? =
+	nil
+
 function Rooms.areaAt(world: World, floor: number, hx: number, hz: number): Area?
 	if not ownedHalf(world, floor, hx, hz) then
 		return nil
 	end
-	local areas, of = computeAreas(world, floor, indexWalls(world.walls), marks(world))
+	local areas, of
+	local memo = areaMemo
+	if memo and memo.world == world then
+		local f = memo.floors[floor]
+		if not f then
+			local a, o = computeAreas(world, floor, indexWalls(world.walls), marks(world))
+			f = { areas = a, of = o }
+			memo.floors[floor] = f
+		end
+		areas, of = f.areas, f.of
+	else
+		areas, of = computeAreas(world, floor, indexWalls(world.walls), marks(world))
+	end
 	local n = of[Rooms.halfKey(hx, hz)]
 	return if n then areas[n] else nil
 end
@@ -1159,11 +1175,30 @@ function Rooms.readiness(world: World): Readiness
 	local w = walkOf(world)
 	local reach = fromEntrance(w)
 	local out: Readiness = {}
-	for id in world.rooms do
-		local ok, missing = readyIn(world, id, w, reach)
-		out[id] = { ok = ok, missing = missing }
-	end
+	Rooms.withAreas(world, function()
+		for id in world.rooms do
+			local ok, missing = readyIn(world, id, w, reach)
+			out[id] = { ok = ok, missing = missing }
+		end
+	end)
 	return out
+end
+
+--[[ Runs `fn` with each floor's areas of `world` worked out once, however
+	many rooms it asks about; `world` must not change meanwhile. For a pass
+	over every room (`readiness`, every room's bars). ]]
+function Rooms.withAreas(world: World, fn: () -> ())
+	local outer = areaMemo
+	if outer and outer.world == world then
+		fn()
+		return
+	end
+	areaMemo = { world = world, floors = {} }
+	local fine, err = pcall(fn)
+	areaMemo = outer
+	if not fine then
+		error(err, 0)
+	end
 end
 
 --[[ Whether a change keeps every room in `busy` (a guest in it or due at it,

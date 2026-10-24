@@ -211,18 +211,24 @@ function HotelService.roomInfo(data: PlayerData.Data, roomId: string): RoomInfo?
 		cache = {}
 		infoCache[data] = cache
 	end
-	local info = cache[roomId]
-	if not info then
+	if not cache[roomId] then
+		-- Every room's at once: the panels ask for them all, and the floor's areas are then worked out once.
 		local w = world(data)
-		local a = Rooms.roomArea(w, roomId)
-		local decor = {}
-		for _, d in Rooms.contents(w, roomId).decor do
-			table.insert(decor, d.item)
-		end
-		info = { bars = Rooms.bars(w, roomId), size = if a then a.size else 0, decor = decor }
-		cache[roomId] = info
+		Rooms.withAreas(w, function()
+			for id in data.rooms do
+				if not cache[id] then
+					local a = Rooms.roomArea(w, id)
+					local decor = {}
+					for _, d in Rooms.contents(w, id).decor do
+						table.insert(decor, d.item)
+					end
+					cache[id] =
+						{ bars = Rooms.bars(w, id), size = if a then a.size else 0, decor = decor }
+				end
+			end
+		end)
 	end
-	return info
+	return cache[roomId]
 end
 
 --[[ The tags a room has (§5.4, A.12): its furniture's and decor's, and every
@@ -378,7 +384,8 @@ function HotelService.refreshPrompts(player: Player, only: string?)
 	end
 	-- Every built room's plaque: its name, and its state or what it lacks (A.12 "Ready").
 	local w = world(data)
-	local all = if only == nil then Rooms.readiness(w) else nil
+	-- The whole hotel's plaques: what `sync` worked out just before, or worked out now.
+	local all = if only == nil then (readinessCache[player] or Rooms.readiness(w)) else nil
 	for id, rec in data.rooms do
 		if only == nil or only == id then
 			local model = plot.pieces[id]
@@ -386,8 +393,9 @@ function HotelService.refreshPrompts(player: Player, only: string?)
 			if model and piece then
 				local room = hotel.rooms[id]
 				local ok, missing
-				if all then
-					ok, missing = all[id].ok, all[id].missing
+				local r = all and all[id]
+				if r then
+					ok, missing = r.ok, r.missing
 				else
 					ok, missing = Rooms.ready(w, id)
 				end
