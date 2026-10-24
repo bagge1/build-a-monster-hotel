@@ -732,8 +732,11 @@ tutorial's first steps by the game's own prompts and remotes.
 - [ ] The weighting stops after 2 such buses (`data`: `tutorialCommonBuses`
   2) and on Skip; it never starts while the step is Build or CheckIn (the
   Slime keeps its room); a hotel with only a Coffin Suite vacant gets none.
-- [ ] (With a Vampire Count announced: "Need a Coffin Suite!" over the head.
-  The browsing and empty-street cases not tried.) The ping menu's "Need a room": with a Vampire Count announced
+- [x] (With a Vampire Count announced: "Need a Coffin Suite!" over the head.
+  2026-10-25 01:55, `Test_Launch1024q`, by the `Ping` remote: the street
+  empty, "Need a room for that guest!"; a bus browsing a Witch (Rare), a
+  Ghost (Uncommon), a Pumpkin Head and a Skeleton, "Need a Potion Loft!",
+  the Witch's.) The ping menu's "Need a room": with a Vampire Count announced
   (`legendary`), it reads "Need a Coffin Suite!" over the head; with Commons
   browsing and nothing announced, the room the rarest of them wants ("Need an
   Attic Room!" for a Ghost); with the street empty, "Need a room for that
