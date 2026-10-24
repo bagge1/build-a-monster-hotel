@@ -173,6 +173,11 @@ function MonsterKit.build(speciesId: string, mutation: string?, size: string?): 
 	local folder = ReplicatedStorage:FindFirstChild("Monsters")
 	local template = folder and folder:FindFirstChild(speciesId)
 	local model = if template and template:IsA("Model") then template:Clone() else blockout(sp)
+	-- Rojo's live sync can drop a template's PrimaryPart (DEVNOTES.md); `Root` is the contract's.
+	local root = model:FindFirstChild("Root")
+	if not model.PrimaryPart and root and root:IsA("BasePart") then
+		model.PrimaryPart = root
+	end
 	local m = if mutation then Mutations.ById[mutation] else nil
 	if m then
 		for _, d in model:GetDescendants() do

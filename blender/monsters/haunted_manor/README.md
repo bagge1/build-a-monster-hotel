@@ -107,3 +107,17 @@ restart (2026-10-19, 15:30): all 69 synced copies match the Workspace imports
 part for part (628 parts: mesh ids, sizes, textures, collision, LOD_Proxy
 hidden, no empty MeshPart), and the Workspace copies are deleted. **Studio
 runtime is not tested yet**: not seen in the game, not walked.
+
+## Imported rigged (2026-10-24, night)
+
+August imported all 27 rigged monsters in one dialog with Rig Type Custom
+(WAITING §0.16). The set's `import_settings.luau` ran in the Edit datamodel;
+read back in a separate call: every model `PrimaryPart = Root`, every MeshPart
+`Box`, `LOD_Proxy` hidden, `Nameplate`/`Hand` as attachments on `Root`, the
+`AnimationController` and `InitialPoses` gone, the Motor6Ds kept, only `Root`
+anchored. Saved over `assets/Monsters/<Name>.rbxm` with
+`tools/save_imports.py`. The synced copies under `ReplicatedStorage.Monsters`
+match the imports part for part (mesh id, size, collision, anchoring, bones,
+Motor6Ds), no empty MeshPart; 26 of 27 came out of Rojo's live sync with
+`PrimaryPart` nil (DEVNOTES), so `MonsterKit.build` sets it to `Root` on each
+clone. Not yet seen bending in a playtest (night log 2026-10-24).
