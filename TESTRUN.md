@@ -216,7 +216,10 @@ Same street first, then two streets, then the leave.
 
 **g. Long runs, last, as the night allows**
 
-- [ ] The hotel chain: a real run toward 5★ against his times.
+- [A] The hotel chain: a real run toward 5★ against his times. (2026-10-24
+  evening: hours of a person's play (building, collecting, checking in); the
+  balance model's times stand in for it, `archive/BALANCE-2026-10-23.md`.
+  His first hours after Publish are the real run.)
 - [x] Residents level up: the cap in a real run, a level's staff effect.
   (2026-10-24 evening: the cap and the coverage effect by the remote, see
   "Residents level up"; not a real run of 900 minutes.)
@@ -1479,3 +1482,4 @@ Played by remotes on the published place, profile `Test_Launch1023a`, Studio not
 - [x] 2026-10-24 night, part 2f: the street's in-game blind review run and triaged (WAITING §2.52); the rigged monsters' too (§2.51).
 - [!] 2026-10-24 night, part 2f by real keys: the VIP ledger by F passes; Boo! had no prompt (the Hunter template's PrimaryPart lost to live sync), fixed in `HunterRenderer` and `BusRenderer`, then a real E sent a hunter fleeing.
 - [!] 2026-10-24 evening, part 2b gamepad: the keyboard item passes after a fix (Roblox's emote wheel took `.`; off while building); the two gamepad items `[?]` (the MCP's ButtonA is a keyboard key).
+- [x] 2026-10-24 evening, Launch run part 2 closed: b, c, d, e, f done or `[?]`/`[A]` with why; g's level cap, staff effect and stacked mutations done, the chain's real run `[A]`; specs 196/196, stylua and selene clean. Part 1 waits on his Server and Clients, part 3 on Publish.
