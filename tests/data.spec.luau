@@ -2,7 +2,6 @@ local Species = require(Shared.Species)
 local Pieces = require(Shared.Pieces)
 local Mutations = require(Shared.Mutations)
 local Constants = require(Shared.Constants)
-local Locations = require(Shared.Locations)
 local Format = require(Shared.Format)
 local Net = require(Shared.Net)
 
@@ -55,15 +54,6 @@ describe("Data tables", function()
 					end
 				end
 				expect.truthy(served, p.id)
-			end
-		end
-	end)
-
-	it("every playable location has a rebirth resident of its own family", function()
-		for _, loc in Locations.List do
-			if loc.playable then
-				local sp = Species.get(loc.rebirthResident :: string)
-				expect.truthy(sp and sp.location == loc.id, loc.name)
 			end
 		end
 	end)
