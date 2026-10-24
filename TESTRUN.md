@@ -204,7 +204,9 @@ Same street first, then two streets, then the leave.
 **g. Long runs, last, as the night allows**
 
 - [ ] The hotel chain: a real run toward 5★ against his times.
-- [ ] Residents level up: the cap in a real run, a level's staff effect.
+- [x] Residents level up: the cap in a real run, a level's staff effect.
+  (2026-10-24 evening: the cap and the coverage effect by the remote, see
+  "Residents level up"; not a real run of 900 minutes.)
 - [ ] Deeper mutations: a stacked guest off a real bus, its pay and
   announcement.
 
@@ -1216,8 +1218,13 @@ PLACEHOLDER. Played by remotes and `execute_luau` only on `Test_Endless1021b`.
 - [x] The Residents panel: each row's `Level` ("Lv 2", "0/40 XP", the bar,
   "Working…"); `LevelBadge` "Lv 2" over the Slime, "Lv 1" over the Ghost.
 - [x] A rebirth: both residents kept at Lv 2 with their XP.
-- [ ] The cap reached in a real run (held by the spec only), and a level's
+- [x] The cap reached in a real run (held by the spec only), and a level's
   staff effect seen in the rating's coverage and Security's scare rate.
+  (2026-10-24 evening, `Test_Launch1024c`, not a real run: XP by `xp`, the
+  last level by the real `LevelUp` remote; level 10 then refused "Already at
+  the top level". A Housekeeping Slime 0.6 → 0.762 efficiency (+27 %), its
+  Cleanliness bonus with 3 rooms +6.00 at level 1 and +7.62 at level 10
+  (66.67 + 10 on time + 7.62 = 84.29). Security's scare rate not tried.)
 - [A] The badge's and the row's look; whether levels go through a rebirth
   (WAITING §2.38).
 
