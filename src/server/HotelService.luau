@@ -103,6 +103,15 @@ function HotelService.onRating(handler: (Player, number, number) -> ())
 	table.insert(ratingHandlers, handler)
 end
 
+local unreadyHandlers: { (Player, string) -> () } = {}
+
+--[[ Called (player, room id) when a room a guest is in or due at is no longer
+	ready (§5.4, A.12): the guest must not stay. Whatever change let it
+	through, the guest is sent back (GuestService). ]]
+function HotelService.onUnready(handler: (Player, string) -> ())
+	table.insert(unreadyHandlers, handler)
+end
+
 local function push(list: { number }, v: number, keep: number)
 	table.insert(list, v)
 	while #list > keep do
@@ -152,9 +161,17 @@ function HotelService.sync(player: Player)
 		end
 	end
 	readyCache[player] = cache
+	local unready = {}
 	for id, room in hotel.rooms do
-		if not data.rooms[id] or (not cache[id] and room.state == "Vacant") then
+		if not cache[id] and (room.state == "Reserved" or room.state == "Occupied") then
+			table.insert(unready, id) -- freed by the handlers, dropped on the next sync
+		elseif not data.rooms[id] or (not cache[id] and room.state == "Vacant") then
 			hotel.rooms[id] = nil
+		end
+	end
+	for _, id in unready do
+		for _, h in unreadyHandlers do
+			h(player, id)
 		end
 	end
 	HotelService.refreshPrompts(player)

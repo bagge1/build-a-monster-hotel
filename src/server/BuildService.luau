@@ -109,6 +109,7 @@ end
 
 local tutorialUnlocks: { [Player]: { [string]: boolean } } = {}
 local windowsOut: (Player, PlayerData.Data) -> ()
+local keepsGuests: (Player, PlayerData.Data, Rooms.World) -> boolean
 
 -- The tutorial unlocks a room type early (Appendix A.7).
 function BuildService.tutorialUnlock(player: Player, item: string)
@@ -162,10 +163,22 @@ function BuildService.tutorialTiles(player: Player)
 	for _, c in chosen do
 		local key = tostring(Grid.tileKey(1, c[1], c[2]))
 		if not data.tiles[key] then
-			for _, e in Rooms.autoWalls(PlotService.world(data), 1, c[1], c[2]) do
-				data.walls[e] = { paid = 0 }
+			-- As a tile bought (buyTile): its auto walls, and never one that breaks a room or a guest's stay.
+			local now = PlotService.world(data)
+			local auto = Rooms.autoWalls(now, 1, c[1], c[2])
+			local after = table.clone(now)
+			after.tiles = table.clone(now.tiles)
+			after.tiles[Grid.tileKey(1, c[1], c[2])] = true
+			after.walls = table.clone(now.walls)
+			for _, e in auto do
+				after.walls[e] = { paid = 0 }
 			end
-			data.tiles[key] = true
+			if Rooms.check(now, after) and keepsGuests(player, data, after) then
+				for _, e in auto do
+					data.walls[e] = { paid = 0 }
+				end
+				data.tiles[key] = true
+			end
 		end
 	end
 	windowsOut(player, data)
@@ -232,20 +245,32 @@ end
 
 --[[ Whether a change keeps every room a guest is in or due at as it was for
 	them (§4.4): still ready, the same size. `after` is the world after it. ]]
-local function keepsGuests(player: Player, data: PlayerData.Data, after: Rooms.World): boolean
-	local before = PlotService.world(data)
+function keepsGuests(player: Player, data: PlayerData.Data, after: Rooms.World): boolean
+	local busy = {}
 	for id in data.rooms do
 		if HotelService.busy(player, id) then
-			local a, b = Rooms.roomArea(before, id), Rooms.roomArea(after, id)
-			if not Rooms.ready(after, id) or not a or not b or a.size ~= b.size then
-				return false
-			end
+			busy[id] = true
 		end
 	end
-	return true
+	return Rooms.keepsBusy(PlotService.world(data), after, busy)
 end
 
 -- ===== Pieces: the stairs and the desks =====
+
+-- The world with piece `id` left out and `extra` (if any) in its place.
+local function withPiece(world: Rooms.World, id: string, extra: Grid.Placed?): Rooms.World
+	local after = table.clone(world)
+	after.pieces = {}
+	for _, p in world.pieces do
+		if p.id ~= id then
+			table.insert(after.pieces, p)
+		end
+	end
+	if extra then
+		table.insert(after.pieces, extra)
+	end
+	return after
+end
 
 local function place(player: Player, item: string, floor: number, x: number, z: number, r: number)
 	local data = PlayerData.get(player)
@@ -270,6 +295,13 @@ local function place(player: Player, item: string, floor: number, x: number, z: 
 	local legal, reason = Rooms.canPlacePiece(world, candidate)
 	if not legal then
 		refuse(player, "Place", reason or "Blocked")
+		return
+	end
+	local placedWorld = table.clone(world)
+	placedWorld.pieces = table.clone(world.pieces)
+	table.insert(placedWorld.pieces, candidate)
+	if not keepsGuests(player, data, placedWorld) then
+		refuse(player, "Place", "Busy")
 		return
 	end
 	local cost = BuildService.price(data, item)
@@ -309,6 +341,10 @@ local function move(
 		refuse(player, "Move", reason or "Blocked")
 		return
 	end
+	if not keepsGuests(player, data, withPiece(world, id, candidate)) then
+		refuse(player, "Move", "Busy")
+		return
+	end
 	rec.floor, rec.x, rec.z, rec.r = floor, x, z, r
 	PlotService.rebuild(player)
 	changed(player, "Move")
@@ -325,6 +361,10 @@ local function sell(player: Player, idNumber: number)
 	local ok, why = Rooms.canRemovePiece(world, Layout.find(world, id) :: Grid.Placed)
 	if not ok then
 		refuse(player, "Sell", why or "Blocked")
+		return
+	end
+	if not keepsGuests(player, data, withPiece(world, id, nil)) then
+		refuse(player, "Sell", "Busy")
 		return
 	end
 	data.layout[id] = nil
@@ -406,6 +446,10 @@ local function buyTile(player: Player, floor: number, x: number, z: number)
 	local fine, refusal = Rooms.check(world, after)
 	if not fine then
 		refuse(player, "BuyTile", refusal or "Blocked")
+		return
+	end
+	if not keepsGuests(player, data, after) then
+		refuse(player, "BuyTile", "Busy")
 		return
 	end
 	if not PlayerData.spend(player, BuildService.tileCost(data, floor)) then

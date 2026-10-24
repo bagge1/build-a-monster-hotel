@@ -1029,6 +1029,23 @@ function GuestService.Start()
 	Players.PlayerRemoving:Connect(function(player)
 		income[player] = nil
 	end)
+	-- A guest whose room stopped being ready never stays in it (§5.4, A.12): it is sent back, the room freed.
+	HotelService.onUnready(function(player, roomId)
+		local sent = 0
+		for _, g in guests do
+			if g.owner == player and g.room == roomId then
+				if g.state == "Queued" or g.state == "ToHotel" then
+					leaveQueue(player, g)
+				end
+				sendHome(g, PlotService.of(player))
+				sent += 1
+			end
+		end
+		HotelService.setRoom(player, roomId, "Vacant")
+		if sent > 0 then
+			Net.fire(player, "Toast", "A guest left: its room isn't ready any more", "Info")
+		end
+	end)
 	DevGrant.register("guest", function(player, args)
 		-- Studio only: a guest of `args[1]` (a Slime by default) walks in from the pavement, as the tutorial's does.
 		local g = GuestService.spawnTutorial(player, args[1] or "Slime", { source = "Dev" })

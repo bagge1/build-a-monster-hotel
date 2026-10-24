@@ -1149,6 +1149,19 @@ function Rooms.ready(world: World, roomId: string): (boolean, { string }?)
 	return readyIn(world, roomId, w, fromEntrance(w))
 end
 
+--[[ Whether a change keeps every room in `busy` (a guest in it or due at it,
+	§5.4, A.12) as it was for its guest: still ready and the same size. The
+	server asks it of every change to the hotel before making it. ]]
+function Rooms.keepsBusy(before: World, after: World, busy: { [string]: boolean }): boolean
+	for id in busy do
+		local a, b = Rooms.roomArea(before, id), Rooms.roomArea(after, id)
+		if not a or not b or a.size ~= b.size or not Rooms.ready(after, id) then
+			return false
+		end
+	end
+	return true
+end
+
 -- ===== Pieces, decor and tiles among the walls (wiring, 2026-10-21) =====
 
 -- The square of a cell nearest its middle a guest can stand on (where a desk's queue or a stair's foot is stood on).
