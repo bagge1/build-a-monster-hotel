@@ -674,7 +674,7 @@ WAITING §0.9): what needs the new models or the build menu's clicks stays open.
   accepted; not looked at.) Floors: a finish laid on a room, the lobby and the hallways; "Its own
   floor" brings the model's back.
 - [x] Rays and walkers as in phase 11 over a hotel of placed stairs (`fill`).
-  (2026-10-25 01:28, `Test_Launch1024q`: `fill`'s 43 rooms on 3 floors, its
+  (2026-10-25 01:25, `Test_Launch1024q`: `fill`'s 43 rooms on 3 floors, its
   stairs at cells (1..2, 14..15). A walker by `MoveTo` over each step's top
   (Step_Up 1–8, the landing, Step_Down 1–7) went from floor 1 (root y 4.4)
   to floor 2 (y 22.4) and out onto its floor, no Freefall or Climbing; the
