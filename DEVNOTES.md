@@ -260,6 +260,14 @@ all the time: count them.
 
 ## Physics and constraints
 
+### `GetJoints` is empty until the part is in the Workspace
+
+2026-10-24: `MonsterAnimator` asked `#p:GetJoints() == 0` on a freshly
+cloned rigged monster, before parenting it: every part answered 0 (with an
+engine warning each), so every part got a WeldConstraint on top of its
+Motor6D. → Read the joints from the model itself (`JointInstance` and
+`WeldConstraint` descendants' `Part0`/`Part1`).
+
 ### A `WeldConstraint` does not carry until the model is in Workspace
 
 Set a root's `CFrame` before parenting and the root moves alone; on parenting,
@@ -342,6 +350,15 @@ of 0. Use `UseJumpPower` and `JumpPower`, which is the speed itself.
   from the MCP. A real purchase is August's click.
 
 ---
+
+### Roblox's emote wheel owns the `.` key
+
+2026-10-24: build mode's camera turned with `,` but never with `.`. The key
+arrived game-processed: the CoreGui emote wheel binds `.` (R15 avatars), and
+an `InputAction` never saw it. → Build mode turns
+`Enum.CoreGuiType.EmotesMenu` off while open and back on after. Check any new
+key against Roblox's own hotkeys (`/` chat, `.` emotes, Esc menu) with an
+`InputBegan` logger: a `gameProcessed` true is a key someone else owns.
 
 ## Data
 
