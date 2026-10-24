@@ -277,8 +277,11 @@ Med Claudes skärmdump där det finns en. -->
    överlapp är ett fel, inte ett val). På korta skärmar slutar
    verktygsraderna 8 px ovanför remsan och rullar, och högermenyn göms medan
    du bygger, som vänstermenyn redan gjorde; på en dator är allt som förut.
-   **Inte sett i Studio än** (Studio var inte anslutet). Bilden före:
-   `archive/screens/2026-10-24_phone_build_overlap.jpg`.
+   Sett i Studios telefonsimulator samma kväll: verktygen slutar vid y 152,
+   remsan börjar vid 190, två hela rader syns och resten rullas fram med ett
+   finger (Done nås). Före: `archive/screens/2026-10-24_phone_build_overlap.jpg`,
+   efter: `archive/screens/2026-10-24_phone_build_fixed.jpg`. Hur det ser ut
+   är ditt att säga.
 
 ## §2 Beslut
 

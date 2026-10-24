@@ -1450,7 +1450,9 @@ function fitTools()
 		local top = tools.AbsolutePosition.Y
 		local stripTop = strip.AbsolutePosition.Y
 		if stripTop > top then
-			height = math.clamp(stripTop - top - 8, 98, 260)
+			-- Whole rows only (44 high, 10 apart), never a row cut in half.
+			local rows = math.clamp(math.floor((stripTop - top - 8 + 10) / 54), 2, 5)
+			height = rows * 54 - 10
 		end
 	end
 	tools.Size = UDim2.fromOffset(380, height)
