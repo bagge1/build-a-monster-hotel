@@ -1095,6 +1095,19 @@ function Rooms.keySpot(world: World, roomId: string): Spot?
 	return reachedKey(world, roomId, w, fromEntrance(w))
 end
 
+-- Every room's `Rooms.keySpot` at once, the walk and the flood built once (as `Rooms.readiness`).
+function Rooms.keySpots(world: World): { [string]: Spot }
+	local w = walkOf(world)
+	local reach = fromEntrance(w)
+	local out: { [string]: Spot } = {}
+	Rooms.withAreas(world, function()
+		for id in world.rooms do
+			out[id] = reachedKey(world, id, w, reach) :: any
+		end
+	end)
+	return out
+end
+
 function readyIn(
 	world: World,
 	roomId: string,

@@ -741,29 +741,41 @@ describe("Rooms", function()
 		return wd
 	end
 
-	it("readiness says of every room what ready says, as the hotel changes", function()
-		local wd = readyRoomWorld()
-		room(wd, "s", "StandardRoom", 6, 4, 2, 2) -- no Bed: not ready
-		local function agree(label)
-			local all = Rooms.readiness(wd)
+	it(
+		"readiness and key spots say of every room what ready and keySpot say, as the hotel changes",
+		function()
+			local wd = readyRoomWorld()
+			room(wd, "s", "StandardRoom", 6, 4, 2, 2) -- no Bed: not ready
+			local function agree(label)
+				local all = Rooms.readiness(wd)
+				for id in wd.rooms do
+					local ok, missing = Rooms.ready(wd, id)
+					expect.eq(all[id].ok, ok, `{label}: {id}`)
+					expect.eq(
+						table.concat(all[id].missing or {}, ","),
+						table.concat(missing or {}, ","),
+						`{label}: {id}`
+					)
+				end
+			end
+			agree("built")
+			local spots = Rooms.keySpots(wd)
 			for id in wd.rooms do
-				local ok, missing = Rooms.ready(wd, id)
-				expect.eq(all[id].ok, ok, `{label}: {id}`)
+				local one, all = Rooms.keySpot(wd, id), spots[id]
 				expect.eq(
-					table.concat(all[id].missing or {}, ","),
-					table.concat(missing or {}, ","),
-					`{label}: {id}`
+					one and `{one.floor}:{one.x}:{one.z}`,
+					all and `{all.floor}:{all.x}:{all.z}`,
+					`key spot {id}`
 				)
 			end
+			for hx = 0, N * HC - 2 do
+				wall(wd, Rooms.edgeKey(1, hx, 3 * HC, 0))
+			end
+			agree("corridor nearly shut")
+			wd.walls[Rooms.edgeKey(1, N * HC - 1, 3 * HC, 0)] = { paid = 0 }
+			agree("corridor shut")
 		end
-		agree("built")
-		for hx = 0, N * HC - 2 do
-			wall(wd, Rooms.edgeKey(1, hx, 3 * HC, 0))
-		end
-		agree("corridor nearly shut")
-		wd.walls[Rooms.edgeKey(1, N * HC - 1, 3 * HC, 0)] = { paid = 0 }
-		agree("corridor shut")
-	end)
+	)
 
 	it(
 		"a wall across the corridor to a ready room is refused (CutsOff), a door in it is not",

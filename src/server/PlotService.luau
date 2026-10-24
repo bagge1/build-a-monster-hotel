@@ -586,15 +586,20 @@ function drawRooms(plot: Plot, data: PlayerData.Data)
 	-- Which half cells belong to which room, to turn each door out of its room.
 	local inRoom: { [string]: string } = {}
 	local areas: { [string]: Rooms.Area } = {}
-	for id in data.rooms do
-		local a = Rooms.roomArea(world, id)
-		if a and not a.hallway and #a.rooms == 1 then
-			areas[id] = a
-			for _, k in a.cells do
-				inRoom[`{a.floor}:{k}`] = id
+	local keySpots: { [string]: Rooms.Spot } = {}
+	Rooms.withAreas(world, function()
+		for id in data.rooms do
+			local a = Rooms.roomArea(world, id)
+			if a and not a.hallway and #a.rooms == 1 then
+				areas[id] = a
+				for _, k in a.cells do
+					inRoom[`{a.floor}:{k}`] = id
+				end
 			end
 		end
-	end
+		-- Every room's key spot at once: one by one a full hotel's took half a second (2026-10-24 evening).
+		keySpots = Rooms.keySpots(world)
+	end)
 	local drawn: { HotelKit.DrawnWall } = {}
 	for edge, rec in data.walls do
 		local floor, hx, hz, o = Rooms.edgeOf(edge)
@@ -677,7 +682,7 @@ function drawRooms(plot: Plot, data: PlayerData.Data)
 					point("Sign", sign)
 				end
 			end
-			local spot = Rooms.keySpot(world, id)
+			local spot = keySpots[id]
 			local keyAt: CFrame? = nil
 			if spot then
 				keyAt = plot.frame
