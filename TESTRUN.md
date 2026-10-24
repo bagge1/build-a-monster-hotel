@@ -139,10 +139,15 @@ Same street first, then two streets, then the leave.
 
 **d. A new player**
 
-- [ ] Phase 12: no walk-ins without a bus; the tutorial's Slime and Vampire
-  Count.
+- [x] Phase 12: no walk-ins without a bus; the tutorial's Slime and Vampire
+  Count. (2026-10-24 night, `Test_Launch1024c`: the Slime on a fresh profile,
+  source Tutorial, before any bus; 30 s with two rooms vacant and no bus: no
+  guest; goal card at bus 1, the Vampire Count added at bus 3 and riding bus
+  4, booked to the Coffin Suite, straight to the hotel `ToHotel`.)
 - [ ] Tutorial Commons: the weighting's stops; the ping menu's three cases.
-- [ ] Built rooms, stage 1–2: Collect, on a profile without Auto Collect.
+- [?] Built rooms, stage 1–2: Collect, on a profile without Auto Collect.
+  (2026-10-24 night: a fresh `Test_` profile still owns his passes, Auto
+  Collect among them; it needs an account without it, part 3.)
 
 **e. Phone** (simulator before Play: `iphone_14` landscape, then
 `ipad_10th_generation`)
@@ -1395,3 +1400,4 @@ Played by remotes on the published place, profile `Test_Launch1023a`, Studio not
 - [ ] Bookshelf and Wardrobe were not placed by the test's positions (no refusal came back): look into it.
 - [ ] Pictures of the placed models, with Studio in front.
 - [x] 2026-10-24 night, Launch run part 2a: persistence, Bayou's kit and the VIP lounge, the four facade packs, notifications and the rigged monsters pass; server size `[A]`, Flip `[?]`. Also run: a booked room that stops being ready sends its guest back (the night's fix), a door only in a wall with its outline on the wall pointed at (the night's fix, by a real mouse).
+- [x] 2026-10-24 night, part 2d: no walk-ins, the tutorial's Slime and its Vampire Count pass; Collect `[?]` (the test profile owns Auto Collect); Tutorial Commons not run.
