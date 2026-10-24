@@ -195,7 +195,11 @@ Same street first, then two streets, then the leave.
   findings; two false (the path is 6 studs, his value; the guest "in the
   player's feet" stood where Claude put the player), the looks to WAITING
   §2.52. Phase 10's not found as its own line.)
-- [ ] Phase 12, the forest: low graphics, a Frostfang plot's band.
+- [x] Phase 12, the forest: low graphics, a Frostfang plot's band.
+  (2026-10-24 evening: low graphics by its remote draws 2,520 of 5,029 trees
+  (50.1 %), back to 5,029 when turned off; around a Frostfang plot (within
+  250 studs) 99 snowy firs, 30 firs and 24 bare trees, the band blending
+  into Creepy Lane's; how the mix looks is his.)
 - [x] Rare decor: the Decor tab's cards, the set line, **Place it**, the Book's
   mark, clicked. (2026-10-24 evening, `Test_Launch1024c`: a roll found the
   Coffin Clock and a dev grant the Slime Souvenir; the pop-up's **Place it**
