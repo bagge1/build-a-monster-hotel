@@ -134,8 +134,10 @@ Same street first, then two streets, then the leave.
   core any more; at each location a person-sized box (3 × 6.5) through the
   start room's door touches no colliding part, and through each of the 9
   plain walls always does, in all three kits.)
-- [ ] Gamepad navigation: the keyboard item (B, R, `,` `.`, the chat;
+- [!] Gamepad navigation: the keyboard item (B, R, `,` `.`, the chat;
   *front*), every window's selection, build mode with the gamepad last.
+  (2026-10-24 evening: the keys pass after a fix (`.` was the emote wheel's);
+  the two gamepad items `[?]`, a real controller.)
 - [ ] Built rooms, stage 3: a gamepad's A and a two-finger pan cannot be sent:
   mark both `[?]`.
 
@@ -712,18 +714,26 @@ August's, on a real controller.
   (2000, off until build mode opens). If no action fires, an `InputContext`
   may need another parent (DEVNOTES: the avatar's `CharacterContext` lives
   in `StarterPlayer.PlayerModule`).
-- [ ] (B opened build mode, `BuildKeys` on and the HUD hidden; B again
+- [!] (B opened build mode, `BuildKeys` on and the HUD hidden; B again
   closed it; R opened Residents; a mouse click on Book opened it. R inside
-  build mode, `,` `.` and the chat not tried.) Keyboard, unchanged: B opens and closes build mode (once per press, not
+  build mode, `,` `.` and the chat not tried. 2026-10-24 evening, real keys:
+  R in build mode leaves Residents shut; `,` held 1 s turns the camera 86°;
+  **`.` did nothing**: Roblox's emote wheel owns the key (it arrived
+  game-processed), so build mode now turns the emote menu off while open
+  and back on after; then `.` held 1 s turned it 88°. With the chat focused
+  (`/`), B and R do nothing.) Keyboard, unchanged: B opens and closes build mode (once per press, not
   open-and-shut), R opens Residents outside build mode and rotates the ghost
   inside it, `,` and `.` turn the build camera; none of them acts while
   typing in the chat.
-- [ ] Every window (Rating, Residents, Book, Moon, Store, Daily, Events,
+- [?] (2026-10-24 evening: `SelectedObject` set on the Rating button and
+  ButtonA sent by the MCP: it arrives as a keyboard key, so the engine's
+  selection does not press the button; a real controller, the [A] below.)
+  Every window (Rating, Residents, Book, Moon, Store, Daily, Events,
   Settings, the piece menu, traps, style, the Ping menu): opened with
   `GuiService.SelectedObject` set by `execute_luau` on its HUD button and
   activated, its top-left button is selected; it stays selected through a
   redraw (the till ticking redraws the Store); closed, the selection is nil.
-- [ ] Build mode with the gamepad as the last input: opens on the first card;
+- [?] (The same: no gamepad input can be sent.) Build mode with the gamepad as the last input: opens on the first card;
   a card chosen lets the selection go and a ghost stands at the plot's
   middle; `BuildPad` is on only while nothing is selected.
 - [A] (A real controller: the Studio MCP cannot press a gamepad button.)
@@ -1428,3 +1438,4 @@ Played by remotes on the published place, profile `Test_Launch1023a`, Studio not
 - [x] 2026-10-24 night, part 2c (Rating): Room Service +10.0 Service with 3 rooms, Housekeeping +6.0 Cleanliness and Service unchanged, Service 0 before any stay, an overdue room counting late at once (66.67 + 5); the 8-room half not tried.
 - [x] 2026-10-24 night, part 2f: the street's in-game blind review run and triaged (WAITING §2.52); the rigged monsters' too (§2.51).
 - [!] 2026-10-24 night, part 2f by real keys: the VIP ledger by F passes; Boo! had no prompt (the Hunter template's PrimaryPart lost to live sync), fixed in `HunterRenderer` and `BusRenderer`, then a real E sent a hunter fleeing.
+- [!] 2026-10-24 evening, part 2b gamepad: the keyboard item passes after a fix (Roblox's emote wheel took `.`; off while building); the two gamepad items `[?]` (the MCP's ButtonA is a keyboard key).

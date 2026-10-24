@@ -47,6 +47,7 @@
 ]]
 
 local GuiService = game:GetService("GuiService")
+local StarterGui = game:GetService("StarterGui")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -1468,6 +1469,10 @@ local function setActive(on: boolean)
 	if leftColumn and leftColumn:IsA("GuiObject") then
 		leftColumn.Visible = not on
 	end
+	-- Roblox's emote wheel owns the . key (it took the camera's turn, 2026-10-24): off while building.
+	pcall(function()
+		StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.EmotesMenu, not on)
+	end)
 	-- On a phone the right menu would lie over the strip too: it steps aside while building.
 	local rightColumn = hud and hud:FindFirstChild("Right")
 	if rightColumn and rightColumn:IsA("GuiObject") then
