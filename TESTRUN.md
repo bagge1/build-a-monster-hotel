@@ -673,7 +673,13 @@ WAITING §0.9): what needs the new models or the build menu's clicks stays open.
 - [ ] (Oak Boards on a room and the hallways, Dark Boards on the lobby,
   accepted; not looked at.) Floors: a finish laid on a room, the lobby and the hallways; "Its own
   floor" brings the model's back.
-- [ ] Rays and walkers as in phase 11 over a hotel of placed stairs (`fill`).
+- [x] Rays and walkers as in phase 11 over a hotel of placed stairs (`fill`).
+  (2026-10-25 01:28, `Test_Launch1024q`: `fill`'s 43 rooms on 3 floors, its
+  stairs at cells (1..2, 14..15). A walker by `MoveTo` over each step's top
+  (Step_Up 1–8, the landing, Step_Down 1–7) went from floor 1 (root y 4.4)
+  to floor 2 (y 22.4) and out onto its floor, no Freefall or Climbing; the
+  stair from floor 2 to 3 is the same piece. `PathfindingService` finds no
+  path through the core (it does on flat floor): plan stairs by their steps.)
 
 ## Rating: staff coverage and cleaning on time (GDD §5.3, Appendix A.4; after the merge)
 
