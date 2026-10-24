@@ -109,8 +109,10 @@ Cards per tab:
 
 - **Walls**: `Tool_Wall` (a tap puts up the cell edge under the pointer, a
   drag a straight run along the grid; a ghost shows each half edge green or
-  red and the strip its price), `Tool_Door` (a tap puts a door in the half
-  edge under it or takes one out), `Tool_Remove` (as Walls, taking them
+  red and the strip its price), `Tool_Door` (pointing at a standing wall
+  outlines its doorway on the half edge the camera's ray meets first, green
+  or red; a tap puts a door in it or takes one out; a door never goes where
+  no wall stands, GDD A.12), `Tool_Remove` (as Walls, taking them
   down), `HalfCells` (the toggle: half edges of 6 studs instead of cell
   edges).
 - **Rooms**: `Room_<id>`, one per room built on the floor in view: its type

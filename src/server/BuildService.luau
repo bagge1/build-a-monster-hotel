@@ -541,8 +541,8 @@ local function wallRun(
 	end
 end
 
---[[ A door put in the wall on `edge` (`on`: $DoorCost, a wall put up with it
-	where there is none) or walled up again (half its price back). ]]
+--[[ A door put in the wall on `edge` (`on`: $DoorCost; only in a wall that
+	stands, his ruling 2026-10-23) or walled up again (half its price back). ]]
 local function door(player: Player, edge: string, on: boolean)
 	local data = PlayerData.get(player)
 	if not data then
@@ -552,14 +552,12 @@ local function door(player: Player, edge: string, on: boolean)
 	local f, hx, hz, o = Rooms.edgeOf(edge)
 	local e = Rooms.edgeKey(f, hx, hz, o)
 	local rec = data.walls[e]
-	local ok, why
-	if rec then
-		ok, why = Rooms.canDoor(world, e, on)
-	elseif on then
-		ok, why = Rooms.canWall(world, e, true)
-	else
-		ok, why = false, "NoWall"
+	if not rec then
+		-- A door goes only in a wall that stands (his ruling 2026-10-23, A.12).
+		refuse(player, "Door", "DoorNeedsWall")
+		return
 	end
+	local ok, why = Rooms.canDoor(world, e, on)
 	if not ok then
 		refuse(player, "Door", why or "Blocked")
 		return
@@ -572,12 +570,12 @@ local function door(player: Player, edge: string, on: boolean)
 		return
 	end
 	if on then
-		local cost = R.DoorCost + (if rec then 0 else R.WallCost)
+		local cost = R.DoorCost
 		if not PlayerData.spend(player, cost) then
 			refuse(player, "Door", "Cash")
 			return
 		end
-		data.walls[e] = { door = true, paid = (if rec then rec.paid else 0) + cost }
+		data.walls[e] = { door = true, paid = (rec.paid or 0) + cost }
 	else
 		local back = math.min(rec.paid or 0, R.DoorCost)
 		PlayerData.refund(player, Economy.refund(back))

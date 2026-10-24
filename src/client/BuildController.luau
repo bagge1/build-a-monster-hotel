@@ -407,6 +407,8 @@ end
 
 -- The cell under the pointer on the floor in view, or nil off the plot.
 local pointerLocal: (number, number) -> Vector3?
+local judgeDoor: (number, number) -> (string?, boolean, boolean, string?)
+local showDoor: (number, number) -> ()
 local function cellUnder(x: number, y: number): Grid.Cell?
 	local l = pointerLocal(x, y)
 	if not l then
@@ -1198,7 +1200,7 @@ function redrawCards()
 				wallMode = t[1]
 				info.Text = if t[1] == "Door"
 					then Controls.hint(
-						"Tap a wall to put a door in it, or take one out",
+						"Point at a wall: the outline shows where the door goes; tap to put it in or take it out",
 						"A on a wall"
 					)
 					else Controls.hint(
@@ -1650,6 +1652,68 @@ local function showRun(edges: { string })
 	end
 end
 
+--[[ The Door tool (his ruling 2026-10-23): the standing wall the pointer is
+	on (`Rooms.wallOnRay`, the first wall the camera's ray meets, never a half
+	edge behind it), whether a door goes in (`on`) or comes out, and whether
+	the rules allow it. No wall under the pointer: nil. ]]
+function judgeDoor(x: number, y: number): (string?, boolean, boolean, string?)
+	local frame = plotFrame()
+	if not frame then
+		return nil, false, false, nil
+	end
+	local ray = camera:ScreenPointToRay(x, y)
+	local w: any = world()
+	local e = Rooms.wallOnRay(
+		w,
+		floor,
+		frame:PointToObjectSpace(ray.Origin),
+		frame:VectorToObjectSpace(ray.Direction)
+	)
+	if not e then
+		return nil, false, false, "DoorNeedsWall"
+	end
+	local on = not w.walls[e].door
+	local ok, why = Rooms.canDoor(w, e, on)
+	return e, on, ok == true, why
+end
+
+-- The outline of the doorway on the wall the pointer is on (MODELS.md: Wall_Door's opening, x −2..2, y 0..7.2).
+function showDoor(x: number, y: number)
+	clearWallGhost()
+	local e, on, ok, why = judgeDoor(x, y)
+	local frame = plotFrame()
+	if not e or not frame then
+		info.Text = Hud.refusal(why or "DoorNeedsWall")
+		return
+	end
+	local f, hx, hz, o = Rooms.edgeOf(e)
+	local folder = Instance.new("Folder")
+	folder.Name = "WallGhost"
+	local p = Instance.new("Part")
+	p.Anchored = true
+	p.CanCollide, p.CanQuery, p.CanTouch, p.CastShadow = false, false, false, false
+	p.Material = Enum.Material.SmoothPlastic
+	p.Transparency = 0.6
+	p.Color = if ok then Ui.Colour.Good else Ui.Colour.Bad
+	p.Size = Vector3.new(4, 7.2, 0.6)
+	local at = if o == 0
+		then Vector3.new(hx * HALF + HALF / 2, Grid.floorY(f) + 3.6, hz * HALF)
+		else Vector3.new(hx * HALF, Grid.floorY(f) + 3.6, hz * HALF + HALF / 2)
+	p.CFrame = frame * CFrame.new(at) * CFrame.Angles(0, if o == 1 then math.pi / 2 else 0, 0)
+	local box = Instance.new("SelectionBox")
+	box.Adornee = p
+	box.Color3 = p.Color
+	box.LineThickness = 0.08
+	box.Parent = p
+	p.Parent = folder
+	folder.Parent = workspace
+	wallGhost = folder
+	info.Text = if not ok
+		then Hud.refusal(why or "")
+		elseif on then `A door here · {Format.cash(build().doorCost or 10)}`
+		else "Wall up this door"
+end
+
 -- The run from the drag's start vertex to the pointer's, along the longer axis; nil on the start vertex.
 local function dragRun(l: Vector3): (number?, number?, number?, number?)
 	local start = wallFrom
@@ -1675,8 +1739,7 @@ local function wallHover(x: number, y: number)
 		return
 	end
 	if wallMode == "Door" then
-		local hx, hz, o = edgeAt(l, true)
-		drawWallGhost({ Rooms.edgeKey(floor, hx, hz, o) }, { true })
+		showDoor(x, y)
 		return
 	end
 	local hx, hz, o, count = dragRun(l)
@@ -1694,21 +1757,11 @@ local function wallRelease(x: number, y: number)
 		return
 	end
 	if wallMode == "Door" then
-		local hx, hz, o = edgeAt(l, true)
-		local e = Rooms.edgeKey(floor, hx, hz, o)
-		local w: any = world()
-		local rec = w.walls[e]
-		local on = not (rec and rec.door)
-		local ok, why
-		if rec then
-			ok, why = Rooms.canDoor(w, e, on)
-		else
-			ok, why = Rooms.canWall(w, e, true)
-		end
-		if ok then
+		local e, on, ok, why = judgeDoor(x, y)
+		if e and ok then
 			Net.send("Door", e, on)
 		else
-			info.Text = Hud.refusal(why or "")
+			info.Text = Hud.refusal(why or "DoorNeedsWall")
 		end
 		wallFrom = nil
 		return

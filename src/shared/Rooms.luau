@@ -1440,6 +1440,39 @@ function Rooms.autoWalls(world: World, floor: number, x: number, z: number): { E
 	return out
 end
 
+--[[ The standing wall (a door's too) on `floor` that a ray meets first, as
+	its half edge, or nil (his ruling 2026-10-23: the Door tool takes the wall
+	the pointer is on, never a half edge behind it). `origin` and `dir` are
+	plot-local studs; a wall is its half edge's upright face, the floor's
+	`WallHeight` tall. ]]
+function Rooms.wallOnRay(world: World, floor: number, origin: Vector3, dir: Vector3): Edge?
+	local half = G.CellSize / HC
+	local y0 = Grid.floorY(floor)
+	local y1 = y0 + G.WallHeight
+	local best: Edge?, bestT = nil, math.huge
+	for e in world.walls do
+		local f, hx, hz, o = Rooms.edgeOf(e)
+		if f == floor then
+			-- o 0: along x at z = hz; o 1: along z at x = hx.
+			local plane = if o == 0 then hz * half else hx * half
+			local d = if o == 0 then dir.Z else dir.X
+			local from = if o == 0 then origin.Z else origin.X
+			if math.abs(d) > 1e-6 then
+				local t = (plane - from) / d
+				if t > 0 and t < bestT then
+					local p = origin + dir * t
+					local along = if o == 0 then p.X else p.Z
+					local start = (if o == 0 then hx else hz) * half
+					if along >= start and along <= start + half and p.Y >= y0 and p.Y <= y1 then
+						best, bestT = e, t
+					end
+				end
+			end
+		end
+	end
+	return best
+end
+
 --[[ Where `Wall_Post` stands (MODELS.md "Walls"): every vertex an inner wall
 	or door touches but where exactly two meet in a straight line, as
 	{ floor, vx, vz } in half-cell units (the vertex at half cell (vx, vz)'s

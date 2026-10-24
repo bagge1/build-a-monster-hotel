@@ -815,6 +815,7 @@ After the soft launch we apply for Kids/Select eligibility:
 | 2026-10-23 | Server size **10** (the plots); private servers **100 Robux/month**; codes `WELCOME`, `SPOOKY` and `HALLOWEEN`; the VIP lounge set and the four facade packs built for launch; Bayou, the lounge and the packs approved in one round | His yeses to Claude's recommendations |
 | 2026-10-23 | **The approval round:** Bayou Spa's ten monsters, its kit (desk, two stairs, sign, plaque, ten decor) and facade, the VIP lounge set (Velvet Rope, VIP Sofa, Cupcake Tower, Red Carpet, VIP Sign; bought with cash once the pass unlocks them, prices PLACEHOLDER) and all seven facade styles, the four packs included, as rendered (`blender/monsters/bayou_spa/`, `blender/hotel/bayou_spa/`, `blender/facade/`, `blender/decor/vip_lounge/` READMEs) | His "ja till alla modeller", with Claude's recommendations in WAITING §2.49–2.50 (keep the Steam Vent, the shutters and the Cupcake Tower; the facade seen in the game before any swampier frieze) |
 | 2026-10-23 | **The balance run's values** (`archive/BALANCE-2026-10-23.md`): pay **×5** per later location (§4.2's ×20 was a starting value; the pieces' rows stay ×20), opening Frostfang Lodge **$400,000** and Bayou Spa **$1,000,000**, Comfort **2.5** points per ready room, a VIP contract's reward **4 minutes** of income × rarity, a daily request **4 minutes**, the reward floor **BasePay × 2** (`Economy.RewardFloor`), codes `WELCOME` $500, `SPOOKY` 5 Moon Shards, `HALLOWEEN` $1,000 + 5. Modelled: 5★ at Haunted Manor 41 / 55 / 39 min, Frostfang +58 / +64 / +52, Bayou +2:04 / +1:30 / +1:56, rebirth 3:39 / 3:24 / 3:25 for an efficient, a casual and a paying player (§6.3) | His yes to the run's summary ("ja till balanskörningen"); the run by Fable, as ruled the same day. Everything the run left is still PLACEHOLDER |
+| 2026-10-23 | **A door goes only in a standing wall**, and the Door tool outlines the doorway on the wall the pointer is on, never placing one blind behind a wall ("lät mig placera dörrar som inte var på väggen. borde visa outlinen vart dörren hamnar. inte placera blint bakom väggen för den delen"); A.12 | His report from play, built the night of 2026-10-24 |
 
 ---
 
@@ -1832,6 +1833,10 @@ plot floor 24 × 24. Walls stand on half-cell edges. Build mode draws a wall
 along a whole cell edge (two half edges) by default; its **Half cells**
 toggle draws one half edge at a time. A half edge costs **$5**, a door **$10**
 (a door is a half edge whose wall has a door in it; it replaces the wall).
+A door goes only in a wall that already stands, never on a bare half edge
+(his ruling 2026-10-23); the Door tool takes the wall the pointer is on (the
+first the camera's ray meets, never a half edge behind it) and outlines the
+doorway on it before the tap.
 A wall stands only inside the hotel: both half cells on its sides owned on
 that floor, neither in the entrance's mouth nor under a stair or its well.
 The facade is the hotel's outer wall; inner walls never stand on it.
@@ -1863,7 +1868,11 @@ through the door to a square beside its key furniture. A room that is not
 ready is never booked and says what it lacks. Furniture, decor or a wall
 that would cut a ready room's key furniture off from its door is refused
 (as a door cut off from the entrance is; found in play 2026-10-21: a
-walled-off bed left the room ready and its VIP was sent home).
+walled-off bed left the room ready and its VIP was sent home). A room a guest is in or due at stays ready and the same size through
+every change to the hotel, and a change that would break it is refused
+("A guest is using that room"); should one ever stop being ready all the
+same, its guest is sent back and the room freed, never left in it (his
+report 2026-10-23).
 
 **Furniture** stands on the 3-stud decor grid like decor (`layer` Floor),
 inside a room or on hallway floor, and is bought and sold like decor. Each

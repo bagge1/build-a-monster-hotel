@@ -75,6 +75,7 @@ local REFUSALS: { [string]: string } = {
 	UnknownType = "Not a room type",
 	Hallway = "That's hallway: wall a space off first",
 	NoDoor = "It needs a door first",
+	DoorNeedsWall = "A door goes in a wall: point at one",
 	Taken = "That's a room already",
 	Outside = "That doesn't fit in the room",
 	Across = "Decor can't stand across a wall",
