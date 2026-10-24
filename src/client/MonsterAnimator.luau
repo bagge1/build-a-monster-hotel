@@ -69,19 +69,49 @@ function MonsterAnimator.attach(model: Model, shape: string, height: number): An
 		return nil
 	end
 	-- The meshes ride on Root (CLAUDE.md, "The art handoff"): the import keeps the
-	-- importer's Motor6Ds to its `RootPart`; a part with no joint is welded to Root.
+	-- importer's Motor6Ds to its `RootPart`; each group of parts its joints hold
+	-- together that does not reach Root is welded to it by one part. The joints are
+	-- read from the model (GetJoints is empty while it is not in the Workspace yet).
 	local root = model.PrimaryPart
 	if root then
+		local links: { [BasePart]: { BasePart } } = {}
+		for _, j in model:GetDescendants() do
+			if j:IsA("JointInstance") or j:IsA("WeldConstraint") then
+				local a, b = (j :: any).Part0, (j :: any).Part1
+				if a and b then
+					links[a] = links[a] or {}
+					links[b] = links[b] or {}
+					table.insert(links[a], b)
+					table.insert(links[b], a)
+				end
+			end
+		end
+		local held: { [BasePart]: boolean } = {}
+		local function hold(from: BasePart)
+			local stack = { from }
+			held[from] = true
+			while #stack > 0 do
+				local q = table.remove(stack) :: BasePart
+				for _, n in links[q] or {} do
+					if not held[n] then
+						held[n] = true
+						table.insert(stack, n)
+					end
+				end
+			end
+		end
+		hold(root)
 		for _, p in model:GetDescendants() do
 			if p:IsA("BasePart") and p ~= root then
 				p.CanCollide, p.CanQuery, p.CanTouch = false, false, false
-				if #p:GetJoints() == 0 then
+				if not held[p] then
 					p.Anchored = false
 					p.Massless = true
 					local w = Instance.new("WeldConstraint")
 					w.Part0 = root
 					w.Part1 = p
 					w.Parent = p
+					hold(p)
 				end
 			end
 		end
