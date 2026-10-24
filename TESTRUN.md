@@ -188,7 +188,10 @@ Same street first, then two streets, then the leave.
   post; from the game's raised camera a 2-cell room shows mostly wall, so
   how they look is his in play. Bayou's are pictured in
   `archive/screens/2026-10-24_bayou_stairs_vip.jpg`.)
-- [ ] Phase 8: the cosmetics with their models.
+- [x] Phase 8: the cosmetics with their models. (2026-10-24 evening: the
+  Pumpkin, Icicle and Lantern signs and the Bat Bunting and Fairy Lights
+  worn on a hotel and pictured; a blind review triaged: every finding a look
+  (WAITING §2.53); each cosmetic's glow carries its light, as the contract says.)
 - [x] Phase 12: the in-game blind review of the street. It replaces Phase
   10's, which waited on the scale (answered 2026-10-19): mark that one with it.
   (2026-10-24 night: four shots of a new hotel on Creepy Lane, twelve
@@ -384,7 +387,7 @@ multiply a capture's x and y by viewport width / 1920 (3434 / 1920 on his screen
   from the save.
 - [!] Style's Sign and Facade rows ran past the panel's edge (six cosmetics in a
   row). Fixed: rows wrap (two lines, rightmost button 790 of 876 px).
-- [ ] Pictures of the cosmetics with their models: after the next import.
+- [x] Pictures of the cosmetics with their models: after the next import. (2026-10-24: see the Launch run's 2f, WAITING §2.53.)
 
 ## Phase 7 (social, GDD §7)
 

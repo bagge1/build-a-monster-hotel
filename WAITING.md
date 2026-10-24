@@ -1310,6 +1310,24 @@ Med Claudes skärmdump där det finns en. -->
      spelarens fötter" (Claude ställde spelaren på köplatsen, och gäster
      kolliderar inte).
 
+53. **Kosmetikan i spelet, enligt en blind granskare** (kvällen 2026-10-24;
+   skyltarna Pumpkin, Icicle och Lantern, entréns Bat Bunting och Fairy
+   Lights; bilder `archive/screens/2026-10-24_cosmetic_pumpkin_sign.jpg` och
+   `2026-10-24_cosmetic_bat_bunting.jpg`). Inget ändrat; allt är utseende.
+   - **Bat Bunting syns knappt**: mörka fladdermöss mot den mörka valvväggen,
+     och de läses som vimplar. Förslag: ljusare färg eller en kant, efter
+     lanseringen; den säljs inte för Robux förrän du sett den.
+   - **Pumpan läses inte som en pumpa** (toppen bakom skyltens lila huvud,
+     bara orange sidor och en sågtandad kant syns), och skylten får en
+     neonkant bara med pumpan. **Snön på Icicle** läses som rör, mest på
+     högra sidan.
+   - **Lyktorna och ljusslingan lyser inte upp något** synligt: varje
+     kosmetika har sitt ljus enligt kontraktet (ett per set), men svagt.
+   - **Entrédekorationerna sitter inne i valvet** bakom lyktan, inte på
+     valvets framsida, och syns inte från sidan.
+   Claudes förslag: titta på dem i spelet (Store → kosmetika) och säg vilka
+   som ska göras om efter lanseringen.
+
 ## §3 Creator Hub och publicering
 
 1. ~~**Slå på Studio Access to API Services**~~ (gjort 2026-10-19: på i
