@@ -108,8 +108,11 @@ Same street first, then two streets, then the leave.
   each its pack's `Facade_Wall` mesh, 43 facade parts.)
 - [?] F on the imported kit rooms and amenities: each has its `_Mirror` (Flip).
   (Flip was removed with built rooms, "Removed: Flip" below.)
-- [ ] Bookshelf and Wardrobe placed (Launch import): why the test's positions
-  placed nothing.
+- [x] Bookshelf and Wardrobe placed (Launch import): why the test's positions
+  placed nothing. (2026-10-24 evening: by their `Pieces` ids both place, the
+  Wardrobe at squares 20,14, the Bookshelf against a wall at 20,9; the
+  model's name `Decor_Bookshelf` is no id and the server ignores it without a
+  word, which is what the test sent.)
 - [x] Notifications: `notify` queues and logs "would send" (the real send is
   part 3). (2026-10-24 night: one for the player in the game is dropped, as it
   should; one for another user logs "would send TillFull to 1 (not set up)".)
@@ -1415,7 +1418,7 @@ Played by remotes on the published place, profile `Test_Launch1023a`, Studio not
 - [x] Glass: 0.55 and material Glass on the vending machine, popcorn cart, salad bar (all three locations) and the facade windows.
 - [x] Frostfang Lodge and Bayou Spa (`chainopen 2`, `3`): walls, door, posts and furniture are kit clones. Bayou's FrontDesk is still a blockout (no desk in its kit yet: launch #5).
 - [x] No game errors; plot parts 184 / 152 / 147.
-- [ ] Bookshelf and Wardrobe were not placed by the test's positions (no refusal came back): look into it.
+- [x] Bookshelf and Wardrobe were not placed by the test's positions (no refusal came back): look into it. (2026-10-24: the test sent model names, not `Pieces` ids; both place by id.)
 - [ ] Pictures of the placed models, with Studio in front.
 - [x] 2026-10-24 night, Launch run part 2a: persistence, Bayou's kit and the VIP lounge, the four facade packs, notifications and the rigged monsters pass; server size `[A]`, Flip `[?]`. Also run: a booked room that stops being ready sends its guest back (the night's fix), a door only in a wall with its outline on the wall pointed at (the night's fix, by a real mouse).
 - [x] 2026-10-24 night, part 2d: no walk-ins, the tutorial's Slime and its Vampire Count pass; Collect `[?]` (the test profile owns Auto Collect); Tutorial Commons not run.
