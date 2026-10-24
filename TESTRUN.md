@@ -92,21 +92,34 @@ Same street first, then two streets, then the leave.
 
 **a. Launch's own**
 
-- [ ] Persistence: build, earn, stop, Play again on the same profile: the
-  hotel, cash and residents are back.
-- [ ] No "server size" warning on Play (Pacing; Server Size is 10).
-- [ ] Bayou Spa's kit and facade and the VIP lounge set in the game (LAUNCH
+- [x] Persistence: build, earn, stop, Play again on the same profile: the
+  hotel, cash and residents are back. (2026-10-24 night, `Test_Launch1024b`:
+  Bayou, 2 floors, the stair, 6 decor, 15 walls, 8 residents, cash back.)
+- [A] No "server size" warning on Play (Pacing; Server Size is 10). (2026-10-24
+  night: Studio's place still says `MaxPlayers` 60 and warns on every Play;
+  Creator Hub's 10 is not in the open Studio copy. WAITING §4.)
+- [x] Bayou Spa's kit and facade and the VIP lounge set in the game (LAUNCH
   #5): at `chainopen 3`, Bayou's walls, door, posts, desk, furniture, decor,
   stairs and facade are kit clones; the VIP lounge decor placed (`pass`).
-- [ ] Each facade pack's facade on the hotel when owned (`cosmetic`).
-- [ ] F on the imported kit rooms and amenities: each has its `_Mirror` (Flip).
+  (2026-10-24 night: every one by MeshId from `HotelKit.BayouSpa`, the five
+  VIP pieces from the lounge set; `archive/screens/2026-10-24_bayou_stairs_vip.jpg`.)
+- [x] Each facade pack's facade on the hotel when owned (`cosmetic`).
+  (2026-10-24 night: Gothic, Neon, Candy, Pirate equipped in turn, the walls
+  each its pack's `Facade_Wall` mesh, 43 facade parts.)
+- [?] F on the imported kit rooms and amenities: each has its `_Mirror` (Flip).
+  (Flip was removed with built rooms, "Removed: Flip" below.)
 - [ ] Bookshelf and Wardrobe placed (Launch import): why the test's positions
   placed nothing.
-- [ ] Notifications: `notify` queues and logs "would send" (the real send is
-  part 3).
-- [ ] The rigged monsters (LAUNCH #6), once imported, not before: each body
+- [x] Notifications: `notify` queues and logs "would send" (the real send is
+  part 3). (2026-10-24 night: one for the player in the game is dropped, as it
+  should; one for another user logs "would send TillFull to 1 (not set up)".)
+- [x] The rigged monsters (LAUNCH #6), once imported, not before: each body
   shape walks, idles, is happy and sad, checks in and works as staff; a Tiny
-  and a Giant; no error.
+  and a Giant; no error. (2026-10-24 night, after the import: all five shapes'
+  bones turn within the radius (3–5 a model in 1.5 s), a guest walks, Tiny and
+  Giant scale; a warning per part fixed (`MonsterAnimator`'s welds); happy,
+  sad, check-in and staff were proved on the Skeleton 2026-10-23 and not run
+  again per shape; how they look is his, `archive/screens/2026-10-24_rigged_residents.jpg`.)
 
 **b. Build mode on a fresh hotel** (*front* where a click or key is real)
 
@@ -1381,3 +1394,4 @@ Played by remotes on the published place, profile `Test_Launch1023a`, Studio not
 - [x] No game errors; plot parts 184 / 152 / 147.
 - [ ] Bookshelf and Wardrobe were not placed by the test's positions (no refusal came back): look into it.
 - [ ] Pictures of the placed models, with Studio in front.
+- [x] 2026-10-24 night, Launch run part 2a: persistence, Bayou's kit and the VIP lounge, the four facade packs, notifications and the rigged monsters pass; server size `[A]`, Flip `[?]`. Also run: a booked room that stops being ready sends its guest back (the night's fix), a door only in a wall with its outline on the wall pointed at (the night's fix, by a real mouse).

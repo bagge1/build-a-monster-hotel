@@ -1304,7 +1304,8 @@ Claude testar. Det som är ditt, i ordning:
 
 1. ~~**Importen av de 136 filerna**~~ (§0.12): gjord och sparad
    2026-10-23.
-2. **Din manuella reset** av veckokvoten när Claude skickar en notis.
+2. ~~**Din manuella reset** av veckokvoten när Claude skickar en notis.~~
+   (bortfallen: ingen manuell reset, ditt besked 2026-10-23, `LAUNCH.md`.)
 3. **Notifikationernas nyckel och hemlighet** (§3.3 steg 1–2), 5 minuter.
 4. ~~**Bayou, VIP-loungen och de fyra facade-paketen**~~: ja till allt
    2026-10-23.
@@ -1320,6 +1321,12 @@ Claude testar. Det som är ditt, i ordning:
    ska bort efter 3 november) står i `docs/STORE_PAGE.md`. Du klistrar in
    den, eller säger till så lägger Claude in den i Creator Hub.
 9. **Publish**, en kvart på **din egen telefon**, och att göra spelet publikt.
+   Före Publish (natten 2026-10-24): Studios öppna kopia säger fortfarande
+   **60** spelare per server (`Players.MaxPlayers`), fast Creator Hub säger
+   10, och spelet varnar om det vid varje Play. Claudes råd: stäng platsen och
+   öppna den igen från Roblox (**File → Open from Roblox**) innan du trycker
+   Publish, så att Studio läser 10 och inte skriver tillbaka 60. Claude
+   kontrollerar serverstorleken i Creator Hub efter Publish.
 
 <!-- Checklistan till en release. Först ett test med vänner (privat), sedan
 den publika. Claude bockar av sitt; det som är ditt står med menyn. -->
