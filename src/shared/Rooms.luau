@@ -1234,13 +1234,25 @@ end
 	§5.4, A.12) as it was for its guest: still ready and the same size. The
 	server asks it of every change to the hotel before making it. ]]
 function Rooms.keepsBusy(before: World, after: World, busy: { [string]: boolean }): boolean
-	for id in busy do
-		local a, b = Rooms.roomArea(before, id), Rooms.roomArea(after, id)
-		if not a or not b or a.size ~= b.size or not Rooms.ready(after, id) then
-			return false
-		end
+	if next(busy) == nil then
+		return true
 	end
-	return true
+	-- One flood for every busy room, each world's areas once (a full, booked hotel's took half a second).
+	local kept = true
+	Rooms.withAreas(before, function()
+		Rooms.withAreas(after, function()
+			local all = Rooms.readiness(after)
+			for id in busy do
+				local a, b = Rooms.roomArea(before, id), Rooms.roomArea(after, id)
+				local r = all[id]
+				if not a or not b or a.size ~= b.size or not (r and r.ok) then
+					kept = false
+					break
+				end
+			end
+		end)
+	end)
+	return kept
 end
 
 -- ===== Pieces, decor and tiles among the walls (wiring, 2026-10-21) =====
