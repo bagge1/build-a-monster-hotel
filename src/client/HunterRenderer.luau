@@ -212,6 +212,13 @@ function HunterRenderer.Init()
 	timer = Ui.label(gui, "HunterTimer", "", UDim2.fromOffset(420, 26), 18, Ui.Colour.Bad)
 	timer.AnchorPoint = Vector2.new(0.5, 0)
 	timer.Position = UDim2.new(0.5, 0, 0, 244)
+	timer.AutomaticSize = Enum.AutomaticSize.Y
+	-- A short screen (a phone in landscape): under the bus countdown, in the lane between the HUD's columns.
+	local camera = workspace.CurrentCamera
+	if camera and camera.ViewportSize.Y < 500 then
+		timer.Size = UDim2.new(1, -2 * (10 + 226 + 8), 0, 26)
+		timer.Position = UDim2.new(0.5, 0, 0, 80)
+	end
 	timer.TextXAlignment = Enum.TextXAlignment.Center
 	timer.TextStrokeTransparency = 0.3
 	timer.Visible = false

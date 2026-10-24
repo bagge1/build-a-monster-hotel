@@ -100,6 +100,7 @@ function Hud.toast(text: string, colour: Color3?)
 		return
 	end
 	local t = Ui.label(toasts, "Toast", text, UDim2.new(1, 0, 0, 34), 20, colour or Ui.Colour.Text)
+	t.AutomaticSize = Enum.AutomaticSize.Y -- a long toast wraps onto a second line, never clipped
 	t.TextXAlignment = Enum.TextXAlignment.Center
 	t.BackgroundColor3 = Ui.Colour.Ink
 	t.BackgroundTransparency = 0.25
@@ -292,27 +293,54 @@ function Hud.Init()
 	right.AnchorPoint = Vector2.new(1, 0)
 	right.BackgroundTransparency = 1
 	Ui.list(right, Enum.FillDirection.Vertical, 6, Enum.HorizontalAlignment.Right)
-	-- A short screen (a phone in landscape) takes the right column in two
-	-- columns, so it stops above the jump button (§11).
+	toasts = Ui.frame(gui, "Toasts", UDim2.fromOffset(420, 200), UDim2.new(0.5, 0, 0, 110))
+	toasts.AnchorPoint = Vector2.new(0.5, 0)
+	toasts.BackgroundTransparency = 1
+	Ui.list(toasts, Enum.FillDirection.Vertical, 6, Enum.HorizontalAlignment.Center)
+
+	banner = Ui.label(gui, "Banner", "", UDim2.new(0.8, 0, 0, 50), 28, Ui.Colour.Moon)
+	banner.AnchorPoint = Vector2.new(0.5, 0)
+	banner.Position = UDim2.new(0.5, 0, 0, 192) -- under the bus countdown and Gloom's bubble
+	banner.AutomaticSize = Enum.AutomaticSize.Y -- a long name wraps onto more lines, never clipped
+	banner.TextXAlignment = Enum.TextXAlignment.Center
+	banner.TextStrokeTransparency = 0.2
+	banner.Visible = false
+
+	-- A short screen (a phone in landscape) takes each column in two columns,
+	-- so the left one stops above the thumbstick and the right one above the
+	-- jump button (§11; 2026-10-24: six left buttons ran off the bottom), and
+	-- the toasts and the banner keep to the lane between the columns.
 	local function fit()
 		local camera = workspace.CurrentCamera
 		local short = camera ~= nil and camera.ViewportSize.Y < 500
-		local list = right:FindFirstChildOfClass("UIListLayout")
-		local grid = right:FindFirstChildOfClass("UIGridLayout")
-		if short and list then
-			list:Destroy()
-			local g = Instance.new("UIGridLayout")
-			g.CellSize = UDim2.fromOffset(110, 44)
-			g.CellPadding = UDim2.fromOffset(6, 6)
-			g.SortOrder = Enum.SortOrder.LayoutOrder
-			g.HorizontalAlignment = Enum.HorizontalAlignment.Right
-			g.Parent = right
-			right.Size = UDim2.new(0, 226, 1, -94 - columnTop)
-		elseif not short and grid then
-			grid:Destroy()
-			Ui.list(right, Enum.FillDirection.Vertical, 6, Enum.HorizontalAlignment.Right)
-			right.Size = UDim2.new(0, 110, 1, -94 - columnTop)
+		for _, col in { left, right } do
+			local align = if col == right
+				then Enum.HorizontalAlignment.Right
+				else Enum.HorizontalAlignment.Left
+			local list = col:FindFirstChildOfClass("UIListLayout")
+			local grid = col:FindFirstChildOfClass("UIGridLayout")
+			if short and list then
+				list:Destroy()
+				local g = Instance.new("UIGridLayout")
+				g.CellSize = UDim2.fromOffset(110, 44)
+				g.CellPadding = UDim2.fromOffset(6, 6)
+				g.SortOrder = Enum.SortOrder.LayoutOrder
+				g.HorizontalAlignment = align
+				g.Parent = col
+				col.Size = UDim2.new(0, 226, 1, -94 - columnTop)
+			elseif not short and grid then
+				grid:Destroy()
+				Ui.list(col, Enum.FillDirection.Vertical, 6, align)
+				col.Size = UDim2.new(0, 110, 1, -94 - columnTop)
+			end
 		end
+		local lane = if short
+			then UDim2.new(1, -2 * (10 + 226 + 8), 0, 200)
+			else UDim2.fromOffset(420, 200)
+		toasts.Size = lane
+		banner.Size = if short
+			then UDim2.new(lane.X.Scale, lane.X.Offset, 0, 50)
+			else UDim2.new(0.8, 0, 0, 50)
 	end
 	fit()
 	if workspace.CurrentCamera then
@@ -336,7 +364,7 @@ function Hud.Init()
 			else UDim2.fromOffset(0, 6)
 		columnTop = if up then 6 else 56
 		left.Position = UDim2.fromOffset(10, columnTop)
-		left.Size = UDim2.new(0, 110, 1, -94 - columnTop)
+		left.Size = UDim2.new(0, left.Size.X.Offset, 1, -94 - columnTop)
 		right.Position = UDim2.new(1, -10, 0, columnTop)
 		right.Size = UDim2.new(0, right.Size.X.Offset, 1, -94 - columnTop)
 		gui:SetAttribute("TopRowUp", up)
@@ -345,18 +373,6 @@ function Hud.Init()
 	GuiService:GetPropertyChangedSignal("TopbarInset"):Connect(placeTop)
 	row:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(placeTop)
 	gui:GetPropertyChangedSignal("AbsoluteSize"):Connect(placeTop)
-
-	toasts = Ui.frame(gui, "Toasts", UDim2.fromOffset(420, 200), UDim2.new(0.5, 0, 0, 110))
-	toasts.AnchorPoint = Vector2.new(0.5, 0)
-	toasts.BackgroundTransparency = 1
-	Ui.list(toasts, Enum.FillDirection.Vertical, 6, Enum.HorizontalAlignment.Center)
-
-	banner = Ui.label(gui, "Banner", "", UDim2.new(0.8, 0, 0, 50), 28, Ui.Colour.Moon)
-	banner.AnchorPoint = Vector2.new(0.5, 0)
-	banner.Position = UDim2.new(0.5, 0, 0, 192) -- under the bus countdown and Gloom's bubble
-	banner.TextXAlignment = Enum.TextXAlignment.Center
-	banner.TextStrokeTransparency = 0.2
-	banner.Visible = false
 end
 
 function Hud.Start()

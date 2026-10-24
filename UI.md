@@ -65,6 +65,19 @@ inputs. The code is `src/client/Controls.luau`.
 - **A hint names the gamepad's button only where it names a key already**
   (`Controls.hint`): the build strip's lines.
 
+### Every window and menu, on a phone
+
+- A window (`Ui.window`), the room view and the Ping menu are `Active`: a tap
+  on their empty space never reaches a HUD button or the plot behind them.
+- A scrolling list keeps its bar in its own room (`ScrollBarInset`), never
+  over a row's right-hand button.
+- On a short screen (under 500 px high) the HUD's two menu columns are each
+  two buttons wide, the toasts, the banner and the Hunter Night timer keep to
+  the lane between them and grow downward rather than clip, and the Ping menu
+  opens left of the right column, so the Ping button that shuts it stays
+  free (2026-10-24, measured on an iPhone 14 and an iPad 10 in Studio's
+  simulator).
+
 ## Images
 
 Every image is drawn by a script in `tools/` (Python, PIL) into `ui/`,
@@ -98,7 +111,9 @@ every button at least 44 × 44 (`Ui.MinTap`), the strip between a phone's
 thumbstick and jump button, the room view on the right clear of both. On a
 short screen (under 500 px high) `Tools` shows the whole rows that fit
 above the strip (8 px clear) and scrolls, and the HUD's right column is hidden while building, as its left
-one always is (2026-10-24: both covered the strip on a phone).
+one always is (2026-10-24: both covered the strip on a phone). On any screen the right column steps aside
+while the room view is open. The room view is never scaled: on a short screen it is as tall as the screen
+allows and its middle (`Details`: tooltip, status, bars) scrolls between `Top` and `Actions`.
 
 | Name | What | The code |
 |---|---|---|

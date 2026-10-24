@@ -704,12 +704,19 @@ local function wallUnder(x: number, y: number, piecesFirst: boolean, windowsOnly
 	return nil
 end
 
--- Whether the pointer is over the build mode's own buttons and strip: a
--- tap there is for them, never for the grid under them (a tap on a card
--- placed a room under it, 2026-10-19).
+-- Whether the pointer is over a button, the strip, or a panel that sinks
+-- taps (the room view, any window, the HUD's): a tap there is for them,
+-- never for the grid under them (a tap on a card placed a room under it,
+-- 2026-10-19). Roblox's touch controls are not ours to count.
 local function overUi(x: number, y: number): boolean
 	for _, g in me.PlayerGui:GetGuiObjectsAtPosition(x, y) do
-		if g.Visible and g:IsDescendantOf(gui) and (g:IsA("GuiButton") or g.Name == "Strip") then
+		local sg = g:FindFirstAncestorWhichIsA("ScreenGui")
+		if
+			g.Visible
+			and sg
+			and sg.Name ~= "TouchGui"
+			and (g:IsA("GuiButton") or g.Name == "Strip" or g.Active)
+		then
 			return true
 		end
 	end
@@ -1927,32 +1934,41 @@ end
 -- ===== The room view (A.12: the camera flies in, the near wall fades, the bars) =====
 
 local viewPanel: Frame
-local viewScale: UIScale
 
 --[[ Where the room view sits (UI.md "RoomView"): on the right on a tall
 	screen; on a short one (a phone in landscape) top-left under the HUD's
-	row, scaled to fit, the tools hidden while it is open and the strip moved
-	beside it, so the room, the panel and the cards are all in view. ]]
+	row, the tools hidden while it is open and the strip moved
+	beside it, so the room, the panel and the cards are all in view. On a
+	short screen it is as tall as the screen allows and its middle (tooltip,
+	status, bars) scrolls between the title and the buttons, never scaled
+	down (2026-10-24: scaled to 0.73 its buttons were 33 px, under a
+	finger's 44). ]]
 local function layoutView()
 	if not viewPanel then
 		return
 	end
 	local h = gui.AbsoluteSize.Y
 	local short = h < 500
-	local scale = if short then math.clamp((h - 60) / 372, 0.55, 1) else 1
-	viewScale.Scale = scale
+	viewPanel.Size = UDim2.new(0.3, 0, 0, if short then math.min(372, h - 60) else 372)
 	if short and roomView then
 		tools.Visible = false
 		viewPanel.AnchorPoint = Vector2.zero
 		viewPanel.Position = UDim2.fromOffset(8, 52)
 		strip.AnchorPoint = Vector2.new(0, 1)
-		strip.Position = UDim2.new(0, 16 + math.ceil(250 * scale), 1, -8)
+		strip.Position = UDim2.new(0, 16 + math.ceil(viewPanel.AbsoluteSize.X), 1, -8)
 	else
 		tools.Visible = active
 		viewPanel.AnchorPoint = Vector2.new(1, 0.5)
 		viewPanel.Position = UDim2.new(1, -10, 0.5, 30)
 		strip.AnchorPoint = Vector2.new(0.5, 1)
 		strip.Position = UDim2.new(0.5, 0, 1, -8)
+	end
+	-- The HUD's right column steps aside while the room view is open, which stands where it is
+	-- (2026-10-24: on a tablet the panel lay over Ping, Events and Settings).
+	local hud = me.PlayerGui:FindFirstChild("Hud")
+	local rightColumn = hud and hud:FindFirstChild("Right")
+	if rightColumn and rightColumn:IsA("GuiObject") then
+		rightColumn.Visible = not (active and (short or roomView ~= nil))
 	end
 end
 local faded: { [BasePart]: boolean } = {}
@@ -2299,6 +2315,11 @@ function BuildController.Init()
 	strip.Visible = false
 	info = Ui.label(strip, "Info", idleHint(), UDim2.new(1, -24, 0, 26), 18, Ui.Colour.Gold)
 	info.Position = UDim2.fromOffset(12, 4)
+	-- A line too long for the strip (a phone's is ~400 px) shrinks onto two lines, never clipped.
+	info.TextScaled = true
+	local infoCap = Instance.new("UITextSizeConstraint")
+	infoCap.MaxTextSize = 18
+	infoCap.Parent = info
 	cards = Ui.scroll(strip, "Cards", UDim2.new(1, -24, 0, 86), UDim2.fromOffset(12, 36), true)
 	Ui.list(cards, Enum.FillDirection.Horizontal, 8)
 
@@ -2427,6 +2448,10 @@ function BuildController.Init()
 	typesWindow, typesBody =
 		Ui.window(gui, "RoomTypes", "Choose a type", UDim2.fromScale(0.56, 0.72), nil, true)
 	Ui.list(typesBody, Enum.FillDirection.Vertical, 8)
+	-- Both windows open over the room view (made after them in the same ScreenGui), never under it
+	-- (2026-10-24: Change type opened the list behind the room view on a phone).
+	menu.ZIndex = 5
+	typesWindow.ZIndex = 5
 
 	--[[ The room view's panel (A.12): on the right, clear of the strip and the
 		tools, so the room stays in view; its type, tooltip, readiness, the
@@ -2442,26 +2467,33 @@ function BuildController.Init()
 	viewCap.MinSize = Vector2.new(250, 0)
 	viewCap.MaxSize = Vector2.new(340, 372)
 	viewCap.Parent = viewPanel
-	viewScale = Instance.new("UIScale")
-	viewScale.Parent = viewPanel
 	gui:GetPropertyChangedSignal("AbsoluteSize"):Connect(layoutView)
+	viewPanel.Active = true -- a tap on it never reaches the plot or a button behind it
 	viewPanel.Visible = false
 	Ui.padding(viewPanel, 10)
-	Ui.list(viewPanel, Enum.FillDirection.Vertical, 6)
-	local top = Ui.frame(viewPanel, "Top", UDim2.new(1, 0, 0, 40))
+	local top = Ui.frame(viewPanel, "Top", UDim2.new(1, 0, 0, 44))
 	top.BackgroundTransparency = 1
-	top.LayoutOrder = 1
+	-- The middle scrolls when the panel is shorter than its rows (a phone).
+	local details = Ui.scroll(
+		viewPanel,
+		"Details",
+		UDim2.new(1, 0, 1, -(44 + 46 + 12)),
+		UDim2.fromOffset(0, 50)
+	)
+	Ui.list(details, Enum.FillDirection.Vertical, 6)
 	local viewTitle = Ui.label(top, "Title", "", UDim2.new(1, -50, 1, 0), 22, Ui.Colour.Gold)
 	viewTitle.TextScaled = false
-	local closeView = Ui.button(top, "Close", "X", UDim2.fromOffset(40, 40), function()
+	local closeView = Ui.button(top, "Close", "X", UDim2.fromOffset(44, 44), function()
 		closeRoomView()
 	end, Ui.Colour.Bad)
-	closeView.Position = UDim2.new(1, -40, 0, 0)
-	local tip = Ui.label(viewPanel, "Tooltip", "", UDim2.new(1, 0, 0, 52), 13, Ui.Colour.Muted)
+	closeView.Position = UDim2.new(1, -44, 0, 0)
+	local tip = Ui.label(details, "Tooltip", "", UDim2.new(1, 0, 0, 52), 13, Ui.Colour.Muted)
 	tip.LayoutOrder = 2
 	tip.TextYAlignment = Enum.TextYAlignment.Top
-	local status = Ui.label(viewPanel, "Status", "", UDim2.new(1, 0, 0, 22), 15, Ui.Colour.Good)
+	tip.AutomaticSize = Enum.AutomaticSize.Y -- a long tooltip wraps on, never clipped
+	local status = Ui.label(details, "Status", "", UDim2.new(1, 0, 0, 22), 15, Ui.Colour.Good)
 	status.LayoutOrder = 3
+	status.AutomaticSize = Enum.AutomaticSize.Y
 	for i, bar in
 		{
 			{ "SizeBar", "Size", Ui.Colour.Moon },
@@ -2469,7 +2501,7 @@ function BuildController.Init()
 			{ "DecorBar", "Decor", Ui.Colour.Teal },
 		}
 	do
-		local barRow = Ui.frame(viewPanel, bar[1], UDim2.new(1, 0, 0, 52))
+		local barRow = Ui.frame(details, bar[1], UDim2.new(1, 0, 0, 52))
 		barRow.BackgroundTransparency = 1
 		barRow.LayoutOrder = 3 + i
 		local name = Ui.label(barRow, "Name", bar[2], UDim2.fromOffset(90, 20), 16)
@@ -2495,9 +2527,8 @@ function BuildController.Init()
 		most.MaxTextSize = 13
 		most.Parent = bonus
 	end
-	local actions = Ui.frame(viewPanel, "Actions", UDim2.new(1, 0, 0, 46))
+	local actions = Ui.frame(viewPanel, "Actions", UDim2.new(1, 0, 0, 46), UDim2.new(0, 0, 1, -46))
 	actions.BackgroundTransparency = 1
-	actions.LayoutOrder = 10
 	Ui.list(actions, Enum.FillDirection.Horizontal, 6)
 	local function viewButton(
 		name: string,

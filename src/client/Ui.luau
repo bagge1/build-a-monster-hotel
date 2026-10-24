@@ -196,6 +196,9 @@ function Ui.scroll(
 	s.BorderSizePixel = 0
 	s.ScrollBarThickness = 6
 	s.ScrollBarImageColor3 = Ui.Colour.Line
+	-- The bar takes its own room, never drawn over a row's right-hand button (2026-10-24, on a phone).
+	s.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
+	s.HorizontalScrollBarInset = Enum.ScrollBarInset.ScrollBar
 	s.CanvasSize = UDim2.new()
 	s.AutomaticCanvasSize = if horizontal then Enum.AutomaticSize.X else Enum.AutomaticSize.Y
 	s.ScrollingDirection = if horizontal
@@ -220,6 +223,9 @@ function Ui.window(
 		size = UDim2.fromScale(0.94, 0.9)
 	end
 	local w = Ui.panel(gui, name, size, UDim2.fromScale(0.5, 0.5), Vector2.new(0.5, 0.5))
+	-- It sinks a tap, so one on its empty space never reaches a HUD button behind it (on a phone it
+	-- covers nearly every one).
+	w.Active = true
 	local t = Ui.label(w, "Title", title, UDim2.new(1, -70, 0, 40), 26, Ui.Colour.Gold)
 	t.Position = UDim2.fromOffset(16, 8)
 	local function shut()

@@ -36,6 +36,7 @@ function Pings.Init()
 		UDim2.new(1, -130, 0, 56),
 		Vector2.new(1, 0)
 	)
+	menu.Active = true -- a tap between its phrases never reaches a HUD button behind it
 	menu.Visible = false
 	-- The gamepad (§11): the first phrase selected when it opens, ButtonB closes it.
 	Controls.panel(menu, function()
@@ -47,13 +48,17 @@ function Pings.Init()
 	grid.SortOrder = Enum.SortOrder.LayoutOrder
 	grid.Parent = menu
 	-- A short screen (a phone in landscape) takes the phrases in two columns,
-	-- so the menu stays above the bottom edge (TESTRUN, the phone).
+	-- so the menu stays above the bottom edge (TESTRUN, the phone). It opens
+	-- left of the HUD's right column, which is two buttons wide there, so the
+	-- Ping button that shuts it is never under it (2026-10-24: it was).
 	local function fit()
 		local camera = workspace.CurrentCamera
-		local columns = if camera and camera.ViewportSize.Y < 500 then 2 else 1
+		local short = camera ~= nil and camera.ViewportSize.Y < 500
+		local columns = if short then 2 else 1
 		local rows = math.ceil(#ORDER / columns)
 		grid.CellSize = UDim2.fromOffset(234, 44)
 		menu.Size = UDim2.fromOffset(columns * 240 + 10, rows * 50 + 16)
+		menu.Position = UDim2.new(1, -(10 + (if short then 226 else 110) + 10), 0, 56)
 	end
 	fit()
 	workspace.CurrentCamera:GetPropertyChangedSignal("ViewportSize"):Connect(fit)
