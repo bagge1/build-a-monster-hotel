@@ -23,6 +23,11 @@ Studio MCP. Claude does this; August does not need to.
    yesterday's modules (`DEVNOTES.md`).
 3. `python tools/test_bundle.py --clean`.
 
+**Bundle only what Lune cannot run** (`data`): every spec at once runs past
+Roblox's script timeout in a playtest (2026-10-25: `busy`'s fuzz and the
+rest, "Script timeout: exhausted allowed execution time"), and Lune runs the
+others.
+
 ### Outside Studio, with Lune
 
 The pure specs also run on the machine, in a second (2026-10-19, free
