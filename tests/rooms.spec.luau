@@ -777,6 +777,30 @@ describe("Rooms", function()
 		end
 	)
 
+	it("withAreas keeps a world's areas only while it runs, even when it fails", function()
+		local wd = readyRoomWorld()
+		local before = assert(Rooms.roomArea(wd, "r")).size
+		local fine = pcall(Rooms.withAreas, wd, function()
+			Rooms.roomArea(wd, "r")
+			error("a failing pass")
+		end)
+		expect.eq(fine, false, "the error comes through")
+		-- Split the room in two: its area must shrink, not be read from a kept memo.
+		for hx = 3 * HC, 5 * HC - 1 do
+			wd.walls[Rooms.edgeKey(1, hx, 5 * HC, 0)] = { paid = 0 }
+		end
+		local after = assert(Rooms.roomArea(wd, "r")).size
+		expect.truthy(after < before, `area {before} -> {after}`)
+		-- Nested, each world keeps its own.
+		local other = readyRoomWorld()
+		Rooms.withAreas(wd, function()
+			Rooms.withAreas(other, function()
+				expect.eq(assert(Rooms.roomArea(wd, "r")).size, after, "the split world")
+				expect.eq(assert(Rooms.roomArea(other, "r")).size, before, "the whole one")
+			end)
+		end)
+	end)
+
 	it(
 		"a wall across the corridor to a ready room is refused (CutsOff), a door in it is not",
 		function()
