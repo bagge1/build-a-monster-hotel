@@ -138,7 +138,10 @@ Same street first, then two streets, then the leave.
 
 **c. Rating**
 
-- [ ] Rating: staff coverage and cleaning on time, its five open items.
+- [x] Rating: staff coverage and cleaning on time, its five open items.
+  (2026-10-24 night: three pass in play, see "Rating"; the 8-room half and
+  "within 0–100 with many staff" are the `rating` spec's rules and not run
+  in play.)
 
 **d. A new player**
 
@@ -639,12 +642,12 @@ stay economy`). Merged 2026-10-19 20:50 and played (test profile
   resident at 60 %) within 5 s; unassign it and it falls back.
 - [ ] (Two rooms: a Slime added +10, 74.4 → 84.4; the 8-room half not tried.) Room Service in a hotel of 4 rooms: up to +10 Service; with 8 rooms the
   same resident gives half of that.
-- [ ] Housekeeping in a hotel of 4 rooms: up to +10 Cleanliness; Service and
+- [x] (2026-10-24 night, `Test_Launch1024c`, 3 rooms, one dirty: a Slime as Housekeeping 66.7 → 72.7, Service 59.42 unchanged; it then cleaned the room in 34 s.) Housekeeping in a hotel of 4 rooms: up to +10 Cleanliness; Service and
   the other categories unchanged by it.
-- [ ] Clean a dirty room by hand within 40 s, several times: Cleanliness
+- [x] (2026-10-24 night: by the housekeeper, not by hand: one cleaned in 34 s, then a room left dirty 45 s with no staff: 66.67 + 5 = 71.67, the on-time share 0.5, the overdue room counting late before it is cleaned.) Clean a dirty room by hand within 40 s, several times: Cleanliness
   rises toward +10 (on-time share). Leave a room dirty past 40 s: the share
   drops at once (an overdue room counts late before it is cleaned).
-- [ ] Nobody stayed yet (a fresh hotel) with staff assigned: Service stays 0;
+- [x] (2026-10-24 night: Room Service assigned before any stay that session: Service 0; after one stay 69.42 with it, 59.42 without, so +10.0 with 3 rooms; the 8-room half and "no rooms" not tried.) Nobody stayed yet (a fresh hotel) with staff assigned: Service stays 0;
   no rooms: Cleanliness 0 but for perks.
 - [ ] Every category stays within 0–100 with many staff (`DevGrant resident`)
   and perks; the stars move by at most the categories' share.
@@ -1415,3 +1418,4 @@ Played by remotes on the published place, profile `Test_Launch1023a`, Studio not
 - [x] 2026-10-24 night, part 2e: frame time (PC simulation) and the one-finger pan pass; build mode's phone layout overlaps (WAITING §1.14); the VIP room view on a phone `[A]`.
 - [x] 2026-10-24 night, part 2b: the doorways clear and the walls solid in all three kits; Phase 13's items (written before built rooms) and the gamepad not run.
 - [x] 2026-10-24 night, blind review of the rigged monsters in the game (three shots of Bayou's garden, a Fable reviewer, ten findings). False: the Skeleton "pitched 45°" (still: hips 0°, spine at most 2° over 6 s; a walking frame not measured), the Hydra "missing" (89 studs off, out of frame), the garden's black back edge (the plot at night). His call (WAITING §2.51): blinding eyes, the troll, werewolf and pup read from behind, the ghost 0.34 studs off the grass, small dark monsters at the game's camera.
+- [x] 2026-10-24 night, part 2c (Rating): Room Service +10.0 Service with 3 rooms, Housekeeping +6.0 Cleanliness and Service unchanged, Service 0 before any stay, an overdue room counting late at once (66.67 + 5); the 8-room half not tried.
