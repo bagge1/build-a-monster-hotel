@@ -126,8 +126,11 @@ Same street first, then two streets, then the leave.
 - [ ] Phase 13, its eight open items: the tabs and refusals, areas, a floor
   and its stairs, a guest to floors 2 and 3, decor, hallway decor, floors, rays
   and walkers over placed stairs (`fill`).
-- [ ] Phase 11: rays out through every door, on a profile without a door onto
-  the stair core.
+- [x] Phase 11: rays out through every door, on a profile without a door onto
+  the stair core. (2026-10-24 night, `Test_Launch1024e`, built rooms: no stair
+  core any more; at each location a person-sized box (3 × 6.5) through the
+  start room's door touches no colliding part, and through each of the 9
+  plain walls always does, in all three kits.)
 - [ ] Gamepad navigation: the keyboard item (B, R, `,` `.`, the chat;
   *front*), every window's selection, build mode with the gamepad last.
 - [ ] Built rooms, stage 3: a gamepad's A and a two-finger pan cannot be sent:
@@ -1410,3 +1413,4 @@ Played by remotes on the published place, profile `Test_Launch1023a`, Studio not
 - [x] 2026-10-24 night, Launch run part 2a: persistence, Bayou's kit and the VIP lounge, the four facade packs, notifications and the rigged monsters pass; server size `[A]`, Flip `[?]`. Also run: a booked room that stops being ready sends its guest back (the night's fix), a door only in a wall with its outline on the wall pointed at (the night's fix, by a real mouse).
 - [x] 2026-10-24 night, part 2d: no walk-ins, the tutorial's Slime and its Vampire Count pass; Collect `[?]` (the test profile owns Auto Collect); Tutorial Commons not run.
 - [x] 2026-10-24 night, part 2e: frame time (PC simulation) and the one-finger pan pass; build mode's phone layout overlaps (WAITING §1.14); the VIP room view on a phone `[A]`.
+- [x] 2026-10-24 night, part 2b: the doorways clear and the walls solid in all three kits; Phase 13's items (written before built rooms) and the gamepad not run.
