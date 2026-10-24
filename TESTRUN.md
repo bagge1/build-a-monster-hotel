@@ -669,7 +669,7 @@ WAITING §0.9): what needs the new models or the build menu's clicks stays open.
   decor; a room sold sells its decor.
 - [x] Hallway decor: a bench in a cell's corner leaves the cell walkable; one
   across a cell's middle that would cut a door off refused; nothing in the
-  entrance's mouth but a rug. (2026-10-25 01:55, as specs, not a playtest:
+  entrance's mouth but a rug. (2026-10-25 01:52, as specs, not a playtest:
   `built` "hallway decor in a cell's corner keeps everything reached; only a
   rug in the entrance's mouth"; the cut-off half is `rooms`' CutsOff and
   KeyCutOff rules, the decor row across a room among them. The night's
