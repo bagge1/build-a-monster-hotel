@@ -174,8 +174,12 @@ Same street first, then two streets, then the leave.
 
 - [ ] Launch import: the placed models.
 - [ ] Phase 8: the cosmetics with their models.
-- [ ] Phase 12: the in-game blind review of the street. It replaces Phase
+- [x] Phase 12: the in-game blind review of the street. It replaces Phase
   10's, which waited on the scale (answered 2026-10-19): mark that one with it.
+  (2026-10-24 night: four shots of a new hotel on Creepy Lane, twelve
+  findings; two false (the path is 6 studs, his value; the guest "in the
+  player's feet" stood where Claude put the player), the looks to WAITING
+  §2.52. Phase 10's not found as its own line.)
 - [ ] Phase 12, the forest: low graphics, a Frostfang plot's band.
 - [ ] Rare decor: the Decor tab's cards, the set line, **Place it**, the Book's
   mark, clicked.
@@ -1419,3 +1423,4 @@ Played by remotes on the published place, profile `Test_Launch1023a`, Studio not
 - [x] 2026-10-24 night, part 2b: the doorways clear and the walls solid in all three kits; Phase 13's items (written before built rooms) and the gamepad not run.
 - [x] 2026-10-24 night, blind review of the rigged monsters in the game (three shots of Bayou's garden, a Fable reviewer, ten findings). False: the Skeleton "pitched 45°" (still: hips 0°, spine at most 2° over 6 s; a walking frame not measured), the Hydra "missing" (89 studs off, out of frame), the garden's black back edge (the plot at night). His call (WAITING §2.51): blinding eyes, the troll, werewolf and pup read from behind, the ghost 0.34 studs off the grass, small dark monsters at the game's camera.
 - [x] 2026-10-24 night, part 2c (Rating): Room Service +10.0 Service with 3 rooms, Housekeeping +6.0 Cleanliness and Service unchanged, Service 0 before any stay, an overdue room counting late at once (66.67 + 5); the 8-room half not tried.
+- [x] 2026-10-24 night, part 2f: the street's in-game blind review run and triaged (WAITING §2.52); the rigged monsters' too (§2.51).

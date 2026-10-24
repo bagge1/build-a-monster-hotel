@@ -1283,6 +1283,35 @@ Med Claudes skärmdump där det finns en. -->
      Hydran "saknas" (den stod 89 studs bort, utanför bild); trädgårdens svarta
      bakkant är hotellets mark i natten.
 
+52. **Det första intrycket: gatan, entrén och lobbyn, enligt en blind
+   granskare** (natten 2026-10-24; bilder `archive/screens/2026-10-24_along_street.jpg`
+   och `2026-10-24_lobby_desk.jpg`, ett nytt hotell på Creepy Lane). Inget är
+   ändrat: allt nedan är utseenden eller placeringar du redan sagt ja till.
+   Det granskaren tog upp, med Claudes förslag:
+   - **Hotellet läses som en container**: platt tak utan list eller takfot,
+     sidoväggen helt slät, ingen skylt på själva huset. Förslag: titta efter
+     lanseringen (fasaderna är godkända; en takfot vore en ny bit i alla sju
+     stilar).
+   - **Lobbyn är en stor tom låda**: kala väggar, nästan svart golv, disken
+     liten mitt i, inget som visar var gästerna köar. Förslag: en kömarkering
+     framför disken (en matta finns redan som dekor) efter lanseringen.
+   - **Insidan av framväggen är rosa** mot de lila innerväggarna, och
+     taket syns svart över väggarna från den höjda kameran. Förslag: titta i
+     spelet; fasadens insida har fasadens färg.
+   - **Rumsdörren öppnar mot svart** (rummet är mörkt inifrån lobbyn), och
+     skylten ovanför är för liten för att läsas. Dörren är 4 × 7,2 som
+     kontraktet säger.
+   - **En svävande orange kula över valvet**: entréns lykta, utan synlig
+     fästare. Förslag: titta på den; en konsol vore en ändring i fasaderna.
+   - **Den orange trottoarkanten** är det skarpaste i varje bild, och **de
+     tomma tomterna syns inte** (inget visar att marken bredvid går att äga).
+     Förslag: behåll till efter lanseringen.
+   - **Skylten står på trottoaren långt från dörren** och läses som en
+     busshållplats. Förslag: behåll (den flyttades dit ur entrén 2026-10-19).
+   - Falskt: gången "en person bred" (6 studs, ditt värde); gästen "inne i
+     spelarens fötter" (Claude ställde spelaren på köplatsen, och gäster
+     kolliderar inte).
+
 ## §3 Creator Hub och publicering
 
 1. ~~**Slå på Studio Access to API Services**~~ (gjort 2026-10-19: på i
