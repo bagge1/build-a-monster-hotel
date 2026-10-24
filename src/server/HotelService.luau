@@ -140,8 +140,20 @@ local readinessCache: { [Player]: Rooms.Readiness } = {} -- with what each room 
 	kept until the hotel next changes (`sync` drops them): the build and VIP
 	panels ask for every room's every 15 s, and a full hotel's 44 took a
 	third of a second each time (2026-10-24 evening, a server hitch). ]]
-export type RoomInfo = { bars: Rooms.Bars, size: number, decor: { string } }
+export type RoomInfo = { bars: Rooms.Bars, size: number, decor: { string }, items: { string } }
 local infoCache: { [PlayerData.Data]: { [string]: RoomInfo } } = setmetatable({}, { __mode = "k" }) :: any
+-- `sync`'s readiness by profile, for what asks by profile (a room's tags, a floor's amenities).
+local readyByData: { [PlayerData.Data]: Rooms.Readiness } = setmetatable({}, { __mode = "k" }) :: any
+
+-- Whether a room of this profile's played hotel is ready: as of the last `sync`, or worked out now.
+local function readyIn(data: PlayerData.Data, roomId: string): boolean
+	local all = readyByData[data]
+	local r = all and all[roomId]
+	if r then
+		return r.ok
+	end
+	return (Rooms.ready(world(data), roomId))
+end
 
 function HotelService.ready(player: Player, roomId: string): boolean
 	local cache = readyCache[player]
@@ -160,6 +172,7 @@ function HotelService.sync(player: Player)
 	infoCache[data] = nil
 	local all = Rooms.readiness(world(data))
 	readinessCache[player] = all
+	readyByData[data] = all
 	local cache = {}
 	for id, rec in data.rooms do
 		local p = Pieces.get(rec.type)
@@ -218,12 +231,21 @@ function HotelService.roomInfo(data: PlayerData.Data, roomId: string): RoomInfo?
 			for id in data.rooms do
 				if not cache[id] then
 					local a = Rooms.roomArea(w, id)
-					local decor = {}
-					for _, d in Rooms.contents(w, id).decor do
+					local c = Rooms.contents(w, id)
+					local decor, items = {}, {}
+					for _, d in c.decor do
 						table.insert(decor, d.item)
+						table.insert(items, d.item)
 					end
-					cache[id] =
-						{ bars = Rooms.bars(w, id), size = if a then a.size else 0, decor = decor }
+					for _, d in c.furniture do
+						table.insert(items, d.item)
+					end
+					cache[id] = {
+						bars = Rooms.bars(w, id),
+						size = if a then a.size else 0,
+						decor = decor,
+						items = items,
+					}
 				end
 			end
 		end)
@@ -238,16 +260,8 @@ function HotelService.roomTags(data: PlayerData.Data, roomId: string): { [string
 	if not rec then
 		return {}
 	end
-	local w = world(data)
-	local items = {}
-	local c = Rooms.contents(w, roomId)
-	for _, d in c.furniture do
-		table.insert(items, d.item)
-	end
-	for _, d in c.decor do
-		table.insert(items, d.item)
-	end
-	local tags = Furnish.tags(items)
+	local info = HotelService.roomInfo(data, roomId)
+	local tags = Furnish.tags(if info then info.items else {})
 	for id, other in data.rooms do
 		local p = Pieces.get(other.type)
 		if
@@ -255,7 +269,7 @@ function HotelService.roomTags(data: PlayerData.Data, roomId: string): { [string
 			and p.kind == "Amenity"
 			and other.floor == rec.floor
 			and p.tags
-			and Rooms.ready(w, id)
+			and readyIn(data, id)
 		then
 			for _, t in p.tags do
 				tags[t] = true
@@ -268,10 +282,9 @@ end
 -- The ready amenities on a floor (A.12: built like rooms).
 function HotelService.amenitiesOn(data: PlayerData.Data, floor: number): number
 	local n = 0
-	local w = world(data)
 	for id, rec in data.rooms do
 		local p = Pieces.get(rec.type)
-		if p and p.kind == "Amenity" and rec.floor == floor and Rooms.ready(w, id) then
+		if p and p.kind == "Amenity" and rec.floor == floor and readyIn(data, id) then
 			n += 1
 		end
 	end
@@ -300,6 +313,7 @@ function HotelService.vacantFor(player: Player, speciesId: string): Offer?
 		return nil
 	end
 	local best: Offer? = nil
+	local amenities: { [number]: number } = {} -- per floor, worked out once
 	for id, room in hotel.rooms do
 		local rec = data.rooms[id]
 		if
@@ -309,7 +323,8 @@ function HotelService.vacantFor(player: Player, speciesId: string): Offer?
 			and HotelService.ready(player, id)
 		then
 			local matched = Stay.matched(sp.prefs, HotelService.roomTags(data, id))
-			local amen = HotelService.amenitiesOn(data, rec.floor)
+			local amen = amenities[rec.floor] or HotelService.amenitiesOn(data, rec.floor)
+			amenities[rec.floor] = amen
 			if not best or matched > best.prefsMatched then
 				best = { pieceId = id, prefsMatched = matched, amenities = amen }
 			end
