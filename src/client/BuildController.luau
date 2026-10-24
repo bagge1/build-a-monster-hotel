@@ -1678,9 +1678,18 @@ local function drawWallGhost(edges: { string }, oks: { boolean })
 	wallGhost = folder
 end
 
+-- The run last judged, and the state it was judged on: a pointer moving along the same run asks nothing again
+-- (each half edge is a `Rooms.check`, 26 ms on a full hotel, 2026-10-24 evening).
+local lastRun: { key: string, state: any }? = nil
+
 -- What the run under the pointer would do: its ghost and its price or refusal in the strip.
 local function showRun(edges: { string })
 	local on = wallMode ~= "Remove"
+	local key = table.concat(edges, ",") .. (if on then "+" else "-")
+	if wallGhost and lastRun and lastRun.key == key and lastRun.state == build() then
+		return
+	end
+	lastRun = { key = key, state = build() }
 	local oks, why, n = judgeRun(edges, on)
 	drawWallGhost(edges, oks)
 	local cost = (build().wallCost or 5) * n
