@@ -268,6 +268,22 @@ Med Claudes skärmdump där det finns en. -->
      och Float snurrar).
    - **Staff**: höger hand i arbete (knackar, torkar) vid dörren.
    Säg vad som känns fel med dina ord ("för hoppigt", "armarna för höga").
+   (Natten 2026-10-24: alla 27 är importerade och sparade; i ett playtest rör
+   alla fem kroppsformer benen, Tiny och Giant också. Bild:
+   `archive/screens/2026-10-24_rigged_residents.jpg`. Nu kan du titta.)
+
+14. **Byggläget på en telefon täcker sig självt** (natten 2026-10-24, iPhone
+   14 liggande i Studios simulator). Bild:
+   `archive/screens/2026-10-24_phone_build_overlap.jpg`. Verktygsraderna uppe
+   till vänster (fem rader, 260 px höga) går ner över remsan med Walls/Door/
+   Remove längst ner, och högermenyn (Moon, Travel, Store …) ligger kvar
+   ovanpå remsan; tomten syns knappt. På en dator är det inget problem. Det
+   är en fråga om utseende, så inget är ändrat i natt. Claudes förslag, på
+   korta skärmar (under 520 px höga) och bara i byggläget: **A** göm
+   högermenyn som vänstermenyn redan göms, och flytta de två sista raderna
+   (Rotate/View/Top och Traps/Style/Done) upp till höger där menyn stod, så
+   att vänsterkolumnen slutar ovanför remsan (rekommenderas); **B** en knapp
+   "Mer" som fäller ut raderna; **C** som det är. Säg A, B eller C.
 
 ## §2 Beslut
 

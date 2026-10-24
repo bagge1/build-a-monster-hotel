@@ -152,9 +152,17 @@ Same street first, then two streets, then the leave.
 **e. Phone** (simulator before Play: `iphone_14` landscape, then
 `ipad_10th_generation`)
 
-- [ ] Phase 12: frame time with the forest and a full bus, against phase 11's.
-- [ ] The free build camera: one finger pans (pinch cannot be sent: `[?]`).
-- [ ] VIP contracts: the room view's layout on a phone.
+- [x] Phase 12: frame time with the forest and a full bus, against phase 11's.
+  (2026-10-24 night, iPhone 14 simulated on his PC, the forest and a bus:
+  16.7 ms a frame on average, 19.8 at worst, at the 60 fps cap; a PC's
+  number, not a phone's: his phone is part 3.)
+- [x] The free build camera: one finger pans (pinch cannot be sent: `[?]`).
+  (2026-10-24 night: a 120 px touch drag moved the camera 36 studs. Found:
+  build mode's tools and the HUD's right menu cover the strip on a phone,
+  `archive/screens/2026-10-24_phone_build_overlap.jpg`: WAITING §1.14.)
+- [A] VIP contracts: the room view's layout on a phone. (Not run in the night;
+  the room view on a phone is already his, Built rooms "[A] How the room view
+  looks on a phone", and the build mode's phone layout is WAITING §1.14.)
 
 **f. Pictures** (*front*; each set to a blind review before he sees it)
 
@@ -1401,3 +1409,4 @@ Played by remotes on the published place, profile `Test_Launch1023a`, Studio not
 - [ ] Pictures of the placed models, with Studio in front.
 - [x] 2026-10-24 night, Launch run part 2a: persistence, Bayou's kit and the VIP lounge, the four facade packs, notifications and the rigged monsters pass; server size `[A]`, Flip `[?]`. Also run: a booked room that stops being ready sends its guest back (the night's fix), a door only in a wall with its outline on the wall pointed at (the night's fix, by a real mouse).
 - [x] 2026-10-24 night, part 2d: no walk-ins, the tutorial's Slime and its Vampire Count pass; Collect `[?]` (the test profile owns Auto Collect); Tutorial Commons not run.
+- [x] 2026-10-24 night, part 2e: frame time (PC simulation) and the one-finger pan pass; build mode's phone layout overlaps (WAITING §1.14); the VIP room view on a phone `[A]`.
