@@ -160,6 +160,9 @@ Same street first, then two streets, then the leave.
   guest; goal card at bus 1, the Vampire Count added at bus 3 and riding bus
   4, booked to the Coffin Suite, straight to the hotel `ToHotel`.)
 - [ ] Tutorial Commons: the weighting's stops; the ping menu's three cases.
+  (2026-10-25: the ping's three cases done, see "The ping menu's Need a
+  room"; a new player's profile showed `tutorialCommonBuses` 2 after ~15
+  minutes of buses, the stop on Skip and the Coffin-only case not tried.)
 - [x] Built rooms, stage 1–2: Collect, on a profile without Auto Collect.
   (2026-10-24 night: a fresh `Test_` profile still owns his passes, Auto
   Collect among them. 2026-10-25 01:11, `Test_Launch1024r` with the pass
@@ -1040,8 +1043,10 @@ bonuses in place of the tiers; Comfort from `Rooms.comfortPoints`. Played on
   the start room walled off from new tiles by itself (`Rooms.autoWalls`), the
   Coffin placed free (voucher), a Coffin Suite built (`room` dev) took the
   Vampire Count.
-- [ ] Collect: the test account owns Auto Collect (its till stays 0), so the
-  step was jumped by `tutorial`.
+- [x] Collect: the test account owns Auto Collect (its till stays 0), so the
+  step was jumped by `tutorial`. (2026-10-25: run on a profile with the
+  pass taken off, see "Built rooms, stage 1–2: Collect"; with the pass the
+  step now closes by itself.)
 
 ### Stage 3: the build mode (real mouse and keys, `Test_Rooms1021e`)
 
