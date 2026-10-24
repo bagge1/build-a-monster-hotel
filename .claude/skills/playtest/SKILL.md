@@ -87,7 +87,10 @@ Studio MCP".
   the windows (`Get-Process | ? MainWindowTitle`). A game running (2026-10-24
   night: Europa Universalis V, the focus taken back 36 times in 30 s) means
   he is at the computer: no focus, no keys, no clicks, and no frame timing
-  (Studio renders in the background at 15 fps).
+  (Studio renders in the background at 15 fps). A game closed is not his
+  absence, and his "continue" is not a go to take the focus (2026-10-25
+  01:34, his words: "kan du göra det utan att ta fram studio på skärmen?
+  använder datorn"): if he writes in the chat, he is at the computer.
 - **Studio must have the focus**, or every key returns *Success* and nothing
   reaches the game. Bring it forward from PowerShell with
   `SetForegroundWindow` on `RobloxStudioBeta`'s `MainWindowHandle` (a tap of
