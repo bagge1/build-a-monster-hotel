@@ -160,9 +160,13 @@ Same street first, then two streets, then the leave.
   guest; goal card at bus 1, the Vampire Count added at bus 3 and riding bus
   4, booked to the Coffin Suite, straight to the hotel `ToHotel`.)
 - [ ] Tutorial Commons: the weighting's stops; the ping menu's three cases.
-- [?] Built rooms, stage 1–2: Collect, on a profile without Auto Collect.
+- [x] Built rooms, stage 1–2: Collect, on a profile without Auto Collect.
   (2026-10-24 night: a fresh `Test_` profile still owns his passes, Auto
-  Collect among them; it needs an account without it, part 3.)
+  Collect among them. 2026-10-25 01:11, `Test_Launch1024r` with the pass
+  taken off its profile on the server: the till filled to $30, its prompt
+  (shown once the player stands at the till, not at the desk: both are E,
+  one per button) collected $47, and the tutorial went on to SecondRoom.
+  With the pass the step now closes by itself, fixed the same evening.)
 
 **e. Phone** (simulator before Play: `iphone_14` landscape, then
 `ipad_10th_generation`)
@@ -691,8 +695,11 @@ stay economy`). Merged 2026-10-19 20:50 and played (test profile
   drops at once (an overdue room counts late before it is cleaned).
 - [x] (2026-10-24 night: Room Service assigned before any stay that session: Service 0; after one stay 69.42 with it, 59.42 without, so +10.0 with 3 rooms; the 8-room half and "no rooms" not tried.) Nobody stayed yet (a fresh hotel) with staff assigned: Service stays 0;
   no rooms: Cleanliness 0 but for perks.
-- [ ] Every category stays within 0–100 with many staff (`DevGrant resident`)
-  and perks; the stars move by at most the categories' share.
+- [x] Every category stays within 0–100 with many staff (`DevGrant resident`)
+  and perks; the stars move by at most the categories' share. (2026-10-25
+  01:09, `Test_Launch1024q`, the full hotel: 12 residents on every role,
+  Cleanliness 100 → 100, Style 100 → 100, Fun 0 → 42, Service 5 → 10,
+  Comfort 17.1 → 17.1; the stars 1.5 → 2. Perks not tried.)
 
 ## Tutorial Commons and the named ping (GDD §11 1:45, §7; after the merge)
 
