@@ -77,6 +77,10 @@ inputs. The code is `src/client/Controls.luau`.
   opens left of the right column, so the Ping button that shuts it stays
   free (2026-10-24, measured on an iPhone 14 and an iPad 10 in Studio's
   simulator).
+- **Landscape only** (2026-10-25): the client sets
+  `PlayerGui.ScreenOrientation = LandscapeSensor` and sets it again when
+  Roblox puts StarterGui's `Sensor` back; upright, the top row ran off both
+  edges. A window refits when the screen's size changes.
 
 ## Images
 
