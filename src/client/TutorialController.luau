@@ -152,13 +152,36 @@ function TutorialController.Init()
 	-- Clear of the countdown and of the arrow pointing at it (26 px of
 	-- countdown, the arrow 12 px past it, then 14 px of air), wherever the
 	-- HUD's top row sits.
-	Ui.onTopRow(function(up: boolean)
-		bubble.Position = UDim2.new(0.5, 0, 0, if up then 56 else 104)
-	end)
 	local cap = Instance.new("UISizeConstraint")
 	cap.MaxSize = Vector2.new(460, 104)
 	cap.MinSize = Vector2.new(270, 0)
 	cap.Parent = bubble
+	-- A short screen (a phone in landscape): along the bottom edge, from past
+	-- the thumbstick's resting place to the HUD's right column, so it covers
+	-- no menu button (2026-10-25: at the top it covered five on an iPhone 7,
+	-- between the two-wide columns).
+	local camera = workspace.CurrentCamera
+	local topUp = false
+	local function place()
+		local short = camera ~= nil and camera.ViewportSize.Y < 500
+		if short then
+			local right = 10 + 226 + 8 -- the right column and its gap
+			bubble.AnchorPoint = Vector2.new(1, 1)
+			bubble.Position = UDim2.new(1, -right, 1, -6)
+			bubble.Size = UDim2.new(1, -(right + 120), 0, 104)
+		else
+			bubble.AnchorPoint = Vector2.new(0.5, 0)
+			bubble.Position = UDim2.new(0.5, 0, 0, if topUp then 56 else 104)
+			bubble.Size = UDim2.new(0.36, 0, 0, 104)
+		end
+	end
+	Ui.onTopRow(function(up: boolean)
+		topUp = up
+		place()
+	end)
+	if camera then
+		camera:GetPropertyChangedSignal("ViewportSize"):Connect(place)
+	end
 	bubble.Visible = false
 	-- Gloom's portrait (ui/Gloom.png, UiImages); the bat emoji if it is not uploaded.
 	local portrait = UiImages.Gloom

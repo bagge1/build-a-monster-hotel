@@ -77,6 +77,11 @@ inputs. The code is `src/client/Controls.luau`.
   opens left of the right column, so the Ping button that shuts it stays
   free (2026-10-24, measured on an iPhone 14 and an iPad 10 in Studio's
   simulator).
+- **Gloom on a short screen** sits along the bottom edge, from 120 px in
+  (past the thumbstick's resting place) to the HUD's right column, so it
+  covers no menu button (2026-10-25: at the top it covered five on an
+  iPhone 7); on a tall screen it stays top centre. The bus countdown keeps
+  to the lane between the columns too (at most 260 px).
 - **Landscape only** (2026-10-25): the client sets
   `PlayerGui.ScreenOrientation = LandscapeSensor` and sets it again when
   Roblox puts StarterGui's `Sensor` back; upright, the top row ran off both
