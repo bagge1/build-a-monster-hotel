@@ -300,7 +300,9 @@ Med Claudes skärmdump där det finns en. -->
    kanterna och kolumnerna täckte mitten
    (`archive/screens/2026-10-25_phone_portrait_before.jpg`). Satt på
    klienten (`LandscapeSensor`), lätt att ändra om du vill ha stående;
-   då behöver gränssnittet en egen stående layout.
+   då behöver gränssnittet en egen stående layout. **Glooms pratbubbla
+   står nu längs nederkanten på en telefon** (överst täckte den fem
+   menyknappar på en iPhone 7): `archive/screens/2026-10-25_iphone7_gloom_fixed.jpg`.
 
 ## §2 Beslut
 
