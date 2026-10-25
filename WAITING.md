@@ -1480,3 +1480,13 @@ den publika. Claude bockar av sitt; det som är ditt står med menyn. -->
     utseendet är ditt.
 11. Rewarded ads, översättning, notifikationer och gruppen: §3.3–3.5 och
     ad-produkten i §3.2.
+12. **Hur många delar en full server bär** (kvällssprinten 2026-10-25, mätt
+    i Studio). Ett fullt hotell (3 våningar, 43 rum) är 3 751 delar, och
+    kedjans hotell som inte spelas ritas lika fullt på sina gator (också
+    3 751). Tio spelare med tre fulla hotell var blir ~112 000 delar på
+    servern; klienterna klarar sig (strömning är på, en telefon i
+    simulatorn höll 16,7 ms i median). Servern är inte mätt med tio
+    spelare. **Förslag:** mät på en riktig server efter Publish (del 3). Om
+    minnet blir för högt ritar Claude kedjans icke spelade hotell som bara
+    fasad och skylt (de syns bara på avstånd från en annan gata), efter
+    lanseringen.
