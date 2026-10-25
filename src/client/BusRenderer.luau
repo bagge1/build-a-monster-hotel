@@ -196,6 +196,19 @@ function BusRenderer.Init()
 	local gui = Ui.screen("Hud", 1)
 	countdown = Ui.label(gui, "BusCountdown", "", UDim2.fromOffset(260, 26), 18, Ui.Colour.Moon)
 	countdown.AnchorPoint = Vector2.new(0.5, 0)
+	-- A short screen (a phone in landscape): no wider than the lane between the HUD's
+	-- two-wide columns (2026-10-25: on an iPhone 7 it lay over Rating and Moon).
+	local camera = workspace.CurrentCamera
+	if camera and camera.ViewportSize.Y < 500 then
+		countdown.Size = UDim2.new(1, -2 * (10 + 226 + 8), 0, 26)
+		local cap = Instance.new("UISizeConstraint")
+		cap.MaxSize = Vector2.new(260, 26)
+		cap.Parent = countdown
+		countdown.TextScaled = true -- shrinks to the line, never past its 18
+		local most = Instance.new("UITextSizeConstraint")
+		most.MaxTextSize = 18
+		most.Parent = countdown
+	end
 	-- Right under the HUD's top row, wherever that sits.
 	Ui.onTopRow(function(up: boolean)
 		countdown.Position = UDim2.new(0.5, 0, 0, if up then 4 else 52)
