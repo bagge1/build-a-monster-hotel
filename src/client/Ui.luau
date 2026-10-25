@@ -217,12 +217,19 @@ function Ui.window(
 	onClose: (() -> ())?,
 	scroll: boolean?
 ): (Frame, Frame)
-	-- A short screen (a phone in landscape) gets nearly the whole screen.
+	-- A short screen (a phone in landscape) gets nearly the whole screen, and
+	-- a screen turned while playing (a tablet) gets the size that fits it.
 	local camera = workspace.CurrentCamera
-	if camera and camera.ViewportSize.Y < 500 then
-		size = UDim2.fromScale(0.94, 0.9)
+	local asked = size
+	local function fitted(): UDim2
+		return if camera and camera.ViewportSize.Y < 500 then UDim2.fromScale(0.94, 0.9) else asked
 	end
-	local w = Ui.panel(gui, name, size, UDim2.fromScale(0.5, 0.5), Vector2.new(0.5, 0.5))
+	local w = Ui.panel(gui, name, fitted(), UDim2.fromScale(0.5, 0.5), Vector2.new(0.5, 0.5))
+	if camera then
+		camera:GetPropertyChangedSignal("ViewportSize"):Connect(function()
+			w.Size = fitted()
+		end)
+	end
 	-- It sinks a tap, so one on its empty space never reaches a HUD button behind it (on a phone it
 	-- covers nearly every one).
 	w.Active = true

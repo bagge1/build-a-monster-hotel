@@ -6,6 +6,21 @@
 
 local Client = script
 
+-- A phone plays in landscape, either way up: the whole interface is laid out
+-- and measured for it (UI.md), and upright its top row ran off both edges
+-- (2026-10-25). Set here, so no project file changes; set again whenever
+-- Roblox puts StarterGui's back (it did, just after this script started).
+local player = game:GetService("Players").LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui") :: PlayerGui
+local function landscape()
+	if playerGui.ScreenOrientation ~= Enum.ScreenOrientation.LandscapeSensor then
+		playerGui.ScreenOrientation = Enum.ScreenOrientation.LandscapeSensor
+	end
+end
+landscape()
+playerGui:GetPropertyChangedSignal("ScreenOrientation"):Connect(landscape)
+player.CharacterAdded:Connect(landscape)
+
 local systems: { { Init: () -> (), Start: () -> () } } = {
 	require(Client.State) :: any, -- first: panels read what it receives
 	require(Client.Controls) :: any, -- the gamepad's back and menu buttons (GDD §11)

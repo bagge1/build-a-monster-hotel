@@ -295,6 +295,12 @@ Med Claudes skärmdump där det finns en. -->
    `2026-10-24_ipad_roomview_fixed.jpg`. På din telefon: säg om något känns
    trångt eller fel. Och bildtiden med ett fullt hotell gick inte att mäta i
    natt (datorn användes); den riktiga siffran är din telefons (§4).
+   **Telefonen spelar nu alltid liggande** (båda hållen): spelet tillät
+   stående (Roblox standard), och stående klipptes toppraden i båda
+   kanterna och kolumnerna täckte mitten
+   (`archive/screens/2026-10-25_phone_portrait_before.jpg`). Satt på
+   klienten (`LandscapeSensor`), lätt att ändra om du vill ha stående;
+   då behöver gränssnittet en egen stående layout.
 
 ## §2 Beslut
 
