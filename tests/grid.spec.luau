@@ -190,6 +190,30 @@ describe("Grid", function()
 		expect.truthy(Grid.canPlace(free, placed("Stairs", 1, 6, 2, 0)), "with the tiles above it")
 	end)
 
+	it("a piece placed off the grid (a fraction of a square or a floor) is refused", function()
+		local free = world(1)
+		free.floors = 2
+		free.pieces = {}
+		for _, c in Grid.startTiles() do
+			free.tiles[Grid.tileKey(2, c.x, c.z)] = true
+		end
+		expect.truthy(Grid.canPlace(free, placed("Stairs", 1, 6, 2, 0)), "on the grid")
+		-- 2026-10-26 review: a fraction aliased another square's key and skipped the checks.
+		expect.truthy(not Grid.canPlace(free, placed("Stairs", 1, 6, 2.5, 0)), "half a square in z")
+		expect.truthy(not Grid.canPlace(free, placed("Stairs", 1, 6.5, 2, 0)), "half a square in x")
+		expect.truthy(
+			not Grid.canPlace(free, placed("Stairs", 1 + 1 / 12, 6, 2, 0)),
+			"a fraction of a floor"
+		)
+		-- The aliases themselves: z + 0.5 reads as x + 6, so these keys name owned squares.
+		for _, at in { { 0, 2.5 }, { -2, 2.5 }, { -6, 3.5 }, { 1, 1.5 } } do
+			expect.truthy(
+				not Grid.canPlace(free, placed("StandardRoom", 1, at[1], at[2], 0)),
+				`a room at {at[1]}, {at[2]}`
+			)
+		end
+	end)
+
 	it(
 		"anything stands on any owned tile, never on a tile not owned or the entrance's mouth",
 		function()

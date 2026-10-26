@@ -541,6 +541,11 @@ end
 	piece being moved (left out while it is checked). ]]
 function Grid.canPlace(world: World, piece: Placed, skip: Placed?): (boolean, Refusal?)
 	local floor = piece.floor
+	-- Whole squares and floors only (2026-10-26 review: a fraction aliased another
+	-- square's tile key, as z + 0.5 reads x + 6, and slipped past every check).
+	if piece.x % 1 ~= 0 or piece.z % 1 ~= 0 or floor % 1 ~= 0 then
+		return false, "OutOfBounds"
+	end
 	if piece.kind == "Stairs" then
 		if floor < 1 or floor >= world.floors then
 			return false, "NoFloorAbove"

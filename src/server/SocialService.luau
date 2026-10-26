@@ -222,6 +222,17 @@ local function like(player: Player, plotIndex: number)
 	if not data or not owner or owner == player then
 		return
 	end
+	-- At the sign, as its prompt asks (2026-10-26 review: the remote took any plot from anywhere).
+	local board = plot.sign and plot.sign:FindFirstChild("Board")
+	local character = player.Character
+	if
+		not board
+		or not board:IsA("BasePart")
+		or not character
+		or (character:GetPivot().Position - board.Position).Magnitude > 14 + 6
+	then
+		return
+	end
 	if data.likesGiven.day ~= today() then
 		data.likesGiven = { day = today(), plots = {} }
 	end

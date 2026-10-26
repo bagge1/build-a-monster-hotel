@@ -395,6 +395,16 @@ local function onTrip(player: Player, rec: PlayerData.ResidentRecord, remote: st
 	return true
 end
 
+-- In the Hunter Camp it is away too (the header's AWAY): not moved, not sent on holiday
+-- (2026-10-26 review: Assign and Release took one the hunters had netted).
+local function inCamp(player: Player, rec: PlayerData.ResidentRecord, remote: string): boolean
+	if rec.campUntil <= os.time() then
+		return false
+	end
+	Net.fire(player, "Refused", remote, "It's in the Hunter Camp: rescue it first")
+	return true
+end
+
 local function assign(player: Player, idNumber: number, role: string)
 	local data = PlayerData.get(player)
 	local rec = data and data.residents[tostring(idNumber)]
@@ -404,7 +414,11 @@ local function assign(player: Player, idNumber: number, role: string)
 	if role ~= "" and not table.find(ResidentService.Roles, role) then
 		return
 	end
-	if heldElsewhere(player, data, rec, "Assign") or onTrip(player, rec, "Assign") then
+	if
+		heldElsewhere(player, data, rec, "Assign")
+		or onTrip(player, rec, "Assign")
+		or inCamp(player, rec, "Assign")
+	then
 		return
 	end
 	rec.role = role
@@ -420,7 +434,11 @@ local function release(player: Player, idNumber: number)
 	if not data or not rec or not sp then
 		return
 	end
-	if heldElsewhere(player, data, rec, "Release") or onTrip(player, rec, "Release") then
+	if
+		heldElsewhere(player, data, rec, "Release")
+		or onTrip(player, rec, "Release")
+		or inCamp(player, rec, "Release")
+	then
 		return
 	end
 	data.residents[id] = nil

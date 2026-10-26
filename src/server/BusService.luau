@@ -607,6 +607,11 @@ local function pitch(player: Player, guestId: number)
 	if g.pitches[player.UserId] then
 		return
 	end
+	-- A guest browses its own street's hotels: a pitch from another street is no pitch
+	-- (2026-10-26 review: only the client-owned position stood in the way).
+	if g.street ~= nil and g.street ~= plot.street then
+		return
+	end
 	local d = (character:GetPivot().Position - GuestService.positionOf(g)).Magnitude
 	if d > Constants.Scoring.PitchRange + 4 then -- a little slack for the client's drawing
 		Net.fire(player, "Refused", "Pitch", "Too far away", guestId) -- the client's prompt comes back
