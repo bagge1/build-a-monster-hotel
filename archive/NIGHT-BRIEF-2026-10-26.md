@@ -21,6 +21,71 @@ pushad. Spelet är inte publicerat.
 Inte valt, och därför inte byggt: Co-managers (§2.5) och Winter crossover
 (§2.8). Emotes och gruppbelöningen har inget förslag än och blir bara utkast.
 
+## Natten stannar aldrig
+
+Hans ord, 2026-10-26: "Vill verkligen !!! inte se (6 hours ago) när jag
+kommer tillbaka på morgonen, då ska sessionen fortfarande arbeta." Bara
+weekly ≥ 90 % eller hans eget stopp i chatten avslutar natten. Skrivs
+morgonavsnittet medan arbete finns kvar är det en mellanrapport, och
+loopen fortsätter.
+
+- **`ScheduleWakeup` är sista anropet i varje tur.** 60–300 s när arbete
+  finns kvar. När du väntar på agenter: högst 900 s (deras notis väcker
+  dig ändå). Ingen avslutande text som låter som ett slut.
+- **Inga frågor:**
+  - aldrig `AskUserQuestion`,
+  - aldrig `wrap_up` med en fråga eller knappar,
+  - aldrig "vill du ...?".
+  Det som är hans går till WAITING, och natten tar nästa sak.
+- **Watchdog-cron var 15:e minut** (`7,22,37,52 * * * *`), satt i nattens
+  första tur och kontrollerad med `CronList` vid varje uppvaknande.
+  Prompten: "Night watchdog: om natten sover mot en reset, avsluta turen
+  med ScheduleWakeup till samma mål; annars läs nattloggen och fortsätt
+  briefen; avsluta aldrig en tur utan ScheduleWakeup." Den tas bort först
+  när natten slutar.
+- **Ett nekat anrop** (säkerhetskontrollen i auto-läget): logga det, ta en
+  annan väg eller nästa sak. Gör aldrig om samma anrop, och vänta aldrig.
+- **Studio dör eller kopplas från:**
+  - Logga det och lägg det i WAITING §0.
+  - Fortsätt med det som inte kräver Studio: kod i worktrees, specs,
+    Blender, design i A.13, kodgranskning.
+  - Pröva `list_roblox_studios` var 15:e minut.
+- **5-timmarsfönstret får aldrig nå 100 %.** Extra usage är av, så ett
+  fullt fönster dödar turen mitt i en ändring.
+  - Från 80 % startas ingen ny agent.
+  - Från 85 % startas inget nytt arbete alls.
+  - Vid 90 %: committa och sov med `ScheduleWakeup` i kedja till resetten.
+- **Datorn:** energischemat sover aldrig (kontrollerat). Anropa ändå
+  `request_keep_awake` (`until: "session_idle"`) i första turen.
+
+## Agenter: parallellt där det ger något, aldrig på kvalitetens bekostnad
+
+Huvudsessionen är den enda som använder Studio (en Studio-användare i
+taget). Den spelar, verifierar, triagerar och mergar. Agenterna arbetar
+bredvid i egna banor:
+
+| Bana | Vem | Vad |
+|---|---|---|
+| Studio | huvudsessionen | Launch run, buggjakt genom att spela, spela grenarna, merge |
+| Kod | en skrivande agent i taget per gren (`isolation: "worktree"`) | Expeditions, sedan rumstypernas kod (efter att A.13 är skriven). Specs, lint och commit på grenen. Ingen Studio, ingen merge |
+| Blender | en modelleringsagent i taget (`.locks/blender`) | rumstypernas modeller, en typ per agent: silhuetter, byggskript, validering, Workbench-bilder, blind granskning |
+| Granskning | läsande agenter, högst två samtidigt | nya ögon på ett system i taget; fynden återskapas av huvudsessionen i Studio |
+
+- **Högst tre bakgrundsagenter samtidigt.** Läs usage före varje agent;
+  de drar ur samma 5-timmarsfönster.
+- **Modellen:** ärvd, ingen nedgradering. Explore duger för rena sökningar.
+- **Varje brief är komplett:** målet, filerna, vad "klart" är, och vad
+  agenten inte får göra (ingen Studio, ingen merge, ingen push till main,
+  ingen kontraktsfil utanför sin egen sektion). Rapporten är högst 15
+  rader, med commit-id. Två skrivare rör aldrig samma fil.
+- **En agents rapport är inget bevis.** Huvudsessionen läser diffen och
+  spelar det i Studio innan något mergas eller kallas klart.
+- **Det huvudsessionen själv gör:**
+  - designen i A.13, eftersom den är för viktig att lämna ifrån sig,
+  - alla merges,
+  - allt i Studio,
+  - triagen av varje fynd.
+
 ## Hur buggar jagas i natt (gäller varje steg)
 
 Fredagens buggar hittade han på en minut genom att bygga fritt med musen.
