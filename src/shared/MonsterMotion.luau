@@ -405,6 +405,38 @@ function MonsterMotion.pose(shape: string, clip: string, t: number): Pose
 	return pose
 end
 
+--[[ The clip a visitor plays at its spot (GDD A.13.1, MODELS.md "Activity
+	furniture": a spot's `Pose`). PLACEHOLDER, every one, until each pose has
+	its own clip (A.13.5 step 3: "GuestService visits and their clips"): a
+	pose borrows the nearest of the six. `Sit`, `Stand`, `Lean`, `Lie` and
+	`Watch` stand at rest on the spot (Idle, as a guest on its bed does
+	today); `Dance` hops (Happy); `Lift` and `Play` work with the hands
+	(Staff); `Swim` idles, sunk in the water (`MonsterMotion.poseDrop`). ]]
+MonsterMotion.PoseClip = {
+	Sit = "Idle",
+	Stand = "Idle",
+	Lean = "Idle",
+	Lie = "Idle",
+	Watch = "Idle",
+	Dance = "Happy",
+	Lift = "Staff",
+	Play = "Staff",
+	Swim = "Idle",
+} :: { [string]: Clip }
+
+-- The clip for a spot's pose; Idle for a pose with none.
+function MonsterMotion.poseClip(pose: string?): Clip
+	return (pose and MonsterMotion.PoseClip[pose]) or "Idle"
+end
+
+--[[ How far under its spot a visitor's feet stand, in studs, for a monster
+	`height` tall: a swimmer's spot is the water's surface (MODELS.md: the
+	5-stud person's middle 1.5 under it, so its feet 4 under: 0.8 of its
+	height), every other pose's is where its feet go. PLACEHOLDER with the clips. ]]
+function MonsterMotion.poseDrop(pose: string?, height: number): number
+	return if pose == "Swim" then 0.8 * height else 0
+end
+
 local REST: BonePose = { r = ZERO, p = ZERO }
 
 --[[ `a` blended toward `b` by `alpha` (0 is `a`, 1 is `b`); a bone missing on one

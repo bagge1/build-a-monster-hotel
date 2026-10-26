@@ -1298,6 +1298,7 @@ function BuildService.Start()
 					bonus = bars.sets ~= nil and table.find(bars.sets, setId) ~= nil,
 				})
 			end
+			local inUse, spotsOf = HotelService.spotsInUse(player, id)
 			table.insert(rooms, {
 				sets = sets,
 				id = tonumber(id),
@@ -1317,6 +1318,9 @@ function BuildService.Start()
 					local room = hotel and hotel.rooms[id]
 					return if room then room.state else ""
 				end)(),
+				-- An activity room's spots and how many visitors hold one (A.13.1, the room view's line).
+				spots = spotsOf,
+				spotsInUse = inUse,
 			})
 		end
 		local buildable, costs = {}, {}

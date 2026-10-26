@@ -2152,8 +2152,10 @@ local function paintRoomView()
 			vipTag = " · 👑 meets your VIP's ask"
 		end
 	end
+	-- An activity room's visitors (A.13.1 "Seen"): "2/4 spots in use".
+	local spots = if rec.spots then ` · {rec.spotsInUse or 0}/{rec.spots} spots in use` else ""
 	status.Text = if rec.ready
-		then `Ready for guests · {rec.size} cells{state}{vipTag}`
+		then `Ready for guests · {rec.size} cells{state}{spots}{vipTag}`
 		else `Not ready: {rec.missingText}`
 	status.TextColor3 = if rec.ready then Ui.Colour.Good else Ui.Colour.Bad
 	local function pct(v: number): string
