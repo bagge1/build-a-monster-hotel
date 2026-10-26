@@ -260,7 +260,8 @@ function keepsGuests(player: Player, data: PlayerData.Data, after: Rooms.World):
 			busy[id] = true
 		end
 	end
-	return Rooms.keepsBusy(PlotService.world(data), after, busy)
+	-- And every activity room a visitor is in or on its way to (GDD A.13.1, `Visits.busyRooms`).
+	return Rooms.keepsBusy(PlotService.world(data), after, HotelService.visitedRooms(player, busy))
 end
 
 -- ===== Pieces: the stairs and the desks =====
