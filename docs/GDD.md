@@ -2040,3 +2040,19 @@ outdoor pool could stand (WAITING §2.57; recommendation **A**):
 Not built before his choices: the yard (A.13.4) and the new preference tags
 on species (WAITING §2.57).
 
+### A.14 Emotes and the group reward (night draft 2026-10-26, his choices in WAITING §2.66–2.67)
+
+A draft only: nothing is built until he picks (night brief 2026-10-26: "Emotes och gruppbelöningen har inget förslag än och blir bara utkast"). Every number is PLACEHOLDER.
+
+**Emotes (§7 "Quick pings and emotes").** Roblox's own emote wheel already works outside build mode (the `.` key on a computer, the Roblox menu on a phone; build mode turns it off because it owned `.`). What is missing is a way a phone player finds without the Roblox menu.
+
+- **A (recommended): five built-in emotes in the Ping menu.** A second section of the Ping menu, "Emotes": Wave, Cheer, Laugh, Point, Dance. Each plays Roblox's built-in emote on the player's own avatar (`Humanoid:PlayEmote`, no animation to make) and floats a small icon over the head as a ping does. A 2 s cooldown per player, nothing to buy, nothing during build mode. Cost: one panel section and one remote; no art.
+- **B: monster emotes.** Three made for the game (a claw pose, a howl, a spooky "Boo!" with hands up) as animations on the standard avatar. Its own art round (skill `modelling` does not cover animation; a new pipeline), so after launch.
+- **C: nothing.** Point at Roblox's wheel in the tutorial's last card instead.
+
+**The group reward (§9 "a group join reward (free decor and +5% cash)").**
+
+- **Who:** a player in the game's Roblox group (`Player:IsInGroup(id)`, checked by the server at join and at most every 10 minutes after, since it is cached per server). The group's id is his (WAITING §4).
+- **The decor:** one piece, given once and kept even if the player leaves the group later, placed like any decor (Build → Decor, under Found or a "Gifts" row). Recommended: a new small piece, a **Fan Club Pennant** (1×1 Wall), modelled once for every kit like the event decor (one model, its own colours). A model, so his look first.
+- **The +5 %:** an income multiplier while the player is a member and playing (`Income.addBoost`, as the 2× Cash boost), not offline (as the friend bonus), stacking by multiplication with the other boosts. Lost on leaving the group, found again on rejoining it.
+- **Where it is offered:** a row at the top of the Store ("Join the group: +5% cash and a free Pennant") with a **Join** button that opens Roblox's own join prompt (`GroupService:PromptJoinAsync`, if the platform allows it in the experience; else the text says where to find the group). A member sees the row as "Thanks for joining!" with the boost shown.

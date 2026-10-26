@@ -1678,6 +1678,23 @@ Med Claudes skärmdump där det finns en. -->
    rum är helt. Förslag: räkna typen som färdig först när ett rum är fullt
    på alla tre, och låt erbjudandet fråga efter det rummets nästa steg.
 
+66. **Emotes: utkast** (natten 2026-10-26, GDD A.14). Roblox egen emote-meny
+   fungerar redan utanför byggläget (tangenten . på datorn, Roblox-menyn på
+   telefonen), men en telefonspelare hittar den sällan. **A
+   (rekommenderas):** fem inbyggda emotes (Wave, Cheer, Laugh, Point, Dance)
+   som en egen del i Ping-menyn: ingen ny konst, en panel och en remote.
+   **B:** tre egna monster-emotes (klo, yl, "Boo!"), egen animationsrunda,
+   efter lanseringen. **C:** inget, tutorialens sista kort pekar på Roblox
+   meny. Vilket?
+
+67. **Gruppbelöningen: utkast** (natten 2026-10-26, GDD A.14; gruppens id
+   är fortfarande din fråga i §4). Förslag: +5 % inkomst medan man är med i
+   gruppen och spelar (inte offline, som vänbonusen), plus en dekorbit som
+   ges en gång och behålls: en ny **Fan Club Pennant** (1×1 på vägg, en
+   modell för alla kit; ditt utseende först). Erbjuds överst i Store med en
+   **Join**-knapp som öppnar Roblox egen fråga om att gå med. Ja, eller
+   annan bit / annan procent?
+
 ## §3 Creator Hub och publicering
 
 1. ~~**Slå på Studio Access to API Services**~~ (gjort 2026-10-19: på i
