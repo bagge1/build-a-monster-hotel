@@ -1,0 +1,87 @@
+{
+ "set": "rooms/haunted_manor_karaoke",
+ "checked": "each fbx/<Name>.fbx re-imported into Blender; nothing here ran in Studio",
+ "pieces": {
+  "Furniture_KaraokeStage": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "5 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the piece's own checks re-run on the re-imported triangles",
+    "the contract re-checked on the re-imported boxes: Root 3fw x 0.2 x 3fd, the layer's envelope (Floor and Wall: inside the footprint inset 0.4, height <= 7; Rug: inside the footprint, height <= 0.15; Wall: its back on z = 3fd/2 - 0.4 +-0.05), nothing collides, budget; w, d, layer and height (to 0.3) as Pieces.luau says; each seat() on the triangles"
+   ],
+   "triangles": 1428,
+   "budget": 1500,
+   "collision_precise": [],
+   "attachments": [
+    "Use_1",
+    "Use_2"
+   ]
+  },
+  "Furniture_Microphone": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "3 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the piece's own checks re-run on the re-imported triangles",
+    "the contract re-checked on the re-imported boxes: Root 3fw x 0.2 x 3fd, the layer's envelope (Floor and Wall: inside the footprint inset 0.4, height <= 7; Rug: inside the footprint, height <= 0.15; Wall: its back on z = 3fd/2 - 0.4 +-0.05), nothing collides, budget; w, d, layer and height (to 0.3) as Pieces.luau says; each seat() on the triangles"
+   ],
+   "triangles": 256,
+   "budget": 1500,
+   "collision_precise": [],
+   "attachments": []
+  }
+ },
+ "collision_precise": {
+  "Furniture_KaraokeStage": [],
+  "Furniture_Microphone": []
+ },
+ "mirrors": {},
+ "not_validated": [
+  "anything in Studio: the import, the axis conversion on Roblox's side (import_fixup.luau checks it first), the atlas upload, how it looks lit",
+  "the attachments and each Use_<n> Pose attribute exist only in manifest.json until import_fixup.luau makes them",
+  "a visitor walking onto the deck (0.8 up, no step) and singing: no walker or clip has run",
+  "the screen lit: import_fixup makes Glow_Cold_1 Neon; no code changes what it shows",
+  "the two singers' figures side by side: each is checked against the piece, not against each other"
+ ],
+ "spots": {
+  "Furniture_KaraokeStage": {
+   "spots": {
+    "Use_1": "Stand",
+    "Use_2": "Stand"
+   },
+   "checked": "spots_check on the built and the re-imported triangles: Use_<n> from 1 without a gap, a Pose from MODELS.md's list, a level LookVector, no two spots on one square; a Stand inside the footprint (on the deck) by stand_on_faults: the deck flat to 0.15 under both feet, the standing 5-stud person (legs, torso, arms out to 3.8 across, head; each block shrunk by 0.03) clear of the body"
+  },
+  "Furniture_Microphone": {
+   "spots": {},
+   "checked": "no visitors' spots (A.13.2: not a key piece)"
+  }
+ },
+ "pieces_rows": {
+  "Furniture_KaraokeStage": {
+   "w": 2,
+   "d": 2,
+   "layer": "Floor",
+   "height": 7.0,
+   "keyFor": [
+    "KaraokeLounge"
+   ],
+   "model_top": 6.95
+  },
+  "Furniture_Microphone": {
+   "w": 1,
+   "d": 1,
+   "layer": "Floor",
+   "height": 5.0,
+   "keyFor": [],
+   "model_top": 4.96
+  }
+ },
+ "height_findings": {
+  "note": "Pieces.luau's height against the model's top, a finding (not refused): the row must say it"
+ }
+}
