@@ -2135,10 +2135,12 @@ local function paintRoomView()
 	local tip = viewPanel:FindFirstChild("Tooltip", true) :: TextLabel
 	tip.Text = if t then typeTooltip(t) else ""
 	local status = viewPanel:FindFirstChild("Status", true) :: TextLabel
-	local state = if rec.state == "Dirty"
+	-- What the room is doing now is the `roomState` section's, by room id (apart from `build`, 2026-10-26).
+	local live = (State.data.roomState or {})[tostring(rec.id)] or {}
+	local state = if live.state == "Dirty"
 		then " · needs cleaning"
-		elseif rec.state == "Occupied" then " · a guest is in"
-		elseif rec.state == "Reserved" then " · a guest is coming"
+		elseif live.state == "Occupied" then " · a guest is in"
+		elseif live.state == "Reserved" then " · a guest is coming"
 		else ""
 	local R = Constants.Rooms
 	local bars = rec.bars or { size = 0, furniture = 0, decor = 0 }
@@ -2160,7 +2162,7 @@ local function paintRoomView()
 		end
 	end
 	-- An activity room's visitors (A.13.1 "Seen"): "2/4 spots in use".
-	local spots = if rec.spots then ` · {rec.spotsInUse or 0}/{rec.spots} spots in use` else ""
+	local spots = if rec.spots then ` · {live.spotsInUse or 0}/{rec.spots} spots in use` else ""
 	status.Text = if rec.ready
 		then `Ready for guests · {rec.size} cells{state}{spots}{vipTag}`
 		else `Not ready: {rec.missingText}`

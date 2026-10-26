@@ -273,6 +273,22 @@ local function squareWorld(plot: PlotService.Plot, floor: number, c: Grid.Cell):
 	)
 end
 
+--[[ The hotel's world as its layout stands (`HotelService.world`: its grid,
+	flood and key spots kept until the layout changes), or a fresh one for a
+	profile that is not the player's own now. ]]
+local function worldOf(player: Player?, data: PlayerData.Data): Rooms.World
+	local w = if player and PlayerData.get(player) == data then HotelService.world(player) else nil
+	return w or PlotService.world(data)
+end
+
+-- A room's key spot in `worldOf`'s world: kept with it when it is the hotel's remembered one.
+local function keySpotIn(player: Player?, world: Rooms.World, roomId: string): Rooms.Spot?
+	if player and world == HotelService.world(player) then
+		return HotelService.keySpot(player, roomId)
+	end
+	return Rooms.keySpot(world, roomId)
+end
+
 -- The hotel's desks (piece ids), lowest first: the first is the one staff work at (HotelPoints).
 local function desks(data: PlayerData.Data): { string }
 	local out = {}
@@ -303,7 +319,7 @@ local function roomPath(
 	toDoor: boolean?,
 	deskId: string?
 ): { Vector3 }?
-	local world = PlotService.world(data)
+	local world = worldOf(plot.owner, data)
 	local desk = (deskId and Layout.find(world, deskId)) or Layout.find(world, desks(data)[1] or "")
 	if not data.rooms[pieceId] or not desk then
 		return nil
@@ -311,7 +327,7 @@ local function roomPath(
 	local start = Rooms.spotSquare(world, Grid.doors(desk)[1])
 	local target = if toDoor
 		then (Rooms.doorSquares(world, pieceId))
-		else Rooms.keySpot(world, pieceId)
+		else keySpotIn(plot.owner, world, pieceId)
 	if not start or not target then
 		return nil
 	end
@@ -983,27 +999,6 @@ local function squareOf(plot: PlotService.Plot, at: Vector3): (number, number, n
 	return floor, math.floor(p.X / SQUARE), math.floor(p.Z / SQUARE)
 end
 
---[[ The guests' tick's one world per hotel (GDD A.13.1, the server's cost):
-	built on first ask and remembered (`Rooms.remember`: its walking grid,
-	flood from the entrance and areas once), so a tick's visit decisions and
-	a Hunter Night's recall of every visitor share them instead of each
-	rebuilding the hotel. Nothing changes the layout during a tick. Outside a
-	tick, a fresh world. ]]
-local tickWorlds: { [PlayerData.Data]: Rooms.World }? = nil
-local function worldFor(data: PlayerData.Data): Rooms.World
-	local cache = tickWorlds
-	if not cache then
-		return PlotService.world(data)
-	end
-	local w = cache[data]
-	if not w then
-		w = PlotService.world(data)
-		Rooms.remember(w)
-		cache[data] = w
-	end
-	return w
-end
-
 -- The points of `Rooms.route`'s legs on a plot: each run's squares, each stair's glide; nil when a stair is missing.
 local function legPoints(plot: PlotService.Plot, legs: { Grid.Leg }, out: { Vector3 }): boolean
 	for _, leg in legs do
@@ -1056,8 +1051,9 @@ local function visitBack(g: Guest)
 	local now = here(g)
 	local path: { Vector3 } = { now }
 	if plot and data then
-		local world = worldFor(data)
-		local home = Rooms.keySpot(world, g.room)
+		-- The hotel's one remembered world (GDD A.13.1, the server's cost), shared by every walk until the layout changes.
+		local world = worldOf(player, data)
+		local home = keySpotIn(player, world, g.room)
 		--[[ From where it is now: at its spot, the square it stepped on from;
 			on its way, the square under it (or the nearest on its side of any
 			wall), never its destination's, or a guest called back mid-walk
@@ -1131,8 +1127,8 @@ local function tryVisit(g: Guest, now: number)
 	if not point or not rec or hotel.visitors[key] then
 		return
 	end
-	local world = worldFor(data)
-	local from = Rooms.keySpot(world, g.room)
+	local world = worldOf(player, data)
+	local from = keySpotIn(player, world, g.room)
 	-- The square in the room it steps onto the spot from (`Rooms.spotApproach`, found with the spots).
 	local target = (ref :: HotelService.SpotRef).square
 	local legs = if from and target then Rooms.route(world, from, target) else nil
@@ -1329,18 +1325,10 @@ local function tickGuests()
 	end
 end
 
--- The guests' tick, with one remembered world per hotel for the tick (`worldFor`), forgotten after.
-local function tick()
-	tickWorlds = {}
-	local ok, err = pcall(tickGuests)
-	for _, w in tickWorlds :: { [PlayerData.Data]: Rooms.World } do
-		Rooms.forget(w)
-	end
-	tickWorlds = nil
-	if not ok then
-		error(err, 0)
-	end
-end
+--[[ The guests' tick. Its walks share each hotel's one remembered world
+	(`worldOf`), kept until the layout changes, not only for the tick
+	(2026-10-26: every 0.2 s tick with a visit decision built it again). ]]
+local tick = tickGuests
 
 -- Pay per second into the till (§4.4), batched once a second per hotel.
 local function payTick()
