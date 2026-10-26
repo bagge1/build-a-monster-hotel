@@ -1939,7 +1939,7 @@ amenities and the new types **activity rooms** that guests visit.
   and walks back to its room. Its room stays Occupied; a request or a
   check-out time while it is out waits until it is back.
 - **Spots.** Every activity furniture piece carries one or more `Use_<n>`
-  attachments with an `Action` (`Sit`, `Stand`, `Lean`, `Dance`, `Swim`,
+  attachments with a `Pose` (MODELS.md; `Sit`, `Stand`, `Lean`, `Dance`, `Swim`,
   `Lie`, `Lift`, `Watch`, `Play`): the guest's pose and clip
   (`Shared/MonsterMotion`). A spot is taken by one guest at a time; a room's
   capacity is its spots. `MODELS.md` gets the contract before the first
