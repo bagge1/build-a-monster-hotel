@@ -1064,7 +1064,7 @@ Med Claudes skärmdump där det finns en. -->
      skymmer rummet. **Rekommendation:** dölj högerkolumnen i rumsvyn och
      gör panelen bredare; säg till om du vill något annat när du sett den.
 
-41. **Nya rumstyper av de nya möblerna?** (natten 2026-10-21; 21 nya bitar
+41. ~~**Nya rumstyper av de nya möblerna?**~~ (ditt ja 2026-10-26 till rekommendationerna, och mycket fler rumstyper: GDD §18 och A.13, byggs natten 2026-10-26) (natten 2026-10-21; 21 nya bitar
    för matsal, spel, lounge, badrum, trädgård och lobby, `Pieces.luau`,
    PLACEHOLDER). Frågor som är dina, var och en *ja* eller *nej*:
    - Ett **Game Room** (nyckel: Pool Table, Ping-Pong Table eller Arcade
@@ -1215,7 +1215,7 @@ Med Claudes skärmdump där det finns en. -->
    **Rekommendation:** (b): det läses som cypress på avstånd och kostar inte
    fler trianglar. Den är inte lagd för import förrän du valt.
 
-48. **Buggar där rättningen är ett beslut** (2026-10-22 kväll, tre
+48. ~~**Buggar där rättningen är ett beslut**~~ (ditt ja 2026-10-26 till alla fem rekommendationerna, GDD §18; rättas natten 2026-10-26) (2026-10-22 kväll, tre
    kodgranskningar; det som var rena fel är rättat, se nedan). Fyra frågor:
    - **Ett accepterat VIP-kontrakt efter en rebirth** stannar kvar för ett
      hotell som kedjan inte längre har; dess klocka går aldrig, så det tar en
