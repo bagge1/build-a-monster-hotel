@@ -1,0 +1,536 @@
+{
+ "set": "rooms/haunted_manor_bar",
+ "title": "Haunted Manor: the Bar's counter and small stage (GDD A.13)",
+ "frame": "Roblox studs, piece frame: X right, Y up, door/front toward -Z, origin per MODELS.md; Blender holds them as (-x, z, y)",
+ "atlas": "textures/HotelAtlas.png (embedded in every FBX)",
+ "palette": {
+  "plum": [
+   90,
+   70,
+   110
+  ],
+  "plum_dark": [
+   60,
+   45,
+   78
+  ],
+  "plum_deep": [
+   40,
+   30,
+   55
+  ],
+  "violet": [
+   130,
+   90,
+   180
+  ],
+  "lilac": [
+   170,
+   135,
+   210
+  ],
+  "lavender": [
+   210,
+   190,
+   235
+  ],
+  "teal": [
+   40,
+   150,
+   150
+  ],
+  "teal_dark": [
+   25,
+   95,
+   105
+  ],
+  "teal_light": [
+   110,
+   205,
+   190
+  ],
+  "pumpkin": [
+   240,
+   130,
+   40
+  ],
+  "pumpkin_dark": [
+   185,
+   85,
+   30
+  ],
+  "amber": [
+   240,
+   175,
+   70
+  ],
+  "gold": [
+   220,
+   180,
+   90
+  ],
+  "moon": [
+   175,
+   200,
+   240
+  ],
+  "moon_dark": [
+   90,
+   115,
+   170
+  ],
+  "night": [
+   35,
+   40,
+   70
+  ],
+  "bone": [
+   235,
+   225,
+   200
+  ],
+  "cream": [
+   245,
+   238,
+   250
+  ],
+  "wood": [
+   125,
+   82,
+   55
+  ],
+  "wood_dark": [
+   80,
+   52,
+   38
+  ],
+  "wood_light": [
+   170,
+   120,
+   80
+  ],
+  "stone": [
+   130,
+   125,
+   140
+  ],
+  "stone_dark": [
+   85,
+   82,
+   95
+  ],
+  "moss": [
+   85,
+   120,
+   70
+  ],
+  "grass": [
+   90,
+   150,
+   80
+  ],
+  "leaf": [
+   125,
+   185,
+   90
+  ],
+  "crimson": [
+   140,
+   30,
+   55
+  ],
+  "crimson_dark": [
+   90,
+   20,
+   40
+  ],
+  "rose": [
+   200,
+   90,
+   120
+  ],
+  "black": [
+   30,
+   28,
+   36
+  ],
+  "iron": [
+   60,
+   62,
+   70
+  ],
+  "sand": [
+   220,
+   200,
+   140
+  ],
+  "meat": [
+   170,
+   60,
+   50
+  ],
+  "straw": [
+   205,
+   170,
+   90
+  ],
+  "white": [
+   240,
+   240,
+   245
+  ],
+  "slime": [
+   140,
+   210,
+   90
+  ],
+  "sky": [
+   90,
+   140,
+   220
+  ],
+  "dusty": [
+   150,
+   130,
+   110
+  ],
+  "jade": [
+   120,
+   200,
+   170
+  ],
+  "honey": [
+   240,
+   190,
+   80
+  ],
+  "brown": [
+   140,
+   100,
+   70
+  ],
+  "wine": [
+   120,
+   30,
+   50
+  ],
+  "ink": [
+   50,
+   45,
+   70
+  ],
+  "book_a": [
+   150,
+   60,
+   70
+  ],
+  "book_b": [
+   60,
+   110,
+   130
+  ],
+  "book_c": [
+   190,
+   150,
+   70
+  ],
+  "grey": [
+   110,
+   110,
+   120
+  ],
+  "flame": [
+   255,
+   205,
+   120
+  ],
+  "lamp": [
+   255,
+   185,
+   110
+  ],
+  "moonglow": [
+   205,
+   225,
+   255
+  ],
+  "brew": [
+   120,
+   255,
+   160
+  ]
+ },
+ "pieces": {
+  "Furniture_BarCounter": {
+   "name": "Furniture_BarCounter",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     9.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      9.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      3.395,
+      0.0
+     ],
+     "size": [
+      8.2,
+      6.79,
+      2.2
+     ],
+     "triangles": 1340,
+     "collide": false
+    },
+    "Glow_Warm_1": {
+     "centre": [
+      -3.4,
+      4.37,
+      -0.3
+     ],
+     "size": [
+      0.1039,
+      0.28,
+      0.12
+     ],
+     "triangles": 36,
+     "collide": false
+    },
+    "Glow_Magic_1": {
+     "centre": [
+      0.0,
+      4.25,
+      0.66
+     ],
+     "size": [
+      1.3252,
+      0.6,
+      0.26
+     ],
+     "triangles": 64,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      3.395,
+      0.0
+     ],
+     "size": [
+      8.2,
+      6.79,
+      2.2
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use_1": {
+     "pos": [
+      -3.0,
+      0.0,
+      -3.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    },
+    "Use_2": {
+     "pos": [
+      0.0,
+      0.0,
+      -3.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    },
+    "Use_3": {
+     "pos": [
+      3.0,
+      0.0,
+      -3.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "triangles": 1452,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a Haunted Manor bar: a plum counter with three pointed-arch crimson panels between dark posts, a dark wood top at 3.7 with a gold tap tower, two pints, a goblet and a candle, a gold foot rail; behind it a back bar of bottles on two shelves either side of a gold-framed pointed-arch mirror, two glowing potions on its ledge, a cornice with gold finials",
+   "decor": {
+    "fw": 3,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     9.0,
+     3.0
+    ]
+   },
+   "furniture": {
+    "id": "BarCounter",
+    "pose": null,
+    "spots": {
+     "Use_1": "Stand",
+     "Use_2": "Stand",
+     "Use_3": "Stand"
+    },
+    "keyFor": [
+     "Bar"
+    ],
+    "pieces_height": 6.79,
+    "model_top": 6.79,
+    "pieces_row": "pending (PENDING in the build script)"
+   }
+  },
+  "Furniture_SmallStage": {
+   "name": "Furniture_SmallStage",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     6.0,
+     0.2,
+     6.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      6.0,
+      0.2,
+      6.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      3.475,
+      0.0
+     ],
+     "size": [
+      5.2,
+      6.95,
+      5.2
+     ],
+     "triangles": 600,
+     "collide": false
+    },
+    "Glow_Warm_1": {
+     "centre": [
+      0.0,
+      1.2,
+      -1.6973
+     ],
+     "size": [
+      4.4502,
+      0.2,
+      1.5654
+     ],
+     "triangles": 180,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      3.475,
+      0.0
+     ],
+     "size": [
+      5.2,
+      6.95,
+      5.2
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use_1": {
+     "pos": [
+      0.0,
+      1.0,
+      0.3
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    }
+   },
+   "triangles": 792,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a Haunted Manor small stage: a round-fronted deck at 1.0 on a crimson skirt, a gold footlight trough with five warm bulbs along its front, a microphone stand; behind it a dark-wood pointed arch, crimson curtains drawn aside before a night-blue panel with a gold crescent moon",
+   "decor": {
+    "fw": 2,
+    "fd": 2,
+    "layer": "Floor",
+    "footprint_studs": [
+     6.0,
+     6.0
+    ]
+   },
+   "furniture": {
+    "id": "SmallStage",
+    "pose": null,
+    "spots": {
+     "Use_1": "Dance"
+    },
+    "keyFor": [],
+    "pieces_height": 6.95,
+    "model_top": 6.95,
+    "pieces_row": "pending (PENDING in the build script)"
+   }
+  }
+ },
+ "mirrors": {}
+}
