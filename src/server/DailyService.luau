@@ -20,6 +20,7 @@ local ServerScriptService = game:GetService("ServerScriptService")
 local Constants = require(ReplicatedStorage.Shared.Constants)
 local Format = require(ReplicatedStorage.Shared.Format)
 local Net = require(ReplicatedStorage.Shared.Net)
+local Rating = require(ReplicatedStorage.Shared.Rating)
 local Species = require(ReplicatedStorage.Shared.Species)
 local PlayerData = require(ServerScriptService.Server.PlayerData)
 local HotelService = require(ServerScriptService.Server.HotelService)
@@ -54,6 +55,11 @@ local function company(player: Player): boolean
 		end
 	end
 	return false
+end
+
+-- The hotel played has a next whole star to reach (A.9): none at the top.
+local function starToReach(player: Player): boolean
+	return Rating.nextStar(HotelService.rating(player)) ~= nil
 end
 
 -- The till fills at all: Auto-Collect pays straight into the wallet, so its owner never collects.
@@ -116,8 +122,9 @@ local KINDS: { Kind } = {
 		text = "Reach {n}★",
 		stat = nil,
 		target = function(rating)
-			return math.min(5, math.floor(rating) + 1)
+			return Rating.nextStar(rating) or 5
 		end,
+		when = starToReach,
 	},
 	{
 		-- The showcase (A.11.4): the visit is asked, the like stays free (not "Like 3 hotels").
@@ -200,6 +207,8 @@ local function draw(player: Player, data: PlayerData.Data, rng: Random): { [stri
 		stat = stat,
 		target = target,
 		base = if stat then (data.stats[stat] or 0) else 0,
+		-- The hotel a star's target was drawn for: its progress counts only there.
+		location = if kind.id == "Rating" then data.location else nil,
 		claimed = false,
 	}
 end
@@ -220,9 +229,7 @@ end
 
 local function progress(player: Player, data: PlayerData.Data, r: any): number
 	if r.kind == "Rating" then
-		return if HotelService.rating(player) >= r.target
-			then r.target
-			else math.floor(HotelService.rating(player))
+		return Rating.towardStar(r.target, HotelService.rating(player), r.location, data.location)
 	end
 	return math.max(0, (data.stats[r.stat] or 0) - r.base)
 end

@@ -105,6 +105,31 @@ function Rating.stars(c: Categories, reviews: { number }): number
 	return math.clamp(Rating.roundHalf(stars), R.Min, R.Max)
 end
 
+--[[ The daily request "Reach {n}★" (A.9: "reach the next whole star"): the
+	next whole star above `rating`, or nil at the top, where there is none to
+	reach (so the request is never drawn there, met as it is drawn). ]]
+function Rating.nextStar(rating: number): number?
+	local n = math.floor(rating) + 1
+	return if n <= R.Max then n else nil
+end
+
+--[[ How far that request has come: `target` once the hotel played
+	(`playedAt`) reaches it, else its whole stars, and nothing at another
+	hotel of the chain than the one it was drawn for (`drawnAt`; nil for a
+	request drawn before it was kept, counted anywhere), since its target is
+	that hotel's next star. ]]
+function Rating.towardStar(
+	target: number,
+	rating: number,
+	drawnAt: number?,
+	playedAt: number
+): number
+	if drawnAt ~= nil and drawnAt ~= playedAt then
+		return 0
+	end
+	return if rating >= target then target else math.floor(rating)
+end
+
 -- Keeps the last `Constants.Stay.ReviewsKept` reviews, the newest last.
 function Rating.addReview(reviews: { number }, stars: number)
 	table.insert(reviews, stars)

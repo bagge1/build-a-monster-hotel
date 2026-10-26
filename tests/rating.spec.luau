@@ -215,6 +215,28 @@ describe("Rating", function()
 		expect.eq(Rating.stars(Rating.categories(empty), {}), 1)
 	end)
 
+	-- A.9: "reach the next whole star".
+	it(
+		"a star request asks the next whole star, never one already met, and none at the top",
+		function()
+			for _, rating in { 1, 1.5, 2, 3.5, 4, 4.5 } do
+				local n = Rating.nextStar(rating) :: number
+				expect.truthy(n ~= nil, `a next star at {rating}`)
+				expect.truthy(n > rating, `not met as drawn at {rating}`)
+				expect.eq(n, math.floor(n), `a whole star at {rating}`)
+				expect.atMost(n, math.floor(rating) + 1, `the next one at {rating}`)
+			end
+			expect.eq(Rating.nextStar(5), nil, "none at 5 stars")
+		end
+	)
+
+	it("a star request counts only at the hotel it was drawn for", function()
+		expect.eq(Rating.towardStar(4, 4, 1, 1), 4, "reached there")
+		expect.eq(Rating.towardStar(4, 3.5, 1, 1), 3, "its whole stars there")
+		expect.eq(Rating.towardStar(4, 5, 1, 2), 0, "nothing at another hotel")
+		expect.eq(Rating.towardStar(4, 4.5, nil, 2), 4, "one drawn before the hotel was kept")
+	end)
+
 	it("only the last reviews are kept", function()
 		local reviews = {}
 		for i = 1, 100 do
