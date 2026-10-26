@@ -1736,6 +1736,23 @@ Med Claudes skärmdump där det finns en. -->
    "3h 05m"); (f) när: nu, så att ny text skrivs med nycklar, eller i M6
    som GDD planerar. Förslag: (f) nu, (a) spanska och portugisiska först.
 
+71. **Aurora Spirit (Frostfangs Mythic) vill ha "silence", men inget med
+   den taggen går att ställa på Frostfang** (natten 2026-10-26,
+   mellanspelsgranskningen). De två bitarna med taggen (Soundproof Walls,
+   Opera Chaise) hör till Haunted Manor. Sedan i dag räknas en preferens
+   bara från det som står i rummet, så den får högst 1 av 2. Det sänker
+   Comfort lite men stoppar inte 5★. Förslag: en Frostfang-bit med
+   "silence" (en Snow Hush Rug, eller taggen på en befintlig Frostfang-bit
+   som Fur Throw). Vilket?
+
+72. **En såld gratis nyckelmöbel i ett nytt hotells startrum** (samma
+   granskning). Den ställdes in gratis, så försäljningen ger $0, och att
+   köpa den igen kostar $50 i Manor, $1 000 (Ice Bed) eller $20 000 (Lily
+   Pad Bed). Med mindre kassa än så står hotellet utan färdigt rum och utan
+   gäster tills Wingen och de andra hotellen har tjänat ihop det. Förslag:
+   startrummets nyckelmöbel går inte att sälja (bara flytta), eller så
+   kostar den att köpa tillbaka vad den gav vid försäljningen. Ditt val.
+
 ## §3 Creator Hub och publicering
 
 1. ~~**Slå på Studio Access to API Services**~~ (gjort 2026-10-19: på i
