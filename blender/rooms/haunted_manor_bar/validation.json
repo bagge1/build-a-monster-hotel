@@ -1,0 +1,90 @@
+{
+ "set": "rooms/haunted_manor_bar",
+ "checked": "each fbx/<Name>.fbx re-imported into Blender; nothing here ran in Studio",
+ "pieces": {
+  "Furniture_BarCounter": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "5 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the piece's own checks re-run on the re-imported triangles",
+    "the contract re-checked on the re-imported boxes: Root 3fw x 0.2 x 3fd, the layer's envelope (Floor and Wall: inside the footprint inset 0.4, height <= 7; Rug: inside the footprint, height <= 0.15; Wall: its back on z = 3fd/2 - 0.4 +-0.05), nothing collides, budget; w, d, layer and height (to 0.3) as Pieces.luau says; each seat() on the triangles"
+   ],
+   "triangles": 1452,
+   "budget": 1500,
+   "collision_precise": [],
+   "attachments": [
+    "Use_1",
+    "Use_2",
+    "Use_3"
+   ]
+  },
+  "Furniture_SmallStage": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "4 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the piece's own checks re-run on the re-imported triangles",
+    "the contract re-checked on the re-imported boxes: Root 3fw x 0.2 x 3fd, the layer's envelope (Floor and Wall: inside the footprint inset 0.4, height <= 7; Rug: inside the footprint, height <= 0.15; Wall: its back on z = 3fd/2 - 0.4 +-0.05), nothing collides, budget; w, d, layer and height (to 0.3) as Pieces.luau says; each seat() on the triangles"
+   ],
+   "triangles": 792,
+   "budget": 1500,
+   "collision_precise": [],
+   "attachments": [
+    "Use_1"
+   ]
+  }
+ },
+ "collision_precise": {
+  "Furniture_BarCounter": [],
+  "Furniture_SmallStage": []
+ },
+ "mirrors": {},
+ "not_validated": [
+  "anything in Studio: the import, the axis conversion on Roblox's side (import_fixup.luau checks it first), the atlas upload, how it looks lit",
+  "the attachments and each Use_<n> Pose attribute exist only in manifest.json until import_fixup.luau makes them",
+  "a visitor walking to a spot, standing or dancing: no walker or animation has run",
+  "Pieces.luau rows (pending, above)"
+ ],
+ "spots": {
+  "Furniture_BarCounter": {
+   "spots": {
+    "Use_1": "Stand",
+    "Use_2": "Stand",
+    "Use_3": "Stand"
+   },
+   "checked": "spots_check on the built and the re-imported triangles: Use_<n> from 1 without a gap, a Pose from MODELS.md's list, a level LookVector, no two spots on one square; Stand on the floor at a front square's middle 1.5 in front, facing +Z, its square free of the body; Dance on a flat surface (to 0.15 over the torso's 1.0 round) inside the footprint, nothing of the body within the figure (1.9 round, 5.2 tall)"
+  },
+  "Furniture_SmallStage": {
+   "spots": {
+    "Use_1": "Dance"
+   },
+   "checked": "spots_check on the built and the re-imported triangles: Use_<n> from 1 without a gap, a Pose from MODELS.md's list, a level LookVector, no two spots on one square; Stand on the floor at a front square's middle 1.5 in front, facing +Z, its square free of the body; Dance on a flat surface (to 0.15 over the torso's 1.0 round) inside the footprint, nothing of the body within the figure (1.9 round, 5.2 tall)"
+  }
+ },
+ "pending_pieces_rows": {
+  "note": "Pieces.luau has no rows for these yet (the code branch adds them). The kit's Pieces check ran against these values; the rows must say the same w, d, layer and height (to 0.3).",
+  "Furniture_BarCounter": {
+   "w": 3,
+   "d": 1,
+   "layer": "Floor",
+   "height": 6.79,
+   "keyFor": [
+    "Bar"
+   ],
+   "furniture": true
+  },
+  "Furniture_SmallStage": {
+   "w": 2,
+   "d": 2,
+   "layer": "Floor",
+   "height": 6.95,
+   "keyFor": [],
+   "furniture": true
+  }
+ }
+}
