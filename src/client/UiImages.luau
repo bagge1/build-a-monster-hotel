@@ -25,6 +25,11 @@ return {
 	PanelFill = "rbxassetid://139329611460977",
 	PanelFrame = "rbxassetid://70385359653016",
 	Gloom = "rbxassetid://121928999888188",
+	-- The Expedition board's destination cards (GDD A.11.2, UI.md "Expedition board"): not drawn
+	-- yet; until then a card is its location's facade colour.
+	Expedition_1 = "",
+	Expedition_2 = "",
+	Expedition_3 = "",
 	-- Pass and product icons: the images Roblox made of ui/pass and ui/product
 	-- when each was created in Creator Hub (2026-10-20); Store.luau names them.
 	Pass_AutoCollectTill = "rbxassetid://137527705254534",

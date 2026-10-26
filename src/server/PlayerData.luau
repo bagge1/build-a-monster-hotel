@@ -11,7 +11,7 @@
 	cells, rotations, what each cost, floor finishes), the decor on its
 	squares, the tiles owned, of the hotel being played, and the chain's
 	other hotels in `chain` (§6.4); residents (species, mutation, role, the
-	hotel they staff);
+	hotel they staff, the end of a trip they are on); the expedition out (A.11.2);
 	friendship; the Monster Book; the Moon Tree; reviews; the tutorial; daily
 	and login state; codes; passes; boosts; settings; and the processed
 	PurchaseIds, so a receipt is never granted twice.
@@ -34,6 +34,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Constants = require(ReplicatedStorage.Shared.Constants)
 local Contracts = require(ReplicatedStorage.Shared.Contracts)
+local Expeditions = require(ReplicatedStorage.Shared.Expeditions)
 local Finds = require(ReplicatedStorage.Shared.Finds)
 local Grid = require(ReplicatedStorage.Shared.Grid)
 local Pieces = require(ReplicatedStorage.Shared.Pieces)
@@ -113,6 +114,8 @@ export type ResidentRecord = {
 	hotel: number?,
 	level: number?, -- A.11.6: its level (nil reads as 1), kept through a rebirth with the resident
 	xp: number?, -- toward the next level (ResidentLevels)
+	-- A.11.2: os.time its expedition ends; away (as in the Hunter Camp) while that is in the future, nil once collected
+	expedition: number?,
 }
 --[[ A hotel of the chain that is not being played (§6.4): its own fields as
 	the played hotel keeps them in `Data`, its rating when it was left, and
@@ -189,6 +192,7 @@ export type Data = {
 	traps: { string }, -- the lobby's trap slots (§8.1), "" when empty
 	contracts: Contracts.Ledger, -- VIP contracts (A.11.1): offers by location, those running, the day's count
 	finds: Finds.Record, -- rare decor found (A.11.3): set pieces and souvenirs by decor id, the pity's misses, move-ins (Reconcile adds it)
+	expedition: Expeditions.Record, -- A.11.2: the trip out (nil none), long trips without a find, trips collected (Reconcile adds it)
 }
 
 local TEMPLATE: Data = {
@@ -248,6 +252,7 @@ local TEMPLATE: Data = {
 	traps = { "", "", "" },
 	contracts = Contracts.newLedger(),
 	finds = Finds.newRecord(),
+	expedition = Expeditions.newRecord(),
 }
 
 local store = ProfileStore.New(StoreNames.of("Players_v1"), TEMPLATE)

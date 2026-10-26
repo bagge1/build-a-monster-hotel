@@ -41,6 +41,7 @@ local systems: { { Init: () -> (), Start: () -> () } } = {
 	require(Server.FindService) :: any, -- rare decor finds and souvenirs (A.11.3): from stays, Hunter Night, move-ins, VIP contracts
 	require(Server.EventService) :: any, -- the calendar's events, over the bus, guests and hunters
 	require(Server.NotifyService) :: any, -- notifications, from residents' offline cap and the calendar
+	require(Server.ExpeditionService) :: any, -- expeditions (A.11.2): over residents, the chain, rebirth, finds and notifications
 	require(Server.SettingsService) :: any,
 	require(Server.SocialService) :: any, -- likes, friend bonus, pings, the street leaderboard
 	require(Server.LeaderboardService) :: any, -- the global boards at the lane's west end

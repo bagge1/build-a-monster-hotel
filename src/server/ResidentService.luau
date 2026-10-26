@@ -19,6 +19,12 @@
 
 	Releasing a resident ("a holiday") gives Moon Shards by rarity.
 
+	AWAY (`present`): a resident in the Hunter Camp (`campUntil`, §8.1) or on
+	an expedition (`expedition`, A.11.2: "away, as a resident in the Hunter
+	Camp is") earns nothing in the Wing or offline, gives no perk, works no
+	post and cannot be moved or sent on holiday; it is home by itself when
+	its time is up. The trip itself is `ExpeditionService`'s.
+
 	LEVELS (A.11.6, `ResidentLevels`): each resident gains XP a minute at
 	work while the player plays (the Wing or a post at any hotel of the chain), a
 	full bar is taken by **Level up** (`LevelUp`) for a price in its own Wing
@@ -44,6 +50,7 @@ local ServerScriptService = game:GetService("ServerScriptService")
 
 local Constants = require(ReplicatedStorage.Shared.Constants)
 local Economy = require(ReplicatedStorage.Shared.Economy)
+local Expeditions = require(ReplicatedStorage.Shared.Expeditions)
 local Format = require(ReplicatedStorage.Shared.Format)
 local Locations = require(ReplicatedStorage.Shared.Locations)
 local Net = require(ReplicatedStorage.Shared.Net)
@@ -135,6 +142,12 @@ function ResidentService.threshold(speciesId: string): number
 	return if sp then Constants.Rarity[sp.rarity].friendship else math.huge
 end
 
+-- Whether a resident is home at `now`: not in the Hunter Camp (§8.1), not on an expedition (A.11.2).
+local function present(r: PlayerData.ResidentRecord, now: number): boolean
+	return r.campUntil <= now and not Expeditions.away(r, now)
+end
+ResidentService.present = present
+
 -- Whether a resident on staff works at the hotel being played (§6.4: each hotel its own staff).
 local function here(data: PlayerData.Data, r: PlayerData.ResidentRecord): boolean
 	return (r.hotel or data.location) == data.location
@@ -145,7 +158,7 @@ ResidentService.here = here
 function ResidentService.staff(data: PlayerData.Data, role: string): { number }
 	local out = {}
 	for _, r in data.residents do
-		if r.role == role and r.campUntil <= os.time() and here(data, r) then
+		if r.role == role and present(r, os.time()) and here(data, r) then
 			local sp = Species.get(r.species)
 			table.insert(
 				out,
@@ -229,7 +242,8 @@ local function publish(player: Player)
 	local ongoing = errands[player] or {}
 	for _, id in ids do
 		local r = data.residents[id]
-		local away = r.campUntil > os.time()
+		local tripping = Expeditions.away(r, os.time())
+		local away = not present(r, os.time())
 		local c = Instance.new("Configuration")
 		c.Name = id
 		c:SetAttribute("Species", r.species)
@@ -238,6 +252,7 @@ local function publish(player: Player)
 		c:SetAttribute("Role", r.role)
 		c:SetAttribute("Level", ResidentLevels.level(r))
 		c:SetAttribute("Away", away)
+		c:SetAttribute("Trip", if tripping then true else nil) -- away on an expedition (A.11.2), not in the camp
 		c:SetAttribute("Hotel", if r.role ~= "" then r.hotel or data.location else nil)
 		if r.role ~= "" and not away and here(data, r) then
 			slots[r.role] = (slots[r.role] or 0) + 1
@@ -360,6 +375,15 @@ local function heldElsewhere(
 	return true
 end
 
+-- Refuses moving a resident away on an expedition (A.11.2): it is not here. Returns whether it was refused.
+local function onTrip(player: Player, rec: PlayerData.ResidentRecord, remote: string): boolean
+	if not Expeditions.away(rec, os.time()) then
+		return false
+	end
+	Net.fire(player, "Refused", remote, "It's away on an expedition")
+	return true
+end
+
 local function assign(player: Player, idNumber: number, role: string)
 	local data = PlayerData.get(player)
 	local rec = data and data.residents[tostring(idNumber)]
@@ -369,7 +393,7 @@ local function assign(player: Player, idNumber: number, role: string)
 	if role ~= "" and not table.find(ResidentService.Roles, role) then
 		return
 	end
-	if heldElsewhere(player, data, rec, "Assign") then
+	if heldElsewhere(player, data, rec, "Assign") or onTrip(player, rec, "Assign") then
 		return
 	end
 	rec.role = role
@@ -385,7 +409,7 @@ local function release(player: Player, idNumber: number)
 	if not data or not rec or not sp then
 		return
 	end
-	if heldElsewhere(player, data, rec, "Release") then
+	if heldElsewhere(player, data, rec, "Release") or onTrip(player, rec, "Release") then
 		return
 	end
 	data.residents[id] = nil
@@ -395,19 +419,59 @@ local function release(player: Player, idNumber: number)
 	publish(player)
 end
 
--- The Wing's residents' combined rate, before offline's 50 %; `offline` for the time away (no friend bonus, no timed boost).
-function ResidentService.rate(player: Player, data: PlayerData.Data, offline: boolean?): number
-	local m = Income.multiplier(player, offline)
+-- What multiplies the Wing's pay now: the income bonuses (offline's for the time away) and the residents' perks.
+local function wingMultiplier(player: Player, data: PlayerData.Data, offline: boolean?): number
+	return Income.multiplier(player, offline)
 		* (1 + Perks.total(data.residents, "ResidentIncome", os.time()))
+end
+
+-- One resident's Wing rate at its level, times `m`, wherever it is now.
+local function wingPay(r: PlayerData.ResidentRecord, m: number): number
+	return Economy.residentPay(r.species, if r.mutation ~= "" then r.mutation else nil, m, r.size)
+		* ResidentLevels.wing(ResidentLevels.level(r))
+end
+
+--[[ The Wing's residents' combined rate, before offline's 50 %; `offline` for
+	the time away (no friend bonus, no timed boost). With `since` (a logout),
+	only those who were not on an expedition then: welcome-back pays one home
+	since for the part after its trip (§18, 2026-10-26). ]]
+function ResidentService.rate(
+	player: Player,
+	data: PlayerData.Data,
+	offline: boolean?,
+	since: number?
+): number
+	local m = wingMultiplier(player, data, offline)
 	local total = 0
 	for _, r in data.residents do
-		if r.role == "" and r.campUntil <= os.time() then
-			total += Economy.residentPay(
-				r.species,
-				if r.mutation ~= "" then r.mutation else nil,
-				m,
-				r.size
-			) * ResidentLevels.wing(ResidentLevels.level(r))
+		if
+			r.role == ""
+			and present(r, os.time())
+			and (r.expedition or 0) <= (since or math.huge)
+		then
+			total += wingPay(r, m)
+		end
+	end
+	return total
+end
+
+--[[ What an expedition's party would earn by staying, $/s (A.11.2, his
+	ruling 2026-10-26: the pay is counted as staying counts): each one's Wing
+	rate at its level with the bonuses now (`offline`: offline's), though it
+	is away. Its own perks are lost while away (A.11.2 "no perk"), so the
+	Wing's ResidentIncome is the one the hotel has now. ]]
+function ResidentService.partyRate(
+	player: Player,
+	data: PlayerData.Data,
+	ids: { string },
+	offline: boolean?
+): number
+	local m = wingMultiplier(player, data, offline)
+	local total = 0
+	for _, id in ids do
+		local r = data.residents[id]
+		if r then
+			total += wingPay(r, m)
 		end
 	end
 	return total
@@ -433,7 +497,21 @@ local function welcomeBack(player: Player, data: PlayerData.Data)
 	local away = os.time() - since
 	local cap = ResidentService.offlineCap(player, data)
 	-- No friend bonus for the hours away, whoever is online now (WAITING §2.48, his yes 2026-10-26).
-	local earned = Economy.offline(ResidentService.rate(player, data, true), away, cap)
+	-- Those on an expedition at the logout are left out: the trip pays for its time (A.11.2) …
+	local earned = Economy.offline(ResidentService.rate(player, data, true, since), away, cap)
+	-- … and one home since earns only for the part after its trip (§18, 2026-10-26: a trip back
+	-- before the login does not also fill the offline till).
+	local m = wingMultiplier(player, data, true)
+	for _, r in data.residents do
+		local ends = r.expedition or 0
+		if r.role == "" and present(r, os.time()) and ends > since then
+			earned += Economy.offline(
+				wingPay(r, m),
+				Expeditions.homeSeconds(since, away, cap, ends),
+				cap
+			)
+		end
+	end
 	if earned > 0 then
 		PlayerData.addTill(player, earned)
 		Net.fire(
@@ -548,7 +626,7 @@ local function runErrands(
 		-- Reassigned, released or away: it stands at its new post at once.
 		local stale = not rec
 			or rec.role ~= e.role
-			or rec.campUntil > os.time()
+			or not present(rec, os.time())
 			or not plot
 			or not here(data, rec)
 		if not stale and (e.phase == "Out" or e.phase == "Work") then
@@ -582,7 +660,7 @@ local function runErrands(
 		for id, rec in data.residents do
 			if
 				rec.role == role
-				and rec.campUntil <= os.time()
+				and present(rec, os.time())
 				and not mine[id]
 				and here(data, rec)
 			then
@@ -816,7 +894,8 @@ function ResidentService.Start()
 				size = r.size, -- Tiny or Giant, stacked with the look (A.11.5)
 				role = r.role,
 				hotel = if r.role ~= "" then r.hotel or data.location else nil,
-				away = r.campUntil > os.time(),
+				away = r.campUntil > os.time(), -- in the Hunter Camp
+				trip = Expeditions.away(r, os.time()), -- away on an expedition (A.11.2)
 				pay = if sp then wingRate(r) * ResidentLevels.wing(ResidentLevels.level(r)) else 0,
 				-- A.11.6: its level, the bar, and the next level's price.
 				level = ResidentLevels.level(r),

@@ -111,6 +111,29 @@ function Finds.roll(
 	return "Piece", id
 end
 
+--[[ A find already decided (an expedition's roll, A.11.2, with its own
+	guarantee): a piece drawn among the location's unfound ones, or a
+	duplicate once all are found. It leaves the rolls' pity alone, which
+	counts the stays' and Hunter Nights' rolls only. ]]
+function Finds.draw(
+	rec: Record,
+	location: number,
+	rand: () -> number,
+	now: number
+): (Outcome, string?)
+	local pool = Finds.pool(location)
+	if #pool == 0 then
+		return "None", nil
+	end
+	local unfound = Finds.unfound(rec, location)
+	if #unfound == 0 then
+		return "Duplicate", pick(pool, rand)
+	end
+	local id = pick(unfound, rand)
+	rec.found[id] = now
+	return "Piece", id
+end
+
 -- The decor id of a species' souvenir.
 function Finds.souvenirId(species: string): string
 	return `Souvenir_{species}`

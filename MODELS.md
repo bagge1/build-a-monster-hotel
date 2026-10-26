@@ -26,7 +26,7 @@ names:
 | Job | Sections |
 |---|---|
 | Any model | The rules; What a model costs to draw; Checklist before handing a set over |
-| A room, an amenity, the lobby, the front desk, the stairs, a facade, decor, a rug | Hotel kit |
+| A room, an amenity, the lobby, the front desk, the stairs, a facade, decor, a rug, the expedition board | Hotel kit |
 | An inner wall, a door, furniture (built rooms) | Hotel kit; Inner walls, doors and furniture |
 | A rare decor set, a souvenir | Hotel kit; Decor; Rare decor sets and souvenirs |
 | A monster, a hunter, the bus | Monsters and street NPCs |
@@ -108,6 +108,7 @@ allow.
   | An inner wall or door; a wall post | 1,200; 200 |
   | A furniture piece | 1,500 |
   | The hotel sign | 3,000 (draft) |
+  | The expedition board | 2,000 (draft) |
   | A sign or lobby cosmetic | 2,000 (draft) |
   | A monster | 4,000, plus `LOD_Proxy` 300 |
   | A tree | 800, plus `LOD_Proxy` 100 |
@@ -466,6 +467,35 @@ collision and rays off).
 | `Root` | Invisible, inside the board | `PivotTo` onto `Sign` |
 | `Board` | The board, its rim and its screws | — |
 | `Face` | The flat panel in front, its front (−Z) face clear | A `SurfaceGui` on its Front: the room's name and tier, and its state on a second line |
+
+### Expedition board (`ExpeditionBoard`, one per hotel kit)
+
+The signpost with a map in the Resident Wing (GDD A.11.2): where the player
+sends residents on trips and collects them. One per hotel; a delivered
+`ExpeditionBoard` per kit (`assets/HotelKit/<Location>/ExpeditionBoard.rbxm`)
+replaces the blockout's geometry and nothing else (`HotelKit.expeditionBoard`).
+
+**Where it stands** (Claude's pick, 2026-10-26: A.11.2 says "by the Wing"):
+at the `ExpeditionBoard` attachment on the plot base's `Wing` part (the
+garden, built by the code), plot-local (P − 12, 1, P + 8) with P the plot's
+144: the garden's front corner on the sign's side (+X), 8 studs behind the
+plot's back edge, front toward −Z, toward the hotel, so a player coming
+round the hotel reads it and has room to stand.
+
+**The frame:** origin at the foot of the post, on the walking surface; front
+(the map's face) toward **−Z**. About 6 wide and 7.5 tall, built for the
+5-stud person: the map's middle at 4.5, the lantern above a person's reach.
+Nothing of it reaches past z ±0.5 behind or 1 in front, so it stands against
+the garden's edge. Visual only: `Box` collision on `Post` and `Board` at
+import, nothing else colliding.
+
+| Name | What | The code |
+|---|---|---|
+| `Root` | Invisible, 6 × 0.2 × 1, centred (0, 0.1, 0) | `PivotTo` onto the Wing's `ExpeditionBoard` attachment |
+| `Board` (part) | The map board, 6 × 4 at (0, 4.5, 0), its front (−Z) face clear of dressing in its middle | A `SurfaceGui` on its Front: "Expeditions" and the trip's state ("Back! Collect", "Out to <destination>", "Send residents on a trip") |
+| `Prompt` (attachment) | (0, 3, −1): before the board at a person's chest, LookVector −Z | Carries the **Expeditions** `ProximityPrompt` (E) that opens `ExpeditionPanel` (UI.md) |
+| `Glow_Warm_1` (part) | A lantern atop the post, about 0.8 across, at (0, 7.2, 0) | Lit (Neon, its light on) while a trip is back and waits for Collect ("the board glows", A.11.2); dark otherwise |
+| `Post`, `Dressing`, `LOD_Proxy` | The posts; the map's paper, pins and trim; the distant mesh, hidden at import | — |
 
 ### Decor (`Decor_<DecorId>`, e.g. `Decor_Candles`)
 
