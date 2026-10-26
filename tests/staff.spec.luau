@@ -107,4 +107,13 @@ describe("Staff", function()
 			"a post"
 		)
 	end)
+
+	-- WAITING §2.48 (his yes 2026-10-26): the staff of a hotel not played are counted in its background rate.
+	it("a resident on staff at another hotel is moved only there; the Wing's and the played hotel's anywhere", function()
+		expect.truthy(Staff.movable({ role = "" }, 2), "in the Wing")
+		expect.truthy(Staff.movable({ role = "FrontDesk", hotel = 2 }, 2), "on staff at the hotel played")
+		expect.truthy(Staff.movable({ role = "FrontDesk" }, 3), "on staff, its hotel the played one's (an old record)")
+		expect.truthy(not Staff.movable({ role = "Housekeeping", hotel = 1 }, 2), "on staff at another hotel")
+		expect.truthy(Staff.movable({ role = "Housekeeping", hotel = 1 }, 1), "once the player is there")
+	end)
 end)

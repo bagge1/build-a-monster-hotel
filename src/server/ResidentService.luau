@@ -45,6 +45,7 @@ local ServerScriptService = game:GetService("ServerScriptService")
 local Constants = require(ReplicatedStorage.Shared.Constants)
 local Economy = require(ReplicatedStorage.Shared.Economy)
 local Format = require(ReplicatedStorage.Shared.Format)
+local Locations = require(ReplicatedStorage.Shared.Locations)
 local Net = require(ReplicatedStorage.Shared.Net)
 local Species = require(ReplicatedStorage.Shared.Species)
 local Stay = require(ReplicatedStorage.Shared.Stay)
@@ -342,6 +343,23 @@ local function onCheckout(player: Player, g: GuestService.Guest, satisfaction: n
 	StateService.mark(player)
 end
 
+--[[ Refuses moving a resident on staff at another hotel of the chain (`Staff.movable`,
+	WAITING §2.48): that hotel's background rate counts it, so it moves only once the
+	player is there. Returns whether it was refused. ]]
+local function heldElsewhere(
+	player: Player,
+	data: PlayerData.Data,
+	rec: PlayerData.ResidentRecord,
+	remote: string
+): boolean
+	if Staff.movable(rec, data.location) then
+		return false
+	end
+	local name = Locations.get(rec.hotel or data.location).name
+	Net.fire(player, "Refused", remote, `It works at your {name}: travel there to move it`)
+	return true
+end
+
 local function assign(player: Player, idNumber: number, role: string)
 	local data = PlayerData.get(player)
 	local rec = data and data.residents[tostring(idNumber)]
@@ -349,6 +367,9 @@ local function assign(player: Player, idNumber: number, role: string)
 		return
 	end
 	if role ~= "" and not table.find(ResidentService.Roles, role) then
+		return
+	end
+	if heldElsewhere(player, data, rec, "Assign") then
 		return
 	end
 	rec.role = role
@@ -362,6 +383,9 @@ local function release(player: Player, idNumber: number)
 	local rec = data and data.residents[id]
 	local sp = rec and Species.get(rec.species)
 	if not data or not rec or not sp then
+		return
+	end
+	if heldElsewhere(player, data, rec, "Release") then
 		return
 	end
 	data.residents[id] = nil
