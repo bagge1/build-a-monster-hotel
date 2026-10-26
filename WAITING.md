@@ -370,6 +370,19 @@ Med Claudes skärmdump där det finns en. -->
      den liggande); rättas när modellerna importeras.
    - Utseenden: galgen, klockkonsolen, det mörka järnet, ränder på bandet.
 
+20. **Spaets badtunna och massagebänk** (natten 2026-10-26, GDD A.13;
+   validerade i Blender, tre blinda granskningar i
+   `blender/rooms/haunted_manor_spa/README.md`; **inte importerade**). Bilder:
+   `archive/screens/2026-10-26_spa/spa_game_camera.jpg`, `spa_silhouettes.jpg`.
+   Dina val:
+   - **Tunnan 3×3 med fyra gäster** (i stället för radens 2×2, som bara rymmer
+     en) eller 3×2 med tre. Förslag: 3×3.
+   - Kanten 2,45 hög med två trappsteg i hörnen som väg in (ingen granskare
+     såg en väg in); föremålen på de bakre stegen; ånga behöver ett namn i
+     MODELS.md (t.ex. `Steam_1`).
+   - Bänkens hästskoformade ansiktsstöd, höjden 2,35, ett klipp för att ligga
+     på magen.
+
 ## §2 Beslut
 
 <!-- En fråga i taget, med alternativen och Claudes rekommendation. -->
