@@ -1714,6 +1714,12 @@ Med Claudes skärmdump där det finns en. -->
    `UIScale` på varje skärm), annars oförändrat. Det är ett utseende, så det
    väntar på ditt ja.
 
+69. **Tutorialens busssteg stängs efter 150 s, bussen går var 180 s**
+   (natten 2026-10-26, tutorialgranskningen). Den som når steget strax
+   efter att en buss gått ser ofta steget stängas utan något att pitcha.
+   Förslag: 200 s (en buss och lite till), eller att steget väntar på nästa
+   buss oavsett tid. Ditt värde.
+
 ## §3 Creator Hub och publicering
 
 1. ~~**Slå på Studio Access to API Services**~~ (gjort 2026-10-19: på i
