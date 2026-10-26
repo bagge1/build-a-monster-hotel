@@ -395,7 +395,7 @@ local function release(player: Player, idNumber: number)
 	publish(player)
 end
 
--- The Wing's residents' combined rate, before offline's 50 %; `offline` for the time away (no friend bonus).
+-- The Wing's residents' combined rate, before offline's 50 %; `offline` for the time away (no friend bonus, no timed boost).
 function ResidentService.rate(player: Player, data: PlayerData.Data, offline: boolean?): number
 	local m = Income.multiplier(player, offline)
 		* (1 + Perks.total(data.residents, "ResidentIncome", os.time()))

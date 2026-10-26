@@ -8,7 +8,8 @@
 	families add to `permanent`; the friend bonus (§7) and timed boosts
 	(§10.2) are their own categories. Every payer (guests, tips, residents)
 	asks `Income.multiplier(player)`; the residents' offline earnings ask it
-	with `offline`, which leaves the friend bonus out (WAITING §2.48).
+	with `offline`, which leaves the friend bonus (WAITING §2.48) and the
+	timed boost (it counts down in play time, A.9) out.
 ]]
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -36,7 +37,7 @@ function Income.setFriends(provider: (Player) -> boolean)
 end
 
 --[[ The player's income multiplier now; `offline` for what pays the time it was away
-	(§4.6): without the friend bonus (`Economy.offlineBonuses`, WAITING §2.48). ]]
+	(§4.6): without the friend bonus or a timed boost (`Economy.offlineBonuses`). ]]
 function Income.multiplier(player: Player, offline: boolean?): number
 	local p = 0
 	for _, f in permanent do

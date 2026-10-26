@@ -82,12 +82,14 @@ function Economy.incomeMultiplier(b: Bonuses): number
 	return m
 end
 
---[[ The bonuses that pay for time away (§4.6's offline earnings): every one
-	but the friend bonus (§7), which is for friends playing together, not for
-	a friend who happens to be online when the player comes back, over all the
-	hours away (WAITING §2.48, his yes 2026-10-26). ]]
+--[[ The bonuses that pay for time away (§4.6's offline earnings): the
+	permanent ones only. Not the friend bonus (§7), which is for friends
+	playing together, not for a friend who happens to be online when the
+	player comes back, over all the hours away (WAITING §2.48, his yes
+	2026-10-26); and not a timed boost (§10.2), which counts down in play time
+	(A.9), so a 2x Cash bought now never doubled the hours away. ]]
 function Economy.offlineBonuses(b: Bonuses): Bonuses
-	return { permanent = b.permanent, friends = false, boost = b.boost }
+	return { permanent = b.permanent, friends = false, boost = nil }
 end
 
 --[[ What a guest pays per second while staying (§4.4): its species' rate,
