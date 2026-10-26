@@ -697,6 +697,14 @@ local function staffTick()
 		if hotel then
 			local timers = staffTimers[player] or {}
 			staffTimers[player] = timers
+			-- A resident home from the Hunter Camp by itself is on staff again:
+			-- its Away, its Slot, the staff bonuses and the Bellhop's speed are
+			-- worked out in `publish`, which nothing else calls when the time runs out.
+			local clock = os.time()
+			if Staff.backFromCamp(data.residents, timers.campChecked or clock, clock) then
+				publish(player)
+			end
+			timers.campChecked = clock
 			-- Front Desk: the first guest waiting at the desk, after a delay from
 			-- when it got there. The head of the queue may still be walking in
 			-- (ToHotel); the ones behind it at the desk are served (Staff.nextAtDesk).

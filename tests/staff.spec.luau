@@ -101,6 +101,19 @@ describe("Staff", function()
 		expect.eq(Staff.nextAtDesk({}, queued), nil, "an empty queue")
 	end)
 
+	-- §8.1: a resident whose camp time runs out while the player plays is on staff again.
+	it("a resident is home from the camp once its time has passed, and only then", function()
+		local residents = {
+			["1"] = { campUntil = 0 }, -- never taken, or rescued
+			["2"] = { campUntil = 100 },
+		}
+		expect.truthy(not Staff.backFromCamp(residents, 90, 99), "still away")
+		expect.truthy(Staff.backFromCamp(residents, 99, 100), "its time is up")
+		expect.truthy(Staff.backFromCamp(residents, 95, 105), "passed within the check")
+		expect.truthy(not Staff.backFromCamp(residents, 100, 110), "already counted home")
+		expect.truthy(not Staff.backFromCamp({ ["1"] = { campUntil = 0 } }, 0, 10), "nobody away")
+	end)
+
 	it("every errand has its tick at the door, and the Wing has no post", function()
 		for role in Staff.Errands do
 			expect.truthy(Staff.DoneText[role], `{role}'s text`)

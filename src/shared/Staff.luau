@@ -153,6 +153,23 @@ function Staff.nextAtDesk<T>(queue: { T }, isQueued: (T) -> boolean): T?
 	return nil
 end
 
+--[[ Whether a resident came home from the Hunter Camp by itself (§8.1, A.8: its
+	`campUntil` passed) after `since` and by `now` (server seconds): the
+	server's staff and their bonuses are worked out again then, as when it is
+	rescued. A resident rescued (`campUntil` 0) or never taken did not. ]]
+function Staff.backFromCamp(
+	residents: { [string]: { campUntil: number } },
+	since: number,
+	now: number
+): boolean
+	for _, r in residents do
+		if r.campUntil > since and r.campUntil <= now then
+			return true
+		end
+	end
+	return false
+end
+
 --[[ Whether a resident may be moved now (to another role or hotel, or
 	released to the Wing or on holiday), with `location` the hotel played:
 	not while it is on staff at another hotel of the chain (WAITING §2.48,
