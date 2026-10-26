@@ -1,0 +1,233 @@
+{
+ "set": "rooms/haunted_manor_extras",
+ "checked": "each fbx/<Name>.fbx re-imported into Blender; nothing here ran in Studio",
+ "pieces": {
+  "Furniture_Parasol": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "3 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the piece's own checks re-run on the re-imported triangles",
+    "the contract re-checked on the re-imported boxes: Root 3fw x 0.2 x 3fd, the layer's envelope (Floor and Wall: inside the footprint inset 0.4, height <= 7; Rug: inside the footprint, height <= 0.15; Wall: its back on z = 3fd/2 - 0.4 +-0.05), nothing collides, budget; w, d, layer and height (to 0.3) as Pieces.luau says; each seat() on the triangles"
+   ],
+   "triangles": 668,
+   "budget": 1500,
+   "collision_precise": [],
+   "attachments": []
+  },
+  "Furniture_PoolLadder": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "2 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the piece's own checks re-run on the re-imported triangles",
+    "the contract re-checked on the re-imported boxes: Root 3fw x 0.2 x 3fd, the layer's envelope (Floor and Wall: inside the footprint inset 0.4, height <= 7; Rug: inside the footprint, height <= 0.15; Wall: its back on z = 3fd/2 - 0.4 +-0.05), nothing collides, budget; w, d, layer and height (to 0.3) as Pieces.luau says; each seat() on the triangles"
+   ],
+   "triangles": 556,
+   "budget": 1500,
+   "collision_precise": [],
+   "attachments": []
+  },
+  "Furniture_DivingBoard": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "2 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the piece's own checks re-run on the re-imported triangles",
+    "the contract re-checked on the re-imported boxes: Root 3fw x 0.2 x 3fd, the layer's envelope (Floor and Wall: inside the footprint inset 0.4, height <= 7; Rug: inside the footprint, height <= 0.15; Wall: its back on z = 3fd/2 - 0.4 +-0.05), nothing collides, budget; w, d, layer and height (to 0.3) as Pieces.luau says; each seat() on the triangles"
+   ],
+   "triangles": 616,
+   "budget": 1500,
+   "collision_precise": [],
+   "attachments": []
+  },
+  "Furniture_DumbbellRack": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "2 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the piece's own checks re-run on the re-imported triangles",
+    "the contract re-checked on the re-imported boxes: Root 3fw x 0.2 x 3fd, the layer's envelope (Floor and Wall: inside the footprint inset 0.4, height <= 7; Rug: inside the footprint, height <= 0.15; Wall: its back on z = 3fd/2 - 0.4 +-0.05), nothing collides, budget; w, d, layer and height (to 0.3) as Pieces.luau says; each seat() on the triangles"
+   ],
+   "triangles": 1032,
+   "budget": 1500,
+   "collision_precise": [],
+   "attachments": [
+    "Use_1"
+   ]
+  },
+  "Furniture_ExerciseMat": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "2 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the piece's own checks re-run on the re-imported triangles",
+    "the contract re-checked on the re-imported boxes: Root 3fw x 0.2 x 3fd, the layer's envelope (Floor and Wall: inside the footprint inset 0.4, height <= 7; Rug: inside the footprint, height <= 0.15; Wall: its back on z = 3fd/2 - 0.4 +-0.05), nothing collides, budget; w, d, layer and height (to 0.3) as Pieces.luau says; each seat() on the triangles"
+   ],
+   "triangles": 172,
+   "budget": 1500,
+   "collision_precise": [],
+   "attachments": [
+    "Use_1"
+   ]
+  },
+  "Furniture_WallMirror": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "3 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the piece's own checks re-run on the re-imported triangles",
+    "the contract re-checked on the re-imported boxes: Root 3fw x 0.2 x 3fd, the layer's envelope (Floor and Wall: inside the footprint inset 0.4, height <= 7; Rug: inside the footprint, height <= 0.15; Wall: its back on z = 3fd/2 - 0.4 +-0.05), nothing collides, budget; w, d, layer and height (to 0.3) as Pieces.luau says; each seat() on the triangles"
+   ],
+   "triangles": 322,
+   "budget": 1500,
+   "collision_precise": [],
+   "attachments": []
+  }
+ },
+ "collision_precise": {
+  "Furniture_Parasol": [],
+  "Furniture_PoolLadder": [],
+  "Furniture_DivingBoard": [],
+  "Furniture_DumbbellRack": [],
+  "Furniture_ExerciseMat": [],
+  "Furniture_WallMirror": []
+ },
+ "mirrors": {},
+ "not_validated": [
+  "anything in Studio: the import, the axis conversion on Roblox's side (import_fixup.luau checks it first), the atlas upload, how it looks lit",
+  "the attachments and each Use_<n> Pose attribute exist only in manifest.json until import_fixup.luau makes them",
+  "a visitor walking to a spot, lifting at the rack or on the mat: no walker or clip has run",
+  "the steps and the springboard beside the real Pool model (reviewed beside a stand-in of its rim and water)",
+  "a Wall piece on a real wall in Studio, turned to each of the four walls by the build mode"
+ ],
+ "spots": {
+  "Furniture_Parasol": {
+   "spots": {},
+   "lift_placed_as": {},
+   "checked": "no visitors' spots (ActivityKit.luau: spots = none)"
+  },
+  "Furniture_PoolLadder": {
+   "spots": {},
+   "lift_placed_as": {},
+   "checked": "no visitors' spots (ActivityKit.luau: spots = none)"
+  },
+  "Furniture_DivingBoard": {
+   "spots": {},
+   "lift_placed_as": {},
+   "checked": "no visitors' spots (ActivityKit.luau: spots = none)"
+  },
+  "Furniture_DumbbellRack": {
+   "spots": {
+    "Use_1": "Lift"
+   },
+   "lift_placed_as": {
+    "Use_1": "Stand"
+   },
+   "checked": "spots_check on the built and the re-imported triangles: Use_<n> from 1 without a gap, a Pose from MODELS.md's list, level, no two on a square; Lift held to the placement it names: the rack's Stand on the floor at the left front square's middle 1.5 in front, facing +Z, its square free; the mat's Lie on its surface with nothing over it and the lying 5-stud person (lie_faults) in the footprint, on the piece, nothing rising through it"
+  },
+  "Furniture_ExerciseMat": {
+   "spots": {
+    "Use_1": "Lift"
+   },
+   "lift_placed_as": {
+    "Use_1": "Lie"
+   },
+   "checked": "spots_check on the built and the re-imported triangles: Use_<n> from 1 without a gap, a Pose from MODELS.md's list, level, no two on a square; Lift held to the placement it names: the rack's Stand on the floor at the left front square's middle 1.5 in front, facing +Z, its square free; the mat's Lie on its surface with nothing over it and the lying 5-stud person (lie_faults) in the footprint, on the piece, nothing rising through it"
+  },
+  "Furniture_WallMirror": {
+   "spots": {},
+   "lift_placed_as": {},
+   "checked": "no visitors' spots (ActivityKit.luau: spots = none)"
+  }
+ },
+ "hung": {
+  "Furniture_Parasol": "hung_check on the built and the re-imported triangles: every shell stands on the floor or touches one that does (a Wall piece: the wall's plane at z = 3fd/2 - 0.4 counts as one that does)",
+  "Furniture_PoolLadder": "hung_check on the built and the re-imported triangles: every shell stands on the floor or touches one that does (a Wall piece: the wall's plane at z = 3fd/2 - 0.4 counts as one that does)",
+  "Furniture_DivingBoard": "hung_check on the built and the re-imported triangles: every shell stands on the floor or touches one that does (a Wall piece: the wall's plane at z = 3fd/2 - 0.4 counts as one that does)",
+  "Furniture_DumbbellRack": "hung_check on the built and the re-imported triangles: every shell stands on the floor or touches one that does (a Wall piece: the wall's plane at z = 3fd/2 - 0.4 counts as one that does)",
+  "Furniture_ExerciseMat": "hung_check on the built and the re-imported triangles: every shell stands on the floor or touches one that does (a Wall piece: the wall's plane at z = 3fd/2 - 0.4 counts as one that does)",
+  "Furniture_WallMirror": "hung_check on the built and the re-imported triangles: every shell stands on the floor or touches one that does (a Wall piece: the wall's plane at z = 3fd/2 - 0.4 counts as one that does)"
+ },
+ "pieces_rows": {
+  "Furniture_Parasol": {
+   "w": 2,
+   "d": 2,
+   "layer": "Floor",
+   "height": 7.0,
+   "keyFor": [],
+   "model_top": 6.95,
+   "main_row": {
+    "w": 1,
+    "d": 1
+   }
+  },
+  "Furniture_PoolLadder": {
+   "w": 1,
+   "d": 1,
+   "layer": "Floor",
+   "height": 3.0,
+   "keyFor": [],
+   "model_top": 2.98,
+   "main_row": "as main"
+  },
+  "Furniture_DivingBoard": {
+   "w": 1,
+   "d": 2,
+   "layer": "Floor",
+   "height": 3.0,
+   "keyFor": [],
+   "model_top": 3.24,
+   "main_row": "as main"
+  },
+  "Furniture_DumbbellRack": {
+   "w": 2,
+   "d": 1,
+   "layer": "Floor",
+   "height": 3.0,
+   "keyFor": [],
+   "model_top": 3.0,
+   "main_row": "as main"
+  },
+  "Furniture_ExerciseMat": {
+   "w": 1,
+   "d": 2,
+   "layer": "Rug",
+   "height": 0.1,
+   "keyFor": [],
+   "model_top": 0.105,
+   "main_row": "as main"
+  },
+  "Furniture_WallMirror": {
+   "w": 2,
+   "d": 1,
+   "layer": "Wall",
+   "height": 6.5,
+   "keyFor": [],
+   "model_top": 6.5,
+   "main_row": "as main"
+  }
+ },
+ "row_changes": {
+  "note": "the kit's Pieces check ran against these (main's Pieces.luau differs): the row must change before import, or the model",
+  "Furniture_Parasol": {
+   "w": 2,
+   "d": 2
+  }
+ },
+ "height_findings": {
+  "note": "Pieces.luau's height against the model's top, a finding (not refused): the row must say it"
+ }
+}
