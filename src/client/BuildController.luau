@@ -562,7 +562,7 @@ local function drawGhost()
 	info.Text = if ok
 		then `{name}{if cost
 			then " · " .. (if cost == 0 then "free" else Format.cash(cost))
-			else " (move)"}  ·  {Controls.hint("R / ⟳ to rotate", "RB / ⟳ to rotate")}`
+			else " (move)"}  ·  {Controls.hint("R / Rotate to turn it", "RB / Rotate to turn it")}`
 		else `{name}: {Hud.refusal(why or "")}`
 	placeButton.Visible = ok == true
 end
@@ -2460,7 +2460,8 @@ function BuildController.Init()
 
 	-- The camera and placing.
 	local placingRow = row()
-	tool(placingRow, "Rotate", "⟳ Rotate", 114, function()
+	-- No ⟳ or ↻: the game's font has neither and drew a blank (2026-10-26 night).
+	tool(placingRow, "Rotate", "Rotate", 114, function()
 		rotation = (rotation + 1) % 4
 		drawGhost()
 	end)
@@ -2469,15 +2470,23 @@ function BuildController.Init()
 		yaw = (math.floor(yaw / (math.pi / 2) + 0.5) + dir) * math.pi / 2
 		updateCamera()
 	end
-	tool(placingRow, "Turn", "↻ View", 114, function()
+	tool(placingRow, "Turn", "View", 114, function()
 		turnQuarter(1)
 	end)
 	tool(placingRow, "TopView", "⬇ Top", 114, function()
 		pitch = if pitch > math.rad(80) then DEFAULT_PITCH else PITCH_MAX
 		updateCamera()
 	end)
-	placeButton = tool(placingRow, "Place", "✔ Place", 114, place, Ui.Colour.Good)
+	-- Its own row, shown with it: a fourth button in the row above stood past the
+	-- tools' edge, 10 px of it showing (2026-10-26 night; a phone's only way to place).
+	local placeRow = row()
+	placeButton = tool(placeRow, "Place", "✔ Place", 114, place, Ui.Colour.Good)
 	placeButton.Visible = false
+	placeRow.Visible = false
+	placeButton:GetPropertyChangedSignal("Visible"):Connect(function()
+		placeRow.Visible = placeButton.Visible
+		fitTools()
+	end)
 
 	-- The extras, and leaving.
 	local extras = row()
@@ -2690,7 +2699,7 @@ function BuildController.Start()
 	end)
 	-- Looking round the plot (his ask, 2026-10-19): the mouse wheel or a pinch
 	-- zooms; the right mouse button dragged, a two-finger twist, or the , and .
-	-- keys turn the camera (E is the prompts' key); ↻ View still turns a quarter.
+	-- keys turn the camera (E is the prompts' key); View still turns a quarter.
 	local function zoomBy(factor: number)
 		zoom = math.clamp(zoom * factor, math.min(0.35, zoom), 1.4)
 		updateCamera()
