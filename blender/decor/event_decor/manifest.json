@@ -1,0 +1,244 @@
+{
+ "set": "decor/event_decor",
+ "title": "Event decor: the Jack-o'-Lantern and the Snowman (every location; GDD \u00a78.2)",
+ "frame": "Roblox studs, piece frame: X right, Y up, door/front toward -Z, origin per MODELS.md; Blender holds them as (-x, z, y)",
+ "atlas": "textures/HotelAtlas.png (embedded in every FBX)",
+ "palette": {
+  "grey": [
+   110,
+   110,
+   120
+  ],
+  "white": [
+   240,
+   240,
+   245
+  ],
+  "black": [
+   30,
+   28,
+   36
+  ],
+  "stone": [
+   130,
+   125,
+   140
+  ],
+  "stone_dark": [
+   85,
+   82,
+   95
+  ],
+  "pumpkin": [
+   236,
+   120,
+   28
+  ],
+  "pumpkin_dark": [
+   150,
+   62,
+   18
+  ],
+  "pumpkin_light": [
+   250,
+   156,
+   52
+  ],
+  "stem": [
+   104,
+   112,
+   52
+  ],
+  "stem_dark": [
+   72,
+   76,
+   38
+  ],
+  "snow": [
+   244,
+   248,
+   255
+  ],
+  "snow_shade": [
+   212,
+   224,
+   240
+  ],
+  "coal": [
+   38,
+   38,
+   46
+  ],
+  "carrot": [
+   242,
+   118,
+   36
+  ],
+  "twig": [
+   112,
+   78,
+   50
+  ],
+  "scarf": [
+   186,
+   36,
+   48
+  ],
+  "scarf_light": [
+   244,
+   238,
+   228
+  ],
+  "hat": [
+   34,
+   32,
+   40
+  ],
+  "flame": [
+   255,
+   196,
+   92
+  ]
+ },
+ "pieces": {
+  "Decor_JackOLantern": {
+   "name": "Decor_JackOLantern",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      -0.0,
+      0.9714,
+      0.0
+     ],
+     "size": [
+      2.0093,
+      1.9429,
+      2.0093
+     ],
+     "triangles": 980,
+     "collide": false
+    },
+    "Glow_Warm_1": {
+     "centre": [
+      0.0,
+      0.91,
+      -0.7934
+     ],
+     "size": [
+      1.24,
+      0.9,
+      0.4431
+     ],
+     "triangles": 80,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 1072,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a jack-o'-lantern: an orange pumpkin of eight lobes over dark grooves, a carved face of triangle eyes, a nose and a grin with two teeth lit from inside (Glow_Warm_1), a bent green stem",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ]
+   }
+  },
+  "Decor_Snowman": {
+   "name": "Decor_Snowman",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      -0.0023,
+      2.25,
+      0.0
+     ],
+     "size": [
+      2.128,
+      4.5,
+      2.0384
+     ],
+     "triangles": 1468,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 1480,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a snowman of three snowballs on a little drift, a black top hat with a red band, coal eyes, smile and buttons, a carrot nose, a red and cream scarf, twig arms raised",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ]
+   }
+  }
+ },
+ "mirrors": {}
+}

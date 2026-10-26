@@ -359,6 +359,20 @@ row of pointed arches as one outline), the shapes `row_a/b/c`,
 pieces share them), `people()` (a seated figure on Sit/Watch spots).
 `-- grey` writes the silhouettes to `silhouettes/`; `-- nopreview`.
 
+## build_projector_event.py
+
+Two sets, one script, one mode a run (`-- grey|projector|event`):
+`Furniture_Projector` (1 x 1 `Floor`, no spots; Haunted Manor's look) into
+`blender/rooms/haunted_manor_projector/`, and the event decor
+`Decor_JackOLantern` and `Decor_Snowman` (1 x 1 `Floor`, one model for every
+kit, its own palette `EV_PALETTE`) into `blender/decor/event_decor/`. Runs
+build_activity_cinema.py's definitions (ast, without its main); `projector`
+first builds the Cinema's screen and row into `context/` (pictures only).
+Adds `rod`, `ring_x`/`disc_x` (a reel), `pumpkin()` (lobes round a core),
+`front_z()`/`carve()` (a face prism on the lobes' front), `snowball()`,
+`scarf()` (its tail laid on a ball), `ev_decor()` (decor with
+`grounded_check`). `-- grey` writes one sheet of two options a piece.
+
 ## build_activity_gym.py
 
 The Gym's key pieces for Haunted Manor (GDD A.13): `Furniture_WeightBench`
