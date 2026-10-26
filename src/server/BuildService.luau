@@ -926,6 +926,11 @@ local function finish(player: Player, target: string, finishId: string)
 	if target ~= "Hallway" and not rec then
 		return
 	end
+	-- The finish it has already: nothing to lay, nothing to pay (Pieces.finishChanges).
+	local current = if rec then rec.finish else data.finishes[target]
+	if not Pieces.finishChanges(current, finishId) then
+		return
+	end
 	if finishId ~= "" then
 		local f = Pieces.finish(finishId)
 		if not f or f.location ~= data.location then
