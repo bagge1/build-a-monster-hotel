@@ -305,8 +305,9 @@ THE EXPEDITIONS WHAT-IF (--expeditions; GDD A.11.2 with its scrutiny lines of 20
         Variant LEAK: welcomeBack credits rate(at join) x min(away, cap), and
         rate() counts every resident whose campUntil has passed, so a party
         back before the login is paid the WHOLE absence's offline till on top
-        of the trip. That is how the code stands; whether Expeditions keep it
-        is an implementation choice.
+        of the trip. That is how the code stood before Expeditions; his ruling
+        (§18, 2026-10-26) is the variant without it, and the code is built so
+        (Expeditions.homeSeconds); LEAK is kept as the comparison.
   The +20 % per matching resident is read two ways (the draft does not say on
   what): on the reward, or on the find chance. Finds: per trip at
   EXP.Lengths' chance, among the destination location's unfound pieces (so
@@ -411,9 +412,14 @@ EXP_PAY_SWEEP = [1.5, 1.25, 1.0, 0.75, 0.5, 0.25]
 EXP_GUARDS = [  # the offline rules the what-if mirrors
     ("src/shared/Economy.luau", "local t = math.clamp(seconds, 0, cap)"),
     ("src/shared/Economy.luau", "return math.floor(rate * Constants.Residents.OfflineFraction * t)"),
-    ("src/server/ResidentService.luau", "if r.role == \"\" and r.campUntil <= os.time() then total += Economy.residentPay("),
-    ("src/server/ResidentService.luau", "local away = os.time() - data.lastSeen"),
-    ("src/server/ResidentService.luau", "local earned = Economy.offline(ResidentService.rate(player, data, true), away, cap)"),
+    # Since Expeditions are built (2026-10-26): the Wing's rate leaves out the residents away (the camp, a trip) and,
+    # for welcome-back, those on a trip at the logout; one home since earns only after its trip (the no-LEAK variant).
+    ("src/server/ResidentService.luau", "return r.campUntil <= now and not Expeditions.away(r, now)"),
+    ("src/server/ResidentService.luau", "if r.role == \"\" and present(r, os.time()) and (r.expedition or 0) <= (since or math.huge) then total += wingPay(r, m)"),
+    ("src/server/ResidentService.luau", "local away = os.time() - since"),
+    ("src/server/ResidentService.luau", "local earned = Economy.offline(ResidentService.rate(player, data, true, since), away, cap)"),
+    ("src/server/ResidentService.luau", "Expeditions.homeSeconds(since, away, cap, ends)"),
+    ("src/shared/Expeditions.luau", "return math.max(0, to - math.max(since, ends))"),
     ("src/server/ResidentService.luau", "local cap = if data.passes.NightManager then Constants.Residents.NightManagerCap else Constants.Residents.OfflineCap"),
 ]
 

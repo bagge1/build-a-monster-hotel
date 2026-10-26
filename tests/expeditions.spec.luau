@@ -4,6 +4,7 @@
 local Constants = require(Shared.Constants)
 local Economy = require(Shared.Economy)
 local Expeditions = require(Shared.Expeditions)
+local Finds = require(Shared.Finds)
 local Perks = require(Shared.Perks)
 local ResidentLevels = require(Shared.ResidentLevels)
 local Species = require(Shared.Species)
@@ -309,6 +310,37 @@ describe("Expeditions (A.11.2)", function()
 			end
 			expect.eq(found, 1, "one guaranteed find")
 			expect.eq(rec.longMisses, 0, "the run starts again")
+		end
+	)
+
+	it(
+		"a trip's find is a piece of its destination not found yet, and leaves the stays' pity alone",
+		function()
+			for _, d in Expeditions.Destinations do
+				local rec = Finds.newRecord()
+				local pool = Finds.pool(d.location)
+				rec.misses[tostring(d.location)] = 7
+				local seen: { [string]: boolean } = {}
+				for i = 1, #pool do
+					local out, id = Finds.draw(rec, d.location, always((i - 1) / #pool), now)
+					expect.eq(out, "Piece", `{d.name} draw {i}`)
+					expect.truthy(
+						id and table.find(pool, id) and not seen[id],
+						`{d.name}: a new piece`
+					)
+					seen[id :: string] = true
+				end
+				if #pool > 0 then
+					expect.eq(
+						Finds.draw(rec, d.location, miss, now),
+						"Duplicate",
+						"all found: a duplicate"
+					)
+				else
+					expect.eq(Finds.draw(rec, d.location, miss, now), "None", "no set: nothing")
+				end
+				expect.eq(rec.misses[tostring(d.location)], 7, "the pity untouched")
+			end
 		end
 	)
 

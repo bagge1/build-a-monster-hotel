@@ -184,7 +184,8 @@ local function net(h: Hunter)
 	local data = PlayerData.get(owner)
 	if data then
 		for _, r in data.residents do
-			if r.campUntil <= os.time() then
+			-- Only one at the hotel: not in the camp already, not away on an expedition (A.11.2).
+			if ResidentService.present(r, os.time()) then
 				r.campUntil = os.time() + H.CampReturn
 				local sp = Species.get(r.species)
 				Net.fire(

@@ -69,7 +69,8 @@ end
 	in the Wing, or on staff at any hotel of the chain, the one played or
 	another ("at the same rate in the Wing and at a staff post", WAITING
 	§2.48, his yes 2026-10-26: a hotel not played still works); not in the
-	Hunter Camp (`campUntil`). ]]
+	Hunter Camp (`campUntil`). On an expedition it learns as in the Wing
+	(GDD §18, 2026-10-26: "XP as in the Wing"), so the trip is not read here. ]]
 function ResidentLevels.learning(rec: { campUntil: number }, now: number): boolean
 	return rec.campUntil <= now
 end
