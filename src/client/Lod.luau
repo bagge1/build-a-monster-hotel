@@ -36,6 +36,10 @@ local DETAIL =
 	{ Bed = true, Pillow = true, Centrepiece = true, Furniture = true, Dressing = true, Rug = true }
 
 local far: { [Model]: boolean } = {}
+--[[ The parts this hid, per plot: it shows again only those (2026-10-26: it set every detail part
+	back to 0 on a near plot, so placing a piece in build mode on floor 1 brought back the upper
+	floors' beds and lamps BuildController had hidden, floating over the floor being edited). ]]
+local hiddenBy: { [Model]: { [BasePart]: boolean } } = {}
 
 local function isDetail(p: BasePart): boolean
 	if DETAIL[p.Name] or string.sub(p.Name, 1, 5) == "Glow_" then
@@ -49,9 +53,27 @@ local function apply(plot: Model, hide: boolean)
 	local pieces = plot:FindFirstChild("Pieces")
 	local mine = plot:GetAttribute("Index") == me:GetAttribute("Plot")
 		and not plot:GetAttribute("Static")
+	if not hide then
+		for p in hiddenBy[plot] or {} do
+			p.LocalTransparencyModifier = 0
+		end
+		hiddenBy[plot] = nil
+	end
+	local mineHidden: { [BasePart]: boolean } = {}
+	if hide then
+		for p in hiddenBy[plot] or {} do
+			if p:IsDescendantOf(plot) then
+				mineHidden[p] = true -- a part taken away since is let go
+			end
+		end
+		hiddenBy[plot] = mineHidden
+	end
 	for _, d in (if pieces then pieces:GetDescendants() else {}) do
 		if d:IsA("BasePart") and isDetail(d) then
-			d.LocalTransparencyModifier = if hide then 1 else 0
+			if hide then
+				d.LocalTransparencyModifier = 1
+				mineHidden[d] = true
+			end
 		elseif d:IsA("PointLight") then
 			d.Enabled = not hide and not (me:GetAttribute("LowGraphics") == true and not mine)
 		end
@@ -113,15 +135,39 @@ function Lod.Init() end
 
 function Lod.Start()
 	-- A rebuilt hotel brings new parts, a moved one (Travel) a new place: reapply to it on the next step.
+	local watched: { [Model]: { RBXScriptConnection } } = {}
 	local function watch(plot: Instance)
-		if plot:IsA("Model") then
+		if not plot:IsA("Model") or watched[plot] then
+			return
+		end
+		local conns: { RBXScriptConnection } = {}
+		watched[plot] = conns
+		table.insert(
+			conns,
 			plot.DescendantAdded:Connect(function()
 				far[plot] = nil
 			end)
+		)
+		table.insert(
+			conns,
 			plot:GetAttributeChangedSignal("Origin"):Connect(function()
 				far[plot] = nil
 			end)
-		end
+		)
+		-- A plot streamed out or taken away is forgotten (2026-10-26: `far` kept every plot model ever seen).
+		table.insert(
+			conns,
+			plot.AncestryChanged:Connect(function()
+				if not plot:IsDescendantOf(workspace) then
+					for _, c in conns do
+						c:Disconnect()
+					end
+					watched[plot] = nil
+					far[plot] = nil
+					hiddenBy[plot] = nil
+				end
+			end)
+		)
 	end
 	for _, name in { "Plots", "WorldPlots" } do
 		task.spawn(function()

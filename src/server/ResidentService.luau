@@ -42,7 +42,11 @@
 	on an errand also `Errand` (the room's piece id), `Phase` ("Out", "Work",
 	"Done" walking back from a finished job, "Back" from one that closed),
 	`Path` and `T0`, `Speed` (the leg, as a guest's walk), and `Door` (where
-	the "✓" rises). The panels get the `collection` state section.
+	the "✓" rises). A publish updates the folder in place: a resident still
+	there keeps its Configuration, so a client keeps its model and its spot
+	(2026-10-26: each publish replaced the folder whole, and every resident
+	of the hotel was rebuilt and jumped across the garden). The panels get
+	the `collection` state section.
 ]]
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -221,15 +225,20 @@ local function publish(player: Player)
 	local plot = PlotService.of(player)
 	local name = `Plot_{player:GetAttribute("Plot") or 0}`
 	local mine = folder:FindFirstChild(name)
-	if mine then
-		mine:Destroy()
-	end
 	if not data or not plot then
+		if mine then
+			mine:Destroy()
+		end
 		return
 	end
-	local f = Instance.new("Folder")
+	local f = mine or Instance.new("Folder")
 	f.Name = name
 	f:SetAttribute("OwnerId", player.UserId)
+	for _, c in f:GetChildren() do
+		if not data.residents[c.Name] then
+			c:Destroy() -- sold, or gone some other way
+		end
+	end
 	-- Each role's staff in id order, so every client stands them alike.
 	local ids = {}
 	for id in data.residents do
@@ -244,7 +253,7 @@ local function publish(player: Player)
 		local r = data.residents[id]
 		local tripping = Expeditions.away(r, os.time())
 		local away = not present(r, os.time())
-		local c = Instance.new("Configuration")
+		local c = f:FindFirstChild(id) or Instance.new("Configuration")
 		c.Name = id
 		c:SetAttribute("Species", r.species)
 		c:SetAttribute("Mutation", if r.mutation ~= "" then r.mutation else nil)
@@ -254,10 +263,12 @@ local function publish(player: Player)
 		c:SetAttribute("Away", away)
 		c:SetAttribute("Trip", if tripping then true else nil) -- away on an expedition (A.11.2), not in the camp
 		c:SetAttribute("Hotel", if r.role ~= "" then r.hotel or data.location else nil)
+		local slot: number? = nil
 		if r.role ~= "" and not away and here(data, r) then
 			slots[r.role] = (slots[r.role] or 0) + 1
-			c:SetAttribute("Slot", slots[r.role])
+			slot = slots[r.role]
 		end
+		c:SetAttribute("Slot", slot) -- set either way: a reused Configuration may carry an old one
 		applyErrand(c, ongoing[id])
 		c.Parent = f
 	end
