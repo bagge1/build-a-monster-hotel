@@ -11,7 +11,9 @@ re-imported triangles: numbered from 1 without a gap, a Pose from MODELS.md's li
 spots on one square; a `Stand` spot on the floor at the middle of a square in front of the front edge, 1.5 in front
 of it, facing +Z, its square free of the body; a `Dance` spot on a flat surface inside the footprint with the
 5-stud person's whole figure (3.8 across, arms out; 5.2 tall) clear of the body; a `Sit` or `Watch` spot (a Sit
-facing the row's front, -Z) on a declared seat with the seated person (sit_blocks) clear of the body. A pose this
+facing the row's front, -Z) on a declared seat with the seated person (sit_blocks) clear of the body; a `Lie` spot
+as a bed's Use (lie_faults); a `Swim` spot on the pool's `Water` top, inside its inner edge by 1.5 (swim_faults,
+added with tools/build_activity_pool.py, which the Bar's pieces never reach). A pose this
 script has no check for is refused, not passed. tools/build_activity_cinema.py (and the next activity sets) load
 these definitions; spots_check is the one validator of visitors' spots.
 
@@ -176,8 +178,66 @@ def spots_check(piece, tris, stage):
             if over:
                 f.append(f'{tag}: something over the seat at {max(over):.2f}')
             f += sit_faults(allt, pos, look, tag)
+        elif pose == 'Lie':
+            # As a bed's `Use` (use_check): inside the footprint, on its surface with nothing over it, and the
+            # lying 5-stud person (lie_faults: in the footprint, on the piece, nothing through it).
+            if abs(pos.x) > hx or abs(pos.z) > hz:
+                f.append(f'{tag}: {K.v3(pos)} leaves the footprint')
+            top = max(K._ray_down(allt, pos.x, pos.z, pos.y + 0.5), default=None)
+            if top is None or abs(top - pos.y) > USE_SURFACE_TOL:
+                f.append(f'{tag}: the surface under {K.v3(pos)} is at {top}, not within {USE_SURFACE_TOL} of it')
+            over = [h for h in K._ray_down(allt, pos.x, pos.z, pos.y + USE_CLEAR) if h > pos.y + 0.2]
+            if over:
+                f.append(f'{tag}: something over the Lie point at {max(over):.2f}')
+            if not getattr(piece, 'lie', None):
+                piece.lie = {'rise': tuple(LIE_RISE), 'waived': None}
+            f += lie_faults(piece, allt, pos, look, tag)
+        elif pose == 'Swim':
+            f += swim_faults(piece, tris, pos, tag)
         else:
             f.append(f'{tag}: this script has no check for Pose {pose} (refused, not passed)')
+    return f
+
+
+SWIM_DEPTH = 1.5                # MODELS.md, `Swim`: the body's middle 1.5 under the water's surface
+SWIM_IN = 1.5                   # and the spot inside the pool's inner edge by 1.5
+SWIM_CLEAR = 2.5                # nothing of the body over the water within SWIM_IN for this far (the head is 1.0 up)
+SWIM_FINDINGS = {}              # Furniture_<Id> -> where the swimmer's body reaches against the floor (a finding)
+
+
+def swim_faults(piece, tris, pos, tag):
+    """A `Swim` spot (MODELS.md, "Activity furniture"): the pool's one `Water` part, not colliding; the spot on
+    the water's top; inside the inner edge by SWIM_IN: within SWIM_IN round it nothing of the rest of the piece
+    from the basin's floor to SWIM_CLEAR over the water (no rim, no spout, no stream on a swimmer). Where the
+    body then reaches (its middle SWIM_DEPTH under the surface, the feet 4 under it) against the floor the pool
+    stands on is recorded in SWIM_FINDINGS, not refused: the floor cannot be dug (a finding for the code)."""
+    f = []
+    water = tris.get('Water')
+    if not water:
+        return [f'{tag}: a Swim spot and no Water part (MODELS.md: a pool\'s water is one part, `Water`)']
+    if piece.collide.get('Water', True):
+        f.append(f'{tag}: Water collides (MODELS.md: not colliding, CanQuery false)')
+    wtop = max(K._ray_down(water, pos.x, pos.z, pos.y + 1.0), default=None)
+    if wtop is None or abs(wtop - pos.y) > 0.02:
+        f.append(f'{tag}: not on the water\'s surface ({wtop} under {K.v3(pos)})')
+        return f
+    solid = [t for p, ts in tris.items() if p not in ('Root', 'LOD_Proxy', 'Water') for t in ts]
+    floor = max(K._ray_down(solid, pos.x, pos.z, pos.y), default=None)
+    if floor is None:
+        return f + [f'{tag}: no basin floor under the spot']
+    for r in (0.0, 0.5, 1.0, SWIM_IN):
+        for k in range(1 if r == 0 else 16):
+            a = 2 * math.pi * k / 16
+            x, z = pos.x + r * math.cos(a), pos.z + r * math.sin(a)
+            hits = K._ray_down(solid, x, z, pos.y + SWIM_CLEAR)
+            top = max(hits, default=None)
+            if top is None or top > floor + 0.05:
+                f.append(f'{tag}: {r} from the spot at ({x:.2f}, {z:.2f}) the piece is at {top} (the basin floor '
+                         f'{floor:.2f}): not inside the inner edge by {SWIM_IN}, or something over the water')
+                return f
+    SWIM_FINDINGS.setdefault(piece.name, {})[tag.split(' ')[0]] = {
+        'surface': round(pos.y, 3), 'basin_floor': round(floor, 3), 'body_middle': round(pos.y - SWIM_DEPTH, 3),
+        'feet': round(pos.y - SWIM_DEPTH - 2.5, 3), 'head_top': round(pos.y - SWIM_DEPTH + 2.5, 3)}
     return f
 
 
