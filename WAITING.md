@@ -1488,6 +1488,15 @@ Med Claudes skärmdump där det finns en. -->
    blockerad ("The top lands outside your floor 2" / "The foot is against the
    desk"). Det är text och visning, så det väntar på ditt ja.
 
+60. **Rum där gästerna gör saker: två följder av besöken** (natten 2026-10-26,
+   runda 2). (a) Bussens bonus för amenities räknar nu **hela hotellets** rum
+   som går att besöka (förut bara våningens), med samma vikt, så den kan bli
+   större. Förslag: behåll, och väg om den när du balanserar A.13. (b) Ett
+   populärt aktivitetsrum har nästan alltid en besökare och är då "busy": det
+   går inte att riva, byta typ eller ändra storlek på det. Förslag: en knapp i
+   rumsvyn "Close for guests" som slutar ta emot nya besök tills rummet är
+   tomt.
+
 ## §3 Creator Hub och publicering
 
 1. ~~**Slå på Studio Access to API Services**~~ (gjort 2026-10-19: på i
