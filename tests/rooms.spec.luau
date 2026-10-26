@@ -952,13 +952,13 @@ describe("Rooms", function()
 			local sold = table.clone(wd)
 			sold.decor = {}
 			for _, phase in { "Going", "There" } do
-				local busy = Visits.busyRooms({ v = { room = "g", spot = 1, phase = phase } })
+				local busy = Visits.busyRooms({ v = { room = "g", spot = "p:1", phase = phase } })
 				expect.truthy(
 					not Rooms.keepsBusy(wd, sold, busy),
 					`selling its key with a visitor {phase}`
 				)
 			end
-			local back = Visits.busyRooms({ v = { room = "g", spot = 1, phase = "Back" } })
+			local back = Visits.busyRooms({ v = { room = "g", spot = "p:1", phase = "Back" } })
 			expect.truthy(Rooms.keepsBusy(wd, sold, back), "the visitor walking back")
 		end
 	)

@@ -1071,8 +1071,10 @@ end
 	ago (`Visits.mayDecide`), with no open request and no Hunter Night, it
 	chooses a ready activity room meeting one of its preferences with a free
 	spot (`Visits.decide`, which keeps the hotel's walkers under the cap), takes
-	the spot and walks there by `Rooms.route`. A guest whose room has no route
-	to the spot frees it and tries again after the gap. ]]
+	the spot and walks there by `Rooms.route`. Not when what is left of its
+	stay is less than the walk there and back and the shortest action
+	(`Visits.fits`). The spot is taken and the visitor recorded in one step
+	(`Visits.begin`), once the way is found, so a spot never leaks. ]]
 local function tryVisit(g: Guest, now: number)
 	local player = g.owner
 	if not player or not g.room or g.requestUntil or not g.visitDue then
@@ -1106,15 +1108,10 @@ local function tryVisit(g: Guest, now: number)
 		return
 	end
 	local key = tostring(g.id)
-	local refs = HotelService.spotRefs(player)[choice.room] or {}
-	local ref = refs[choice.spot]
+	local ref = HotelService.spotRef(player, choice.room, choice.spot)
 	local point = ref and HotelService.spotPoint(player, ref)
 	local rec = data.rooms[choice.room]
-	if
-		not point
-		or not rec
-		or not Visits.take(hotel.taken, choice.room, choice.spot, #refs, key)
-	then
+	if not point or not rec or hotel.visitors[key] then
 		return
 	end
 	local world = PlotService.world(data)
@@ -1124,11 +1121,18 @@ local function tryVisit(g: Guest, now: number)
 	local legs = if from and target then Rooms.route(world, from, target) else nil
 	local path: { Vector3 } = { here(g) }
 	if not legs or not legPoints(plot, legs, path) then
-		Visits.free(hotel.taken, key)
 		return
 	end
 	table.insert(path, point.WorldPosition)
-	hotel.visitors[key] = { room = choice.room, spot = choice.spot, phase = "Going" }
+	-- The walk there and back (at its own pace, a Bellhop's bonus aside) and the shortest action must fit the stay.
+	local walkTime = 2 * Walk.duration(path, {}, g.speed)
+	if not Visits.fits(if g.stayEnd then g.stayEnd - now else nil, walkTime) then
+		return
+	end
+	local keys = HotelService.spotKeys(player)[choice.room] or {}
+	if not Visits.begin(hotel.taken, hotel.visitors, key, choice, keys) then
+		return
+	end
 	g.visitSquare = target
 	g.state = "Visiting"
 	g.config:SetAttribute("Pose", ActivityKit.pose(point))
@@ -1186,7 +1190,20 @@ local function visitTick(g: Guest, now: number)
 	end
 end
 
--- Visitors whose target stopped being ready walk back to their rooms (A.13.1, `Visits.stranded`).
+-- A visitor sent back to its room (by its guest id's key): its spot freed; a visit with no guest behind it forgotten.
+local function sendBack(hotel: HotelService.Hotel, key: string)
+	local g = guests[tonumber(key) or 0]
+	if g and g.state == "Visiting" then
+		visitBack(g)
+	else
+		hotel.visitors[key] = nil
+		Visits.free(hotel.taken, key)
+	end
+end
+
+--[[ Visitors whose target stopped being ready, or whose spot is no longer
+	one of its room's (its piece sold), walk back to their rooms (A.13.1,
+	`Visits.stranded`). ]]
 local function strandedTick()
 	for player, hotel in HotelService.all() do
 		if next(hotel.visitors) ~= nil then
@@ -1194,15 +1211,8 @@ local function strandedTick()
 			for _, v in hotel.visitors do
 				ready[v.room] = HotelService.ready(player, v.room)
 			end
-			for _, key in Visits.stranded(hotel.visitors, ready) do
-				local g = guests[tonumber(key) or 0]
-				if g and g.state == "Visiting" then
-					visitBack(g)
-				else
-					-- A visit with no guest behind it: forget it, freeing its spot.
-					hotel.visitors[key] = nil
-					Visits.free(hotel.taken, key)
-				end
+			for _, key in Visits.stranded(hotel.visitors, ready, HotelService.spotKeys(player)) do
+				sendBack(hotel, key)
 			end
 		end
 	end
@@ -1351,6 +1361,15 @@ function GuestService.Start()
 		HotelService.setRoom(player, roomId, "Vacant")
 		if sent > 0 then
 			Net.fire(player, "Toast", "A guest left: its room isn't ready any more", "Info")
+		end
+	end)
+	-- A piece moved or sold under a visitor (A.13.1): it walks back, never left on nothing.
+	HotelService.onPieceChanged(function(player, decorId)
+		local hotel = HotelService.get(player)
+		if hotel then
+			for _, key in Visits.onPiece(hotel.visitors, decorId) do
+				sendBack(hotel, key)
+			end
 		end
 	end)
 	DevGrant.register("guest", function(player, args)
