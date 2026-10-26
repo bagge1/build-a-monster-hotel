@@ -442,6 +442,23 @@ Med Claudes skärmdump där det finns en. -->
    - Ånga behöver ett namn i MODELS.md (samma fråga som spaet).
    - Utseenden: snöflingan, färgerna, isen i hinken.
 
+25. **Tillbehör till pool och gym (Manor): parasoll, pooltrappa, svikt,
+   hantelställ, träningsmatta, väggspegel** (natten 2026-10-26, GDD A.13;
+   validerade i Blender, en blind granskning i
+   `blender/rooms/haunted_manor_extras/README.md`; **inte importerade**).
+   Bilder: `archive/screens/2026-10-26_extras/` (`poolside_game_camera.jpg`,
+   `gym_game_camera.jpg`, `extras_silhouettes.jpg`). Dina val:
+   - Parasollet byggt på 2×2 (på 1×1 blir skärmen 2,16 bred, smalare än en
+     persons armar). Raden säger 1×1: förslag 2×2.
+   - Spegelns glas är matt. Förslag: en del `Mirror` i MODELS.md så att
+     koden kan göra den blank.
+   - Sviktens spets slutar vid kantens 0,4-marginal och når inte ut över
+     vattnet. Ska den få gå förbi marginalen?
+   - Mattan 1×2 (armarna hänger utanför) eller 2×2: förslag 1×2. Trappan
+     1×1 eller 2×1: förslag 1×1.
+   - Mattans Lift som Lie (byggt, mitt antagande) eller Stand.
+   - Utseenden: mattan läses som en matta på golvet, trappan är slät sten.
+
 ## §2 Beslut
 
 <!-- En fråga i taget, med alternativen och Claudes rekommendation. -->
