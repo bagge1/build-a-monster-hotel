@@ -1582,6 +1582,13 @@ function BuildController.isActive(): boolean
 	return active
 end
 
+-- Hides the floors above the one being edited again, soon (Lod, after it shows what it hid).
+function BuildController.rehide()
+	if active then
+		scheduleHide()
+	end
+end
+
 function BuildController.open()
 	setActive(true)
 end

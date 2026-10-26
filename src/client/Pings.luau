@@ -62,7 +62,8 @@ function Pings.Init()
 		menu.Size = UDim2.fromOffset(columns * 240 + 10, rows * 50 + 16)
 		-- On a computer the column's buttons sit at its foot, under Roblox's
 		-- player list (Hud's `fit`), and the menu opens down there beside them.
-		local foot = not short and not UserInputService.TouchEnabled
+		local foot = not short
+			and (UserInputService.MouseEnabled or not UserInputService.TouchEnabled)
 		menu.AnchorPoint = if foot then Vector2.new(1, 1) else Vector2.new(1, 0)
 		menu.Position = if foot
 			then UDim2.new(1, -(10 + 110 + 10), 1, -94)

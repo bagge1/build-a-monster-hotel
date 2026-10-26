@@ -60,6 +60,7 @@ local stepStarted: { [Player]: number } = {}
 local slimeSent: { [Player]: number } = {} -- when this session last sent the tutorial Slime
 local nextPressed: { [Player]: boolean } = {}
 local vampireOnBus: { [Player]: boolean } = {} -- the tutorial's Vampire Count is on a bus this session
+local vampireTold: { [Player]: boolean } = {} -- the street has heard of this player's Vampire this session
 
 local function rooms(data: PlayerData.Data): number
 	local n = 0
@@ -196,14 +197,28 @@ local function tick(player: Player, data: PlayerData.Data)
 					local now = PlayerData.get(player)
 					if reached and now then
 						now.stats.tutorialVampire = 1
+					elseif player.Parent then
+						-- No suite it could get to from the desk (one ready from the street only,
+						-- or gone): say so, or it comes back every bus with no reason given.
+						Net.fire(
+							player,
+							"Toast",
+							"The Vampire Count couldn't get to a Coffin Suite from your front desk: it will try a later bus",
+							"Bad"
+						)
 					end
 				end,
 			})
-			Net.fireAll(
-				"Announce",
-				`A Legendary Vampire Count is on the next bus, booked at {player.DisplayName}'s hotel!`,
-				"Rare"
-			)
+			-- Told to the street once (2026-10-26 review: a suite ready from the street but
+			-- not from the desk booked it again every bus, announced to everyone each time).
+			if not vampireTold[player] then
+				vampireTold[player] = true
+				Net.fireAll(
+					"Announce",
+					`A Legendary Vampire Count is on the next bus, booked at {player.DisplayName}'s hotel!`,
+					"Rare"
+				)
+			end
 		end
 		return
 	end
@@ -294,6 +309,7 @@ function TutorialService.Start()
 		slimeSent[player] = nil
 		nextPressed[player] = nil
 		vampireOnBus[player] = nil
+		vampireTold[player] = nil
 	end)
 	task.spawn(function()
 		while true do

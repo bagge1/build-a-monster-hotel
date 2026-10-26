@@ -28,7 +28,9 @@ player.CharacterAdded:Connect(landscape)
 local function faceHotel()
 	local at = player:GetAttribute("SpawnAt")
 	local camera = workspace.CurrentCamera
-	if typeof(at) == "CFrame" and camera then
+	-- Build mode's camera is its own (a respawn while building left the view on the forecourt).
+	local building = (require(Client.BuildController) :: any).isActive()
+	if typeof(at) == "CFrame" and camera and not building then
 		local stand = at.Position + Vector3.new(0, 3, 0)
 		camera.CFrame = CFrame.lookAt(
 			stand - at.LookVector * 14 + Vector3.new(0, 6, 0),

@@ -60,6 +60,7 @@ type Drawn = {
 	connections: { RBXScriptConnection },
 	anim: MonsterAnimator.Animator?,
 	placed: boolean, -- `pos` is a place in its hotel (kept while it has no model, beyond the radius)
+	origin: any, -- the plot's `Origin` when it was placed: a new one is a Travel
 	post: Vector3?, -- its post, cached (2026-10-26: HotelPoints.find sorted the plot's Pieces each frame)
 	postKey: string, -- the role and slot the cached post is for
 	postGen: number, -- the plot's points generation it was found in (`pointsGen`)
@@ -310,10 +311,18 @@ local function frame(dt: number)
 			d.placed = false -- back from the camp, or streamed in again: a new spot in the garden
 			continue
 		end
+		-- A Travel or a rebirth moves the plot to another street (its `Origin`) and keeps
+		-- each Configuration: the resident starts again in the new garden, not 1400 studs
+		-- away walking there (2026-10-26, the regression review).
+		local origin = plot:GetAttribute("Origin")
+		if d.placed and origin ~= d.origin then
+			d.placed = false
+		end
 		if not d.placed then
 			d.pos = wingPoint(plot) or Vector3.zero
 			d.target = d.pos
 			d.placed = true
+			d.origin = origin
 		end
 		local role = c:GetAttribute("Role") :: string? or ""
 		local ck = `{d.plot}|{role}`

@@ -15,6 +15,7 @@
 	`ExpeditionCollect`, which the server checks again.
 ]]
 
+local HttpService = game:GetService("HttpService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Constants = require(ReplicatedStorage.Shared.Constants)
@@ -24,6 +25,7 @@ local Locations = require(ReplicatedStorage.Shared.Locations)
 local Mutations = require(ReplicatedStorage.Shared.Mutations)
 local Net = require(ReplicatedStorage.Shared.Net)
 local Species = require(ReplicatedStorage.Shared.Species)
+local BuildController = require(script.Parent.BuildController)
 local State = require(script.Parent.State)
 local Ui = require(script.Parent.Ui)
 local UiImages = require(script.Parent.UiImages)
@@ -43,6 +45,7 @@ local leftLabel: TextLabel? = nil -- the trip's time left in the panel, redrawn 
 local shownFor: number? = nil -- the trip (its start) whose Collect pop-up was shown
 local timer: TextLabel? = nil -- ExpeditionTimer on the HUD's Residents button
 local drewTrip: boolean? = nil -- whether the last draw was the trip view; a switch scrolls back to the top
+local drewSig: string? = nil -- what the last draw was drawn from (`signature`)
 
 local function clear(f: Instance)
 	for _, c in f:GetChildren() do
@@ -423,7 +426,15 @@ local function drawTrip(ex: any)
 	end
 end
 
+-- What a draw shows from the server's state: a send that changes none of it redraws
+-- nothing, so a gamepad's selection on a card or a resident is kept (2026-10-26:
+-- every send rebuilt the planner and dropped it).
+local function signature(): string
+	return HttpService:JSONEncode({ State.data.expedition or false, home() })
+end
+
 draw = function()
+	drewSig = signature()
 	clear(body)
 	leftLabel = nil
 	local ex = State.data.expedition
@@ -530,7 +541,7 @@ end
 function ExpeditionPanel.Start()
 	State.changed:Connect(function()
 		sentAt = os.clock()
-		if window.Visible then
+		if window.Visible and signature() ~= drewSig then
 			draw()
 		end
 		local ex = State.data.expedition
@@ -548,7 +559,8 @@ function ExpeditionPanel.Start()
 		updateTimer()
 	end)
 	Net.listen("Moment", function(kind: string)
-		if kind == "ExpeditionBoard" then
+		-- Nothing opens over build mode (UI.md; the board's prompt stays live while building).
+		if kind == "ExpeditionBoard" and not BuildController.isActive() then
 			ExpeditionPanel.open()
 		elseif kind == "ExpeditionCollected" then
 			popup.Visible = false

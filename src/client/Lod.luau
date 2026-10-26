@@ -25,6 +25,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Constants = require(ReplicatedStorage.Shared.Constants)
 local StreetLayout = require(ReplicatedStorage.Shared.StreetLayout)
+local BuildController = require(script.Parent.BuildController)
 
 local Lod = {}
 
@@ -122,7 +123,21 @@ local function step()
 					Vector3.new(StreetLayout.PlotSize / 2, 0, StreetLayout.PlotSize / 2)
 				)
 				local isFar = (Vector3.new(centre.X, eye.Y, centre.Z) - eye).Magnitude > FAR
-				if far[plot] ~= isFar then
+				-- Your own hotel while building is build mode's to show and hide by floor: its
+				-- camera can stand past FAR, and Lod would then record and later show the upper
+				-- floors build mode had hidden (2026-10-26, the regression review).
+				local building = BuildController.isActive()
+					and plot:GetAttribute("Index") == me:GetAttribute("Plot")
+					and not plot:GetAttribute("Static")
+				if building then
+					-- Shown in full while building; what Lod hid comes back, then build mode
+					-- hides its upper floors again.
+					if far[plot] then
+						far[plot] = false
+						apply(plot, false)
+						BuildController.rehide()
+					end
+				elseif far[plot] ~= isFar then
 					far[plot] = isFar
 					apply(plot, isFar)
 				end

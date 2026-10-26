@@ -150,7 +150,8 @@ describe("Staff", function()
 			FrontDesk = desk,
 			Clerk = desk * CFrame.new(0, 0, 1.5),
 			Till = desk * CFrame.new(3.4, 3.8, -4.2),
-			Queue_4 = desk * CFrame.new(0, 0, -17),
+			-- The queue's points look +Z, back at the desk (HotelKit `attach`, look (0, 0, 1)).
+			Queue_4 = desk * CFrame.new(0, 0, -17) * CFrame.Angles(0, math.pi, 0),
 			Entrance = entrance,
 		}
 		local function point(name: string): CFrame?
@@ -177,6 +178,10 @@ describe("Staff", function()
 				expect.atMost(l.X, x1, `{role} {slot} within the area (x)`)
 				expect.atLeast(l.Z, z0, `{role} {slot} within the area (z)`)
 				expect.atMost(l.Z, z1, `{role} {slot} within the area (z)`)
+				if role == "Housekeeping" then
+					-- Never on the queue's line (desk-local x 0), where guests stand (2026-10-26).
+					expect.atLeast(math.abs(l.X), 2, `{role} {slot} off the queue`)
+				end
 				if slot <= 4 then
 					for i, q in seen do
 						expect.atLeast((p - q).Magnitude, 2, `{role} {slot} apart from {i}`)

@@ -116,9 +116,11 @@ function Staff.post(role: string, slot: number, point: (name: string) -> CFrame?
 		local at = near("Till", Vector3.new(4, 0, 2))
 		return if at then placeIn(desk, at, slot, 1, STEP, halfW, -halfD, halfD) else nil
 	elseif role == "Housekeeping" then
-		-- Beside the queue, in the desk's two front cells (`Grid` keeps them walkable).
+		-- Beside the queue, in the desk's two front cells (`Grid` keeps them walkable), the
+		-- next ones further from it: the queue's points look back at the desk, so its -X
+		-- is the desk's +X (2026-10-26: the rows stepped onto the queue's line).
 		local at = near("Queue_4", Vector3.new(-4, 0, 0))
-		return if at then placeIn(desk, at, slot, -1, STEP, halfW, -halfD - CELL, -halfD) else nil
+		return if at then placeIn(desk, at, slot, 1, STEP, halfW, -halfD - CELL, -halfD) else nil
 	end
 	return nil
 end
