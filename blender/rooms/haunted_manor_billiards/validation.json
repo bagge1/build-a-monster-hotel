@@ -1,0 +1,111 @@
+{
+ "set": "rooms/haunted_manor_billiards",
+ "checked": "each fbx/<Name>.fbx re-imported into Blender; nothing here ran in Studio",
+ "pieces": {
+  "Furniture_CueRack": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "3 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the piece's own checks re-run on the re-imported triangles",
+    "the contract re-checked on the re-imported boxes: Root 3fw x 0.2 x 3fd, the layer's envelope (Floor and Wall: inside the footprint inset 0.4, height <= 7; Rug: inside the footprint, height <= 0.15; Wall: its back on z = 3fd/2 - 0.4 +-0.05), nothing collides, budget; w, d, layer and height (to 0.3) as Pieces.luau says; each seat() on the triangles"
+   ],
+   "triangles": 1120,
+   "budget": 1500,
+   "collision_precise": [],
+   "attachments": []
+  },
+  "Furniture_Scoreboard": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "3 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the piece's own checks re-run on the re-imported triangles",
+    "the contract re-checked on the re-imported boxes: Root 3fw x 0.2 x 3fd, the layer's envelope (Floor and Wall: inside the footprint inset 0.4, height <= 7; Rug: inside the footprint, height <= 0.15; Wall: its back on z = 3fd/2 - 0.4 +-0.05), nothing collides, budget; w, d, layer and height (to 0.3) as Pieces.luau says; each seat() on the triangles"
+   ],
+   "triangles": 948,
+   "budget": 1500,
+   "collision_precise": [],
+   "attachments": []
+  },
+  "Furniture_WallLamp": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "4 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the piece's own checks re-run on the re-imported triangles",
+    "the contract re-checked on the re-imported boxes: Root 3fw x 0.2 x 3fd, the layer's envelope (Floor and Wall: inside the footprint inset 0.4, height <= 7; Rug: inside the footprint, height <= 0.15; Wall: its back on z = 3fd/2 - 0.4 +-0.05), nothing collides, budget; w, d, layer and height (to 0.3) as Pieces.luau says; each seat() on the triangles"
+   ],
+   "triangles": 620,
+   "budget": 1500,
+   "collision_precise": [],
+   "attachments": []
+  }
+ },
+ "collision_precise": {
+  "Furniture_CueRack": [],
+  "Furniture_Scoreboard": [],
+  "Furniture_WallLamp": []
+ },
+ "mirrors": {},
+ "not_validated": [
+  "anything in Studio: the import, the axis conversion on Roblox's side (import_fixup.luau checks it first), the atlas upload, how it looks lit",
+  "the lamp lit: import_fixup makes Glow_Warm_1 Neon; no light source is added by the model",
+  "a piece on a real wall in Studio, turned to each of the four walls by the build mode"
+ ],
+ "spots": {
+  "Furniture_CueRack": {
+   "spots": {},
+   "checked": "no visitors' spots (A.13.2: not a key piece; ActivityKit.luau spots = none)"
+  },
+  "Furniture_Scoreboard": {
+   "spots": {},
+   "checked": "no visitors' spots (A.13.2: not a key piece; ActivityKit.luau spots = none)"
+  },
+  "Furniture_WallLamp": {
+   "spots": {},
+   "checked": "no visitors' spots (A.13.2: not a key piece; ActivityKit.luau spots = none)"
+  }
+ },
+ "hung": {
+  "Furniture_CueRack": "hung_check on the built and the re-imported triangles: every shell stands on the floor or touches one that does, the wall's plane at z = 1.1 counting as one that does (MODELS.md, \"Furniture\", \"Nothing floats\"); the back on that plane (the kit's Wall rule)",
+  "Furniture_Scoreboard": "hung_check on the built and the re-imported triangles: every shell stands on the floor or touches one that does, the wall's plane at z = 1.1 counting as one that does (MODELS.md, \"Furniture\", \"Nothing floats\"); the back on that plane (the kit's Wall rule)",
+  "Furniture_WallLamp": "hung_check on the built and the re-imported triangles: every shell stands on the floor or touches one that does, the wall's plane at z = 1.1 counting as one that does (MODELS.md, \"Furniture\", \"Nothing floats\"); the back on that plane (the kit's Wall rule)"
+ },
+ "pieces_rows": {
+  "Furniture_CueRack": {
+   "w": 1,
+   "d": 1,
+   "layer": "Wall",
+   "height": 6.0,
+   "keyFor": [],
+   "model_top": 6.08
+  },
+  "Furniture_Scoreboard": {
+   "w": 2,
+   "d": 1,
+   "layer": "Wall",
+   "height": 6.0,
+   "keyFor": [],
+   "model_top": 6.95
+  },
+  "Furniture_WallLamp": {
+   "w": 1,
+   "d": 1,
+   "layer": "Wall",
+   "height": 6.5,
+   "keyFor": [],
+   "model_top": 6.698
+  }
+ },
+ "height_findings": {
+  "note": "Pieces.luau's height against the model's top, a finding (not refused): the row must say it",
+  "Furniture_Scoreboard": "Pieces.luau's height 6, the body's top 6.95"
+ }
+}
