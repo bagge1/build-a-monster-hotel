@@ -1,0 +1,157 @@
+{
+ "set": "rooms/haunted_manor_dance",
+ "checked": "each fbx/<Name>.fbx re-imported into Blender; nothing here ran in Studio",
+ "pieces": {
+  "Furniture_LightFloor": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "18 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the piece's own checks re-run on the re-imported triangles",
+    "the contract re-checked on the re-imported boxes: Root 3fw x 0.2 x 3fd, the layer's envelope (Floor and Wall: inside the footprint inset 0.4, height <= 7; Rug: inside the footprint, height <= 0.15; Wall: its back on z = 3fd/2 - 0.4 +-0.05), nothing collides, budget; w, d, layer and height (to 0.3) as Pieces.luau says; each seat() on the triangles"
+   ],
+   "triangles": 708,
+   "budget": 1500,
+   "collision_precise": [],
+   "attachments": [
+    "Use_1",
+    "Use_2",
+    "Use_3",
+    "Use_4"
+   ]
+  },
+  "Furniture_Speaker": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "3 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the piece's own checks re-run on the re-imported triangles",
+    "the contract re-checked on the re-imported boxes: Root 3fw x 0.2 x 3fd, the layer's envelope (Floor and Wall: inside the footprint inset 0.4, height <= 7; Rug: inside the footprint, height <= 0.15; Wall: its back on z = 3fd/2 - 0.4 +-0.05), nothing collides, budget; w, d, layer and height (to 0.3) as Pieces.luau says; each seat() on the triangles"
+   ],
+   "triangles": 1048,
+   "budget": 1500,
+   "collision_precise": [],
+   "attachments": []
+  },
+  "Furniture_DiscoBall": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "3 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the piece's own checks re-run on the re-imported triangles",
+    "the contract re-checked on the re-imported boxes: Root 3fw x 0.2 x 3fd, the layer's envelope (Floor and Wall: inside the footprint inset 0.4, height <= 7; Rug: inside the footprint, height <= 0.15; Wall: its back on z = 3fd/2 - 0.4 +-0.05), nothing collides, budget; w, d, layer and height (to 0.3) as Pieces.luau says; each seat() on the triangles"
+   ],
+   "triangles": 1234,
+   "budget": 1500,
+   "collision_precise": [],
+   "attachments": []
+  }
+ },
+ "collision_precise": {
+  "Furniture_LightFloor": [],
+  "Furniture_Speaker": [],
+  "Furniture_DiscoBall": []
+ },
+ "mirrors": {},
+ "not_validated": [
+  "anything in Studio: the import, the axis conversion on Roblox's side (import_fixup.luau checks it first), the atlas upload, how it looks lit",
+  "the attachments and each Use_<n> Pose attribute exist only in manifest.json until import_fixup.luau makes them",
+  "a visitor walking to a spot and dancing: no walker or clip has run",
+  "the tiles lit: import_fixup makes them Neon in their key's colour; no code lights them in turn yet",
+  "the ball is Body: nothing spins (MODELS.md names no part for it)"
+ ],
+ "spots": {
+  "Furniture_LightFloor": {
+   "spots": {
+    "Use_1": "Dance",
+    "Use_2": "Dance",
+    "Use_3": "Dance",
+    "Use_4": "Dance"
+   },
+   "checked": "spots_check on the built and the re-imported triangles: Use_<n> from 1 without a gap, a Pose from MODELS.md's list, a level LookVector, no two spots on one square; Dance inside the footprint by the torso (1.0), the surface flat to 0.15 under it, nothing of the body within the dancer's figure (1.9 round, 5.2 tall)"
+  },
+  "Furniture_Speaker": {
+   "spots": {},
+   "checked": "no visitors' spots (A.13.2: not a key piece)"
+  },
+  "Furniture_DiscoBall": {
+   "spots": {},
+   "checked": "no visitors' spots (A.13.2: not a key piece)"
+  }
+ },
+ "rug": {
+  "Furniture_LightFloor": {
+   "checked": "rug_check on the built and the re-imported triangles: the body to all four footprint edges (+-3), y 0..0.15, a ray every 0.25 finds it (no hole), its top steps at most 0.15, every tile a Glow_ part with its top at 0.15",
+   "edges": [
+    [
+     -3.0,
+     -0.0,
+     -3.0
+    ],
+    [
+     3.0,
+     0.15,
+     3.0
+    ]
+   ],
+   "top_min": 0.13,
+   "top_max": 0.15,
+   "tiles": 16,
+   "tile_parts": [
+    "Glow_Cold_1",
+    "Glow_Cold_2",
+    "Glow_Cold_3",
+    "Glow_Cold_4",
+    "Glow_Cold_5",
+    "Glow_Cold_6",
+    "Glow_Cold_7",
+    "Glow_Cold_8",
+    "Glow_Magenta_1",
+    "Glow_Magenta_2",
+    "Glow_Magenta_3",
+    "Glow_Magenta_4",
+    "Glow_Magenta_5",
+    "Glow_Magenta_6",
+    "Glow_Magenta_7",
+    "Glow_Magenta_8"
+   ]
+  }
+ },
+ "pieces_rows": {
+  "Furniture_LightFloor": {
+   "w": 2,
+   "d": 2,
+   "layer": "Rug",
+   "height": 0.15,
+   "keyFor": [
+    "DanceFloor"
+   ],
+   "model_top": 0.15
+  },
+  "Furniture_Speaker": {
+   "w": 1,
+   "d": 1,
+   "layer": "Floor",
+   "height": 5.0,
+   "keyFor": [],
+   "model_top": 5.18
+  },
+  "Furniture_DiscoBall": {
+   "w": 1,
+   "d": 1,
+   "layer": "Floor",
+   "height": 7.0,
+   "keyFor": [],
+   "model_top": 7.0
+  }
+ },
+ "height_findings": {
+  "note": "Pieces.luau's height against the model's top, a finding (not refused): the row must say it"
+ }
+}
