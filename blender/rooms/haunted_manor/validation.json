@@ -401,7 +401,9 @@
    "budget": 1500,
    "collision_precise": [],
    "attachments": [
-    "Use"
+    "Use",
+    "Use_1",
+    "Use_2"
    ]
   },
   "Furniture_CardTable": {
@@ -554,7 +556,8 @@
    "budget": 1500,
    "collision_precise": [],
    "attachments": [
-    "Use"
+    "Use",
+    "Use_1"
    ]
   },
   "Furniture_PingPongTable": {
@@ -571,7 +574,9 @@
    "budget": 1500,
    "collision_precise": [],
    "attachments": [
-    "Use"
+    "Use",
+    "Use_1",
+    "Use_2"
    ]
   },
   "Furniture_BoardGameShelf": {
@@ -934,6 +939,28 @@
   "Furniture_BarStool": {
    "pieces_height": 2.6,
    "model_top": 3.2
+  }
+ },
+ "spots": {
+  "Furniture_PoolTable": {
+   "spots": {
+    "Use_1": "Play",
+    "Use_2": "Play"
+   },
+   "checked": "spots_check (tools/build_activity_bar.py) on the built and the re-imported triangles: Use_<n> from 1 without a gap, a Pose from MODELS.md's list, a level LookVector, no two spots on one square; Play on the floor at a square's middle 1.5 outside an edge, looking straight in, its square free of the body and the standing 5-stud person (arms included) clear of it. `Use` (Stand, in front) kept beside them: PlotService reads a key piece's Use"
+  },
+  "Furniture_ArcadeCabinet": {
+   "spots": {
+    "Use_1": "Play"
+   },
+   "checked": "spots_check (tools/build_activity_bar.py) on the built and the re-imported triangles: Use_<n> from 1 without a gap, a Pose from MODELS.md's list, a level LookVector, no two spots on one square; Play on the floor at a square's middle 1.5 outside an edge, looking straight in, its square free of the body and the standing 5-stud person (arms included) clear of it. `Use` (Stand, in front) kept beside them: PlotService reads a key piece's Use"
+  },
+  "Furniture_PingPongTable": {
+   "spots": {
+    "Use_1": "Play",
+    "Use_2": "Play"
+   },
+   "checked": "spots_check (tools/build_activity_bar.py) on the built and the re-imported triangles: Use_<n> from 1 without a gap, a Pose from MODELS.md's list, a level LookVector, no two spots on one square; Play on the floor at a square's middle 1.5 outside an edge, looking straight in, its square free of the body and the standing 5-stud person (arms included) clear of it. `Use` (Stand, in front) kept beside them: PlotService reads a key piece's Use"
   }
  },
  "height_note": "Pieces.luau's `height` (the blockouts' placeholder) against the model's top, more than 0.3 apart: a finding for the code session, not a fault (src/ untouched)"

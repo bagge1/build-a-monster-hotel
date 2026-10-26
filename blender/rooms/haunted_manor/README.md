@@ -346,3 +346,59 @@ after the fixes; not seen in Studio.
 ## Imported
 
 All 51 (the three walls, 45 furniture and decor pieces, `VendingMachine`, `PopcornCart`, `BarTable`) imported 2026-10-23, fixed up by `import_fixup.luau` (Box on every mesh, no Precise; `LOD_Proxy` hidden), read back and saved as `assets/HotelKit/HauntedManor/<Name>.rbxm`; the synced templates match the import (mesh ids, sizes, collision), none empty. Not yet seen in a playtest.
+
+## Visitors' spots on the Game Room's pieces (2026-10-26)
+
+GDD A.13.2 (Game Room, Billiard Hall) makes these three key furniture that
+guests visit. They now carry `Use_<n>` `Play` spots (`MODELS.md`, "Activity
+furniture: visitors' spots"), added by `play()` in their build functions;
+**the meshes are unchanged** (916, 380, 324 triangles, as before), and each
+keeps its `Use` (`Stand`, in front): PlotService reads a key piece's `Use`.
+
+| Piece | Spot | Position (x, y, z) | Facing |
+|---|---|---|---|
+| `Furniture_PoolTable` (3 x 2) | `Use_1` `Play` | (-3, 0, -4.5), front long side | +Z |
+| | `Use_2` `Play` | (3, 0, 4.5), back long side, diagonally across | -Z |
+| `Furniture_PingPongTable` (3 x 2) | `Use_1` `Play` | (-6, 0, -1.5), the left end | +X |
+| | `Use_2` `Play` | (6, 0, 1.5), the right end | -X |
+| `Furniture_ArcadeCabinet` (1 x 1) | `Use_1` `Play` | (0, 0, -3), in front (the `Use` point) | +Z |
+
+The positions are the code's blockout spots (`ActivityKit.luau`), except that
+the blockout's pool table has **four** (two a long side) and the model two.
+A ping-pong spot sits 1.5 off the table's centreline because z 0 is a square's
+edge: no square's middle lies on it.
+
+**Validated** (by the build, `-- only PoolTable,PingPongTable,ArcadeCabinet`,
+on the built and the re-imported triangles): `spots_check` from
+`tools/build_activity_bar.py`, lifted into `build_built_rooms.py`, with a new
+`Play` branch (`play_faults`): on the floor at a square's middle 1.5 outside
+an edge, looking straight in, its square free of the body, the standing
+5-stud person (arms included) clear of it. The check refused all six bad
+spots of a negative test (wrong facing, between squares, raised, inside the
+footprint, body in the square, body through an arm). `validation.json`
+`spots`; `import_fixup.luau` sets each `Use_<n>`'s `Pose`. The other 48
+pieces' records are unchanged. Images (Workbench, not in git):
+`review/spots/<Name>.png` (labelled), `review/blind/` (the reviewer's).
+
+A whole build of this set stops at Pieces.luau's activity rows (built in their
+own sets, `tools/build_activity_*.py`); only a partial build runs, which now
+asks only for what it builds.
+
+**Blind review 2026-10-26** (one round, the three images). **False:** the
+pool players at different distances (both spots 2.1 from the rail's edge,
+z ±4.5 against ±2.4: the raised camera's foreshortening); the arcade player
+oblique and off-centre (at x 0 facing +Z, checked; the camera's angle); the
+tables too low (tops 2.6, the figure's hip 2.0); the ping-pong player maybe
+facing away (looks -X at the table, checked); the arcade screen blank (it is
+`Glow_Cold_1`, lit by the code). **Confirmed, not a fault:** the ping-pong
+spots are not mirrored across the net (diagonal by the grid, above).
+**For his look, not changed here** (the task left the meshes alone): the net
+reads as a hairline from the raised camera (0.06 thick, 0.36 tall); the
+arcade's panel at 2.75-3.2 reads shoulder-high to the reviewer (measured
+chest-high, about a real cabinet's proportion); no cues or rack at the pool
+table. Not re-reviewed.
+
+**Not validated:** not imported (the game sees the spots only after his
+import and the fix-up); not seen in Studio; no visitor has walked to a spot
+or played. The Lodge's and the Spa's own pool table, arcade and ping-pong
+table (`build_built_rooms_kits.py`) have no spots yet.
