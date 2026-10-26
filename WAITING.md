@@ -356,6 +356,20 @@ Med Claudes skärmdump där det finns en. -->
    - Utseenden: rombbandet (lästes som ett kasino), hörnspirorna (en
      fontän), solstolens nackstöd.
 
+19. **Gymmets bänk, löpband och boxsäck** (natten 2026-10-26, GDD A.13;
+   validerade i Blender, tre blinda granskningar i
+   `blender/rooms/haunted_manor_gym/README.md`; **inte importerade**). Bilder:
+   `archive/screens/2026-10-26_gym/gym_game_camera.jpg`, `gym_silhouettes.jpg`
+   (valda: bänk med lågt ställ, löpband med räcken och konsol, boxsäck i en
+   järngalge). Dina val:
+   - Stången får vara 2,2 bred (kontraktets inset) men händerna hänger vid
+     ±1,46. Förslag: ett undantag så att stången når ±1,45.
+   - Att ligga på bänken läses som en säng eller kista. Förslag: en
+     `Lift`-placering med fötterna på golvet (en rad i MODELS.md).
+   - Bänkens höjd i spelets rad går från 2,5 till 4,5 (ställningen står över
+     den liggande); rättas när modellerna importeras.
+   - Utseenden: galgen, klockkonsolen, det mörka järnet, ränder på bandet.
+
 ## §2 Beslut
 
 <!-- En fråga i taget, med alternativen och Claudes rekommendation. -->
