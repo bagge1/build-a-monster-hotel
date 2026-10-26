@@ -1370,8 +1370,9 @@ function GuestService.Start()
 		end
 		return table.concat(lines, " | ")
 	end)
-	DevGrant.register("visit", function()
-		-- Studio only: every guest in its room may decide on a visit now (A.13.1).
+	DevGrant.register("visitnow", function()
+		-- Studio only: every guest in its room may decide on a visit now (A.13.1). Not
+		-- `visit`: the showcase's command (SocialService) has that name and won.
 		local now, n = os.clock(), 0
 		for _, g in guests do
 			if g.state == "InRoom" then
