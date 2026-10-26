@@ -304,6 +304,25 @@ Med Claudes skärmdump där det finns en. -->
    står nu längs nederkanten på en telefon** (överst täckte den fem
    menyknappar på en iPhone 7): `archive/screens/2026-10-25_iphone7_gloom_fixed.jpg`.
 
+16. **Barens disk och lilla scen** (natten 2026-10-26, GDD A.13; byggda och
+   validerade i Blender, tre blinda granskningar triagerade i
+   `blender/rooms/haunted_manor_bar/README.md`; **inte importerade, inget
+   lagt i `_import/`**). Bilder (Workbench, glöden syns olyst):
+   `archive/screens/2026-10-26_bar/bar_game_camera.jpg`, `bar_front.jpg`,
+   `bar_counter_close.jpg`, `bar_stage_close.jpg`, silhuetterna
+   `bar_silhouettes.jpg` (tre per bit; valda: disken med bakhylla, scenen med
+   välvd fond). Dina val:
+   - Diskens storlek: **3×1** (tre gästplatser framför, förslag) eller 3×2
+     med en gång bakom.
+   - Baksidorna är släta på båda (att göra dem färdiga kostar ~300 trianglar
+     som disken inte har). Förslag: behåll, de står mot väggen.
+   - Spegeln läses som ett fönster (förslag: mörkare blå), skivan är mörk
+     (förslag: ljusare trä), diskens höjd 3,7 (förslag: behåll), scenens
+     bredd.
+   - Gäster 3 studs isär vid disken når varandras armar (kontraktets en plats
+     per ruta); dansaren står 2,15 bakom mikrofonen.
+   Säg ja eller vad som ska ändras; först efter ditt ja läggs de för import.
+
 ## §2 Beslut
 
 <!-- En fråga i taget, med alternativen och Claudes rekommendation. -->
