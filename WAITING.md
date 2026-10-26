@@ -158,6 +158,11 @@ Connect: knappen under fliken Plugins i Studio. -->
    dialog, och under **Rig General** välj **Rig Type: Custom**. Skriv
    *importerat*; resten är vårt. Inte mitt i en annan import.
 
+- **Nästa import (natten 2026-10-26):** Haunted Manors `Furniture_PoolTable`,
+  `Furniture_PingPongTable` och `Furniture_ArcadeCabinet` har fått platser för
+  besökare (formerna oförändrade). Claude stagar dem i `blender/_import/` när du
+  vill importera; tills dess tar varje bit en besökare.
+
 ## §1 Att titta på eller spela
 
 <!-- Det bara en människa kan bedöma: hur det känns, hur det ser ut.
