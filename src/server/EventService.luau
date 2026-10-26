@@ -24,6 +24,7 @@ local GuestService = require(ServerScriptService.Server.GuestService)
 local HunterService = require(ServerScriptService.Server.HunterService)
 local StateService = require(ServerScriptService.Server.StateService)
 local DevGrant = require(ServerScriptService.Server.DevGrant)
+local Safe = require(ServerScriptService.Server.Safe)
 
 local EventService = {}
 
@@ -208,7 +209,7 @@ function EventService.Start()
 	task.spawn(function()
 		while true do
 			task.wait(5)
-			pcall(tick)
+			Safe.call("[event] tick", tick) -- said once a minute when it fails (2026-10-26: it failed silently)
 		end
 	end)
 end

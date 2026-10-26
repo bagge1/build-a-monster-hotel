@@ -45,6 +45,7 @@ local Income = require(ServerScriptService.Server.Income)
 local BusService = require(ServerScriptService.Server.BusService)
 local DevGrant = require(ServerScriptService.Server.DevGrant)
 local StateService = require(ServerScriptService.Server.StateService)
+local Safe = require(ServerScriptService.Server.Safe)
 
 local SocialService = {}
 
@@ -65,17 +66,32 @@ local function pairKey(a: Player, b: Player): string
 	return `{x}:{y}`
 end
 
+--[[ Yields on `IsFriendsWith` for each new pair, so it runs on its own
+	thread (2026-10-26 review: run inside the load handler it held up every
+	load handler after it). The pairs are asked first; the bonus is then
+	worked out from the players still here once the answers are in, so one
+	who left meanwhile no longer counts. A failed ask is not remembered, so
+	the next join or leave asks again. ]]
 local function recomputeFriends()
 	local list = Players:GetPlayers()
-	local found = false
 	for i = 1, #list do
 		for j = i + 1, #list do
 			local key = pairKey(list[i], list[j])
 			if friendCache[key] == nil then
 				local ok, yes = pcall(list[i].IsFriendsWith, list[i], list[j].UserId)
-				friendCache[key] = ok and yes == true
+				if ok then
+					friendCache[key] = yes == true
+				else
+					Safe.warn("[social] friends check", tostring(yes))
+				end
 			end
-			if friendCache[key] then
+		end
+	end
+	list = Players:GetPlayers()
+	local found = false
+	for i = 1, #list do
+		for j = i + 1, #list do
+			if friendCache[pairKey(list[i], list[j])] then
 				found = true
 			end
 		end
@@ -448,7 +464,7 @@ function SocialService.Start()
 	end)
 	PlayerData.onLoaded(function(player, data)
 		leaderstats(player)
-		recomputeFriends()
+		task.spawn(Safe.call, "[social] friends", recomputeFriends)
 		milestones(player, data, false) -- a milestone reached while away
 		refreshFavourite()
 		StateService.markAll()
@@ -468,21 +484,21 @@ function SocialService.Start()
 			last = os.clock()
 			-- A new week starts every count at 0: last week's Street Favourite gives up its badge now, not at
 			-- the next like, join or leave.
+			-- Each part protected on its own (2026-10-26): a throw here ended play time and visits for the server's life.
 			if thisWeek() ~= week then
 				week = thisWeek()
-				refreshFavourite()
-				StateService.markAll()
+				Safe.call("[social] new week", function()
+					refreshFavourite()
+					StateService.markAll()
+				end)
 			end
-			for _, data in PlayerData.loaded() do
+			Safe.each(PlayerData.loaded(), function(_, data: PlayerData.Data)
 				if data.played.day ~= today() then
 					data.played = { day = today(), seconds = 0 }
 				end
 				data.played.seconds += step
-			end
-			local ok, err = pcall(checkVisits)
-			if not ok then
-				warn(`[social] visits: {err}`)
-			end
+			end, "[social] play time for")
+			Safe.call("[social] visits", checkVisits)
 		end
 	end)
 	-- The Showcase panel (A.11.4): this server's hotels by likes this week, each with Visit.
@@ -565,7 +581,7 @@ function SocialService.Start()
 		while true do
 			task.wait(2)
 			for _, player in Players:GetPlayers() do
-				pcall(vipTag, player)
+				Safe.call("[social] VIP tag", vipTag, player)
 			end
 		end
 	end)

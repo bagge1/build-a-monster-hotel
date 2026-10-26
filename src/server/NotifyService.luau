@@ -46,6 +46,7 @@ local PlayerData = require(ServerScriptService.Server.PlayerData)
 local ResidentService = require(ServerScriptService.Server.ResidentService)
 local EventService = require(ServerScriptService.Server.EventService)
 local DevGrant = require(ServerScriptService.Server.DevGrant)
+local Safe = require(ServerScriptService.Server.Safe)
 
 local NotifyService = {}
 
@@ -91,13 +92,14 @@ end
 
 -- Puts a notification for `userId` in the queue, due at `due` (replacing one of the same kind).
 function NotifyService.queue(kind: Kind, userId: number, due: number)
-	pcall(function()
+	-- Each MemoryStore call says when it fails (2026-10-26 review: they failed silently), once a minute at most.
+	Safe.call("[notify] queue", function()
 		queue:SetAsync(key(kind, userId), { u = userId, k = kind, n = 0 }, expiry(due), due)
 	end)
 end
 
 function NotifyService.cancel(kind: Kind, userId: number)
-	pcall(function()
+	Safe.call("[notify] cancel", function()
 		queue:RemoveAsync(key(kind, userId))
 	end)
 end
@@ -158,7 +160,7 @@ end
 -- Claims entry `k` (nil if another server has it or it is gone), its lease taken.
 local function claim(k: string, now: number): any
 	local claimed = nil
-	pcall(function()
+	Safe.call("[notify] claim", function()
 		queue:UpdateAsync(k, function(value: any, sortKey: any)
 			if value == nil or (tonumber(sortKey) or 0) > now then
 				return nil -- gone, or another server's lease
@@ -187,7 +189,7 @@ function NotifyService.tick(): number
 				then "drop"
 				else send(value.k, value.u)
 			if result ~= "retry" or value.n >= TRIES then
-				pcall(function()
+				Safe.call("[notify] remove", function()
 					queue:RemoveAsync(item.key)
 				end)
 			end
@@ -212,7 +214,7 @@ function NotifyService.broadcastFullMoon(force: boolean?): number
 		-- Take (or keep) the day's claim; its value is where the last page ended.
 		local cursor = nil
 		local mine = false
-		pcall(function()
+		Safe.call("[notify] broadcast claim", function()
 			broadcasts:UpdateAsync(`FullMoon_{day}`, function(value: any, sortKey: any)
 				local t = os.time()
 				if
@@ -251,7 +253,7 @@ function NotifyService.broadcastFullMoon(force: boolean?): number
 		end
 		local last = (page :: any)[#(page :: any)]
 		local done = #(page :: any) < 200
-		pcall(function()
+		Safe.call("[notify] broadcast cursor", function()
 			broadcasts:UpdateAsync(`FullMoon_{day}`, function(value: any)
 				value = value or { by = game.JobId }
 				if last then
@@ -269,7 +271,7 @@ end
 
 -- Marks `userId` as seen now, for the broadcasts.
 local function seen(userId: number)
-	pcall(function()
+	Safe.call("[notify] seen", function()
 		recent:SetAsync(tostring(userId), userId, RECENT_FOR, os.time())
 	end)
 end
@@ -310,8 +312,8 @@ function NotifyService.Start()
 	task.spawn(function()
 		task.wait(math.random() * TICK) -- servers out of step with each other
 		while true do
-			pcall(NotifyService.broadcastFullMoon)
-			pcall(NotifyService.tick)
+			Safe.call("[notify] broadcast", NotifyService.broadcastFullMoon)
+			Safe.call("[notify] tick", NotifyService.tick)
 			task.wait(TICK)
 		end
 	end)

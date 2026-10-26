@@ -59,6 +59,7 @@ local StreetLayout = require(ReplicatedStorage.Shared.StreetLayout)
 local HotelKit = require(ServerScriptService.Server.HotelKit)
 local ActivityKit = require(ServerScriptService.Server.ActivityKit)
 local PlayerData = require(ServerScriptService.Server.PlayerData)
+local Safe = require(ServerScriptService.Server.Safe)
 
 local G = Constants.Grid
 
@@ -1143,10 +1144,13 @@ local function claim(player: Player, data: PlayerData.Data)
 			plot.model:SetAttribute("OwnerId", player.UserId)
 			plot.model:SetAttribute("OwnerName", player.DisplayName)
 			player:SetAttribute("Plot", index)
-			place(plot, data.location)
+			--[[ The plot stays theirs whatever throws below (2026-10-26 review: a
+				throw in the build left it half built and skipped the rest of the
+				join, the respawn hook too). A later rebuild finishes it. ]]
+			Safe.call(`[plot] place for {player.Name}`, place, plot, data.location)
 			player:SetAttribute("Street", plot.street)
-			buildHotel(plot, data)
-			drawChain(index, player)
+			Safe.call(`[plot] build for {player.Name}`, buildHotel, plot, data)
+			Safe.call(`[plot] chain for {player.Name}`, drawChain, index, player)
 			task.spawn(spawnAt, player)
 			return
 		end

@@ -51,6 +51,7 @@ local HunterService = {}
 type Hunter = {
 	id: number,
 	plot: PlotService.Plot,
+	owner: Player, -- whose hotel it came for: the plot's owner when the night began
 	street: number, -- the street its path leads down
 	state: "Approach" | "Fleeing" | "Leaving",
 	path: { Vector3 },
@@ -111,9 +112,14 @@ local function here(h: Hunter): Vector3
 	return h.path[#h.path]
 end
 
+--[[ For the plot's owner as the night begins, and only while that player
+	still has the plot (2026-10-26 review: a plot left and taken by another
+	player during the delay sent the first one's hunters, and their net, to
+	the newcomer's hotel). ]]
 local function spawnHunter(plot: PlotService.Plot, delay: number)
+	local owner = plot.owner
 	task.delay(delay, function()
-		if not active or not plot.owner then
+		if not active or not owner or plot.owner ~= owner then
 			return
 		end
 		local id = nextId
@@ -124,6 +130,7 @@ local function spawnHunter(plot: PlotService.Plot, delay: number)
 		local h: Hunter = {
 			id = id,
 			plot = plot,
+			owner = owner,
 			street = plot.street,
 			state = "Approach",
 			path = {},
@@ -158,7 +165,7 @@ end
 
 local function net(h: Hunter)
 	reached += 1
-	local owner = h.plot.owner
+	local owner = if h.plot.owner == h.owner then h.owner else nil
 	h.state = "Leaving"
 	local p = here(h)
 	walk(h, {
@@ -337,7 +344,7 @@ end
 -- A set trap scares the first hunter that comes within reach of it, once a night (§8.1).
 local function springTraps()
 	for _, h in hunters do
-		local owner = h.plot.owner
+		local owner = if h.plot.owner == h.owner then h.owner else nil
 		local data = owner and PlayerData.get(owner)
 		if h.state == "Approach" and owner and data then
 			local used = trapsUsed[owner] or {}
