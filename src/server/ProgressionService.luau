@@ -38,6 +38,7 @@ local StateService = require(ServerScriptService.Server.StateService)
 local Income = require(ServerScriptService.Server.Income)
 local ChainService = require(ServerScriptService.Server.ChainService)
 local DevGrant = require(ServerScriptService.Server.DevGrant)
+local Safe = require(ServerScriptService.Server.Safe)
 
 local ProgressionService = {}
 
@@ -122,24 +123,28 @@ local function rebirth(player: Player, force: boolean?)
 			warn(`[rebirth] {player.Name}: {err}`)
 		end
 	end
+	--[[ The shards and the count together, before anything that can throw
+		(2026-10-26 review: a throw after the shards were given skipped the
+		count, the save and the handlers). Every step after them is protected
+		on its own, so a rebirth that began always ends counted and saved. ]]
 	PlayerData.addShards(player, req.shards)
+	data.rebirths += 1
+	if req.prestige then
+		data.prestige += 1
+	end
 	data.cash = Constants.Economy.StartCash
 	data.till = 0
 	data.runCash = 0
 	-- The chain is taken apart: Haunted Manor again, from the start square.
 	data.chain = {}
 	data.location = 1
-	PlayerData.resetHotel(data)
+	Safe.call(`[rebirth] new hotel for {player.Name}`, PlayerData.resetHotel, data)
 	data.reviews = {}
 	-- The new Haunted Manor rates from nothing (2026-10-26: samples are saved);
 	-- the other hotels' went with `chain`.
 	data.samples = Rating.newSamples()
 	data.rate = 0
-	ChainService.resample(player)
-	data.rebirths += 1
-	if req.prestige then
-		data.prestige += 1
-	end
+	Safe.call(`[rebirth] resample for {player.Name}`, ChainService.resample, player)
 	-- Staff of the hotels that are gone go back to the Wing.
 	for _, r in data.residents do
 		if r.role ~= "" and (r.hotel or 1) ~= 1 then
@@ -147,7 +152,7 @@ local function rebirth(player: Player, force: boolean?)
 			r.hotel = nil
 		end
 	end
-	ChainService.redraw(player)
+	Safe.call(`[rebirth] redraw for {player.Name}`, ChainService.redraw, player)
 	Net.fireAll("Announce", `{player.DisplayName} was reborn! Rebirth {data.rebirths}`, "Rare")
 	Net.fire(
 		player,

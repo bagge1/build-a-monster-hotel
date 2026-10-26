@@ -678,15 +678,17 @@ function PlayerData.awaySince(player: Player): number
 	return awaySince[player] or 0
 end
 
-function PlayerData.waitFor(player: Player): Data?
-	while player.Parent == Players do
+-- The profile once it is loaded; nil if the player leaves first, or after `timeout` seconds when one is given.
+function PlayerData.waitFor(player: Player, timeout: number?): Data?
+	local waited = 0
+	while player.Parent == Players and (timeout == nil or waited < timeout) do
 		local data = PlayerData.get(player)
 		if data then
 			return data
 		end
-		task.wait()
+		waited += task.wait()
 	end
-	return nil
+	return if player.Parent == Players then PlayerData.get(player) else nil
 end
 
 function PlayerData.loaded(): { [Player]: Data }

@@ -32,6 +32,7 @@ local Visits = require(ReplicatedStorage.Shared.Visits)
 local PlayerData = require(ServerScriptService.Server.PlayerData)
 local PlotService = require(ServerScriptService.Server.PlotService)
 local ActivityKit = require(ServerScriptService.Server.ActivityKit)
+local Safe = require(ServerScriptService.Server.Safe)
 
 local HotelService = {}
 
@@ -824,15 +825,18 @@ local function updateSign(player: Player, hotel: Hotel)
 	while #featured > 3 do
 		table.remove(featured)
 	end
-	local label = (gui :: SurfaceGui):FindFirstChild("Text") :: TextLabel
+	-- A board that lost its label still keeps the attributes current (2026-10-26: it threw and ended the 5 s loop).
+	local label = (gui :: SurfaceGui):FindFirstChild("Text")
 	local badge = if plot.model:GetAttribute("StreetFavourite")
 		then "  ★ Street Favourite"
 		else ""
-	label.Text =
-		`{player.DisplayName}'s Hotel{badge}\n{Format.stars(hotel.rating)} · ♥ {data.likes}\n{table.concat(
-			featured,
-			" · "
-		)}`
+	if label and label:IsA("TextLabel") then
+		label.Text =
+			`{player.DisplayName}'s Hotel{badge}\n{Format.stars(hotel.rating)} · ♥ {data.likes}\n{table.concat(
+				featured,
+				" · "
+			)}`
+	end
 	plot.model:SetAttribute("Featured", table.concat(featured, ","))
 	plot.model:SetAttribute("Likes", data.likes)
 end
@@ -907,9 +911,10 @@ function HotelService.Start()
 	task.spawn(function()
 		while true do
 			task.wait(5)
-			for player in hotels do
+			-- Each hotel on its own (2026-10-26): one that throws no longer ends the loop for every hotel.
+			Safe.each(hotels, function(player)
 				HotelService.recompute(player)
-			end
+			end, "[hotel] recompute for")
 		end
 	end)
 end

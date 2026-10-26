@@ -61,6 +61,7 @@ local ActivityKit = require(ServerScriptService.Server.ActivityKit)
 local Income = require(ServerScriptService.Server.Income)
 local DevGrant = require(ServerScriptService.Server.DevGrant)
 local StateService = require(ServerScriptService.Server.StateService)
+local Safe = require(ServerScriptService.Server.Safe)
 local Visits = require(ReplicatedStorage.Shared.Visits)
 
 local S = Constants.Stay
@@ -811,70 +812,86 @@ local function checkout(g: Guest)
 		destroy(g)
 		return
 	end
-	local satisfaction = math.clamp(
-		Stay.satisfaction({
-			prefsMatched = g.prefsMatched,
-			tier = g.tier,
-			-- The floor rule goes (A.13.1): activity rooms add to a stay only by visits (their +5, `satBonus`).
-			amenities = 0,
-			requestsPlayer = g.requestsPlayer,
-			requestsStaff = g.requestsStaff,
-			requestsMissed = g.requestsMissed,
-			deskWait = g.waited,
-		}) + g.satBonus, -- the Furniture and Decor bars (A.12)
-		0,
-		100
-	)
-	if g.happyFloor then
-		satisfaction = math.max(satisfaction, g.happyFloor)
-	end
-	local sp = assert(Species.get(g.species))
-	local stay = Constants.Rarity[sp.rarity].stay * g.stayMult
-	local tip = math.floor(
-		Stay.tip(g.payRate, stay, satisfaction) * (1 + GuestService.tipBonus(player, "Tips"))
-	)
-	PlayerData.addTill(player, tip)
-	countIncome(player, tip)
-	local stars = Stay.review(satisfaction)
-	HotelService.addReview(player, stars)
-	HotelService.recordStay(player, g.prefsMatched / math.max(1, #sp.prefs))
-	PlayerData.stat(player, "stays")
-	PlayerData.stat(player, `served_{g.species}`)
-	if Stay.isHappy(satisfaction) then
-		PlayerData.stat(player, "happyStays")
-	end
-	local room = g.room
-	HotelService.setRoom(player, room, "Dirty")
-	g.config:SetAttribute("Happy", Stay.isHappy(satisfaction))
-	local bed = PlotService.piecePoint(plot :: any, room, "Bed")
-	Net.fire(player, "Pop", tip, if bed then bed.Position else nil, "Tip")
-	for _, h in checkoutHandlers do
-		task.spawn(h, player, g, satisfaction)
-	end
-	-- Walk back out the way it came in: the desk-to-bed path, reversed.
-	local data = PlayerData.get(player)
-	local deskId = if data
-			and g.desk
-			and data.layout[g.desk]
-		then g.desk
-		elseif data then desks(data)[1]
-		else nil
-	local desk = plot and queueSpot(plot, deskId, 1)
-	local inPath = if plot
-			and data
-			and desk
-		then roomPath(plot, data, desk, room, false, deskId)
-		else nil
+	--[[ Leaving before anything is paid (2026-10-26 review): only an InRoom
+		guest checks out, and a throw further on ran the whole check-out again
+		on the next tick, its tip, review and stats with it, every 0.2 s. ]]
 	g.state = "Leaving"
-	g.room = nil
-	g.requestUntil = nil
-	g.speed = S.WalkSpeed
-	if plot and inPath then
-		walk(g, exitPath(g, plot, reversed(inPath)))
-	else
-		sendHome(g, plot)
+	local room = g.room :: string
+	local done = Safe.call(`[guests] checkout of {g.species}`, function()
+		local satisfaction = math.clamp(
+			Stay.satisfaction({
+				prefsMatched = g.prefsMatched,
+				tier = g.tier,
+				-- The floor rule goes (A.13.1): activity rooms add to a stay only by visits (their +5, `satBonus`).
+				amenities = 0,
+				requestsPlayer = g.requestsPlayer,
+				requestsStaff = g.requestsStaff,
+				requestsMissed = g.requestsMissed,
+				deskWait = g.waited,
+			}) + g.satBonus, -- the Furniture and Decor bars (A.12)
+			0,
+			100
+		)
+		if g.happyFloor then
+			satisfaction = math.max(satisfaction, g.happyFloor)
+		end
+		local sp = assert(Species.get(g.species))
+		local stay = Constants.Rarity[sp.rarity].stay * g.stayMult
+		local tip = math.floor(
+			Stay.tip(g.payRate, stay, satisfaction) * (1 + GuestService.tipBonus(player, "Tips"))
+		)
+		PlayerData.addTill(player, tip)
+		countIncome(player, tip)
+		local stars = Stay.review(satisfaction)
+		HotelService.addReview(player, stars)
+		HotelService.recordStay(player, g.prefsMatched / math.max(1, #sp.prefs))
+		PlayerData.stat(player, "stays")
+		PlayerData.stat(player, `served_{g.species}`)
+		if Stay.isHappy(satisfaction) then
+			PlayerData.stat(player, "happyStays")
+		end
+		HotelService.setRoom(player, room, "Dirty")
+		g.config:SetAttribute("Happy", Stay.isHappy(satisfaction))
+		local bed = PlotService.piecePoint(plot :: any, room, "Bed")
+		Net.fire(player, "Pop", tip, if bed then bed.Position else nil, "Tip")
+		for _, h in checkoutHandlers do
+			task.spawn(h, player, g, satisfaction)
+		end
+		-- Walk back out the way it came in: the desk-to-bed path, reversed.
+		local data = PlayerData.get(player)
+		local deskId = if data
+				and g.desk
+				and data.layout[g.desk]
+			then g.desk
+			elseif data then desks(data)[1]
+			else nil
+		local desk = plot and queueSpot(plot, deskId, 1)
+		local inPath = if plot
+				and data
+				and desk
+			then roomPath(plot, data, desk, room, false, deskId)
+			else nil
+		g.room = nil
+		g.requestUntil = nil
+		g.speed = S.WalkSpeed
+		if plot and inPath then
+			walk(g, exitPath(g, plot, reversed(inPath)))
+		else
+			sendHome(g, plot)
+		end
+		publish(g)
+	end)
+	if not done then
+		-- Out of its room all the same: the room left for cleaning, the guest walked out, nothing paid twice.
+		Safe.call("[guests] checkout fallback", function()
+			local hotel = HotelService.get(player)
+			local r = hotel and hotel.rooms[room]
+			if r and r.state == "Occupied" and r.guest == g.id then
+				HotelService.setRoom(player, room, "Dirty")
+			end
+			sendHome(g, plot)
+		end)
 	end
-	publish(g)
 end
 
 -- A request fulfilled, by the player (at the door) or by Room Service staff.
@@ -1233,8 +1250,9 @@ end
 
 local function tickGuests()
 	local now = os.clock()
-	strandedTick()
-	for _, g in guests do
+	Safe.call("[guests] stranded", strandedTick)
+	-- Each guest on its own (2026-10-26): one guest that threw used to stop every guest after it, every tick.
+	Safe.each(guests, function(_, g: Guest)
 		if g.state == "Browsing" then
 			if now >= g.arriveAt then
 				local decide = g.onDecide
@@ -1322,7 +1340,7 @@ local function tickGuests()
 				destroy(g)
 			end
 		end
-	end
+	end, "[guests] tick for guest")
 end
 
 --[[ The guests' tick. Its walks share each hotel's one remembered world

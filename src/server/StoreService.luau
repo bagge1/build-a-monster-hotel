@@ -44,6 +44,7 @@ local StateService = require(ServerScriptService.Server.StateService)
 local Income = require(ServerScriptService.Server.Income)
 local Analytics = require(ServerScriptService.Server.Analytics)
 local DevGrant = require(ServerScriptService.Server.DevGrant)
+local Safe = require(ServerScriptService.Server.Safe)
 
 local StoreService = {}
 
@@ -125,9 +126,15 @@ local function grantFor(player: Player, key: string): ((PlayerData.Data) -> bool
 	return nil
 end
 
+--[[ How long a receipt waits for its player's profile (2026-10-26 review): a
+	receipt delivered at the join comes before the profile has loaded, and its
+	"not yet" waited for the player's next join. Loading takes a few tries of
+	a few seconds at worst (PlayerData's LOAD_WAIT). ]]
+local RECEIPT_WAIT = 30
+
 local function processReceipt(receipt: any): Enum.ProductPurchaseDecision
 	local player = Players:GetPlayerByUserId(receipt.PlayerId)
-	if not player then
+	if not player or not PlayerData.waitFor(player, RECEIPT_WAIT) then
 		return Enum.ProductPurchaseDecision.NotProcessedYet
 	end
 	local entry = Store.byId("Product", receipt.ProductId)
@@ -150,12 +157,15 @@ local function processReceipt(receipt: any): Enum.ProductPurchaseDecision
 end
 
 local function refreshPasses(player: Player)
-	local data = PlayerData.get(player)
-	if not data then
+	local start = PlayerData.get(player)
+	if not start then
 		return
 	end
+	local owned: { [string]: boolean } = {}
+	local before: { [string]: boolean? } = {}
 	for _, e in Store.Entries do
 		if e.kind == "Pass" and e.id ~= 0 then
+			before[e.key] = start.passes[e.key]
 			local ok, owns = pcall(
 				MarketplaceService.UserOwnsGamePassAsync,
 				MarketplaceService,
@@ -163,8 +173,22 @@ local function refreshPasses(player: Player)
 				e.id
 			)
 			if ok then
-				data.passes[e.key] = owns or data.gifted[e.key] or nil
+				owned[e.key] = owns == true
+			else
+				Safe.warn("[store] pass ownership", `{e.key} for {player.Name}: {owns}`)
 			end
+		end
+	end
+	--[[ Written after the yields, from the data as it is then (2026-10-26
+		review): the player may have left, and a pass bought or gifted while
+		the checks ran is never written back to false. ]]
+	local data = PlayerData.get(player)
+	if player.Parent ~= Players or not data then
+		return
+	end
+	for key, owns in owned do
+		if data.passes[key] == before[key] then
+			data.passes[key] = owns or data.gifted[key] or nil
 		end
 	end
 	StateService.mark(player)
@@ -397,7 +421,7 @@ function StoreService.Start()
 	task.spawn(function()
 		while true do
 			local dt = task.wait(1)
-			pcall(boostTick, dt)
+			Safe.call("[store] boost tick", boostTick, dt)
 		end
 	end)
 end

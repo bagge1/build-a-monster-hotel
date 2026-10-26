@@ -22,6 +22,7 @@ local Format = require(ReplicatedStorage.Shared.Format)
 local StreetLayout = require(ReplicatedStorage.Shared.StreetLayout)
 local PlayerData = require(ServerScriptService.Server.PlayerData)
 local StoreNames = require(ServerScriptService.Server.StoreNames)
+local Safe = require(ServerScriptService.Server.Safe)
 
 local LeaderboardService = {}
 
@@ -98,7 +99,8 @@ local function write(player: Player, data: PlayerData.Data)
 	end
 	task.spawn(function()
 		for _, w in writes do
-			pcall(function()
+			-- Said once a minute when it fails (2026-10-26: a board's write failed silently).
+			Safe.call("[leaderboard] write", function()
 				w.store():SetAsync(userId, w.score)
 			end)
 		end

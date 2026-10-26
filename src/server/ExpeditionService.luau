@@ -48,6 +48,7 @@ local ProgressionService = require(ServerScriptService.Server.ProgressionService
 local FindService = require(ServerScriptService.Server.FindService)
 local StateService = require(ServerScriptService.Server.StateService)
 local DevGrant = require(ServerScriptService.Server.DevGrant)
+local Safe = require(ServerScriptService.Server.Safe)
 
 local X = Constants.Expeditions
 
@@ -280,7 +281,8 @@ end
 -- Once a second: the play seconds into each trip, and a party home at its end.
 local function tick()
 	local now = os.time()
-	for player, data in PlayerData.loaded() do
+	-- Each player on its own (2026-10-26), as the chain's tick is: one that throws no longer stops the rest.
+	Safe.each(PlayerData.loaded(), function(player: Player, data: PlayerData.Data)
 		local trip = record(data).trip
 		if trip and settled[player] then
 			countPlay(player, data, trip)
@@ -298,7 +300,7 @@ local function tick()
 				StateService.mark(player)
 			end
 		end
-	end
+	end, "[expeditions] tick for")
 end
 
 function ExpeditionService.Init()

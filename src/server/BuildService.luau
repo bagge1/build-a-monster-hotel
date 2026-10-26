@@ -53,6 +53,7 @@ local PlotService = require(ServerScriptService.Server.PlotService)
 local HotelService = require(ServerScriptService.Server.HotelService)
 local StateService = require(ServerScriptService.Server.StateService)
 local DevGrant = require(ServerScriptService.Server.DevGrant)
+local Safe = require(ServerScriptService.Server.Safe)
 
 local R = Constants.Rooms
 
@@ -93,6 +94,9 @@ local function markState(player: Player)
 	StateService.mark(player)
 end
 
+--[[ Each step on its own (2026-10-26 review): `flush` runs deferred, outside
+	the remote's pcall, so one throw skipped every step after it, the state
+	send and the handlers with it. ]]
 local function flush(player: Player)
 	local p = pendingChanges[player]
 	pendingChanges[player] = nil
@@ -100,10 +104,10 @@ local function flush(player: Player)
 		return
 	end
 	if p.rooms then
-		PlotService.refreshRooms(player)
+		Safe.call("[build] flush rooms", PlotService.refreshRooms, player)
 	end
-	HotelService.sync(player)
-	HotelService.recompute(player)
+	Safe.call("[build] flush sync", HotelService.sync, player)
+	Safe.call("[build] flush recompute", HotelService.recompute, player)
 	markState(player)
 	for _, what in p.whats do
 		for _, h in changedHandlers do
@@ -111,8 +115,16 @@ local function flush(player: Player)
 		end
 	end
 	for _, id in p.pieces do
-		HotelService.pieceChanged(player, id)
+		Safe.call("[build] flush piece", HotelService.pieceChanged, player, id)
 	end
+end
+
+--[[ The hotel drawn again after a change to the data (2026-10-26 review): a
+	throw while drawing skipped the `changed` after it (and a sale's refund),
+	so the data had changed and nothing else heard of it. Logged instead; the
+	next rebuild draws it. ]]
+local function rebuild(player: Player)
+	Safe.call(`[build] rebuild for {player.Name}`, PlotService.rebuild, player)
 end
 
 local function pendingOf(player: Player): Pending
@@ -250,7 +262,7 @@ function BuildService.tutorialTiles(player: Player)
 		end
 	end
 	windowsOut(player, data)
-	PlotService.rebuild(player)
+	rebuild(player)
 	changed(player, "Tile")
 end
 
@@ -391,7 +403,7 @@ local function place(player: Player, item: string, floor: number, x: number, z: 
 	end
 	local id = newId(data)
 	data.layout[id] = { item = item, floor = floor, x = x, z = z, r = r, paid = cost, finish = "" }
-	PlotService.rebuild(player)
+	rebuild(player)
 	changed(player, "Place")
 end
 
@@ -423,7 +435,7 @@ local function move(
 		return
 	end
 	rec.floor, rec.x, rec.z, rec.r = floor, x, z, r
-	PlotService.rebuild(player)
+	rebuild(player)
 	changed(player, "Move")
 end
 
@@ -445,7 +457,7 @@ local function sell(player: Player, idNumber: number)
 		return
 	end
 	data.layout[id] = nil
-	PlotService.rebuild(player)
+	rebuild(player)
 	PlayerData.refund(player, Economy.refund(rec.paid or 0))
 	changed(player, "Sell")
 end
@@ -468,7 +480,7 @@ local function buyFloor(player: Player)
 	data.floors = next
 	data.freeStairs += 1 -- its first stair is free to place (§5.4)
 	player:SetAttribute("Floors", next)
-	PlotService.rebuild(player)
+	rebuild(player)
 	Net.fire(
 		player,
 		"Toast",
@@ -1025,7 +1037,7 @@ local function finish(player: Player, target: string, finishId: string)
 	end
 	if target == "Hallway" then
 		data.finishes[target] = finishId
-		PlotService.rebuild(player)
+		rebuild(player)
 	elseif rec then
 		rec.finish = finishId
 		redrawRooms(player)
@@ -1258,7 +1270,7 @@ local function fill(player: Player, args: { string }): string
 		end
 	end
 	player:SetAttribute("Floors", data.floors)
-	PlotService.rebuild(player)
+	rebuild(player)
 	changed(player, "Floor")
 	return `{n} rooms on {data.floors} floors`
 end
@@ -1359,7 +1371,7 @@ function BuildService.Start()
 			end
 		end
 		local id, why = buildBox(data, args[5] or "StandardRoom", floor, x, z, w, d)
-		PlotService.rebuild(player)
+		rebuild(player)
 		changed(player, "Room")
 		return `room {id} {why or "ready"}`
 	end)

@@ -72,6 +72,7 @@ local Perks = require(ReplicatedStorage.Shared.Perks)
 local ResidentLevels = require(ReplicatedStorage.Shared.ResidentLevels)
 local Staff = require(ReplicatedStorage.Shared.Staff)
 local DevGrant = require(ServerScriptService.Server.DevGrant)
+local Safe = require(ServerScriptService.Server.Safe)
 
 local ResidentService = {}
 
@@ -802,7 +803,8 @@ local function staffTick()
 	local now = os.clock()
 	local step = math.min(now - lastTick, 5)
 	lastTick = now
-	for player, data in PlayerData.loaded() do
+	-- Each player on its own (2026-10-26), as the chain's tick is: one that throws no longer stops the rest.
+	Safe.each(PlayerData.loaded(), function(player: Player, data: PlayerData.Data)
 		local hotel = HotelService.get(player)
 		if hotel then
 			local timers = staffTimers[player] or {}
@@ -860,7 +862,7 @@ local function staffTick()
 				end
 			end
 		end
-	end
+	end, "[residents] staff tick for")
 end
 
 function ResidentService.Init()

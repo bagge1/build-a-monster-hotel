@@ -64,6 +64,7 @@ local PlotService = require(ServerScriptService.Server.PlotService)
 local HotelService = require(ServerScriptService.Server.HotelService)
 local GuestService = require(ServerScriptService.Server.GuestService)
 local DevGrant = require(ServerScriptService.Server.DevGrant)
+local Safe = require(ServerScriptService.Server.Safe)
 
 local B = Constants.Bus
 
@@ -703,34 +704,43 @@ function BusService.Start()
 	nextAt = os.clock() + B.FirstBusDelay
 	workspace:SetAttribute("NextBusAt", workspace:GetServerTimeNow() + B.FirstBusDelay)
 	workspace:SetAttribute("BusStreets", "1")
+	-- The streets with a bus follow the hotels played (a Travel moves one); a new one's bus is drawn now.
+	local function follow()
+		local streets = liveStreets()
+		local list = {}
+		for _, street in streets do
+			table.insert(list, tostring(street))
+			if not lines[street] then
+				local l = line(street)
+				local soon = os.time() + math.max(0, math.floor(nextAt - os.clock()))
+				local ok = Safe.call(`[bus] draw for street {street}`, function()
+					l.nextList, l.nextGuaranteed = draw(street, busIndex + 1, lastArrival, soon)
+				end)
+				if not ok then
+					lines[street] = nil -- drawn again on the next pass, not left a street with no list
+				end
+			end
+		end
+		-- A street left with no hotel played has no bus any more: its street guests go with the last one.
+		local live = {}
+		for _, street in streets do
+			live[street] = true
+		end
+		Safe.each(GuestService.all(), function(_, g)
+			if not g.owner and not live[g.street] then
+				GuestService.remove(g)
+			end
+		end, "[bus] removal of street guest")
+		local text = if #list > 0 then table.concat(list, ",") else "1"
+		if workspace:GetAttribute("BusStreets") ~= text then
+			workspace:SetAttribute("BusStreets", text)
+		end
+	end
 	task.spawn(function()
 		while true do
 			task.wait(0.5)
-			-- The streets with a bus follow the hotels played (a Travel moves one); a new one's bus is drawn now.
-			local streets = liveStreets()
-			local list = {}
-			for _, street in streets do
-				table.insert(list, tostring(street))
-				if not lines[street] then
-					local l = line(street)
-					local soon = os.time() + math.max(0, math.floor(nextAt - os.clock()))
-					l.nextList, l.nextGuaranteed = draw(street, busIndex + 1, lastArrival, soon)
-				end
-			end
-			-- A street left with no hotel played has no bus any more: its street guests go with the last one.
-			local live = {}
-			for _, street in streets do
-				live[street] = true
-			end
-			for _, g in GuestService.all() do
-				if not g.owner and not live[g.street] then
-					GuestService.remove(g)
-				end
-			end
-			local text = if #list > 0 then table.concat(list, ",") else "1"
-			if workspace:GetAttribute("BusStreets") ~= text then
-				workspace:SetAttribute("BusStreets", text)
-			end
+			-- Protected apart from the arrival (2026-10-26): a throw here ended the bus for the server's life.
+			Safe.call("[bus] streets", follow)
 			if os.clock() >= nextAt then
 				local ok, err = pcall(arrive)
 				if not ok then

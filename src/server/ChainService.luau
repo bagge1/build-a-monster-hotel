@@ -38,6 +38,7 @@ local GuestService = require(ServerScriptService.Server.GuestService)
 local ResidentService = require(ServerScriptService.Server.ResidentService)
 local StateService = require(ServerScriptService.Server.StateService)
 local DevGrant = require(ServerScriptService.Server.DevGrant)
+local Safe = require(ServerScriptService.Server.Safe)
 
 local ChainService = {}
 
@@ -94,6 +95,25 @@ local function putAway(player: Player, data: PlayerData.Data)
 		rate = data.rate,
 	}
 end
+
+-- Every field of the profile `putAway` and `takeOut` (with `resetHotel`) change, besides `chain`: a Travel that throws puts them back.
+local SWAPPED = {
+	"location",
+	"layout",
+	"decor",
+	"walls",
+	"rooms",
+	"tiles",
+	"tilesBought",
+	"windows",
+	"finishes",
+	"floors",
+	"freeStairs",
+	"reviews",
+	"samples",
+	"rate",
+	"nextId",
+}
 
 local function takeOut(data: PlayerData.Data, location: number)
 	local key = tostring(location)
@@ -185,25 +205,51 @@ local function travel(player: Player, location: number)
 	end
 	local opened = ChainService.opened(data)
 	local from = data.location
+	local cost = 0
 	if not opened[location] then
 		if Chain.nextToOpen(opened) ~= location then
 			Net.fire(player, "Refused", "Travel", "OpenInOrder")
 			return
 		end
-		local cost = Chain.openCost(location) or 0
+		cost = Chain.openCost(location) or 0
 		if data.cash < cost then
 			Net.fire(player, "Refused", "Travel", "NotEnoughCash")
 			return
 		end
-		data.cash -= cost
 	end
 	-- Settle the time since the last tick first: the hotels in the background earn it, the played one's rate
 	-- counts it (the sample is reset below, which would throw it away).
-	tick(player)
-	putAway(player, data)
-	takeOut(data, location)
+	Safe.call(`[chain] tick before travel for {player.Name}`, tick, player)
+	--[[ The swap, then the cost (2026-10-26 review: the cost was taken first
+		and a throw in the swap kept it). A swap that throws is undone field by
+		field, so the player is where they were and charged nothing. ]]
+	local before: { [string]: any } = {}
+	for _, field in SWAPPED do
+		before[field] = (data :: any)[field]
+	end
+	local chainBefore = table.clone(data.chain)
+	local swapped = Safe.call(`[chain] travel for {player.Name}`, function()
+		putAway(player, data)
+		takeOut(data, location)
+	end)
+	if not swapped then
+		for _, field in SWAPPED do
+			(data :: any)[field] = before[field]
+		end
+		table.clear(data.chain)
+		for key, rec in chainBefore do
+			data.chain[key] = rec
+		end
+		Net.fire(player, "Refused", "Travel", "Unknown")
+		return
+	end
+	if cost > 0 then
+		data.cash -= cost
+		player:SetAttribute("Cash", data.cash)
+	end
 	sample(player)
-	ChainService.redraw(player)
+	-- The swap stands: a throw while drawing is logged, and the rest (the save, the handlers) still runs.
+	Safe.call(`[chain] redraw for {player.Name}`, ChainService.redraw, player)
 	if opened[location] then
 		Net.fire(player, "Toast", `Welcome back to your {loc.name}`, "Good")
 	else
