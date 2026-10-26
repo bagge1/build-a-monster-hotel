@@ -76,11 +76,19 @@ function Rating.categories(i: Inputs): Categories
 	end
 	local fun = math.min(100, i.amenities * R.FunPerAmenity + i.entertainers * R.FunPerEntertainer)
 	local style = math.min(100, i.decor * R.StylePerDecor + i.roomTypes * R.StylePerRoomType)
+	-- Residents' perks under the same gates as the staff (A.4: no Service before a
+	-- stay, no Cleanliness without rooms; 2026-10-26 review: they were added ungated).
 	local perks = i.perks or {}
+	if i.checkIns > 0 then
+		service += perks.Service or 0
+	end
+	if i.rooms > 0 then
+		cleanliness += perks.Cleanliness or 0
+	end
 	return {
 		Comfort = math.clamp(comfort, 0, 100),
-		Service = math.clamp(service + (perks.Service or 0), 0, 100),
-		Cleanliness = math.clamp(cleanliness + (perks.Cleanliness or 0), 0, 100),
+		Service = math.clamp(service, 0, 100),
+		Cleanliness = math.clamp(cleanliness, 0, 100),
 		Fun = math.clamp(fun + (perks.Fun or 0), 0, 100),
 		Style = style,
 	}

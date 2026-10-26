@@ -116,12 +116,20 @@ local function typeName(typeId: string): string
 	return if p then p.name else typeId
 end
 
--- Each room type's best bars in the played hotel (per bar, over every room of it).
-local function bestBars(data: PlayerData.Data): { [string]: Contracts.Bars }
+-- Each room type's best bars in the played hotel (per bar, over every room of it), and each room's own.
+local function bestBars(
+	data: PlayerData.Data
+): ({ [string]: Contracts.Bars }, { [string]: { Contracts.Bars } })
 	local out: { [string]: Contracts.Bars } = {}
+	local rooms: { [string]: { Contracts.Bars } } = {}
 	for id, rec in data.rooms do
 		local bars = HotelService.roomBars(data, id)
 		if bars then
+			rooms[rec.type] = rooms[rec.type] or {}
+			table.insert(
+				rooms[rec.type],
+				{ size = bars.size, furniture = bars.furniture, decor = bars.decor }
+			)
 			local b = out[rec.type]
 			if not b then
 				out[rec.type] = { size = bars.size, furniture = bars.furniture, decor = bars.decor }
@@ -132,7 +140,7 @@ local function bestBars(data: PlayerData.Data): { [string]: Contracts.Bars }
 			end
 		end
 	end
-	return out
+	return out, rooms
 end
 
 local function context(player: Player, data: PlayerData.Data): Contracts.Context
@@ -143,11 +151,13 @@ local function context(player: Player, data: PlayerData.Data): Contracts.Context
 			buildable[sp.room] = (Unlocks.buildable(sp.room, ctx))
 		end
 	end
+	local best, rooms = bestBars(data)
 	return {
 		location = data.location,
 		rating = rating(player),
 		buildable = buildable,
-		best = bestBars(data),
+		best = best,
+		rooms = rooms,
 	}
 end
 

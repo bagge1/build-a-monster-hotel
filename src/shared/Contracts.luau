@@ -81,6 +81,8 @@ export type Context = {
 	rating: number,
 	buildable: { [string]: boolean }, -- room types that can be built now (Unlocks)
 	best: { [string]: Bars }, -- per room type, each bar's best among the hotel's rooms of it; absent: none built
+	-- per room type, each room's own bars: what `prune` asks of a single room (absent: `best` stands in)
+	rooms: { [string]: { Bars } }?,
 }
 export type Refusal =
 	"Stars"
@@ -439,7 +441,19 @@ function Contracts.prune(L: Ledger, ctx: Context): number
 	local list = Contracts.offersAt(L, ctx.location)
 	local n = 0
 	for i = #list, 1, -1 do
-		if not Contracts.asksChange(list[i].needs, ctx.best[list[i].type]) then
+		local o = list[i]
+		-- Met by one room, all of it (A.11.1): two rooms each full on another bar
+		-- meet nothing (2026-10-26 review: the bars' best over all rooms dropped those).
+		local rooms = ctx.rooms and ctx.rooms[o.type]
+		local met = false
+		if rooms then
+			for _, bars in rooms do
+				met = met or Contracts.meets(o.needs, bars)
+			end
+		else
+			met = not Contracts.asksChange(o.needs, ctx.best[o.type])
+		end
+		if met then
 			table.remove(list, i)
 			n += 1
 		end

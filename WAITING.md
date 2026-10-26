@@ -1669,6 +1669,15 @@ Med Claudes skärmdump där det finns en. -->
    telefon ligger knappen bredvid Security: samma fråga som rebirthens
    bekräftelse i §2.62.
 
+65. **VIP-kontrakt: när är en rumstyp "färdig"?** (natten 2026-10-26,
+   granskning mot A.11.1). Ett erbjudande tas nu bort bara när **ett** rum
+   möter det (rättat i natt). Men frågan om typen kan få fler erbjudanden
+   (`canAsk`) tittar fortfarande på varje stapels bästa värde över alla
+   rum: tre rum som är fulla på var sin stapel (storlek, möbler, dekor) gör
+   att typen räknas som färdig, och den får inga fler kontrakt, fast inget
+   rum är helt. Förslag: räkna typen som färdig först när ett rum är fullt
+   på alla tre, och låt erbjudandet fråga efter det rummets nästa steg.
+
 ## §3 Creator Hub och publicering
 
 1. ~~**Slå på Studio Access to API Services**~~ (gjort 2026-10-19: på i

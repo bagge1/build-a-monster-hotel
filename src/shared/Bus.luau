@@ -58,13 +58,19 @@ function Bus.rollRarity(r: number, weights: { [string]: number }?): Constants.Ra
 		total += w(id)
 	end
 	local at = 0
+	local last = "Common"
 	for _, id in Constants.RarityOrder do
 		at += w(id) / total
+		if w(id) > 0 then
+			last = id
+		end
 		if r < at then
 			return id
 		end
 	end
-	return "Common"
+	-- The fractions can sum to just under 1: a draw in that sliver is the last
+	-- weighted rarity, as it would be with exact sums (2026-10-26 review).
+	return last
 end
 
 -- The species of `rarity` among `locations`, in roster order.

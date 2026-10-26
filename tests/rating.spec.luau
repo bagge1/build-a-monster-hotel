@@ -1,3 +1,4 @@
+local Constants = require(Shared.Constants)
 local Rating = require(Shared.Rating)
 
 local BAR = { size = 0, furniture = 0.5, decor = 0 }
@@ -201,6 +202,18 @@ describe("Rating", function()
 		expect.eq(c.Cleanliness, 0, "no Cleanliness without rooms")
 	end)
 
+	it("residents' perks earn nothing either before a stay or without rooms (A.4)", function()
+		local c = Rating.categories(inputs({
+			roomBars = {},
+			rooms = 0,
+			checkIns = 0,
+			perks = { Service = 5, Cleanliness = 5, Fun = 5 },
+		}))
+		expect.eq(c.Service, 0, "no Service from perks yet")
+		expect.eq(c.Cleanliness, 0, "no Cleanliness from perks without rooms")
+		expect.atLeast(c.Fun, 5, "Fun's perk is not gated")
+	end)
+
 	it("a hotel with nothing in it rates the lowest", function()
 		local empty = inputs({
 			roomBars = {},
@@ -237,12 +250,19 @@ describe("Rating", function()
 		expect.eq(Rating.towardStar(4, 4.5, nil, 2), 4, "one drawn before the hotel was kept")
 	end)
 
-	it("only the last reviews are kept", function()
-		local reviews = {}
-		for i = 1, 100 do
-			Rating.addReview(reviews, (i % 5) + 1)
+	it(
+		"only the last reviews are kept, exactly as many as kept, the oldest dropped first",
+		function()
+			local kept = Constants.Stay.ReviewsKept
+			local reviews = {}
+			for i = 1, 100 do
+				Rating.addReview(reviews, (i % 5) + 1)
+			end
+			expect.eq(#reviews, kept, "as many as kept")
+			for j = 1, kept do
+				local i = 100 - kept + j
+				expect.eq(reviews[j], (i % 5) + 1, `review {i} in place {j}`)
+			end
 		end
-		expect.atMost(#reviews, 30)
-		expect.eq(reviews[#reviews], (100 % 5) + 1, "newest last")
-	end)
+	)
 end)

@@ -59,55 +59,109 @@ describe("VIP contracts (A.11.1)", function()
 		expect.truthy(o == nil, "a draw below the stars")
 	end)
 
-	it("a better rating never draws rarer VIPs less, runs fewer at once or asks fewer bars", function()
-		local last = { 0, 0, 0 }
-		for tenth = 10, 50 do
-			local r = tenth / 10
-			local now = { Contracts.maxRarity(r), Contracts.activeCap(r), Contracts.barCount(r) }
-			for i = 1, 3 do
-				expect.truthy(now[i] >= last[i], `rule {i} at {r}`)
-			end
-			last = now
-		end
-		expect.truthy(Contracts.maxRarity(5) > Contracts.maxRarity(C.UnlockStars), "5★ draws rarer than the unlock")
-	end)
-
-	it("every offer is its location's, within the rating's rarity, of a buildable type, and asks for a change", function()
-		for n = 1, 400 do
-			local location = if n % 2 == 0 then 1 else 2
-			local rating = C.UnlockStars + rand() * (5 - C.UnlockStars)
-			local best = randomBest(location)
-			local c = ctx(rating, location, best)
-			local o = Contracts.draw(c, n, rand)
-			if o then
-				local sp = assert(Species.get(o.species))
-				expect.eq(sp.location, location, "location")
-				expect.eq(o.location, location, "offer's location")
-				expect.eq(o.type, sp.room, "its species' room")
-				expect.truthy(c.buildable[o.type], "buildable")
-				local rank = table.find(Constants.RarityOrder, sp.rarity) :: number
-				expect.atMost(rank, Contracts.maxRarity(rating), "rarity")
-				expect.truthy(Contracts.asksChange(o.needs, best[o.type]), `asks a change ({n})`)
-				if best[o.type] then
-					expect.truthy(not Contracts.meets(o.needs, best[o.type]), "the best room does not meet it")
+	it(
+		"a better rating never draws rarer VIPs less, runs fewer at once or asks fewer bars",
+		function()
+			local last = { 0, 0, 0 }
+			for tenth = 10, 50 do
+				local r = tenth / 10
+				local now =
+					{ Contracts.maxRarity(r), Contracts.activeCap(r), Contracts.barCount(r) }
+				for i = 1, 3 do
+					expect.truthy(now[i] >= last[i], `rule {i} at {r}`)
 				end
-				local bars = 0
-				for _, name in Contracts.BarNames do
-					local need = (o.needs :: any)[name]
-					if need then
-						bars += 1
-						expect.truthy(need > 0 and need <= 1, "a need is a share of a bar")
+				last = now
+			end
+			expect.truthy(
+				Contracts.maxRarity(5) > Contracts.maxRarity(C.UnlockStars),
+				"5★ draws rarer than the unlock"
+			)
+		end
+	)
+
+	it(
+		"every offer is its location's, within the rating's rarity, of a buildable type, and asks for a change",
+		function()
+			for n = 1, 400 do
+				local location = if n % 2 == 0 then 1 else 2
+				local rating = C.UnlockStars + rand() * (5 - C.UnlockStars)
+				local best = randomBest(location)
+				local c = ctx(rating, location, best)
+				local o = Contracts.draw(c, n, rand)
+				if o then
+					local sp = assert(Species.get(o.species))
+					expect.eq(sp.location, location, "location")
+					expect.eq(o.location, location, "offer's location")
+					expect.eq(o.type, sp.room, "its species' room")
+					expect.truthy(c.buildable[o.type], "buildable")
+					local rank = table.find(Constants.RarityOrder, sp.rarity) :: number
+					expect.atMost(rank, Contracts.maxRarity(rating), "rarity")
+					expect.truthy(
+						Contracts.asksChange(o.needs, best[o.type]),
+						`asks a change ({n})`
+					)
+					if best[o.type] then
+						expect.truthy(
+							not Contracts.meets(o.needs, best[o.type]),
+							"the best room does not meet it"
+						)
+					end
+					local bars = 0
+					for _, name in Contracts.BarNames do
+						local need = (o.needs :: any)[name]
+						if need then
+							bars += 1
+							expect.truthy(need > 0 and need <= 1, "a need is a share of a bar")
+						end
+					end
+					expect.eq(bars, Contracts.barCount(rating), "bars asked")
+					expect.truthy(
+						Contracts.meets(o.needs, { size = 1, furniture = 1, decor = 1 }),
+						"full bars meet it"
+					)
+					if o.mutation then
+						local m = Mutations.ById[o.mutation]
+						expect.truthy(
+							m and m.group == "Look" and not m.event,
+							"a plain look, never a season's or month's"
+						)
 					end
 				end
-				expect.eq(bars, Contracts.barCount(rating), "bars asked")
-				expect.truthy(Contracts.meets(o.needs, { size = 1, furniture = 1, decor = 1 }), "full bars meet it")
-				if o.mutation then
-					local m = Mutations.ById[o.mutation]
-					expect.truthy(m and m.group == "Look" and not m.event, "a plain look, never a season's or month's")
-				end
 			end
 		end
-	end)
+	)
+
+	it(
+		"an offer is dropped only when one room meets all of it, not two rooms a bar each (A.11.1)",
+		function()
+			local L = Contracts.newLedger()
+			local c = ctx(4, 1)
+			Contracts.fill(L, c, rand)
+			local o = Contracts.offersAt(L, 1)[1]
+			o.needs = { furniture = 1, decor = 0.5 }
+			local split = ctx(4, 1, { [o.type] = { size = 0, furniture = 1, decor = 1 } })
+			split.rooms = {
+				[o.type] = {
+					{ size = 0, furniture = 1, decor = 0 },
+					{ size = 0, furniture = 0, decor = 1 },
+				},
+			}
+			local n = #Contracts.offersAt(L, 1)
+			Contracts.prune(L, split)
+			expect.truthy(
+				table.find(Contracts.offersAt(L, 1), o) ~= nil,
+				"kept: no single room meets it"
+			)
+			local one = ctx(4, 1, { [o.type] = { size = 0, furniture = 1, decor = 1 } })
+			one.rooms = { [o.type] = { { size = 0, furniture = 1, decor = 0.5 } } }
+			Contracts.prune(L, one)
+			expect.truthy(
+				table.find(Contracts.offersAt(L, 1), o) == nil,
+				"dropped: one room meets it"
+			)
+			expect.atMost(#Contracts.offersAt(L, 1), n - 1)
+		end
+	)
 
 	it("an offer a room has come to meet is dropped, and its slot drawn anew", function()
 		local L = Contracts.newLedger()
@@ -123,7 +177,10 @@ describe("VIP contracts (A.11.1)", function()
 		local after = ctx(3, 1, built)
 		expect.truthy(Contracts.prune(L, after) >= 1, "pruned")
 		for _, o in Contracts.offersAt(L, 1) do
-			expect.truthy(Contracts.asksChange(o.needs, built[o.type]), "every offer left asks a change")
+			expect.truthy(
+				Contracts.asksChange(o.needs, built[o.type]),
+				"every offer left asks a change"
+			)
 		end
 		Contracts.fill(L, after, rand)
 		for _, o in Contracts.offersAt(L, 1) do
@@ -177,32 +234,35 @@ describe("VIP contracts (A.11.1)", function()
 		expect.eq(Contracts.reward(-5, "Slime"), 0)
 	end)
 
-	it("the clock runs only at the contract's own hotel, only before Ready, and a miss loses the offer", function()
-		local L = Contracts.newLedger()
-		local c = ctx(3, 1)
-		Contracts.fill(L, c, rand)
-		local offers = Contracts.offersAt(L, 1)
-		expect.eq(#offers, C.Offers, "a full ledger")
-		local first = offers[1].id
-		local k = assert(Contracts.accept(L, 1, first, 3))
-		expect.eq(#Contracts.offersAt(L, 1), C.Offers - 1, "its slot is the contract's")
-		expect.eq(Contracts.fill(L, c, rand), 0, "no refill while it runs")
-		Contracts.tick(L, 2, C.Deadline * 2)
-		expect.eq(k.played, 0, "another hotel's play")
-		k.state = "Booked"
-		Contracts.tick(L, 1, C.Deadline * 2)
-		expect.eq(k.played, 0, "booked: the VIP is coming")
-		k.state = "Accepted"
-		local missed = Contracts.tick(L, 1, C.Deadline - 1)
-		expect.eq(#missed, 0, "not before the deadline")
-		missed = Contracts.tick(L, 1, 1)
-		expect.eq(#missed, 1, "missed at the deadline")
-		expect.truthy(Contracts.find(L, first) == nil, "gone")
-		expect.eq(Contracts.fill(L, c, rand), 1, "its slot drawn anew")
-		for _, o in Contracts.offersAt(L, 1) do
-			expect.truthy(o.id ~= first, "the missed offer is not re-listed")
+	it(
+		"the clock runs only at the contract's own hotel, only before Ready, and a miss loses the offer",
+		function()
+			local L = Contracts.newLedger()
+			local c = ctx(3, 1)
+			Contracts.fill(L, c, rand)
+			local offers = Contracts.offersAt(L, 1)
+			expect.eq(#offers, C.Offers, "a full ledger")
+			local first = offers[1].id
+			local k = assert(Contracts.accept(L, 1, first, 3))
+			expect.eq(#Contracts.offersAt(L, 1), C.Offers - 1, "its slot is the contract's")
+			expect.eq(Contracts.fill(L, c, rand), 0, "no refill while it runs")
+			Contracts.tick(L, 2, C.Deadline * 2)
+			expect.eq(k.played, 0, "another hotel's play")
+			k.state = "Booked"
+			Contracts.tick(L, 1, C.Deadline * 2)
+			expect.eq(k.played, 0, "booked: the VIP is coming")
+			k.state = "Accepted"
+			local missed = Contracts.tick(L, 1, C.Deadline - 1)
+			expect.eq(#missed, 0, "not before the deadline")
+			missed = Contracts.tick(L, 1, 1)
+			expect.eq(#missed, 1, "missed at the deadline")
+			expect.truthy(Contracts.find(L, first) == nil, "gone")
+			expect.eq(Contracts.fill(L, c, rand), 1, "its slot drawn anew")
+			for _, o in Contracts.offersAt(L, 1) do
+				expect.truthy(o.id ~= first, "the missed offer is not re-listed")
+			end
 		end
-	end)
+	)
 
 	it("never more than the daily cap completed, and none accepted that could pass it", function()
 		local L = Contracts.newLedger()
@@ -241,89 +301,108 @@ describe("VIP contracts (A.11.1)", function()
 		end
 	end)
 
-	it("a swap or a Book page's request costs one of the day's swaps, and a request is that species", function()
-		local L = Contracts.newLedger()
-		local c = ctx(5, 1)
-		Contracts.fill(L, c, rand)
-		local swaps = Contracts.swapsLeft(L, false)
-		expect.truthy(swaps >= 1, "a swap a day")
-		expect.eq(Contracts.swapsLeft(L, true), swaps + 1, "VIP Lobby's one more")
-		local before = #Contracts.offersAt(L, 1)
-		local why = Contracts.request(L, c, "VampireCount", rand, false)
-		expect.truthy(why == nil, `request: {why}`)
-		local found = false
-		for _, o in Contracts.offersAt(L, 1) do
-			found = found or o.species == "VampireCount"
-		end
-		expect.truthy(found, "the species requested")
-		expect.eq(#Contracts.offersAt(L, 1), before, "it takes an offer's place")
-		expect.eq(Contracts.swapsLeft(L, false), swaps - 1, "a swap spent")
-		while Contracts.swapsLeft(L, false) > 0 do
-			Contracts.swap(L, c, Contracts.offersAt(L, 1)[1].id, rand, false)
-		end
-		expect.eq(Contracts.swap(L, c, Contracts.offersAt(L, 1)[1].id, rand, false), "NoSwaps")
-		expect.eq(Contracts.request(L, c, "Slime", rand, false), "NoSwaps")
-		-- A species the rating does not reach is refused.
-		local L2 = Contracts.newLedger()
-		local low = ctx(C.UnlockStars, 1)
-		Contracts.fill(L2, low, rand)
-		expect.eq(Contracts.request(L2, low, "GrandBanshee", rand, false), "Rarity")
-		expect.truthy((Contracts.starsFor("GrandBanshee") or 99) > C.UnlockStars, "its stars named")
-	end)
-
-	it("a rejoin puts every contract back to Accepted, and only a species' first completion is first", function()
-		local L = Contracts.newLedger()
-		local c = ctx(5, 1)
-		Contracts.fill(L, c, rand)
-		local k = assert(Contracts.accept(L, 1, Contracts.offersAt(L, 1)[1].id, 5))
-		k.state = "Staying"
-		k.room = "7"
-		Contracts.loaded(L)
-		expect.eq(k.state, "Accepted")
-		expect.truthy(k.room == nil, "no room held")
-		local done, first = Contracts.complete(L, k.id)
-		expect.truthy(done ~= nil and first, "first")
-		L.done = 0
-		Contracts.fill(L, c, rand)
-		Contracts.request(L, c, k.species, rand, true)
-		for _, o in table.clone(Contracts.offersAt(L, 1)) do
-			if o.species == k.species then
-				local again = assert(Contracts.accept(L, 1, o.id, 5))
-				local _, second = Contracts.complete(L, again.id)
-				expect.truthy(not second, "not first again")
-				break
+	it(
+		"a swap or a Book page's request costs one of the day's swaps, and a request is that species",
+		function()
+			local L = Contracts.newLedger()
+			local c = ctx(5, 1)
+			Contracts.fill(L, c, rand)
+			local swaps = Contracts.swapsLeft(L, false)
+			expect.truthy(swaps >= 1, "a swap a day")
+			expect.eq(Contracts.swapsLeft(L, true), swaps + 1, "VIP Lobby's one more")
+			local before = #Contracts.offersAt(L, 1)
+			local why = Contracts.request(L, c, "VampireCount", rand, false)
+			expect.truthy(why == nil, `request: {why}`)
+			local found = false
+			for _, o in Contracts.offersAt(L, 1) do
+				found = found or o.species == "VampireCount"
 			end
+			expect.truthy(found, "the species requested")
+			expect.eq(#Contracts.offersAt(L, 1), before, "it takes an offer's place")
+			expect.eq(Contracts.swapsLeft(L, false), swaps - 1, "a swap spent")
+			while Contracts.swapsLeft(L, false) > 0 do
+				Contracts.swap(L, c, Contracts.offersAt(L, 1)[1].id, rand, false)
+			end
+			expect.eq(Contracts.swap(L, c, Contracts.offersAt(L, 1)[1].id, rand, false), "NoSwaps")
+			expect.eq(Contracts.request(L, c, "Slime", rand, false), "NoSwaps")
+			-- A species the rating does not reach is refused.
+			local L2 = Contracts.newLedger()
+			local low = ctx(C.UnlockStars, 1)
+			Contracts.fill(L2, low, rand)
+			expect.eq(Contracts.request(L2, low, "GrandBanshee", rand, false), "Rarity")
+			expect.truthy(
+				(Contracts.starsFor("GrandBanshee") or 99) > C.UnlockStars,
+				"its stars named"
+			)
 		end
-	end)
+	)
+
+	it(
+		"a rejoin puts every contract back to Accepted, and only a species' first completion is first",
+		function()
+			local L = Contracts.newLedger()
+			local c = ctx(5, 1)
+			Contracts.fill(L, c, rand)
+			local k = assert(Contracts.accept(L, 1, Contracts.offersAt(L, 1)[1].id, 5))
+			k.state = "Staying"
+			k.room = "7"
+			Contracts.loaded(L)
+			expect.eq(k.state, "Accepted")
+			expect.truthy(k.room == nil, "no room held")
+			local done, first = Contracts.complete(L, k.id)
+			expect.truthy(done ~= nil and first, "first")
+			L.done = 0
+			Contracts.fill(L, c, rand)
+			Contracts.request(L, c, k.species, rand, true)
+			local checked = false
+			for _, o in table.clone(Contracts.offersAt(L, 1)) do
+				if o.species == k.species then
+					local again = assert(Contracts.accept(L, 1, o.id, 5))
+					local _, second = Contracts.complete(L, again.id)
+					expect.truthy(not second, "not first again")
+					checked = true
+					break
+				end
+			end
+			-- 2026-10-26 review: with no such offer drawn, the test passed asserting nothing.
+			expect.truthy(checked, "the species was offered again, so a second completion was checked")
+		end
+	)
 
 	-- WAITING §2.48 (his yes 2026-10-26): a rebirth takes the chain's hotels, and their ledger with them.
-	it("a rebirth ends the contracts and offers of the hotels it takes, without a miss or a place in the cap", function()
-		local L = Contracts.newLedger()
-		Contracts.fill(L, ctx(5, 1), rand)
-		Contracts.fill(L, ctx(5, 2), rand)
-		local here = assert(Contracts.accept(L, 1, Contracts.offersAt(L, 1)[1].id, 5))
-		local there = assert(Contracts.accept(L, 2, Contracts.offersAt(L, 2)[1].id, 5))
-		L.done = C.DailyCap - #L.active
-		expect.truthy(not (Contracts.canAccept(L, 5)), "the running ones hold places in the day's cap")
-		local done, swaps = L.done, L.swaps
-		-- Only the hotels not kept end.
-		local ended = Contracts.endHotels(L, { [2] = true })
-		expect.eq(#ended, 1)
-		expect.eq(ended[1].id, here.id, "the lost hotel's contract ended")
-		expect.truthy(Contracts.find(L, there.id) ~= nil, "a kept hotel's contract runs on")
-		expect.eq(#Contracts.offersAt(L, 1), 0, "the lost hotel's offers are gone")
-		expect.truthy(#Contracts.offersAt(L, 2) > 0, "a kept hotel's offers stay")
-		-- A rebirth keeps none.
-		Contracts.endHotels(L, {})
-		expect.eq(#L.active, 0, "no contract waits for a hotel that is gone")
-		for k, list in L.offers do
-			expect.eq(#list, 0, `no offer left at {k}`)
+	it(
+		"a rebirth ends the contracts and offers of the hotels it takes, without a miss or a place in the cap",
+		function()
+			local L = Contracts.newLedger()
+			Contracts.fill(L, ctx(5, 1), rand)
+			Contracts.fill(L, ctx(5, 2), rand)
+			local here = assert(Contracts.accept(L, 1, Contracts.offersAt(L, 1)[1].id, 5))
+			local there = assert(Contracts.accept(L, 2, Contracts.offersAt(L, 2)[1].id, 5))
+			L.done = C.DailyCap - #L.active
+			expect.truthy(
+				not (Contracts.canAccept(L, 5)),
+				"the running ones hold places in the day's cap"
+			)
+			local done, swaps = L.done, L.swaps
+			-- Only the hotels not kept end.
+			local ended = Contracts.endHotels(L, { [2] = true })
+			expect.eq(#ended, 1)
+			expect.eq(ended[1].id, here.id, "the lost hotel's contract ended")
+			expect.truthy(Contracts.find(L, there.id) ~= nil, "a kept hotel's contract runs on")
+			expect.eq(#Contracts.offersAt(L, 1), 0, "the lost hotel's offers are gone")
+			expect.truthy(#Contracts.offersAt(L, 2) > 0, "a kept hotel's offers stay")
+			-- A rebirth keeps none.
+			Contracts.endHotels(L, {})
+			expect.eq(#L.active, 0, "no contract waits for a hotel that is gone")
+			for k, list in L.offers do
+				expect.eq(#list, 0, `no offer left at {k}`)
+			end
+			expect.eq(L.done, done, "nothing counted as done")
+			expect.eq(L.swaps, swaps, "the swaps are kept")
+			expect.truthy(not L.first[here.species], "no souvenir's first")
+			expect.truthy((Contracts.canAccept(L, 5)), "their places in the cap are given back")
+			-- Ended, not missed: no clock runs them out afterwards.
+			expect.eq(#Contracts.tick(L, 1, C.Deadline * 2), 0, "nothing is missed")
 		end
-		expect.eq(L.done, done, "nothing counted as done")
-		expect.eq(L.swaps, swaps, "the swaps are kept")
-		expect.truthy(not L.first[here.species], "no souvenir's first")
-		expect.truthy((Contracts.canAccept(L, 5)), "their places in the cap are given back")
-		-- Ended, not missed: no clock runs them out afterwards.
-		expect.eq(#Contracts.tick(L, 1, C.Deadline * 2), 0, "nothing is missed")
-	end)
+	)
 end)
