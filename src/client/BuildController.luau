@@ -1471,6 +1471,10 @@ end
 
 local function setActive(on: boolean)
 	active = on
+	if on then
+		-- A HUD panel left open would lie over the hotel and take every tap (2026-10-26 night).
+		Ui.closePanels()
+	end
 	strip.Visible = on
 	tools.Visible = on
 	fitTools()
