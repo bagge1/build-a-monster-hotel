@@ -42,6 +42,7 @@ local sentAt = os.clock()
 local leftLabel: TextLabel? = nil -- the trip's time left in the panel, redrawn each second
 local shownFor: number? = nil -- the trip (its start) whose Collect pop-up was shown
 local timer: TextLabel? = nil -- ExpeditionTimer on the HUD's Residents button
+local drewTrip: boolean? = nil -- whether the last draw was the trip view; a switch scrolls back to the top
 
 local function clear(f: Instance)
 	for _, c in f:GetChildren() do
@@ -438,7 +439,14 @@ draw = function()
 		Ui.Colour.Muted
 	)
 	head.LayoutOrder = 1
-	if ex.trip then
+	local onTrip = ex.trip ~= nil
+	if onTrip ~= drewTrip then
+		-- the planner is scrolled down to Send; the trip view is short and
+		-- would otherwise open part-way down, its first line cut off
+		(body :: any).CanvasPosition = Vector2.zero
+		drewTrip = onTrip
+	end
+	if onTrip then
 		drawTrip(ex)
 	else
 		drawPlanner(ex)
