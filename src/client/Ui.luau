@@ -208,6 +208,26 @@ function Ui.scroll(
 	return s
 end
 
+--[[ The HUD's panels (a window named `<X>Panel`, UI.md "One panel at a time"): opening one
+	closes the others, which all stand at the screen's centre (2026-10-26 night: eight
+	opened one on another by the HUD's buttons). Pop-ups and build mode's windows are
+	named otherwise and stand over a panel. ]]
+local panels: { Frame } = {}
+
+local function trackPanel(w: Frame)
+	table.insert(panels, w)
+	w:GetPropertyChangedSignal("Visible"):Connect(function()
+		if not w.Visible then
+			return
+		end
+		for _, other in panels do
+			if other ~= w and other.Visible then
+				other.Visible = false
+			end
+		end
+	end)
+end
+
 -- A window with a title and a cross in its top-right corner (UI.md, "Pop-ups close with a cross").
 function Ui.window(
 	gui: ScreenGui,
@@ -255,6 +275,9 @@ function Ui.window(
 	sizeConstraint.MaxSize = Vector2.new(900, 640)
 	sizeConstraint.Parent = w
 	w.Visible = false
+	if string.sub(name, -5) == "Panel" then
+		trackPanel(w)
+	end
 	return w, body
 end
 

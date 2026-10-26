@@ -33,6 +33,14 @@ Every menu or dialog over a window carries a cross in its top-right corner as
 well as closing on a click beside it (his ruling in Sector Omega,
 2026-10-04; confirm it carries over).
 
+### One panel at a time
+
+A HUD window is named `<X>Panel` (`ResidentsPanel`, `StorePanel`, ...) and
+stands at the screen's centre; opening one closes any other `<X>Panel`
+(`Ui.window`; found 2026-10-26 night, eight open one on another). Pop-ups
+(`FoundPopup`, `VipDone`, `ShowcaseMilestone`) and build mode's windows are
+named otherwise and may stand over a panel.
+
 ### Gamepad
 
 GDD §11: gamepad navigation for everything, the Input Action System for all
