@@ -61,6 +61,12 @@ local slimeSent: { [Player]: number } = {} -- when this session last sent the tu
 local nextPressed: { [Player]: boolean } = {}
 local vampireOnBus: { [Player]: boolean } = {} -- the tutorial's Vampire Count is on a bus this session
 local vampireTold: { [Player]: boolean } = {} -- the street has heard of this player's Vampire this session
+-- This server's BusIndex at the goal card, when it was shown in this session: every server
+-- counts its buses from 0, so the index means nothing on another (2026-10-26 review).
+local goalBusHere: { [Player]: number } = {}
+-- The step's counts at its start: a Common that chose the hotel during Furnish closed the
+-- Bus step the moment it began (2026-10-26 review: `busGuests` is a lifetime count).
+local stepBase: { [Player]: { pitches: number, busGuests: number } } = {}
 
 local function rooms(data: PlayerData.Data): number
 	local n = 0
@@ -115,6 +121,20 @@ local function slimeHere(player: Player): boolean
 	return false
 end
 
+-- Whether this player's tutorial Slime stands in the desk's line now, waiting to be checked in.
+local function slimeAtDesk(player: Player): boolean
+	for _, g in GuestService.of(player) do
+		if g.tutorialFriend and g.state == "Queued" then
+			return true
+		end
+	end
+	return false
+end
+
+local function setBase(player: Player, data: PlayerData.Data)
+	stepBase[player] = { pitches = stat(data, "pitches"), busGuests = stat(data, "busGuests") }
+end
+
 local function satisfied(player: Player, data: PlayerData.Data, s: string, since: number): boolean
 	if s == "CheckIn" then
 		return stat(data, "checkIns") >= 1
@@ -126,13 +146,17 @@ local function satisfied(player: Player, data: PlayerData.Data, s: string, since
 	elseif s == "Furnish" then
 		return readyRooms(player, data) >= 2
 	elseif s == "Bus" then
-		return stat(data, "pitches") >= 1
-			or stat(data, "busGuests") >= 1
+		local base = stepBase[player] or { pitches = 0, busGuests = 0 }
+		return stat(data, "pitches") > base.pitches
+			or stat(data, "busGuests") > base.busGuests
 			or os.clock() - since > 150
 	elseif s == "MoveIn" then
 		return next(data.residents) ~= nil
 	elseif s == "Goal" then
-		return os.clock() - since > 8
+		-- Closed by the client once the card has been on screen, uncovered, for
+		-- `Tutorial.GoalCardTime`, or by its Got it! (2026-10-26 review: 8 s of wall
+		-- clock ran out under build mode or the Book, the card never seen).
+		return nextPressed[player] == true
 	elseif s == "Clean" then
 		return stat(data, "cleaned") >= 1
 	elseif s == "Staff" then
@@ -153,12 +177,15 @@ local function setStep(player: Player, data: PlayerData.Data, s: string)
 	player:SetAttribute("Tutorial", s)
 	stepStarted[player] = os.clock()
 	nextPressed[player] = nil
+	setBase(player, data)
 	if s == "Goal" then
 		BuildService.tutorialUnlock(player, "CoffinSuite")
 		BuildService.tutorialTiles(player)
 		data.stats.voucher_CoffinSuite = 1
 		data.stats.tutorialGoal = 1
-		data.stats.tutorialGoalBus = workspace:GetAttribute("BusIndex") :: number? or 0
+		-- The goal's time, the same on every server, for "in 3 buses" after a rejoin (Bus.busesSince).
+		data.stats.tutorialGoalAt = os.time()
+		goalBusHere[player] = workspace:GetAttribute("BusIndex") :: number? or 0
 	elseif s == "MoveIn" then
 		Net.fire(player, "Moment", "OpenBook", {})
 	end
@@ -166,60 +193,81 @@ local function setStep(player: Player, data: PlayerData.Data, s: string)
 	StateService.mark(player)
 end
 
+--[[ The scheduled Vampire Count: on the third bus after the goal card ("A
+	Vampire Count arrives in 3 buses", §11), booked to this hotel once a
+	Coffin Suite stands vacant for it, whatever step the player is on by then
+	(2026-10-26 review: booked only at Done, a player who never gave a resident
+	a job never got the Vampire the card promised). Every guest comes by bus
+	(§4.3). `tutorialVampire` is 1 once it has reached the hotel (walking to its
+	desk); one that missed at step-off (its room gone, no way to it) went home
+	and is offered again on a later bus (Bus.tutorialVampire). Being on a bus
+	lives only in this session, so a player who left before it came is owed it
+	on coming back. ]]
+local function bookVampire(player: Player, data: PlayerData.Data)
+	if stat(data, "tutorialGoal") ~= 1 or stat(data, "tutorialVampire") ~= 0 then
+		return
+	end
+	local here = goalBusHere[player]
+	local busesSince = Bus.busesSince(
+		stat(data, "tutorialGoalAt"),
+		os.time(),
+		Constants.Bus.Interval,
+		if here then (workspace:GetAttribute("BusIndex") :: number? or 0) - here else nil
+	)
+	if
+		Bus.tutorialVampire({
+			goal = true,
+			arrived = false,
+			onBus = vampireOnBus[player] == true,
+			busesSince = busesSince,
+			vacant = HotelService.vacantFor(player, "VampireCount") ~= nil,
+		})
+	then
+		vampireOnBus[player] = true
+		BusService.addToNext("VampireCount", nil, {
+			booked = player,
+			happyFloor = Constants.Stay.Happy,
+			onBooked = function(reached)
+				vampireOnBus[player] = nil
+				local now = PlayerData.get(player)
+				if reached and now then
+					now.stats.tutorialVampire = 1
+				elseif player.Parent then
+					-- No suite it could get to from the desk (one ready from the street only,
+					-- or gone): say so, or it comes back every bus with no reason given.
+					Net.fire(
+						player,
+						"Toast",
+						"The Vampire Count couldn't get to a Coffin Suite from your front desk: it will try a later bus",
+						"Bad"
+					)
+				end
+			end,
+		})
+		-- Told to the street once (2026-10-26 review: a suite ready from the street but
+		-- not from the desk booked it again every bus, announced to everyone each time).
+		if not vampireTold[player] then
+			vampireTold[player] = true
+			Net.fireAll(
+				"Announce",
+				`A Legendary Vampire Count is on the next bus, booked at {player.DisplayName}'s hotel!`,
+				"Rare"
+			)
+		end
+	end
+end
+
 local function tick(player: Player, data: PlayerData.Data)
 	local s = step(data)
+	bookVampire(player, data)
+	-- A tutorial Slime in the desk's line (one sent again after a rejoin or a Hunter's net)
+	-- waits there for good, with no patience (GuestService): Gloom points at the desk while it
+	-- does (2026-10-26 review: MoveIn said "nearly ready" and pointed at the Book).
+	local atDesk = if s ~= "Done" and slimeAtDesk(player) then true else nil
+	if player:GetAttribute("TutorialSlimeAtDesk") ~= atDesk then
+		player:SetAttribute("TutorialSlimeAtDesk", atDesk)
+	end
 	if s == "Done" then
-		-- The scheduled Vampire Count: on the third bus after the goal card ("A
-		-- Vampire Count arrives in 3 buses", §11), booked to this hotel once a
-		-- Coffin Suite stands vacant for it. Every guest comes by bus (§4.3).
-		-- `tutorialVampire` is 1 once it has reached the hotel (walking to its
-		-- desk); one that missed at step-off (its room gone, no way to it) went
-		-- home and is offered again on a later bus (Bus.tutorialVampire). Being
-		-- on a bus lives only in this session, so a player who left before it
-		-- came is owed it on coming back.
-		local busesSince = (workspace:GetAttribute("BusIndex") :: number? or 0)
-			- stat(data, "tutorialGoalBus")
-		if
-			Bus.tutorialVampire({
-				goal = stat(data, "tutorialGoal") == 1,
-				arrived = stat(data, "tutorialVampire") ~= 0,
-				onBus = vampireOnBus[player] == true,
-				busesSince = busesSince,
-				vacant = HotelService.vacantFor(player, "VampireCount") ~= nil,
-			})
-		then
-			vampireOnBus[player] = true
-			BusService.addToNext("VampireCount", nil, {
-				booked = player,
-				happyFloor = Constants.Stay.Happy,
-				onBooked = function(reached)
-					vampireOnBus[player] = nil
-					local now = PlayerData.get(player)
-					if reached and now then
-						now.stats.tutorialVampire = 1
-					elseif player.Parent then
-						-- No suite it could get to from the desk (one ready from the street only,
-						-- or gone): say so, or it comes back every bus with no reason given.
-						Net.fire(
-							player,
-							"Toast",
-							"The Vampire Count couldn't get to a Coffin Suite from your front desk: it will try a later bus",
-							"Bad"
-						)
-					end
-				end,
-			})
-			-- Told to the street once (2026-10-26 review: a suite ready from the street but
-			-- not from the desk booked it again every bus, announced to everyone each time).
-			if not vampireTold[player] then
-				vampireTold[player] = true
-				Net.fireAll(
-					"Announce",
-					`A Legendary Vampire Count is on the next bus, booked at {player.DisplayName}'s hotel!`,
-					"Rare"
-				)
-			end
-		end
 		return
 	end
 	-- The tutorial Slime: the one guest that walks in instead of riding the bus.
@@ -295,14 +343,21 @@ function TutorialService.Start()
 			data.tutorial = "CheckIn"
 		end
 		stepStarted[player] = os.clock()
+		setBase(player, data)
 		player:SetAttribute("Tutorial", step(data))
+		-- The goal card's early Coffin Suite lives in BuildService's memory: given again on
+		-- every join, or a player who left before building the suite could not type one
+		-- on coming back and the Vampire never came (2026-10-26 review).
+		if stat(data, "tutorialGoal") == 1 then
+			BuildService.tutorialUnlock(player, "CoffinSuite")
+		end
 	end)
 	DevGrant.register("tutorial", function(player, args)
 		local data = PlayerData.get(player)
 		if data and args[1] then
 			setStep(player, data, args[1])
 		end
-		return `tutorial {data and data.tutorial} goalBus {data and data.stats.tutorialGoalBus}`
+		return `tutorial {data and data.tutorial} goalAt {data and data.stats.tutorialGoalAt} goalBusHere {goalBusHere[player]}`
 	end)
 	PlayerData.onDeparted(function(player)
 		stepStarted[player] = nil
@@ -310,6 +365,8 @@ function TutorialService.Start()
 		nextPressed[player] = nil
 		vampireOnBus[player] = nil
 		vampireTold[player] = nil
+		goalBusHere[player] = nil
+		stepBase[player] = nil
 	end)
 	task.spawn(function()
 		while true do

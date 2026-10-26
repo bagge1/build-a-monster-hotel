@@ -195,6 +195,17 @@ describe("Bus", function()
 		end
 	)
 
+	-- §11 "in 3 buses": the same on any server, not this server's bus index (2026-10-26).
+	it("the buses since the goal card count by the clock on another server", function()
+		expect.eq(Bus.busesSince(1000, 1000, 180, nil), 0, "the goal card's own moment")
+		expect.eq(Bus.busesSince(1000, 1000 + 359, 180, nil), 1, "short of two intervals")
+		expect.eq(Bus.busesSince(1000, 1000 + 360, 180, nil), 2, "two intervals: the next rides")
+		expect.eq(Bus.busesSince(1000, 900, 180, nil), 0, "a clock behind never counts back")
+		expect.eq(Bus.busesSince(0, 1000000, 180, nil) >= 2, true, "no goal time: long owed")
+		expect.eq(Bus.busesSince(1000, 1000 + 100, 180, 2), 2, "this server's buses, called early")
+		expect.eq(Bus.busesSince(1000, 1000 + 400, 180, 1), 2, "never fewer than by the clock")
+	end)
+
 	it("weights are drawn from the whole of [0, 1)", function()
 		expect.eq(Bus.rollRarity(0), "Common")
 		expect.truthy(Bus.rollRarity(0.99999) ~= "Mythic", "Mythic is scheduled only")

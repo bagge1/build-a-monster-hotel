@@ -15,6 +15,7 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 
+local Constants = require(ReplicatedStorage.Shared.Constants)
 local HotelPoints = require(ReplicatedStorage.Shared.HotelPoints)
 local Net = require(ReplicatedStorage.Shared.Net)
 local BuildController = require(script.Parent.BuildController)
@@ -27,7 +28,16 @@ local TutorialController = {}
 local me = Players.LocalPlayer
 
 -- `pad`: the text in a gamepad's words, where `text` names a tap (2026-10-26).
-type Step = { text: string, pad: string?, ui: string?, world: string? }
+-- `build`, `buildPad`: the short line the build strip shows for it while building, where
+-- Gloom's bubble is hidden (BuildController.setTutorialHint).
+type Step = {
+	text: string,
+	pad: string?,
+	ui: string?,
+	world: string?,
+	build: string?,
+	buildPad: string?,
+}
 local STEPS: { [string]: Step } = {
 	CheckIn = {
 		text = "Welcome, new manager! I'm Gloom. Your first room is ready and a Slime is on its way: check it in at the front desk.",
@@ -41,10 +51,13 @@ local STEPS: { [string]: Step } = {
 		text = "Build a second room! In Build: buy gold tiles beside the hotel, draw Walls round them, put in a Door, then tap inside and choose Standard Room.",
 		pad = "Build a second room! In Build: buy gold tiles beside the hotel, draw Walls round them, put in a Door, then press A with the cursor inside and choose Standard Room.",
 		ui = "Hud.Left.BuildButton",
+		build = "Gloom: buy gold tiles, draw Walls round them, add a Door, then tap inside: Standard Room",
+		buildPad = "Gloom: buy gold tiles, draw Walls round them, add a Door, then A inside: Standard Room",
 	},
 	Furnish = {
 		text = "Now put a Bed in it (Build, Furniture). A room is ready once its key furniture stands in it.",
 		ui = "Hud.Left.BuildButton",
+		build = "Gloom: put a Bed in your new room (Furniture)",
 	},
 	Bus = {
 		text = "The Night Bus brings guests for every hotel on the street. Walk up to one and Pitch it!",
@@ -55,8 +68,13 @@ local STEPS: { [string]: Step } = {
 		ui = "Hud.Left.BookButton",
 	},
 	Goal = {
-		text = "Big news: a Vampire Count arrives in 3 buses! Build a Coffin Suite on your new tiles: walls, a door, then a Coffin. The tiles and the Coffin are on me.",
+		-- Placing the Coffin does not type the room (BuildService `makeRoom`): the type is chosen
+		-- inside the walls, as for the second room (2026-10-26 review).
+		text = "Big news: a Vampire Count arrives in 3 buses! On your new tiles: Walls, a Door, then tap inside, choose Coffin Suite and put in a Coffin. Tiles and Coffin are on me.",
+		pad = "Big news: a Vampire Count arrives in 3 buses! On your new tiles: Walls, a Door, then A inside, choose Coffin Suite and put in a Coffin. Tiles and Coffin are on me.",
 		ui = "Hud.Left.BuildButton",
+		build = "Gloom: on the new tiles, Walls, a Door, tap inside: Coffin Suite, then a Coffin (Furniture)",
+		buildPad = "Gloom: on the new tiles, Walls, a Door, A inside: Coffin Suite, then a Coffin (Furniture)",
 	},
 	Clean = {
 		text = "Rooms need cleaning after a stay. Hold Clean at a dirty room's door.",
@@ -70,6 +88,13 @@ local STEPS: { [string]: Step } = {
 		text = "Reach 4★, earn $1M and befriend a Vampire Count, and Frostfang Lodge awaits. Your residents earn while you're away, up to 2 hours!",
 		ui = "Hud.Right.ProgressionButton",
 	},
+}
+
+-- A tutorial Slime waiting in the desk's line after CheckIn (one sent again after a rejoin
+-- or a Hunter's net, `TutorialSlimeAtDesk`): it waits for good, so Gloom says where it is.
+local AT_DESK: Step = {
+	text = "Your Slime is waiting at the front desk: check it in!",
+	world = "Desk",
 }
 
 local bubble: Frame
@@ -94,6 +119,35 @@ local function shown(g: GuiObject): boolean
 			return false
 		end
 		node = node.Parent
+	end
+	return true
+end
+
+-- Whether Gloom's bubble is on screen with nothing over it: its gui on (build mode turns it
+-- off) and no window of a gui drawn above it (the Book's Panels, 6) overlapping it. A frame
+-- with no background (the toasts' column) hides nothing.
+local function uncovered(): boolean
+	local gui = bubble:FindFirstAncestorOfClass("ScreenGui")
+	if not gui or not gui.Enabled or not shown(bubble) then
+		return false
+	end
+	local p, size = bubble.AbsolutePosition, bubble.AbsoluteSize
+	for _, other in (gui.Parent :: Instance):GetChildren() do
+		if other:IsA("ScreenGui") and other.Enabled and other.DisplayOrder > gui.DisplayOrder then
+			for _, w in other:GetChildren() do
+				if w:IsA("GuiObject") and w.Visible and w.BackgroundTransparency < 1 then
+					local q, wSize = w.AbsolutePosition, w.AbsoluteSize
+					if
+						q.X < p.X + size.X
+						and p.X < q.X + wSize.X
+						and q.Y < p.Y + size.Y
+						and p.Y < q.Y + wSize.Y
+					then
+						return false
+					end
+				end
+			end
+		end
 	end
 	return true
 end
@@ -132,22 +186,43 @@ local function current(): (string?, Step?)
 	if step == "Start" or step == "Build" then
 		step = "CheckIn"
 	end
-	return step, step and STEPS[step] or nil
+	local s = step and STEPS[step] or nil
+	if s and step ~= "CheckIn" and me:GetAttribute("TutorialSlimeAtDesk") == true then
+		return step, AT_DESK
+	end
+	return step, s
 end
 
 local function words(s: Step): string
 	return if s.pad then Controls.hint(s.text, s.pad) else s.text
 end
 
+-- The goal card's time on screen and uncovered (Tutorial.GoalCardTime), and whether its Next was sent.
+local goalSeen = 0
+local goalSent = false
+local lastStep: string? = nil
+
 local function refresh()
 	local step, s = current()
+	if step ~= lastStep then
+		lastStep = step
+		goalSeen, goalSent = 0, false
+	end
 	bubble.Visible = s ~= nil
 	arrow.Visible = false
 	setWorldArrow(nil)
 	if s then
 		text.Text = words(s)
-		nextButton.Visible = step == "Preview"
+		-- The goal card has a Got it! too: it stays until seen (2026-10-26 review).
+		nextButton.Visible = step == "Preview" or step == "Goal"
 		setWorldArrow(s.world)
+	end
+	-- Build steps keep their line on the build strip, where the bubble is hidden.
+	local base = step and STEPS[step]
+	if base and base.build then
+		BuildController.setTutorialHint(base.build, base.buildPad)
+	else
+		BuildController.setTutorialHint(nil)
 	end
 	-- A button the gamepad had selected that went (the bubble, or Got it!): the selection goes too.
 	local sel = GuiService.SelectedObject
@@ -251,6 +326,7 @@ function TutorialController.Start()
 			text.Text = words(s)
 		end
 	end)
+	me:GetAttributeChangedSignal("TutorialSlimeAtDesk"):Connect(refresh)
 	-- ButtonY's round (Controls): from the HUD's menu on to Gloom's Got it! (or Skip), then
 	-- off (2026-10-26: no gamepad press reached them). Hidden in build mode, so never there.
 	Controls.onMenuNext(function(sel: GuiObject): boolean
@@ -268,9 +344,18 @@ function TutorialController.Start()
 		return b ~= nil
 	end)
 	-- The arrow follows its UI target and bobs.
-	RunService.Heartbeat:Connect(function()
-		local step = me:GetAttribute("Tutorial") :: string?
-		local s = step and STEPS[step]
+	RunService.Heartbeat:Connect(function(dt: number)
+		local step, s = current()
+		-- The goal card closes once it has been seen for its time: counted only while it is on
+		-- screen and nothing lies over it (2026-10-26 review: build mode hid it and the Book
+		-- covered it, and 8 s of wall clock closed it unseen).
+		if step == "Goal" and not goalSent and uncovered() then
+			goalSeen += dt
+			if goalSeen >= Constants.Tutorial.GoalCardTime then
+				goalSent = true
+				Net.send("Tutorial", "Next")
+			end
+		end
 		local target = s and s.ui and find(s.ui)
 		if target and shown(target) then
 			local p = target.AbsolutePosition
