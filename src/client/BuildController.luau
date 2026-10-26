@@ -2479,7 +2479,10 @@ function BuildController.Init()
 	end)
 	-- Its own row, shown with it: a fourth button in the row above stood past the
 	-- tools' edge, 10 px of it showing (2026-10-26 night; a phone's only way to place).
+	-- First of the rows: on a phone the tools scroll, and a Place below the fold
+	-- was out of sight while placing (measured on an iPhone 14, 2026-10-26).
 	local placeRow = row()
+	placeRow.LayoutOrder = 0
 	placeButton = tool(placeRow, "Place", "✔ Place", 114, place, Ui.Colour.Good)
 	placeButton.Visible = false
 	placeRow.Visible = false
