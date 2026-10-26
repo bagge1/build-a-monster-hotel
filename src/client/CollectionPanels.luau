@@ -41,9 +41,14 @@ local bookWindow: Frame
 local bookBody: Frame
 local bookLocation = 1
 
+-- Leaves the kept lists (`Ui.keptScroll`) standing: a redraw empties those itself.
 local function clear(f: Instance)
 	for _, c in f:GetChildren() do
-		if not c:IsA("UIListLayout") and not c:IsA("UIGridLayout") then
+		if
+			not c:IsA("UIListLayout")
+			and not c:IsA("UIGridLayout")
+			and not c:IsA("ScrollingFrame")
+		then
 			c:Destroy()
 		end
 	end
@@ -83,7 +88,7 @@ local function drawResidents()
 		Ui.Colour.Muted
 	)
 	head.LayoutOrder = 0
-	local list = Ui.scroll(residentsBody, "List", UDim2.new(1, 0, 1, -36))
+	local list = Ui.keptScroll(residentsBody, "List", UDim2.new(1, 0, 1, -36))
 	list.LayoutOrder = 1
 	Ui.list(list, Enum.FillDirection.Vertical, 8)
 	table.sort(c.residents, function(a, b)
@@ -242,6 +247,11 @@ local function drawBook()
 				loc.name,
 				UDim2.fromOffset(170, 44),
 				function()
+					-- Another location's pages start at the top; a redraw of the same keeps its place.
+					local pages = bookBody:FindFirstChild("Pages")
+					if loc.id ~= bookLocation and pages and pages:IsA("ScrollingFrame") then
+						pages.CanvasPosition = Vector2.zero
+					end
 					bookLocation = loc.id
 					drawBook()
 				end,
@@ -261,7 +271,7 @@ local function drawBook()
 		Ui.Colour.Muted
 	)
 	titles.LayoutOrder = 1
-	local grid = Ui.scroll(bookBody, "Pages", UDim2.new(1, 0, 1, -84))
+	local grid, fresh = Ui.keptScroll(bookBody, "Pages", UDim2.new(1, 0, 1, -84))
 	grid.LayoutOrder = 2
 	-- Room round the pages (his report, 2026-10-19: "cramped"): the grid is
 	-- inset so the pages' outlines are not cut off at its edges, and the
@@ -277,11 +287,16 @@ local function drawBook()
 	layout.SortOrder = Enum.SortOrder.LayoutOrder
 	layout.Parent = grid
 	local function columns()
+		local current = grid:FindFirstChildOfClass("UIGridLayout")
 		local n = math.clamp(math.floor((grid.AbsoluteSize.X - 18) / 200), 2, 4)
-		layout.CellSize = UDim2.new(1 / n, -12 * (n - 1) / n, 0, 142)
+		if current then
+			current.CellSize = UDim2.new(1 / n, -12 * (n - 1) / n, 0, 142)
+		end
 	end
 	columns()
-	grid:GetPropertyChangedSignal("AbsoluteSize"):Connect(columns)
+	if fresh then -- the same grid is refilled by every redraw: connected once
+		grid:GetPropertyChangedSignal("AbsoluteSize"):Connect(columns)
+	end
 	for i, sp in Species.ofLocation(bookLocation) do
 		local found = book.pages[sp.id] or {}
 		local page = Ui.frame(

@@ -32,10 +32,12 @@ local storeBody: Frame
 local dailyWindow: Frame
 local dailyBody: Frame
 local giftFor: string? = nil -- the pass key whose recipient is being picked
+local codeRow: Frame
 
+-- Leaves the kept list (`Ui.keptScroll`) and the code row standing: a redraw empties those itself.
 local function clear(f: Instance)
 	for _, c in f:GetChildren() do
-		if not c:IsA("UIListLayout") then
+		if not c:IsA("UIListLayout") and not c:IsA("ScrollingFrame") and c ~= codeRow then
 			c:Destroy()
 		end
 	end
@@ -129,7 +131,7 @@ local function drawStore()
 		end, Ui.Colour.Panel)
 		cancel.LayoutOrder = 100
 	end
-	local list = Ui.scroll(storeBody, "List", UDim2.new(1, 0, 1, -84 - picking))
+	local list = Ui.keptScroll(storeBody, "List", UDim2.new(1, 0, 1, -84 - picking))
 	list.LayoutOrder = 3
 	Ui.list(list, Enum.FillDirection.Vertical, 6)
 	for i, e in s.entries do
@@ -267,7 +269,13 @@ local function drawDaily()
 		if d.loginClaimed then Ui.Colour.Ink else Ui.Colour.Pumpkin
 	)
 	login.LayoutOrder = 10
-	local codeRow = Ui.frame(dailyBody, "Codes", UDim2.new(1, 0, 0, 46))
+end
+
+--[[ The code row, built once and left standing by every redraw (2026-10-26: rebuilt on each
+	state send, it lost what was being typed and its focus, and the next keys went to the game,
+	B opening build mode). ]]
+local function buildCodes()
+	codeRow = Ui.frame(dailyBody, "Codes", UDim2.new(1, 0, 0, 46))
 	codeRow.BackgroundTransparency = 1
 	codeRow.LayoutOrder = 11
 	local box = Instance.new("TextBox")
@@ -310,6 +318,13 @@ function LivePanels.Init()
 	dailyWindow, dailyBody =
 		Ui.window(gui, "DailyPanel", "Daily", UDim2.fromScale(0.6, 0.7), nil, true)
 	Ui.list(dailyBody, Enum.FillDirection.Vertical, 6)
+	buildCodes()
+	-- The recipient being picked is forgotten with the Store (2026-10-26: it came back on reopening).
+	storeWindow:GetPropertyChangedSignal("Visible"):Connect(function()
+		if not storeWindow.Visible then
+			giftFor = nil
+		end
+	end)
 end
 
 function LivePanels.Start()

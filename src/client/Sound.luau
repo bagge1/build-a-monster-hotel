@@ -55,18 +55,43 @@ function Sound.play(id: string, volume: number?)
 	end)
 end
 
-local function applyLowGraphics(low: boolean)
-	me:SetAttribute("LowGraphics", low)
-	Lighting.GlobalShadows = not low
+--[[ Low graphics darkens the lamps of the hotels this player is not playing, and turned off it
+	lights again only the ones it darkened (2026-10-26: run on every state send, it set every lamp
+	in every plot, lighting the Expedition board's dark lantern, HotelKit.lightBoard, and walked
+	every plot each send). The lamps among a plot's `Pieces` are Lod's, which reads `LowGraphics`. ]]
+local darkened: { [PointLight]: boolean } = setmetatable({}, { __mode = "k" }) :: any
+local appliedLow: boolean? = nil
+
+local function darken()
 	local mine = me:GetAttribute("Plot")
 	local plots = workspace:FindFirstChild("Plots")
 	for _, plot in (if plots then plots:GetChildren() else {}) do
-		local isMine = plot:GetAttribute("Index") == mine
-		for _, d in plot:GetDescendants() do
-			if d:IsA("PointLight") then
-				d.Enabled = isMine or not low
+		local pieces = plot:FindFirstChild("Pieces")
+		if plot:GetAttribute("Index") ~= mine then
+			for _, d in plot:GetDescendants() do
+				if
+					d:IsA("PointLight")
+					and d.Enabled
+					and not (pieces and d:IsDescendantOf(pieces))
+				then
+					d.Enabled = false
+					darkened[d] = true
+				end
 			end
 		end
+	end
+end
+
+local function applyLowGraphics(low: boolean)
+	appliedLow = low
+	me:SetAttribute("LowGraphics", low)
+	Lighting.GlobalShadows = not low
+	for light in darkened do
+		light.Enabled = true
+	end
+	table.clear(darkened)
+	if low then
+		darken()
 	end
 end
 
@@ -78,7 +103,9 @@ local function apply()
 	elseif not s.music and music.IsPlaying then
 		music:Stop()
 	end
-	applyLowGraphics(s.lowGraphics)
+	if s.lowGraphics ~= appliedLow then
+		applyLowGraphics(s.lowGraphics)
+	end
 end
 
 local function drawSettings()
@@ -166,8 +193,16 @@ function Sound.Start()
 			pending = true
 			task.delay(0.5, function()
 				pending = false
-				applyLowGraphics(true)
+				if appliedLow then
+					darken()
+				end
 			end)
+		end
+	end)
+	-- A Travel makes another plot this player's: its lamps lit again, the one left darkened.
+	me:GetAttributeChangedSignal("Plot"):Connect(function()
+		if appliedLow then
+			applyLowGraphics(true)
 		end
 	end)
 	apply()
