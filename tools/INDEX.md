@@ -372,3 +372,18 @@ under both feet, `stand_blocks`' standing figure clear of the body). Adds
 `gfurn()` (a piece on its Pieces.luau row), `lift_spot()`, `rod_x()`,
 `arch_band()`, the shapes `bench_a/b/c`, `treadmill_a/b/c`, `bag_a/b/c`.
 `-- grey` writes the silhouettes to `silhouettes/`; `-- nopreview`.
+
+## build_activity_dance.py
+
+The Dance Floor's pieces for Haunted Manor (GDD A.13): `Furniture_LightFloor`
+(2 x 2 `Rug`, 0.15 tall, 16 tiles each its own `Glow_Magenta_<n>` /
+`Glow_Cold_<n>` part, `Use_1..Use_4` `Dance` in the blockout's order),
+`Furniture_Speaker` and `Furniture_DiscoBall` (1 x 1, no spots); output
+`blender/rooms/haunted_manor_dance/`. Runs build_activity_bar.py's
+definitions (its `Dance` check unchanged). Adds the `Magenta` glow key as
+build_facades.py does, `dfurn()` (a piece on its Pieces.luau row, spots
+or none), `dance_spots()`, `rug_check` (to all four footprint edges,
+0..0.15, no hole, the tiles' tops at 0.15), `clip_box()`, `tile()`,
+`sector()`, `driver()`, `mirror_ball()` (one closed shell, chequered
+facets), the shapes `floor_a/b/c`, `speaker_a/b/c`, `ball_a/b/c`. `-- grey`
+writes the silhouettes to `silhouettes/`; `-- nopreview`.

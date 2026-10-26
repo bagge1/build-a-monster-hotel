@@ -1,0 +1,832 @@
+{
+ "set": "rooms/haunted_manor_dance",
+ "title": "Haunted Manor: the Dance Floor's light-up floor, speaker and disco ball (GDD A.13)",
+ "frame": "Roblox studs, piece frame: X right, Y up, door/front toward -Z, origin per MODELS.md; Blender holds them as (-x, z, y)",
+ "atlas": "textures/HotelAtlas.png (embedded in every FBX)",
+ "palette": {
+  "plum": [
+   90,
+   70,
+   110
+  ],
+  "plum_dark": [
+   60,
+   45,
+   78
+  ],
+  "plum_deep": [
+   40,
+   30,
+   55
+  ],
+  "violet": [
+   130,
+   90,
+   180
+  ],
+  "lilac": [
+   170,
+   135,
+   210
+  ],
+  "lavender": [
+   210,
+   190,
+   235
+  ],
+  "teal": [
+   40,
+   150,
+   150
+  ],
+  "teal_dark": [
+   25,
+   95,
+   105
+  ],
+  "teal_light": [
+   110,
+   205,
+   190
+  ],
+  "pumpkin": [
+   240,
+   130,
+   40
+  ],
+  "pumpkin_dark": [
+   185,
+   85,
+   30
+  ],
+  "amber": [
+   240,
+   175,
+   70
+  ],
+  "gold": [
+   220,
+   180,
+   90
+  ],
+  "moon": [
+   175,
+   200,
+   240
+  ],
+  "moon_dark": [
+   90,
+   115,
+   170
+  ],
+  "night": [
+   35,
+   40,
+   70
+  ],
+  "bone": [
+   235,
+   225,
+   200
+  ],
+  "cream": [
+   245,
+   238,
+   250
+  ],
+  "wood": [
+   125,
+   82,
+   55
+  ],
+  "wood_dark": [
+   80,
+   52,
+   38
+  ],
+  "wood_light": [
+   170,
+   120,
+   80
+  ],
+  "stone": [
+   130,
+   125,
+   140
+  ],
+  "stone_dark": [
+   85,
+   82,
+   95
+  ],
+  "moss": [
+   85,
+   120,
+   70
+  ],
+  "grass": [
+   90,
+   150,
+   80
+  ],
+  "leaf": [
+   125,
+   185,
+   90
+  ],
+  "crimson": [
+   140,
+   30,
+   55
+  ],
+  "crimson_dark": [
+   90,
+   20,
+   40
+  ],
+  "rose": [
+   200,
+   90,
+   120
+  ],
+  "black": [
+   30,
+   28,
+   36
+  ],
+  "iron": [
+   60,
+   62,
+   70
+  ],
+  "sand": [
+   220,
+   200,
+   140
+  ],
+  "meat": [
+   170,
+   60,
+   50
+  ],
+  "straw": [
+   205,
+   170,
+   90
+  ],
+  "white": [
+   240,
+   240,
+   245
+  ],
+  "slime": [
+   140,
+   210,
+   90
+  ],
+  "sky": [
+   90,
+   140,
+   220
+  ],
+  "dusty": [
+   150,
+   130,
+   110
+  ],
+  "jade": [
+   120,
+   200,
+   170
+  ],
+  "honey": [
+   240,
+   190,
+   80
+  ],
+  "brown": [
+   140,
+   100,
+   70
+  ],
+  "wine": [
+   120,
+   30,
+   50
+  ],
+  "ink": [
+   50,
+   45,
+   70
+  ],
+  "book_a": [
+   150,
+   60,
+   70
+  ],
+  "book_b": [
+   60,
+   110,
+   130
+  ],
+  "book_c": [
+   190,
+   150,
+   70
+  ],
+  "grey": [
+   110,
+   110,
+   120
+  ],
+  "flame": [
+   255,
+   205,
+   120
+  ],
+  "lamp": [
+   255,
+   185,
+   110
+  ],
+  "moonglow": [
+   205,
+   225,
+   255
+  ],
+  "brew": [
+   120,
+   255,
+   160
+  ],
+  "magenta": [
+   255,
+   60,
+   200
+  ],
+  "silver": [
+   185,
+   188,
+   198
+  ]
+ },
+ "pieces": {
+  "Furniture_LightFloor": {
+   "name": "Furniture_LightFloor",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     6.0,
+     0.2,
+     6.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      6.0,
+      0.2,
+      6.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      0.065,
+      0.0
+     ],
+     "size": [
+      6.0,
+      0.13,
+      6.0
+     ],
+     "triangles": 248,
+     "collide": false
+    },
+    "Glow_Magenta_1": {
+     "centre": [
+      -2.25,
+      0.115,
+      -2.25
+     ],
+     "size": [
+      1.4,
+      0.07,
+      1.4
+     ],
+     "triangles": 28,
+     "collide": false
+    },
+    "Glow_Cold_1": {
+     "centre": [
+      -2.25,
+      0.115,
+      -0.75
+     ],
+     "size": [
+      1.4,
+      0.07,
+      1.4
+     ],
+     "triangles": 28,
+     "collide": false
+    },
+    "Glow_Magenta_2": {
+     "centre": [
+      -2.25,
+      0.115,
+      0.75
+     ],
+     "size": [
+      1.4,
+      0.07,
+      1.4
+     ],
+     "triangles": 28,
+     "collide": false
+    },
+    "Glow_Cold_2": {
+     "centre": [
+      -2.25,
+      0.115,
+      2.25
+     ],
+     "size": [
+      1.4,
+      0.07,
+      1.4
+     ],
+     "triangles": 28,
+     "collide": false
+    },
+    "Glow_Cold_3": {
+     "centre": [
+      -0.75,
+      0.115,
+      -2.25
+     ],
+     "size": [
+      1.4,
+      0.07,
+      1.4
+     ],
+     "triangles": 28,
+     "collide": false
+    },
+    "Glow_Magenta_3": {
+     "centre": [
+      -0.75,
+      0.115,
+      -0.75
+     ],
+     "size": [
+      1.4,
+      0.07,
+      1.4
+     ],
+     "triangles": 28,
+     "collide": false
+    },
+    "Glow_Cold_4": {
+     "centre": [
+      -0.75,
+      0.115,
+      0.75
+     ],
+     "size": [
+      1.4,
+      0.07,
+      1.4
+     ],
+     "triangles": 28,
+     "collide": false
+    },
+    "Glow_Magenta_4": {
+     "centre": [
+      -0.75,
+      0.115,
+      2.25
+     ],
+     "size": [
+      1.4,
+      0.07,
+      1.4
+     ],
+     "triangles": 28,
+     "collide": false
+    },
+    "Glow_Magenta_5": {
+     "centre": [
+      0.75,
+      0.115,
+      -2.25
+     ],
+     "size": [
+      1.4,
+      0.07,
+      1.4
+     ],
+     "triangles": 28,
+     "collide": false
+    },
+    "Glow_Cold_5": {
+     "centre": [
+      0.75,
+      0.115,
+      -0.75
+     ],
+     "size": [
+      1.4,
+      0.07,
+      1.4
+     ],
+     "triangles": 28,
+     "collide": false
+    },
+    "Glow_Magenta_6": {
+     "centre": [
+      0.75,
+      0.115,
+      0.75
+     ],
+     "size": [
+      1.4,
+      0.07,
+      1.4
+     ],
+     "triangles": 28,
+     "collide": false
+    },
+    "Glow_Cold_6": {
+     "centre": [
+      0.75,
+      0.115,
+      2.25
+     ],
+     "size": [
+      1.4,
+      0.07,
+      1.4
+     ],
+     "triangles": 28,
+     "collide": false
+    },
+    "Glow_Cold_7": {
+     "centre": [
+      2.25,
+      0.115,
+      -2.25
+     ],
+     "size": [
+      1.4,
+      0.07,
+      1.4
+     ],
+     "triangles": 28,
+     "collide": false
+    },
+    "Glow_Magenta_7": {
+     "centre": [
+      2.25,
+      0.115,
+      -0.75
+     ],
+     "size": [
+      1.4,
+      0.07,
+      1.4
+     ],
+     "triangles": 28,
+     "collide": false
+    },
+    "Glow_Cold_8": {
+     "centre": [
+      2.25,
+      0.115,
+      0.75
+     ],
+     "size": [
+      1.4,
+      0.07,
+      1.4
+     ],
+     "triangles": 28,
+     "collide": false
+    },
+    "Glow_Magenta_8": {
+     "centre": [
+      2.25,
+      0.115,
+      2.25
+     ],
+     "size": [
+      1.4,
+      0.07,
+      1.4
+     ],
+     "triangles": 28,
+     "collide": false
+    }
+   },
+   "attachments": {
+    "Use_1": {
+     "pos": [
+      -1.5,
+      0.15,
+      -1.5
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    "Use_2": {
+     "pos": [
+      1.5,
+      0.15,
+      -1.5
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    "Use_3": {
+     "pos": [
+      -1.5,
+      0.15,
+      1.5
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    "Use_4": {
+     "pos": [
+      1.5,
+      0.15,
+      1.5
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    }
+   },
+   "triangles": 708,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a Haunted Manor light-up floor: the Victorian octagon-and-dot hall floor, 16 octagon tiles lit magenta and moon-blue in a chequer (each its own Glow part), gold dots between on iron grout, to the edges",
+   "decor": {
+    "fw": 2,
+    "fd": 2,
+    "layer": "Rug",
+    "footprint_studs": [
+     6.0,
+     6.0
+    ]
+   },
+   "furniture": {
+    "id": "LightFloor",
+    "pose": null,
+    "spots": {
+     "Use_1": "Dance",
+     "Use_2": "Dance",
+     "Use_3": "Dance",
+     "Use_4": "Dance"
+    },
+    "keyFor": [
+     "DanceFloor"
+    ],
+    "pieces_height": 0.15,
+    "model_top": 0.15,
+    "pieces_row": "Pieces.luau",
+    "rug": {
+     "edges": [
+      [
+       -3.0,
+       0.0,
+       -3.0
+      ],
+      [
+       3.0,
+       0.15,
+       3.0
+      ]
+     ],
+     "top_min": 0.13,
+     "top_max": 0.15,
+     "tiles": 16,
+     "tile_parts": [
+      "Glow_Cold_1",
+      "Glow_Cold_2",
+      "Glow_Cold_3",
+      "Glow_Cold_4",
+      "Glow_Cold_5",
+      "Glow_Cold_6",
+      "Glow_Cold_7",
+      "Glow_Cold_8",
+      "Glow_Magenta_1",
+      "Glow_Magenta_2",
+      "Glow_Magenta_3",
+      "Glow_Magenta_4",
+      "Glow_Magenta_5",
+      "Glow_Magenta_6",
+      "Glow_Magenta_7",
+      "Glow_Magenta_8"
+     ]
+    }
+   }
+  },
+  "Furniture_Speaker": {
+   "name": "Furniture_Speaker",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      2.59,
+      -0.005
+     ],
+     "size": [
+      2.16,
+      5.18,
+      1.97
+     ],
+     "triangles": 1036,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      2.59,
+      -0.005
+     ],
+     "size": [
+      2.16,
+      5.18,
+      1.97
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 1048,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a Haunted Manor speaker: a plum cabinet between dark-wood corner posts on a plinth, a dark-wood pointed-arch roof with a gold spire, a crimson cloth grille under a pointed arch with three black drivers in gold rims",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ]
+   },
+   "furniture": {
+    "id": "Speaker",
+    "pose": null,
+    "spots": {},
+    "keyFor": [],
+    "pieces_height": 5.0,
+    "model_top": 5.18,
+    "pieces_row": "Pieces.luau"
+   }
+  },
+  "Furniture_DiscoBall": {
+   "name": "Furniture_DiscoBall",
+   "kind": "Decor",
+   "footprint_cells": null,
+   "root": {
+    "centre": [
+     0.0,
+     0.1,
+     0.0
+    ],
+    "size": [
+     3.0,
+     0.2,
+     3.0
+    ]
+   },
+   "parts": {
+    "Root": {
+     "centre": [
+      0.0,
+      0.1,
+      0.0
+     ],
+     "size": [
+      3.0,
+      0.2,
+      3.0
+     ],
+     "triangles": 12,
+     "collide": false
+    },
+    "Body": {
+     "centre": [
+      0.0,
+      3.5,
+      0.0
+     ],
+     "size": [
+      2.2,
+      7.0,
+      2.0
+     ],
+     "triangles": 1222,
+     "collide": false
+    },
+    "LOD_Proxy": {
+     "centre": [
+      0.0,
+      3.5,
+      0.0
+     ],
+     "size": [
+      2.2,
+      7.0,
+      2.0
+     ],
+     "triangles": 12,
+     "collide": false
+    }
+   },
+   "attachments": {},
+   "triangles": 1234,
+   "budget": 1500,
+   "collision_precise": [],
+   "collision_note": "every mesh Box: walls stand in pieces round the door and every walked step is its own box, so nothing needs a decomposition",
+   "note": "a Haunted Manor disco ball: a mirror ball of white and silver facets on an iron chain from the point of an iron pointed-arch frame on two long feet, a gold spire on the point",
+   "decor": {
+    "fw": 1,
+    "fd": 1,
+    "layer": "Floor",
+    "footprint_studs": [
+     3.0,
+     3.0
+    ]
+   },
+   "furniture": {
+    "id": "DiscoBall",
+    "pose": null,
+    "spots": {},
+    "keyFor": [],
+    "pieces_height": 7.0,
+    "model_top": 7.0,
+    "pieces_row": "Pieces.luau"
+   }
+  }
+ },
+ "mirrors": {}
+}
