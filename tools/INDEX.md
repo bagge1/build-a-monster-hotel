@@ -342,6 +342,19 @@ build_built_rooms.py's definitions (ast, without its main) and adds the
 visitors' spots (MODELS.md, "Activity furniture"): `bfurn()` (a piece on its
 `PENDING` row while Pieces.luau has none), `spot()`, `stand_spots()`,
 `spots_check` (numbering, Pose, squares, Stand's square free, Dance's
-figure clear), `sdone()`, `patch_fixup` (each `Use_<n>`'s Pose); shapes
+figure clear, Sit/Watch on a declared seat with the seated figure clear), `sdone()`, `patch_fixup` (each `Use_<n>`'s Pose); shapes
 `loft`, `bottle`, `arc`, `apron`, `mic`, `backdrop`. `-- grey` writes the
 silhouettes (three a piece) to `silhouettes/`; `-- nopreview`.
+
+## build_activity_cinema.py
+
+The Cinema's pieces for Haunted Manor (GDD A.13): `Furniture_FilmScreen`
+(3 x 1 `Wall`, no spots) and `Furniture_CinemaSeat` (3 x 1, `Use_1..Use_3`
+`Watch`, facing -Z); output `blender/rooms/haunted_manor_cinema/`. Runs
+build_activity_bar.py's definitions (ast, without its main), so its
+`spots_check` is the one validator of visitors' spots. Adds `no_spots()`,
+`watch_spots()` (a rule-6 seat and a Watch spot a sitter), `arches()` (a
+row of pointed arches as one outline), the shapes `row_a/b/c`,
+`screen_a/b/c` (a colour dict each; the grey silhouettes and the chosen
+pieces share them), `people()` (a seated figure on Sit/Watch spots).
+`-- grey` writes the silhouettes to `silhouettes/`; `-- nopreview`.
