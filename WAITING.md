@@ -1600,6 +1600,16 @@ Med Claudes skärmdump där det finns en. -->
    rumsvyn "Close for guests" som slutar ta emot nya besök tills rummet är
    tomt.
 
+61. **Expeditions: efter "Later" finns Collect bara vid brädan** (natten
+   2026-10-26, spelat med mus). När en resa kommer hem medan en panel är
+   öppen lägger sig Collect-popupen ovanpå, som den ska. Trycker man
+   **Later** står det "Back!" på Residents-knappen, men Residents-panelen
+   har ingen Collect: man måste gå till brädan i Wing-trädgården, och inget
+   säger det. Det är som UI.md är skrivet. **Förslag:** ett tryck på
+   Residents medan det står "Back!" öppnar Collect-popupen igen (eller
+   popupens text säger "Collect later at the Expedition board"). Det väntar
+   på ditt ja, eftersom det ändrar vad en knapp gör.
+
 ## §3 Creator Hub och publicering
 
 1. ~~**Slå på Studio Access to API Services**~~ (gjort 2026-10-19: på i
