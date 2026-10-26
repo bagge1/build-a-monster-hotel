@@ -1521,6 +1521,17 @@ Claude testar. Det som är ditt, i ordning:
    beslut, GDD §18, PLACEHOLDER struket på dem; sammanfattningen i
    `archive/BALANCE-2026-10-23.md`.)
 6. **Ikon och thumbnails:** välj av tre.
+   *Natten 2026-10-26:* tre thumbnails och tre ikoner tagna **i spelet**
+   (`archive/screens/store-art-2026-10-26/`: byggläget över ett fullt hotell,
+   gatan med skylten, rumsvyn med ett Skeleton och en Zombie; ikonerna
+   beskurna ur dem), blint granskade. Granskarens dom: **ingen är klar för
+   butiken**: gränssnittet tar en tredjedel (1, 3), monstren är prickar,
+   rummen mörka och tomma, fasaden en slät vägg utan fönster (2), skylten
+   klipps i ikon 1. Bäst: thumbnail 1 (visar idén) och ikon 2 (en figur).
+   Två fel den såg är rättade samma natt (⟳ som inte ritades, en klippt
+   Place-knapp). **Förslag:** behåll Blender-bilderna (punkten ovan) som
+   huvudbilder; ta om rumsvyn i spelet utan HUD, med tända rum och en
+   möblerad svit, som en extra "så här ser det ut"-bild om du vill ha en.
 7. ~~**Frågeformuläret** (Maturity & Compliance)~~: redan ifyllt (ditt
    besked 2026-10-23).
 8. **Titel och beskrivning:** titeln "Build A Monster Hotel!" (din,
