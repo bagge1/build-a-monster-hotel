@@ -41,6 +41,10 @@ type Drawn = {
 local me = Players.LocalPlayer
 local folder: Folder
 local drawn: { Drawn } = {}
+--[[ Which build is current: a build or a pass that yielded stops when a newer build has begun
+	(2026-10-26: a second build during the first, a saved Low graphics setting arriving while the
+	first was still placing, doubled the trees). ]]
+local generation = 0
 
 --[[ Bayou Spa's swamp cypress (Forest.Sets[3]) as a Luau blockout until its
 	model is imported (CLAUDE.md, "A blockout in Luau is allowed"): MODELS.md
@@ -235,6 +239,8 @@ local function place(d: Drawn, mode: Mode)
 end
 
 local function build()
+	generation += 1
+	local mine = generation
 	for _, d in drawn do
 		if d.model then
 			d.model:Destroy()
@@ -255,6 +261,9 @@ local function build()
 				built += 1
 				if built % 40 == 0 then
 					task.wait() -- spread over frames: hundreds of trees at once would hitch a phone
+					if generation ~= mine then
+						return -- a newer build took over and cleared what this placed
+					end
 				end
 			end
 		end
@@ -268,6 +277,7 @@ local function lod()
 		return
 	end
 	local swaps = 0
+	local mine = generation
 	for _, d in drawn do
 		local mode = modeFrom(d, camera.CFrame.Position)
 		if mode ~= d.mode then
@@ -275,6 +285,9 @@ local function lod()
 			swaps += 1
 			if swaps % F.SwapsPerPass == 0 then
 				task.wait() -- a Travel moves the camera across the world: fill in over frames, never in one
+				if generation ~= mine then
+					return -- a build cleared the list meanwhile: what is left is no longer drawn
+				end
 			end
 		end
 	end
@@ -287,9 +300,10 @@ function ForestRenderer.Init()
 end
 
 function ForestRenderer.Start()
+	-- Connected before the first build, which yields: a saved setting arriving meanwhile builds again.
+	me:GetAttributeChangedSignal("LowGraphics"):Connect(build)
 	task.spawn(function()
 		build()
-		me:GetAttributeChangedSignal("LowGraphics"):Connect(build)
 		while true do
 			task.wait(0.5)
 			pcall(lod)

@@ -16,6 +16,13 @@
 	A rigged model plays its clips (GDD §12, `MonsterAnimator`): Walk on the
 	move, Staff at the door, Happy for an entertainer and for a moment when a
 	job is done, Idle at its post. A model with no bones bobs whole, as before.
+
+	The render budget (§13.4): a resident has a model only within the guests'
+	draw radius (`GuestRenderer.DrawRadius`) of the camera; beyond it only its
+	place is kept, so ten streamed-in hotels' residents cost nothing to draw
+	(2026-10-26: every one was built and moved every frame). A republish
+	updates the Configurations in place (ResidentService), so a resident keeps
+	its model and its spot in the garden.
 ]]
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -27,6 +34,7 @@ local Species = require(ReplicatedStorage.Shared.Species)
 local Staff = require(ReplicatedStorage.Shared.Staff)
 local MonsterKit = require(script.Parent.MonsterKit)
 local MonsterAnimator = require(script.Parent.MonsterAnimator)
+local GuestRenderer = require(script.Parent.GuestRenderer)
 local Hud = require(script.Parent.Hud)
 local Ui = require(script.Parent.Ui)
 
@@ -35,6 +43,9 @@ local ResidentRenderer = {}
 local G = Constants.Grid
 local P = G.Cells * G.CellSize
 local POP_RADIUS = 150 -- a "✓" further from the camera than this is not drawn
+local DRAW_RADIUS = GuestRenderer.DrawRadius
+-- A drawn resident stays until clearly out, as a guest does (GuestRenderer's `KEEP_SLACK`): no flicker at the edge.
+local KEEP_SLACK = 30
 
 type Drawn = {
 	config: Configuration,
@@ -48,10 +59,59 @@ type Drawn = {
 	errandCode: string?,
 	connections: { RBXScriptConnection },
 	anim: MonsterAnimator.Animator?,
+	placed: boolean, -- `pos` is a place in its hotel (kept while it has no model, beyond the radius)
+	post: Vector3?, -- its post, cached (2026-10-26: HotelPoints.find sorted the plot's Pieces each frame)
+	postKey: string, -- the role and slot the cached post is for
+	postGen: number, -- the plot's points generation it was found in (`pointsGen`)
 }
 
 local drawn: { [Configuration]: Drawn } = {}
 local rng = Random.new()
+
+--[[ Each plot's points generation: bumped when anything is added to or taken from the plot or it
+	moves (Travel sets `Origin`), so a cached post is found again only then. A piece is moved by
+	being rebuilt (PlotService), which adds it anew. ]]
+local pointsGen: { [Model]: number } = {}
+local function genOf(plot: Model): number
+	local gen = pointsGen[plot]
+	if gen then
+		return gen
+	end
+	pointsGen[plot] = 1
+	local conns: { RBXScriptConnection } = {}
+	local function bump()
+		pointsGen[plot] = (pointsGen[plot] or 1) + 1
+	end
+	table.insert(conns, plot.DescendantAdded:Connect(bump))
+	table.insert(conns, plot.DescendantRemoving:Connect(bump))
+	table.insert(conns, plot:GetAttributeChangedSignal("Origin"):Connect(bump))
+	table.insert(
+		conns,
+		plot.AncestryChanged:Connect(function()
+			if not plot:IsDescendantOf(workspace) then
+				for _, c in conns do
+					c:Disconnect()
+				end
+				pointsGen[plot] = nil
+			end
+		end)
+	)
+	return 1
+end
+
+-- A resident's post (`Staff.post`), found again only when its role, slot or the plot's points change.
+local function postOf(d: Drawn, plot: Model, role: string, slot: number): Vector3?
+	local key = `{role}|{slot}`
+	local gen = genOf(plot)
+	if d.postKey ~= key or d.postGen ~= gen then
+		d.postKey = key
+		d.postGen = gen
+		d.post = Staff.post(role, slot, function(name)
+			return HotelPoints.find(plot, name)
+		end)
+	end
+	return d.post
+end
 
 local function plotModel(index: number): Model?
 	local plots = workspace:FindFirstChild("Plots")
@@ -86,39 +146,8 @@ local function popDone(c: Configuration)
 	Hud.float(text, door + Vector3.new(0, 3, 0), Ui.Colour.Good)
 end
 
-local function add(c: Instance, plotIndex: number)
-	if not c:IsA("Configuration") or drawn[c] then
-		return
-	end
-	local d: Drawn = {
-		config = c,
-		plot = plotIndex,
-		model = nil,
-		pos = Vector3.zero,
-		target = Vector3.zero,
-		waitUntil = 0,
-		key = "",
-		errand = {},
-		errandCode = nil,
-		connections = {},
-		anim = nil,
-	}
-	drawn[c] = d
-	table.insert(
-		d.connections,
-		c:GetAttributeChangedSignal("Phase"):Connect(function()
-			if c:GetAttribute("Phase") == "Done" then
-				popDone(c)
-				if d.anim then
-					MonsterAnimator.play(d.anim, "Happy", 1.2) -- the job done (§12)
-				end
-			end
-		end)
-	)
-end
-
---[[ The level over a resident's head (A.11.6): "Lv n", gold at the cap. A
-	republish replaces the Configuration, and with it the model and this. ]]
+--[[ The level over a resident's head (A.11.6): "Lv n", gold at the cap,
+	redrawn when `Level` changes. ]]
 local function levelBadge(m: Model, level: number)
 	local cf, size = m:GetBoundingBox()
 	local anchor = m.PrimaryPart or m:FindFirstChildWhichIsA("BasePart", true)
@@ -145,6 +174,55 @@ local function levelBadge(m: Model, level: number)
 	l.BackgroundTransparency = 0.3
 	Ui.corner(l, 8)
 	bb.Parent = m
+end
+
+local function add(c: Instance, plotIndex: number)
+	if not c:IsA("Configuration") or drawn[c] then
+		return
+	end
+	local d: Drawn = {
+		config = c,
+		plot = plotIndex,
+		model = nil,
+		pos = Vector3.zero,
+		target = Vector3.zero,
+		waitUntil = 0,
+		key = "",
+		errand = {},
+		errandCode = nil,
+		connections = {},
+		anim = nil,
+		placed = false,
+		post = nil,
+		postKey = "",
+		postGen = 0,
+	}
+	drawn[c] = d
+	table.insert(
+		d.connections,
+		c:GetAttributeChangedSignal("Phase"):Connect(function()
+			if c:GetAttribute("Phase") == "Done" then
+				popDone(c)
+				if d.anim then
+					MonsterAnimator.play(d.anim, "Happy", 1.2) -- the job done (§12)
+				end
+			end
+		end)
+	)
+	-- A level-up arrives on the same Configuration (a republish updates in place): its badge follows.
+	table.insert(
+		d.connections,
+		c:GetAttributeChangedSignal("Level"):Connect(function()
+			local m = d.model
+			if m then
+				local old = m:FindFirstChild("LevelBadge")
+				if old then
+					old:Destroy()
+				end
+				levelBadge(m, c:GetAttribute("Level") :: number? or 1)
+			end
+		end)
+	)
 end
 
 local function remove(c: Instance)
@@ -200,12 +278,23 @@ local function onErrand(d: Drawn, serverNow: number): (Vector3?, Vector3, boolea
 	return pos, dir, walking
 end
 
+local function dropModel(d: Drawn)
+	if d.model then
+		d.model:Destroy()
+		d.model = nil
+	end
+	MonsterAnimator.release(d.anim)
+	d.anim = nil
+end
+
 local function frame(dt: number)
 	local now = os.clock()
 	local serverNow = workspace:GetServerTimeNow()
+	local camera = workspace.CurrentCamera
+	local eye = camera and camera.CFrame.Position
 	local counts: { [string]: number } = {}
 	for c, d in drawn do
-		-- A republished Wing replaces its folder whole: drop what it took with it.
+		-- A Wing taken away (its owner gone) takes its Configurations with it: drop what went.
 		if not c:IsDescendantOf(game) then
 			remove(c)
 			continue
@@ -215,102 +304,101 @@ local function frame(dt: number)
 		local key =
 			`{c:GetAttribute("Species")}|{c:GetAttribute("Mutation")}|{c:GetAttribute("Size")}`
 		if d.model and (d.key ~= key or away or not plot) then
-			d.model:Destroy()
-			d.model = nil
-			MonsterAnimator.release(d.anim)
-			d.anim = nil
+			dropModel(d)
 		end
-		if plot and not away then
-			if not d.model then
-				local m = MonsterKit.build(
-					c:GetAttribute("Species") :: string,
-					c:GetAttribute("Mutation") :: string?,
-					c:GetAttribute("Size") :: string?
-				)
-				if m then
-					levelBadge(m, c:GetAttribute("Level") :: number? or 1)
-					m.Parent = workspace:FindFirstChild("ClientGuests") or workspace
-					d.model = m
-					local sp = Species.get(c:GetAttribute("Species") :: string)
-					d.anim = if sp
-						then MonsterAnimator.attach(m, sp.look.shape, sp.look.height)
-						else nil
-					d.key = key
-					d.pos = wingPoint(plot) or Vector3.zero
-					d.target = d.pos
-				end
+		if away or not plot then
+			d.placed = false -- back from the camp, or streamed in again: a new spot in the garden
+			continue
+		end
+		if not d.placed then
+			d.pos = wingPoint(plot) or Vector3.zero
+			d.target = d.pos
+			d.placed = true
+		end
+		local role = c:GetAttribute("Role") :: string? or ""
+		local ck = `{d.plot}|{role}`
+		counts[ck] = (counts[ck] or 0) + 1
+		local slot = c:GetAttribute("Slot") :: number? or counts[ck]
+		local errandPos, errandDir, walking = onErrand(d, serverNow)
+		local dir: Vector3
+		if errandPos then
+			d.pos = errandPos
+			d.target = errandPos
+			dir = errandDir
+		else
+			local goal = if role ~= "" then postOf(d, plot, role, slot) else nil
+			if goal then
+				d.target = goal
+			elseif (d.pos - d.target).Magnitude < 0.5 and now >= d.waitUntil then
+				d.target = wingPoint(plot) or d.pos
+				d.waitUntil = now + rng:NextNumber(2, 6)
 			end
-			local role = c:GetAttribute("Role") :: string? or ""
-			local ck = `{d.plot}|{role}`
-			counts[ck] = (counts[ck] or 0) + 1
-			local slot = c:GetAttribute("Slot") :: number? or counts[ck]
-			local errandPos, errandDir, walking = onErrand(d, serverNow)
-			local dir: Vector3
-			if errandPos then
-				d.pos = errandPos
-				d.target = errandPos
-				dir = errandDir
+			local delta = d.target - d.pos
+			local step = math.min(delta.Magnitude, (if role ~= "" then 12 else 3) * dt)
+			dir = if delta.Magnitude > 0.01 then delta.Unit else Vector3.new(0, 0, -1)
+			walking = delta.Magnitude > 0.05
+			if delta.Magnitude > 20 then
+				d.pos = d.target -- a new post far away: appear there
 			else
-				local goal = if role ~= ""
-					then Staff.post(role, slot, function(name)
-						return HotelPoints.find(plot, name)
-					end)
+				d.pos += dir * step
+			end
+		end
+		-- Drawn within the radius; once drawn, until clearly out of it.
+		local dist = if eye then (d.pos - eye).Magnitude else 0
+		local show = dist <= DRAW_RADIUS or (d.model ~= nil and dist <= DRAW_RADIUS + KEEP_SLACK)
+		if not show then
+			dropModel(d)
+		elseif not d.model then
+			local m = MonsterKit.build(
+				c:GetAttribute("Species") :: string,
+				c:GetAttribute("Mutation") :: string?,
+				c:GetAttribute("Size") :: string?
+			)
+			if m then
+				levelBadge(m, c:GetAttribute("Level") :: number? or 1)
+				m.Parent = workspace:FindFirstChild("ClientGuests") or workspace
+				d.model = m
+				local sp = Species.get(c:GetAttribute("Species") :: string)
+				d.anim = if sp
+					then MonsterAnimator.attach(m, sp.look.shape, sp.look.height)
 					else nil
-				if goal then
-					d.target = goal
-				elseif (d.pos - d.target).Magnitude < 0.5 and now >= d.waitUntil then
-					d.target = wingPoint(plot) or d.pos
-					d.waitUntil = now + rng:NextNumber(2, 6)
-				end
-				local delta = d.target - d.pos
-				local step = math.min(delta.Magnitude, (if role ~= "" then 12 else 3) * dt)
-				dir = if delta.Magnitude > 0.01 then delta.Unit else Vector3.new(0, 0, -1)
-				walking = delta.Magnitude > 0.05
-				if delta.Magnitude > 20 then
-					d.pos = d.target -- a new post far away: appear there
-				else
-					d.pos += dir * step
-				end
+				d.key = key
 			end
-			if d.model then
-				local flat = Vector3.new(dir.X, 0, dir.Z)
-				local look = if flat.Magnitude > 0.01 then flat.Unit else Vector3.new(0, 0, -1)
-				local phase = c:GetAttribute("Phase")
-				local anim = d.anim
-				if anim then
-					local camera = workspace.CurrentCamera
-					anim.dist = if camera then (camera.CFrame.Position - d.pos).Magnitude else 0
-					if walking then
-						MonsterAnimator.set(
-							anim,
-							"Walk",
-							if errandPos
-								then c:GetAttribute("Speed") :: number? or Constants.Staff.WalkSpeed
-								elseif role ~= "" then 12
-								else 3
-						)
-					elseif phase == "Work" then
-						MonsterAnimator.set(anim, "Staff")
-					elseif role == "Entertainment" then
-						MonsterAnimator.set(anim, "Happy")
-					else
-						MonsterAnimator.set(anim, "Idle")
-					end
-				end
-				local bob = if anim
-					then 0 -- its clips carry the motion
-					elseif walking and errandPos then math.abs(math.sin(now * 8))
-						* 0.25 -- a guest's stride (GuestRenderer)
-					elseif phase == "Work" then math.abs(math.sin(now * 5)) * 0.4 -- knocking
-					elseif role == "Entertainment" then math.abs(math.sin(now * 6)) * 0.6
-					else 0
-				d.model:PivotTo(
-					CFrame.lookAt(
-						d.pos + Vector3.new(0, bob, 0),
-						d.pos + Vector3.new(0, bob, 0) + look
+		end
+		if d.model then
+			local flat = Vector3.new(dir.X, 0, dir.Z)
+			local look = if flat.Magnitude > 0.01 then flat.Unit else Vector3.new(0, 0, -1)
+			local phase = c:GetAttribute("Phase")
+			local anim = d.anim
+			if anim then
+				anim.dist = dist
+				if walking then
+					MonsterAnimator.set(
+						anim,
+						"Walk",
+						if errandPos
+							then c:GetAttribute("Speed") :: number? or Constants.Staff.WalkSpeed
+							elseif role ~= "" then 12
+							else 3
 					)
-				)
+				elseif phase == "Work" then
+					MonsterAnimator.set(anim, "Staff")
+				elseif role == "Entertainment" then
+					MonsterAnimator.set(anim, "Happy")
+				else
+					MonsterAnimator.set(anim, "Idle")
+				end
 			end
+			local bob = if anim
+				then 0 -- its clips carry the motion
+				elseif walking and errandPos then math.abs(math.sin(now * 8))
+					* 0.25 -- a guest's stride (GuestRenderer)
+				elseif phase == "Work" then math.abs(math.sin(now * 5)) * 0.4 -- knocking
+				elseif role == "Entertainment" then math.abs(math.sin(now * 6)) * 0.6
+				else 0
+			d.model:PivotTo(
+				CFrame.lookAt(d.pos + Vector3.new(0, bob, 0), d.pos + Vector3.new(0, bob, 0) + look)
+			)
 		end
 	end
 end

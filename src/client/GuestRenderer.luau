@@ -41,6 +41,13 @@ local GuestRenderer = {}
 
 local MAX_DRAWN = 40 -- §13.4
 local DRAW_RADIUS = 300
+--[[ A drawn guest stays drawn until it is clearly out: past the radius by `KEEP_SLACK` studs or
+	past the budget by `KEEP_RANKS` (2026-10-26: the 40th and 41st, or a guest pacing the radius,
+	were destroyed and rebuilt frame after frame). The budget itself is never exceeded: a newly
+	near guest waits for a free place. Not a design value: it changes no limit a player sees. ]]
+local KEEP_SLACK = 30
+local KEEP_RANKS = 4
+GuestRenderer.DrawRadius = DRAW_RADIUS -- the residents' radius too (ResidentRenderer)
 
 type Drawn = {
 	config: Configuration,
@@ -55,6 +62,7 @@ type Drawn = {
 	anim: MonsterAnimator.Animator?,
 	state: string?,
 	height: number, -- its species' height, for a swimmer's depth (A.13.1)
+	pitched: boolean, -- pitched and not refused: kept off the model, which may be rebuilt meanwhile
 }
 
 local drawn: { [Configuration]: Drawn } = {}
@@ -156,9 +164,12 @@ local function refreshDecor(d: Drawn)
 		p.KeyboardKeyCode = Enum.KeyCode.E
 		p.MaxActivationDistance = 12
 		p.RequiresLineOfSight = false
+		p.Enabled = not d.pitched
+		p.ActionText = if d.pitched then "Pitched!" else "Pitch"
 		p.Parent = d.model.PrimaryPart
 		p.Triggered:Connect(function()
 			Net.send("Pitch", tonumber(d.config.Name) or 0)
+			d.pitched = true
 			p.Enabled = false
 			p.ActionText = "Pitched!"
 		end)
@@ -166,6 +177,9 @@ local function refreshDecor(d: Drawn)
 	elseif not browsing and d.prompt then
 		d.prompt:Destroy()
 		d.prompt = nil
+	end
+	if not browsing then
+		d.pitched = false
 	end
 end
 
@@ -210,6 +224,7 @@ local function add(c: Instance)
 		anim = nil,
 		state = c:GetAttribute("State") :: string?,
 		height = 5,
+		pitched = false,
 	}
 	drawn[c] = d
 	readPath(d)
@@ -262,11 +277,34 @@ local function frame()
 	table.sort(order, function(a, b)
 		return a.dist < b.dist
 	end)
+	-- The low graphics tier draws half as many (§13.4's budget for a low-end phone).
+	local cap = if me:GetAttribute("LowGraphics") then MAX_DRAWN // 2 else MAX_DRAWN
+	-- First the drawn guests not clearly out, nearest first; then the nearest new ones, into what is free.
+	local keep: { [Drawn]: boolean } = {}
+	local kept = 0
 	for i, entry in order do
+		if
+			entry.d.model
+			and kept < cap
+			and i <= cap + KEEP_RANKS
+			and entry.dist <= DRAW_RADIUS + KEEP_SLACK
+		then
+			keep[entry.d] = true
+			kept += 1
+		end
+	end
+	for i, entry in order do
+		if kept >= cap or i > cap then
+			break
+		end
+		if not entry.d.model and entry.dist <= DRAW_RADIUS then
+			keep[entry.d] = true
+			kept += 1
+		end
+	end
+	for _, entry in order do
 		local d = entry.d
-		-- The low graphics tier draws half as many (§13.4's budget for a low-end phone).
-		local cap = if me:GetAttribute("LowGraphics") then MAX_DRAWN // 2 else MAX_DRAWN
-		local show = i <= cap and entry.dist <= DRAW_RADIUS
+		local show = keep[d] == true
 		if show and not d.model then
 			spawnModel(d)
 		elseif not show and d.model then
@@ -338,9 +376,12 @@ function GuestRenderer.Start()
 			return
 		end
 		for c, d in drawn do
-			if c.Name == tostring(guestId) and d.prompt then
-				d.prompt.Enabled = true
-				d.prompt.ActionText = "Pitch"
+			if c.Name == tostring(guestId) then
+				d.pitched = false
+				if d.prompt then
+					d.prompt.Enabled = true
+					d.prompt.ActionText = "Pitch"
+				end
 			end
 		end
 	end)
