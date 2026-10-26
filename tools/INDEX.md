@@ -358,3 +358,17 @@ row of pointed arches as one outline), the shapes `row_a/b/c`,
 `screen_a/b/c` (a colour dict each; the grey silhouettes and the chosen
 pieces share them), `people()` (a seated figure on Sit/Watch spots).
 `-- grey` writes the silhouettes to `silhouettes/`; `-- nopreview`.
+
+## build_activity_gym.py
+
+The Gym's key pieces for Haunted Manor (GDD A.13): `Furniture_WeightBench`
+(1 x 2, `Use_1` `Lift` placed as `Lie`), `Furniture_Treadmill` (1 x 2,
+`Use_1` `Stand` on the belt, facing +Z) and `Furniture_PunchingBag` (1 x 1,
+`Use_1` `Stand` in front); output `blender/rooms/haunted_manor_gym/`. Runs
+build_activity_bar.py's definitions; added there, purely additive:
+`spots_check`'s `Lift` branch (held to the placement the piece names in
+`piece.lift`) and a `Stand` inside the footprint (`stand_on_faults`: flat
+under both feet, `stand_blocks`' standing figure clear of the body). Adds
+`gfurn()` (a piece on its Pieces.luau row), `lift_spot()`, `rod_x()`,
+`arch_band()`, the shapes `bench_a/b/c`, `treadmill_a/b/c`, `bag_a/b/c`.
+`-- grey` writes the silhouettes to `silhouettes/`; `-- nopreview`.
