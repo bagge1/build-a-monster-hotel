@@ -402,6 +402,20 @@ Med Claudes skärmdump där det finns en. -->
    - Utseenden: högtalaren bakifrån (en garderob), de halva guldprickarna vid
      ett ensamt golvs kant, det tunna mörka järnet.
 
+22. **Karaokescenen och mikrofonen** (natten 2026-10-26, GDD A.13; validerade i
+   Blender, tre blinda granskningar i
+   `blender/rooms/haunted_manor_karaoke/README.md`; **inte importerade**;
+   raderna stämmer). Bilder: `archive/screens/2026-10-26_karaoke/`
+   (`karaoke_game_camera.jpg`, `karaoke_silhouettes.jpg`; valda: scen med
+   textskärm i en spetsbåge och glödlampor, vintagemikrofon). Dina val:
+   - Två sångare 2,6 isär når varandras armar: förslag behåll platserna med ett
+     klipp där de håller mikrofonen.
+   - Inget trappsteg upp på scenen (0,8): förslag att koden ställer sångaren där,
+     som på lilla scenen.
+   - Den släckta skärmen lästes som en spegel eller gravsten; i spelet lyser den.
+     Förslag: behåll.
+   - Utseenden: skåpet djupare än ramen, stångens tjocklek, skärmens höjd.
+
 ## §2 Beslut
 
 <!-- En fråga i taget, med alternativen och Claudes rekommendation. -->
