@@ -155,6 +155,28 @@ local function valid(def: Def, args: { any }): boolean
 	return true
 end
 
+-- The remotes that change a hotel's layout (build mode), budgeted together per player.
+local BUILD: { [string]: boolean } = {
+	Place = true,
+	Move = true,
+	WallRun = true,
+	Door = true,
+	MakeRoom = true,
+	ClearRoom = true,
+	Sell = true,
+	BuyFloor = true,
+	BuyTile = true,
+	PlaceWindow = true,
+	MoveWindow = true,
+	SellWindow = true,
+	PlaceDecor = true,
+	MoveDecor = true,
+	SellDecor = true,
+	Finish = true,
+}
+local BUILD_BURST = 8 -- calls at once: a quick run of clicks
+local BUILD_PER_SECOND = 10 -- refill: faster than any one build remote's own rate allows alone
+
 -- Server: handle a client's intent. Malformed or too-frequent messages never reach `handler`.
 function Net.on(name: string, handler: (Player, ...any) -> ())
 	local def = DEFS[name]
@@ -167,6 +189,11 @@ function Net.on(name: string, handler: (Player, ...any) -> ())
 			return
 		end
 		if def.rate and not RateLimit.allow(player, name, def.rate) then
+			return
+		end
+		-- The build remotes share one budget too (RateLimit.bucket): each its own rate, and
+		-- together no more than a person building fast sends.
+		if BUILD[name] and not RateLimit.bucket(player, "Build", BUILD_BURST, BUILD_PER_SECOND) then
 			return
 		end
 		local ok, err = pcall(handler, player, table.unpack(args))

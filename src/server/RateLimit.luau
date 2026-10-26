@@ -33,8 +33,36 @@ function RateLimit.allow(player: Player, key: string, seconds: number): boolean
 	return true
 end
 
+--[[ A budget shared by several remotes (2026-10-26 review: each build remote
+	had its own cooldown, so a client firing all of them at once loaded the
+	server for everyone). `capacity` calls at once, refilled at `perSecond`: a
+	burst a person makes (a click that sends two) passes, a stream does not. ]]
+local buckets: { [Player]: { [string]: { tokens: number, at: number } } } = {}
+
+function RateLimit.bucket(player: Player, key: string, capacity: number, perSecond: number): boolean
+	local now = os.clock()
+	local mine = buckets[player]
+	if not mine then
+		mine = {}
+		buckets[player] = mine
+	end
+	local b = mine[key]
+	if not b then
+		b = { tokens = capacity, at = now }
+		mine[key] = b
+	end
+	b.tokens = math.min(capacity, b.tokens + (now - b.at) * perSecond)
+	b.at = now
+	if b.tokens < 1 then
+		return false
+	end
+	b.tokens -= 1
+	return true
+end
+
 Players.PlayerRemoving:Connect(function(player)
 	last[player] = nil
+	buckets[player] = nil
 end)
 
 return RateLimit
