@@ -15,7 +15,9 @@ facing the row's front, -Z) on a declared seat with the seated person (sit_block
 as a bed's Use (lie_faults); a `Swim` spot on the pool's `Water` top, inside its inner edge by 1.5 (swim_faults,
 added with tools/build_activity_pool.py, which the Bar's pieces never reach); a `Lift` spot as the Lie or Stand
 it names, and a `Stand` inside the footprint (on the piece: a treadmill's belt) by stand_on_faults, the standing
-figure clear of the body (both added with tools/build_activity_gym.py; the Bar's spots never reach them). A pose this
+figure clear of the body (both added with tools/build_activity_gym.py; the Bar's spots never reach them); a `Sit`
+under the piece's `Water` (a hot tub's bench) by soak_faults: on a seat, the water over the torso, the head above
+it, the seated figure clear of the solid body (added with tools/build_activity_spa.py; no other set reaches it). A pose this
 script has no check for is refused, not passed. tools/build_activity_cinema.py (and the next activity sets) load
 these definitions; spots_check is the one validator of visitors' spots.
 
@@ -178,6 +180,10 @@ def spots_check(piece, tris, stage):
                     f.append(f'{tag}: the body at {K.v3(hit, 2)} is inside the dancer\'s figure '
                              f'({FIGURE_R} round, {FIGURE_H} tall over {pos.y:.2f})')
                     break
+        elif pose == 'Sit' and 'Water' in tris and (_water_top(tris, pos) or -1e9) > pos.y:
+            # A Sit under the piece's Water (a hot tub's bench; added with tools/build_activity_spa.py, whose
+            # pieces alone reach it): soak_faults, the water left out of the body.
+            f += soak_faults(piece, tris, pos, look, tag)
         elif pose in ('Sit', 'Watch'):
             # A seat's Sit (Watch: a Sit facing the screen; the piece's front, -Z, is the way a seat faces, as
             # every Sit in the kits looks -Z): inside the footprint, on a declared seat (rule 6, K.seat), on
@@ -299,6 +305,58 @@ def swim_faults(piece, tris, pos, tag):
     SWIM_FINDINGS.setdefault(piece.name, {})[tag.split(' ')[0]] = {
         'surface': round(pos.y, 3), 'basin_floor': round(floor, 3), 'body_middle': round(pos.y - SWIM_DEPTH, 3),
         'feet': round(pos.y - SWIM_DEPTH - 2.5, 3), 'head_top': round(pos.y - SWIM_DEPTH + 2.5, 3)}
+    return f
+
+
+SOAK_MIN = 1.0                  # a Sit in water: the water's top at least this over the seat (the seated torso half
+SOAK_MAX = 2.0                  # under it) and at most this (the shoulders: the head, 2..3 over the seat, above it)
+SOAK_FINDINGS = {}              # Furniture_<Id> -> each tub spot's seat, water top, shoulders and head top
+
+
+def _water_top(tris, pos):
+    """The top of the piece's `Water` over (pos.x, pos.z), or None."""
+    water = tris.get('Water')
+    return max(K._ray_down(water, pos.x, pos.z, pos.y + 10.0), default=None) if water else None
+
+
+def soak_faults(piece, tris, pos, look, tag):
+    """A `Sit` under the piece's `Water` (a hot tub's underwater bench; added with tools/build_activity_spa.py):
+    the Water not colliding; the spot inside the footprint, on a declared seat, the solid body (the water left
+    out) under it to USE_SURFACE_TOL and nothing of it over it for USE_CLEAR; the water over the seated torso
+    (its middle and four corners) SOAK_MIN..SOAK_MAX over the seat, the head above it; and the seated 5-stud
+    person (sit_blocks, arms included) clear of the solid body."""
+    f = []
+    if piece.collide.get('Water', True):
+        f.append(f'{tag}: Water collides (MODELS.md: not colliding, CanQuery false)')
+    hx, hz = 1.5 * piece.fw, 1.5 * piece.fd
+    if abs(pos.x) > hx or abs(pos.z) > hz:
+        f.append(f'{tag}: {K.v3(pos)} leaves the footprint')
+    if not any(s['x'][0] <= pos.x <= s['x'][1] and s['z'][0] <= pos.z <= s['z'][1] for s in piece.seats):
+        f.append(f'{tag}: not on a declared seat')
+    solid = [t for p, ts in tris.items() if p not in ('Root', 'LOD_Proxy', 'Water') for t in ts]
+    top = max(K._ray_down(solid, pos.x, pos.z, pos.y + 0.5), default=None)
+    if top is None or abs(top - pos.y) > USE_SURFACE_TOL:
+        f.append(f'{tag}: the surface under {K.v3(pos)} is at {top}, not within {USE_SURFACE_TOL} of it')
+    over = [h for h in K._ray_down(solid, pos.x, pos.z, pos.y + USE_CLEAR) if h > pos.y + 0.2]
+    if over:
+        f.append(f'{tag}: something over the seat at {max(over):.2f}')
+    a = Vector((look[0], 0, look[2])).normalized()
+    b = Vector((-a.z, 0, a.x))
+    tops = []
+    for t, s in ((0.0, 0.0), (-0.45, -0.95), (-0.45, 0.95), (0.45, -0.95), (0.45, 0.95)):
+        q = Vector(pos) + a * t + b * s
+        w = _water_top(tris, q)
+        if w is None or not pos.y + SOAK_MIN - 1e-6 <= w <= pos.y + SOAK_MAX + 1e-6:
+            f.append(f'{tag}: the water over the seated torso at ({q.x:.2f}, {q.z:.2f}) is at {w}, not '
+                     f'{pos.y + SOAK_MIN:.2f}..{pos.y + SOAK_MAX:.2f} (the seat {pos.y:.2f}: in it to the waist, '
+                     'the head above it)')
+            break
+        tops.append(w)
+    f += sit_faults(solid, pos, look, tag)
+    if tops:
+        SOAK_FINDINGS.setdefault(piece.name, {})[tag.split(' ')[0]] = {
+            'seat': round(pos.y, 3), 'water_top': round(max(tops), 3), 'shoulders': round(pos.y + 2.0, 3),
+            'head_top': round(pos.y + 3.0, 3)}
     return f
 
 
