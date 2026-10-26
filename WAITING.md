@@ -416,6 +416,20 @@ Med Claudes skärmdump där det finns en. -->
      Förslag: behåll.
    - Utseenden: skåpet djupare än ramen, stångens tjocklek, skärmens höjd.
 
+23. **Biljardsalens kösställ, poängtavla och lampa** (natten 2026-10-26, GDD
+   A.13; väggbitar, validerade i Blender, två blinda granskningar i
+   `blender/rooms/haunted_manor_billiards/README.md`; **inte importerade**).
+   Bilder: `archive/screens/2026-10-26_billiards/billiards_game_camera.jpg`,
+   `billiards_front.jpg`. Dina val:
+   - Poängtavlan med pärlor lästes som en kulram av två granskare. Förslag:
+     behåll (alternativet är en griffeltavla).
+   - Kösstället hänger lågt (köerna är 4,3 under 7-taket). Behåll, eller ett
+     ställ på golvet.
+   - Lampans skärm syns bara uppifrån från spelkameran. Förslag: ett ljus som
+     koden lägger under skärmen. Den gröna skärmen i Manors palett.
+   - Poängtavlans höjd i spelets rad går från 6,0 till 7,0 (rättas vid
+     importen).
+
 ## §2 Beslut
 
 <!-- En fråga i taget, med alternativen och Claudes rekommendation. -->
