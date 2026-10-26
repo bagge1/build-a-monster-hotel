@@ -714,8 +714,8 @@ FORMULA_GUARDS = [
     # Travel clears the desk queue only: HotelService's samples (waits, preference shares, requests, cleanings) carry over
     ("src/server/ChainService.luau", "if hotel then table.clear(hotel.queue) end"),
     ("src/server/HotelService.luau", "waits = {}, prefsShares = {}, requestsAsked = 0, requestsDone = 0, cleanTimes = {},"),
-    ("src/server/TutorialService.luau", "{ booked = player, happyFloor = Constants.Stay.Happy }"),
-    ("src/server/TutorialService.luau", "and busesSince >= 2"),
+    ("src/server/TutorialService.luau", "booked = player, happyFloor = Constants.Stay.Happy,"),
+    ("src/shared/Bus.luau", "and t.busesSince >= 2 and t.vacant"),  # the tutorial Vampire, offered again until it arrives (2026-10-26)
     ("src/server/ResidentService.luau", "local threshold = if g.tutorialFriend"),
     ("src/server/BookService.luau", "math.floor(Economy.speciesPay(speciesId) * Constants.Book.SpeciesFoundPaySeconds)"),
     ("src/server/BusService.luau", "l.nextList, l.nextGuaranteed = draw(street, busIndex + 1, now, now + interval)"),  # each street's bus a bus ahead (one world, 2026-10-21)
