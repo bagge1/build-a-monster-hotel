@@ -96,19 +96,22 @@ export type Entry = { key: string, street: number, week: number, likes: number }
 --[[ Each street's favourite: the hotel with the most weekly likes (more than
 	none); a tie goes to the larger lifetime count, then the lower key, so
 	every server and every call agree. ]]
+-- Whether `a` ranks above `b`: the favourite's order, so a sorted list starts with it (the Showcase panel).
+function Showcase.before(a: Entry, b: Entry): boolean
+	if a.week ~= b.week then
+		return a.week > b.week
+	end
+	if a.likes ~= b.likes then
+		return a.likes > b.likes
+	end
+	return a.key < b.key
+end
+
 function Showcase.favourites(entries: { Entry }): { [number]: string }
 	local best: { [number]: Entry } = {}
 	for _, e in entries do
 		local b = best[e.street]
-		if
-			e.week > 0
-			and (
-				b == nil
-				or e.week > b.week
-				or (e.week == b.week and e.likes > b.likes)
-				or (e.week == b.week and e.likes == b.likes and e.key < b.key)
-			)
-		then
+		if e.week > 0 and (b == nil or Showcase.before(e, b)) then
 			best[e.street] = e
 		end
 	end

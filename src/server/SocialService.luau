@@ -485,6 +485,7 @@ function SocialService.Start()
 				local key = tostring(owner.UserId)
 				local loc = Locations.get(plot.street)
 				table.insert(list, {
+					key = key, -- the favourite's tie-break, so the panel's order agrees (Showcase.before)
 					index = plot.index,
 					name = owner.DisplayName,
 					street = if loc then loc.name else `Street {plot.street}`,

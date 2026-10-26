@@ -61,6 +61,18 @@ describe("Showcase (A.11.4)", function()
 		expect.eq(best[3], "5")
 	end)
 
+	it("the panel's order puts the street's favourite first, ties included", function()
+		-- 2026-10-26 night: two hotels at 1 weekly and 1 lifetime like; the
+		-- panel ordered by plot index and showed the favourite second.
+		local list = {
+			{ key = "-3", street = 1, week = 1, likes = 1, index = 2 },
+			{ key = "-1", street = 1, week = 1, likes = 1, index = 3 },
+		}
+		local best = Showcase.favourites(list)
+		table.sort(list, Showcase.before)
+		expect.eq(list[1].key, best[1])
+	end)
+
 	it("a lobby is the hotel's own floor-1 tiles", function()
 		local tiles = {}
 		for _, c in Grid.startTiles() do

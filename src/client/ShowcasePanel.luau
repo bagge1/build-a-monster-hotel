@@ -13,6 +13,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Format = require(ReplicatedStorage.Shared.Format)
 local Net = require(ReplicatedStorage.Shared.Net)
+local Showcase = require(ReplicatedStorage.Shared.Showcase)
 local State = require(script.Parent.State)
 local Ui = require(script.Parent.Ui)
 local Hud = require(script.Parent.Hud)
@@ -60,15 +61,8 @@ local function draw()
 	)
 	hint.LayoutOrder = 1
 	local list = table.clone(s.list)
-	table.sort(list, function(a, b)
-		if a.week ~= b.week then
-			return a.week > b.week
-		end
-		if a.likes ~= b.likes then
-			return a.likes > b.likes
-		end
-		return a.index < b.index
-	end)
+	-- The favourite's own order, so "1." is the Street Favourite on a tie too.
+	table.sort(list, Showcase.before)
 	for i, e in list do
 		local row =
 			Ui.frame(body, `Hotel_{e.index}`, UDim2.new(1, -10, 0, 56), nil, Ui.Colour.PanelLight)
