@@ -84,15 +84,25 @@ local BOARDS: { Board } = {
 local labels: { [string]: TextLabel } = {}
 local lastWrite: { [Player]: number } = {}
 
+--[[ The scores are read now and written in the background (2026-10-26
+	review): on leave this runs as a release handler, and its three SetAsyncs
+	held the session open, so a rejoin to the same server could not load. ]]
 local function write(player: Player, data: PlayerData.Data)
+	local userId = tostring(player.UserId)
+	local writes = {}
 	for _, b in BOARDS do
 		local score = math.floor(b.score(data))
 		if score > 0 then
-			pcall(function()
-				b.store():SetAsync(tostring(player.UserId), score)
-			end)
+			table.insert(writes, { store = b.store, score = score })
 		end
 	end
+	task.spawn(function()
+		for _, w in writes do
+			pcall(function()
+				w.store():SetAsync(userId, w.score)
+			end)
+		end
+	end)
 end
 
 local function nameOf(userId: number): string

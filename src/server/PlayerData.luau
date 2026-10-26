@@ -215,9 +215,16 @@ local TEMPLATE: Data = {
 	decor = {},
 	walls = {},
 	rooms = {},
-	tiles = startTiles(),
+	--[[ Empty, not the start set (2026-10-26 review): Reconcile puts back every
+		template key missing from a keyed table, so a start window sold, moved
+		or pushed out along its wall (BuildService) came back free on every
+		load, at whichever hotel was played. The start set is given once, by
+		`resetHotel` (a new profile goes through it in `migrate`). No tile is
+		ever removed, but a start square changed in Constants would have been
+		granted to every played hotel the same way. ]]
+	tiles = {},
 	tilesBought = {},
-	windows = startWindows(),
+	windows = {},
 	finishes = { Hallway = "" },
 	freeStairs = 0,
 	nextId = 1,
@@ -258,6 +265,7 @@ local TEMPLATE: Data = {
 local store = ProfileStore.New(StoreNames.of("Players_v1"), TEMPLATE)
 
 local profiles: { [Player]: any } = {}
+local sessions: { [string]: any } = {} -- profile key -> its session on this server, until that has ended
 local loadedCallbacks: { (Player, Data) -> () } = {}
 local releaseCallbacks: { (Player, Data) -> () } = {}
 local departedCallbacks: { (Player) -> () } = {}
@@ -456,20 +464,82 @@ local function settle(player: Player, profile: any)
 	end
 end
 
+local function deepCopy<T>(t: T): T
+	if typeof(t) ~= "table" then
+		return t
+	end
+	local out = {}
+	for k, v in t :: any do
+		out[k] = deepCopy(v)
+	end
+	return out :: any
+end
+
+--[[ A rejoin to this server can arrive while the player's last session here
+	is still ending: StartSessionAsync throws "already loaded in this session"
+	until that one's EndSession, and the throw left the player with no data
+	and no kick (2026-10-26 review). It waits for the old session and tries
+	again; past that, a kick, the save untouched in the store. ]]
+local LOAD_TRIES = 4
+local LOAD_WAIT = 5 -- seconds a try waits for this server's old session of the key to end
+
+local function startSession(player: Player, key: string): (any, boolean)
+	for try = 1, LOAD_TRIES do
+		local ok, profile = pcall(store.StartSessionAsync, store, key, {
+			Cancel = function()
+				return player.Parent ~= Players
+			end,
+		})
+		if ok then
+			return profile, false
+		end
+		warn(`[playerdata] load of {key} for {player.Name} failed (try {try}): {profile}`)
+		local waited = 0
+		repeat
+			waited += task.wait(0.25)
+		until sessions[key] == nil or waited >= LOAD_WAIT or player.Parent ~= Players
+		if player.Parent ~= Players then
+			return nil, false
+		end
+	end
+	return nil, true
+end
+
 local function onPlayerAdded(player: Player)
 	local key = profileKey(player)
-	local profile = store:StartSessionAsync(key, {
-		Cancel = function()
-			return player.Parent ~= Players
-		end,
-	})
+	local profile, busy = startSession(player, key)
 	if not profile then
-		player:Kick("Could not load your save data. Please rejoin.")
+		player:Kick(
+			if busy
+				then "Your save is still closing from your last visit. Nothing is lost: please rejoin in a moment."
+				else "Could not load your save data. Please rejoin."
+		)
 		return
 	end
-	profile:AddUserId(player.UserId)
-	profile:Reconcile()
-	migrate(profile.Data)
+	sessions[key] = profile
+	profile.OnSessionEnd:Connect(function()
+		if sessions[key] == profile then
+			sessions[key] = nil
+		end
+	end)
+
+	--[[ Reconciled and migrated on a copy (2026-10-26 review): a throw here
+		held the session for good. Now it ends the session with the save as it
+		was loaded, never half migrated, and the player is told. ]]
+	local loaded = profile.Data
+	local prepared, why = pcall(function()
+		profile:AddUserId(player.UserId)
+		profile.Data = deepCopy(loaded)
+		profile:Reconcile()
+		migrate(profile.Data)
+	end)
+	if not prepared then
+		warn(`[playerdata] could not prepare {key} for {player.Name}: {why}`)
+		profile.Data = loaded
+		profile:EndSession()
+		player:Kick("Your save data could not be read. Nothing was changed: please rejoin.")
+		return
+	end
 
 	if player.Parent ~= Players then
 		profile:EndSession()
@@ -550,7 +620,10 @@ function PlayerData.onLoaded(callback: (Player, Data) -> ())
 	end
 end
 
--- Called once per session as it ends, while changes to `Data` are still saved.
+--[[ Called once per session as it ends, while changes to `Data` are still
+	saved. It must not yield: the session is held until every one returns,
+	and a rejoin to this server waits for it (2026-10-26 review). Work that
+	yields (a DataStore write) is worked out at once and spawned. ]]
 function PlayerData.onRelease(callback: (Player, Data) -> ())
 	table.insert(releaseCallbacks, callback)
 end
