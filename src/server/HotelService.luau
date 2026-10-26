@@ -165,8 +165,6 @@ local readinessCache: { [Player]: Rooms.Readiness } = {} -- with what each room 
 	third of a second each time (2026-10-24 evening, a server hitch). ]]
 export type RoomInfo = { bars: Rooms.Bars, size: number, decor: { string }, items: { string } }
 local infoCache: { [PlayerData.Data]: { [string]: RoomInfo } } = setmetatable({}, { __mode = "k" }) :: any
--- `sync`'s readiness by profile, for what asks by profile (a room's tags, a floor's amenities).
-local readyByData: { [PlayerData.Data]: Rooms.Readiness } = setmetatable({}, { __mode = "k" }) :: any
 --[[ Each activity room's spots (GDD A.13.1), by player and room id, kept until
 	the hotel next changes (`sync`): a spot is a placed piece's decor id and the
 	index of its `Use_<n>` (`ActivityKit.spots`), keyed "decorId:n"
@@ -177,16 +175,6 @@ local readyByData: { [PlayerData.Data]: Rooms.Readiness } = setmetatable({}, { _
 export type SpotRef = { key: Visits.SpotKey, decor: string, index: number, square: Rooms.Spot }
 local spotCache: { [Player]: { [string]: { SpotRef } } } = {}
 local spotKeyCache: { [Player]: { [string]: { Visits.SpotKey } } } = {}
-
--- Whether a room of this profile's played hotel is ready: as of the last `sync`, or worked out now.
-local function readyIn(data: PlayerData.Data, roomId: string): boolean
-	local all = readyByData[data]
-	local r = all and all[roomId]
-	if r then
-		return r.ok
-	end
-	return (Rooms.ready(world(data), roomId))
-end
 
 function HotelService.ready(player: Player, roomId: string): boolean
 	local cache = readyCache[player]
@@ -207,7 +195,6 @@ function HotelService.sync(player: Player)
 	spotKeyCache[player] = nil
 	local all = Rooms.readiness(world(data))
 	readinessCache[player] = all
-	readyByData[data] = all
 	local cache = {}
 	for id, rec in data.rooms do
 		local p = Pieces.get(rec.type)
@@ -302,18 +289,18 @@ function HotelService.roomTags(data: PlayerData.Data, roomId: string): { [string
 	return Furnish.tags(if info then info.items else {})
 end
 
---[[ The tags of the hotel's ready activity rooms (GDD A.13.1): what a guest
-	could meet by visiting. The bus's offer counts them (`vacantFor`), so a
-	hotel's amenities still draw the guests who want them now that they no
-	longer lend their tags to a floor. ]]
-function HotelService.visitTags(data: PlayerData.Data): { [string]: boolean }
+--[[ The tags of the hotel's activity rooms open to visits (GDD A.13.1:
+	ready, reachable, with at least one usable spot, `Visits.open`): what a
+	guest could meet by visiting. The bus's offer counts them (`vacantFor`),
+	so a hotel's amenities still draw the guests who want them now that they
+	no longer lend their tags to a floor; a room nobody can visit draws
+	nobody. ]]
+function HotelService.visitTags(player: Player): { [string]: boolean }
 	local tags = {}
-	for id, rec in data.rooms do
-		local p = Pieces.get(rec.type)
-		if p and Visits.isActivity(rec.type) and readyIn(data, id) then
-			for _, t in p.tags or {} do
-				tags[t] = true
-			end
+	for _, r in Visits.open(HotelService.activityRooms(player)) do
+		local p = Pieces.get(r.type)
+		for _, t in (p and p.tags) or {} do
+			tags[t] = true
 		end
 	end
 	return tags
@@ -459,18 +446,6 @@ function HotelService.visitedRooms(
 	return if hotel then Visits.busyRooms(hotel.visitors, into) else (into or {})
 end
 
--- The ready amenities on a floor (A.12: built like rooms).
-function HotelService.amenitiesOn(data: PlayerData.Data, floor: number): number
-	local n = 0
-	for id, rec in data.rooms do
-		local p = Pieces.get(rec.type)
-		if p and p.kind == "Amenity" and rec.floor == floor and readyIn(data, id) then
-			n += 1
-		end
-	end
-	return n
-end
-
 -- The ready rooms of a type (for the milestones' count, §6.2).
 function HotelService.readyOfType(player: Player, data: PlayerData.Data, typeId: string): number
 	local n = 0
@@ -482,6 +457,9 @@ function HotelService.readyOfType(player: Player, data: PlayerData.Data, typeId:
 	return n
 end
 
+--[[ `amenities`: the hotel's activity rooms open to visits (A.13.1: ready,
+	reachable, a usable spot, `Visits.open`), the bus's amenity bonus; the
+	floor rule (the amenities on the room's floor) is gone. ]]
 export type Offer = { pieceId: string, prefsMatched: number, amenities: number }
 
 -- The best vacant ready room of a species' type (A.12): the one matching most of its preferences, or nil.
@@ -493,8 +471,8 @@ function HotelService.vacantFor(player: Player, speciesId: string): Offer?
 		return nil
 	end
 	local best: Offer? = nil
-	local amenities: { [number]: number } = {} -- per floor, worked out once
-	local visitTags = HotelService.visitTags(data)
+	local open = #Visits.open(HotelService.activityRooms(player))
+	local visitTags = HotelService.visitTags(player)
 	for id, room in hotel.rooms do
 		local rec = data.rooms[id]
 		if
@@ -509,10 +487,8 @@ function HotelService.vacantFor(player: Player, speciesId: string): Offer?
 				tags[t] = true
 			end
 			local matched = Stay.matched(sp.prefs, tags)
-			local amen = amenities[rec.floor] or HotelService.amenitiesOn(data, rec.floor)
-			amenities[rec.floor] = amen
 			if not best or matched > best.prefsMatched then
-				best = { pieceId = id, prefsMatched = matched, amenities = amen }
+				best = { pieceId = id, prefsMatched = matched, amenities = open }
 			end
 		end
 	end

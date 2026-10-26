@@ -104,7 +104,6 @@ export type Guest = {
 	satBonus: number,
 	friendshipMult: number,
 	prefsMatched: number,
-	amenities: number,
 	stayEnd: number?,
 	requestAt: number?,
 	requestUntil: number?,
@@ -217,7 +216,6 @@ local function newGuest(speciesId: string, mutation: string?, source: string, si
 		satBonus = 0,
 		friendshipMult = 1,
 		prefsMatched = 0,
-		amenities = 0,
 		stayEnd = nil,
 		requestAt = nil,
 		requestUntil = nil,
@@ -736,7 +734,6 @@ function GuestService.checkIn(player: Player, byStaff: boolean?, deskId: string?
 		end
 	end
 	g.visitRewarded = false
-	g.amenities = HotelService.amenitiesOn(data, rec.floor)
 	-- The room's three bars' bonuses (A.12) replace the tiers' pay.
 	local _, bonus = HotelService.roomBars(data, g.room)
 	g.stayMult = if bonus then bonus.stay else 1
@@ -796,7 +793,8 @@ local function checkout(g: Guest)
 		Stay.satisfaction({
 			prefsMatched = g.prefsMatched,
 			tier = g.tier,
-			amenities = g.amenities,
+			-- The floor rule goes (A.13.1): activity rooms add to a stay only by visits (their +5, `satBonus`).
+			amenities = 0,
 			requestsPlayer = g.requestsPlayer,
 			requestsStaff = g.requestsStaff,
 			requestsMissed = g.requestsMissed,

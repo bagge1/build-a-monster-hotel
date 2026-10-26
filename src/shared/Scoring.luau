@@ -28,7 +28,7 @@ export type Candidate = {
 	eligible: boolean,
 	rating: number,
 	prefsMatched: number, -- in the best vacant room of the type
-	amenityBonus: number, -- amenities on that room's floor
+	amenityBonus: number, -- the hotel's activity rooms open to visits (GDD A.13.1)
 	pitched: boolean,
 	busBonus: number?, -- the Moon Tree's, as a fraction
 	distance: number,
