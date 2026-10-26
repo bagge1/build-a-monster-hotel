@@ -952,14 +952,118 @@ describe("Rooms", function()
 			local sold = table.clone(wd)
 			sold.decor = {}
 			for _, phase in { "Going", "There" } do
-				local busy = Visits.busyRooms({ v = { room = "g", spot = 1, phase = phase } })
+				local busy = Visits.busyRooms({ v = { room = "g", spot = "p:1", phase = phase } })
 				expect.truthy(
 					not Rooms.keepsBusy(wd, sold, busy),
 					`selling its key with a visitor {phase}`
 				)
 			end
-			local back = Visits.busyRooms({ v = { room = "g", spot = 1, phase = "Back" } })
+			local back = Visits.busyRooms({ v = { room = "g", spot = "p:1", phase = "Back" } })
 			expect.truthy(Rooms.keepsBusy(wd, sold, back), "the visitor walking back")
 		end
 	)
+
+	-- A.13.1: a visitor steps onto its spot from a square in the room, never through a wall.
+	it(
+		"a spot's approach is in its room and across no wall; with none, the spot is unusable",
+		function()
+			local wd = world()
+			room(wd, "g", "GameRoom", 8, 4, 2, 2)
+			local x0, z0 = 8 * Q, 4 * Q
+			table.insert(wd.decor, decor("PoolTable", 1, x0 + 3, z0 + 2, 0))
+			expect.truthy(Rooms.ready(wd, "g"), "the Game Room ready")
+			-- A spot in the back corner, every square of the room within reach of it furnished.
+			local sx, sz = x0, z0 + 2 * Q - 1
+			local item = smallDecor()[1]
+			local blockers = {}
+			for z = sz - 2, sz do
+				for x = sx, sx + 2 do
+					local d = decor(item, 1, x, z, 0)
+					d.id = `b{x}:{z}`
+					table.insert(wd.decor, d)
+					blockers[`{x}:{z}`] = d
+				end
+			end
+			-- The hallway behind the wall is a square a guest stands on, two squares away.
+			expect.truthy(Rooms.walkable(wd, 1, sx - 1, sz), "the hallway beyond the wall")
+			expect.truthy(Rooms.walkable(wd, 1, sx, sz + 1), "and beyond the back wall")
+			expect.eq(Rooms.spotApproach(wd, "g", sx, sz), nil, "no square in the room: unusable")
+			-- One square in the room freed: that is the way onto the spot.
+			local freed = blockers[`{sx + 2}:{sz - 1}`]
+			table.remove(wd.decor, table.find(wd.decor, freed))
+			local a = Rooms.spotApproach(wd, "g", sx, sz)
+			expect.truthy(a, "an approach")
+			expect.eq((a :: any).x, sx + 2)
+			expect.eq((a :: any).z, sz - 1)
+			expect.eq(Rooms.roomAtSquare(wd, 1, (a :: any).x, (a :: any).z), "g", "in the room")
+			expect.truthy(Rooms.route(wd, entranceSquare(), a :: any), "reached from the entrance")
+			-- A spot whose own square is free is its own approach.
+			local own = Rooms.spotApproach(wd, "g", x0 + 6, z0 + 6)
+			expect.truthy(own and own.x == x0 + 6 and own.z == z0 + 6, "a Stand square")
+			-- The room walled shut: no spot of it is usable.
+			for _, w in wd.walls do
+				w.door = nil
+			end
+			expect.eq(Rooms.spotApproach(wd, "g", x0 + 6, z0 + 6), nil, "not reached: unusable")
+			expect.eq(Rooms.spotApproach(wd, "nope", x0 + 6, z0 + 6), nil, "no such room")
+		end
+	)
+
+	it(
+		"a guest called back walks on from a square near it on its side of a wall, never through it",
+		function()
+			local wd = world()
+			room(wd, "g", "GameRoom", 8, 4, 2, 2)
+			local x0, z0 = 8 * Q, 4 * Q
+			-- Standing on a free square: that square.
+			local here = Rooms.standNear(wd, 1, x0 + 5, z0 + 5)
+			expect.truthy(here and here.x == x0 + 5 and here.z == z0 + 5, "where it stands")
+			-- On a seat in the back corner (the door is at the front), the room's squares near it
+			-- furnished: never the hallway beyond the walls.
+			local item = smallDecor()[1]
+			local bz = z0 + 2 * Q - 1
+			for z = bz - 2, bz do
+				for x = x0, x0 + 2 do
+					table.insert(wd.decor, decor(item, 1, x, z, 0))
+				end
+			end
+			expect.truthy(Rooms.walkable(wd, 1, x0 - 1, bz), "the hallway beyond the wall")
+			local off = Rooms.standNear(wd, 1, x0, bz)
+			expect.eq(off, nil, "no square on its side within reach")
+			table.remove(wd.decor, #wd.decor) -- the square at (x0 + 2, bz) freed
+			off = Rooms.standNear(wd, 1, x0, bz)
+			expect.truthy(off and off.x == x0 + 2 and off.z == bz, "the free square in the room")
+			expect.eq(Rooms.standNear(wd, 1, -1, 0), nil, "off the plot")
+		end
+	)
+
+	it("a world remembered answers as a fresh one, and forgetting it changes nothing", function()
+		local wd = world()
+		room(wd, "r", "StandardRoom", 8, 4, 2, 2)
+		bedIn(wd, 8, 4)
+		local spot = Rooms.keySpot(wd, "r")
+		local fresh = Rooms.route(wd, entranceSquare(), spot :: any)
+		local again, kept
+		Rooms.withWalk(wd, function()
+			kept = Rooms.keySpot(wd, "r")
+			again = Rooms.route(wd, entranceSquare(), kept :: any)
+			-- Asked many times, one grid: the same answers.
+			for _ = 1, 5 do
+				local k = Rooms.keySpot(wd, "r") :: any
+				expect.truthy(k.x == (kept :: any).x and k.z == (kept :: any).z, "the same spot")
+			end
+		end)
+		expect.truthy(spot and kept and spot.x == kept.x and spot.z == kept.z, "the same key spot")
+		expect.eq(#(again :: any), #(fresh :: any), "the same route")
+		-- Forgotten: a change is seen again.
+		for _, w in wd.walls do
+			w.door = nil
+		end
+		expect.eq(Rooms.keySpot(wd, "r"), nil, "the change seen once forgotten")
+		local ok = pcall(Rooms.withWalk, wd, function()
+			error("boom")
+		end)
+		expect.truthy(not ok, "an error passes through")
+		expect.eq(Rooms.keySpot(wd, "r"), nil, "and the world is forgotten after it")
+	end)
 end)

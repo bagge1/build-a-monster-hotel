@@ -10,13 +10,19 @@
 	  and A.13.2's types) that is ready, reachable from the guest's room (the
 	  caller's flag: `Rooms.route` found a way, not merely the same floor, as
 	  `amenitiesOn` did) and has a free spot, whose tags meet a preference;
-	- spots: a room's capacity is its spots (`Use_<n>` on its activity
-	  furniture, MODELS.md, counted by the caller); one guest a spot, one spot
-	  a guest; a spot is taken when the guest sets out, so two never walk to
-	  the same one, and freed when it leaves;
+	- spots: a room's capacity is its usable spots (`Use_<n>` on its activity
+	  furniture, MODELS.md, with a square in the room a visitor steps onto it
+	  from, `Rooms.spotApproach`; listed by the caller). A spot is named by its
+	  piece's decor id and its number (`Visits.spotKey`, "12:2"), never by its
+	  place in a list, so selling or moving another piece never moves it. One
+	  guest a spot, one spot a guest; a spot is taken when the guest sets out
+	  (`Visits.begin`), so two never walk to the same one, and freed when it
+	  leaves; a visitor whose piece is sold or moved is sent back
+	  (`Visits.stranded`, `Visits.onPiece`);
 	- when: every 90–150 s of a stay, at most one decision a guest per 10 s,
-	  and at most 12 visitors walking at once per hotel, so a full hotel does
-	  not route every frame;
+	  at most 12 visitors walking at once per hotel, so a full hotel does not
+	  route every frame, and only while the stay has time left for the walk
+	  and the shortest action (`Visits.fits`);
 	- what a visit gives: the preferences it meets count as met for the stay,
 	  and +5 satisfaction once a stay;
 	- busy: a room with a visitor in it or on the way is busy (`Rooms.keepsBusy`).
@@ -34,21 +40,23 @@ local Visits = {}
 -- Every number of A.13.1, PLACEHOLDER each: `Constants.Visits`, where the tuning lives.
 local C = Constants.Visits
 
--- An activity room as the caller sees it now. `spots` counts the `Use_<n>` of its furniture.
+-- A spot's name: its piece's decor id and its `Use_<n>`'s number, "decorId:n" (`Visits.spotKey`).
+export type SpotKey = string
+-- An activity room as the caller sees it now. `spots` lists its usable spots, in a fixed order.
 export type RoomInfo = {
 	id: string,
 	type: string,
 	ready: boolean,
 	reachable: boolean, -- a route from the guest's room to it (Rooms.route)
-	spots: number,
+	spots: { SpotKey },
 }
--- The spots taken in a hotel: room id -> spot index (1..spots) -> guest id.
-export type Taken = { [string]: { [number]: string } }
+-- The spots taken in a hotel: room id -> spot key -> guest id.
+export type Taken = { [string]: { [SpotKey]: string } }
 -- A visit under way: `Going` to the room, `There` doing the action, `Back` to its own room.
 export type Phase = "Going" | "There" | "Back"
-export type Visitor = { room: string, spot: number, phase: Phase }
+export type Visitor = { room: string, spot: SpotKey, phase: Phase }
 -- A visit chosen: the room, the spot taken there and the preference that drew the guest.
-export type Choice = { room: string, spot: number, pref: string }
+export type Choice = { room: string, spot: SpotKey, pref: string }
 export type Decide = {
 	now: number,
 	dueAt: number, -- when this guest's next visit is due (`Visits.nextAt`)
@@ -88,34 +96,69 @@ function Visits.meets(prefs: { string }, typeId: string): { string }
 	return out
 end
 
+--[[ The rooms guests can visit now (A.13.1): activity rooms, ready, reachable
+	and with at least one usable spot. What the bus counts and offers
+	(`HotelService.visitTags`, its amenity bonus); a room with no usable spot
+	draws nobody. ]]
+function Visits.open(rooms: { RoomInfo }): { RoomInfo }
+	local out = {}
+	for _, r in rooms do
+		if r.ready and r.reachable and #r.spots > 0 and Visits.isActivity(r.type) then
+			table.insert(out, r)
+		end
+	end
+	return out
+end
+
 -- ===== Spots =====
 
--- How many of a room's spots are taken ("2/4 spots in use", A.13.1).
-function Visits.inUse(taken: Taken, roomId: string): number
+-- A spot's key: the piece's decor id and its `Use_<n>`'s number.
+function Visits.spotKey(decor: string, n: number): SpotKey
+	return `{decor}:{n}`
+end
+
+-- The decor id of the piece a spot is on, nil for a key that is not a spot's.
+function Visits.pieceOf(spot: SpotKey): string?
+	return string.match(spot, "^(.+):%d+$")
+end
+
+--[[ How many of a room's spots are taken ("2/4 spots in use", A.13.1): of
+	`spots` when given (its spots now, so a spot gone never counts), else
+	every one held. ]]
+function Visits.inUse(taken: Taken, roomId: string, spots: { SpotKey }?): number
+	local t = taken[roomId] or {}
 	local n = 0
-	for _ in taken[roomId] or {} do
+	if spots then
+		for _, k in spots do
+			if t[k] ~= nil then
+				n += 1
+			end
+		end
+		return n
+	end
+	for _ in t do
 		n += 1
 	end
 	return n
 end
 
--- The lowest free spot of a room with `spots` spots, or nil when every one is taken.
-function Visits.freeSpot(taken: Taken, roomId: string, spots: number): number?
+-- The first free spot of a room's `spots`, in their order, or nil when every one is taken.
+function Visits.freeSpot(taken: Taken, roomId: string, spots: { SpotKey }): SpotKey?
 	local t = taken[roomId] or {}
-	for i = 1, spots do
-		if t[i] == nil then
-			return i
+	for _, k in spots do
+		if t[k] == nil then
+			return k
 		end
 	end
 	return nil
 end
 
 -- The spot a guest holds, if any.
-function Visits.spotOf(taken: Taken, guest: string): (string?, number?)
+function Visits.spotOf(taken: Taken, guest: string): (string?, SpotKey?)
 	for roomId, t in taken do
-		for i, g in t do
+		for k, g in t do
 			if g == guest then
-				return roomId, i
+				return roomId, k
 			end
 		end
 	end
@@ -123,27 +166,27 @@ function Visits.spotOf(taken: Taken, guest: string): (string?, number?)
 end
 
 --[[ Takes spot `spot` of a room for `guest`: refused when the spot is not
-	one of the room's, is taken, or the guest holds a spot already. ]]
+	one of the room's `spots`, is taken, or the guest holds a spot already. ]]
 function Visits.take(
 	taken: Taken,
 	roomId: string,
-	spot: number,
-	spots: number,
+	spot: SpotKey,
+	spots: { SpotKey },
 	guest: string
 ): boolean
-	if spot < 1 or spot > spots or spot % 1 ~= 0 then
+	if not table.find(spots, spot) then
 		return false
 	end
 	if Visits.spotOf(taken, guest) ~= nil then
 		return false
 	end
 	local t = taken[roomId]
+	if t and t[spot] ~= nil then
+		return false
+	end
 	if not t then
 		t = {}
 		taken[roomId] = t
-	end
-	if t[spot] ~= nil then
-		return false
 	end
 	t[spot] = guest
 	return true
@@ -151,21 +194,42 @@ end
 
 -- Frees the spot a guest holds (it left, was sent home or checked out); whether it held one.
 function Visits.free(taken: Taken, guest: string): boolean
-	local roomId, i = Visits.spotOf(taken, guest)
-	if not roomId or not i then
+	local roomId, k = Visits.spotOf(taken, guest)
+	if not roomId or not k then
 		return false
 	end
 	local t = taken[roomId]
-	t[i] = nil
+	t[k] = nil
 	if next(t) == nil then
 		taken[roomId] = nil
 	end
 	return true
 end
 
+--[[ A visit begun, in one step (A.13.1): the choice's spot taken for `guest`
+	and the guest recorded `Going` there, or neither (refused as `take` is,
+	or when the guest is a visitor already), so a spot is never held by
+	nobody's visit. ]]
+function Visits.begin(
+	taken: Taken,
+	visitors: { [string]: Visitor },
+	guest: string,
+	choice: Choice,
+	spots: { SpotKey }
+): boolean
+	if visitors[guest] ~= nil then
+		return false
+	end
+	if not Visits.take(taken, choice.room, choice.spot, spots, guest) then
+		return false
+	end
+	visitors[guest] = { room = choice.room, spot = choice.spot, phase = "Going" }
+	return true
+end
+
 -- ===== Choosing =====
 
---[[ The visits a guest may make now, one per room (its lowest free spot), in
+--[[ The visits a guest may make now, one per room (its first free spot), in
 	room-id order: an activity room, ready, reachable, with a free spot, whose
 	tags meet one of the guest's preferences. When some room meets a
 	preference not yet met this stay (`met`), only those: a guest goes first
@@ -231,6 +295,14 @@ function Visits.mayDecide(now: number, dueAt: number, lastDecision: number?): bo
 	return now >= dueAt and (lastDecision == nil or now - lastDecision >= C.DecisionGap)
 end
 
+--[[ Whether a visit fits in what is left of the stay (`remaining` seconds,
+	nil for no end set): the walk there and back (`walk`, the caller's
+	estimate) and the shortest action. A visit that would not is not begun,
+	so a check-out never waits long on a guest out at a spot. ]]
+function Visits.fits(remaining: number?, walk: number): boolean
+	return remaining == nil or remaining >= walk + C.DoMin
+end
+
 -- How many visitors are walking (to a room or back), for the cap.
 function Visits.walking(visitors: { [string]: Visitor }): number
 	local n = 0
@@ -256,7 +328,7 @@ end
 	not decide yet; otherwise it decided now (the caller stores `now` as its
 	last decision), and the visit chosen, nil when there is none or the
 	hotel's walkers are at the cap (it tries again after the gap). The caller
-	takes the choice's spot (`Visits.take`) and sets the guest `Going`. ]]
+	begins the visit (`Visits.begin`: the spot taken, the guest `Going`). ]]
 function Visits.decide(i: Decide): (Choice?, boolean)
 	if not Visits.mayDecide(i.now, i.dueAt, i.lastDecision) then
 		return nil, false
@@ -295,11 +367,33 @@ function Visits.busyRooms(
 	return out
 end
 
--- The visitors to send home (A.13.1): on the way to or in a room no longer ready (`ready` by room id).
-function Visits.stranded(visitors: { [string]: Visitor }, ready: { [string]: boolean }): { string }
+--[[ The visitors to send home (A.13.1): on the way to or in a room no
+	longer ready (`ready` by room id), or, when `spots` (each room's spots
+	now) is given, whose spot is no longer one of its room's (its piece sold,
+	or moved where no square reaches it). ]]
+function Visits.stranded(
+	visitors: { [string]: Visitor },
+	ready: { [string]: boolean },
+	spots: { [string]: { SpotKey } }?
+): { string }
 	local out = {}
 	for g, v in visitors do
-		if (v.phase == "Going" or v.phase == "There") and not ready[v.room] then
+		if v.phase == "Going" or v.phase == "There" then
+			local gone = spots ~= nil and not table.find(spots[v.room] or {}, v.spot)
+			if not ready[v.room] or gone then
+				table.insert(out, g)
+			end
+		end
+	end
+	table.sort(out)
+	return out
+end
+
+-- The visitors on the way to or at a spot on piece `decor` (sold or moved: each is sent back), sorted.
+function Visits.onPiece(visitors: { [string]: Visitor }, decor: string): { string }
+	local out = {}
+	for g, v in visitors do
+		if (v.phase == "Going" or v.phase == "There") and Visits.pieceOf(v.spot) == decor then
 			table.insert(out, g)
 		end
 	end

@@ -907,6 +907,8 @@ local function moveDecor(
 	end
 	rec.floor, rec.x, rec.z, rec.r, rec.room = floor, x, z, r, ""
 	decorChanged(player, id)
+	-- A visitor at one of its spots is sent back, not left sitting on nothing (GDD A.13.1).
+	HotelService.pieceChanged(player, id)
 end
 
 local function sellDecor(player: Player, idNumber: number)
@@ -923,6 +925,7 @@ local function sellDecor(player: Player, idNumber: number)
 	data.decor[id] = nil
 	PlayerData.refund(player, Economy.refund(rec.paid or 0))
 	decorChanged(player, id)
+	HotelService.pieceChanged(player, id) -- its visitors sent back (GDD A.13.1)
 end
 
 -- A floor finish: `target` a built room's id or "Hallway"; "" is the slab's own.
