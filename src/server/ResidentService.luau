@@ -395,9 +395,9 @@ local function release(player: Player, idNumber: number)
 	publish(player)
 end
 
--- The Wing's residents' combined rate, before offline's 50 %.
-function ResidentService.rate(player: Player, data: PlayerData.Data): number
-	local m = Income.multiplier(player)
+-- The Wing's residents' combined rate, before offline's 50 %; `offline` for the time away (no friend bonus).
+function ResidentService.rate(player: Player, data: PlayerData.Data, offline: boolean?): number
+	local m = Income.multiplier(player, offline)
 		* (1 + Perks.total(data.residents, "ResidentIncome", os.time()))
 	local total = 0
 	for _, r in data.residents do
@@ -429,7 +429,8 @@ local function welcomeBack(player: Player, data: PlayerData.Data)
 	end
 	local away = os.time() - data.lastSeen
 	local cap = ResidentService.offlineCap(player, data)
-	local earned = Economy.offline(ResidentService.rate(player, data), away, cap)
+	-- No friend bonus for the hours away, whoever is online now (WAITING §2.48, his yes 2026-10-26).
+	local earned = Economy.offline(ResidentService.rate(player, data, true), away, cap)
 	if earned > 0 then
 		PlayerData.addTill(player, earned)
 		Net.fire(

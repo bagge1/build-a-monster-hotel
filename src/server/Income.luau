@@ -7,7 +7,8 @@
 	required by whoever pays: the Moon Tree's cash nodes and the Book's
 	families add to `permanent`; the friend bonus (§7) and timed boosts
 	(§10.2) are their own categories. Every payer (guests, tips, residents)
-	asks `Income.multiplier(player)`.
+	asks `Income.multiplier(player)`; the residents' offline earnings ask it
+	with `offline`, which leaves the friend bonus out (WAITING §2.48).
 ]]
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -34,7 +35,9 @@ function Income.setFriends(provider: (Player) -> boolean)
 	friends = provider
 end
 
-function Income.multiplier(player: Player): number
+--[[ The player's income multiplier now; `offline` for what pays the time it was away
+	(§4.6): without the friend bonus (`Economy.offlineBonuses`, WAITING §2.48). ]]
+function Income.multiplier(player: Player, offline: boolean?): number
 	local p = 0
 	for _, f in permanent do
 		local ok, v = pcall(f, player)
@@ -54,7 +57,12 @@ function Income.multiplier(player: Player): number
 		local ok, v = pcall(friends, player)
 		withFriends = ok and v == true
 	end
-	local m = Economy.incomeMultiplier({ permanent = p, friends = withFriends, boost = boost })
+	local bonuses: Economy.Bonuses = { permanent = p, friends = withFriends, boost = boost }
+	if offline then
+		-- Not published: the HUD's multiplier is the one paying now.
+		return Economy.incomeMultiplier(Economy.offlineBonuses(bonuses))
+	end
+	local m = Economy.incomeMultiplier(bonuses)
 	player:SetAttribute("IncomeMultiplier", m)
 	return m
 end

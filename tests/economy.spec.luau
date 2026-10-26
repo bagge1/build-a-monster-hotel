@@ -113,6 +113,21 @@ describe("Economy", function()
 		expect.truthy(Economy.offline(10, cap, cap) < 10 * cap, "less than online")
 	end)
 
+	-- WAITING §2.48 (his yes 2026-10-26).
+	it("offline earnings never carry the friend bonus, and keep every other", function()
+		local b = { permanent = 0.2, friends = true, boost = 2 }
+		local away = Economy.incomeMultiplier(Economy.offlineBonuses(b))
+		local plain = Economy.incomeMultiplier({ permanent = 0.2, boost = 2 })
+		expect.near(away, plain, 1e-9, "no friend bonus")
+		expect.truthy(away < Economy.incomeMultiplier(b), "less than with friends online")
+		expect.near(
+			Economy.incomeMultiplier(Economy.offlineBonuses({ permanent = 0.2, boost = 2 })),
+			away,
+			1e-9,
+			"the same without friends online"
+		)
+	end)
+
 	it("rebirth shards grow with run cash, and 4x the cash doubles them", function()
 		local prev = -1
 		for _, cash in { 0, 1e5, 1e6, 2e6, 4e6, 1e8 } do
