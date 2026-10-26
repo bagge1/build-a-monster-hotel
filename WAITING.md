@@ -388,6 +388,20 @@ Med Claudes skärmdump där det finns en. -->
    - Bänkens hästskoformade ansiktsstöd, höjden 2,35, ett klipp för att ligga
      på magen.
 
+21. **Dansgolvet, högtalaren och discokulan** (natten 2026-10-26, GDD A.13;
+   validerade i Blender, tre blinda granskningar i
+   `blender/rooms/haunted_manor_dance/README.md`; **inte importerade**; spelets
+   rader stämmer redan). Bilder: `archive/screens/2026-10-26_dance/`
+   (`dance_game_camera.jpg`, `dance_four_floors.jpg`: fyra golv i rad,
+   `dance_silhouettes.jpg`). Dina val:
+   - Plattornas färger: magenta och månblått (mot Manors egna nycklar).
+   - Kulan kan inte hänga över golvet (en 1×1-bit håller sin kula i sin ruta
+     och under 7): ett taklager i MODELS.md först. Stativet läses som en
+     gongong eller galge, och kulan sitter i huvudhöjd.
+   - Dansare 3 isär når varandras armar (en plats per ruta, som vid disken).
+   - Utseenden: högtalaren bakifrån (en garderob), de halva guldprickarna vid
+     ett ensamt golvs kant, det tunna mörka järnet.
+
 ## §2 Beslut
 
 <!-- En fråga i taget, med alternativen och Claudes rekommendation. -->
