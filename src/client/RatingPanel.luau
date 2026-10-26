@@ -92,11 +92,40 @@ function RatingPanel.Start()
 			redraw()
 		end
 	end, 2)
-	me:GetAttributeChangedSignal("Rating"):Connect(function()
+	local function changed()
 		if window.Visible then
 			redraw()
 		end
+	end
+	me:GetAttributeChangedSignal("Rating"):Connect(changed)
+	-- The bars are the plot's `Categories`, which move without the stars; a Travel is another
+	-- plot (2026-10-26: an open breakdown kept the old numbers, or the hotel left behind).
+	local watched: { RBXScriptConnection } = {}
+	local function watch()
+		for _, c in watched do
+			c:Disconnect()
+		end
+		table.clear(watched)
+		local plots = workspace:FindFirstChild("Plots")
+		local plot = plots and plots:FindFirstChild(`Plot_{me:GetAttribute("Plot")}`)
+		if plot then
+			for _, a in { "Categories", "Rating" } do
+				table.insert(watched, plot:GetAttributeChangedSignal(a):Connect(changed))
+			end
+		end
+	end
+	for _, a in { "Plot", "Street" } do
+		me:GetAttributeChangedSignal(a):Connect(function()
+			watch()
+			changed()
+		end)
+	end
+	window:GetPropertyChangedSignal("Visible"):Connect(function()
+		if window.Visible then
+			watch() -- the plot's model may have streamed in since
+		end
 	end)
+	watch()
 end
 
 return RatingPanel

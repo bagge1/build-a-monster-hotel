@@ -331,6 +331,19 @@ function GuestRenderer.Start()
 	folder.ChildAdded:Connect(add)
 	folder.ChildRemoved:Connect(remove)
 	RunService.Heartbeat:Connect(frame)
+	-- A refused pitch (too far away, BusService) may be tried again: its prompt comes back
+	-- (2026-10-26: it stayed "Pitched!" and dead for the guest's whole visit).
+	Net.listen("Refused", function(remote: string, _reason: string, guestId: number?)
+		if remote ~= "Pitch" or guestId == nil then
+			return
+		end
+		for c, d in drawn do
+			if c.Name == tostring(guestId) and d.prompt then
+				d.prompt.Enabled = true
+				d.prompt.ActionText = "Pitch"
+			end
+		end
+	end)
 end
 
 return GuestRenderer

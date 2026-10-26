@@ -15,6 +15,7 @@ local RunService = game:GetService("RunService")
 
 local HotelPoints = require(ReplicatedStorage.Shared.HotelPoints)
 local Net = require(ReplicatedStorage.Shared.Net)
+local BuildController = require(script.Parent.BuildController)
 local Ui = require(script.Parent.Ui)
 local UiImages = require(script.Parent.UiImages)
 
@@ -236,19 +237,30 @@ function TutorialController.Start()
 			local p = target.AbsolutePosition
 			local size = target.AbsoluteSize
 			-- A centred label points at its text, not its (wider) box.
-			local rightEdge = p.X + size.X
+			local leftEdge, rightEdge = p.X, p.X + size.X
 			if target:IsA("TextLabel") and target.TextXAlignment == Enum.TextXAlignment.Center then
+				leftEdge = p.X + size.X / 2 - target.TextBounds.X / 2
 				rightEdge = p.X + size.X / 2 + target.TextBounds.X / 2
 			end
 			local bob = math.sin(os.clock() * 6) * 6
-			arrow.Position = UDim2.fromOffset(rightEdge + 8 + bob, p.Y + size.Y / 2 - 25)
+			-- On the side with room: from the left at a target by the right edge (2026-10-26: the
+			-- right column's ProgressionButton had its arrow drawn off the screen).
+			local width = (arrow.Parent :: ScreenGui).AbsoluteSize.X
+			local fromLeft = rightEdge + 8 + 50 + 6 > width
+			arrow.Text = if fromLeft then "▶" else "◀"
+			arrow.TextXAlignment = if fromLeft
+				then Enum.TextXAlignment.Right
+				else Enum.TextXAlignment.Left
+			local x = if fromLeft then leftEdge - 8 - 50 - bob else rightEdge + 8 + bob
+			arrow.Position = UDim2.fromOffset(x, p.Y + size.Y / 2 - 25)
 			arrow.Visible = true
 		else
 			arrow.Visible = false
 		end
 	end)
 	Net.listen("Moment", function(kind: string)
-		if kind == "OpenBook" then
+		-- Not over build mode, which keeps every panel shut (UI.md "One panel at a time", 2026-10-26).
+		if kind == "OpenBook" and not BuildController.isActive() then
 			local panels = require(script.Parent.CollectionPanels) :: any
 			panels.openBook()
 		end

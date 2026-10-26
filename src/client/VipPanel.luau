@@ -14,6 +14,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Format = require(ReplicatedStorage.Shared.Format)
 local Net = require(ReplicatedStorage.Shared.Net)
+local BuildController = require(script.Parent.BuildController)
 local State = require(script.Parent.State)
 local Ui = require(script.Parent.Ui)
 local Hud = require(script.Parent.Hud)
@@ -265,8 +266,12 @@ function VipPanel.Start()
 		end
 	end)
 	Net.listen("Moment", function(kind: string, data: any)
+		-- The desk's prompt: not over build mode, which keeps every panel shut (UI.md "One panel
+		-- at a time"; 2026-10-26: it opened the ledger over the hotel being built).
 		if kind == "VipLedger" then
-			VipPanel.open()
+			if not BuildController.isActive() then
+				VipPanel.open()
+			end
 		elseif kind == "VipDone" and typeof(data) == "table" then
 			done(data)
 		end

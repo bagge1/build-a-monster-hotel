@@ -39,6 +39,7 @@ function Pings.Init()
 	)
 	menu.Active = true -- a tap between its phrases never reaches a HUD button behind it
 	menu.Visible = false
+	Ui.trackMenu(menu) -- shut by a panel opening and by build mode (UI.md "One panel at a time")
 	-- The gamepad (§11): the first phrase selected when it opens, ButtonB closes it.
 	Controls.panel(menu, function()
 		menu.Visible = false

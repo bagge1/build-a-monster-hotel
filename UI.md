@@ -41,6 +41,16 @@ stands at the screen's centre; opening one closes any other `<X>Panel`
 (`FoundPopup`, `VipDone`, `ShowcaseMilestone`) and build mode's windows are
 named otherwise and may stand over a panel. Entering build mode closes every
 panel (`Ui.closePanels`): one left open lay over the hotel and took its taps.
+A HUD menu that is not a panel (`PingMenu`, `Ui.trackMenu`) shuts when a panel
+opens and with `Ui.closePanels`; the desk's VIP ledger and Gloom's Book do not
+open while build mode is. The toasts have their own ScreenGui (`Toasts`,
+DisplayOrder 8), over every window and Gloom's bubble, so a refusal of a
+button in a panel is seen (2026-10-26).
+
+A list a panel redraws on every state send is `Ui.keptScroll`: the same
+ScrollingFrame emptied and refilled, so it keeps the player's place, and the
+Daily panel's code box is built once, so a code being typed survives a redraw
+(2026-10-26).
 
 ### Gamepad
 

@@ -599,7 +599,7 @@ local function pitch(player: Player, guestId: number)
 	end
 	local d = (character:GetPivot().Position - GuestService.positionOf(g)).Magnitude
 	if d > Constants.Scoring.PitchRange + 4 then -- a little slack for the client's drawing
-		Net.fire(player, "Refused", "Pitch", "Too far away")
+		Net.fire(player, "Refused", "Pitch", "Too far away", guestId) -- the client's prompt comes back
 		return
 	end
 	g.pitches[player.UserId] = plot.index

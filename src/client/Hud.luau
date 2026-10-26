@@ -294,7 +294,14 @@ function Hud.Init()
 	right.AnchorPoint = Vector2.new(1, 0)
 	right.BackgroundTransparency = 1
 	Ui.list(right, Enum.FillDirection.Vertical, 6, Enum.HorizontalAlignment.Right)
-	toasts = Ui.frame(gui, "Toasts", UDim2.fromOffset(420, 200), UDim2.new(0.5, 0, 0, 110))
+	-- The toasts have a gui of their own, over every window and Gloom's bubble (2026-10-26: under
+	-- the Panels gui, a refusal of a button inside a panel was never seen).
+	toasts = Ui.frame(
+		Ui.screen("Toasts", 8),
+		"Toasts",
+		UDim2.fromOffset(420, 200),
+		UDim2.new(0.5, 0, 0, 110)
+	)
 	toasts.AnchorPoint = Vector2.new(0.5, 0)
 	toasts.BackgroundTransparency = 1
 	Ui.list(toasts, Enum.FillDirection.Vertical, 6, Enum.HorizontalAlignment.Center)

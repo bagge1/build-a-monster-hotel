@@ -208,11 +208,35 @@ function Ui.scroll(
 	return s
 end
 
+--[[ A list redrawn whole on every state send (Residents, the Book's pages, the Store): the same
+	ScrollingFrame emptied and refilled, so it keeps where the player had scrolled it (2026-10-26:
+	a new one each send snapped to the top under the player's finger). The panel's own clear
+	leaves it standing; `fresh` is true the first time, for what is connected only once. ]]
+function Ui.keptScroll(parent: Instance, name: string, size: UDim2): (ScrollingFrame, boolean)
+	local old = parent:FindFirstChild(name)
+	if old and old:IsA("ScrollingFrame") then
+		for _, c in old:GetChildren() do
+			c:Destroy()
+		end
+		old.Size = size
+		return old, false
+	end
+	return Ui.scroll(parent, name, size), true
+end
+
 --[[ The HUD's panels (a window named `<X>Panel`, UI.md "One panel at a time"): opening one
 	closes the others, which all stand at the screen's centre (2026-10-26 night: eight
 	opened one on another by the HUD's buttons). Pop-ups and build mode's windows are
 	named otherwise and stand over a panel. ]]
 local panels: { Frame } = {}
+-- The HUD's menus that are not panels (`PingMenu`): shut by a panel opening and by closePanels.
+local menus: { GuiObject } = {}
+
+local function closeMenus()
+	for _, m in menus do
+		m.Visible = false
+	end
+end
 
 local function trackPanel(w: Frame)
 	table.insert(panels, w)
@@ -225,7 +249,14 @@ local function trackPanel(w: Frame)
 				other.Visible = false
 			end
 		end
+		closeMenus()
 	end)
+end
+
+--[[ A HUD menu that is not a `<X>Panel` (the Ping menu), shut when a panel opens or build mode
+	starts (2026-10-26: it stayed open over the window opened after it, in the same gui). ]]
+function Ui.trackMenu(m: GuiObject)
+	table.insert(menus, m)
 end
 
 -- Closes every HUD panel (build mode opening over the hotel, UI.md "One panel at a time").
@@ -233,6 +264,7 @@ function Ui.closePanels()
 	for _, w in panels do
 		w.Visible = false
 	end
+	closeMenus()
 end
 
 -- A window with a title and a cross in its top-right corner (UI.md, "Pop-ups close with a cross").
