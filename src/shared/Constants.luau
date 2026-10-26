@@ -238,6 +238,9 @@ Constants.Tutorial = {
 	FirstGuestDelay = 6, -- PLACEHOLDER: the first Slime after the first room (§11 0:30)
 	CommonBuses = 2, -- PLACEHOLDER: the buses that bring a new hotel its Commons (§11 1:45)
 	CommonsPerBus = 2, -- PLACEHOLDER: at most this many Commons per hotel on such a bus
+	-- The goal card's 8 s, moved here from TutorialService (2026-10-26) so the client counts it:
+	-- seconds on screen and uncovered before it closes by itself.
+	GoalCardTime = 8,
 }
 
 -- §5.3, Appendix A.4: the rating.

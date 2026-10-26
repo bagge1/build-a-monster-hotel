@@ -121,9 +121,16 @@ local tab = "Wall"
 -- Each tab's button name (UI.md "Build mode").
 local tabNames: { [string]: string } = { Wall = "Walls", Room = "Rooms" }
 local paintTabs: () -> ()
+-- Gloom's short line for the tutorial step being built (TutorialController), keyboard and
+-- gamepad words: Gloom's bubble steps aside while building, and SecondRoom's four-part
+-- instruction went with it mid-task (2026-10-26 review).
+local tutorialHint: { text: string, pad: string }? = nil
 -- What the strip says while nothing is being placed: that a placed piece is
 -- tapped to change it (his report, 2026-10-19: no way to remove or replace a room).
 local function idleHint(): string
+	if tutorialHint then
+		return Controls.hint(tutorialHint.text, tutorialHint.pad)
+	end
 	if tab == "Room" then
 		return Controls.hint(
 			"Tap a walled space with a door to choose its type, or a room to see it",
@@ -1592,7 +1599,7 @@ local function setActive(on: boolean)
 	if rightColumn and rightColumn:IsA("GuiObject") then
 		rightColumn.Visible = not (on and shortScreen())
 	end
-	-- Gloom steps aside while building: the strip says what to do.
+	-- Gloom steps aside while building: the strip says what to do (`setTutorialHint`).
 	local tutorial = me.PlayerGui:FindFirstChild("Tutorial")
 	if tutorial and tutorial:IsA("ScreenGui") then
 		tutorial.Enabled = not on
@@ -1647,6 +1654,14 @@ end
 
 function BuildController.isActive(): boolean
 	return active
+end
+
+-- Gloom's line for the strip while a tutorial step is built (nil: the strip's own idle line).
+function BuildController.setTutorialHint(text: string?, padText: string?)
+	tutorialHint = if text then { text = text, pad = padText or text } else nil
+	if active and not anyChosen() then
+		info.Text = idleHint()
+	end
 end
 
 -- Hides the floors above the one being edited again, soon (Lod, after it shows what it hid).

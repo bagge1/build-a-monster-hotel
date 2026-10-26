@@ -161,6 +161,17 @@ function Bus.tutorialVampire(t: {
 	return t.goal and not t.arrived and not t.onBus and t.busesSince >= 2 and t.vacant
 end
 
+--[[ The buses gone by since a moment `at` (os.time), for "A Vampire Count
+	arrives in 3 buses" (§11): one every `interval` since then, the same on any
+	server, since each server counts its own buses from 0 (2026-10-26 review: a
+	rejoin on a younger server owed the Vampire for hours). `here`, the buses
+	this server has run since, when the moment was on this server: a bus called
+	early or a Parade's (§8.2) count too, never fewer than by the clock. ]]
+function Bus.busesSince(at: number, now: number, interval: number, here: number?): number
+	local byClock = math.floor(math.max(0, now - at) / interval)
+	return if here then math.max(here, byClock) else byClock
+end
+
 --[[ The Commons the tutorial brings a new hotel (§11 1:45: "The tutorial
 	weights Commons toward your hotel"): at most `n`, never more for a room
 	type than `vacant` (room id → rooms of it standing vacant) has, each a
