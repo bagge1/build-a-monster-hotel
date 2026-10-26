@@ -6,8 +6,9 @@
 
 	The specs require the real modules; `script.Parent.X` and `Shared.X` are
 	resolved to src/shared/X.luau, Roblox's datatypes come from @lune/roblox,
-	and `Random` is a small seeded stand-in. A spec whose module needs the
-	engine (Net in `data`) runs only in Studio. Lune is installed globally by
+	and `Random` is a small seeded stand-in; `game` is a stub enough for Net
+	to load as a client. A spec that needs more of the engine runs only in
+	Studio (`data`). Lune is installed globally by
 	rokit (`rokit add --global lune-org/lune`), not by the project.
 ]]
 local fs = require("@lune/fs")
@@ -64,6 +65,23 @@ function Shared:WaitForChild(name)
 	return { __module = name }
 end
 
+--[[ The engine as far as a module needs it to load: Net asks RunService
+	whether it is the server (here a client, so it makes no remotes) and
+	waits for its Remotes folder, which it touches only when a message is
+	sent. So Net's validation (`Net._valid`) runs here too. ]]
+local game = {
+	GetService = function(_, _name)
+		return {
+			WaitForChild = function(_, n)
+				return Shared
+			end,
+			IsServer = function()
+				return false
+			end,
+		}
+	end,
+}
+
 local function load(name: string)
 	if cache[name] then
 		return cache[name]
@@ -73,6 +91,7 @@ local function load(name: string)
 	local scriptObj = { Parent = Shared, Name = name }
 	local fenv = table.clone(env)
 	fenv.script = scriptObj
+	fenv.game = game
 	fenv.require = function(ref)
 		return load(ref.__module)
 	end
@@ -81,16 +100,6 @@ local function load(name: string)
 	cache[name] = result
 	return result
 end
-
-local game = {
-	GetService = function(_, _name)
-		return {
-			WaitForChild = function(_, n)
-				return Shared
-			end,
-		}
-	end,
-}
 
 local harness = fs.readFile(`{root}/tests/harness.luau`)
 local chunks = { harness }

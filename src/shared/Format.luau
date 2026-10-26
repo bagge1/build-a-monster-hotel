@@ -15,7 +15,9 @@ function Format.number(n: number): string
 	local sign = if n < 0 then "-" else ""
 	n = math.abs(n)
 	if n < 1000 then
-		return sign .. tostring(math.floor(n))
+		-- No sign on a whole part of 0 (2026-10-26 spec: -0.5 read "-0").
+		local whole = math.floor(n)
+		return (if whole > 0 then sign else "") .. tostring(whole)
 	end
 	local suffixes = Constants.Format.Suffixes
 	local i = 1
@@ -35,7 +37,11 @@ end
 
 function Format.perSecond(n: number): string
 	if n < 10 and n % 1 ~= 0 then
-		return "$" .. string.format("%.1f", n) .. "/s"
+		local text = string.format("%.1f", n)
+		if text == "-0.0" then
+			text = "0.0" -- a tiny negative rate reads no "-0.0" (2026-10-26 spec)
+		end
+		return "$" .. text .. "/s"
 	end
 	return Format.cash(n) .. "/s"
 end
