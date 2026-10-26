@@ -9,6 +9,8 @@
 	- `Desk`, `Clerk`, `Till`, `Queue_1`..`Queue_4`: on the hotel's first
 	  desk, the `FrontDesk` piece with the lowest id (there may be several;
 	  each guest queues at its own, `GuestService`).
+	- `FrontDesk`: that desk's pivot, the centre of its footprint on the
+	  walking surface (`find` only: it is the model's, not an attachment).
 ]]
 
 local HotelPoints = {}
@@ -56,6 +58,11 @@ function HotelPoints.attachment(plot: Model, name: string): Attachment?
 end
 
 function HotelPoints.find(plot: Model, name: string): CFrame?
+	if name == "FrontDesk" then
+		-- The first desk's pivot: its footprint's centre on the walking surface (MODELS.md, "Hotel kit").
+		local desk = HotelPoints.desks(plot)[1]
+		return if desk and rootOf(desk) then desk:GetPivot() else nil
+	end
 	local a = HotelPoints.attachment(plot, name)
 	return if a then a.WorldCFrame else nil
 end
