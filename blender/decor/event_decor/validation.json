@@ -1,0 +1,66 @@
+{
+ "set": "decor/event_decor",
+ "checked": "each fbx/<Name>.fbx re-imported into Blender; nothing here ran in Studio",
+ "pieces": {
+  "Decor_JackOLantern": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "3 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the piece's own checks re-run on the re-imported triangles",
+    "the contract re-checked on the re-imported boxes: Root 3fw x 0.2 x 3fd, the layer's envelope (Floor and Wall: inside the footprint inset 0.4, height <= 7; Rug: inside the footprint, height <= 0.15; Wall: its back on z = 3fd/2 - 0.4 +-0.05), nothing collides, budget; w, d, layer and height (to 0.3) as Pieces.luau says; each seat() on the triangles"
+   ],
+   "triangles": 1072,
+   "budget": 1500,
+   "collision_precise": [],
+   "attachments": []
+  },
+  "Decor_Snowman": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "2 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the piece's own checks re-run on the re-imported triangles",
+    "the contract re-checked on the re-imported boxes: Root 3fw x 0.2 x 3fd, the layer's envelope (Floor and Wall: inside the footprint inset 0.4, height <= 7; Rug: inside the footprint, height <= 0.15; Wall: its back on z = 3fd/2 - 0.4 +-0.05), nothing collides, budget; w, d, layer and height (to 0.3) as Pieces.luau says; each seat() on the triangles"
+   ],
+   "triangles": 1480,
+   "budget": 1500,
+   "collision_precise": [],
+   "attachments": []
+  }
+ },
+ "collision_precise": {
+  "Decor_JackOLantern": [],
+  "Decor_Snowman": []
+ },
+ "mirrors": {},
+ "not_validated": [
+  "anything in Studio: the import, the axis conversion on Roblox's side (import_fixup.luau checks it first), the atlas upload, how it looks lit",
+  "the face lit (Workbench draws Glow_Warm_1 unlit)",
+  "placement by the build mode in Studio"
+ ],
+ "grounded": {
+  "Decor_JackOLantern": "grounded_check on the built and the re-imported triangles: every shell stands on the floor or touches one that does",
+  "Decor_Snowman": "grounded_check on the built and the re-imported triangles: every shell stands on the floor or touches one that does"
+ },
+ "pieces_rows": {
+  "Decor_JackOLantern": {
+   "w": 1,
+   "d": 1,
+   "layer": "Floor",
+   "height": 2.0,
+   "row": "as main"
+  },
+  "Decor_Snowman": {
+   "w": 1,
+   "d": 1,
+   "layer": "Floor",
+   "height": 4.5,
+   "row": "as main"
+  }
+ }
+}
