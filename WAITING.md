@@ -340,6 +340,22 @@ Med Claudes skärmdump där det finns en. -->
    - Radens rygg: crimson paneler (byggt) eller trä (förslag: trä); stolens
      höjd 1,7, lampornas storlek, tornspetsarna.
 
+18. **Inomhuspoolen och solstolen** (natten 2026-10-26, GDD A.13; byggda och
+   validerade i Blender, tre blinda granskningar i
+   `blender/rooms/haunted_manor_pool/README.md`; **inte importerade**).
+   Bilder: `archive/screens/2026-10-26_pool/pool_game_camera.jpg`,
+   `pool_poolside.jpg`, `pool_silhouettes.jpg`. Dina val:
+   - **Storleken:** byggd **4×2** (tre simmare) i stället för A.13:s 3×2 (två
+     simmare); spelets rad står kvar på 3×2 tills du valt. Förslag: 4×2.
+   - **Djupet** (det största): golvet går inte att gräva, så vattnet är 0,72
+     djupt, och kontraktets simmare (mitten 1,5 under ytan) sticker benen
+     genom golvet. Förslag: koden döljer simmarens ben, eller ett eget
+     simklipp med benen uppdragna.
+   - Gargoylens stråle läses som en stång (alla tre rundorna): förslag att
+     koden gör `Jet_1` till genomskinligt fallande vatten. Gargoylens storlek.
+   - Utseenden: rombbandet (lästes som ett kasino), hörnspirorna (en
+     fontän), solstolens nackstöd.
+
 ## §2 Beslut
 
 <!-- En fråga i taget, med alternativen och Claudes rekommendation. -->
