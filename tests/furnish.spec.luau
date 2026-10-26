@@ -162,6 +162,70 @@ describe("Furnish", function()
 		end
 	end)
 
+	-- A.13.3: a piece counts in every type its set serves, and in every type it is a key of.
+	it("a set piece serves every type its sets serve, and only those besides its keys", function()
+		for _, s in Pieces.FurnitureSets do
+			expect.truthy(#s.serves > 0, `{s.id} serves a type`)
+			for _, t in s.serves do
+				local p = Pieces.get(t)
+				expect.truthy(p and p.kind == "Amenity", `{s.id} serves the activity room {t}`)
+			end
+		end
+		for _, d in Pieces.DecorList do
+			for _, setId in d.sets or {} do
+				expect.truthy(Pieces.FurnitureSetById[setId], `{d.id}'s set {setId} exists`)
+			end
+			for _, p in Pieces.List do
+				local bySet = false
+				for _, setId in d.sets or {} do
+					local s = Pieces.FurnitureSetById[setId]
+					if s and table.find(s.serves, p.id) then
+						bySet = true
+					end
+				end
+				local byKey = d.keyFor ~= nil and table.find(d.keyFor, p.id) ~= nil
+				expect.eq(Pieces.servesType(d, p.id), bySet or byKey, `{d.id} serves {p.id}`)
+			end
+		end
+		-- Rooms that look alike share their pieces.
+		local pool = Pieces.decor("PoolTable") :: any
+		expect.truthy(Pieces.servesType(pool, "GameRoom"), "a Pool Table in a Game Room")
+		expect.truthy(Pieces.servesType(pool, "BilliardHall"), "and in a Billiard Hall")
+		expect.truthy(not Pieces.servesType(pool, "Gym"), "not in a Gym")
+		local sofa = Pieces.decor("VelvetSofa") :: any
+		for _, t in { "Bar", "KaraokeLounge", "QuietLibrary", "Spa", "Cinema" } do
+			expect.truthy(Pieces.servesType(sofa, t), `a Lounge piece in {t}`)
+		end
+	end)
+
+	-- §18 2026-10-26, his yes (A.13.2): the new keys of the Game Room, the Snack Bar and the Graveyard Garden.
+	it(
+		"his yes: the Game Room's keys, the Snack Bar's salad and desserts, the Garden's fountain and bench",
+		function()
+			for _, pair in
+				{
+					{ "PoolTable", "GameRoom" },
+					{ "PingPongTable", "GameRoom" },
+					{ "ArcadeCabinet", "GameRoom" },
+					{ "SaladBar", "SnackBar" },
+					{ "DessertTrolley", "SnackBar" },
+					{ "SnackCounter", "SnackBar" },
+					{ "Fountain", "GraveyardGarden" },
+					{ "GardenBench", "GraveyardGarden" },
+					{ "Gravestone", "GraveyardGarden" },
+				}
+			do
+				local d = Pieces.decor(pair[1]) :: any
+				expect.truthy(d and d.furniture, `{pair[1]} is furniture`)
+				expect.truthy(
+					d.keyFor and table.find(d.keyFor, pair[2]),
+					`{pair[1]} key for {pair[2]}`
+				)
+				expect.truthy(Pieces.servesType(d, pair[2]), `{pair[1]} serves {pair[2]}`)
+			end
+		end
+	)
+
 	-- §5.4: the finish a floor has already is never laid, nor paid for, again.
 	it("a floor finish changes a floor only to another finish", function()
 		local f = Pieces.Finishes[1]

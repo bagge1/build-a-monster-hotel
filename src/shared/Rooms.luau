@@ -909,11 +909,12 @@ end
 
 --[[ The types a player at `c.location` can choose for a room, locked ones
 	with the reason (Unlocks, as the build panel shows today), each with its
-	tooltip: who stays in it, its key furniture and its sizes. ]]
+	tooltip: who stays in it, its key furniture and its sizes. A type of
+	location 0 is every location's (the activity rooms, GDD A.13.2). ]]
 function Rooms.typesFor(c: Unlocks.Context): { TypeInfo }
 	local out: { TypeInfo } = {}
 	for _, p in Pieces.List do
-		if isType(p.id) and p.location == c.location then
+		if isType(p.id) and (p.location == c.location or p.location == 0) then
 			local ok, why = Unlocks.buildable(p.id, c)
 			local req = Rooms.requirement(p.id) :: Requirement
 			local species = {}
