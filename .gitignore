@@ -50,3 +50,4 @@ src/server/TestBundle.luau
 
 # Session locks for Blender and Studio (LAUNCH.md, "How the work runs")
 /.locks/
+.claude/settings.local.json
