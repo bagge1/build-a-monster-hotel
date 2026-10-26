@@ -1753,6 +1753,15 @@ Med Claudes skärmdump där det finns en. -->
    startrummets nyckelmöbel går inte att sälja (bara flytta), eller så
    kostar den att köpa tillbaka vad den gav vid försäljningen. Ditt val.
 
+73. **Önskemålens andel i Service: hela hotellets liv eller ett fönster?**
+   (natten 2026-10-26). Betygets underlag sparas nu per hotell (förut bara
+   i minnet, så ett 5★-hotell blev ~4★ efter en rejoin). Köväntan,
+   preferenser och städtider är redan de senaste 20. Men antalet önskemål
+   som ställts och besvarats var bara en räkning för passet; sparad blir den
+   en andel över hotellets hela liv, så ett gammalt hotell rör sig knappt.
+   Förslag: de senaste 20 önskemålen som ett fönster, som de andra. Ändrar
+   regeln, så ditt val.
+
 ## §3 Creator Hub och publicering
 
 1. ~~**Slå på Studio Access to API Services**~~ (gjort 2026-10-19: på i

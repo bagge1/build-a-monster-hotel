@@ -1,8 +1,10 @@
 --!strict
 --[[
 	Each hotel's live state, which is not saved (GDD §4.4, §5.3): which rooms
-	are vacant, reserved, occupied or dirty, the desk queue, what recent stays
-	were like, and the rating computed from all of it.
+	are vacant, reserved, occupied or dirty, the desk queue, and the rating
+	computed from it and from what recent stays were like. Those samples are
+	saved, in the profile's `samples` (Rating.Samples, 2026-10-26): a rejoin
+	and a Travel find the hotel's rating as it stood.
 
 	The saved layout is `PlayerData`'s; this is what the layout is doing now.
 	`GuestService` moves guests through it, `BuildService` asks whether a room
@@ -46,11 +48,6 @@ export type Hotel = {
 	queue: { number }, -- guest ids at the desk, first first
 	rating: number,
 	categories: Rating.Categories?,
-	waits: { number },
-	prefsShares: { number },
-	requestsAsked: number,
-	requestsDone: number,
-	cleanTimes: { number }, -- seconds each recent cleaning's room stood dirty (§5.3)
 	staffBonus: { [string]: number }, -- set by the staff system: Entertainment count etc.
 	-- Visits (GDD A.13.1, `Visits`): the activity rooms' spots taken, and each visitor's visit by guest id.
 	taken: Visits.Taken,
@@ -62,47 +59,13 @@ local hotels: { [Player]: Hotel } = {}
 -- A 3-stud square of Rooms' walking grid (A.12 "Guests").
 local SQUARE = Constants.Grid.CellSize / Constants.Grid.Squares
 
---[[ The rating's samples of the chain's hotels not being played (§6.4: the
-	rating is each hotel's own), by location, this session. ]]
-type Samples = {
-	waits: { number },
-	prefsShares: { number },
-	requestsAsked: number,
-	requestsDone: number,
-	cleanTimes: { number },
-}
-local away: { [Player]: { [number]: Samples } } = {}
-
---[[ Travel (ChainService): the samples of the hotel left are put away under
-	`from`, and `to`'s taken out, empty for a hotel never played this
-	session. `to` nil forgets them all (a rebirth). ]]
-function HotelService.switchSamples(player: Player, from: number, to: number?)
-	local hotel = hotels[player]
-	if not hotel then
-		return
-	end
-	local bank = away[player] or {}
-	away[player] = bank
-	if to == nil then
-		table.clear(bank)
-	else
-		bank[from] = {
-			waits = hotel.waits,
-			prefsShares = hotel.prefsShares,
-			requestsAsked = hotel.requestsAsked,
-			requestsDone = hotel.requestsDone,
-			cleanTimes = hotel.cleanTimes,
-		}
-	end
-	local s = if to then bank[to] else nil
-	if to then
-		bank[to] = nil
-	end
-	hotel.waits = if s then s.waits else {}
-	hotel.prefsShares = if s then s.prefsShares else {}
-	hotel.requestsAsked = if s then s.requestsAsked else 0
-	hotel.requestsDone = if s then s.requestsDone else 0
-	hotel.cleanTimes = if s then s.cleanTimes else {}
+--[[ The played hotel's samples of recent play (§5.3, A.4): the profile's own
+	table, so every sample is saved with the profile, and a Travel
+	(ChainService) puts it away with the hotel left and takes out the chosen
+	one's. Nil until both the hotel and the profile are there. ]]
+local function samplesOf(player: Player): Rating.Samples?
+	local data = PlayerData.get(player)
+	return if hotels[player] and data then data.samples else nil
 end
 local ratingHandlers: { (Player, number, number) -> () } = {}
 
@@ -133,13 +96,6 @@ end
 	through, the guest is sent back (GuestService). ]]
 function HotelService.onUnready(handler: (Player, string) -> ())
 	table.insert(unreadyHandlers, handler)
-end
-
-local function push(list: { number }, v: number, keep: number)
-	table.insert(list, v)
-	while #list > keep do
-		table.remove(list, 1)
-	end
 end
 
 function HotelService.get(player: Player): Hotel?
@@ -591,8 +547,13 @@ function HotelService.setRoom(player: Player, pieceId: string, state: RoomState,
 	end
 	-- A room leaving Dirty was cleaned: how long it stood dirty feeds
 	-- Cleanliness's "rooms cleaned on time" (§5.3, Appendix A.4).
-	if room.state == "Dirty" and state ~= "Dirty" and room.dirtySince and hotel then
-		push(hotel.cleanTimes, os.clock() - room.dirtySince, Constants.Rating.CleanSampleSize)
+	local samples = samplesOf(player)
+	if room.state == "Dirty" and state ~= "Dirty" and room.dirtySince and samples then
+		Rating.push(
+			samples.cleanTimes,
+			os.clock() - room.dirtySince,
+			Constants.Rating.CleanSampleSize
+		)
 	end
 	room.state = state
 	room.guest = guest
@@ -727,38 +688,27 @@ end
 
 -- Recent stays, for the rating's Comfort and Service (Appendix A.4).
 function HotelService.recordCheckIn(player: Player, waited: number)
-	local hotel = hotels[player]
-	if hotel then
-		push(hotel.waits, waited, Constants.Rating.ServiceSampleSize)
+	local samples = samplesOf(player)
+	if samples then
+		Rating.push(samples.waits, waited, Constants.Rating.ServiceSampleSize)
 	end
 end
 
 function HotelService.recordStay(player: Player, prefsShare: number)
-	local hotel = hotels[player]
-	if hotel then
-		push(hotel.prefsShares, prefsShare, Constants.Rating.ServiceSampleSize)
+	local samples = samplesOf(player)
+	if samples then
+		Rating.push(samples.prefsShares, prefsShare, Constants.Rating.ServiceSampleSize)
 	end
 end
 
 function HotelService.recordRequest(player: Player, done: boolean)
-	local hotel = hotels[player]
-	if hotel then
-		hotel.requestsAsked += 1
+	local samples = samplesOf(player)
+	if samples then
+		samples.requestsAsked += 1
 		if done then
-			hotel.requestsDone += 1
+			samples.requestsDone += 1
 		end
 	end
-end
-
-local function mean(list: { number }): number
-	if #list == 0 then
-		return 0
-	end
-	local s = 0
-	for _, v in list do
-		s += v
-	end
-	return s / #list
 end
 
 function HotelService.inputs(player: Player): Rating.Inputs?
@@ -800,23 +750,15 @@ function HotelService.inputs(player: Player): Rating.Inputs?
 	for _ in types do
 		nTypes += 1
 	end
-	-- Rooms cleaned on time (§5.3): the share of recent cleanings within the
-	-- limit, every room overdue now counted as a late one.
-	local onTime = 0
-	for _, t in hotel.cleanTimes do
-		if t <= Constants.Rating.CleanOnTime then
-			onTime += 1
-		end
-	end
-	local judged = #hotel.cleanTimes + overdue
+	-- What recent stays were like, as saved (Rating.sampleInputs): rooms
+	-- cleaned on time (§5.3) count every room overdue now as a late one.
+	local fromSamples = Rating.sampleInputs(data.samples, overdue)
 	return {
 		roomBars = bars,
-		prefsShare = mean(hotel.prefsShares),
-		meanWait = mean(hotel.waits),
-		checkIns = #hotel.waits,
-		requestShare = if hotel.requestsAsked > 0
-			then hotel.requestsDone / hotel.requestsAsked
-			else 0,
+		prefsShare = fromSamples.prefsShare,
+		meanWait = fromSamples.meanWait,
+		checkIns = fromSamples.checkIns,
+		requestShare = fromSamples.requestShare,
 		rooms = rooms,
 		dirtyRooms = dirty,
 		amenities = amenities,
@@ -825,7 +767,7 @@ function HotelService.inputs(player: Player): Rating.Inputs?
 		frontDesk = hotel.staffBonus.FrontDesk or 0,
 		roomService = hotel.staffBonus.RoomService or 0,
 		housekeeping = hotel.staffBonus.Housekeeping or 0,
-		onTimeShare = if judged > 0 then onTime / judged else 0,
+		onTimeShare = fromSamples.onTimeShare,
 		perks = {
 			Service = hotel.staffBonus.PerkService or 0,
 			Fun = hotel.staffBonus.PerkFun or 0,
@@ -930,18 +872,15 @@ end
 function HotelService.Init() end
 
 function HotelService.Start()
-	PlayerData.onLoaded(function(player)
+	PlayerData.onLoaded(function(player, data)
+		-- The played hotel's samples as saved (2026-10-26): its rating as it stood.
+		data.samples = Rating.restoreSamples(data.samples)
 		hotels[player] = {
 			player = player,
 			rooms = {},
 			queue = {},
 			rating = 1,
 			categories = nil,
-			waits = {},
-			prefsShares = {},
-			requestsAsked = 0,
-			requestsDone = 0,
-			cleanTimes = {},
 			staffBonus = {},
 			taken = {},
 			visitors = {},
@@ -951,7 +890,6 @@ function HotelService.Start()
 	end)
 	PlayerData.onDeparted(function(player)
 		hotels[player] = nil
-		away[player] = nil
 		readyCache[player] = nil
 		readinessCache[player] = nil
 		revisions[player] = nil

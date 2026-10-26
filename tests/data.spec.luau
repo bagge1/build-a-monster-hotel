@@ -87,4 +87,50 @@ describe("Data tables", function()
 		expect.truthy(not Net._valid(def, { string.rep("x", 999), 1 }), "long")
 		expect.truthy(not Net._valid(def, { "a", 1, 3 }), "extra")
 	end)
+
+	-- The rating's samples are saved per hotel (2026-10-26 review): Reconcile
+	-- gives an older profile the template's empty window, read as never stayed in.
+	it(
+		"the profile holds the rating's samples, the template's empty, every loaded one within its caps",
+		function()
+			local PlayerData = require(game:GetService("ServerScriptService").Server.PlayerData)
+			local Rating = require(Shared.Rating)
+			local R = Constants.Rating
+			local t = PlayerData.Template.samples
+			expect.truthy(typeof(t) == "table", "samples in the template")
+			local back = Rating.restoreSamples(t)
+			for k, v in back do
+				expect.eq(typeof(t[k]), typeof(v), `template's {k}`)
+			end
+			for k in t do
+				expect.truthy((back :: any)[k] ~= nil, `{k} is read back`)
+			end
+			expect.eq(
+				#t.waits + #t.prefsShares + #t.cleanTimes + t.requestsAsked + t.requestsDone,
+				0,
+				"empty"
+			)
+			for player, data in PlayerData.loaded() do
+				local s = data.samples
+				expect.truthy(typeof(s) == "table", `{player.Name} has samples`)
+				expect.atMost(#s.waits, R.ServiceSampleSize, `{player.Name}'s waits`)
+				expect.atMost(#s.prefsShares, R.ServiceSampleSize, `{player.Name}'s preferences`)
+				expect.atMost(#s.cleanTimes, R.CleanSampleSize, `{player.Name}'s cleanings`)
+				for key, rec in data.chain do
+					if rec.samples then
+						expect.atMost(
+							#rec.samples.waits,
+							R.ServiceSampleSize,
+							`hotel {key}'s waits`
+						)
+						expect.atMost(
+							#rec.samples.cleanTimes,
+							R.CleanSampleSize,
+							`hotel {key}'s cleanings`
+						)
+					end
+				end
+			end
+		end
+	)
 end)
