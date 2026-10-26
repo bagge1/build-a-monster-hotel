@@ -1720,6 +1720,22 @@ Med Claudes skärmdump där det finns en. -->
    Förslag: 200 s (en buss och lite till), eller att steget väntar på nästa
    buss oavsett tid. Ditt värde.
 
+70. **Översättning: hur och när** (natten 2026-10-26, en genomgång av
+   koden: `research/research_notes/Localization readiness 2026-10-26.md`).
+   Inget är förberett än: allt är engelska, och ungefär hälften av det en
+   spelare läser byggs medan spelet körs eller kommer från servern, så
+   Roblox automatiska översättning räcker inte. Förslag: en liten
+   `Text.t(nyckel, värden)`-modul och en exportfil till Roblox
+   översättningstabell; ungefär 1 000 ställen i koden, flera sessioner.
+   Dina val: (a) vilka språk först (spanska och portugisiska fungerar med
+   dagens typsnitt Fredoka One; japanska saknas i det och måste provas i
+   Studio, kanske med ett andra typsnitt); (b) om monstrens, bitarnas och
+   Glooms namn översätts eller förblir engelska namn; (c) om butikens namn
+   översätts (passen och produkterna översätts separat i Creator Hub); (d)
+   maskin- eller mänsklig översättning; (e) talformat per språk ($, K/M/B,
+   "3h 05m"); (f) när: nu, så att ny text skrivs med nycklar, eller i M6
+   som GDD planerar. Förslag: (f) nu, (a) spanska och portugisiska först.
+
 ## §3 Creator Hub och publicering
 
 1. ~~**Slå på Studio Access to API Services**~~ (gjort 2026-10-19: på i
