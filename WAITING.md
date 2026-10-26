@@ -473,6 +473,15 @@ Med Claudes skärmdump där det finns en. -->
    - Pumpans storlek, snödrivan och snögubbens uppsträckta armar: förslag
      behåll alla tre. Färgerna.
 
+27. **HUD:ens högra kolumn på datorn sitter nu nedtill** (natten 2026-10-26,
+   en rättad bugg, spelad med mus). Roblox spelarlista (gatans topplista,
+   §7) står öppen uppe till höger på en dator och låg över Moon och Travel:
+   ett klick på Travel gick till listan. Knapparna sitter nu längst ned i
+   kolumnen (Moon överst som förut), Ping-menyn öppnas bredvid dem; telefon
+   och surfplatta är som förut. Titta om placeringen känns rätt.
+   Alternativ: kolumnen på vänster sida under den vänstra, eller
+   spelarlistan av och gatans ranking i en egen panel.
+
 ## §2 Beslut
 
 <!-- En fråga i taget, med alternativen och Claudes rekommendation. -->

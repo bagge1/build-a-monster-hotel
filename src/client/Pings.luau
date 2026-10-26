@@ -8,6 +8,7 @@
 ]]
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local UserInputService = game:GetService("UserInputService")
 
 local Net = require(ReplicatedStorage.Shared.Net)
 local Controls = require(script.Parent.Controls)
@@ -58,7 +59,13 @@ function Pings.Init()
 		local rows = math.ceil(#ORDER / columns)
 		grid.CellSize = UDim2.fromOffset(234, 44)
 		menu.Size = UDim2.fromOffset(columns * 240 + 10, rows * 50 + 16)
-		menu.Position = UDim2.new(1, -(10 + (if short then 226 else 110) + 10), 0, 56)
+		-- On a computer the column's buttons sit at its foot, under Roblox's
+		-- player list (Hud's `fit`), and the menu opens down there beside them.
+		local foot = not short and not UserInputService.TouchEnabled
+		menu.AnchorPoint = if foot then Vector2.new(1, 1) else Vector2.new(1, 0)
+		menu.Position = if foot
+			then UDim2.new(1, -(10 + 110 + 10), 1, -94)
+			else UDim2.new(1, -(10 + (if short then 226 else 110) + 10), 0, 56)
 	end
 	fit()
 	workspace.CurrentCamera:GetPropertyChangedSignal("ViewportSize"):Connect(fit)

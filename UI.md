@@ -80,6 +80,12 @@ inputs. The code is `src/client/Controls.luau`.
   on their empty space never reaches a HUD button or the plot behind them.
 - A scrolling list keeps its bar in its own room (`ScrollBarInset`), never
   over a row's right-hand button.
+- On a computer (a tall screen, no touch) the HUD's right column keeps its
+  buttons at its foot, and the Ping menu opens beside them: Roblox's player
+  list, the street's leaderboard (§7), stands open at the top right there and
+  grows a row per player (2026-10-26: it lay over Moon and Travel and took
+  their clicks). A phone or tablet keeps the list shut and has its jump button
+  under the column's foot, so there the column starts at the top.
 - On a short screen (under 500 px high) the HUD's two menu columns are each
   two buttons wide, the toasts, the banner and the Hunter Night timer keep to
   the lane between them and grow downward rather than clip, and the Ping menu

@@ -18,6 +18,7 @@ local GuiService = game:GetService("GuiService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
 
 local Format = require(ReplicatedStorage.Shared.Format)
 local Net = require(ReplicatedStorage.Shared.Net)
@@ -333,6 +334,18 @@ function Hud.Init()
 				Ui.list(col, Enum.FillDirection.Vertical, 6, align)
 				col.Size = UDim2.new(0, 110, 1, -94 - columnTop)
 			end
+		end
+		-- On a computer the right column's buttons sit at its foot: Roblox's player
+		-- list (the street's leaderboard, §7) stands open at the top right there and
+		-- grows a row per player (2026-10-26: it lay over Moon and Travel and took
+		-- their clicks). A phone or tablet keeps the list shut, and its jump button
+		-- is under the column's foot, so there they start at the top.
+		local foot = not short and not UserInputService.TouchEnabled
+		local layout = right:FindFirstChildWhichIsA("UIGridStyleLayout")
+		if layout then
+			layout.VerticalAlignment = if foot
+				then Enum.VerticalAlignment.Bottom
+				else Enum.VerticalAlignment.Top
 		end
 		local lane = if short
 			then UDim2.new(1, -2 * (10 + 226 + 8), 0, 200)
