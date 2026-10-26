@@ -354,6 +354,7 @@ local SET = {
 	},
 	Furniture_PoolTable = {
 		pose = "Stand",
+		poses = { Use_1 = "Play", Use_2 = "Play" },
 		root = Vector3.new(0, 0.1, 0),
 		parts = {
 			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(9, 0.2, 6), collide = false },
@@ -362,6 +363,8 @@ local SET = {
 		},
 		att = {
 			{ "Use", Vector3.new(0, 0, -4.5), Vector3.new(0, 0, 1) },
+			{ "Use_1", Vector3.new(-3, 0, -4.5), Vector3.new(0, 0, 1) },
+			{ "Use_2", Vector3.new(3, 0, 4.5), Vector3.new(0, 0, -1) },
 		},
 		precise = {  },
 		light = 12,
@@ -488,6 +491,7 @@ local SET = {
 	},
 	Furniture_ArcadeCabinet = {
 		pose = "Stand",
+		poses = { Use_1 = "Play" },
 		root = Vector3.new(0, 0.1, 0),
 		parts = {
 			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(3, 0.2, 3), collide = false },
@@ -498,6 +502,7 @@ local SET = {
 		},
 		att = {
 			{ "Use", Vector3.new(0, 0, -3), Vector3.new(0, 0, 1) },
+			{ "Use_1", Vector3.new(0, 0, -3), Vector3.new(0, 0, 1) },
 		},
 		precise = {  },
 		light = 12,
@@ -505,6 +510,7 @@ local SET = {
 	},
 	Furniture_PingPongTable = {
 		pose = "Stand",
+		poses = { Use_1 = "Play", Use_2 = "Play" },
 		root = Vector3.new(0, 0.1, 0),
 		parts = {
 			Root = { c = Vector3.new(0, 0.1, 0), s = Vector3.new(9, 0.2, 6), collide = false },
@@ -513,6 +519,8 @@ local SET = {
 		},
 		att = {
 			{ "Use", Vector3.new(0, 0, -4.5), Vector3.new(0, 0, 1) },
+			{ "Use_1", Vector3.new(-6, 0, -1.5), Vector3.new(1, 0, 0) },
+			{ "Use_2", Vector3.new(6, 0, 1.5), Vector3.new(-1, 0, 0) },
 		},
 		precise = {  },
 		light = 12,
@@ -868,6 +876,9 @@ for name, spec in SET do
 		att.CFrame = if a[3] then CFrame.lookAt(rel, rel + a[3]) else CFrame.new(rel)
 		if a[1] == "Use" and spec.pose then
 			att:SetAttribute("Pose", spec.pose)
+		end
+		if spec.poses and spec.poses[a[1]] then
+			att:SetAttribute("Pose", spec.poses[a[1]])
 		end
 		att.Parent = root
 	end

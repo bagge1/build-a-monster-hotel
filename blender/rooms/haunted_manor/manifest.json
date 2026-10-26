@@ -2620,6 +2620,30 @@
       0.0,
       1.0
      ]
+    },
+    "Use_1": {
+     "pos": [
+      -3.0,
+      0.0,
+      -4.5
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
+    },
+    "Use_2": {
+     "pos": [
+      3.0,
+      0.0,
+      4.5
+     ],
+     "look": [
+      0.0,
+      0.0,
+      -1.0
+     ]
     }
    },
    "triangles": 916,
@@ -2639,10 +2663,17 @@
    "furniture": {
     "id": "PoolTable",
     "pose": "Stand",
-    "keyFor": [],
+    "keyFor": [
+     "GameRoom",
+     "BilliardHall"
+    ],
     "pieces_height": 2.6,
     "model_top": 2.78,
-    "height_finding": null
+    "height_finding": null,
+    "spots": {
+     "Use_1": "Play",
+     "Use_2": "Play"
+    }
    }
   },
   "Furniture_CardTable": {
@@ -3531,6 +3562,18 @@
       0.0,
       1.0
      ]
+    },
+    "Use_1": {
+     "pos": [
+      0.0,
+      0.0,
+      -3.0
+     ],
+     "look": [
+      0.0,
+      0.0,
+      1.0
+     ]
     }
    },
    "triangles": 324,
@@ -3550,10 +3593,15 @@
    "furniture": {
     "id": "ArcadeCabinet",
     "pose": "Stand",
-    "keyFor": [],
+    "keyFor": [
+     "GameRoom"
+    ],
     "pieces_height": 5.6,
     "model_top": 5.62,
-    "height_finding": null
+    "height_finding": null,
+    "spots": {
+     "Use_1": "Play"
+    }
    }
   },
   "Furniture_PingPongTable": {
@@ -3628,6 +3676,30 @@
       0.0,
       1.0
      ]
+    },
+    "Use_1": {
+     "pos": [
+      -6.0,
+      0.0,
+      -1.5
+     ],
+     "look": [
+      1.0,
+      0.0,
+      0.0
+     ]
+    },
+    "Use_2": {
+     "pos": [
+      6.0,
+      0.0,
+      1.5
+     ],
+     "look": [
+      -1.0,
+      0.0,
+      0.0
+     ]
     }
    },
    "triangles": 380,
@@ -3647,10 +3719,16 @@
    "furniture": {
     "id": "PingPongTable",
     "pose": "Stand",
-    "keyFor": [],
+    "keyFor": [
+     "GameRoom"
+    ],
     "pieces_height": 3.0,
     "model_top": 3.05,
-    "height_finding": null
+    "height_finding": null,
+    "spots": {
+     "Use_1": "Play",
+     "Use_2": "Play"
+    }
    }
   },
   "Furniture_BoardGameShelf": {

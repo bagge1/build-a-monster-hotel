@@ -17,7 +17,10 @@ added with tools/build_activity_pool.py, which the Bar's pieces never reach); a 
 it names, and a `Stand` inside the footprint (on the piece: a treadmill's belt) by stand_on_faults, the standing
 figure clear of the body (both added with tools/build_activity_gym.py; the Bar's spots never reach them); a `Sit`
 under the piece's `Water` (a hot tub's bench) by soak_faults: on a seat, the water over the torso, the head above
-it, the seated figure clear of the solid body (added with tools/build_activity_spa.py; no other set reaches it). A pose this
+it, the seated figure clear of the solid body (added with tools/build_activity_spa.py; no other set reaches it); a
+`Play` spot on the floor at a square's middle 1.5 outside any edge, looking straight in, its square free and the
+standing figure clear of the body (play_faults, added with the Game Room's pieces in tools/build_built_rooms.py,
+which lifts spots_check from here). A pose this
 script has no check for is refused, not passed. tools/build_activity_cinema.py (and the next activity sets) load
 these definitions; spots_check is the one validator of visitors' spots.
 
@@ -217,6 +220,8 @@ def spots_check(piece, tris, stage):
             f += lie_faults(piece, allt, pos, look, tag)
         elif pose == 'Swim':
             f += swim_faults(piece, tris, pos, tag)
+        elif pose == 'Play':
+            f += play_faults(piece, allt, pos, look, tag)
         else:
             f.append(f'{tag}: this script has no check for Pose {pose} (refused, not passed)')
     return f
@@ -263,6 +268,36 @@ def stand_on_faults(allt, pos, look, tag):
             if _tri_box(t, lo + g, hi - g):
                 cen = (t[0] + t[1] + t[2]) / 3
                 return f + [f'{tag}: the piece goes through the standing person\'s {nm} (a face at {K.v3(cen, 2)})']
+    return f
+
+
+def play_faults(piece, allt, pos, look, tag):
+    """A `Play` spot (MODELS.md: `Stand`, at the table's edge, facing its middle; added with the Game Room's
+    pieces, tools/build_built_rooms.py's play()): on the floor at the middle of a square just outside one edge of
+    the footprint, 1.5 out (any edge: a pool table's long sides, a ping-pong table's ends), looking straight in
+    at the piece (that edge's inward normal); its square free of the body, and the standing 5-stud person
+    (stand_blocks, arms included, each block shrunk by SIT_GAP) clear of it."""
+    hx, hz = 1.5 * piece.fw, 1.5 * piece.fd
+    edges = (((0, 0, 1), 'x', -hz - 1.5, piece.fw, hx), ((0, 0, -1), 'x', hz + 1.5, piece.fw, hx),
+             ((1, 0, 0), 'z', -hx - 1.5, piece.fd, hz), ((-1, 0, 0), 'z', hx + 1.5, piece.fd, hz))
+    ok = False
+    for normal, along, out, n, h in edges:
+        a, o = (pos.x, pos.z) if along == 'x' else (pos.z, pos.x)
+        if (abs(o - out) < 0.01 and min(abs(a - (-h + 1.5 + 3 * k)) for k in range(n)) < 0.01
+                and (look - Vector(normal)).length < 1e-3):
+            ok = True
+    if abs(pos.y) > 0.01 or not ok:
+        return [f'{tag}: a Play spot is on the floor at a square\'s middle 1.5 outside an edge, looking straight '
+                f'in at the piece; it is {K.v3(pos)} looking {K.v3(look)}']
+    f = []
+    lo, hi = Vector((pos.x - 1.49, 0.0, pos.z - 1.49)), Vector((pos.x + 1.49, 7.5, pos.z + 1.49))
+    if any(_tri_box(t, lo, hi) for t in allt):
+        f.append(f'{tag}: its square is not free of the body')
+    g = Vector((SIT_GAP,) * 3)
+    for blo, bhi, nm in stand_blocks(pos, look):
+        if any(_tri_box(t, blo + g, bhi - g) for t in allt):
+            f.append(f'{tag}: the piece goes through the standing player\'s {nm}')
+            break
     return f
 
 

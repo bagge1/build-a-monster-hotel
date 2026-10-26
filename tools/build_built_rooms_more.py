@@ -244,6 +244,7 @@ def f_arcade_cabinet():
     for x in (-0.15, 0.15):
         span('Body', (x - 0.05, 1.7, -0.86), (x + 0.05, 1.9, -0.83), 'amber')
     stand()
+    play(((0.0, 0, -3.0), (0, 0, 1)))     # the one player at the controls (its Use too: the same point)
     done('an arcade cabinet: plum with violet sides, a glowing slanted screen and marquee, a joystick and three '
          'buttons, a coin door')
 
@@ -269,6 +270,8 @@ def f_ping_pong_table():
         span('Body', (x + 0.3, 2.6, z - 0.07), (x + 0.85, 2.68, z + 0.07), 'wood')
     sphere('Body', (1.0, 2.7, 0.5), 0.1, 'white', n=6, rings=4)
     stand()
+    # One player an end, facing the net, on the middle of a square there (z 0 is a square's edge; ActivityKit.luau).
+    play(((-6.0, 0, -1.5), (1, 0, 0)), ((6.0, 0, 1.5), (-1, 0, 0)))
     done('a ping-pong table: a dark teal top with white lines on iron legs, a grey net with a white band '
          'between gold posts, two bats and a ball')
 

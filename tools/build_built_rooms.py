@@ -39,6 +39,7 @@ bar stool at a counter).
 import ast
 import json
 import math
+import re
 import sys
 from pathlib import Path
 
@@ -720,6 +721,18 @@ def stand():
     use((0, 0, -1.5 * K.P.fd - 1.5), (0, 0, 1), 'Stand')
 
 
+def play(*spots):
+    """Visitors' spots (MODELS.md, "Activity furniture: visitors' spots"): Use_1, Use_2, ... `Play`, one a
+    (pos, look), beside the piece's `Use` (kept: PlotService reads a key piece's `Use`). Checked by spots_check,
+    lifted from tools/build_activity_bar.py below (the one validator of visitors' spots)."""
+    p = K.P
+    p.spots = {}
+    for k, (pos, look) in enumerate(spots, 1):
+        attach(f'Use_{k}', pos, look)
+        p.spots[f'Use_{k}'] = 'Play'
+    p.checks.append(spots_check)
+
+
 def use_check(piece, tris, stage):
     f = []
     if 'Use' not in piece.att or piece.pose not in POSES:
@@ -841,6 +854,8 @@ def done(note):
     if piece.lie:
         rec['furniture']['lie'] = {'person': PERSON, 'rise': list(piece.lie['rise']), 'drop': LIE_DROP,
                                    'waived': piece.lie['waived']}
+    if getattr(piece, 'spots', None):
+        rec['furniture']['spots'] = {a: piece.spots[a] for a in sorted(piece.spots, key=lambda a: int(a[4:]))}
     return rec
 
 
@@ -1327,6 +1342,8 @@ def f_pool_table():
                        (2.1, 0.5, 'black')):
         sphere('Body', (x, 2.6, z), 0.18, colr, n=8, rings=4)
     stand()
+    # Two players on the long sides, diagonally across (GDD A.13.2; the blockout's spots, ActivityKit.luau).
+    play(((-3.0, 0, -4.5), (0, 0, 1)), ((3.0, 0, 4.5), (0, 0, -1)))
     done('a pool table: dark wood on six turned legs, green baize, black pockets, five balls')
 
 
@@ -2462,16 +2479,21 @@ def patch_fixup(path, manifest):
     """The kit's import_fixup.luau, plus each furniture piece's Use Pose (an attribute on the attachment)."""
     s = path.read_text(encoding='utf-8')
     poses = {n: r['furniture']['pose'] for n, r in manifest['pieces'].items() if 'furniture' in r}
+    spots = {n: r['furniture']['spots'] for n, r in manifest['pieces'].items() if r.get('furniture', {}).get('spots')}
     lines = []
     for line in s.split('\n'):
         lines.append(line)
         for n, pose in poses.items():
             if line == f'\t{n} = {{':
                 lines.append(f'\t\tpose = "{pose}",')
+                if n in spots:      # visitors' spots, each Use_<n>'s Pose (as tools/build_activity_bar.py's patch)
+                    lines.append('\t\tposes = { ' + ', '.join(f'{a} = "{q}"' for a, q in spots[n].items()) + ' },')
     s = '\n'.join(lines)
     old = '\t\tatt.Parent = root\n'
     assert old in s, 'import_fixup.luau changed: the Pose patch has no anchor'
     s = s.replace(old, '\t\tif a[1] == "Use" and spec.pose then\n\t\t\tatt:SetAttribute("Pose", spec.pose)\n\t\tend\n'
+                  + ('\t\tif spec.poses and spec.poses[a[1]] then\n\t\t\tatt:SetAttribute("Pose", spec.poses[a[1]])'
+                     '\n\t\tend\n' if spots else '')
                   + old, 1)
     s = s.replace('-- and hides LOD_Proxy.', '-- and hides LOD_Proxy; a furniture piece\'s Use gets its Pose attribute '
                   '(tools/build_built_rooms.py).', 1)
@@ -2493,9 +2515,12 @@ def main():
                   ('Wall_Post', lambda: wall_post(st))]
         table = st['furniture']()
         ids = [i for i, r in ROWS.items() if r['location'] in st['locations']]
-        missing = [i for i in ids if i not in table]
+        # A partial build (-- only) asks only for what it builds: Pieces.luau's activity rows (GDD A.13) are built
+        # in their own sets (tools/build_activity_*.py), so a whole build of this set stops here until they are
+        # listed or skipped.
+        missing = [i for i in ids if i not in table and want(f'Furniture_{i}')]
         assert not missing, f'{style}: no build for {missing}'
-        builds += [(f'Furniture_{i}', table[i]) for i in ids]
+        builds += [(f'Furniture_{i}', table[i]) for i in ids if i in table]
         builds += [(f'Decor_{i}', fn) for i, fn in st.get('decor', dict)().items()]    # the set's own decor
         bad = False
         for name, fn in builds:
@@ -2528,6 +2553,14 @@ def main():
             n: {'pieces_height': r['furniture']['pieces_height'], 'model_top': r['furniture']['model_top']}
             for n, r in manifest['pieces'].items()
             if 'furniture' in r and abs(r['furniture']['pieces_height'] - r['furniture']['model_top']) > K.HEIGHT_TOL}
+        val['spots'] = {
+            n: {'spots': r['furniture']['spots'],
+                'checked': 'spots_check (tools/build_activity_bar.py) on the built and the re-imported triangles: '
+                           'Use_<n> from 1 without a gap, a Pose from MODELS.md\'s list, a level LookVector, no two '
+                           'spots on one square; Play on the floor at a square\'s middle 1.5 outside an edge, looking '
+                           'straight in, its square free of the body and the standing 5-stud person (arms included) '
+                           'clear of it. `Use` (Stand, in front) kept beside them: PlotService reads a key piece\'s Use'}
+            for n, r in manifest['pieces'].items() if r.get('furniture', {}).get('spots')}
         val['height_note'] = ("Pieces.luau's `height` (the blockouts' placeholder) against the model's top, more than "
                               f"{K.HEIGHT_TOL} apart: a finding for the code session, not a fault (src/ untouched)")
         val['not_validated'] = val.get('not_validated', [])[:1] + [
@@ -2567,5 +2600,13 @@ exec(compile(_MORE.read_text(encoding='utf8'), str(_MORE), 'exec'))
 # run here the same way.
 _KITS = TOOLS / 'build_built_rooms_kits.py'
 exec(compile(_KITS.read_text(encoding='utf8'), str(_KITS), 'exec'))
+# Visitors' spots on the Game Room's pieces (play() above; GDD A.13.2): the one validator is
+# tools/build_activity_bar.py's spots_check, lifted with what it calls (that script execs this one, so it cannot be
+# run from here; its own definitions replace these there).
+_lift(TOOLS / 'build_activity_bar.py',
+      ['SPOT_POSES', 'FIGURE_R', 'FIGURE_H', 'TORSO_R', 'SWIM_DEPTH', 'SWIM_IN', 'SWIM_CLEAR', 'SWIM_FINDINGS',
+       'SOAK_MIN', 'SOAK_MAX', 'SOAK_FINDINGS', 'spots_check', 'play_faults', '_square', '_samples', 'stand_blocks',
+       'stand_on_faults', 'swim_faults', '_water_top', 'soak_faults'], globals())
+SPOT_RE = re.compile(r'^Use_(\d+)$')
 
 main()
