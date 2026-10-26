@@ -20,7 +20,7 @@
 	Releasing a resident ("a holiday") gives Moon Shards by rarity.
 
 	LEVELS (A.11.6, `ResidentLevels`): each resident gains XP a minute at
-	work while the player plays (the Wing or a post at the hotel played), a
+	work while the player plays (the Wing or a post at any hotel of the chain), a
 	full bar is taken by **Level up** (`LevelUp`) for a price in its own Wing
 	rate, and a level raises its Wing earnings and its staff efficiency.
 
@@ -628,12 +628,13 @@ local function runErrands(
 end
 
 --[[ XP for every resident at work while the player plays (A.11.6): in the
-	Wing, or on staff at the hotel being played; not in the Hunter Camp. A bar
+	Wing, or on staff at any hotel of the chain, the one played or another
+	(`ResidentLevels.learning`, WAITING §2.48); not in the Hunter Camp. A bar
 	that fills sends the panel again (its Level up button). ]]
 local function giveXp(player: Player, data: PlayerData.Data, seconds: number)
 	local filled = false
 	for _, r in data.residents do
-		if r.campUntil <= os.time() and (r.role == "" or here(data, r)) then
+		if ResidentLevels.learning(r, os.time()) then
 			local level = ResidentLevels.level(r)
 			local before = ResidentLevels.xp(r)
 			r.xp = ResidentLevels.gain(level, before, seconds)
