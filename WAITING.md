@@ -1426,6 +1426,15 @@ Med Claudes skärmdump där det finns en. -->
    också om du sålt allt i det innan du åkte. **Förslag:** takten räknas
    utan boost, VIP och vänbonus (bara gästernas grundlön och personalen).
 
+59. **Trappan säger inte varför den inte går** (natten 2026-10-26, spelat med
+   mus på en ny våning 2). Efter att plattor köpts ovanför nekades trappan i
+   alla fyra vridningar med "The door would open into a wall", fast det som
+   saknades var en ruta att kliva av på (trappans fot eller topp utanför det
+   ägda, eller mot disken). **Förslag:** spöket visar trappans fot och topp
+   som två markerade rutor (grön/röd), och texten säger vilken som är
+   blockerad ("The top lands outside your floor 2" / "The foot is against the
+   desk"). Det är text och visning, så det väntar på ditt ja.
+
 ## §3 Creator Hub och publicering
 
 1. ~~**Slå på Studio Access to API Services**~~ (gjort 2026-10-19: på i
