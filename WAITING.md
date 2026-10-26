@@ -480,7 +480,17 @@ Med Claudes skärmdump där det finns en. -->
    kolumnen (Moon överst som förut), Ping-menyn öppnas bredvid dem; telefon
    och surfplatta är som förut. Titta om placeringen känns rätt.
    Alternativ: kolumnen på vänster sida under den vänstra, eller
-   spelarlistan av och gatans ranking i en egen panel.
+   spelarlistan av och gatans ranking i en egen panel. (Senare samma dag:
+   bara med en mus; en konsol och en telefon har kolumnen överst.)
+
+28. **Prova med en handkontroll** (natten 2026-10-26; gamepad-rättningarna
+   kunde inte spelas här, Studios MCP skickar knapparna som tangentbord).
+   Med en Xbox-handkontroll i datorn, i en playtest: Y till HUD:en och A på
+   Build; i byggläget Walls-kortet, A, styrspaken, A igen (en hel
+   väggsträcka med förhandsvisning); A på ett rum (rumsvyn tar markeringen,
+   B stänger); spaken mot kanten (kameran följer, `PAD_EDGE` 0,12 är en
+   känsla att stämma av); under tutorialen Y, Y, A (Glooms knapp). Säg vad
+   som känns fel.
 
 ## §2 Beslut
 

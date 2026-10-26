@@ -346,10 +346,10 @@ function Hud.Init()
 		-- list (the street's leaderboard, §7) stands open at the top right there and
 		-- grows a row per player (2026-10-26: it lay over Moon and Travel and took
 		-- their clicks). A phone or tablet keeps the list shut, and its jump button
-		-- is under the column's foot, so there they start at the top. A touchscreen
-		-- laptop has a mouse and the computer's open list: the foot too (2026-10-26).
-		local foot = not short
-			and (UserInputService.MouseEnabled or not UserInputService.TouchEnabled)
+		-- is under the column's foot, so there they start at the top. A mouse means
+		-- a computer and its open list, a touchscreen laptop too; a console has no
+		-- mouse and no open list, so the top (2026-10-26: it took the foot as well).
+		local foot = not short and UserInputService.MouseEnabled
 		local layout = right:FindFirstChildWhichIsA("UIGridStyleLayout")
 		if layout then
 			layout.VerticalAlignment = if foot

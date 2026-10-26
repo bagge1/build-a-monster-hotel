@@ -3,12 +3,14 @@
 	Gloom, the bat concierge (GDD §11, Appendix A.7): a speech bubble with what
 	to do next, an arrow at the thing to press or the place to go, and Skip.
 	The step is the server's (`Tutorial` attribute, `TutorialService`); this
-	only draws it. Nothing here blocks movement.
+	only draws it. Nothing here blocks movement. On a gamepad ButtonY's round
+	reaches Gloom's buttons after the HUD's menu (`Controls.onMenuNext`).
 
 	Gloom's look is a night draft (WAITING.md §1); his name is GDD §17's open
 	question 6.
 ]]
 
+local GuiService = game:GetService("GuiService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -16,6 +18,7 @@ local RunService = game:GetService("RunService")
 local HotelPoints = require(ReplicatedStorage.Shared.HotelPoints)
 local Net = require(ReplicatedStorage.Shared.Net)
 local BuildController = require(script.Parent.BuildController)
+local Controls = require(script.Parent.Controls)
 local Ui = require(script.Parent.Ui)
 local UiImages = require(script.Parent.UiImages)
 
@@ -23,7 +26,8 @@ local TutorialController = {}
 
 local me = Players.LocalPlayer
 
-type Step = { text: string, ui: string?, world: string? }
+-- `pad`: the text in a gamepad's words, where `text` names a tap (2026-10-26).
+type Step = { text: string, pad: string?, ui: string?, world: string? }
 local STEPS: { [string]: Step } = {
 	CheckIn = {
 		text = "Welcome, new manager! I'm Gloom. Your first room is ready and a Slime is on its way: check it in at the front desk.",
@@ -35,6 +39,7 @@ local STEPS: { [string]: Step } = {
 	},
 	SecondRoom = {
 		text = "Build a second room! In Build: buy gold tiles beside the hotel, draw Walls round them, put in a Door, then tap inside and choose Standard Room.",
+		pad = "Build a second room! In Build: buy gold tiles beside the hotel, draw Walls round them, put in a Door, then press A with the cursor inside and choose Standard Room.",
 		ui = "Hud.Left.BuildButton",
 	},
 	Furnish = {
@@ -122,21 +127,33 @@ local function setWorldArrow(name: string?)
 	worldArrow = bb
 end
 
-local function refresh()
+local function current(): (string?, Step?)
 	local step = me:GetAttribute("Tutorial") :: string?
 	if step == "Start" or step == "Build" then
 		step = "CheckIn"
 	end
-	local s = step and STEPS[step]
+	return step, step and STEPS[step] or nil
+end
+
+local function words(s: Step): string
+	return if s.pad then Controls.hint(s.text, s.pad) else s.text
+end
+
+local function refresh()
+	local step, s = current()
 	bubble.Visible = s ~= nil
 	arrow.Visible = false
 	setWorldArrow(nil)
-	if not s then
-		return
+	if s then
+		text.Text = words(s)
+		nextButton.Visible = step == "Preview"
+		setWorldArrow(s.world)
 	end
-	text.Text = s.text
-	nextButton.Visible = step == "Preview"
-	setWorldArrow(s.world)
+	-- A button the gamepad had selected that went (the bubble, or Got it!): the selection goes too.
+	local sel = GuiService.SelectedObject
+	if sel and sel:IsDescendantOf(bubble) and not Controls.shown(sel) then
+		Controls.select(nil)
+	end
 end
 
 function TutorialController.Init()
@@ -228,6 +245,28 @@ function TutorialController.Start()
 	me:GetAttributeChangedSignal("Tutorial"):Connect(refresh)
 	me:GetAttributeChangedSignal("Plot"):Connect(refresh)
 	refresh()
+	Controls.onDevice(function()
+		local _, s = current()
+		if s then
+			text.Text = words(s)
+		end
+	end)
+	-- ButtonY's round (Controls): from the HUD's menu on to Gloom's Got it! (or Skip), then
+	-- off (2026-10-26: no gamepad press reached them). Hidden in build mode, so never there.
+	Controls.onMenuNext(function(sel: GuiObject): boolean
+		if sel:IsDescendantOf(bubble) then
+			return false
+		end
+		local skip = bubble:FindFirstChild("Skip")
+		local b: GuiObject? = if Controls.shown(nextButton)
+			then nextButton
+			elseif skip and skip:IsA("GuiObject") and Controls.shown(skip) then skip
+			else nil
+		if b then
+			Controls.select(b)
+		end
+		return b ~= nil
+	end)
 	-- The arrow follows its UI target and bobs.
 	RunService.Heartbeat:Connect(function()
 		local step = me:GetAttribute("Tutorial") :: string?

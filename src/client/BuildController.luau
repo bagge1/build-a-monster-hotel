@@ -163,6 +163,9 @@ local pad: Vector3? = nil -- plot-local, on the floor in view
 local padMarker: BasePart? = nil
 -- The plot's width the cursor crosses in a second at full zoom.
 local PAD_SPEED = 0.45
+-- How near the view's edge the cursor pulls the camera after it, a share of the
+-- screen's smaller side: a gamepad has no W/S A/D to pan with (2026-10-26).
+local PAD_EDGE = 0.12
 local buildKeys: InputContext -- while building: rotate, leave, the camera
 local padKeys: InputContext -- while building with nothing selected: the cursor, A, the D-pad
 local cursorAction: InputAction
@@ -411,6 +414,7 @@ local pointerLocal: (number, number) -> Vector3?
 local judgeDoor: (number, number) -> (string?, boolean, boolean, string?)
 local fitTools: () -> ()
 local showDoor: (number, number) -> ()
+local wallHover: (number, number) -> ()
 local function cellUnder(x: number, y: number): Grid.Cell?
 	local l = pointerLocal(x, y)
 	if not l then
@@ -465,6 +469,18 @@ end
 
 local function placing(): boolean
 	return pieceBeingPlaced() ~= nil or decorBeingPlaced() ~= nil
+end
+
+-- Whether anything is chosen to place, lay, put in or move: B stops it, the stick is the plot's.
+local function anyChosen(): boolean
+	return selected ~= nil
+		or selectedDecor ~= nil
+		or selectedFinish ~= nil
+		or selectedWindow ~= nil
+		or movingWindow ~= nil
+		or moving ~= nil
+		or movingDecor ~= nil
+		or wallMode ~= nil
 end
 
 local function ghostBox(model: Model, size: Vector3, at: CFrame, ok: boolean)
@@ -838,8 +854,16 @@ local function padRefresh(force: boolean?)
 		end
 		return
 	end
-	showHover(underPointer(s.X, s.Y))
-	lightTile(s.X, s.Y)
+	-- What the mouse's move shows (2026-10-26: the gamepad showed none of the wall tools'):
+	-- the edge or run a wall tool would take, the door's spot, the wall a window goes on.
+	if wallMode then
+		wallHover(s.X, s.Y)
+	elseif selectedWindow or movingWindow then
+		outline(wallUnder(s.X, s.Y, false))
+	else
+		showHover(underPointer(s.X, s.Y))
+		lightTile(s.X, s.Y)
+	end
 	if not padMarker then
 		-- The door marker's look: where the cursor stands while nothing is placed.
 		local m = Instance.new("Part")
@@ -873,8 +897,25 @@ local function movePad(v: Vector2, dt: number)
 	if f.Magnitude < 1e-3 or r.Magnitude < 1e-3 then
 		return
 	end
+	local before = p
 	p += (r.Unit * v.X + f.Unit * v.Y) * size * PAD_SPEED * zoom * dt
 	pad = Vector3.new(math.clamp(p.X, 0, size), 0, math.clamp(p.Z, 0, size))
+	-- Near the view's edge the camera follows the cursor outward, as far as it moved
+	-- (2026-10-26: a gamepad could not pan, and the cursor left the view). The strip
+	-- is the foot of the view; W/S A/D and a drag pan as before.
+	local s = padScreen()
+	if s and pad then
+		local moved = pad - before
+		local dx, dy = moved:Dot(r.Unit), moved:Dot(f.Unit)
+		local view = gui.AbsoluteSize
+		local band = math.min(view.X, view.Y) * PAD_EDGE
+		local foot = if strip.Visible then strip.AbsolutePosition.Y else view.Y
+		local x = if (dx < 0 and s.X < band) or (dx > 0 and s.X > view.X - band) then dx else 0
+		local y = if (dy > 0 and s.Y < band) or (dy < 0 and s.Y > foot - band) then dy else 0
+		if x ~= 0 or y ~= 0 then
+			panBy(Vector2.new(x, y))
+		end
+	end
 	padRefresh()
 end
 
@@ -882,8 +923,28 @@ end
 local function toPlot()
 	if Controls.gamepad() then
 		Controls.select(nil)
+		local words = info.Text
 		padRefresh(true)
+		-- A wall tool's line stays until the cursor moves, as it does until the mouse does:
+		-- the preview's price would take it at once.
+		if wallMode then
+			info.Text = words
+		end
 	end
+end
+
+-- B's step back on what is chosen: a gamepad's wall run lets go of the run and keeps the
+-- tool, else what is chosen stops. False when nothing was.
+local function unchoose(): boolean
+	if wallFrom then
+		wallFrom = nil
+	elseif anyChosen() then
+		stopPlacing()
+	else
+		return false
+	end
+	padRefresh()
+	return true
 end
 
 -- ===== Menus =====
@@ -1231,9 +1292,11 @@ function redrawCards()
 	local b = build()
 	if tab == "Wall" then
 		-- The wall tools (A.12): put up, a door, take down, and the half-cell toggle.
+		-- The Door card's words follow the device as the strip's do (2026-10-26).
+		local onWall = Controls.hint("tap a wall", "A on a wall")
 		local tools3 = {
 			{ "Wall", `Walls\n{Format.cash(b.wallCost or 5)} a half edge` },
-			{ "Door", `Door\n{Format.cash(b.doorCost or 10)} · tap a wall` },
+			{ "Door", `Door\n{Format.cash(b.doorCost or 10)} · {onWall}` },
 			{ "Remove", "Remove\nwalls" },
 		}
 		for i, t in tools3 do
@@ -1251,7 +1314,7 @@ function redrawCards()
 					)
 					else Controls.hint(
 						"Tap an edge, or drag along the grid · tap the card again to stop",
-						"A on an edge · B to stop"
+						"A starts a run, A again ends it · B to stop"
 					)
 				redrawCards()
 				toPlot()
@@ -1543,6 +1606,9 @@ local function setActive(on: boolean)
 	clearWallGhost()
 	clearGhost()
 	showHover(nil)
+	-- Nothing is chosen now: the idle line, in the words of the device in use (2026-10-26: it was
+	-- drawn once at Init, before any input, and a re-entry kept the last placement's line).
+	info.Text = idleHint()
 	buildKeys.Enabled = on
 	updatePad()
 	hidePadMarker()
@@ -1552,10 +1618,11 @@ local function setActive(on: boolean)
 		redrawCards()
 		local size = G.Cells * G.CellSize
 		pad = Vector3.new(size / 2, 0, size / 2)
-		-- The gamepad opens on the cards (§11).
+		-- The gamepad opens on the cards (§11), unless a piece was chosen meanwhile (a find's
+		-- Place it, A.11.3): then the stick stays the plot's (2026-10-26: it froze on the card).
 		if Controls.gamepad() then
 			task.defer(function()
-				if active then
+				if active and not anyChosen() then
 					Controls.select(
 						firstCard() or tools:FindFirstChild("Walls", true) :: GuiObject?
 					)
@@ -1835,7 +1902,7 @@ local function dragRun(l: Vector3): (number?, number?, number?, number?)
 end
 
 -- The pointer moved with the wall tool: the run being dragged, or the edge a tap would take.
-local function wallHover(x: number, y: number)
+function wallHover(x: number, y: number)
 	local l = pointerLocal(x, y)
 	if not l or not wallMode then
 		clearWallGhost()
@@ -2563,6 +2630,14 @@ function BuildController.Init()
 		closeRoomView()
 	end, Ui.Colour.Bad)
 	closeView.Position = UDim2.new(1, -44, 0, 0)
+	--[[ A panel for the gamepad (§11, UI.md "Gamepad"): open, it takes the selection on
+		its first button; B closes it (2026-10-26: it moved no selection, and Y went to the
+		cards). B stops what is chosen first, as it did (Furnish, then a card). ]]
+	Controls.panel(viewPanel, function()
+		if not unchoose() then
+			closeRoomView()
+		end
+	end, closeView)
 	local tip = Ui.label(details, "Tooltip", "", UDim2.new(1, 0, 0, 52), 13, Ui.Colour.Muted)
 	tip.LayoutOrder = 2
 	tip.TextYAlignment = Enum.TextYAlignment.Top
@@ -2667,9 +2742,19 @@ function BuildController.Init()
 		if not active or not s or Controls.selectedRecently() then
 			return
 		end
-		if wallMode then
-			wallFrom = nil
+		if wallMode == "Door" then
 			wallRelease(s.X, s.Y)
+			padRefresh()
+		elseif wallMode then
+			-- A run, as a mouse drags one (2026-10-26: each A put up one edge): the first A
+			-- takes the corner under the cursor, the stick draws the run, the next A puts it
+			-- up (or takes it down); B lets go of it. A, A on one spot is the edge there.
+			if wallFrom then
+				wallRelease(s.X, s.Y)
+			else
+				wallPress(s.X, s.Y)
+			end
+			padRefresh()
 		elseif placing() then
 			local c = screenToAnchor(s.X, s.Y)
 			if c then
@@ -2709,6 +2794,21 @@ function BuildController.Start()
 			drawGhost()
 			scheduleHide()
 			drawTiles()
+			-- The gamepad's wall preview judged again on the hotel as it is now (a run just
+			-- put up): a mouse's next move does that, a resting stick moves nothing.
+			if wallMode and Controls.gamepad() then
+				padRefresh()
+			end
+		end
+	end)
+	-- The device changed (a pad picked up, the mouse again): the strip's idle line and the
+	-- cards' words say it in the new device's (2026-10-26). A chosen tool's line stays.
+	Controls.onDevice(function()
+		if active then
+			if not anyChosen() then
+				info.Text = idleHint()
+			end
+			redrawCards()
 		end
 	end)
 	-- Looking round the plot (his ask, 2026-10-19): the mouse wheel or a pinch
@@ -2806,23 +2906,13 @@ function BuildController.Start()
 		)
 		return true
 	end)
-	-- ButtonB with no panel open: stop placing, else leave the cards, else leave build mode.
+	-- ButtonB with no panel open: let go of a wall run, else stop placing, else leave the cards, else leave build mode.
 	Controls.onBack(function()
 		if not active then
 			return false
 		end
-		if
-			selected
-			or selectedDecor
-			or selectedFinish
-			or selectedWindow
-			or movingWindow
-			or moving
-			or movingDecor
-			or wallMode
-		then
-			stopPlacing()
-			padRefresh()
+		if unchoose() then
+			return true
 		elseif roomView then
 			closeRoomView()
 		elseif Controls.selectedRecently() then

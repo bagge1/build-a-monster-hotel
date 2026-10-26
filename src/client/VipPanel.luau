@@ -15,6 +15,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Format = require(ReplicatedStorage.Shared.Format)
 local Net = require(ReplicatedStorage.Shared.Net)
 local BuildController = require(script.Parent.BuildController)
+local Controls = require(script.Parent.Controls)
 local State = require(script.Parent.State)
 local Ui = require(script.Parent.Ui)
 local Hud = require(script.Parent.Hud)
@@ -60,7 +61,10 @@ local function statusText(c: any): string
 		end
 		local left = c.left - (os.clock() - sentAt)
 		local best = if c.best ~= "" then ` · your best {c.typeName} now: {c.best}` else ""
-		local ready = if c.canReady then " · ready to book: tap Ready" else `\n{c.why}`
+		-- A gamepad presses the button, never taps it (2026-10-26).
+		local ready = if c.canReady
+			then ` · ready to book: {Controls.hint("tap Ready", "press Ready")}`
+			else `\n{c.why}`
 		return `{clock(left)} of play left{best}{ready}`
 	elseif c.state == "Booked" then
 		local at = workspace:GetAttribute("NextBusAt") :: number?
@@ -209,7 +213,10 @@ local function draw()
 	local hint = Ui.label(
 		body,
 		"Hint",
-		"Accept a VIP, build or furnish a room to its ask, tap Ready: it rides the next Night Bus, booked to you. "
+		`Accept a VIP, build or furnish a room to its ask, {Controls.hint(
+			"tap Ready",
+			"press Ready"
+		)}: it rides the next Night Bus, booked to you. `
 			.. "A happy stay pays the reward. A Book page's 👑 asks for that monster (a swap).",
 		UDim2.new(1, -10, 0, 52),
 		14,

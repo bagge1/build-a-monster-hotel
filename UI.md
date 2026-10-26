@@ -60,15 +60,19 @@ inputs. The code is `src/client/Controls.luau`.
 - **Every button is `Selectable`** (`Ui.button`), and a designed panel's
   buttons must be too.
 - **Every window is a panel** (`Ui.window` calls `Controls.panel`; a menu
-  built otherwise, like `PingMenu`, calls it itself). Opened while the
+  built otherwise, like `PingMenu`, and build mode's room view, calls it
+  itself). Opened while the
   gamepad is the input, its top-left button is selected (the cross last);
   the selection stays inside it (`SelectionGroup`, `Stop` on every side);
   a redraw keeps the selection on the button of the same name; closed, the
   selection goes, so the left stick walks again.
 - **ButtonB** closes the panel on top, with no panel open it steps back
-  (build mode: stop placing, leave the cards, leave build mode).
-  **ButtonY** puts the selection on the HUD's menu buttons (in build mode
-  the cards) and takes it off again.
+  (build mode: let go of a wall run, stop placing, leave the cards, leave
+  build mode; the room view, a panel, stops what is chosen before it closes).
+  **ButtonY** goes round: the HUD's menu buttons (in build mode the cards),
+  then Gloom's Got it! or Skip while his bubble shows, then off. With a panel
+  open, Y from the panel goes to the HUD, and from nothing back into the
+  panel (2026-10-26: the HUD was out of reach while one stood open).
 - **`NextSelection*` only where the automatic order is wrong**: build mode's
   cards go up to their tab, the tools' last row down to the cards.
 - **Keys and gamepad buttons are input actions** (`InputContext`,
@@ -78,11 +82,19 @@ inputs. The code is `src/client/Controls.luau`.
   Pointer input (clicks and taps on the plot, drags, pinches, twists) stays
   on UserInputService, since it carries a position.
 - **Build mode with a gamepad**: a cursor on the plot (the door marker's
-  gold square) stands in for the pointer. Left stick moves it, A places or
-  taps, RB rotates (beside R), D-pad up/down changes floor and left/right
-  turns the view a quarter, the right stick turns and zooms.
+  gold square) stands in for the pointer and shows what the mouse's move
+  does (the edge or run a wall tool takes, the door's spot, a window's
+  wall). Left stick moves it, and near the view's edge the camera follows
+  it; A places or taps, and with Walls or Remove the first A starts a run
+  and the next ends it; RB rotates (beside R), D-pad up/down changes floor
+  and left/right turns the view a quarter, the right stick turns and zooms.
+  A piece chosen to place (a card, a find's Place it) gives the stick to
+  the cursor.
 - **A hint names the gamepad's button only where it names a key already**
-  (`Controls.hint`): the build strip's lines.
+  (`Controls.hint`): the build strip's lines. A text that says "tap" says it
+  in the gamepad's words too (the Door card, Gloom, the VIP ledger's Ready),
+  and the server's say "press" (2026-10-26). A line drawn before the device
+  changed is said again when it does (`Controls.onDevice`).
 
 ### Every window and menu, on a phone
 
@@ -90,12 +102,13 @@ inputs. The code is `src/client/Controls.luau`.
   on their empty space never reaches a HUD button or the plot behind them.
 - A scrolling list keeps its bar in its own room (`ScrollBarInset`), never
   over a row's right-hand button.
-- On a computer (a tall screen, no touch) the HUD's right column keeps its
-  buttons at its foot, and the Ping menu opens beside them: Roblox's player
+- On a computer (a tall screen and a mouse, a touchscreen laptop too) the
+  HUD's right column keeps its buttons at its foot, and the Ping menu opens beside them: Roblox's player
   list, the street's leaderboard (§7), stands open at the top right there and
   grows a row per player (2026-10-26: it lay over Moon and Travel and took
   their clicks). A phone or tablet keeps the list shut and has its jump button
-  under the column's foot, so there the column starts at the top.
+  under the column's foot, and a console (no mouse) keeps it shut too, so
+  there the column starts at the top.
 - On a short screen (under 500 px high) the HUD's two menu columns are each
   two buttons wide, the toasts, the banner and the Hunter Night timer keep to
   the lane between them and grow downward rather than clip, and the Ping menu
