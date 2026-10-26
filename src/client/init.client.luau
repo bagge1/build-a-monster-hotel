@@ -39,6 +39,7 @@ local systems: { { Init: () -> (), Start: () -> () } } = {
 	require(Client.ShowcasePanel) :: any, -- the showcase (A.11.4)
 	require(Client.VipPanel) :: any, -- the VIP ledger (A.11.1)
 	require(Client.FindsPanel) :: any, -- a rare find's pop-up (A.11.3)
+	require(Client.ExpeditionPanel) :: any, -- the Expedition board, its Collect pop-up, the Residents button's timer (A.11.2)
 	require(Client.HunterRenderer) :: any,
 	require(Client.Sound) :: any,
 	require(Client.Pings) :: any,

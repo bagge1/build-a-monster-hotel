@@ -229,3 +229,44 @@ Elsewhere: a Book page of a species the ledger can draw carries `RequestVip`
 (👑, top right; `Vip` "Request" with its id, one of the day's swaps). The room
 view's `Status` adds "👑 held for your VIP" or "👑 meets your VIP's ask". A
 VIP guest's label reads "👑 VIP for <owner>" in gold, with a gold glow.
+
+### Expedition board (`Expedition`, `ExpeditionPanel`, `src/client/ExpeditionPanel.luau`)
+
+Built in code; GDD A.11.2 (its scrutinized recommendations; the pay his
+ruling, §18 2026-10-26). Opened by the `ExpeditionBoard`'s **Expeditions**
+prompt in the Resident Wing (E; the server answers with the `Moment`
+"ExpeditionBoard"). Everything drawn is the server's `expedition` state
+section and, for the residents, `collection`; the client sends only
+`ExpeditionSend` (a destination, a length, the party's ids) and
+`ExpeditionCollect`. Mobile first: every button at least 44 tall, the party
+filled by one tap on **Best for this trip**.
+
+| Name | What | The code |
+|---|---|---|
+| `ExpeditionPanel` | A window, its `Body` a scrolling list: `Head` (how a trip pays: three quarters of what the party would earn in the Wing meanwhile, the offline cap included, and a free roll for a find), then either the planner below or `Trip` | Redrawn on every state send while open; `Left` each second |
+| `Destinations` | A row of picture cards `Dest_<id>`, one per destination: `Name`, `Likes` (the tags a resident matches by), its picture `Image` (`UiImages` `Expedition_<id>`; the location's facade colour while that is empty); a closed one is dark with "Open <hotel> first"; the chosen one has a gold outline | A tap chooses it |
+| `Lengths` | `Len_<seconds>`: "30 min · 5% find", the chosen one pumpkin | A tap chooses it |
+| `Party` | `Slot_1`… (`Constants.Expeditions.Party`): the resident in it or "Empty" | A tap empties the slot |
+| `Best` | **Best for this trip** | Fills the slots (`Expeditions.best`: matching the destination first, then level, then rarity); any slot can then be changed |
+| `Send` | "Send n" (green when a party is picked) and `Chance` beside it (the find's chance with this party's matches) | Sends `ExpeditionSend`; the server checks everything again |
+| `Residents` | A list `Pick_<id>`, one per resident who may go (in the Wing, home): its look and species, "Lv n", its Wing pay, "♥ likes it" when it matches; teal when picked | A tap puts it in the first empty slot or takes it out |
+| `Trip` | While a trip is out: `Where` (destination and length), `Who` (the party), `Left` (time left, or "Back!"), `SoFar` (the pay counted so far), `Chance` (the find's chance; "a find is sure" on the guaranteed one), and `Collect` once it is back | `Collect` sends `ExpeditionCollect` |
+
+### Collect pop-up (`Expedition`, `ExpeditionCollect`)
+
+Opened once per trip, the first time the state shows it back (as it comes
+home while the player plays, or on joining with one back). Named not
+`<X>Panel`, so it stands over a panel.
+
+| Name | What | The code |
+|---|---|---|
+| `ExpeditionCollect` | A pop-up: `Text` ("Your residents are back from the <destination>!", the pay, the find's chance), `Buttons` with `Collect` and `Later` | `Collect` sends `ExpeditionCollect`; the `Moment` "ExpeditionCollected" closes it (a find opens `FoundPopup` as any find does) |
+
+### Residents button: the trip's timer (`Hud`, `ResidentsButton`)
+
+While a trip is out, the HUD's `ResidentsButton` carries `ExpeditionTimer`, a
+small badge on its top-right corner: the time left ("1:23:45"), "Back!" in
+gold once the party is home and the trip waits for Collect. Hidden with no
+trip. Counted down on the client from the state's `left`. In the Residents
+panel a resident on a trip reads "· on an expedition" in its `Name`, and its
+buttons are refused by the server until it is home.
