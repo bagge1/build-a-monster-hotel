@@ -1481,17 +1481,17 @@ function Rooms.canPlaceDecor(world: World, d: Grid.DecorPlaced, skip: string?): 
 		end
 	end
 	if not rug then
-		local before = table.clone(world)
-		before.decor = {}
+		-- Judged against the hotel as it stands, the moved piece still in its old place: a
+		-- Bed moved out of a ready room's reach was skipped when "before" lacked it (2026-10-26).
+		local after = table.clone(world)
+		after.decor = {}
 		for _, o in world.decor do
 			if not (skip ~= nil and o.id == skip) then
-				table.insert(before.decor, o)
+				table.insert(after.decor, o)
 			end
 		end
-		local after = table.clone(before)
-		after.decor = table.clone(before.decor)
 		table.insert(after.decor, d)
-		local ok, why = Rooms.check(before, after)
+		local ok, why = Rooms.check(world, after)
 		if not ok then
 			return false, why
 		end

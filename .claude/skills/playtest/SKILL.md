@@ -103,11 +103,14 @@ Studio MCP".
   would.
 - **Prefer the game's own remotes** from a Client `execute_luau` where an item
   allows: they need no focus and no aim.
-- **Coordinates**: `user_mouse_input` x/y are viewport pixels. A ScreenGui's
-  origin sits below Roblox's top bar (`ScreenGui.AbsolutePosition`, 58 px on
-  his screen), and a capture is the viewport scaled to 1920 wide *with* the
-  bar. Click by `instance_path` wherever there is one; scroll a row into its
-  list first. Nothing in Roblox's own top bar can be clicked.
+- **Coordinates**: `user_mouse_input` x/y are **GUI pixels**, below Roblox's
+  top bar: a `GuiObject.AbsolutePosition` is clicked as it is, but a world
+  point from `Camera:WorldToViewportPoint` is clicked at its y **minus the
+  inset** (58 px on his screen; `GuiService:GetGuiInset()`). Measured
+  2026-10-26 night: x/y 2000, 400 sent, `UserInputService:GetMouseLocation()`
+  2000, 458. A capture is the viewport scaled to 1920 wide *with* the bar.
+  Click by `instance_path` wherever there is one; scroll a row into its list
+  first. Nothing in Roblox's own top bar can be clicked.
 - **Text boxes**: click, then `textInput`.
 - **A held key is released early** (2026-10-24: `keyDown` E, wait 3 s,
   `keyUp`, and `InputEnded` came after 0.72 s): a prompt with a
@@ -115,8 +118,14 @@ Studio MCP".
 - **A click on a GUI button can arrive and not press it** (2026-10-24 night,
   on foot: `InputBegan` MouseButton1 with `gameProcessed` true over the
   button, no `Activated`, HUD and windows alike; the build cards clicked
-  fine minutes before). Check `Activated` with a connection, and fall back
-  to the remote the button sends.
+  fine minutes before). **The cause, found 2026-10-26 night: the game's
+  "Turn on Notifications" opt-in** (`LivePanels.offerNotifications`, 4 s
+  after the first move-in) is a CoreGui modal that no capture shows and
+  that sinks every click. Look for it
+  (`game.CoreGui.NotificationModals...ConfirmationPrompt`, from a Client
+  `execute_luau`) and click its **Cancel** by `instance_path`
+  (`game.CoreGui.NotificationModals.ScreenGui.Container.Children.ConfirmationPrompt.AlertContents.Footer.Buttons.1`).
+  Check `Activated` with a connection when a click seems lost.
 - **A ProximityPrompt only shows on screen**: turn the camera to it before E,
   hold for its `HoldDuration` (`keyDown`, wait, `keyUp`), or trigger it without
   the focus by `prompt:InputHoldBegin()`, wait, `InputHoldEnd()` from a Client

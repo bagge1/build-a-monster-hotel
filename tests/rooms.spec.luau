@@ -836,4 +836,40 @@ describe("Rooms", function()
 		expect.truthy(not ok, "the wall closing the pocket")
 		expect.eq(why, "KeyCutOff")
 	end)
+
+	it(
+		"moving a ready room's Bed behind furniture that cuts it off is refused (KeyCutOff)",
+		function()
+			-- 2026-10-26 night (a code review): a move judged the room without the piece
+			-- being moved, so a moved Bed was never "before" ready and the rule was skipped.
+			local wd = world()
+			room(wd, "r", "StandardRoom", 8, 4, 2, 2)
+			local x0, z0 = 8 * Q, 4 * Q
+			local bed = decor("Bed", 1, x0 + 5, z0, 0) -- at the front, beside the door's corner
+			bed.id = "bed"
+			table.insert(wd.decor, bed)
+			expect.truthy(Rooms.ready(wd, "r"), "ready with the Bed at the front")
+			-- A row right across the room behind the Bed: it cuts off only the empty back.
+			local item = smallDecor()[1]
+			for x = x0, x0 + 2 * Q - 1 do
+				local d = decor(item, 1, x, z0 + 4, 0)
+				d.id = `row{x}`
+				local ok, why = Rooms.canPlaceDecor(wd, d)
+				expect.truthy(ok, `row piece at {x}: {why}`)
+				table.insert(wd.decor, d)
+			end
+			expect.truthy(Rooms.ready(wd, "r"), "still ready")
+			local moved = decor("Bed", 1, x0 + 1, z0 + 5, 0)
+			moved.id = "bed"
+			local ok, why = Rooms.canPlaceDecor(wd, moved, "bed")
+			expect.truthy(not ok, "the Bed moved behind the row")
+			expect.eq(why, "KeyCutOff")
+			local along = decor("Bed", 1, x0 + 2, z0, 0)
+			along.id = "bed"
+			expect.truthy(
+				Rooms.canPlaceDecor(wd, along, "bed"),
+				"moved along the front, still reached"
+			)
+		end
+	)
 end)
