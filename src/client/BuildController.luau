@@ -1317,8 +1317,11 @@ function redrawCards()
 						free = true
 					end
 				end
+				-- Event decor: one copy per purchase in its shop, so the copies left to place (WAITING §2.48).
+				local left = (b.copies or {})[d.id]
 				local text = `{d.name}\n{d.w}×{d.d} · {if free
 					then "free"
+					elseif left then `{left} left`
 					elseif d.cost > 0 then Format.cash(d.cost)
 					else "owned"}`
 				card(d.id, text, 1000 + i, selectedDecor == d.id, true, function()

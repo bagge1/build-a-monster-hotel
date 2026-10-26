@@ -632,4 +632,29 @@ function Contracts.fail(L: Ledger, id: number): Contract?
 	return take(L, id)
 end
 
+--[[ A rebirth (§6.4: it takes the chain apart; WAITING §2.48, his yes
+	2026-10-26): the offers and the contracts of every hotel not in `kept`
+	(by location) end, without penalty. Not missed, not failed: the hotel
+	they were for is gone, not the player's doing, and a contract kept for
+	it would hold a place in the ledger and the day's cap, its clock never
+	running, and an offer drawn at the old rating (a Mythic at 2★) would
+	wait for a hotel that no longer earns it. The day's completions and
+	swaps and the species' firsts stay. Returns the contracts ended, so the
+	service can let their held rooms go. ]]
+function Contracts.endHotels(L: Ledger, kept: { [number]: boolean }): { Contract }
+	for k in L.offers do
+		local location = tonumber(k)
+		if not (location and kept[location]) then
+			L.offers[k] = nil
+		end
+	end
+	local ended = {}
+	for i = #L.active, 1, -1 do
+		if not kept[L.active[i].location] then
+			table.insert(ended, table.remove(L.active, i) :: Contract)
+		end
+	end
+	return ended
+end
+
 return Contracts

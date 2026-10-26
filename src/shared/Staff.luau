@@ -140,4 +140,15 @@ function Staff.deskDelay(delay: number, desk: number, bellhop: number, bonus: nu
 	return delay / math.max(desk, 0.01) / (1 + math.max(bellhop, 0) * math.max(bonus, 0))
 end
 
+--[[ Whether a resident may be moved now (to another role or hotel, or
+	released to the Wing or on holiday), with `location` the hotel played:
+	not while it is on staff at another hotel of the chain (WAITING §2.48,
+	his yes 2026-10-26). That hotel earns in the background at the rate it
+	earned while played (`Chain.background`, frozen as it was left, its
+	staff in it), so a resident taken from it would be counted twice: at
+	the hotel it left and where it went. At that hotel it moves freely. ]]
+function Staff.movable(rec: { role: string, hotel: number? }, location: number): boolean
+	return rec.role == "" or (rec.hotel or location) == location
+end
+
 return Staff

@@ -5,8 +5,9 @@
 
 	Each resident (the individual, not its species) fills an XP bar by
 	working: `LevelXpPerMinute` a minute while the player plays, in the Wing
-	or at a staff post alike (one time-based scale, not per cash, so a loved
-	Common levels as fast as a Mythic). A full bar waits for **Level up**,
+	or at a staff post alike, at any hotel of the chain (`learning`; one
+	time-based scale, not per cash, so a loved Common levels as fast as a
+	Mythic). A full bar waits for **Level up**,
 	which costs `LevelPriceMinutes` × level minutes of that resident's own
 	Wing rate (what it earns, or would earn, in the Wing at its level). A
 	level gives Wing earnings and staff efficiency (decision 1a); perks stay
@@ -62,6 +63,15 @@ end
 	level's multiplier). ]]
 function ResidentLevels.price(level: number, wingRate: number): number
 	return math.ceil(R.LevelPriceMinutes * level * 60 * wingRate * ResidentLevels.wing(level))
+end
+
+--[[ Whether a resident gains XP while the player plays (at `now`, os.time):
+	in the Wing, or on staff at any hotel of the chain, the one played or
+	another ("at the same rate in the Wing and at a staff post", WAITING
+	§2.48, his yes 2026-10-26: a hotel not played still works); not in the
+	Hunter Camp (`campUntil`). ]]
+function ResidentLevels.learning(rec: { campUntil: number }, now: number): boolean
+	return rec.campUntil <= now
 end
 
 return ResidentLevels

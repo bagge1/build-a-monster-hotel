@@ -5,8 +5,9 @@
 
 	REBIRTH asks for 5★ on every hotel of the chain (`Chain.rebirthReady`).
 	It takes the chain apart: cash, every hotel and the locations opened go,
-	and the player starts again at Haunted Manor from the start square. It
-	keeps residents (staff of a lost hotel back in the Wing), the Book,
+	and the player starts again at Haunted Manor from the start square. Its
+	VIP contracts and offers end with it, without penalty (`ContractService`,
+	WAITING §2.48). It keeps residents (staff of a lost hotel back in the Wing), the Book,
 	cosmetics, Moon Shards, the Moon Tree, friendship and every room type
 	already unlocked. It gives Moon Shards = floor(10 × √(run cash / $1M)),
 	and either the right to buy one more floor (odd rebirths, to the cap) or
@@ -40,9 +41,17 @@ local DevGrant = require(ServerScriptService.Server.DevGrant)
 local ProgressionService = {}
 
 local rebirthHandlers: { (Player, number) -> () } = {}
+local startHandlers: { (Player) -> () } = {}
 
 function ProgressionService.onRebirth(handler: (Player, number) -> ())
 	table.insert(rebirthHandlers, handler)
+end
+
+--[[ Called at once when a rebirth is taken, before the chain is taken apart:
+	what has to be let go while the hotels are still there (a VIP contract's
+	held room, WAITING §2.48). It must not yield. ]]
+function ProgressionService.onRebirthStart(handler: (Player) -> ())
+	table.insert(startHandlers, handler)
 end
 
 function ProgressionService.level(data: PlayerData.Data, id: string): number
@@ -106,6 +115,12 @@ local function rebirth(player: Player, force: boolean?)
 		return
 	end
 	local from = data.location
+	for _, h in startHandlers do
+		local ok, err = pcall(h, player)
+		if not ok then
+			warn(`[rebirth] {player.Name}: {err}`)
+		end
+	end
 	PlayerData.addShards(player, req.shards)
 	data.cash = Constants.Economy.StartCash
 	data.till = 0

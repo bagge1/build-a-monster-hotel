@@ -82,6 +82,14 @@ function Economy.incomeMultiplier(b: Bonuses): number
 	return m
 end
 
+--[[ The bonuses that pay for time away (§4.6's offline earnings): every one
+	but the friend bonus (§7), which is for friends playing together, not for
+	a friend who happens to be online when the player comes back, over all the
+	hours away (WAITING §2.48, his yes 2026-10-26). ]]
+function Economy.offlineBonuses(b: Bonuses): Bonuses
+	return { permanent = b.permanent, friends = false, boost = b.boost }
+end
+
 --[[ What a guest pays per second while staying (§4.4): its species' rate,
 	the room's tier, its mutation (a look and a size, their pay added,
 	A.11.5), the milestones of that room type, and the hotel's bonuses. ]]

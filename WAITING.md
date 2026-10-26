@@ -1217,6 +1217,7 @@ Med Claudes skärmdump där det finns en. -->
 
 48. ~~**Buggar där rättningen är ett beslut**~~ (ditt ja 2026-10-26 till alla fem rekommendationerna, GDD §18; rättas natten 2026-10-26) (2026-10-22 kväll, tre
    kodgranskningar; det som var rena fel är rättat, se nedan). Fyra frågor:
+   - *Byggt på grenen `claude/fixes-2-48`, inte kört i Studio (2026-10-26).*
    - **Ett accepterat VIP-kontrakt efter en rebirth** stannar kvar för ett
      hotell som kedjan inte längre har; dess klocka går aldrig, så det tar en
      plats i ledgern (och en av dagens tre) tills hotellet öppnas igen, kanske

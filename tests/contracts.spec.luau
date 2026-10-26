@@ -295,4 +295,35 @@ describe("VIP contracts (A.11.1)", function()
 			end
 		end
 	end)
+
+	-- WAITING §2.48 (his yes 2026-10-26): a rebirth takes the chain's hotels, and their ledger with them.
+	it("a rebirth ends the contracts and offers of the hotels it takes, without a miss or a place in the cap", function()
+		local L = Contracts.newLedger()
+		Contracts.fill(L, ctx(5, 1), rand)
+		Contracts.fill(L, ctx(5, 2), rand)
+		local here = assert(Contracts.accept(L, 1, Contracts.offersAt(L, 1)[1].id, 5))
+		local there = assert(Contracts.accept(L, 2, Contracts.offersAt(L, 2)[1].id, 5))
+		L.done = C.DailyCap - #L.active
+		expect.truthy(not (Contracts.canAccept(L, 5)), "the running ones hold places in the day's cap")
+		local done, swaps = L.done, L.swaps
+		-- Only the hotels not kept end.
+		local ended = Contracts.endHotels(L, { [2] = true })
+		expect.eq(#ended, 1)
+		expect.eq(ended[1].id, here.id, "the lost hotel's contract ended")
+		expect.truthy(Contracts.find(L, there.id) ~= nil, "a kept hotel's contract runs on")
+		expect.eq(#Contracts.offersAt(L, 1), 0, "the lost hotel's offers are gone")
+		expect.truthy(#Contracts.offersAt(L, 2) > 0, "a kept hotel's offers stay")
+		-- A rebirth keeps none.
+		Contracts.endHotels(L, {})
+		expect.eq(#L.active, 0, "no contract waits for a hotel that is gone")
+		for k, list in L.offers do
+			expect.eq(#list, 0, `no offer left at {k}`)
+		end
+		expect.eq(L.done, done, "nothing counted as done")
+		expect.eq(L.swaps, swaps, "the swaps are kept")
+		expect.truthy(not L.first[here.species], "no souvenir's first")
+		expect.truthy((Contracts.canAccept(L, 5)), "their places in the cap are given back")
+		-- Ended, not missed: no clock runs them out afterwards.
+		expect.eq(#Contracts.tick(L, 1, C.Deadline * 2), 0, "nothing is missed")
+	end)
 end)

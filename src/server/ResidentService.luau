@@ -20,7 +20,7 @@
 	Releasing a resident ("a holiday") gives Moon Shards by rarity.
 
 	LEVELS (A.11.6, `ResidentLevels`): each resident gains XP a minute at
-	work while the player plays (the Wing or a post at the hotel played), a
+	work while the player plays (the Wing or a post at any hotel of the chain), a
 	full bar is taken by **Level up** (`LevelUp`) for a price in its own Wing
 	rate, and a level raises its Wing earnings and its staff efficiency.
 
@@ -45,6 +45,7 @@ local ServerScriptService = game:GetService("ServerScriptService")
 local Constants = require(ReplicatedStorage.Shared.Constants)
 local Economy = require(ReplicatedStorage.Shared.Economy)
 local Format = require(ReplicatedStorage.Shared.Format)
+local Locations = require(ReplicatedStorage.Shared.Locations)
 local Net = require(ReplicatedStorage.Shared.Net)
 local Species = require(ReplicatedStorage.Shared.Species)
 local Stay = require(ReplicatedStorage.Shared.Stay)
@@ -342,6 +343,23 @@ local function onCheckout(player: Player, g: GuestService.Guest, satisfaction: n
 	StateService.mark(player)
 end
 
+--[[ Refuses moving a resident on staff at another hotel of the chain (`Staff.movable`,
+	WAITING §2.48): that hotel's background rate counts it, so it moves only once the
+	player is there. Returns whether it was refused. ]]
+local function heldElsewhere(
+	player: Player,
+	data: PlayerData.Data,
+	rec: PlayerData.ResidentRecord,
+	remote: string
+): boolean
+	if Staff.movable(rec, data.location) then
+		return false
+	end
+	local name = Locations.get(rec.hotel or data.location).name
+	Net.fire(player, "Refused", remote, `It works at your {name}: travel there to move it`)
+	return true
+end
+
 local function assign(player: Player, idNumber: number, role: string)
 	local data = PlayerData.get(player)
 	local rec = data and data.residents[tostring(idNumber)]
@@ -349,6 +367,9 @@ local function assign(player: Player, idNumber: number, role: string)
 		return
 	end
 	if role ~= "" and not table.find(ResidentService.Roles, role) then
+		return
+	end
+	if heldElsewhere(player, data, rec, "Assign") then
 		return
 	end
 	rec.role = role
@@ -364,6 +385,9 @@ local function release(player: Player, idNumber: number)
 	if not data or not rec or not sp then
 		return
 	end
+	if heldElsewhere(player, data, rec, "Release") then
+		return
+	end
 	data.residents[id] = nil
 	local shards = Constants.Rarity[sp.rarity].releaseShards
 	PlayerData.addShards(player, shards)
@@ -371,9 +395,9 @@ local function release(player: Player, idNumber: number)
 	publish(player)
 end
 
--- The Wing's residents' combined rate, before offline's 50 %.
-function ResidentService.rate(player: Player, data: PlayerData.Data): number
-	local m = Income.multiplier(player)
+-- The Wing's residents' combined rate, before offline's 50 %; `offline` for the time away (no friend bonus).
+function ResidentService.rate(player: Player, data: PlayerData.Data, offline: boolean?): number
+	local m = Income.multiplier(player, offline)
 		* (1 + Perks.total(data.residents, "ResidentIncome", os.time()))
 	local total = 0
 	for _, r in data.residents do
@@ -405,7 +429,8 @@ local function welcomeBack(player: Player, data: PlayerData.Data)
 	end
 	local away = os.time() - data.lastSeen
 	local cap = ResidentService.offlineCap(player, data)
-	local earned = Economy.offline(ResidentService.rate(player, data), away, cap)
+	-- No friend bonus for the hours away, whoever is online now (WAITING §2.48, his yes 2026-10-26).
+	local earned = Economy.offline(ResidentService.rate(player, data, true), away, cap)
 	if earned > 0 then
 		PlayerData.addTill(player, earned)
 		Net.fire(
@@ -603,12 +628,13 @@ local function runErrands(
 end
 
 --[[ XP for every resident at work while the player plays (A.11.6): in the
-	Wing, or on staff at the hotel being played; not in the Hunter Camp. A bar
+	Wing, or on staff at any hotel of the chain, the one played or another
+	(`ResidentLevels.learning`, WAITING §2.48); not in the Hunter Camp. A bar
 	that fills sends the panel again (its Level up button). ]]
 local function giveXp(player: Player, data: PlayerData.Data, seconds: number)
 	local filled = false
 	for _, r in data.residents do
-		if r.campUntil <= os.time() and (r.role == "" or here(data, r)) then
+		if ResidentLevels.learning(r, os.time()) then
 			local level = ResidentLevels.level(r)
 			local before = ResidentLevels.xp(r)
 			r.xp = ResidentLevels.gain(level, before, seconds)

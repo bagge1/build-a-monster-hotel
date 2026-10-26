@@ -54,4 +54,16 @@ describe("Residents level up (A.11.6)", function()
 			last = payback
 		end
 	end)
+
+	-- WAITING §2.48 (his yes 2026-10-26): A.11.6's "the same rate in the Wing and at a staff post".
+	it("a resident learns in the Wing and on staff at any hotel of the chain, not in the Hunter Camp", function()
+		local now = 1e6
+		expect.truthy(ResidentLevels.learning({ role = "", campUntil = 0 }, now), "in the Wing")
+		expect.truthy(ResidentLevels.learning({ role = "FrontDesk", hotel = 1, campUntil = 0 }, now), "on staff")
+		expect.truthy(
+			ResidentLevels.learning({ role = "Housekeeping", hotel = 2, campUntil = 0 }, now),
+			"on staff at a hotel not played"
+		)
+		expect.truthy(not ResidentLevels.learning({ role = "", campUntil = now + 60 }, now), "not in the Hunter Camp")
+	end)
 end)

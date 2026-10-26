@@ -2336,6 +2336,39 @@ function Pieces.decorHere(
 		or unlocked[`Decor_{d.id}`] == true
 end
 
+-- Event decor (§8.2): location 0, not `always`, not furniture, not a pass's or a find: bought in a season's shop.
+function Pieces.isEventDecor(d: Decor): boolean
+	return d.location == 0
+		and d.always ~= true
+		and d.furniture ~= true
+		and d.pass == nil
+		and d.found ~= true
+end
+
+-- The profile's count of an event decor's copies bought, in `stats` (as a voucher is).
+function Pieces.copiesKey(id: string): string
+	return `copies_Decor_{id}`
+end
+
+--[[ The copies of an event decor bought: `bought` purchases counted; a
+	profile from before the count that owns it (`owned`, its shop's unlock)
+	has one. ]]
+function Pieces.copiesBought(bought: number?, owned: boolean): number
+	return math.max(bought or 0, if owned then 1 else 0)
+end
+
+--[[ How many more copies of decor `d` may be placed, with `placed` standing
+	in the chain's hotels: event decor is one copy per purchase in its shop,
+	as other decor is one per price paid (WAITING §2.48, his yes 2026-10-26:
+	free copies without end each gave full Decor). Nil for other decor: it is
+	paid for at each placing. ]]
+function Pieces.copiesLeft(d: Decor, bought: number?, owned: boolean, placed: number): number?
+	if not Pieces.isEventDecor(d) then
+		return nil
+	end
+	return math.max(0, Pieces.copiesBought(bought, owned) - placed)
+end
+
 function Pieces.get(id: string): Piece?
 	return Pieces.ById[id]
 end
