@@ -424,10 +424,13 @@ end
 
 -- Offline earnings (§4.6), into the till on joining.
 local function welcomeBack(player: Player, data: PlayerData.Data)
-	if data.lastSeen <= 0 then
+	-- From when it was last seen before this session: `data.lastSeen` is kept
+	-- up to date from the load on (PlayerData.awaySince).
+	local since = PlayerData.awaySince(player)
+	if since <= 0 then
 		return
 	end
-	local away = os.time() - data.lastSeen
+	local away = os.time() - since
 	local cap = ResidentService.offlineCap(player, data)
 	-- No friend bonus for the hours away, whoever is online now (WAITING §2.48, his yes 2026-10-26).
 	local earned = Economy.offline(ResidentService.rate(player, data, true), away, cap)
