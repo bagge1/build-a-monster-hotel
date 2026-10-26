@@ -937,6 +937,9 @@ Med Claudes skärmdump där det finns en. -->
      bäst), fyndchans per resa bland ännu inte funna bitar, en knapp **Best
      for this trip**; rebirth kallar hem gruppen. Notisen är en tredje text
      som du gör i Creator Hub (Engagement → Notifications).
+     *Byggs natten 2026-10-26 enligt rekommendationerna (PLACEHOLDER), på en
+     egen gren som inte mergas före lanseringen; lönen besvarad, se nedan.
+     Kvar som ditt: punkterna ovan och notisens text.*
    - **Rare decor sets och Souvenirs:** *hur fynd görs* (slump / milstolpar /
      Souvenirs av milstolpe, set-bitar av slump med garanti), *vad ett set
      gör* (bara utseende / Decor-stapeln i ett rum / hela hotellet),
@@ -1004,13 +1007,14 @@ Med Claudes skärmdump där det finns en. -->
      nytt hotell blir stor ($9K–18K, inkomsten räknas minst $10/s): rätt? En
      VIP som inte blir nöjd ger ingen belöning: rätt? **Rekommendation:**
      räkna inkomsten utan golv, och ge halva belöningen för en olycklig VIP.
-   - *Expeditions är inte byggda:* modellen visar att resorna fortfarande
+   - ~~*Expeditions är inte byggda:* modellen visar att resorna fortfarande
      slår Wing (1,25–1,5 × med Pay 1,5; `archive/BALANCE-2026-10-21c.md`),
      och A.11 säger att de byggs först när det är ett riktigt val. Ditt
      beslut: Pay under 1 (0,75 eller 0,5), XP bara för speltid, och
      matchningsbonusen på fyndchansen. **Rekommendation:** Pay 0,75, XP som
      i Wing, bonusen på fyndchansen; och att en resa som kommer hem före
-     inloggning inte också fyller offline-kassan.
+     inloggning inte också fyller offline-kassan.~~ (besvarat 2026-10-26:
+     "Ja, rekommendationen"; GDD §18.)
    - *Sällsynt dekor och souvenirer byggt 2026-10-21 morgon (PLACEHOLDER i
      `Constants.Finds`):* fynd vid nöjda vistelser av Rare+ (2 %) och Hunter
      Night (25 % per spelare på gatan), pity efter 40 missar, setbonus +0,25
