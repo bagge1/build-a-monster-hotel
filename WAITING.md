@@ -1392,6 +1392,40 @@ Med Claudes skärmdump där det finns en. -->
    står i UI.md (Found, sedan ej funna, sedan butiken). Förslag: **Found,
    butiken, ej funna sist**.
 
+57. **Rum där gästerna gör saker: dina val** (natten 2026-10-26, utkastet är
+   GDD A.13; alla siffror PLACEHOLDER). Natten bygger reglerna, raderna och
+   blockouter för fyra typer (Game Room, Bar, Indoor Pool, Cinema) och väntar
+   med det som står nedan.
+   - **Besök:** en gäst går ibland från sitt rum till ett aktivitetsrum som
+     möter en av dess preferenser, gör saken 20–40 s och går tillbaka. Ett
+     besök räknas som preferensen mött och ger +5 nöjdhet. Våningsregeln i
+     dag (en amenity på samma våning räcker, osedd) försvinner. **Förslag:
+     ja.**
+   - **Typerna** (A.13.2): Game Room, Billiard Hall, Cinema, Bar,
+     Restaurant, Dance Floor, Indoor Pool, Outdoor Pool, Gym, Spa, Karaoke
+     Lounge, Sauna (Frostfang), och de amenities som finns blir besöksrum.
+     Stryk eller lägg till fritt. **Förslag:** alla; Billiard Hall kan slås
+     ihop med Game Room om du vill ha färre.
+   - **Nya preferenser** (*film, drinks, dining, dance, swim, fitness,
+     pampering, singing, billiards*): i dag har varje art två. **Förslag:**
+     en tredje preferens per art enligt kolumnen "Wanted by" i A.13.2, så att
+     varje typ har minst två arter som vill dit.
+   - **Utomhuspoolen** (A.13.4): A en gård bakom hotellet (nya
+     "yard"-plattor utan tak, staket, grind), B förgården bredvid gången, C
+     taket. **Förslag: A.**
+   - **Delade möbelset** (A.13.3: Lounge, Dining, Stage, Poolside, Games,
+     Fitness): en möbel räknas i varje typ dess set tjänar. **Förslag: ja.**
+   - Utseendet på varje modell är ditt (§1), och ingen läggs för import
+     innan du sagt ja.
+
+58. **Ett hotell du lämnat tjänar på sin senaste takt, med boost och VIP**
+   (natten 2026-10-26, kodgranskning). Bakgrundsinkomsten (25 % av takten
+   när du spelade det, §6.4) räknar in en 2x-boost, VIP:ns ×2 och
+   vänbonusen som gällde då. Spelar du ett hotell under en 15-minutersboost
+   och reser, tjänar det på dubbel takt så länge du är borta. Det tjänar
+   också om du sålt allt i det innan du åkte. **Förslag:** takten räknas
+   utan boost, VIP och vänbonus (bara gästernas grundlön och personalen).
+
 ## §3 Creator Hub och publicering
 
 1. ~~**Slå på Studio Access to API Services**~~ (gjort 2026-10-19: på i
