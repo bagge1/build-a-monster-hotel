@@ -474,6 +474,22 @@ Constants.Visits = {
 	Satisfaction = 5, -- PLACEHOLDER: what a visit meeting a preference adds, once a stay
 }
 
+--[[ Expeditions (GDD A.11.2, its scrutinized recommendations; `Shared/Expeditions`).
+	Only `Pay` is his (§18, 2026-10-26); every other value is PLACEHOLDER.
+	`tools/balance_model.py --expeditions` reads these. ]]
+Constants.Expeditions = {
+	-- His ruling 2026-10-26 (§18): a trip pays 0.75 × what its residents would have earned by
+	-- staying, counted as staying counts (the Wing rate while playing, the offline rate and cap away).
+	Pay = 0.75,
+	Party = 3, -- PLACEHOLDER: up to three residents a trip, Wing residents only (decision 1a)
+	-- PLACEHOLDER: a trip's length (seconds) -> its chance of a find (decision 3b: a free roll, never paid)
+	Lengths = { [1800] = 0.05, [7200] = 0.15, [28800] = 0.35 },
+	Match = 0.20, -- PLACEHOLDER: the find chance × (1 + this) for each resident matching the destination (§18: on the find, not the pay)
+	PityTrips = 10, -- PLACEHOLDER: a guaranteed find on the 10th trip in a row of PityMin or longer without one …
+	PityMin = 7200, -- PLACEHOLDER: … counting trips of 2 h or more
+	NotifyMin = 7200, -- PLACEHOLDER: "Your residents are back" only for trips of 2 h and more (decision 6b)
+}
+
 -- §6.2: number format.
 Constants.Format = {
 	Suffixes = { "", "K", "M", "B", "T", "Qa", "Qi" },

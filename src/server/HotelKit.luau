@@ -1131,6 +1131,9 @@ function HotelKit.base(location: number): Folder
 		}
 	)
 	wing:SetAttribute("Wing", true)
+	-- Where the Expedition board stands (MODELS.md "Expedition board", GDD A.11.2 "by the
+	-- Wing"): the garden's front corner on the sign's side, 8 studs in, facing the hotel.
+	attach(wing, "ExpeditionBoard", Vector3.new(P - 12, th, P + 8), Vector3.new(0, 0, -1))
 	local fh = 2.5
 	part(
 		folder,
@@ -1202,6 +1205,62 @@ function HotelKit.cosmetic(c: Cosmetics.Cosmetic): Model
 		end
 	end
 	return model
+end
+
+--[[ The Expedition board (MODELS.md, "Expedition board"; GDD A.11.2): a
+	signpost with a map, its `Board` facing −Z, the `Prompt` attachment
+	before it and a `Glow_Warm_1` lantern on top the code lights while a trip
+	waits for Collect. Origin at the post's foot. ]]
+function HotelKit.expeditionBoard(location: number): Model
+	local found = template(location, "ExpeditionBoard")
+	if found then
+		return found
+	end
+	local loc = Locations.get(location)
+	local wood = darker(loc.facade, 0.55)
+	local model, root = shell("ExpeditionBoard", Vector3.new(6, 0.2, 1), Vector3.new(0, 0.1, 0))
+	for _, x in { -2.6, 2.6 } do
+		part(model, "Post", Vector3.new(0.5, 6.8, 0.5), Vector3.new(x, 3.4, 0), { Color = wood })
+	end
+	-- The map's paper is the board itself: its front face stays clear for the code's SurfaceGui.
+	part(
+		model,
+		"Board",
+		Vector3.new(6, 4, 0.4),
+		Vector3.new(0, 4.5, 0),
+		{ Color = Color3.fromRGB(225, 205, 150) }
+	)
+	-- A frame round the paper, behind the face's plane so it never covers it.
+	part(model, "Dressing", Vector3.new(6.4, 4.4, 0.3), Vector3.new(0, 4.5, 0.1), {
+		Color = wood,
+		CanCollide = false,
+		CanQuery = false,
+		CanTouch = false,
+	})
+	lamp(model, 1, Vector3.new(0, 6.9, 0), loc.lamp)
+	attach(root, "Prompt", Vector3.new(0, 3, -1), Vector3.new(0, 0, -1))
+	return model
+end
+
+--[[ The Expedition board's lantern (`Glow_Warm_1`): lit while a trip waits
+	for Collect ("the board glows", A.11.2), dark otherwise. A delivered
+	model arrives lit (its import fix-up), so the code sets it either way. ]]
+function HotelKit.lightBoard(board: Model, on: boolean)
+	local glow = board:FindFirstChild("Glow_Warm_1", true)
+	if not glow or not glow:IsA("BasePart") then
+		return
+	end
+	if glow:GetAttribute("LitColour") == nil then
+		glow:SetAttribute("LitColour", glow.Color)
+	end
+	local lit = glow:GetAttribute("LitColour") :: Color3
+	glow.Material = if on then Enum.Material.Neon else Enum.Material.SmoothPlastic
+	glow.Color = if on then lit else darker(lit, 0.35)
+	for _, l in glow:GetChildren() do
+		if l:IsA("Light") then
+			l.Enabled = on
+		end
+	end
 end
 
 --[[ The hotel sign (MODELS.md, "Facade and sign"): posts and a `Board`

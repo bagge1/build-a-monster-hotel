@@ -49,14 +49,16 @@ Perks.BySpecies = {
 	MoonHeron = { kind = "Income", amount = 0.10, text = "+10% income" },
 } :: { [string]: Perk }
 
-export type Resident = { species: string, campUntil: number }
+export type Resident = { species: string, campUntil: number, expedition: number? }
 
--- The sum of one kind of perk over a set of residents, at time `now` (os.time).
+--[[ The sum of one kind of perk over a set of residents, at time `now` (os.time).
+	Away gives none: in the Hunter Camp (`campUntil`) or on an expedition
+	(`expedition`, GDD A.11.2: "no Wing earnings, no perk"). ]]
 function Perks.total(residents: { [any]: Resident }, kind: string, now: number): number
 	local sum = 0
 	for _, r in residents do
 		local perk = Perks.BySpecies[r.species]
-		if perk and perk.kind == kind and r.campUntil <= now then
+		if perk and perk.kind == kind and r.campUntil <= now and (r.expedition or 0) <= now then
 			sum += perk.amount
 		end
 	end

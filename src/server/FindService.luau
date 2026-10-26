@@ -9,7 +9,9 @@
 	played hotel's location (`StayChance`), and so does every player on a
 	defended Hunter Night (`HunterChance`; decision 5: per street, one roll
 	for each player on it). The pity gives the next unfound piece after a run
-	of misses. Once a location's sets are all found, a find is a duplicate,
+	of misses. An expedition's collected trip that found (A.11.2, its roll
+	and guarantee `Expeditions`') draws a piece of its destination's location
+	(`draw`). Once a location's sets are all found, a find is a duplicate,
 	paid in cash (`DuplicateMinutes` of income, at least the piece's price).
 
 	SOUVENIRS. A species' souvenir on its first VIP contract
@@ -86,15 +88,14 @@ local function describe(data: PlayerData.Data, id: string): { [string]: any }
 	return out
 end
 
---[[ One roll for the played hotel's set pieces (`why` says where it came
-	from, for the pop-up). Returns the outcome, for the dev commands. ]]
-function FindService.roll(player: Player, chance: number, why: string): Finds.Outcome
-	local data = PlayerData.get(player)
-	if not data then
-		return "None"
-	end
-	local rec = record(data)
-	local out, id = Finds.roll(rec, data.location, chance, rand, os.time())
+-- What a roll or a draw gave: the pop-up, the announcement, a duplicate's cash, the state.
+local function give(
+	player: Player,
+	data: PlayerData.Data,
+	out: Finds.Outcome,
+	id: string?,
+	why: string
+)
 	if out == "Piece" and id then
 		local info = describe(data, id)
 		info.kind = "Piece"
@@ -120,6 +121,31 @@ function FindService.roll(player: Player, chance: number, why: string): Finds.Ou
 	elseif out == "Miss" then
 		StateService.mark(player)
 	end
+end
+
+--[[ One roll for the played hotel's set pieces (`why` says where it came
+	from, for the pop-up). Returns the outcome, for the dev commands. ]]
+function FindService.roll(player: Player, chance: number, why: string): Finds.Outcome
+	local data = PlayerData.get(player)
+	if not data then
+		return "None"
+	end
+	local out, id = Finds.roll(record(data), data.location, chance, rand, os.time())
+	give(player, data, out, id, why)
+	return out
+end
+
+--[[ An expedition's find (A.11.2): its roll already found, so a piece of the
+	destination's `location` (not the hotel played) among the unfound, or a
+	duplicate. The trip's own guarantee is `Expeditions`'; the stays' pity is
+	left alone. ]]
+function FindService.draw(player: Player, location: number, why: string): Finds.Outcome
+	local data = PlayerData.get(player)
+	if not data then
+		return "None"
+	end
+	local out, id = Finds.draw(record(data), location, rand, os.time())
+	give(player, data, out, id, why)
 	return out
 end
 

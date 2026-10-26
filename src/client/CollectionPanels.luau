@@ -105,6 +105,7 @@ local function drawResidents()
 				"Name",
 				`{mutation}{sp.name}  ·  {sp.rarity}  ·  best at {best}{perkText}{if r.away
 					then "  ·  in the Hunter Camp!"
+					elseif r.trip then "  ·  on an expedition" -- A.11.2: away until its trip ends
 					else ""}`,
 				UDim2.new(1, -20, 0, 26),
 				18,

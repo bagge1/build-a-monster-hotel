@@ -323,6 +323,23 @@ Med Claudes skärmdump där det finns en. -->
      per ruta); dansaren står 2,15 bakom mikrofonen.
    Säg ja eller vad som ska ändras; först efter ditt ja läggs de för import.
 
+17. **Biografens duk och stolsrad** (natten 2026-10-26, GDD A.13; byggda och
+   validerade i Blender, fem blinda granskningar triagerade i
+   `blender/rooms/haunted_manor_cinema/README.md`; **inte importerade**).
+   Bilder: `archive/screens/2026-10-26_cinema/cinema_game_camera.jpg`,
+   `cinema_in_use.jpg` (gäster i raden), `cinema_silhouettes.jpg` (valda:
+   duken i en spetsbågig scenram med ridåer, raden med tre stolar under var
+   sin båge). Dina val:
+   - Duken läses som en **dockteater** (tre granskare): behåll, eller byt till
+     en enkel duk i ram på väggen (alternativ B). Förslag: behåll, med en ljus
+     `Screen`-yta som spelet kan tända.
+   - Stolarna står 2,75 isär och armstöden överlappar: behåll 3×1, eller 4×1
+     med luft. Förslag: behåll.
+   - Andra raden ser inte över den första under 7-studs-taket: en upphöjd
+     rad (en "riser"-bit) eller högre tak (~9). Förslag: en riser-bit senare.
+   - Radens rygg: crimson paneler (byggt) eller trä (förslag: trä); stolens
+     höjd 1,7, lampornas storlek, tornspetsarna.
+
 ## §2 Beslut
 
 <!-- En fråga i taget, med alternativen och Claudes rekommendation. -->
@@ -1042,6 +1059,7 @@ Med Claudes skärmdump där det finns en. -->
      rebirth. Dina frågor: siffrorna; om fynden behålls; ett souvenirmärke för
      alla arter (färgat per art) ok; riktiga emblembilder (i dag en skiva med
      initialen); "äldsta rummet" som rätt tolkning.
+   - *Expeditions byggt 2026-10-26 på grenen `claude/expeditions` (inte mergat, inte kört i Studio; PLACEHOLDER i `Constants.Expeditions` utom Pay 0,75):* antaget: platserna Haunted Woods / Frostfang Pass / Bayou Backwaters och vad var och en "gillar" (taggar ur arternas preferenser); gruppen är hemma i Wing när tiden är slut, lönen och fyndet väntar på Collect (tavlan i Wing-trädgårdens främre hörn på skyltens sida, eller pop-upen var som helst); en resa kan inte avbrytas; en rebirth betalar det räknade hittills (pengarna går sedan med rebirthen) och en resa som redan är hemma hämtas med sitt fynd; gruppens egna perks räknas inte i lönen; resornas fynd räknas inte mot vistelsernas pity (40), bara mot resornas egen (10 långa); notisen för resor på 2 h och mer har en PLACEHOLDER-text, "[PLACEHOLDER] Your residents are back from their expedition!", din att skriva i Creator Hub.
 
 39. **Väggarna, dörren och möblerna: det granskaren såg som är ditt**
    (natten 2026-10-21; modellerna i `blender/rooms/<hotell>/`, bilderna i

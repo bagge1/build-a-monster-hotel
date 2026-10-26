@@ -10,8 +10,10 @@ visitor's spot is a `Use_<n>` attachment with a `Pose`. Checked here (spots_chec
 re-imported triangles: numbered from 1 without a gap, a Pose from MODELS.md's list, a level LookVector, no two
 spots on one square; a `Stand` spot on the floor at the middle of a square in front of the front edge, 1.5 in front
 of it, facing +Z, its square free of the body; a `Dance` spot on a flat surface inside the footprint with the
-5-stud person's whole figure (3.8 across, arms out; 5.2 tall) clear of the body. A pose this script has no check
-for is refused, not passed.
+5-stud person's whole figure (3.8 across, arms out; 5.2 tall) clear of the body; a `Sit` or `Watch` spot (a Sit
+facing the row's front, -Z) on a declared seat with the seated person (sit_blocks) clear of the body. A pose this
+script has no check for is refused, not passed. tools/build_activity_cinema.py (and the next activity sets) load
+these definitions; spots_check is the one validator of visitors' spots.
 
 Not a kit of its own: it runs tools/build_built_rooms.py's definitions (every helper there and the kit's shapes,
 without its main()) and adds the spots. Its own set, blender/rooms/haunted_manor_bar/, so the Manor's built-rooms
@@ -157,6 +159,23 @@ def spots_check(piece, tris, stage):
                     f.append(f'{tag}: the body at {K.v3(hit, 2)} is inside the dancer\'s figure '
                              f'({FIGURE_R} round, {FIGURE_H} tall over {pos.y:.2f})')
                     break
+        elif pose in ('Sit', 'Watch'):
+            # A seat's Sit (Watch: a Sit facing the screen; the piece's front, -Z, is the way a seat faces, as
+            # every Sit in the kits looks -Z): inside the footprint, on a declared seat (rule 6, K.seat), on
+            # its surface with nothing over it, and the seated 5-stud person (sit_blocks) clear of the body.
+            if abs(pos.x) > hx or abs(pos.z) > hz:
+                f.append(f'{tag}: {K.v3(pos)} leaves the footprint')
+            if pose == 'Watch' and (look - Vector((0, 0, -1))).length > 1e-3:
+                f.append(f'{tag}: a Watch spot faces the row\'s front (-Z, turned toward the screen), not {K.v3(look)}')
+            if not any(s['x'][0] <= pos.x <= s['x'][1] and s['z'][0] <= pos.z <= s['z'][1] for s in piece.seats):
+                f.append(f'{tag}: not on a declared seat (rule 6)')
+            top = max(K._ray_down(allt, pos.x, pos.z, pos.y + 0.5), default=None)
+            if top is None or abs(top - pos.y) > USE_SURFACE_TOL:
+                f.append(f'{tag}: the surface under {K.v3(pos)} is at {top}, not within {USE_SURFACE_TOL} of it')
+            over = [h for h in K._ray_down(allt, pos.x, pos.z, pos.y + USE_CLEAR) if h > pos.y + 0.2]
+            if over:
+                f.append(f'{tag}: something over the seat at {max(over):.2f}')
+            f += sit_faults(allt, pos, look, tag)
         else:
             f.append(f'{tag}: this script has no check for Pose {pose} (refused, not passed)')
     return f

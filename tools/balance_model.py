@@ -23,12 +23,12 @@ Run:  python tools/balance_model.py [--seeds 4] [--hours 8] [--skip-tutorial] [-
       [--set Section.Key=value ...]   a WHAT-IF in memory only (e.g. --set Chain.OpenCost.2=500000):
                                       nothing is written to src/, and the report says which values were set.
       [--expeditions [--exp-set Key=value ...]]
-                                      the EXPEDITIONS WHAT-IF (GDD A.11.2, not built): off by default, so the
+                                      the EXPEDITIONS WHAT-IF (GDD A.11.2, built 2026-10-26): off by default, so the
                                       normal run is unchanged. It records the Wing as the run goes and adds a
                                       section comparing, for players who log out N times a day for H hours,
                                       (a) residents earning offline in the Wing to the cap against (b) the
                                       best residents sent on trips, by A.11.2's revised rules and PLACEHOLDER
-                                      numbers (EXP below; not in src/), and the pace of the finds. See
+                                      numbers (Constants.Expeditions, read over EXP below), and the pace of the finds. See
                                       "THE EXPEDITIONS WHAT-IF" below.
 
 THE CHAIN (as ChainService, Chain.luau and Constants.Chain implement it, 2026-10-21)
@@ -305,8 +305,9 @@ THE EXPEDITIONS WHAT-IF (--expeditions; GDD A.11.2 with its scrutiny lines of 20
         Variant LEAK: welcomeBack credits rate(at join) x min(away, cap), and
         rate() counts every resident whose campUntil has passed, so a party
         back before the login is paid the WHOLE absence's offline till on top
-        of the trip. That is how the code stands; whether Expeditions keep it
-        is an implementation choice.
+        of the trip. That is how the code stood before Expeditions; his ruling
+        (§18, 2026-10-26) is the variant without it, and the code is built so
+        (Expeditions.homeSeconds); LEAK is kept as the comparison.
   The +20 % per matching resident is read two ways (the draft does not say on
   what): on the reward, or on the find chance. Finds: per trip at
   EXP.Lengths' chance, among the destination location's unfound pieces (so
@@ -314,7 +315,8 @@ THE EXPEDITIONS WHAT-IF (--expeditions; GDD A.11.2 with its scrutiny lines of 20
   PityMin or more in a row without a find; A.11.3's happy-stay roll (StayFind
   per happy stay of a Rare-or-better guest, guaranteed after StayPity misses)
   at the rate the run measured at Haunted Manor. The cash is the Wing's only
-  (the guests' income is the same in (a) and (b)); XP is A.11.6's.
+  (the guests' income is the same in (a) and (b)); XP is A.11.6's, on a trip as in
+  the Wing (his ruling, §18 2026-10-26).
   NOT SIMULATED: levels (both sides scale alike), perks lost while the party
   is away (perks are not in the model), the Moon Tree's offline nodes, the
   Night Manager beyond one line at its 8 h cap, a second trip slot, the value
@@ -387,8 +389,10 @@ CODES_ON = False  # --codes: the player redeems every code at the start (DailySe
 
 # ------------------------------------------------- the Expeditions what-if (--expeditions)
 EXPEDITIONS = False  # set by --expeditions: record the Wing during the run and report the what-if
-# GDD A.11.2's numbers, all PLACEHOLDER, as the revised draft has them (scrutiny 2026-10-21). They are not in src/
-# (Expeditions are not built): when src/shared/Expeditions.luau exists the model stops and must read them from there.
+# GDD A.11.2's numbers. Since Expeditions are built (src/shared/Expeditions.luau, 2026-10-26) the trip's own numbers
+# (Lengths, Pay, Party, Match, PityTrips, PityMin) are read from Constants.Expeditions by exp_check, over these
+# defaults; Pay 0.75 is his ruling (§18, 2026-10-26), and XP on a trip is as in the Wing (the same ruling), so a
+# party member learns at the Wing's rate while the player plays. The rest are this model's own.
 EXP = {
     "Lengths": {1800: 0.05, 7200: 0.15, 28800: 0.35},  # trip length (s) -> a find's chance per trip
     "Pay": 1.5,  # the fixed reward = Pay x what the party would have earned by staying, counted as staying counts
@@ -396,7 +400,6 @@ EXP = {
     "Match": 0.20,  # +20 % for each resident matching the destination (on what: read both ways)
     "PityTrips": 10,  # "a guaranteed find every 10 trips of 2 h or more": the 10th such trip in a row without a find
     "PityMin": 7200,
-    "XpPerHour": 20,  # A.11.6: XP per hour on an expedition
     "PiecesPerLocation": 5,  # A.11.3: one set of five per location at launch
     "StayFind": 0.02,  # A.11.3: a set piece at 2 % per happy stay of a Rare-or-better guest
     "StayPity": 40,  # ... guaranteed after 40 misses
@@ -409,9 +412,14 @@ EXP_PAY_SWEEP = [1.5, 1.25, 1.0, 0.75, 0.5, 0.25]
 EXP_GUARDS = [  # the offline rules the what-if mirrors
     ("src/shared/Economy.luau", "local t = math.clamp(seconds, 0, cap)"),
     ("src/shared/Economy.luau", "return math.floor(rate * Constants.Residents.OfflineFraction * t)"),
-    ("src/server/ResidentService.luau", "if r.role == \"\" and r.campUntil <= os.time() then total += Economy.residentPay("),
-    ("src/server/ResidentService.luau", "local away = os.time() - data.lastSeen"),
-    ("src/server/ResidentService.luau", "local earned = Economy.offline(ResidentService.rate(player, data, true), away, cap)"),
+    # Since Expeditions are built (2026-10-26): the Wing's rate leaves out the residents away (the camp, a trip) and,
+    # for welcome-back, those on a trip at the logout; one home since earns only after its trip (the no-LEAK variant).
+    ("src/server/ResidentService.luau", "return r.campUntil <= now and not Expeditions.away(r, now)"),
+    ("src/server/ResidentService.luau", "if r.role == \"\" and present(r, os.time()) and (r.expedition or 0) <= (since or math.huge) then total += wingPay(r, m)"),
+    ("src/server/ResidentService.luau", "local away = os.time() - since"),
+    ("src/server/ResidentService.luau", "local earned = Economy.offline(ResidentService.rate(player, data, true, since), away, cap)"),
+    ("src/server/ResidentService.luau", "Expeditions.homeSeconds(since, away, cap, ends)"),
+    ("src/shared/Expeditions.luau", "return math.max(0, to - math.max(since, ends))"),
     ("src/server/ResidentService.luau", "local cap = if data.passes.NightManager then Constants.Residents.NightManagerCap else Constants.Residents.OfflineCap"),
 ]
 
@@ -706,8 +714,8 @@ FORMULA_GUARDS = [
     # Travel clears the desk queue only: HotelService's samples (waits, preference shares, requests, cleanings) carry over
     ("src/server/ChainService.luau", "if hotel then table.clear(hotel.queue) end"),
     ("src/server/HotelService.luau", "waits = {}, prefsShares = {}, requestsAsked = 0, requestsDone = 0, cleanTimes = {},"),
-    ("src/server/TutorialService.luau", "{ booked = player, happyFloor = Constants.Stay.Happy }"),
-    ("src/server/TutorialService.luau", "and busesSince >= 2"),
+    ("src/server/TutorialService.luau", "booked = player, happyFloor = Constants.Stay.Happy,"),
+    ("src/shared/Bus.luau", "and t.busesSince >= 2 and t.vacant"),  # the tutorial Vampire, offered again until it arrives (2026-10-26)
     ("src/server/ResidentService.luau", "local threshold = if g.tutorialFriend"),
     ("src/server/BookService.luau", "math.floor(Economy.speciesPay(speciesId) * Constants.Book.SpeciesFoundPaySeconds)"),
     ("src/server/BusService.luau", "l.nextList, l.nextGuaranteed = draw(street, busIndex + 1, now, now + interval)"),  # each street's bus a bus ahead (one world, 2026-10-21)
@@ -2486,9 +2494,11 @@ def money(x):
 
 # ------------------------------------------------------ the Expeditions what-if
 def exp_check(G):
-    """--expeditions: the offline rules it mirrors, and the numbers it holds that are not in src/ yet."""
-    if os.path.exists(os.path.join(ROOT, "src/shared/Expeditions.luau")):
-        raise ParseError("src/shared/Expeditions.luau exists: read the Expeditions numbers from it instead of EXP")
+    """--expeditions: the offline rules it mirrors, and the trip's numbers from Constants.Expeditions (built 2026-10-26)."""
+    X = assignment("src/shared/Constants.luau", r"^Constants\.Expeditions")
+    for k in ("Lengths", "Pay", "Party", "Match", "PityTrips", "PityMin"):
+        EXP[k] = need(X, k, "src/shared/Constants.luau Constants.Expeditions")
+    EXP["Lengths"] = {int(L): p for L, p in EXP["Lengths"].items()}
     norm = lambda x: re.sub(r"\s+", "", x)
     bad = [f"  {rel}: {line}" for rel, line in EXP_GUARDS if norm(line) not in norm(read(rel))]
     if bad:
@@ -2527,7 +2537,7 @@ def exp_days(n, s, cap_s, length_s, policy, leak, days, off_frac, xp_wing):
             acc["xa"] += xp_wing if online else 0
             if on_trip:
                 acc["counted"] += w
-                acc["xb"] += EXP["XpPerHour"] / 60
+                acc["xb"] += xp_wing if online else 0  # XP as in the Wing (his ruling, §18 2026-10-26)
             elif online:
                 acc["party"] += w
                 acc["xb"] += xp_wing
@@ -2628,13 +2638,13 @@ def exp_report(G, sims):
     E = EXP
     lens = sorted(E["Lengths"])
     lname = lambda L: f"{L // 3600} h" if L >= 3600 else f"{L // 60} min"
-    out = ["", "## Expeditions what-if (GDD A.11.2, revised 2026-10-21; numbers PLACEHOLDER, not in src/)", ""]
+    out = ["", "## Expeditions what-if (GDD A.11.2, revised 2026-10-21; numbers Constants.Expeditions, PLACEHOLDER but Pay)", ""]
     out.append("Rules as the draft states them: the trip pays Pay x what its party would have earned by staying, "
                "counted as staying counts (Wing rate while playing, offline rate while away, nothing past the cap). "
                f"EXP = Pay {E['Pay']}, party {E['Party']}, lengths/chances "
                + ", ".join(f"{lname(L)} {p:.0%}" for L, p in sorted(E['Lengths'].items()))
                + f", guarantee on the {E['PityTrips']}th trip of {lname(E['PityMin'])}+ without a find, +{E['Match']:.0%} a matching resident, "
-               f"{E['XpPerHour']} XP/h away, {E['PiecesPerLocation']} pieces a location; offline {off:.0%} of the rate to "
+               f"XP on a trip as in the Wing, {E['PiecesPerLocation']} pieces a location; offline {off:.0%} of the rate to "
                f"{cap // 3600} h ({nm // 3600} h with Night Manager), Wing XP {xpw}/min while playing (Constants).")
     # the stages
     out += ["", "### The Wing at each stage (medians over seeds)", "",
@@ -2792,7 +2802,7 @@ def main():
     ap.add_argument("--size", choices=("roi", "min", "full"), default="roi",
                     help="the player's size policy for new rooms in rule 6 (a policy what-if, not a value)")
     ap.add_argument("--expeditions", action="store_true",
-                    help="the Expeditions what-if (GDD A.11.2, not built): (a) the Wing offline against (b) trips, and the finds' pace")
+                    help="the Expeditions what-if (GDD A.11.2): (a) the Wing offline against (b) trips, and the finds' pace")
     ap.add_argument("--player", choices=tuple(PLAYERS), default="efficient",
                     help="the player profile (PLAYERS): efficient (every earlier run), casual (45 min a day, slower), payer (the passes)")
     ap.add_argument("--no-extras", action="store_true",

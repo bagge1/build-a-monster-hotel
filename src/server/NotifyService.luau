@@ -10,6 +10,11 @@
 	    Cancelled when they come back first.
 	  - FULL MOON: "Full Moon tonight", Saturday 16:00 UTC, to every player seen
 	    in the last 7 days, four hours before the Full Moon Hunt.
+	  - EXPEDITION BACK (GDD A.11.2 decision 6b): when a trip of
+	    `Constants.Expeditions.NotifyMin` or longer comes home while the player
+	    is away. Its string is August's to write in Creator Hub (WAITING
+	    §2.38); the one below is a PLACEHOLDER. Cancelled when they come back
+	    first. It shares Roblox's one a day with the two above.
 
 	Both wait in a MemoryStore sorted map, the due time its sort key, and every
 	running server sends what is due once a minute. A server claims an entry
@@ -34,7 +39,9 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 local ServerScriptService = game:GetService("ServerScriptService")
 
+local Constants = require(ReplicatedStorage.Shared.Constants)
 local Events = require(ReplicatedStorage.Shared.Events)
+local Expeditions = require(ReplicatedStorage.Shared.Expeditions)
 local PlayerData = require(ServerScriptService.Server.PlayerData)
 local ResidentService = require(ServerScriptService.Server.ResidentService)
 local EventService = require(ServerScriptService.Server.EventService)
@@ -42,12 +49,14 @@ local DevGrant = require(ServerScriptService.Server.DevGrant)
 
 local NotifyService = {}
 
-export type Kind = "TillFull" | "FullMoon"
+export type Kind = "TillFull" | "FullMoon" | "ExpeditionBack"
 
 -- Each notification string's asset id, from Creator Hub (Engagement → Notifications); 0 until made.
 NotifyService.Messages = {
 	TillFull = 0, -- "Your residents' till is full"
 	FullMoon = 0, -- "Full Moon tonight"
+	-- PLACEHOLDER text, his to write (A.11.2, WAITING §2.38): "[PLACEHOLDER] Your residents are back from their expedition!"
+	ExpeditionBack = 0,
 } :: { [Kind]: number }
 
 local SECRET = "OpenCloudKey"
@@ -272,6 +281,7 @@ function NotifyService.Start()
 		task.spawn(function()
 			NotifyService.cancel("TillFull", player.UserId)
 			NotifyService.cancel("FullMoon", player.UserId)
+			NotifyService.cancel("ExpeditionBack", player.UserId)
 			seen(player.UserId)
 		end)
 	end)
@@ -280,10 +290,20 @@ function NotifyService.Start()
 		local earns = ResidentService.rate(player, data) > 0
 		local due = os.time() + ResidentService.offlineCap(player, data)
 		local userId = player.UserId
+		-- A trip still out (A.11.2 decision 6b: of NotifyMin or longer): "back" at its end.
+		local trip = data.expedition and data.expedition.trip
+		local tripDue = if trip
+				and trip.length >= Constants.Expeditions.NotifyMin
+				and not Expeditions.back(trip, os.time())
+			then trip.ends
+			else nil
 		task.spawn(function()
 			seen(userId)
 			if earns then
 				NotifyService.queue("TillFull", userId, due)
+			end
+			if tripDue then
+				NotifyService.queue("ExpeditionBack", userId, tripDue)
 			end
 		end)
 	end)
@@ -296,7 +316,7 @@ function NotifyService.Start()
 		end
 	end)
 
-	-- `notify tick` | `notify queue <TillFull|FullMoon> [seconds] [userId]` |
+	-- `notify tick` | `notify queue <TillFull|FullMoon|ExpeditionBack> [seconds] [userId]` |
 	-- `notify fullmoon` (the broadcast now) | `notify list` (the queue)
 	DevGrant.register("notify", function(player, args)
 		local what = args[1] or "list"

@@ -430,6 +430,25 @@ local function buildHotel(plot: Plot, data: PlayerData.Data?)
 	sign.Parent = plot.model
 	plot.sign = sign
 
+	-- The Expedition board in the Wing garden (MODELS.md "Expedition board", GDD A.11.2),
+	-- at the base's `ExpeditionBoard` attachment; its prompt opens the board's panel.
+	local wing = base:FindFirstChild("Wing")
+	local boardAt = wing and wing:FindFirstChild("ExpeditionBoard")
+	if boardAt and boardAt:IsA("Attachment") then
+		local trips = HotelKit.expeditionBoard(plot.location)
+		trips.Name = "ExpeditionBoard"
+		trips:PivotTo(boardAt.WorldCFrame)
+		HotelKit.lightBoard(trips, false)
+		trips.Parent = plot.model
+		local root = trips.PrimaryPart
+		local at = root and root:FindFirstChild("Prompt")
+		if at then
+			makePrompt(at, "Expeditions", "Expedition board", 0, plot, "Expedition", nil)
+		else
+			warn(`[plot] ExpeditionBoard has no Prompt attachment (MODELS.md, "Expedition board")`)
+		end
+	end
+
 	drawCosmetics(plot, data)
 
 	buildSlabs(plot, data)
