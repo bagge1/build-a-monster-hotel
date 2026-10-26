@@ -176,6 +176,64 @@ export type SpotRef = { key: Visits.SpotKey, decor: string, index: number, squar
 local spotCache: { [Player]: { [string]: { SpotRef } } } = {}
 local spotKeyCache: { [Player]: { [string]: { Visits.SpotKey } } } = {}
 
+--[[ Each hotel's world as its layout stands, remembered (`Rooms.remember`:
+	its walking grid, the flood from the entrance and each floor's areas
+	worked out once) with its rooms' key spots, until the layout next changes
+	(`sync` forgets it). A guest's check-in and checkout, every staff errand
+	and every visit walk it (2026-10-26: each built a fresh world, a grid and
+	two floods, and a door's plaque a third). For reading only. ]]
+type Walked = {
+	data: PlayerData.Data,
+	world: Rooms.World,
+	keySpots: { [string]: Rooms.Spot }, -- by room id, for the rooms `asked` (none is nil)
+	asked: { [string]: boolean },
+}
+local walked: { [Player]: Walked } = {}
+
+local function forgetWorld(player: Player)
+	local c = walked[player]
+	if c then
+		Rooms.forget(c.world)
+		walked[player] = nil
+	end
+end
+
+local function walkedOf(player: Player): Walked?
+	local data = PlayerData.get(player)
+	if not data then
+		return nil
+	end
+	local c = walked[player]
+	if c and c.data == data then
+		return c
+	end
+	forgetWorld(player)
+	local w = world(data)
+	Rooms.remember(w)
+	local fresh: Walked = { data = data, world = w, keySpots = {}, asked = {} }
+	walked[player] = fresh
+	return fresh
+end
+
+-- The hotel's world as its layout stands, remembered until it changes (read only); nil with no data.
+function HotelService.world(player: Player): Rooms.World?
+	local c = walkedOf(player)
+	return if c then c.world else nil
+end
+
+-- A room's `Rooms.keySpot` in `HotelService.world`, kept until the layout changes.
+function HotelService.keySpot(player: Player, roomId: string): Rooms.Spot?
+	local c = walkedOf(player)
+	if not c then
+		return nil
+	end
+	if not c.asked[roomId] then
+		c.asked[roomId] = true
+		c.keySpots[roomId] = Rooms.keySpot(c.world, roomId) :: any
+	end
+	return c.keySpots[roomId]
+end
+
 function HotelService.ready(player: Player, roomId: string): boolean
 	local cache = readyCache[player]
 	return cache ~= nil and cache[roomId] == true
@@ -193,7 +251,9 @@ function HotelService.sync(player: Player)
 	infoCache[data] = nil
 	spotCache[player] = nil
 	spotKeyCache[player] = nil
-	local all = Rooms.readiness(world(data))
+	forgetWorld(player)
+	-- Worked out on the remembered world, so the guests' walks reuse its grid and flood.
+	local all = Rooms.readiness(HotelService.world(player) or world(data))
 	readinessCache[player] = all
 	local cache = {}
 	for id, rec in data.rooms do
@@ -327,7 +387,7 @@ function HotelService.spotRefs(player: Player): { [string]: { SpotRef } }
 	if not data or not plot then
 		return out
 	end
-	local w = world(data)
+	local w = HotelService.world(player) or world(data)
 	Rooms.withWalk(w, function()
 		for id, rec in data.rooms do
 			if Visits.isActivity(rec.type) then
@@ -577,10 +637,11 @@ function HotelService.refreshPrompts(player: Player, only: string?)
 			end
 		end
 	end
-	-- Every built room's plaque: its name, and its state or what it lacks (A.12 "Ready").
-	local w = world(data)
-	-- The whole hotel's plaques: what `sync` worked out just before, or worked out now.
-	local all = if only == nil then (readinessCache[player] or Rooms.readiness(w)) else nil
+	--[[ Every built room's plaque: its name, and its state or what it lacks
+		(A.12 "Ready"), as `sync` worked it out at the last change, else worked
+		out now. One room's too (2026-10-26): every check-in, checkout, clean and
+		request worked out the whole hotel's walk and flood again for one plaque. ]]
+	local all = readinessCache[player]
 	for id, rec in data.rooms do
 		if only == nil or only == id then
 			local model = plot.pieces[id]
@@ -592,7 +653,7 @@ function HotelService.refreshPrompts(player: Player, only: string?)
 				if r then
 					ok, missing = r.ok, r.missing
 				else
-					ok, missing = Rooms.ready(w, id)
+					ok, missing = Rooms.ready(HotelService.world(player) or world(data), id)
 				end
 				model:SetAttribute("State", if room then room.state else nil)
 				model:SetAttribute("Request", if room then room.request else nil)
@@ -882,6 +943,8 @@ function HotelService.Start()
 		readyCache[player] = nil
 		readinessCache[player] = nil
 		spotCache[player] = nil
+		spotKeyCache[player] = nil
+		forgetWorld(player)
 	end)
 	-- A full rebuild makes new prompts: put the room states back on them.
 	PlotService.onBuilt(function(plot)

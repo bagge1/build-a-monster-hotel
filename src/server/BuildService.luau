@@ -66,13 +66,65 @@ function BuildService.onChanged(handler: (Player, string) -> ())
 	table.insert(changedHandlers, handler)
 end
 
-local function changed(player: Player, what: string)
+--[[ What a change leaves to do, once per player per batch of actions
+	(2026-10-26): every wall, door or decor action synced the hotel (its whole
+	walk and flood), recomputed the rating, redrew every wall, door and room
+	and asked for a state send, so a wall run dragged or a fast run of taps did
+	it all once per tap. `changed` notes it, and `flush` does it once at the end
+	of the batch of remotes it came in (`task.defer`, before anything else of
+	the server runs), in the order each action did it: the rooms redrawn, the
+	hotel synced, the handlers told, then the visitors of a piece moved or
+	sold sent back (which needs the synced spots). ]]
+type Pending = { rooms: boolean, whats: { string }, pieces: { string } }
+local pendingChanges: { [Player]: Pending } = {}
+
+local function flush(player: Player)
+	local p = pendingChanges[player]
+	pendingChanges[player] = nil
+	if not p then
+		return
+	end
+	if p.rooms then
+		PlotService.refreshRooms(player)
+	end
 	HotelService.sync(player)
 	HotelService.recompute(player)
 	StateService.mark(player)
-	for _, h in changedHandlers do
-		task.spawn(h, player, what)
+	for _, what in p.whats do
+		for _, h in changedHandlers do
+			task.spawn(h, player, what)
+		end
 	end
+	for _, id in p.pieces do
+		HotelService.pieceChanged(player, id)
+	end
+end
+
+local function pendingOf(player: Player): Pending
+	local p = pendingChanges[player]
+	if not p then
+		p = { rooms = false, whats = {}, pieces = {} }
+		pendingChanges[player] = p
+		task.defer(flush, player)
+	end
+	return p
+end
+
+local function changed(player: Player, what: string)
+	local p = pendingOf(player)
+	if not table.find(p.whats, what) then
+		table.insert(p.whats, what)
+	end
+end
+
+-- The walls, doors and rooms drawn again (`PlotService.refreshRooms`) with the change's `flush`.
+local function redrawRooms(player: Player)
+	pendingOf(player).rooms = true
+end
+
+-- A placed piece moved or sold: its visitors sent back (`HotelService.pieceChanged`) once the hotel is synced.
+local function pieceChanged(player: Player, decorId: string)
+	table.insert(pendingOf(player).pieces, decorId)
 end
 
 local function refuse(player: Player, remote: string, reason: string)
@@ -473,7 +525,7 @@ local function buyTile(player: Player, floor: number, x: number, z: number)
 	windowsOut(player, data)
 	PlotService.refreshTiles(player)
 	if #auto > 0 then
-		PlotService.refreshRooms(player)
+		redrawRooms(player)
 	end
 	changed(player, "Tile")
 end
@@ -545,7 +597,7 @@ local function wallRun(
 		refuse(player, "WallRun", first)
 	end
 	if done > 0 then
-		PlotService.refreshRooms(player)
+		redrawRooms(player)
 		changed(player, "Wall")
 	end
 end
@@ -590,7 +642,7 @@ local function door(player: Player, edge: string, on: boolean)
 		PlayerData.refund(player, Economy.refund(back))
 		data.walls[e] = { paid = (rec.paid or 0) - back }
 	end
-	PlotService.refreshRooms(player)
+	redrawRooms(player)
 	changed(player, "Door")
 end
 
@@ -639,7 +691,7 @@ local function makeRoom(player: Player, floor: number, hx: number, hz: number, t
 	else
 		data.rooms[newId(data)] = { type = typeId, floor = floor, hx = hx, hz = hz, finish = "" }
 	end
-	PlotService.refreshRooms(player)
+	redrawRooms(player)
 	changed(player, "Room")
 end
 
@@ -659,7 +711,7 @@ local function clearRoom(player: Player, idNumber: number)
 		return
 	end
 	data.rooms[id] = nil
-	PlotService.refreshRooms(player)
+	redrawRooms(player)
 	changed(player, "Room")
 end
 
@@ -822,7 +874,7 @@ end
 
 local function decorChanged(player: Player, id: string)
 	PlotService.drawDecor(player, id)
-	PlotService.refreshRooms(player)
+	redrawRooms(player)
 	changed(player, "Decor")
 end
 
@@ -908,7 +960,7 @@ local function moveDecor(
 	rec.floor, rec.x, rec.z, rec.r, rec.room = floor, x, z, r, ""
 	decorChanged(player, id)
 	-- A visitor at one of its spots is sent back, not left sitting on nothing (GDD A.13.1).
-	HotelService.pieceChanged(player, id)
+	pieceChanged(player, id)
 end
 
 local function sellDecor(player: Player, idNumber: number)
@@ -925,7 +977,7 @@ local function sellDecor(player: Player, idNumber: number)
 	data.decor[id] = nil
 	PlayerData.refund(player, Economy.refund(rec.paid or 0))
 	decorChanged(player, id)
-	HotelService.pieceChanged(player, id) -- its visitors sent back (GDD A.13.1)
+	pieceChanged(player, id) -- its visitors sent back (GDD A.13.1)
 end
 
 -- A floor finish: `target` a built room's id or "Hallway"; "" is the slab's own.
@@ -960,7 +1012,7 @@ local function finish(player: Player, target: string, finishId: string)
 		PlotService.rebuild(player)
 	elseif rec then
 		rec.finish = finishId
-		PlotService.refreshRooms(player)
+		redrawRooms(player)
 	end
 	changed(player, "Finish")
 end
@@ -1301,7 +1353,7 @@ function BuildService.Start()
 					bonus = bars.sets ~= nil and table.find(bars.sets, setId) ~= nil,
 				})
 			end
-			local inUse, spotsOf = HotelService.spotsInUse(player, id)
+			local _, spotsOf = HotelService.spotsInUse(player, id)
 			table.insert(rooms, {
 				sets = sets,
 				id = tonumber(id),
@@ -1316,14 +1368,8 @@ function BuildService.Start()
 				size = info.size,
 				bars = bars,
 				bonuses = Rooms.bonuses(bars),
-				state = (function()
-					local hotel = HotelService.get(player)
-					local room = hotel and hotel.rooms[id]
-					return if room then room.state else ""
-				end)(),
-				-- An activity room's spots and how many visitors hold one (A.13.1, the room view's line).
+				-- An activity room's spots (A.13.1, the room view's line); how many are held is `roomState`'s.
 				spots = spotsOf,
-				spotsInUse = inUse,
 			})
 		end
 		local buildable, costs = {}, {}
@@ -1413,6 +1459,24 @@ function BuildService.Start()
 			costs = costs,
 			location = data.location,
 		}
+	end)
+	--[[ What each built room is doing now, by room id: its guest's state and an
+		activity room's spots held (A.13.1), for the room view. Apart from
+		`build` (2026-10-26): they change with nearly every check-in, checkout,
+		clean and visit, and inside `build` they sent its whole ~58 KB again
+		each time; `build` is now sent again only when the hotel or a price
+		changes. ]]
+	StateService.provide("roomState", function(player, data)
+		local hotel = HotelService.get(player)
+		local out = {}
+		for id in data.rooms do
+			local room = hotel and hotel.rooms[id]
+			local inUse = HotelService.spotsInUse(player, id)
+			if room or inUse then
+				out[id] = { state = if room then room.state else "", spotsInUse = inUse }
+			end
+		end
+		return out
 	end)
 end
 

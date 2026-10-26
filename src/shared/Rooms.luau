@@ -539,7 +539,16 @@ end
 
 type Hop = { to: number, stair: Grid.Placed, up: boolean }
 
-local function flood(w: Walk, from: { number }): ({ [number]: number }, { [number]: Hop })
+--[[ Breadth first from `from`: each square's parent on its shortest way back
+	(-1 at a start). With `goal`, it stops once the goal is found: a square's
+	parent is set once, when first met, and never changed, so the way to the
+	goal is the one the whole flood gives (2026-10-26: `Rooms.route` flooded
+	every square of every floor for each guest's walk). ]]
+local function flood(
+	w: Walk,
+	from: { number },
+	goal: number?
+): ({ [number]: number }, { [number]: Hop })
 	local hops: { [number]: { Hop } } = {}
 	for _, p in w.world.pieces do
 		if p.kind == "Stairs" then
@@ -562,6 +571,9 @@ local function flood(w: Walk, from: { number }): ({ [number]: number }, { [numbe
 			table.insert(queue, k)
 		end
 	end
+	if goal and parent[goal] ~= nil then
+		return parent, via
+	end
 	local head = 1
 	while head <= #queue do
 		local k = queue[head]
@@ -576,6 +588,9 @@ local function flood(w: Walk, from: { number }): ({ [number]: number }, { [numbe
 				local nk = sqKey(s.floor, nx, nz)
 				if parent[nk] == nil then
 					parent[nk] = k
+					if nk == goal then
+						return parent, via
+					end
 					table.insert(queue, nk)
 				end
 			end
@@ -586,6 +601,9 @@ local function flood(w: Walk, from: { number }): ({ [number]: number }, { [numbe
 				if parent[hop.to] == nil then
 					parent[hop.to] = k
 					via[hop.to] = hop
+					if hop.to == goal then
+						return parent, via
+					end
 					table.insert(queue, hop.to)
 				end
 			end
@@ -645,8 +663,8 @@ end
 	when there is no way. ]]
 function Rooms.route(world: World, from: Spot, to: Spot): { Leg }?
 	local w = walkOf(world)
-	local parent, via = flood(w, { sqKey(from.floor, from.x, from.z) })
 	local k = sqKey(to.floor, to.x, to.z)
+	local parent, via = flood(w, { sqKey(from.floor, from.x, from.z) }, k)
 	if parent[k] == nil then
 		return nil
 	end

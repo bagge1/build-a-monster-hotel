@@ -669,6 +669,78 @@ describe("Rooms", function()
 		expect.truthy(upstairs, "some by the stair")
 	end)
 
+	--[[ The search stops at its target (2026-10-26) and must give the way the
+		whole flood gave: a way to any square on a route is that route up to it,
+		so stopping sooner never picks another way. ]]
+	it("a route to a square on another route is that route up to it", function()
+		local rng = Random.new(9)
+		local wd = stairWorld()
+		local H = N * HC
+		for _ = 1, 150 do
+			local e = Rooms.edgeKey(
+				rng:NextInteger(1, 2),
+				rng:NextInteger(0, H),
+				rng:NextInteger(0, H),
+				rng:NextInteger(0, 1)
+			)
+			if Rooms.canWall(wd, e) then
+				wd.walls[e] = { paid = 0, door = if rng:NextInteger(0, 2) == 0 then true else nil }
+			end
+		end
+		-- Every square and stair of a route in walking order, each a word.
+		local function walked(legs)
+			local out = {}
+			local steps = stepsOf(legs)
+			local run = 0
+			for _, leg in legs do
+				if leg.stair then
+					table.insert(out, `stair {leg.stair.x},{leg.stair.z} {leg.up}`)
+				else
+					run += 1
+					local r = steps[run]
+					for _, s in r.squares do
+						table.insert(out, `{r.floor}:{s.x},{s.z}`)
+					end
+				end
+			end
+			return out, steps
+		end
+		local checked, upstairs = 0, false
+		for _ = 1, 40 do
+			local to = {
+				floor = rng:NextInteger(1, 2),
+				x = rng:NextInteger(0, N * Q - 1),
+				z = rng:NextInteger(0, N * Q - 1),
+			}
+			local legs = Rooms.route(wd, entranceSquare(), to)
+			if legs then
+				local whole, steps = walked(legs)
+				local squares = {}
+				for _, r in steps do
+					for _, s in r.squares do
+						table.insert(squares, { floor = r.floor, x = s.x, z = s.z })
+					end
+				end
+				for _ = 1, 6 do
+					local m = squares[rng:NextInteger(1, #squares)]
+					local part = walked(assert(Rooms.route(wd, entranceSquare(), m), "reached"))
+					local word = `{m.floor}:{m.x},{m.z}`
+					local at = table.find(whole, word)
+					expect.eq(#part, at, `the way to {word} is as long as the route up to it`)
+					for i, w in part do
+						expect.eq(w, whole[i], `step {i} to {word}`)
+					end
+					if m.floor == 2 then
+						upstairs = true
+					end
+					checked += 1
+				end
+			end
+		end
+		expect.truthy(checked > 0, "some routes checked")
+		expect.truthy(upstairs, "some across the stair")
+	end)
+
 	it("the type list is every room type and amenity of the location, with its tooltip", function()
 		local list = Rooms.types(1, {}, 1, 0, 1, false)
 		local byId = {}
