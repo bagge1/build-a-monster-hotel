@@ -658,6 +658,43 @@ local function underPointer(x: number, y: number): (number?, string?)
 		end
 		inst = inst.Parent
 	end
+	--[[ The kit's meshes are invisible to rays (MODELS.md: "invisible to
+		raycasts") and so is every Root, so a placed piece or decor is found by
+		the square under the pointer when the ray meets none (2026-10-26 night:
+		a Bed tapped opened the room view; no placed decor could be moved or
+		sold). Furniture and decor before a rug under them. ]]
+	local l = pointerLocal(x, y)
+	if not l then
+		return nil, nil
+	end
+	local w = world()
+	local sx, sz = math.floor(l.X / SQUARE), math.floor(l.Z / SQUARE)
+	local rug: number? = nil
+	for _, d in w.decor do
+		if d.floor == floor then
+			for _, s in Grid.squares(d) do
+				if s.x == sx and s.z == sz then
+					if d.layer ~= "Rug" then
+						return tonumber(d.id), "Decor"
+					end
+					rug = rug or tonumber(d.id)
+				end
+			end
+		end
+	end
+	if rug then
+		return rug, "Decor"
+	end
+	local cx, cz = math.floor(l.X / G.CellSize), math.floor(l.Z / G.CellSize)
+	for _, p in w.pieces do
+		if p.floor == floor then
+			for _, c in Grid.cells(p) do
+				if c.x == cx and c.z == cz then
+					return tonumber(p.id), "Piece"
+				end
+			end
+		end
+	end
 	return nil, nil
 end
 
