@@ -37,6 +37,8 @@ local Expeditions = require(ReplicatedStorage.Shared.Expeditions)
 local Format = require(ReplicatedStorage.Shared.Format)
 local Net = require(ReplicatedStorage.Shared.Net)
 local PlayerData = require(ServerScriptService.Server.PlayerData)
+local PlotService = require(ServerScriptService.Server.PlotService)
+local HotelKit = require(ServerScriptService.Server.HotelKit)
 local ResidentService = require(ServerScriptService.Server.ResidentService)
 local ChainService = require(ServerScriptService.Server.ChainService)
 local ProgressionService = require(ServerScriptService.Server.ProgressionService)
@@ -72,6 +74,59 @@ local function lengthText(seconds: number): string
 	return if seconds >= 3600 then `{seconds // 3600} h` else `{seconds // 60} min`
 end
 
+--[[ The player's Expedition board (MODELS.md "Expedition board"): its
+	lantern lit while a trip waits for Collect, and the trip's state on the
+	`Board`'s face. ]]
+local function refreshBoard(player: Player, data: PlayerData.Data)
+	local plot = PlotService.of(player)
+	local board = plot and plot.model:FindFirstChild("ExpeditionBoard")
+	if not board or not board:IsA("Model") then
+		return
+	end
+	local trip = record(data).trip
+	local back = trip ~= nil and Expeditions.back(trip, os.time())
+	HotelKit.lightBoard(board, back)
+	local face = board:FindFirstChild("Board", true)
+	if not face or not face:IsA("BasePart") then
+		return
+	end
+	local gui = face:FindFirstChild("BoardGui")
+	if not gui then
+		local g = Instance.new("SurfaceGui")
+		g.Name = "BoardGui"
+		g.Face = Enum.NormalId.Front
+		g.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
+		g.PixelsPerStud = 40
+		g.LightInfluence = 0
+		local list = Instance.new("UIListLayout")
+		list.HorizontalAlignment = Enum.HorizontalAlignment.Center
+		list.VerticalAlignment = Enum.VerticalAlignment.Center
+		list.SortOrder = Enum.SortOrder.LayoutOrder
+		list.Parent = g
+		for i, name in { "Title", "Status" } do
+			local l = Instance.new("TextLabel")
+			l.Name = name
+			l.LayoutOrder = i
+			l.BackgroundTransparency = 1
+			l.Size = UDim2.fromScale(1, if i == 1 then 0.4 else 0.3)
+			l.Font = Enum.Font.FredokaOne
+			l.TextScaled = true
+			l.TextColor3 = Color3.fromRGB(60, 40, 25)
+			l.Text = if i == 1 then "Expeditions" else ""
+			l.Parent = g
+		end
+		g.Parent = face
+		gui = g
+	end
+	local status = (gui :: Instance):FindFirstChild("Status")
+	if status and status:IsA("TextLabel") then
+		status.Text = if not trip
+			then "Send residents on a trip"
+			elseif back then "Back! Collect"
+			else `Out to the {destinationName(trip.destination)}`
+	end
+end
+
 -- Counts the trip's play seconds up to now (once its time away is counted).
 local function countPlay(player: Player, data: PlayerData.Data, trip: Expeditions.Trip)
 	if settled[player] and trip.counted < trip.ends then
@@ -102,6 +157,7 @@ local function settle(player: Player, data: PlayerData.Data)
 		trip.counted = math.max(trip.counted, os.time())
 	end
 	settled[player] = true
+	refreshBoard(player, data)
 	StateService.mark(player)
 end
 
@@ -131,6 +187,7 @@ local function send(player: Player, destination: number, length: number, party: 
 	end
 	Expeditions.start(rec, data.residents, ids, destination, length, now)
 	ResidentService.publish(player)
+	refreshBoard(player, data)
 	Net.fire(
 		player,
 		"Toast",
@@ -173,6 +230,7 @@ local function collectTrip(player: Player, data: PlayerData.Data): number?
 	end
 	announced[player] = nil
 	ResidentService.publish(player)
+	refreshBoard(player, data)
 	PlayerData.stat(player, "expeditionsCollected")
 	StateService.mark(player)
 	return cash
@@ -212,6 +270,7 @@ local function onRebirthStart(player: Player)
 	)
 	announced[player] = nil
 	ResidentService.publish(player)
+	refreshBoard(player, data)
 	StateService.mark(player)
 end
 
@@ -224,8 +283,9 @@ local function tick()
 			countPlay(player, data, trip)
 			if Expeditions.back(trip, now) and announced[player] ~= trip.start then
 				announced[player] = trip.start
-				-- Home in the Wing by itself (its Away attribute, the Wing's rate).
+				-- Home in the Wing by itself (its Away attribute, the Wing's rate); the board glows.
 				ResidentService.publish(player)
+				refreshBoard(player, data)
 				Net.fire(
 					player,
 					"Toast",
@@ -253,6 +313,19 @@ function ExpeditionService.Start()
 		announced[player] = nil
 	end)
 	ProgressionService.onRebirthStart(onRebirthStart)
+	-- The board's prompt opens the panel (UI.md "Expedition board"); a rebuilt plot gets its board's state again.
+	PlotService.onPrompt(function(player, _plot, kind)
+		if kind == "Expedition" then
+			StateService.mark(player)
+			Net.fire(player, "Moment", "ExpeditionBoard", {})
+		end
+	end)
+	PlotService.onBuilt(function(plot)
+		local data = plot.owner and PlayerData.get(plot.owner)
+		if plot.owner and data then
+			refreshBoard(plot.owner, data)
+		end
+	end)
 	StateService.provide("expedition", function(player, data)
 		local rec = record(data)
 		local opened = ChainService.opened(data)
