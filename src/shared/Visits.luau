@@ -26,21 +26,13 @@
 	decision. A guest's own room stays Occupied while it is out.
 ]]
 
+local Constants = require(script.Parent.Constants)
 local Pieces = require(script.Parent.Pieces)
 
 local Visits = {}
 
--- PLACEHOLDER (to Constants.Visits at merge): every number of A.13.1.
-Visits.Config = {
-	EveryMin = 90, -- seconds of a stay between visits (A.13.1: "every 90–150 s")
-	EveryMax = 150,
-	DecisionGap = 10, -- at most one visit decision a guest per this many seconds
-	MaxWalking = 12, -- visitors walking (to or back) at once per hotel
-	DoMin = 20, -- seconds a visit's action lasts
-	DoMax = 40,
-	Satisfaction = 5, -- what a visit meeting a preference adds, once a stay
-}
-local C = Visits.Config
+-- Every number of A.13.1, PLACEHOLDER each: `Constants.Visits`, where the tuning lives.
+local C = Constants.Visits
 
 -- An activity room as the caller sees it now. `spots` counts the `Use_<n>` of its furniture.
 export type RoomInfo = {

@@ -1,7 +1,8 @@
 local Visits = require(Shared.Visits)
 local Pieces = require(Shared.Pieces)
+local Constants = require(Shared.Constants)
 
-local C = Visits.Config
+local C = Constants.Visits
 
 -- An activity room as the server would describe it.
 local function room(id, type, spots, ready, reachable)
@@ -271,4 +272,19 @@ describe("Visits", function()
 		expect.eq(home[2], "b")
 		expect.eq(#Visits.stranded(visitors, { r1 = true, r2 = true }), 0, "all ready")
 	end)
+
+	it(
+		"the tuning in Constants.Visits keeps its ranges and caps sane, whatever the numbers",
+		function()
+			expect.truthy(C.EveryMin > 0 and C.EveryMin <= C.EveryMax, "between visits")
+			expect.truthy(C.DoMin > 0 and C.DoMin <= C.DoMax, "a visit's action")
+			expect.truthy(C.DecisionGap > 0, "a decision gap")
+			expect.truthy(
+				C.DecisionGap <= C.EveryMin,
+				"a due visit is decided before the next is due"
+			)
+			expect.truthy(C.MaxWalking >= 1 and C.MaxWalking % 1 == 0, "at least one walker")
+			expect.truthy(C.Satisfaction >= 0, "a visit never makes a guest less happy")
+		end
+	)
 end)
