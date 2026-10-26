@@ -12,7 +12,8 @@
 	squares, the tiles owned, of the hotel being played, and the chain's
 	other hotels in `chain` (§6.4); residents (species, mutation, role, the
 	hotel they staff, the end of a trip they are on); the expedition out (A.11.2);
-	friendship; the Monster Book; the Moon Tree; reviews; the tutorial; daily
+	friendship; the Monster Book; the Moon Tree; reviews and the rating's
+	samples of recent stays, each hotel's own; the tutorial; daily
 	and login state; codes; passes; boosts; settings; and the processed
 	PurchaseIds, so a receipt is never granted twice.
 
@@ -38,6 +39,7 @@ local Expeditions = require(ReplicatedStorage.Shared.Expeditions)
 local Finds = require(ReplicatedStorage.Shared.Finds)
 local Grid = require(ReplicatedStorage.Shared.Grid)
 local Pieces = require(ReplicatedStorage.Shared.Pieces)
+local Rating = require(ReplicatedStorage.Shared.Rating)
 local Rooms = require(ReplicatedStorage.Shared.Rooms)
 local StoreNames = require(script.Parent.StoreNames)
 
@@ -118,8 +120,9 @@ export type ResidentRecord = {
 	expedition: number?,
 }
 --[[ A hotel of the chain that is not being played (§6.4): its own fields as
-	the played hotel keeps them in `Data`, its rating when it was left, and
-	the rate it earned while played, for its background earnings. ]]
+	the played hotel keeps them in `Data`, its rating when it was left (its
+	samples with it, so it rates the same when played again), and the rate it
+	earned while played, for its background earnings. ]]
 export type HotelRecord = {
 	layout: { [string]: PieceRecord },
 	decor: { [string]: DecorRecord },
@@ -132,6 +135,7 @@ export type HotelRecord = {
 	floors: number,
 	freeStairs: number,
 	reviews: { number }?,
+	samples: Rating.Samples?, -- nil for a hotel put away before they were saved: read as none
 	rating: number,
 	rate: number,
 }
@@ -169,6 +173,7 @@ export type Data = {
 	families: { [string]: boolean }, -- location id -> completed
 	titles: { [string]: boolean },
 	reviews: { number },
+	samples: Rating.Samples, -- the played hotel's recent stays for the rating (§5.3, A.4; HotelService)
 	stats: { [string]: number },
 	tutorial: string,
 	daily: { day: number, list: { any }, rerolls: number, done: { [string]: boolean } },
@@ -236,6 +241,7 @@ local TEMPLATE: Data = {
 	families = {},
 	titles = {},
 	reviews = {},
+	samples = Rating.newSamples(),
 	stats = {},
 	tutorial = "Start",
 	daily = { day = 0, list = {}, rerolls = 0, done = {} },

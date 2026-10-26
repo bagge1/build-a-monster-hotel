@@ -265,4 +265,121 @@ describe("Rating", function()
 			end
 		end
 	)
+
+	-- The samples are saved per hotel (2026-10-26 review: in memory only, a
+	-- rejoin read a 5★ hotel as about 4★ and a Travel saved that).
+	local R = Constants.Rating
+
+	-- A hotel played a while: every window past its cap, as the server fills it.
+	local function played(n)
+		local s = Rating.newSamples()
+		for i = 1, n do
+			Rating.push(s.waits, (i * 7) % 23 + 0.25, R.ServiceSampleSize)
+			Rating.push(s.prefsShares, ((i * 3) % 5) / 4, R.ServiceSampleSize)
+			Rating.push(s.cleanTimes, (i * 11) % (2 * R.CleanOnTime) + 0.5, R.CleanSampleSize)
+			s.requestsAsked += 1
+			if i % 3 ~= 0 then
+				s.requestsDone += 1
+			end
+		end
+		return s
+	end
+
+	local function deepCopy(t)
+		if typeof(t) ~= "table" then
+			return t
+		end
+		local out = {}
+		for k, v in t do
+			out[k] = deepCopy(v)
+		end
+		return out
+	end
+
+	local function rate(samples, overdue, over)
+		local o = table.clone(over or {})
+		for k, v in Rating.sampleInputs(samples, overdue) do
+			o[k] = v
+		end
+		return Rating.categories(inputs(o))
+	end
+
+	it("the samples saved and read back give the same categories and stars", function()
+		for _, n in { 1, 5, R.ServiceSampleSize, 3 * R.ServiceSampleSize + 1 } do
+			for _, overdue in { 0, 1, 3 } do
+				for _, over in
+					{ {}, { frontDesk = 1, housekeeping = 0.6, perks = { Service = 5 } } }
+				do
+					local live = played(n)
+					local saved = deepCopy(live) -- the profile, as the store hands it back
+					local back = Rating.restoreSamples(saved)
+					local a, b = rate(live, overdue, over), rate(back, overdue, over)
+					for _, name in Rating.Order do
+						expect.eq(b[name], a[name], `{name} after {n} stays, {overdue} overdue`)
+					end
+					for _, reviews in { {}, { 5, 4, 5 } } do
+						expect.eq(
+							Rating.stars(b, reviews),
+							Rating.stars(a, reviews),
+							`stars after {n}`
+						)
+					end
+				end
+			end
+		end
+	end)
+
+	it("a window is read back to its cap, the newest kept, as the server keeps it", function()
+		local long =
+			{ waits = {}, prefsShares = {}, cleanTimes = {}, requestsAsked = 9, requestsDone = 4 }
+		local live = Rating.newSamples()
+		for i = 1, 3 * R.ServiceSampleSize + 3 * R.CleanSampleSize do
+			table.insert(long.waits, i)
+			table.insert(long.prefsShares, (i % 4) / 4)
+			table.insert(long.cleanTimes, i)
+			Rating.push(live.waits, i, R.ServiceSampleSize)
+			Rating.push(live.prefsShares, (i % 4) / 4, R.ServiceSampleSize)
+			Rating.push(live.cleanTimes, i, R.CleanSampleSize)
+		end
+		local back = Rating.restoreSamples(long)
+		expect.eq(#back.waits, R.ServiceSampleSize, "waits capped")
+		expect.eq(#back.prefsShares, R.ServiceSampleSize, "preferences capped")
+		expect.eq(#back.cleanTimes, R.CleanSampleSize, "cleanings capped")
+		for name, list in
+			{ waits = live.waits, prefsShares = live.prefsShares, cleanTimes = live.cleanTimes }
+		do
+			for j, v in list do
+				expect.eq((back :: any)[name][j], v, `{name} {j}`)
+			end
+		end
+		expect.eq(back.requestsAsked, 9, "requests asked kept")
+		expect.eq(back.requestsDone, 4, "requests done kept")
+	end)
+
+	it("nothing saved, or what is not a number, reads as a hotel never stayed in", function()
+		for _, saved in
+			{ nil, {}, "x", { waits = "x", prefsShares = { 0 / 0 }, requestsAsked = -1 } }
+		do
+			local back = Rating.restoreSamples(saved)
+			local i = Rating.sampleInputs(back, 0)
+			expect.eq(i.checkIns, 0, "no check-ins")
+			expect.eq(#back.prefsShares, 0, "no preferences")
+			expect.eq(back.requestsAsked, 0, "no requests")
+			expect.eq(rate(back, 0).Service, 0, "no Service yet")
+		end
+		local mixed = Rating.restoreSamples({ waits = { 1, 0 / 0, math.huge, 3 } })
+		expect.eq(#mixed.waits, 2, "only finite waits kept")
+		expect.eq(mixed.waits[2], 3, "in their order")
+	end)
+
+	it("a hotel read back rates as it stood, never as one nobody stayed in", function()
+		local live = played(2 * R.ServiceSampleSize)
+		local back = Rating.restoreSamples(deepCopy(live))
+		local stood = rate(live, 0)
+		local empty = rate(Rating.newSamples(), 0)
+		expect.truthy(stood.Service > 0, "Service earned")
+		expect.eq(empty.Service, 0, "an empty window has none")
+		expect.eq(rate(back, 0).Service, stood.Service, "read back keeps it")
+		expect.atLeast(rate(back, 0).Comfort, empty.Comfort, "and Comfort's preferences")
+	end)
 end)

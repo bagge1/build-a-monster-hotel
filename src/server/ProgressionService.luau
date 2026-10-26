@@ -29,6 +29,7 @@ local Format = require(ReplicatedStorage.Shared.Format)
 local Locations = require(ReplicatedStorage.Shared.Locations)
 local MoonTree = require(ReplicatedStorage.Shared.MoonTree)
 local Net = require(ReplicatedStorage.Shared.Net)
+local Rating = require(ReplicatedStorage.Shared.Rating)
 local PlayerData = require(ServerScriptService.Server.PlayerData)
 local HotelService = require(ServerScriptService.Server.HotelService)
 local BusService = require(ServerScriptService.Server.BusService)
@@ -130,6 +131,9 @@ local function rebirth(player: Player, force: boolean?)
 	data.location = 1
 	PlayerData.resetHotel(data)
 	data.reviews = {}
+	-- The new Haunted Manor rates from nothing (2026-10-26: samples are saved);
+	-- the other hotels' went with `chain`.
+	data.samples = Rating.newSamples()
 	data.rate = 0
 	ChainService.resample(player)
 	data.rebirths += 1
@@ -143,7 +147,6 @@ local function rebirth(player: Player, force: boolean?)
 			r.hotel = nil
 		end
 	end
-	HotelService.switchSamples(player, from, nil)
 	ChainService.redraw(player)
 	Net.fireAll("Announce", `{player.DisplayName} was reborn! Rebirth {data.rebirths}`, "Rare")
 	Net.fire(

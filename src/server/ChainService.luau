@@ -6,8 +6,9 @@
 	chain's other hotels wait in `data.chain`, by location id, as
 	`PlayerData.HotelRecord`s.
 
-	TRAVEL swaps them: the played hotel is put away with its rating and its
-	measured earning rate, the chosen one is taken out, and the plot, the
+	TRAVEL swaps them: the played hotel is put away with its rating, the
+	samples it was computed from (2026-10-26: saved, so it rates the same when
+	played again) and its measured earning rate, the chosen one is taken out, and the plot, the
 	rooms and the build state are drawn again. Opening the next location is
 	the same, with a new hotel from the start square, for its price
 	(`Chain.openCost`, PLACEHOLDER).
@@ -28,6 +29,7 @@ local Constants = require(ReplicatedStorage.Shared.Constants)
 local Format = require(ReplicatedStorage.Shared.Format)
 local Locations = require(ReplicatedStorage.Shared.Locations)
 local Net = require(ReplicatedStorage.Shared.Net)
+local Rating = require(ReplicatedStorage.Shared.Rating)
 local PlayerData = require(ServerScriptService.Server.PlayerData)
 local PlotService = require(ServerScriptService.Server.PlotService)
 local HotelService = require(ServerScriptService.Server.HotelService)
@@ -87,6 +89,7 @@ local function putAway(player: Player, data: PlayerData.Data)
 		floors = data.floors,
 		freeStairs = data.freeStairs,
 		reviews = data.reviews,
+		samples = data.samples,
 		rating = HotelService.rating(player),
 		rate = data.rate,
 	}
@@ -109,10 +112,12 @@ local function takeOut(data: PlayerData.Data, location: number)
 		data.floors = rec.floors
 		data.freeStairs = rec.freeStairs
 		data.reviews = rec.reviews or {}
+		data.samples = Rating.restoreSamples(rec.samples)
 		data.rate = rec.rate
 	else
 		PlayerData.resetHotel(data) -- a new hotel: the start square and the desk (§5.4)
 		data.reviews = {}
+		data.samples = Rating.newSamples()
 		data.rate = 0
 	end
 end
@@ -197,7 +202,6 @@ local function travel(player: Player, location: number)
 	tick(player)
 	putAway(player, data)
 	takeOut(data, location)
-	HotelService.switchSamples(player, from, location)
 	sample(player)
 	ChainService.redraw(player)
 	if opened[location] then

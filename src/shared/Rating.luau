@@ -146,4 +146,108 @@ function Rating.addReview(reviews: { number }, stars: number)
 	end
 end
 
+--[[ A hotel's samples of recent play (§5.3, A.4): what the categories read
+	besides the hotel as it stands. Saved in the profile per hotel
+	(2026-10-26 review: kept in server memory only, a rejoin or a hotel not
+	played this session read as never stayed in, Service 0 and Comfort
+	without its preferences, a 5★ hotel about 4★, and a Travel then saved
+	that as the hotel's rating, which held back the rebirth). The windows are
+	capped as they always were, so the profile does not grow. ]]
+export type Samples = {
+	waits: { number }, -- seconds at the desk, the last `ServiceSampleSize` check-ins
+	prefsShares: { number }, -- 0..1 preferences matched, the last `ServiceSampleSize` stays
+	requestsAsked: number,
+	requestsDone: number,
+	cleanTimes: { number }, -- seconds each of the last `CleanSampleSize` cleanings' rooms stood dirty
+}
+
+function Rating.newSamples(): Samples
+	return { waits = {}, prefsShares = {}, requestsAsked = 0, requestsDone = 0, cleanTimes = {} }
+end
+
+-- Adds a sample to a window, the newest last, keeping the last `keep`.
+function Rating.push(list: { number }, v: number, keep: number)
+	table.insert(list, v)
+	while #list > keep do
+		table.remove(list, 1)
+	end
+end
+
+local function finite(v: any): boolean
+	return typeof(v) == "number" and v == v and v > -math.huge and v < math.huge
+end
+
+local function count(v: any): number
+	return if finite(v) and v > 0 then v else 0
+end
+
+-- The last `keep` finite numbers of a saved window, in order, the newest last.
+local function window(saved: any, keep: number): { number }
+	local out = {}
+	if typeof(saved) == "table" then
+		for _, v in saved do
+			if finite(v) then
+				table.insert(out, v)
+			end
+		end
+	end
+	while #out > keep do
+		table.remove(out, 1)
+	end
+	return out
+end
+
+--[[ The samples as saved, read back: the same windows, each to its cap (a
+	cap lowered since keeps the newest), anything that is not a finite number
+	left out, nothing saved read as a hotel never stayed in. ]]
+function Rating.restoreSamples(saved: any): Samples
+	local s = if typeof(saved) == "table" then saved else {}
+	return {
+		waits = window(s.waits, R.ServiceSampleSize),
+		prefsShares = window(s.prefsShares, R.ServiceSampleSize),
+		requestsAsked = count(s.requestsAsked),
+		requestsDone = count(s.requestsDone),
+		cleanTimes = window(s.cleanTimes, R.CleanSampleSize),
+	}
+end
+
+local function mean(list: { number }): number
+	if #list == 0 then
+		return 0
+	end
+	local s = 0
+	for _, v in list do
+		s += v
+	end
+	return s / #list
+end
+
+export type SampleInputs = {
+	prefsShare: number,
+	meanWait: number,
+	checkIns: number,
+	requestShare: number,
+	onTimeShare: number,
+}
+
+--[[ The categories' inputs that come from the samples (Inputs above), with
+	`overdue` rooms dirty past `CleanOnTime` right now counted as late
+	cleanings (A.4). ]]
+function Rating.sampleInputs(s: Samples, overdue: number): SampleInputs
+	local onTime = 0
+	for _, t in s.cleanTimes do
+		if t <= R.CleanOnTime then
+			onTime += 1
+		end
+	end
+	local judged = #s.cleanTimes + overdue
+	return {
+		prefsShare = mean(s.prefsShares),
+		meanWait = mean(s.waits),
+		checkIns = #s.waits,
+		requestShare = if s.requestsAsked > 0 then s.requestsDone / s.requestsAsked else 0,
+		onTimeShare = if judged > 0 then onTime / judged else 0,
+	}
+end
+
 return Rating
