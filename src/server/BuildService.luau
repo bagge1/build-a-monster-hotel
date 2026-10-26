@@ -78,6 +78,21 @@ end
 type Pending = { rooms: boolean, whats: { string }, pieces: { string } }
 local pendingChanges: { [Player]: Pending } = {}
 
+--[[ What this file has changed, per player, for `build`'s state version
+	(2026-10-26, `buildVersion`): bumped with every state send this file
+	asks for (`markState`), so anything it changes outside a `sync` (a
+	window, a cosmetic worn, an unlock) makes the section again. ]]
+local revisions: { [Player]: number } = {}
+
+local function touch(player: Player)
+	revisions[player] = (revisions[player] or 0) + 1
+end
+
+local function markState(player: Player)
+	touch(player)
+	StateService.mark(player)
+end
+
 local function flush(player: Player)
 	local p = pendingChanges[player]
 	pendingChanges[player] = nil
@@ -89,7 +104,7 @@ local function flush(player: Player)
 	end
 	HotelService.sync(player)
 	HotelService.recompute(player)
-	StateService.mark(player)
+	markState(player)
 	for _, what in p.whats do
 		for _, h in changedHandlers do
 			task.spawn(h, player, what)
@@ -167,6 +182,7 @@ local keepsGuests: (Player, PlayerData.Data, Rooms.World) -> boolean
 function BuildService.tutorialUnlock(player: Player, item: string)
 	tutorialUnlocks[player] = tutorialUnlocks[player] or {}
 	tutorialUnlocks[player][item] = true
+	touch(player)
 end
 
 --[[ The goal card's free tiles (§11, A.7, his go 2026-10-20; PLACEHOLDER
@@ -725,7 +741,7 @@ end
 
 local function windowsChanged(player: Player)
 	PlotService.refreshCosmetics(player)
-	StateService.mark(player)
+	markState(player)
 end
 
 -- A window of `kind` on wall section `edge`: bought, or swapped for the one there (that one refunded).
@@ -1032,7 +1048,7 @@ local function equip(player: Player, slot: string, id: string)
 	end
 	data.equipped[slot] = id
 	PlotService.refreshCosmetics(player)
-	StateService.mark(player)
+	markState(player)
 end
 
 function BuildService.Init()
@@ -1062,7 +1078,7 @@ local function announceUnlocks(player: Player)
 			Net.fire(player, "Toast", `Unlocked: {piece.name}!`, "Unlock")
 		end
 	end
-	StateService.mark(player)
+	markState(player)
 end
 
 --[[ DEV: a room of `typeId` built free in the w × d cells at (x, z) on
@@ -1247,9 +1263,60 @@ local function fill(player: Player, args: { string }): string
 	return `{n} rooms on {data.floors} floors`
 end
 
+-- A small table's every entry, in its own order, onto `parts` (a different table gives a different list).
+local function entries(parts: { string }, t: any)
+	for k, v in t or {} do
+		table.insert(parts, `{k}={v}`)
+	end
+	table.insert(parts, ";")
+end
+
+--[[ `build`'s state version (2026-10-26, `StateService.provide`): while it
+	is the same, the section is not made or encoded again. The layout and
+	everything worked out from it (the tiles, walls, rooms, decor, windows,
+	finishes, floors, tiles bought, the chain's other hotels for an event
+	decor's copies; readiness, bars, spots) by the hotel's sync count, which
+	every change of the layout reaches, Travel and rebirth too, and this
+	file's own count (`revisions`); the rest is read here, being small and
+	changed by other files too: what `context` reads (the rating, the
+	location, rooms owned, floors, a Legendary resident, the tutorial's
+	early unlocks), the rebirths and passes (the floor cap), the unlocks,
+	finds and passes (the decor offered), the vouchers and event decor
+	copies bought (`stats`), the cosmetics owned and worn, and the traps. A
+	new input of the section goes here too, or the section goes out stale. ]]
+local function buildVersion(player: Player, data: PlayerData.Data): string
+	local ctx = BuildService.context(player, data)
+	local parts = {
+		tostring(revisions[player] or 0),
+		tostring(HotelService.revision(player)),
+		tostring(ctx.rating),
+		tostring(ctx.location),
+		tostring(ctx.rooms),
+		tostring(ctx.floors),
+		tostring(ctx.legendaryResident),
+		tostring(data.rebirths),
+		tostring(data.freeStairs),
+	}
+	entries(parts, ctx.tutorial)
+	entries(parts, data.unlocked)
+	entries(parts, data.passes)
+	entries(parts, data.finds and data.finds.found)
+	entries(parts, data.cosmetics)
+	entries(parts, data.equipped)
+	entries(parts, data.traps)
+	for k, v in data.stats do
+		-- `voucherFor`'s and `Pieces.copiesKey`'s ("copies_Decor_<id>").
+		if string.sub(k, 1, 8) == "voucher_" or string.sub(k, 1, 7) == "copies_" then
+			table.insert(parts, `{k}={v}`)
+		end
+	end
+	return table.concat(parts, ",")
+end
+
 function BuildService.Start()
 	PlayerData.onDeparted(function(player)
 		tutorialUnlocks[player] = nil
+		revisions[player] = nil
 	end)
 	PlayerData.onLoaded(function(player)
 		BuildService.refreshUnlocks(player)
@@ -1265,14 +1332,14 @@ function BuildService.Start()
 				data.cosmetics[c.id] = true
 			end
 		end
-		StateService.mark(player)
+		markState(player)
 		return "ok"
 	end)
 	DevGrant.register("unlock", function(player, args)
 		local data = PlayerData.get(player)
 		if data and args[1] then
 			data.unlocked[args[1]] = true
-			StateService.mark(player)
+			markState(player)
 		end
 		return "ok"
 	end)
@@ -1303,6 +1370,7 @@ function BuildService.Start()
 		announceUnlocks(player)
 	end)
 	-- What the build mode draws: the layout, the walls and rooms, the decor, the tiles, the prices and what can be built.
+	-- Made again only when `buildVersion` changes.
 	StateService.provide("build", function(player, data)
 		local ctx = BuildService.context(player, data)
 		local world = PlotService.world(data)
@@ -1459,7 +1527,7 @@ function BuildService.Start()
 			costs = costs,
 			location = data.location,
 		}
-	end)
+	end, buildVersion)
 	--[[ What each built room is doing now, by room id: its guest's state and an
 		activity room's spots held (A.13.1), for the room view. Apart from
 		`build` (2026-10-26): they change with nearly every check-in, checkout,

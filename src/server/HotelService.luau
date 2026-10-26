@@ -189,6 +189,12 @@ type Walked = {
 	asked: { [string]: boolean },
 }
 local walked: { [Player]: Walked } = {}
+--[[ How many times each hotel has been synced (2026-10-26): every change of
+	the layout reaches `sync`, which drops the caches above, so this counter
+	is what `build`'s state version reads for the layout and everything
+	worked out from it (readiness, bars, spots), whoever changed it (a build
+	action, a Travel, a rebirth, a load). ]]
+local revisions: { [Player]: number } = {}
 
 local function forgetWorld(player: Player)
 	local c = walked[player]
@@ -248,6 +254,7 @@ function HotelService.sync(player: Player)
 	if not hotel or not data then
 		return
 	end
+	revisions[player] = (revisions[player] or 0) + 1
 	infoCache[data] = nil
 	spotCache[player] = nil
 	spotKeyCache[player] = nil
@@ -289,6 +296,11 @@ function HotelService.roomBars(data: PlayerData.Data, roomId: string): (Rooms.Ba
 		return nil, nil
 	end
 	return info.bars, Rooms.bonuses(info.bars)
+end
+
+-- How many times the hotel has been synced: it changes whenever the layout has (`revisions`).
+function HotelService.revision(player: Player): number
+	return revisions[player] or 0
 end
 
 -- Every built room's readiness and what it lacks, as of the last `sync` (nil before the first).
@@ -942,6 +954,7 @@ function HotelService.Start()
 		away[player] = nil
 		readyCache[player] = nil
 		readinessCache[player] = nil
+		revisions[player] = nil
 		spotCache[player] = nil
 		spotKeyCache[player] = nil
 		forgetWorld(player)
