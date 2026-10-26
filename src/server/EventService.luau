@@ -16,6 +16,7 @@ local ServerScriptService = game:GetService("ServerScriptService")
 
 local Events = require(ReplicatedStorage.Shared.Events)
 local Net = require(ReplicatedStorage.Shared.Net)
+local Pieces = require(ReplicatedStorage.Shared.Pieces)
 local Species = require(ReplicatedStorage.Shared.Species)
 local Stay = require(ReplicatedStorage.Shared.Stay)
 local PlayerData = require(ServerScriptService.Server.PlayerData)
@@ -70,8 +71,9 @@ local function buy(player: Player, key: string)
 	if not item or not s or not s.currency then
 		return
 	end
-	local owned = data.unlocked[key] or data.cosmetics[key]
-	if owned then
+	-- Event decor is one copy per purchase (WAITING §2.48): bought again for another copy. A cosmetic once.
+	local decor = string.sub(key, 1, 6) == "Decor_"
+	if not decor and (data.unlocked[key] or data.cosmetics[key]) then
 		Net.fire(player, "Refused", "EventShop", "You already have it")
 		return
 	end
@@ -81,7 +83,9 @@ local function buy(player: Player, key: string)
 	end
 	data.candy -= item.cost
 	player:SetAttribute("Candy", data.candy)
-	if string.sub(key, 1, 6) == "Decor_" then
+	if decor then
+		local copies = Pieces.copiesKey(string.sub(key, 7))
+		data.stats[copies] = Pieces.copiesBought(data.stats[copies], data.unlocked[key] == true) + 1
 		data.unlocked[key] = true
 	else
 		data.cosmetics[key] = true
@@ -172,7 +176,8 @@ function EventService.Start()
 				name = i.name,
 				cost = i.cost,
 				text = i.text,
-				owned = data.unlocked[i.key] == true or data.cosmetics[i.key] == true,
+				-- Decor is never "owned" here: each purchase is one more copy (WAITING §2.48).
+				owned = string.sub(i.key, 1, 6) ~= "Decor_" and data.cosmetics[i.key] == true,
 			})
 		end
 		local p = Events.paradeStart(t)

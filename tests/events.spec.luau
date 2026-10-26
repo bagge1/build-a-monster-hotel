@@ -94,4 +94,29 @@ describe("Events", function()
 			expect.truthy(#Events.shop(winter and winter.id) > 0, "Winter has a shop")
 		end
 	)
+
+	-- WAITING §2.48 (his yes 2026-10-26): event decor is one copy per purchase, as other decor.
+	it("event decor is one copy per purchase: another copy needs another purchase", function()
+		for _, shop in Events.Shops do
+			for _, item in shop do
+				local decorId = string.match(item.key, "^Decor_(.+)$")
+				local d = decorId and Pieces.decor(decorId)
+				if d then
+					expect.truthy(Pieces.isEventDecor(d), `{item.key} is event decor`)
+					expect.eq(Pieces.copiesLeft(d, 0, false, 0), 0, `{item.key}: none before it is bought`)
+					expect.eq(Pieces.copiesLeft(d, 1, true, 0), 1, `{item.key}: one bought, one to place`)
+					expect.eq(Pieces.copiesLeft(d, 1, true, 1), 0, `{item.key}: a second needs a purchase`)
+					expect.eq(Pieces.copiesLeft(d, 2, true, 1), 1, `{item.key}: bought again, one more`)
+					expect.eq(Pieces.copiesLeft(d, 1, true, 3), 0, `{item.key}: never below none`)
+					expect.eq(Pieces.copiesLeft(d, nil, true, 0), 1, `{item.key}: an old profile's unlock is one`)
+				end
+			end
+		end
+		-- Every other decor is paid for at each placing: no count.
+		for _, d in Pieces.DecorList do
+			if d.location ~= 0 or d.always or d.furniture or d.pass or d.found then
+				expect.eq(Pieces.copiesLeft(d, 0, false, 99), nil, `{d.id} has no copy count`)
+			end
+		end
+	end)
 end)

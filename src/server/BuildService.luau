@@ -786,6 +786,30 @@ local function voucherFor(data: PlayerData.Data, d: Pieces.Decor): string?
 	return nil
 end
 
+--[[ The copies of event decor `d` the player may still place (`Pieces.copiesLeft`, WAITING
+	§2.48): its purchases less the copies standing in every hotel of the chain, the one
+	played and the others. Nil for other decor. ]]
+local function copiesLeft(data: PlayerData.Data, d: Pieces.Decor): number?
+	local placed = 0
+	local function count(decor: { [string]: PlayerData.DecorRecord })
+		for _, rec in decor do
+			if rec.item == d.id then
+				placed += 1
+			end
+		end
+	end
+	count(data.decor)
+	for _, hotel in data.chain do
+		count(hotel.decor or {})
+	end
+	return Pieces.copiesLeft(
+		d,
+		data.stats[Pieces.copiesKey(d.id)],
+		data.unlocked[`Decor_{d.id}`] == true,
+		placed
+	)
+end
+
 local function decorChanged(player: Player, id: string)
 	PlotService.drawDecor(player, id)
 	PlotService.refreshRooms(player)
@@ -822,17 +846,22 @@ local function placeDecor(
 		refuse(player, "PlaceDecor", "Location")
 		return
 	end
+	-- Event decor is one copy per purchase in its shop (WAITING §2.48): another needs another purchase.
+	local left = copiesLeft(data, d)
+	if left and left <= 0 then
+		refuse(
+			player,
+			"PlaceDecor",
+			"Each copy is one purchase in the event shop: yours are all placed"
+		)
+		return
+	end
 	if not decorWhere(player, "PlaceDecor", data, item, floor, x, z, r) then
 		return
 	end
-	-- Event decor (location 0, not `always`, not furniture) is owned once bought in its shop: placing it is free.
+	-- Event decor is paid for in its shop, a copy a purchase: placing a copy bought is free.
 	-- A pass's decor is bought with cash (A.2): its cost is its decor points.
-	local cost = if d.location == 0
-			and not d.always
-			and not d.furniture
-			and not d.pass
-		then 0
-		else d.cost
+	local cost = if Pieces.isEventDecor(d) then 0 else d.cost
 	local voucher = voucherFor(data, d)
 	if voucher then
 		cost = 0
@@ -1297,6 +1326,14 @@ function BuildService.Start()
 				unlockedDecor[d.id] = true
 			end
 		end
+		-- Event decor's copies left to place (WAITING §2.48): the Decor tab's card says how many.
+		local copies = {}
+		for _, d in Pieces.DecorList do
+			local left = unlockedDecor[d.id] and copiesLeft(data, d)
+			if left then
+				copies[d.id] = left
+			end
+		end
 		local vouchers = {}
 		for k, v in data.stats do
 			if string.sub(k, 1, 8) == "voucher_" and v > 0 then
@@ -1332,6 +1369,7 @@ function BuildService.Start()
 			equipped = data.equipped,
 			traps = data.traps,
 			unlockedDecor = unlockedDecor,
+			copies = copies,
 			vouchers = vouchers,
 			layout = layout,
 			decor = decor,
