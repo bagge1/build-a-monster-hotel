@@ -59,6 +59,9 @@ export type Hotel = {
 
 local hotels: { [Player]: Hotel } = {}
 
+-- A 3-stud square of Rooms' walking grid (A.12 "Guests").
+local SQUARE = Constants.Grid.CellSize / Constants.Grid.Squares
+
 --[[ The rating's samples of the chain's hotels not being played (§6.4: the
 	rating is each hotel's own), by location, this session. ]]
 type Samples = {
@@ -168,8 +171,10 @@ local readyByData: { [PlayerData.Data]: Rooms.Readiness } = setmetatable({}, { _
 	the hotel next changes (`sync`): a spot is a placed piece's decor id and the
 	index of its `Use_<n>` (`ActivityKit.spots`), keyed "decorId:n"
 	(`Visits.spotKey`), found again on the piece's model when a visitor sets
-	out, so a rebuilt model is never held. ]]
-export type SpotRef = { key: Visits.SpotKey, decor: string, index: number }
+	out, so a rebuilt model is never held. `square` is where a visitor steps
+	onto it from (`Rooms.spotApproach`): in the room, across no wall,
+	reached from the entrance; a spot with none is not listed (unusable). ]]
+export type SpotRef = { key: Visits.SpotKey, decor: string, index: number, square: Rooms.Spot }
 local spotCache: { [Player]: { [string]: { SpotRef } } } = {}
 local spotKeyCache: { [Player]: { [string]: { Visits.SpotKey } } } = {}
 
@@ -320,7 +325,10 @@ end
 	of furniture in the room (in decor-id order) gives its `Use_1..n`, or a
 	delivered model's one `Use` (`ActivityKit.spots`), each keyed by its
 	piece and number (`Visits.spotKey`), so a spot is the same spot whatever
-	else is bought, sold or moved. ]]
+	else is bought, sold or moved. Only the usable ones: a spot no square in
+	its room steps onto (`Rooms.spotApproach`) is left out, so it is never
+	chosen, rather than tried and refused every decision. The walk grid is
+	built once for them all (`Rooms.withWalk`). ]]
 function HotelService.spotRefs(player: Player): { [string]: { SpotRef } }
 	local cached = spotCache[player]
 	if cached then
@@ -333,7 +341,7 @@ function HotelService.spotRefs(player: Player): { [string]: { SpotRef } }
 		return out
 	end
 	local w = world(data)
-	Rooms.withAreas(w, function()
+	Rooms.withWalk(w, function()
 		for id, rec in data.rooms do
 			if Visits.isActivity(rec.type) then
 				local refs = {}
@@ -345,12 +353,23 @@ function HotelService.spotRefs(player: Player): { [string]: { SpotRef } }
 				for _, d in furniture do
 					local model = d.id and plot.decor[d.id]
 					if model then
-						for i in ActivityKit.spots(model) do
+						for i, point in ActivityKit.spots(model) do
 							local decorId = d.id :: string
-							table.insert(
-								refs,
-								{ key = Visits.spotKey(decorId, i), decor = decorId, index = i }
+							local at = plot.frame:PointToObjectSpace(point.WorldPosition)
+							local square = Rooms.spotApproach(
+								w,
+								id,
+								math.floor(at.X / SQUARE),
+								math.floor(at.Z / SQUARE)
 							)
+							if square then
+								table.insert(refs, {
+									key = Visits.spotKey(decorId, i),
+									decor = decorId,
+									index = i,
+									square = square,
+								})
+							end
 						end
 					end
 				end

@@ -367,12 +367,23 @@ end
 type FloorAreas = { areas: { Area }, of: { [number]: number } }
 local areaMemo: { [World]: { [number]: FloorAreas } }? = nil
 
+--[[ The worlds `Rooms.remember` keeps, until `Rooms.forget`: each one's
+	walking grid, flood from the entrance and floors' areas, worked out once
+	however often it is asked about (a server tick's visit decisions and
+	recalls, GDD A.13.1). Only worlds that do not change meanwhile. ]]
+type WalkMemo = { walk: any?, reach: { [number]: number }?, floors: { [number]: FloorAreas } }
+local walkMemo: { [World]: WalkMemo } = setmetatable({}, { __mode = "k" }) :: any
+
 function Rooms.areaAt(world: World, floor: number, hx: number, hz: number): Area?
 	if not ownedHalf(world, floor, hx, hz) then
 		return nil
 	end
 	local areas, of
 	local floors = areaMemo and areaMemo[world]
+	if not floors then
+		local m = walkMemo[world]
+		floors = if m then m.floors else nil
+	end
 	if floors then
 		local f = floors[floor]
 		if not f then
@@ -413,7 +424,7 @@ type Walk = {
 	blocked: { [number]: boolean }, -- squares under decor or furniture, by sqKey
 }
 
-local function walkOf(world: World): Walk
+local function buildWalk(world: World): Walk
 	local m = marks(world)
 	local piece = {}
 	for _, t in { m.stair, m.desk, m.other } do
@@ -430,6 +441,43 @@ local function walkOf(world: World): Walk
 		end
 	end
 	return { world = world, idx = indexWalls(world.walls), piece = piece, blocked = blocked }
+end
+
+-- A world's walking grid: built now, or kept for a world `Rooms.remember`s.
+local function walkOf(world: World): Walk
+	local m = walkMemo[world]
+	if not m then
+		return buildWalk(world)
+	end
+	if not m.walk then
+		m.walk = buildWalk(world)
+	end
+	return m.walk :: Walk
+end
+
+-- Keeps a world's walking grid, entrance flood and areas until `Rooms.forget` (it must not change meanwhile).
+function Rooms.remember(world: World)
+	if not walkMemo[world] then
+		walkMemo[world] = { floors = {} }
+	end
+end
+
+function Rooms.forget(world: World)
+	walkMemo[world] = nil
+end
+
+-- Runs `fn` with `world` remembered (`Rooms.remember`), forgotten after unless it was before.
+function Rooms.withWalk(world: World, fn: () -> ())
+	if walkMemo[world] then
+		fn()
+		return
+	end
+	Rooms.remember(world)
+	local fine, err = pcall(fn)
+	Rooms.forget(world)
+	if not fine then
+		error(err, 0)
+	end
 end
 
 local function canStand(w: Walk, floor: number, sx: number, sz: number): boolean
@@ -560,6 +608,13 @@ local function entranceSquares(): { number }
 end
 
 local function fromEntrance(w: Walk): { [number]: number }
+	local m = walkMemo[w.world]
+	if m and m.walk == w then
+		if not m.reach then
+			m.reach = (flood(w, entranceSquares()))
+		end
+		return m.reach :: { [number]: number }
+	end
 	local parent = flood(w, entranceSquares())
 	return parent
 end
@@ -1262,6 +1317,101 @@ end
 function Rooms.spotSquare(world: World, s: Grid.Spot): Spot?
 	local k = anchor(walkOf(world), s)
 	return if k then sqOf(k) else nil
+end
+
+-- How far (in squares, either way) a guest steps onto a spot from, or off a seat to walk on.
+local NEAR = 2
+
+--[[ The first square within NEAR of (sx, sz) on `floor` a guest can stand
+	on, reached from (sx, sz) by steps that cross no wall without a door
+	(over furniture, which a visitor steps across onto its spot), each in
+	`set` (half cells by halfKey) when given, and reached from the entrance
+	(`reach`) when given; (sx, sz) itself first, then ring by ring in a fixed
+	order. ]]
+local function nearStand(
+	w: Walk,
+	floor: number,
+	sx: number,
+	sz: number,
+	set: { [number]: boolean }?,
+	reach: { [number]: number }?
+): Spot?
+	local function inside(x: number, z: number): boolean
+		return x >= 0
+			and z >= 0
+			and x < NQ
+			and z < NQ
+			and Grid.isOpen(w.world, floor, x // Q, z // Q)
+			and (set == nil or set[Rooms.halfKey(x // SQ, z // SQ)] == true)
+	end
+	if sx < 0 or sz < 0 or sx >= NQ or sz >= NQ then
+		return nil
+	end
+	-- The squares near it a step reaches without crossing a wall.
+	local seen = { [sqKey(floor, sx, sz)] = true }
+	local queue = { { sx, sz } }
+	local head = 1
+	while head <= #queue do
+		local x, z = queue[head][1], queue[head][2]
+		head += 1
+		for _, step in STEPS do
+			local nx, nz = x + step[1], z + step[2]
+			local k = sqKey(floor, nx, nz)
+			if
+				not seen[k]
+				and math.max(math.abs(nx - sx), math.abs(nz - sz)) <= NEAR
+				and inside(nx, nz)
+				and not shutBetween(w, floor, x, z, step[1], step[2])
+			then
+				seen[k] = true
+				table.insert(queue, { nx, nz })
+			end
+		end
+	end
+	local function ok(x: number, z: number): boolean
+		local k = sqKey(floor, x, z)
+		return seen[k] == true
+			and inside(x, z)
+			and canStand(w, floor, x, z)
+			and (reach == nil or reach[k] ~= nil)
+	end
+	if ok(sx, sz) then
+		return { floor = floor, x = sx, z = sz }
+	end
+	for r = 1, NEAR do
+		for dz = -r, r do
+			for dx = -r, r do
+				if math.max(math.abs(dx), math.abs(dz)) == r and ok(sx + dx, sz + dz) then
+					return { floor = floor, x = sx + dx, z = sz + dz }
+				end
+			end
+		end
+	end
+	return nil
+end
+
+--[[ The square a visitor walks to for an activity room's spot at square
+	(sx, sz) (GDD A.13.1): the spot's own square when a guest can stand on it
+	(a `Stand` square in front of a counter), else one beside it within NEAR
+	(a seat, a pool or a bench is furniture's body: the visitor steps onto
+	the spot from there). It is in the room's area, the step from it to the
+	spot crosses no wall, and guests reach it from the entrance; nil when no
+	square is, and the spot is not one a visitor can use. ]]
+function Rooms.spotApproach(world: World, roomId: string, sx: number, sz: number): Spot?
+	local a = Rooms.roomArea(world, roomId)
+	if not a then
+		return nil
+	end
+	local w = walkOf(world)
+	return nearStand(w, a.floor, sx, sz, inArea(a), fromEntrance(w))
+end
+
+--[[ The square a guest at square (sx, sz) of `floor` walks on from (GDD
+	A.13.1, a visitor called back mid-walk or off its spot): that square when
+	a guest can stand on it, else the nearest within NEAR not across a wall;
+	nil when there is none. ]]
+function Rooms.standNear(world: World, floor: number, sx: number, sz: number): Spot?
+	return nearStand(walkOf(world), floor, sx, sz, nil, nil)
 end
 
 -- Whether a wall stands on a half edge with either side in one of `cells` (cellKeys).

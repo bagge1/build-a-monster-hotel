@@ -971,33 +971,33 @@ end
 
 -- ===== Visits (GDD A.13.1) =====
 
--- A world square's (sx, sz) of a point on a plot (Rooms' walking grid, as `squareWorld` the other way).
-local function squareOf(plot: PlotService.Plot, at: Vector3): (number, number)
+-- The floor and square (sx, sz) of a point on a plot (Rooms' walking grid, as `squareWorld` the other way).
+local function squareOf(plot: PlotService.Plot, at: Vector3): (number, number, number)
 	local p = plot.frame:PointToObjectSpace(at)
-	return math.floor(p.X / SQUARE), math.floor(p.Z / SQUARE)
+	local G = Constants.Grid
+	local floor = math.max(1, math.floor((p.Y - G.SlabThickness) / G.FloorHeight + 0.5) + 1)
+	return floor, math.floor(p.X / SQUARE), math.floor(p.Z / SQUARE)
 end
 
---[[ The square a visitor walks to for a spot (A.13.1): the spot's own square
-	when a guest can stand on it (a `Stand` square in front of a counter),
-	else a square beside it it can (a seat, a pool or a bench is furniture's
-	body: the visitor steps onto the spot from there). ]]
-local function spotSquare(world: Rooms.World, floor: number, sx: number, sz: number): Rooms.Spot?
-	if Rooms.walkable(world, floor, sx, sz) then
-		return { floor = floor, x = sx, z = sz }
+--[[ The guests' tick's one world per hotel (GDD A.13.1, the server's cost):
+	built on first ask and remembered (`Rooms.remember`: its walking grid,
+	flood from the entrance and areas once), so a tick's visit decisions and
+	a Hunter Night's recall of every visitor share them instead of each
+	rebuilding the hotel. Nothing changes the layout during a tick. Outside a
+	tick, a fresh world. ]]
+local tickWorlds: { [PlayerData.Data]: Rooms.World }? = nil
+local function worldFor(data: PlayerData.Data): Rooms.World
+	local cache = tickWorlds
+	if not cache then
+		return PlotService.world(data)
 	end
-	for r = 1, 2 do
-		for dz = -r, r do
-			for dx = -r, r do
-				if
-					math.max(math.abs(dx), math.abs(dz)) == r
-					and Rooms.walkable(world, floor, sx + dx, sz + dz)
-				then
-					return { floor = floor, x = sx + dx, z = sz + dz }
-				end
-			end
-		end
+	local w = cache[data]
+	if not w then
+		w = PlotService.world(data)
+		Rooms.remember(w)
+		cache[data] = w
 	end
-	return nil
+	return w
 end
 
 -- The points of `Rooms.route`'s legs on a plot: each run's squares, each stair's glide; nil when a stair is missing.
@@ -1039,6 +1039,7 @@ local function visitBack(g: Guest)
 	if not player or not hotel or not v or not g.room then
 		return
 	end
+	local phase = v.phase
 	if Visits.free(hotel.taken, key) then
 		StateService.mark(player)
 	end
@@ -1048,11 +1049,23 @@ local function visitBack(g: Guest)
 	g.config:SetAttribute("Face", nil)
 	local plot = PlotService.of(player)
 	local data = PlayerData.get(player)
-	local path: { Vector3 } = { here(g) }
+	local now = here(g)
+	local path: { Vector3 } = { now }
 	if plot and data then
-		local world = PlotService.world(data)
+		local world = worldFor(data)
 		local home = Rooms.keySpot(world, g.room)
-		local legs = if home and g.visitSquare then Rooms.route(world, g.visitSquare, home) else nil
+		--[[ From where it is now: at its spot, the square it stepped on from;
+			on its way, the square under it (or the nearest on its side of any
+			wall), never its destination's, or a guest called back mid-walk
+			would cut straight through the walls. ]]
+		local from: Rooms.Spot? = nil
+		if phase == "There" then
+			from = g.visitSquare
+		else
+			local floor, sx, sz = squareOf(plot, now)
+			from = Rooms.standNear(world, floor, sx, sz) or g.visitSquare
+		end
+		local legs = if home and from then Rooms.route(world, from, home) else nil
 		local ok = legs ~= nil and legPoints(plot, legs :: { Grid.Leg }, path)
 		if not ok then
 			path = { here(g) }
@@ -1114,10 +1127,10 @@ local function tryVisit(g: Guest, now: number)
 	if not point or not rec or hotel.visitors[key] then
 		return
 	end
-	local world = PlotService.world(data)
+	local world = worldFor(data)
 	local from = Rooms.keySpot(world, g.room)
-	local sx, sz = squareOf(plot, point.WorldPosition)
-	local target = spotSquare(world, rec.floor, sx, sz)
+	-- The square in the room it steps onto the spot from (`Rooms.spotApproach`, found with the spots).
+	local target = (ref :: HotelService.SpotRef).square
 	local legs = if from and target then Rooms.route(world, from, target) else nil
 	local path: { Vector3 } = { here(g) }
 	if not legs or not legPoints(plot, legs, path) then
@@ -1218,7 +1231,7 @@ local function strandedTick()
 	end
 end
 
-local function tick()
+local function tickGuests()
 	local now = os.clock()
 	strandedTick()
 	for _, g in guests do
@@ -1309,6 +1322,19 @@ local function tick()
 				destroy(g)
 			end
 		end
+	end
+end
+
+-- The guests' tick, with one remembered world per hotel for the tick (`worldFor`), forgotten after.
+local function tick()
+	tickWorlds = {}
+	local ok, err = pcall(tickGuests)
+	for _, w in tickWorlds :: { [PlayerData.Data]: Rooms.World } do
+		Rooms.forget(w)
+	end
+	tickWorlds = nil
+	if not ok then
+		error(err, 0)
 	end
 end
 
