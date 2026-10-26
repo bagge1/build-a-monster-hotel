@@ -357,7 +357,11 @@ local function decide(g: GuestService.Guest)
 		return
 	end
 	g.config:SetAttribute("Wish", nil)
-	GuestService.assign(g, owner, offer.pieceId)
+	-- Announced and counted only once it is on its way: a room with no way to
+	-- it from the desk sends the guest home instead (GuestService.assign).
+	if not GuestService.assign(g, owner, offer.pieceId) then
+		return
+	end
 	if sp.rarity == "Legendary" or sp.rarity == "Mythic" or sp.rarity == "Epic" then
 		fireStreet(g.street, "Announce", `The {sp.name} chose {owner.DisplayName}'s hotel!`, "Rare")
 	end
