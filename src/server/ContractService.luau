@@ -289,7 +289,7 @@ local function accept(player: Player, data: PlayerData.Data, id: number)
 	Net.fire(
 		player,
 		"Toast",
-		`VIP {speciesName(c)} booked! Build its {typeName(c.type)}, then tap Ready.`,
+		`VIP {speciesName(c)} booked! Build its {typeName(c.type)}, then press Ready.`,
 		"Unlock"
 	)
 	PlayerData.stat(player, "vipAccepted")
@@ -406,7 +406,7 @@ local function vipArrives(g: GuestService.Guest, p: any)
 	if not player or not data or not c or c.state ~= "Arriving" or not holdOk(player, c) then
 		GuestService.leaveStreet(g)
 		if player and c then
-			reopen(player, c, "Your VIP's room wasn't held any more: tap Ready again")
+			reopen(player, c, "Your VIP's room wasn't held any more: press Ready again")
 		end
 		return
 	end
@@ -529,7 +529,7 @@ local function tickPlayer(player: Player, data: PlayerData.Data, dt: number)
 					-- Rebuilt (a sync makes a new room Vacant): hold it again.
 					HotelService.setRoom(player, c.room, "Reserved", nil)
 				else
-					reopen(player, c, "Your VIP's room isn't ready any more: tap Ready again")
+					reopen(player, c, "Your VIP's room isn't ready any more: press Ready again")
 				end
 			end
 		elseif c.state == "Arriving" then
@@ -544,7 +544,7 @@ local function tickPlayer(player: Player, data: PlayerData.Data, dt: number)
 					or g.state == "Waiting"
 					or g.state == "Boarding"
 				then
-					reopen(player, c, "Your VIP had to leave: tap Ready again")
+					reopen(player, c, "Your VIP had to leave: press Ready again")
 				end
 			elseif not s or os.clock() - (s.since or 0) > C.ArrivalGrace then
 				reopen(player, c, nil)
@@ -552,7 +552,7 @@ local function tickPlayer(player: Player, data: PlayerData.Data, dt: number)
 		elseif c.state == "Staying" then
 			local guest = s and s.guest
 			if not guest or not GuestService.get(guest) then
-				reopen(player, c, "Your VIP had to leave: tap Ready again")
+				reopen(player, c, "Your VIP had to leave: press Ready again")
 			end
 		end
 	end

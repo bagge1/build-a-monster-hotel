@@ -17,8 +17,10 @@
 	gamepad is the input, keeps it while it redraws, and lets it go when it
 	closes. ButtonB closes the panel on top; with none open it steps back once
 	in what is open (`Controls.onBack`: build mode's chain). ButtonY is the
-	menu: the selection goes onto the HUD's buttons (or build mode's cards)
-	and off them again, so the left stick walks again.
+	menu: the selection goes onto the HUD's buttons (or build mode's cards),
+	on to what else asks for it (`Controls.onMenuNext`: Gloom's buttons) and
+	off again, so the left stick walks again; with a panel open, from the
+	panel to the HUD, and from nothing back into the panel.
 
 	Nothing here requires another client module, so anything may require it.
 ]]
@@ -69,6 +71,29 @@ end
 -- A hint's words for the device in use (only where a keyboard hint is shown already, UI.md).
 function Controls.hint(keyboard: string, gamepad: string): string
 	return if Controls.gamepad() then gamepad else keyboard
+end
+
+local deviceHandlers: { () -> () } = {}
+local wasGamepad = false
+
+-- Runs `fn` whenever the gamepad becomes, or stops being, the input: a hint drawn
+-- before the change says it again in the new device's words (2026-10-26: a console
+-- player read the strip's "tap a room", drawn before any input). The last input
+-- type changes on every switch between the mouse and the keys: only a flip counts.
+function Controls.onDevice(fn: () -> ())
+	if #deviceHandlers == 0 then
+		wasGamepad = Controls.gamepad()
+		UserInputService.LastInputTypeChanged:Connect(function()
+			local now = Controls.gamepad()
+			if now ~= wasGamepad then
+				wasGamepad = now
+				for _, f in deviceHandlers do
+					task.spawn(f)
+				end
+			end
+		end)
+	end
+	table.insert(deviceHandlers, fn)
 end
 
 -- Whether the player is typing (a TextBox, or the chat's bar): no key acts then.
@@ -266,6 +291,7 @@ end
 
 local backHandlers: { () -> boolean } = {}
 local menuHandlers: { () -> boolean } = {}
+local menuNext: { (GuiObject) -> boolean } = {}
 
 -- A step back for ButtonB when no panel is open: `fn` returns true when it took the press.
 -- The last registered is asked first.
@@ -273,10 +299,17 @@ function Controls.onBack(fn: () -> boolean)
 	table.insert(backHandlers, 1, fn)
 end
 
--- Where ButtonY puts the selection when nothing is selected and no panel is open:
--- `fn` returns true when it did. The last registered is asked first.
+-- Where ButtonY puts the selection when nothing is selected outside a panel (none open,
+-- or the selection in the one on top): `fn` returns true when it did. The last
+-- registered is asked first.
 function Controls.onMenu(fn: () -> boolean)
 	table.insert(menuHandlers, 1, fn)
+end
+
+-- Where ButtonY moves the selection on to from outside a panel (the HUD's menu): `fn`
+-- gets the selection and returns true when it moved it; none did, and Y lets it go.
+function Controls.onMenuNext(fn: (GuiObject) -> boolean)
+	table.insert(menuNext, 1, fn)
 end
 
 local function back()
@@ -295,13 +328,24 @@ local function back()
 	end
 end
 
+--[[ ButtonY's round: nothing selected, the menu (the HUD's buttons, build
+	mode's cards), what asks next (Gloom's buttons), off. With a panel open the
+	round runs through it: from the panel Y goes to the menu, and from nothing
+	back into the panel (2026-10-26: Y went only off the panel and back, so the
+	HUD was out of reach while one stood open). B still closes the panel. ]]
 local function menu()
-	if GuiService.SelectedObject then
+	local sel = GuiService.SelectedObject
+	local top = open[#open]
+	if sel and not (top and sel:IsDescendantOf(top.window)) then
+		for _, fn in menuNext do
+			if fn(sel) then
+				return
+			end
+		end
 		Controls.select(nil)
 		return
 	end
-	local top = open[#open]
-	if top then
+	if not sel and top then
 		selectIn(top)
 		return
 	end
@@ -309,6 +353,9 @@ local function menu()
 		if fn() then
 			return
 		end
+	end
+	if sel then
+		Controls.select(nil)
 	end
 end
 
