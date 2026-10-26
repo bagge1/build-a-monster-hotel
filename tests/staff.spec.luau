@@ -133,6 +133,60 @@ describe("Staff", function()
 		)
 	end)
 
+	--[[ 2026-10-26: Room Service's third post stood past the desk's end, in the
+		next cell, at a height taken off the counter's; Bellhop and Security
+		stood outside the facade. A hotel turned and lifted off the origin, its
+		points where MODELS.md puts them; the areas are where nothing is built. ]]
+	it("every post stands on its floor, inside its area, whatever the count", function()
+		local Constants = require(Shared.Constants)
+		local Grid = require(Shared.Grid)
+		local Pieces = require(Shared.Pieces)
+		local CELL = Constants.Grid.CellSize
+		local piece = assert(Pieces.get("FrontDesk"))
+		local halfW, halfD = piece.w * CELL / 2, piece.d * CELL / 2
+		local desk = CFrame.new(140, 19, 60) * CFrame.Angles(0, math.pi / 2, 0)
+		local entrance = CFrame.new(100, 1, 20) * CFrame.Angles(0, -math.pi / 2, 0)
+		local points = {
+			FrontDesk = desk,
+			Clerk = desk * CFrame.new(0, 0, 1.5),
+			Till = desk * CFrame.new(3.4, 3.8, -4.2),
+			Queue_4 = desk * CFrame.new(0, 0, -17),
+			Entrance = entrance,
+		}
+		local function point(name: string): CFrame?
+			return points[name]
+		end
+		local mouthHalf = #Grid.entrance() * CELL / 2
+		local areas = {
+			FrontDesk = { desk, -halfW, halfW, -halfD, halfD },
+			RoomService = { desk, -halfW, halfW, -halfD, halfD },
+			Housekeeping = { desk, -halfW, halfW, -halfD - CELL, -halfD },
+			Bellhop = { entrance, -mouthHalf, mouthHalf, 0, CELL },
+			Security = { entrance, -mouthHalf, mouthHalf, 0, CELL },
+			Entertainment = { entrance, -mouthHalf, mouthHalf, 0, CELL },
+		}
+		for role, a in areas do
+			local frame: CFrame, x0: number, x1: number, z0: number, z1: number =
+				a[1], a[2], a[3], a[4], a[5]
+			local seen: { Vector3 } = {}
+			for slot = 1, 40 do
+				local p = assert(Staff.post(role, slot, point), `{role} {slot}`)
+				local l = frame:PointToObjectSpace(p)
+				expect.near(l.Y, 0, 0.01, `{role} {slot} on the floor`)
+				expect.atLeast(l.X, x0, `{role} {slot} within the area (x)`)
+				expect.atMost(l.X, x1, `{role} {slot} within the area (x)`)
+				expect.atLeast(l.Z, z0, `{role} {slot} within the area (z)`)
+				expect.atMost(l.Z, z1, `{role} {slot} within the area (z)`)
+				if slot <= 4 then
+					for i, q in seen do
+						expect.atLeast((p - q).Magnitude, 2, `{role} {slot} apart from {i}`)
+					end
+					table.insert(seen, p)
+				end
+			end
+		end
+	end)
+
 	-- WAITING §2.48 (his yes 2026-10-26): the staff of a hotel not played are counted in its background rate.
 	it(
 		"a resident on staff at another hotel is moved only there; the Wing's and the played hotel's anywhere",

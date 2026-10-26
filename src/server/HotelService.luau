@@ -309,8 +309,8 @@ end
 -- ===== Visits' rooms and spots (GDD A.13.1) =====
 
 --[[ Every activity room's spots, by room id, as of the last change: each piece
-	of furniture in the room (in decor-id order) gives its `Use_1..n`, or a
-	delivered model's one `Use` (`ActivityKit.spots`), each keyed by its
+	of activity furniture in the room (in decor-id order) gives its `Use_1..n`,
+	or the room's key piece its one `Use` (`ActivityKit.spots`), each keyed by its
 	piece and number (`Visits.spotKey`), so a spot is the same spot whatever
 	else is bought, sold or moved. Only the usable ones: a spot no square in
 	its room steps onto (`Rooms.spotApproach`) is left out, so it is never
@@ -337,10 +337,26 @@ function HotelService.spotRefs(player: Player): { [string]: { SpotRef } }
 					local x, y = tonumber(a.id) or 0, tonumber(b.id) or 0
 					return if x ~= y then x < y else (a.id or "") < (b.id or "")
 				end)
+				local keys = (Rooms.requirement(rec.type) or { keys = {} }).keys
 				for _, d in furniture do
 					local model = d.id and plot.decor[d.id]
+					local spots = if model then ActivityKit.spots(model) else {}
+					--[[ Only activity furniture holds visitors: a piece with
+						`Use_<n>` (MODELS.md "Activity furniture"); a lone `Use` only
+						on an activity piece (`ActivityKit.has`) or the room's key
+						piece, delivered before its spots. Every furniture blockout
+						has a `Use` (2026-10-26: a Nightstand, a Wardrobe or a Bed in
+						a Bar added a visitor's spot). ]]
+					if
+						#spots == 1
+						and spots[1].Name == "Use"
+						and not ActivityKit.has(d.item)
+						and not table.find(keys, d.item)
+					then
+						spots = {}
+					end
 					if model then
-						for i, point in ActivityKit.spots(model) do
+						for i, point in spots do
 							local decorId = d.id :: string
 							local at = plot.frame:PointToObjectSpace(point.WorldPosition)
 							local square = Rooms.spotApproach(

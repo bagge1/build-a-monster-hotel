@@ -6,16 +6,22 @@
 	numbers, and the `staff` spec holds it to its rules.
 
 	A POST is found by the hotel's shared points (`HotelPoints`: the facade's
-	`Entrance`, the first desk's `Clerk`, `Till`, `Queue_n`), through `point`,
-	which the server answers from `PlotService.point` and the client from the
-	plot it sees. `slot` is the resident's place among
-	its role's staff (1, 2, ...), which the server publishes so every client
-	stands them in the same order.
+	`Entrance`, the first desk's pivot `FrontDesk` and its `Clerk`, `Till`,
+	`Queue_n`), through `point`, which the server answers from
+	`PlotService.point` and the client from the plot it sees. `slot` is the
+	resident's place among its role's staff (1, 2, ...), which the server
+	publishes so every client stands them in the same order.
 
 	AN ERRAND is a walk along a path of world points at a constant speed,
 	from a server time `T0`: the same encoding and the same arithmetic as a
 	guest's walk (`GuestService`, `GuestRenderer`).
 ]]
+
+local Constants = require(script.Parent.Constants)
+local Grid = require(script.Parent.Grid)
+local Pieces = require(script.Parent.Pieces)
+
+local CELL = Constants.Grid.CellSize
 
 local Staff = {}
 
@@ -28,28 +34,91 @@ Staff.DoneText = {
 	Housekeeping = "✓ Housekeeping",
 } :: { [string]: string }
 
--- Where a resident in `role` stands, or nil (the Wing, or a hotel without the point).
+-- Staff of a role stand this far apart, a row's places and its rows alike.
+local STEP = 3
+-- A post keeps this far inside its area's edge: about half the 5-stud person's width.
+local MARGIN = 1
+
+--[[ Slot `slot`'s place in an area of `frame` (x within ±`halfW`, z within
+	`z0..z1`, at y 0 of the frame: its walking surface): the first place at
+	`first`'s x and z (pulled inside the area), the next ones STEP along
+	`along` (+1 or −1 in x) while they stay inside, then a row `rowStep`
+	further in z; past the last row it starts again at the first place. A
+	post never leaves its area, whatever the role's count (2026-10-26: Room
+	Service's third stood 1.4 past the desk's end, in the next cell's wall or
+	room, and its errands started there). ]]
+local function placeIn(
+	frame: CFrame,
+	first: Vector3,
+	slot: number,
+	along: number,
+	rowStep: number,
+	halfW: number,
+	z0: number,
+	z1: number
+): Vector3
+	local lo, hi = -halfW + MARGIN, halfW - MARGIN
+	local zlo, zhi = math.min(z0, z1) + MARGIN, math.max(z0, z1) - MARGIN
+	local x = math.clamp(first.X, lo, hi)
+	local z = math.clamp(first.Z, zlo, zhi)
+	local cols = 1 + math.floor((if along > 0 then hi - x else x - lo) / STEP)
+	local rows = 1 + math.floor((if rowStep > 0 then zhi - z else z - zlo) / math.abs(rowStep))
+	local i = (slot - 1) % (cols * rows)
+	return frame:PointToWorldSpace(
+		Vector3.new(x + along * (i % cols) * STEP, 0, z + (i // cols) * rowStep)
+	)
+end
+
+--[[ Where a resident in `role` stands, or nil (the Wing, or a hotel without
+	the point). Every post is on a walking surface, inside an area nothing is
+	built on: the first desk's footprint (`FrontDesk`, the desk's pivot: its
+	footprint's centre on the floor, MODELS.md "Hotel kit"), the desk's two
+	front cells where the queue stands, or the entrance's mouth
+	(`Grid.entrance`: the cells inside the arch, +Z of `Entrance`, which
+	looks to the street). ]]
 function Staff.post(role: string, slot: number, point: (name: string) -> CFrame?): Vector3?
+	if role == "Bellhop" or role == "Security" or role == "Entertainment" then
+		local entrance = point("Entrance")
+		if not entrance then
+			return nil
+		end
+		local half = #Grid.entrance() * CELL / 2
+		if role == "Bellhop" then
+			-- Just inside the arch, to its side (2026-10-26: it stood 0.9 outside the facade, on the forecourt).
+			return placeIn(entrance, Vector3.new(4, 0, 1.5), slot, 1, STEP, half, 0, CELL)
+		elseif role == "Security" then
+			-- Inside the entrance, across from the Bellhop (the sign left the lobby for the forecourt);
+			-- its rows two steps apart, between Entertainment's.
+			return placeIn(entrance, Vector3.new(-4, 0, 1.5), slot, -1, 2 * STEP, half, 0, CELL)
+		end
+		-- Just inside the arch, off to the side of the queue (the lobby's spawn went with the lobby).
+		return placeIn(entrance, Vector3.new(-8, 0, 4), slot, -1, 2 * STEP, half, 0, CELL)
+	end
+	local desk = point("FrontDesk")
+	local piece = Pieces.get("FrontDesk")
+	if not desk or not piece then
+		return nil
+	end
+	local halfW, halfD = piece.w * CELL / 2, piece.d * CELL / 2
+	-- A desk point moved by `offset` in its own frame, in the desk's frame.
 	local function near(name: string, offset: Vector3): Vector3?
 		local cf = point(name)
-		return if cf then (cf * CFrame.new(offset)).Position else nil
+		return if cf then desk:PointToObjectSpace((cf * CFrame.new(offset)).Position) else nil
 	end
-	local spread = (slot - 1) * 3
 	if role == "FrontDesk" then
 		-- Behind the first desk's counter, side by side along it (MODELS.md, "Front desk": `Clerk`).
-		return near("Clerk", Vector3.new(spread, 0, 0))
-	elseif role == "Bellhop" then
-		return near("Entrance", Vector3.new(4 + spread, 0, -1.5))
-	elseif role == "Security" then
-		-- Inside the entrance, across from the Bellhop (the sign left the lobby for the forecourt).
-		return near("Entrance", Vector3.new(-4 - spread, 0, -1.5))
-	elseif role == "Entertainment" then
-		-- Just inside the arch, off to the side of the queue (the lobby's spawn went with the lobby).
-		return near("Entrance", Vector3.new(-8 - spread, 0, 4))
+		local at = near("Clerk", Vector3.zero)
+		return if at then placeIn(desk, at, slot, 1, STEP, halfW, -halfD, halfD) else nil
 	elseif role == "RoomService" then
-		return near("Till", Vector3.new(4 + spread, -3.8, 2))
+		--[[ Beside the till, on the desk's floor: the desk's pivot is on the
+			walking surface (2026-10-26: the post took the counter's height,
+			3.8, off the till's, a blockout's measurement in gameplay code). ]]
+		local at = near("Till", Vector3.new(4, 0, 2))
+		return if at then placeIn(desk, at, slot, 1, STEP, halfW, -halfD, halfD) else nil
 	elseif role == "Housekeeping" then
-		return near("Queue_4", Vector3.new(-4 - spread, 0, 0))
+		-- Beside the queue, in the desk's two front cells (`Grid` keeps them walkable).
+		local at = near("Queue_4", Vector3.new(-4, 0, 0))
+		return if at then placeIn(desk, at, slot, -1, STEP, halfW, -halfD - CELL, -halfD) else nil
 	end
 	return nil
 end

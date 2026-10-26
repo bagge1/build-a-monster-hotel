@@ -57,6 +57,7 @@ local HotelPoints = require(ReplicatedStorage.Shared.HotelPoints)
 local Format = require(ReplicatedStorage.Shared.Format)
 local StreetLayout = require(ReplicatedStorage.Shared.StreetLayout)
 local HotelKit = require(ServerScriptService.Server.HotelKit)
+local ActivityKit = require(ServerScriptService.Server.ActivityKit)
 local PlayerData = require(ServerScriptService.Server.PlayerData)
 
 local G = Constants.Grid
@@ -174,6 +175,9 @@ local function roomPrompts(plot: Plot, model: Model, pieceId: string)
 	local help = makePrompt(door, "Help", model.Name, 0, plot, "Request", pieceId)
 	help.Enabled = false
 	help.UIOffset = Vector2.new(0, 60)
+	-- Shown only through the doorway (PromptFilter), never through a wall from the next room or the forecourt.
+	clean:SetAttribute("Doorway", true)
+	help:SetAttribute("Doorway", true)
 end
 
 --[[ Lays a floor finish on a part (MODELS.md, "Floor finishes"): its texture
@@ -285,10 +289,16 @@ local function buildDecor(
 	model:SetAttribute("Item", rec.item)
 	model:SetAttribute("Floor", rec.floor)
 	model:SetAttribute("Room", rec.room)
+	--[[ Invisible to rays as a delivered model is (its import sets CanQuery
+		to its collision, off for a `Body`): the build mode finds placed decor
+		by the square under the pointer (`BuildController.underPointer`), so a
+		blockout and a delivered piece answer a tap alike (2026-10-26: a
+		blockout's `Body` was hit, a delivered one's was not). ]]
 	for _, part in model:GetDescendants() do
 		if part:IsA("BasePart") then
 			part.Anchored = true
 			part.CanCollide = false
+			part.CanQuery = false
 			part.CanTouch = false
 		end
 	end
@@ -586,7 +596,7 @@ end
 	room id, `Kind` Room or Amenity, `Item` its type) carrying what the rest of
 	the game asks a room for, all read from models: `Door` (its door's
 	threshold, looking out of the room), `Sign` and the plaque over it, `Bed`
-	(where a guest ends up: its key furniture's `Use`, else `KeySpot`),
+	(where a guest ends up: its key furniture's first spot, else `KeySpot`),
 	`KeySpot` (the square beside the key furniture, Rooms.keySpot), and the
 	door's prompts. Drawn again whole on every change of walls, rooms or
 	furniture. ]]
@@ -716,15 +726,18 @@ function drawRooms(plot: Plot, data: PlayerData.Data)
 					)
 				point("KeySpot", keyAt :: CFrame)
 			end
-			-- Where the guest ends up: the key furniture's `Use`, else beside it.
+			--[[ Where the guest ends up: the key furniture's first spot, else beside
+				it. Its first spot as the visits read it (`ActivityKit.spots`:
+				`Use_1`, else `Use`), so an activity piece's blockout (only
+				`Use_<n>`) and its delivered model give the same point (2026-10-26:
+				only `Use` was read, which the blockout does not carry). ]]
 			local use: CFrame? = nil
 			local req = Rooms.requirement(rec.type)
 			for _, d in furniture[id] or {} do
 				local dm = d.id and plot.decor[d.id]
 				if not use and req and table.find(req.keys, d.item) and dm then
-					local r = dm.PrimaryPart
-					local u = r and r:FindFirstChild("Use")
-					if u and u:IsA("Attachment") then
+					local u = ActivityKit.spots(dm)[1]
+					if u then
 						use = u.WorldCFrame
 					end
 				end

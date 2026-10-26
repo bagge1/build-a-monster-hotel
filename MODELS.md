@@ -178,6 +178,12 @@ leaf would block every guest.
 door and furniture (below, "Inner walls, doors and furniture"). This
 section stands until the code no longer places these models.
 
+**Not read by the code (checked 2026-10-26): build none of these.** No
+code places a room or amenity model any more (`HotelKit.piece` builds only
+the `FrontDesk`; a built room is an invisible marker, `R_<id>`, whose `Door`,
+`Sign` and `Bed` the code makes from the walls and the furniture). The
+section is kept as a record of the retired models.
+
 Walls 0.4 thick and 17 tall, inside the footprint: `Wall_Back` the full width,
 `Wall_Left` and `Wall_Right` between it and the front, the front wall in
 pieces round the door, and `Wall_Lintel` over the door from 7 to 17.
@@ -188,13 +194,17 @@ pieces round the door, and `Wall_Lintel` over the door from 7 to 17.
 | `Door` (attachment) | The middle of the door's threshold, on the floor, **its LookVector pointing out** of the room | Cleaning and request prompts; the guest's last waypoint before the bed. Must sit over the cell `Grid.doorInside` names: at rotation 0 on the −Z wall, at x = (floor((w−1)/2) + 0.5) × 12 − w × 6 (−6 for a 2-wide piece, 0 for a 3-wide) |
 | `Bed` (attachment) | Where a guest rests, facing the way it lies: a room's 7 studs in from the back wall (z = D/2 − 7, facing −Z), an amenity's at z = −D/6 facing +Z (the centrepiece) | The guest's destination |
 | `Floor` (part) | The room's floor, **one part**, its top the room's walking surface | Placed decor stands on its top; a floor finish is laid on it |
-| `Bed`, `Furniture`, `Centrepiece` (parts) | The room's own furniture | Placed decor is kept off the 3-stud squares their boxes cover |
+| `Bed`, `Furniture`, `Centrepiece` (parts) | The room's own furniture | Hidden far away (`Lod`). **Not read for placing** (2026-10-26): `Furnish.blocked` has no caller; decor is kept off furniture by `Rooms.canPlaceDecor`, from the placed pieces' squares |
 | `Sign` (attachment) | Outside, above the door: (door x, 8.2, −D/2 − 0.3) | The room's name and its state (vacant, dirty, a request) |
-| `DoorLeaf` (part) | The door that swings, hinged at its own `Hinge` attachment | Opened when a guest passes (rule 2) |
+| `DoorLeaf` (part) | The door that swings, hinged at its own `Hinge` attachment | **Not read** (2026-10-26): no code opens a door or looks for `Hinge`; doorways are open arches (above) |
 | `Glow_<Colour>_<n>` | Lamps | Lit by the code (rule 1) |
 | `Wall_<n>` | Walls, **in pieces apart round the door** (`DEVNOTES.md`, "A decomposition closes small openings") | Collision `Box` each |
 
 The door opening is at least **4 studs wide and 7 tall** (a 5-stud person).
+
+**Not read (2026-10-26): no code places `<PieceId>_Mirror`.** Flip went with
+placed rooms (GDD §18, 2026-10-21: "no ready-made rooms, no Flip"); the
+paragraph below is the record of what it was.
 
 **Every room and amenity also has its mirror image, `<PieceId>_Mirror`** (his
 ask, 2026-10-20: F flips a room to move its door, GDD A.1). Roblox has no
@@ -255,6 +265,11 @@ needs neither.
 | `Entrance` (attachment) | (0, 0, 0): the front door's threshold, LookVector toward the street | Where guests walk in |
 | `Spawn` (attachment) | (8, 0, 18), in the back row | The plot's spawn |
 
+**Not read (checked 2026-10-26): no code places a `Lobby` model or copies
+the desk's points onto one.** `Entrance` is read from `Facade_Entrance`,
+and `Desk`, `Clerk`, `Till` and `Queue_n` from the first `FrontDesk` itself
+(`HotelPoints`). Build no `Lobby`. What the lobby once did:
+
 **The desk's points are mirrored onto the lobby.** Wherever the player puts
 the `FrontDesk`, the code copies its `Desk`, `Clerk`, `Till` and `Queue_n`
 onto the lobby's `Root` under the same names (`PlotService`), so whatever
@@ -281,14 +296,14 @@ z −6..6). Built for the 5-stud person, at the old lobby desk's sizes:
 
 | Name | What | The code |
 |---|---|---|
-| `Root` | 24 × 0.2 × 12, centred (0, 0.1, 0) | Placement |
+| `Root` | 24 × 0.2 × 12, centred (0, 0.1, 0) | Placement; its pivot (the footprint's centre on the floor) keeps the staff posts on the floor and inside the footprint (`Staff.post`) |
 | `Counter` (part) | The counter and its top | Collides |
 | `Till` (part) | The till | — |
 | `KeyRack` (part) | The rack and its clock | Collides |
 | `Desk` (attachment) | (0, 3.8, −4.2): the counter's served edge, LookVector −Z, toward the guests | Check-in prompt |
-| `Till` (attachment) | (3.4, 3.8, −4.2), LookVector −Z | Collect prompt |
+| `Till` (attachment) | (3.4, 3.8, −4.2), LookVector −Z | Collect prompt; Room Service's post beside it (on the floor) |
 | `Clerk` (attachment) | (0, 0, 1.5), LookVector −Z | The Front Desk resident's post |
-| `Queue_1`–`Queue_4` (attachments) | (0, 0, −8), (0, 0, −11), (0, 0, −14), (0, 0, −17), LookVector +Z (at the desk); 1 nearest. Guests beyond the fourth stand on, 3 studs further back each | The desk queue |
+| `Queue_1`–`Queue_4` (attachments) | (0, 0, −8), (0, 0, −11), (0, 0, −14), (0, 0, −17), LookVector +Z (at the desk); 1 nearest. Guests beyond the fourth stand on, 3 studs further back each | The desk queue; Housekeeping's post beside `Queue_4` |
 | `Glow_Warm_1` | The lamp's shade | Lit |
 
 `Grid` keeps the two cells in front of the desk walkable and reached from the
@@ -384,7 +399,7 @@ round a convex and a concave corner to prove it):
 | `Wall` (`Facade_Wall`, `Facade_Window_<Type>`); `Wall_Left`, `Wall_Right`, `ArchLeft`, `ArchRight`, `ArchTop` (`Facade_Entrance`); `Post` (`Facade_Corner`) | The colliding parts: `Wall` exactly x −6..6, y 0..17, z −0.62..−0.02; `Wall_Left` x −12..−5.5 and `Wall_Right` 5.5..12 the same; the arch's pillars x ±4.5..±5.5 up to 9 and `ArchTop` over 9, so the opening is 9 × 9 clear; `Post` exactly x −0.64..0, z −0.64..0, 17 tall | `Box` collision each |
 | `Glass` (part) | The window panes, one part | Not colliding; the code may make it glass |
 | `Dressing`, `Glow_<Colour>_<n>`, `LOD_Proxy` | Frames, sills, trim; lamps and tubes (rule 1; no light but the entrance's); the wall with its holes, flat | — |
-| `Entrance` (attachment, `Facade_Entrance` only) | (0, 0, 0): the threshold, LookVector −Z | Where guests walk in; the lobby cosmetics hang from it |
+| `Entrance` (attachment, `Facade_Entrance` only) | (0, 0, 0): the threshold, LookVector −Z | Where guests walk in; the lobby cosmetics hang from it; Bellhop, Security and Entertainment stand inside it (+Z), in the entrance's two cells |
 
 **Every outline edge of every floor is walled**, the street side included
 (his ruling, 2026-10-20, replacing the open street side above floor 1). Each
@@ -551,9 +566,11 @@ Placed by the player **on a grid of 3 studs** (a quarter cell), turned in
   on the wall's face (2026-10-20, lifted from the monster kit).
 
 **Where the code lets it stand** (`Grid`, `Furnish`): inside one room's walls
-(never across a wall, never in the 6 × 6 just inside the door, never on the
-room's own `Bed`, `Furniture` or `Centrepiece` boxes, which the code reads
-from the model), or on hallway and lobby floor. In a hallway a `Floor` piece
+(never across a wall, never in the 6 × 6 just inside the door, never over
+another placed piece of its layer: `Rooms.canPlaceDecor`, from the placed
+pieces' squares; checked 2026-10-26, **no code reads a box from a model**,
+so a `Bed`, `Furniture` or `Centrepiece` part keeps nothing off), or on
+hallway and lobby floor. In a hallway a `Floor` piece
 that reaches into the middle of a cell (where guests walk) makes that cell no
 hallway, and is refused if it cuts a door off; one in a cell's corner leaves
 it walkable. A room's preference tags are the tags of the decor inside its
