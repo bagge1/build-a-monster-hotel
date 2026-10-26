@@ -720,7 +720,8 @@ FORMULA_GUARDS = [
     ("src/server/BookService.luau", "math.floor(Economy.speciesPay(speciesId) * Constants.Book.SpeciesFoundPaySeconds)"),
     ("src/server/BusService.luau", "l.nextList, l.nextGuaranteed = draw(street, busIndex + 1, now, now + interval)"),  # each street's bus a bus ahead (one world, 2026-10-21)
     # the systems the balance run of 2026-10-23 added to the model (EXTRAS): what pays a lump of "minutes of income"
-    ("src/server/StoreService.luau", "if g.state == \"InRoom\" then rate += g.payRate"),
+    # A guest on a visit (A.13.1) pays as one in its room: the model counts the whole stay as paid.
+    ("src/server/StoreService.luau", "if g.state == \"InRoom\" or g.state == \"Visiting\" then"),
     ("src/server/DailyService.luau", "local amount = math.floor(StoreService.incomeRate(player) * REWARD_MINUTES * 60)"),
     ("src/server/DailyService.luau", "local amount = math.floor(StoreService.incomeRate(player) * LOGIN_MINUTES[day] * 60)"),
     ("src/server/DailyService.luau", "local kind = kinds[rng:NextInteger(1, #kinds)]"),
