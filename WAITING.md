@@ -459,6 +459,20 @@ Med Claudes skärmdump där det finns en. -->
    - Mattans Lift som Lie (byggt, mitt antagande) eller Stand.
    - Utseenden: mattan läses som en matta på golvet, trappan är slät sten.
 
+26. **Bions projektor (Manor) och eventdekorn Jack-o'-Lantern och Snowman**
+   (natten 2026-10-26, GDD A.13; validerade i Blender, en blind granskning
+   i `blender/rooms/haunted_manor_projector/README.md` och
+   `blender/decor/event_decor/README.md`; **inte importerade**; raderna
+   stämmer). Bilder: `archive/screens/2026-10-26_projector_event/`
+   (`projector_cinema_game_camera.jpg`, `projector_silhouettes.jpg`,
+   `event_decor_game_camera.jpg`). Dina val:
+   - Projektorns lins sitter på 3,06, under de sittandes huvuden (4,7).
+     Förslag: en piedestal till ~6,5, vilket ändrar radens höjd från 4,5.
+     Stativ (byggt) eller piedestal med lamphus.
+   - Projektorn läses som en filmkamera; stativets tunna ben.
+   - Pumpans storlek, snödrivan och snögubbens uppsträckta armar: förslag
+     behåll alla tre. Färgerna.
+
 ## §2 Beslut
 
 <!-- En fråga i taget, med alternativen och Claudes rekommendation. -->
