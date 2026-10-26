@@ -1,0 +1,117 @@
+{
+ "set": "rooms/haunted_manor_pool",
+ "checked": "each fbx/<Name>.fbx re-imported into Blender; nothing here ran in Studio",
+ "pieces": {
+  "Furniture_Pool": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "5 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the piece's own checks re-run on the re-imported triangles",
+    "the contract re-checked on the re-imported boxes: Root 3fw x 0.2 x 3fd, the layer's envelope (Floor and Wall: inside the footprint inset 0.4, height <= 7; Rug: inside the footprint, height <= 0.15; Wall: its back on z = 3fd/2 - 0.4 +-0.05), nothing collides, budget; w, d, layer and height (to 0.3) as Pieces.luau says; each seat() on the triangles"
+   ],
+   "triangles": 1228,
+   "budget": 1500,
+   "collision_precise": [],
+   "attachments": [
+    "Use_1",
+    "Use_2",
+    "Use_3"
+   ]
+  },
+  "Furniture_Lounger": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "2 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the piece's own checks re-run on the re-imported triangles",
+    "the contract re-checked on the re-imported boxes: Root 3fw x 0.2 x 3fd, the layer's envelope (Floor and Wall: inside the footprint inset 0.4, height <= 7; Rug: inside the footprint, height <= 0.15; Wall: its back on z = 3fd/2 - 0.4 +-0.05), nothing collides, budget; w, d, layer and height (to 0.3) as Pieces.luau says; each seat() on the triangles"
+   ],
+   "triangles": 240,
+   "budget": 1500,
+   "collision_precise": [],
+   "attachments": [
+    "Use_1"
+   ]
+  }
+ },
+ "collision_precise": {
+  "Furniture_Pool": [],
+  "Furniture_Lounger": []
+ },
+ "mirrors": {},
+ "not_validated": [
+  "anything in Studio: the import, the axis conversion on Roblox's side (import_fixup.luau checks it first), the atlas upload, how it looks lit",
+  "the attachments and each Use_<n> Pose attribute exist only in manifest.json until import_fixup.luau makes them",
+  "a visitor walking to a spot, stepping over the rim, swimming or lying: no walker or animation has run",
+  "the Water made water and the Jet_1 stream dressed: the code does it (nothing does yet)",
+  "Pieces.luau rows (pending, above)"
+ ],
+ "spots": {
+  "Furniture_Pool": {
+   "spots": {
+    "Use_1": "Swim",
+    "Use_2": "Swim",
+    "Use_3": "Swim"
+   },
+   "checked": "spots_check on the built and the re-imported triangles: Use_<n> from 1 without a gap, a Pose from MODELS.md's list, a level LookVector, no two spots on one square; Swim: the one Water part present and not colliding, the spot on its top (to 0.02), nothing else of the piece within 1.5 round it from the basin floor to 2.5 over the water (inside the inner edge by 1.5, no spout or stream on a swimmer); Lie: inside the footprint, on its surface with nothing over it, and the lying 5-stud person (lie_faults: in the footprint, on the piece, nothing rising through it, arms included)"
+  },
+  "Furniture_Lounger": {
+   "spots": {
+    "Use_1": "Lie"
+   },
+   "checked": "spots_check on the built and the re-imported triangles: Use_<n> from 1 without a gap, a Pose from MODELS.md's list, a level LookVector, no two spots on one square; Swim: the one Water part present and not colliding, the spot on its top (to 0.02), nothing else of the piece within 1.5 round it from the basin floor to 2.5 over the water (inside the inner edge by 1.5, no spout or stream on a swimmer); Lie: inside the footprint, on its surface with nothing over it, and the lying 5-stud person (lie_faults: in the footprint, on the piece, nothing rising through it, arms included)"
+  }
+ },
+ "swim_findings": {
+  "note": "MODELS.md's Swim puts the body's middle 1.5 under the water's surface (shoulders at it, the head over it, the feet 4 under it). The floor cannot be dug, so the water is 0.72 over the floor: the body's middle and legs are under the floor the pool stands on (inside the 1-stud slab, and past it into the room below). A finding for the code (README, his call), not a refusal.",
+  "Furniture_Pool": {
+   "Use_1": {
+    "surface": 0.72,
+    "basin_floor": 0.06,
+    "body_middle": -0.78,
+    "feet": -3.28,
+    "head_top": 1.72
+   },
+   "Use_2": {
+    "surface": 0.72,
+    "basin_floor": 0.06,
+    "body_middle": -0.78,
+    "feet": -3.28,
+    "head_top": 1.72
+   },
+   "Use_3": {
+    "surface": 0.72,
+    "basin_floor": 0.06,
+    "body_middle": -0.78,
+    "feet": -3.28,
+    "head_top": 1.72
+   }
+  }
+ },
+ "pending_pieces_rows": {
+  "note": "Pieces.luau has no rows for these on main (the code branch claude/room-types has Pool 3 x 2 height 1.5 and Lounger 1 x 2 height 2.0). The kit's Pieces check ran against these values; the rows must say the same w, d, layer and height (to 0.3).",
+  "Furniture_Pool": {
+   "w": 4,
+   "d": 2,
+   "layer": "Floor",
+   "height": 3.15,
+   "keyFor": [
+    "IndoorPool"
+   ],
+   "furniture": true
+  },
+  "Furniture_Lounger": {
+   "w": 1,
+   "d": 2,
+   "layer": "Floor",
+   "height": 2.12,
+   "keyFor": [],
+   "furniture": true
+  }
+ }
+}
