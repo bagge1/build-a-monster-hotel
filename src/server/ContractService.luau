@@ -25,8 +25,10 @@
 	offer (1 a day, +1 with VIP Lobby).
 
 	What only the session knows (a held room, a VIP on its way) goes back to
-	Accepted on a rejoin, a travel or a rebirth, so a contract is never lost
-	to them; its clock is kept.
+	Accepted on a rejoin or a travel, so a contract is never lost to them;
+	its clock is kept. A rebirth ends the contracts and offers of the hotels
+	it takes apart, every one, without penalty (`Contracts.endHotels`,
+	WAITING §2.48, his yes 2026-10-26), and lets their held rooms go.
 
 	State section `vip`; remote `Vip`; Moments `VipLedger` (open the panel,
 	from the desk's prompt) and `VipDone`.
@@ -53,6 +55,7 @@ local GuestService = require(ServerScriptService.Server.GuestService)
 local BusService = require(ServerScriptService.Server.BusService)
 local StoreService = require(ServerScriptService.Server.StoreService)
 local StateService = require(ServerScriptService.Server.StateService)
+local ProgressionService = require(ServerScriptService.Server.ProgressionService)
 local DevGrant = require(ServerScriptService.Server.DevGrant)
 
 local C = Constants.Contracts
@@ -631,6 +634,25 @@ function ContractService.Start()
 		devStars[player] = nil
 	end)
 	StateService.provide("vip", provide)
+	--[[ A rebirth takes every hotel of the chain apart, Haunted Manor's too (its
+		rooms, its rating from the start), so no hotel of the ledger is kept: its
+		contracts and offers end without penalty (no `vipMissed`, nothing toward
+		the day's cap), and a held room is let go while it is still the hotel's.
+		WAITING §2.48, his yes 2026-10-26. ]]
+	ProgressionService.onRebirthStart(function(player)
+		local data = PlayerData.get(player)
+		if not data then
+			return
+		end
+		local s = sessions[player]
+		for _, c in Contracts.endHotels(ledger(data), {}) do
+			release(player, c)
+			if s then
+				s[c.id] = nil
+			end
+		end
+		StateService.mark(player)
+	end)
 	BusService.setVips(vipsFor :: any, vipArrives)
 	GuestService.onCheckIn(checkedIn)
 	GuestService.onCheckout(checkedOut)
