@@ -789,6 +789,12 @@ local function checkout(g: Guest)
 		return
 	end
 	local plot = PlotService.of(player)
+	if not plot then
+		-- The owner is leaving: the hotel is freed before their guests are (PlayerData
+		-- settles first). No tip, review or stat, each tick again (2026-10-26 review).
+		destroy(g)
+		return
+	end
 	local satisfaction = math.clamp(
 		Stay.satisfaction({
 			prefsMatched = g.prefsMatched,

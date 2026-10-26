@@ -252,16 +252,26 @@ local function draw(
 	return drawIds(street, flags, size(street), at), guaranteed
 end
 
--- At the bus's arrival: as many as the street's vacancies ask for now, never dropping a guarantee.
+-- At the bus's arrival: as many as the street's vacancies ask for now, never dropping a guarantee
+-- or the guest announced to the street (2026-10-26 review: a drawn Legendary, told of a bus
+-- ahead, was cut when the street's vacancies fell).
 local function fit(
 	street: number,
 	list: { Passenger },
 	guaranteed: number,
+	announced: string?,
 	at: number
 ): { Passenger }
 	local want = size(street)
 	while #list > math.max(want, guaranteed) do
-		table.remove(list)
+		local cut = #list
+		while cut > guaranteed and list[cut].species == announced do
+			cut -= 1
+		end
+		if cut <= guaranteed then
+			break
+		end
+		table.remove(list, cut)
 	end
 	if #list < want then
 		local none = { epic = false, legendary = false, mythic = false }
@@ -503,7 +513,7 @@ local function arriveOn(street: number, now: number)
 	local guaranteed = l.nextGuaranteed
 	local list: { Passenger }
 	if l.nextList then
-		list = fit(street, l.nextList :: { Passenger }, l.nextGuaranteed, now)
+		list = fit(street, l.nextList :: { Passenger }, l.nextGuaranteed, l.announced, now)
 	else
 		list, guaranteed = draw(street, busIndex, lastArrival, now)
 	end

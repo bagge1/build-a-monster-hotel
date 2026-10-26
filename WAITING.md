@@ -1655,6 +1655,20 @@ Med Claudes skärmdump där det finns en. -->
    (en serverkrasch före sparning) går passet till givaren, även om hen
    redan äger det. Sällsynt; förslag: lämna tills vidare.
 
+64. **Gatan med flera spelare: tre regler att läsa** (natten 2026-10-26,
+   kodläsning). (a) När en spelare lämnar försvinner alla gäster på väg
+   till eller från hens hotell där de står, även en Legendary som valt
+   det: de andra ser dem försvinna på gatan, mot din regel att varje gäst
+   kommer och går med bussen. Förslag: de går tillbaka till hållplatsen
+   och åker med nästa buss (en Legendary väljer om). (b) Vänbonusen
+   (+10 %) räknas över hela servern, inte "alla på gatan" som GDD säger:
+   två vänner på Creepy Lane ger bonus till en främling på Bayou. Förslag:
+   per gata. (c) En gata som blir levande mellan två bussar får sin nästa
+   buss utan annons, så en garanterad Legendary kommer oannonserad. Liten
+   sak. (d) Holiday (släpper en boende) går också på ett tryck, och på en
+   telefon ligger knappen bredvid Security: samma fråga som rebirthens
+   bekräftelse i §2.62.
+
 ## §3 Creator Hub och publicering
 
 1. ~~**Slå på Studio Access to API Services**~~ (gjort 2026-10-19: på i

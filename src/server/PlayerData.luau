@@ -646,6 +646,12 @@ function PlayerData.addTill(player: Player, amount: number)
 	if not d or amount <= 0 or amount ~= amount then
 		return
 	end
+	-- An Auto-Collect owner's till never fills ("Till cash goes straight to your
+	-- wallet"): tips and the welcome-back pay filled it (2026-10-26 review).
+	if d.passes.AutoCollect then
+		PlayerData.earn(player, amount)
+		return
+	end
 	d.till = math.min(Constants.Economy.TillCap, d.till + amount)
 	player:SetAttribute("Till", d.till)
 end
