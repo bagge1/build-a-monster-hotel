@@ -430,6 +430,18 @@ Med Claudes skärmdump där det finns en. -->
    - Poängtavlans höjd i spelets rad går från 6,0 till 7,0 (rättas vid
      importen).
 
+24. **Bastuns bänk, aggregat och hink (Frostfang)** (natten 2026-10-26, GDD
+   A.13; validerade i Blender, tre blinda granskningar i
+   `blender/rooms/frostfang_lodge_sauna/README.md`; **inte importerade**;
+   raderna stämmer). Bilder: `archive/screens/2026-10-26_sauna/`
+   (`sauna_game_camera.jpg`, `sauna_bench_in_use.jpg`, `sauna_silhouettes.jpg`).
+   Dina val:
+   - Bänken 2×1 med två (byggd) eller 2×2 i tre steg med fyra. Förslag: 2×1.
+   - Aggregatet i knähöjd lästes som en grill av tre granskare: förslag att
+     radens höjd höjs till ~3,0.
+   - Ånga behöver ett namn i MODELS.md (samma fråga som spaet).
+   - Utseenden: snöflingan, färgerna, isen i hinken.
+
 ## §2 Beslut
 
 <!-- En fråga i taget, med alternativen och Claudes rekommendation. -->
