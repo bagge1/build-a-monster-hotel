@@ -1,0 +1,130 @@
+{
+ "set": "rooms/haunted_manor_gym",
+ "checked": "each fbx/<Name>.fbx re-imported into Blender; nothing here ran in Studio",
+ "pieces": {
+  "Furniture_WeightBench": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "3 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the piece's own checks re-run on the re-imported triangles",
+    "the contract re-checked on the re-imported boxes: Root 3fw x 0.2 x 3fd, the layer's envelope (Floor and Wall: inside the footprint inset 0.4, height <= 7; Rug: inside the footprint, height <= 0.15; Wall: its back on z = 3fd/2 - 0.4 +-0.05), nothing collides, budget; w, d, layer and height (to 0.3) as Pieces.luau says; each seat() on the triangles"
+   ],
+   "triangles": 492,
+   "budget": 1500,
+   "collision_precise": [],
+   "attachments": [
+    "Use_1"
+   ]
+  },
+  "Furniture_Treadmill": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "4 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the piece's own checks re-run on the re-imported triangles",
+    "the contract re-checked on the re-imported boxes: Root 3fw x 0.2 x 3fd, the layer's envelope (Floor and Wall: inside the footprint inset 0.4, height <= 7; Rug: inside the footprint, height <= 0.15; Wall: its back on z = 3fd/2 - 0.4 +-0.05), nothing collides, budget; w, d, layer and height (to 0.3) as Pieces.luau says; each seat() on the triangles"
+   ],
+   "triangles": 688,
+   "budget": 1500,
+   "collision_precise": [],
+   "attachments": [
+    "Use_1"
+   ]
+  },
+  "Furniture_PunchingBag": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "3 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the piece's own checks re-run on the re-imported triangles",
+    "the contract re-checked on the re-imported boxes: Root 3fw x 0.2 x 3fd, the layer's envelope (Floor and Wall: inside the footprint inset 0.4, height <= 7; Rug: inside the footprint, height <= 0.15; Wall: its back on z = 3fd/2 - 0.4 +-0.05), nothing collides, budget; w, d, layer and height (to 0.3) as Pieces.luau says; each seat() on the triangles"
+   ],
+   "triangles": 742,
+   "budget": 1500,
+   "collision_precise": [],
+   "attachments": [
+    "Use_1"
+   ]
+  }
+ },
+ "collision_precise": {
+  "Furniture_WeightBench": [],
+  "Furniture_Treadmill": [],
+  "Furniture_PunchingBag": []
+ },
+ "mirrors": {},
+ "not_validated": [
+  "anything in Studio: the import, the axis conversion on Roblox's side (import_fixup.luau checks it first), the atlas upload, how it looks lit",
+  "the attachments and each Use_<n> Pose attribute exist only in manifest.json until import_fixup.luau makes them",
+  "a visitor walking to a spot, lying on the bench, walking the belt or punching: no walker or clip has run",
+  "the bar, the belt and the bag are Body: nothing moves (MODELS.md names no part for them)"
+ ],
+ "spots": {
+  "Furniture_WeightBench": {
+   "spots": {
+    "Use_1": "Lift"
+   },
+   "lift_placed_as": {
+    "Use_1": "Lie"
+   },
+   "checked": "spots_check on the built and the re-imported triangles: Use_<n> from 1 without a gap, a Pose from MODELS.md's list, a level LookVector, no two spots on one square; Lift: held to the placement it names (the bench's Lie: inside the footprint, on its surface with nothing over it, and the lying 5-stud person, lie_faults: in the footprint, on the piece, nothing rising through it, arms included); Stand on the piece (the belt): flat under both feet to 0.15, the standing person (stand_blocks, arms included, 3.8 across, 5 tall) clear of the body; Stand in front: on the floor at the front square's middle 1.5 in front, facing +Z, its square free of the body"
+  },
+  "Furniture_Treadmill": {
+   "spots": {
+    "Use_1": "Stand"
+   },
+   "lift_placed_as": {},
+   "checked": "spots_check on the built and the re-imported triangles: Use_<n> from 1 without a gap, a Pose from MODELS.md's list, a level LookVector, no two spots on one square; Lift: held to the placement it names (the bench's Lie: inside the footprint, on its surface with nothing over it, and the lying 5-stud person, lie_faults: in the footprint, on the piece, nothing rising through it, arms included); Stand on the piece (the belt): flat under both feet to 0.15, the standing person (stand_blocks, arms included, 3.8 across, 5 tall) clear of the body; Stand in front: on the floor at the front square's middle 1.5 in front, facing +Z, its square free of the body"
+  },
+  "Furniture_PunchingBag": {
+   "spots": {
+    "Use_1": "Stand"
+   },
+   "lift_placed_as": {},
+   "checked": "spots_check on the built and the re-imported triangles: Use_<n> from 1 without a gap, a Pose from MODELS.md's list, a level LookVector, no two spots on one square; Lift: held to the placement it names (the bench's Lie: inside the footprint, on its surface with nothing over it, and the lying 5-stud person, lie_faults: in the footprint, on the piece, nothing rising through it, arms included); Stand on the piece (the belt): flat under both feet to 0.15, the standing person (stand_blocks, arms included, 3.8 across, 5 tall) clear of the body; Stand in front: on the floor at the front square's middle 1.5 in front, facing +Z, its square free of the body"
+  }
+ },
+ "pieces_rows": {
+  "Furniture_WeightBench": {
+   "w": 1,
+   "d": 2,
+   "layer": "Floor",
+   "height": 2.5,
+   "keyFor": [
+    "Gym"
+   ],
+   "model_top": 4.5
+  },
+  "Furniture_Treadmill": {
+   "w": 1,
+   "d": 2,
+   "layer": "Floor",
+   "height": 4.5,
+   "keyFor": [
+    "Gym"
+   ],
+   "model_top": 4.51
+  },
+  "Furniture_PunchingBag": {
+   "w": 1,
+   "d": 1,
+   "layer": "Floor",
+   "height": 6.5,
+   "keyFor": [
+    "Gym"
+   ],
+   "model_top": 6.47
+  }
+ },
+ "height_findings": {
+  "note": "Pieces.luau's height against the model's top, a finding (not refused): the row must say it",
+  "Furniture_WeightBench": "Pieces.luau's height 2.5, the body's top 4.50"
+ }
+}

@@ -13,7 +13,9 @@ of it, facing +Z, its square free of the body; a `Dance` spot on a flat surface 
 5-stud person's whole figure (3.8 across, arms out; 5.2 tall) clear of the body; a `Sit` or `Watch` spot (a Sit
 facing the row's front, -Z) on a declared seat with the seated person (sit_blocks) clear of the body; a `Lie` spot
 as a bed's Use (lie_faults); a `Swim` spot on the pool's `Water` top, inside its inner edge by 1.5 (swim_faults,
-added with tools/build_activity_pool.py, which the Bar's pieces never reach). A pose this
+added with tools/build_activity_pool.py, which the Bar's pieces never reach); a `Lift` spot as the Lie or Stand
+it names, and a `Stand` inside the footprint (on the piece: a treadmill's belt) by stand_on_faults, the standing
+figure clear of the body (both added with tools/build_activity_gym.py; the Bar's spots never reach them). A pose this
 script has no check for is refused, not passed. tools/build_activity_cinema.py (and the next activity sets) load
 these definitions; spots_check is the one validator of visitors' spots.
 
@@ -132,6 +134,21 @@ def spots_check(piece, tris, stage):
         if sq in seen:
             f.append(f'{tag}: on the square {sq} with {seen[sq]} (two spots never share a square)')
         seen[sq] = a
+        if pose == 'Lift':
+            # MODELS.md: Lift is placed "as Lie or Stand would place it" (on the bench or the mat). The piece
+            # names which (piece.lift, tools/build_activity_gym.py's lift_spot), and the spot is held to that
+            # pose's checks below; a Lift that names neither is refused.
+            how = getattr(piece, 'lift', {}).get(a)
+            if how not in ('Lie', 'Stand'):
+                f.append(f'{tag}: a Lift spot that does not name its placement (Lie or Stand)')
+                continue
+            pose = how
+        if pose == 'Stand' and abs(pos.x) < hx and abs(pos.z) < hz:
+            # A Stand on the piece (a treadmill's belt, a mat; added with tools/build_activity_gym.py): inside
+            # the footprint, so not the square in front. Held by stand_on_faults; a Stand outside the
+            # footprint keeps the check below unchanged.
+            f += stand_on_faults(allt, pos, look, tag)
+            continue
         if pose == 'Stand':
             centres = [-hx + 1.5 + 3 * k for k in range(piece.fw)]
             if (abs(pos.y) > 0.01 or abs(pos.z - (-hz - 1.5)) > 0.01 or min(abs(pos.x - c) for c in centres) > 0.01
@@ -196,6 +213,50 @@ def spots_check(piece, tris, stage):
             f += swim_faults(piece, tris, pos, tag)
         else:
             f.append(f'{tag}: this script has no check for Pose {pose} (refused, not passed)')
+    return f
+
+
+def stand_blocks(pos, look):
+    """The 5-stud person standing on `pos`, facing `look`, as the review's figure (_person's blocks: the legs 2,
+    the torso 2 with the arms beside it, 3.8 across, the head 1), boxes (lo, hi, name) in the piece's frame."""
+    a = Vector((look[0], 0, look[2])).normalized()
+    b = Vector((-a.z, 0, a.x))
+    p = Vector(pos)
+    out = []
+
+    def blk(t0, t1, s0, s1, y0, y1, name):
+        c = [p + a * t + b * s for t in (t0, t1) for s in (s0, s1)]
+        out.append((Vector((min(v.x for v in c), p.y + y0, min(v.z for v in c))),
+                    Vector((max(v.x for v in c), p.y + y1, max(v.z for v in c))), name))
+    for s0, s1, side in ((-0.95, -0.05, 'one'), (0.05, 0.95, 'other')):
+        blk(-0.45, 0.45, s0, s1, 0.0, 2.0, f'{side} leg')
+    blk(-0.5, 0.5, -1.0, 1.0, 2.0, 4.0, 'torso')
+    for s0, s1, side in ((-1.9, -1.02, 'one'), (1.02, 1.9, 'other')):
+        blk(-0.45, 0.45, s0, s1, 2.0, 4.0, f'{side} arm')
+    blk(-0.6, 0.6, -0.6, 0.6, 4.0, 5.0, 'head')
+    return out
+
+
+def stand_on_faults(allt, pos, look, tag):
+    """A Stand (or a Lift placed as Stand) on the piece: the surface under both feet (the legs' 1.9 x 0.9) flat
+    at the spot to USE_SURFACE_TOL, and the standing 5-stud person (stand_blocks, arms included, each block
+    shrunk by SIT_GAP) clear of the body: a console ahead, rails beside the legs, nothing through the figure."""
+    f = []
+    a = Vector((look[0], 0, look[2])).normalized()
+    b = Vector((-a.z, 0, a.x))
+    for t in (-0.4, 0.0, 0.4):
+        for s in (-0.9, -0.45, 0.0, 0.45, 0.9):
+            q = Vector(pos) + a * t + b * s
+            top = max(K._ray_down(allt, q.x, q.z, pos.y + 0.5), default=None)
+            if top is None or abs(top - pos.y) > USE_SURFACE_TOL:
+                return [f'{tag}: under the feet at ({q.x:.2f}, {q.z:.2f}) the surface is {top}, not {pos.y:.2f} '
+                        f'(flat to {USE_SURFACE_TOL})']
+    g = Vector((SIT_GAP,) * 3)
+    for lo, hi, nm in stand_blocks(pos, look):
+        for t in allt:
+            if _tri_box(t, lo + g, hi - g):
+                cen = (t[0] + t[1] + t[2]) / 3
+                return f + [f'{tag}: the piece goes through the standing person\'s {nm} (a face at {K.v3(cen, 2)})']
     return f
 
 
