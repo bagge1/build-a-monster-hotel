@@ -3,6 +3,7 @@ local Grid = require(Shared.Grid)
 local Constants = require(Shared.Constants)
 local Pieces = require(Shared.Pieces)
 local Species = require(Shared.Species)
+local Visits = require(Shared.Visits)
 
 local G = Constants.Grid
 local N = G.Cells
@@ -870,6 +871,95 @@ describe("Rooms", function()
 				Rooms.canPlaceDecor(wd, along, "bed"),
 				"moved along the front, still reached"
 			)
+		end
+	)
+	-- A.13.2 and his yes (§18 2026-10-26): activity rooms are ready on their key furniture as any room.
+	it(
+		"a Game Room is ready with a Pool Table, the Snack Bar with a Salad Bar, the Graveyard Garden with a Fountain",
+		function()
+			for _, case in
+				{
+					{ "GameRoom", "PoolTable" },
+					{ "SnackBar", "SaladBar" },
+					{ "SnackBar", "DessertTrolley" },
+					{ "GraveyardGarden", "Fountain" },
+					{ "GraveyardGarden", "GardenBench" },
+				}
+			do
+				local wd = world()
+				room(wd, "r", case[1], 8, 4, 2, 2)
+				local ok0 = Rooms.ready(wd, "r")
+				expect.truthy(not ok0, `{case[1]} not ready before its key`)
+				local d = Pieces.decor(case[2]) :: any
+				-- At the back of the room, the door at the front.
+				local key = decor(case[2], 1, 8 * Q + 1, 4 * Q + 2 * Q - 1 - d.d, 0)
+				local okPlace, why = Rooms.canPlaceDecor(wd, key)
+				expect.truthy(okPlace, `{case[2]} placed: {why}`)
+				table.insert(wd.decor, key)
+				local ok, lacks = Rooms.ready(wd, "r")
+				expect.truthy(
+					ok,
+					`{case[1]} ready with a {case[2]}: {table.concat(lacks or {}, ", ")}`
+				)
+			end
+		end
+	)
+
+	it("the activity rooms are every location's; a location's own stay its own", function()
+		local function ids(location)
+			local out = {}
+			for _, t in Rooms.types(location, {}, 1, 0, 1, false) do
+				out[t.id] = t
+			end
+			return out
+		end
+		local manor, frost = ids(1), ids(2)
+		for _, p in Pieces.List do
+			if p.kind == "Amenity" or p.kind == "Room" then
+				expect.eq(
+					manor[p.id] ~= nil,
+					p.location == 0 or p.location == 1,
+					`{p.id} at the Manor`
+				)
+				expect.eq(
+					frost[p.id] ~= nil,
+					p.location == 0 or p.location == 2,
+					`{p.id} at Frostfang`
+				)
+			end
+		end
+		for _, t in Rooms.types(2, {}, 1, 0, 1, false) do
+			expect.truthy(#t.keys > 0, `{t.id} has key furniture`)
+			expect.eq(t.fullCells, t.minCells * Constants.Rooms.FullSizeFactor, `{t.id} full size`)
+			for _, k in t.keys do
+				local d = Pieces.decor(k) :: any
+				expect.truthy(d.furniture, `{k} is furniture`)
+				expect.truthy(Pieces.decorHere(d, 2, {}), `{k} placeable at Frostfang`)
+			end
+		end
+	end)
+
+	-- A.13.1 "Rules kept": a room with a visitor in it or on the way is busy, as a booked one.
+	it(
+		"a visitor on its way to or in an activity room keeps it ready; one walking back does not",
+		function()
+			local wd = world()
+			room(wd, "g", "GameRoom", 8, 4, 2, 2)
+			local pool = decor("PoolTable", 1, 8 * Q + 2, 4 * Q + 5, 0)
+			pool.id = "pool"
+			table.insert(wd.decor, pool)
+			expect.truthy(Rooms.ready(wd, "g"), "the Game Room ready")
+			local sold = table.clone(wd)
+			sold.decor = {}
+			for _, phase in { "Going", "There" } do
+				local busy = Visits.busyRooms({ v = { room = "g", spot = 1, phase = phase } })
+				expect.truthy(
+					not Rooms.keepsBusy(wd, sold, busy),
+					`selling its key with a visitor {phase}`
+				)
+			end
+			local back = Visits.busyRooms({ v = { room = "g", spot = 1, phase = "Back" } })
+			expect.truthy(Rooms.keepsBusy(wd, sold, back), "the visitor walking back")
 		end
 	)
 end)

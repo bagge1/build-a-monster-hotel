@@ -205,7 +205,11 @@ function BuildService.context(player: Player, data: PlayerData.Data): Unlocks.Co
 	}
 end
 
--- Marks every piece whose condition is met now as unlocked for good (§6.4), returning the new ones.
+--[[ Marks every piece whose condition is met now as unlocked for good (§6.4), returning the new ones.
+	A location-0 piece counts only when it has an `unlock`: the activity rooms
+	(GDD A.13.2) are every location's and their rating and rooms unlocks are
+	kept like any type's, while the stairs and the desk, which have none, are
+	never announced. ]]
 function BuildService.refreshUnlocks(player: Player): { string }
 	local data = PlayerData.get(player)
 	if not data then
@@ -214,7 +218,11 @@ function BuildService.refreshUnlocks(player: Player): { string }
 	local ctx = BuildService.context(player, data)
 	local new = {}
 	for _, p in Pieces.List do
-		if p.location ~= 0 and not data.unlocked[p.id] and Unlocks.met(p.id, ctx) then
+		if
+			(p.location ~= 0 or p.unlock ~= nil)
+			and not data.unlocked[p.id]
+			and Unlocks.met(p.id, ctx)
+		then
 			data.unlocked[p.id] = true
 			table.insert(new, p.id)
 		end
@@ -252,7 +260,8 @@ function keepsGuests(player: Player, data: PlayerData.Data, after: Rooms.World):
 			busy[id] = true
 		end
 	end
-	return Rooms.keepsBusy(PlotService.world(data), after, busy)
+	-- And every activity room a visitor is in or on its way to (GDD A.13.1, `Visits.busyRooms`).
+	return Rooms.keepsBusy(PlotService.world(data), after, HotelService.visitedRooms(player, busy))
 end
 
 -- ===== Pieces: the stairs and the desks =====
@@ -594,7 +603,8 @@ local function makeRoom(player: Player, floor: number, hx: number, hz: number, t
 	if not data or not p or (p.kind ~= "Room" and p.kind ~= "Amenity") then
 		return
 	end
-	if p.location ~= data.location then
+	-- A location-0 type is every location's (the activity rooms, GDD A.13.2), as `Rooms.typesFor` lists it.
+	if p.location ~= 0 and p.location ~= data.location then
 		refuse(player, "MakeRoom", "Location")
 		return
 	end
@@ -1288,6 +1298,7 @@ function BuildService.Start()
 					bonus = bars.sets ~= nil and table.find(bars.sets, setId) ~= nil,
 				})
 			end
+			local inUse, spotsOf = HotelService.spotsInUse(player, id)
 			table.insert(rooms, {
 				sets = sets,
 				id = tonumber(id),
@@ -1307,6 +1318,9 @@ function BuildService.Start()
 					local room = hotel and hotel.rooms[id]
 					return if room then room.state else ""
 				end)(),
+				-- An activity room's spots and how many visitors hold one (A.13.1, the room view's line).
+				spots = spotsOf,
+				spotsInUse = inUse,
 			})
 		end
 		local buildable, costs = {}, {}

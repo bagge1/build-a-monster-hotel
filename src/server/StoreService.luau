@@ -52,7 +52,7 @@ function StoreService.incomeRate(player: Player): number
 	local data = PlayerData.get(player)
 	local rate = 0
 	for _, g in GuestService.of(player) do
-		if g.state == "InRoom" then
+		if g.state == "InRoom" or g.state == "Visiting" then -- a visitor pays too (A.13.1)
 			rate += g.payRate
 		end
 	end

@@ -10,7 +10,11 @@
 	States (§13.2): Browsing (a bus guest walking the pavements, pausing at
 	each entrance) → ToHotel → Queued (at the desk) → ToRoom → InRoom (paying
 	per second into the till, with one request) → Leaving (walking back to a
-	bus stop) → Waiting (at the stop) → Boarding (onto the next bus). A guest
+	bus stop) → Waiting (at the stop) → Boarding (onto the next bus). While it
+	stays, an InRoom guest goes Visiting now and then (GDD A.13.1, `Visits`):
+	to an activity room's free spot, doing the action there, and back, still
+	paying; its room stays Occupied, and a request or a check-out waits until
+	it is back. A guest
 	that waits too long at the desk leaves unhappy; a guest no hotel takes
 	walks back to a stop too. **Every guest comes and goes by the Night Bus**
 	(his ruling, 2026-10-19: no walk-ins, nobody walks off the map's edge),
@@ -19,7 +23,8 @@
 	Published per guest: `Species`, `Mutation` (the look), `Size` (A.11.5), `State`, `Plot`, `Path`
 	(`Walk.encode`: points, and seconds standing at some), `T0` (server time
 	the path starts), `Speed`, `Wish` (a bus guest's wish list), `Request`,
-	`Happy`.
+	`Happy`; a visitor's `Pose` (its spot's, MODELS.md) and `Face` (the spot's
+	LookVector) while it goes to or is at its spot (A.13.1).
 
 	What other systems hook: `onCheckout(player, guest, satisfaction)` for
 	friendship (§4.6); `checkIn`, `clean`, `fulfil` and `pathToDoor` for staff;
@@ -52,8 +57,11 @@ local Mutations = require(ReplicatedStorage.Shared.Mutations)
 local PlayerData = require(ServerScriptService.Server.PlayerData)
 local PlotService = require(ServerScriptService.Server.PlotService)
 local HotelService = require(ServerScriptService.Server.HotelService)
+local ActivityKit = require(ServerScriptService.Server.ActivityKit)
 local Income = require(ServerScriptService.Server.Income)
 local DevGrant = require(ServerScriptService.Server.DevGrant)
+local StateService = require(ServerScriptService.Server.StateService)
+local Visits = require(ReplicatedStorage.Shared.Visits)
 
 local S = Constants.Stay
 
@@ -65,6 +73,7 @@ export type State =
 	| "Queued"
 	| "ToRoom"
 	| "InRoom"
+	| "Visiting"
 	| "Leaving"
 	| "Waiting"
 	| "Boarding"
@@ -109,6 +118,15 @@ export type Guest = {
 	wish: string?,
 	config: Configuration,
 	onDecide: ((Guest) -> ())?, -- a bus guest at the end of its browse
+	-- Visits (GDD A.13.1): when the next is due, the last decision, the preferences met this
+	-- stay (its room's tags and its visits'), whether a visit's satisfaction was given, and,
+	-- on a visit, when its action ends and the square it walked to (its way back starts there).
+	visitDue: number?,
+	visitDecided: number?,
+	met: { [string]: boolean },
+	visitRewarded: boolean,
+	visitUntil: number?,
+	visitSquare: Rooms.Spot?,
 }
 
 local guests: { [number]: Guest } = {}
@@ -211,12 +229,38 @@ local function newGuest(speciesId: string, mutation: string?, source: string, si
 		wish = nil,
 		config = config,
 		onDecide = nil,
+		visitDue = nil,
+		visitDecided = nil,
+		met = {},
+		visitRewarded = false,
+		visitUntil = nil,
+		visitSquare = nil,
 	}
 	guests[id] = g
 	return g
 end
 
+--[[ Ends a guest's visit, wherever it is (GDD A.13.1): its spot freed and its
+	visit forgotten, so a guest sent home, taken or gone never holds a spot. ]]
+local function endVisit(g: Guest)
+	local hotel = g.owner and HotelService.get(g.owner)
+	if not hotel then
+		return
+	end
+	local key = tostring(g.id)
+	local had = hotel.visitors[key] ~= nil
+	hotel.visitors[key] = nil
+	if Visits.free(hotel.taken, key) or had then
+		StateService.mark(hotel.player) -- the room view's "n/m spots in use"
+	end
+	g.visitUntil = nil
+	g.visitSquare = nil
+	g.config:SetAttribute("Pose", nil)
+	g.config:SetAttribute("Face", nil)
+end
+
 local function destroy(g: Guest)
+	endVisit(g)
 	guests[g.id] = nil
 	g.config:Destroy()
 end
@@ -463,6 +507,7 @@ end
 -- ===== Lifecycle =====
 
 local function sendHome(g: Guest, plot: PlotService.Plot?)
+	endVisit(g)
 	g.state = "Leaving"
 	g.room = nil
 	g.requestUntil = nil
@@ -681,7 +726,16 @@ function GuestService.checkIn(player: Player, byStaff: boolean?, deskId: string?
 	HotelService.recordCheckIn(player, g.waited)
 	local sp = assert(Species.get(g.species))
 	g.tier = 1
-	g.prefsMatched = Stay.matched(sp.prefs, HotelService.roomTags(data, g.room))
+	-- Its room's own tags (A.12); the rest of its preferences are met by visits (A.13.1).
+	local tags = HotelService.roomTags(data, g.room)
+	g.prefsMatched = Stay.matched(sp.prefs, tags)
+	g.met = {}
+	for _, pref in sp.prefs do
+		if tags[pref] then
+			g.met[pref] = true
+		end
+	end
+	g.visitRewarded = false
 	g.amenities = HotelService.amenitiesOn(data, rec.floor)
 	-- The room's three bars' bonuses (A.12) replace the tiers' pay.
 	local _, bonus = HotelService.roomBars(data, g.room)
@@ -731,6 +785,7 @@ function GuestService.checkIn(player: Player, byStaff: boolean?, deskId: string?
 end
 
 local function checkout(g: Guest)
+	endVisit(g)
 	local player = g.owner
 	if not player or not g.room then
 		destroy(g)
@@ -902,7 +957,11 @@ end
 function GuestService.remove(g: Guest)
 	local player = g.owner
 	if player and g.room then
-		HotelService.setRoom(player, g.room, if g.state == "InRoom" then "Dirty" else "Vacant")
+		HotelService.setRoom(
+			player,
+			g.room,
+			if g.state == "InRoom" or g.state == "Visiting" then "Dirty" else "Vacant"
+		)
 		if g.state == "Queued" or g.state == "ToHotel" then
 			leaveQueue(player, g)
 		end
@@ -910,8 +969,248 @@ function GuestService.remove(g: Guest)
 	destroy(g)
 end
 
+-- ===== Visits (GDD A.13.1) =====
+
+-- A world square's (sx, sz) of a point on a plot (Rooms' walking grid, as `squareWorld` the other way).
+local function squareOf(plot: PlotService.Plot, at: Vector3): (number, number)
+	local p = plot.frame:PointToObjectSpace(at)
+	return math.floor(p.X / SQUARE), math.floor(p.Z / SQUARE)
+end
+
+--[[ The square a visitor walks to for a spot (A.13.1): the spot's own square
+	when a guest can stand on it (a `Stand` square in front of a counter),
+	else a square beside it it can (a seat, a pool or a bench is furniture's
+	body: the visitor steps onto the spot from there). ]]
+local function spotSquare(world: Rooms.World, floor: number, sx: number, sz: number): Rooms.Spot?
+	if Rooms.walkable(world, floor, sx, sz) then
+		return { floor = floor, x = sx, z = sz }
+	end
+	for r = 1, 2 do
+		for dz = -r, r do
+			for dx = -r, r do
+				if
+					math.max(math.abs(dx), math.abs(dz)) == r
+					and Rooms.walkable(world, floor, sx + dx, sz + dz)
+				then
+					return { floor = floor, x = sx + dx, z = sz + dz }
+				end
+			end
+		end
+	end
+	return nil
+end
+
+-- The points of `Rooms.route`'s legs on a plot: each run's squares, each stair's glide; nil when a stair is missing.
+local function legPoints(plot: PlotService.Plot, legs: { Grid.Leg }, out: { Vector3 }): boolean
+	for _, leg in legs do
+		if leg.stair then
+			local glide = PlotService.stairPath(plot, (leg.stair :: Grid.Placed).id :: string)
+			if #glide == 0 then
+				return false
+			end
+			for i = 1, #glide do
+				table.insert(out, if leg.up then glide[i] else glide[#glide + 1 - i])
+			end
+		else
+			for _, c in leg.cells :: { Grid.Cell } do
+				table.insert(out, squareWorld(plot, leg.floor :: number, c))
+			end
+		end
+	end
+	return true
+end
+
+-- Whether a Hunter Night is on (HunterService publishes its end on workspace): visitors are called back (A.13.1).
+local function hunterNight(): boolean
+	local untilAt = workspace:GetAttribute("HunterNightUntil")
+	return type(untilAt) == "number" and workspace:GetServerTimeNow() < untilAt
+end
+
+--[[ A visitor turns back to its room (A.13.1): its action done, its target no
+	longer ready, or a Hunter Night calling it back. Its spot is freed now (a
+	visitor walking back no longer keeps the room busy), and it walks from where
+	it is by `Rooms.route` to its room's key spot and onto its `Bed`; with no
+	way (the hotel changed under it), straight to the `Bed`. ]]
+local function visitBack(g: Guest)
+	local player = g.owner
+	local hotel = player and HotelService.get(player)
+	local key = tostring(g.id)
+	local v = hotel and hotel.visitors[key]
+	if not player or not hotel or not v or not g.room then
+		return
+	end
+	if Visits.free(hotel.taken, key) then
+		StateService.mark(player)
+	end
+	v.phase = "Back"
+	g.visitUntil = nil
+	g.config:SetAttribute("Pose", nil)
+	g.config:SetAttribute("Face", nil)
+	local plot = PlotService.of(player)
+	local data = PlayerData.get(player)
+	local path: { Vector3 } = { here(g) }
+	if plot and data then
+		local world = PlotService.world(data)
+		local home = Rooms.keySpot(world, g.room)
+		local legs = if home and g.visitSquare then Rooms.route(world, g.visitSquare, home) else nil
+		local ok = legs ~= nil and legPoints(plot, legs :: { Grid.Leg }, path)
+		if not ok then
+			path = { here(g) }
+		end
+		local bed = PlotService.piecePoint(plot, g.room, "Bed")
+		if bed then
+			table.insert(path, bed.Position)
+		end
+	end
+	walk(g, path)
+	publish(g)
+end
+
+--[[ An InRoom guest's visit decision (A.13.1), from the guests' one tick (no
+	loop of its own): when its visit is due and the last decision is the gap
+	ago (`Visits.mayDecide`), with no open request and no Hunter Night, it
+	chooses a ready activity room meeting one of its preferences with a free
+	spot (`Visits.decide`, which keeps the hotel's walkers under the cap), takes
+	the spot and walks there by `Rooms.route`. A guest whose room has no route
+	to the spot frees it and tries again after the gap. ]]
+local function tryVisit(g: Guest, now: number)
+	local player = g.owner
+	if not player or not g.room or g.requestUntil or not g.visitDue then
+		return
+	end
+	if not Visits.mayDecide(now, g.visitDue, g.visitDecided) or hunterNight() then
+		return
+	end
+	local hotel = HotelService.get(player)
+	local plot = PlotService.of(player)
+	local data = PlayerData.get(player)
+	local sp = Species.get(g.species)
+	if not hotel or not plot or not data or not sp then
+		return
+	end
+	local choice, decided = Visits.decide({
+		now = now,
+		dueAt = g.visitDue,
+		lastDecision = g.visitDecided,
+		prefs = sp.prefs,
+		met = g.met,
+		rooms = HotelService.activityRooms(player),
+		taken = hotel.taken,
+		visitors = hotel.visitors,
+		roll = rng:NextNumber(),
+	})
+	if decided then
+		g.visitDecided = now
+	end
+	if not choice then
+		return
+	end
+	local key = tostring(g.id)
+	local refs = HotelService.spotRefs(player)[choice.room] or {}
+	local ref = refs[choice.spot]
+	local point = ref and HotelService.spotPoint(player, ref)
+	local rec = data.rooms[choice.room]
+	if
+		not point
+		or not rec
+		or not Visits.take(hotel.taken, choice.room, choice.spot, #refs, key)
+	then
+		return
+	end
+	local world = PlotService.world(data)
+	local from = Rooms.keySpot(world, g.room)
+	local sx, sz = squareOf(plot, point.WorldPosition)
+	local target = spotSquare(world, rec.floor, sx, sz)
+	local legs = if from and target then Rooms.route(world, from, target) else nil
+	local path: { Vector3 } = { here(g) }
+	if not legs or not legPoints(plot, legs, path) then
+		Visits.free(hotel.taken, key)
+		return
+	end
+	table.insert(path, point.WorldPosition)
+	hotel.visitors[key] = { room = choice.room, spot = choice.spot, phase = "Going" }
+	g.visitSquare = target
+	g.state = "Visiting"
+	g.config:SetAttribute("Pose", ActivityKit.pose(point))
+	g.config:SetAttribute("Face", point.WorldCFrame.LookVector)
+	walk(g, path)
+	publish(g)
+	StateService.mark(player)
+end
+
+--[[ A visitor's tick (A.13.1): at its spot it does the action for its
+	duration (`Visits.duration`) and is given what the visit gives (the
+	preferences it meets counted met for the stay, +satisfaction once a stay,
+	`Visits.gives`); then it walks back; back in its room it is InRoom again
+	and its next visit is due (`Visits.nextAt`). A Hunter Night calls it back. ]]
+local function visitTick(g: Guest, now: number)
+	local player = g.owner
+	local hotel = player and HotelService.get(player)
+	local v = hotel and hotel.visitors[tostring(g.id)]
+	if not player or not hotel or not v then
+		-- Its visit was lost (the hotel was put away): it is in its room again.
+		g.state = "InRoom"
+		g.visitDue = Visits.nextAt(now, rng:NextNumber())
+		publish(g)
+		return
+	end
+	local calledBack = v.phase ~= "Back" and hunterNight()
+	local done = v.phase == "There" and now >= (g.visitUntil or now)
+	if calledBack or done then
+		visitBack(g)
+	elseif v.phase == "Going" and now >= g.arriveAt then
+		v.phase = "There"
+		g.visitUntil = now + Visits.duration(rng:NextNumber())
+		local data = PlayerData.get(player)
+		local rec = data and data.rooms[v.room]
+		local sp = Species.get(g.species)
+		if rec and sp then
+			local hits, bonus = Visits.gives(sp.prefs, rec.type, g.visitRewarded)
+			for _, h in hits do
+				if not g.met[h] then
+					g.met[h] = true
+					g.prefsMatched += 1
+				end
+			end
+			if bonus > 0 then
+				g.satBonus += bonus
+				g.visitRewarded = true
+			end
+		end
+	elseif v.phase == "Back" and now >= g.arriveAt then
+		hotel.visitors[tostring(g.id)] = nil
+		g.visitSquare = nil
+		g.state = "InRoom"
+		g.visitDue = Visits.nextAt(now, rng:NextNumber())
+		publish(g)
+	end
+end
+
+-- Visitors whose target stopped being ready walk back to their rooms (A.13.1, `Visits.stranded`).
+local function strandedTick()
+	for player, hotel in HotelService.all() do
+		if next(hotel.visitors) ~= nil then
+			local ready = {}
+			for _, v in hotel.visitors do
+				ready[v.room] = HotelService.ready(player, v.room)
+			end
+			for _, key in Visits.stranded(hotel.visitors, ready) do
+				local g = guests[tonumber(key) or 0]
+				if g and g.state == "Visiting" then
+					visitBack(g)
+				else
+					-- A visit with no guest behind it: forget it, freeing its spot.
+					hotel.visitors[key] = nil
+					Visits.free(hotel.taken, key)
+				end
+			end
+		end
+	end
+end
+
 local function tick()
 	local now = os.clock()
+	strandedTick()
 	for _, g in guests do
 		if g.state == "Browsing" then
 			if now >= g.arriveAt then
@@ -960,6 +1259,7 @@ local function tick()
 				local stay = Constants.Rarity[sp.rarity].stay * g.stayMult
 				g.stayEnd = now + stay
 				g.requestAt = now + stay * (0.25 + 0.5 * rng:NextNumber())
+				g.visitDue = Visits.nextAt(now, rng:NextNumber()) -- A.13.1: its first visit
 				publish(g)
 			end
 		elseif g.state == "InRoom" then
@@ -982,7 +1282,11 @@ local function tick()
 			end
 			if g.stayEnd and now >= g.stayEnd then
 				checkout(g)
+			elseif g.state == "InRoom" then
+				tryVisit(g, now)
 			end
+		elseif g.state == "Visiting" then
+			visitTick(g, now)
 		elseif g.state == "Leaving" then
 			if now >= g.arriveAt then
 				-- At the stop: nobody's guest any more, waiting for the next bus.
@@ -1002,7 +1306,8 @@ end
 local function payTick()
 	local owed: { [Player]: number } = {}
 	for _, g in guests do
-		if g.state == "InRoom" and g.owner then
+		-- A visitor still pays: its room stays Occupied while it is out (A.13.1).
+		if (g.state == "InRoom" or g.state == "Visiting") and g.owner then
 			owed[g.owner] = (owed[g.owner] or 0) + g.payRate
 		end
 	end
@@ -1065,6 +1370,19 @@ function GuestService.Start()
 		end
 		return table.concat(lines, " | ")
 	end)
+	DevGrant.register("visitnow", function()
+		-- Studio only: every guest in its room may decide on a visit now (A.13.1). Not
+		-- `visit`: the showcase's command (SocialService) has that name and won.
+		local now, n = os.clock(), 0
+		for _, g in guests do
+			if g.state == "InRoom" then
+				g.visitDue = now
+				g.visitDecided = nil
+				n += 1
+			end
+		end
+		return `{n} guests may visit`
+	end)
 	DevGrant.register("request", function()
 		-- Opens a request in every occupied room now.
 		local n = 0
@@ -1080,8 +1398,9 @@ function GuestService.Start()
 		-- Ends every stay and walk now (to see a check-out without waiting).
 		local now = os.clock()
 		for _, g in guests do
-			if g.state == "InRoom" then
-				g.stayEnd = now
+			if g.state == "InRoom" or g.state == "Visiting" then
+				g.stayEnd = now -- a visitor checks out once it is back (A.13.1)
+				g.arriveAt = math.min(g.arriveAt, now)
 			elseif g.state ~= "Queued" then
 				g.arriveAt = math.min(g.arriveAt, now)
 			end

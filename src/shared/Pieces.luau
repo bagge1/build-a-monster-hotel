@@ -57,6 +57,10 @@ export type Decor = {
 	-- names the room types and amenities it is a key piece of.
 	furniture: boolean?,
 	keyFor: { string }?,
+	-- Furniture sets (GDD A.13.3): the `Pieces.FurnitureSets` this piece belongs to, so
+	-- rooms that look alike are furnished alike; a piece serves every type its sets serve
+	-- (`Pieces.servesType`). Not `set`, which names a rare decor set (A.11.3).
+	sets: { string }?,
 	-- Rare decor (GDD A.11.3, MODELS.md "Rare decor sets and souvenirs"): `found`
 	-- pieces are never sold in the build shop, only placed once found (`Finds`);
 	-- `set` names a set of `Pieces.Sets`; `souvenir` the species a souvenir is of.
@@ -69,6 +73,8 @@ export type Decor = {
 }
 -- A rare decor set (A.11.3): its display name, its location, its pieces in the pity's order.
 export type DecorSet = { id: string, name: string, location: number, pieces: { string } }
+-- A furniture set (A.13.3): the room types its pieces serve.
+export type FurnitureSet = { id: string, name: string, serves: { string } }
 export type Finish = {
 	id: string,
 	name: string,
@@ -252,6 +258,136 @@ local pieces: { Piece } = {
 		colour = Color3.fromRGB(90, 50, 110),
 	},
 
+	--[[ Activity rooms of every location (GDD A.13.2, night draft 2026-10-26, his ask in
+		§18): rooms guests visit and do things in (A.13.1, `Visits`), so kind "Amenity" as
+		the amenities above, which become activity rooms too. Location 0: every location's,
+		as the shared furniture; a location's kit gives the look (MODELS.md). `w` × `d` is
+		the minimum size in cells (A.12; the full size is twice it). Tags marked new in
+		A.13.2 (billiards, film, drinks, dining, dance, swim, fitness, pampering, singing)
+		are no species' preference yet: who wants them is his (WAITING §2.57). PLACEHOLDER
+		every cost (Manor scale: about its key furniture's price, as the Snack Bar's and
+		the Music Room's) and every unlock. The Outdoor Pool waits for where it stands
+		(A.13.4, his), so it has no row yet. ]]
+	{
+		id = "GameRoom", -- his yes (§18 2026-10-26)
+		name = "Game Room",
+		kind = "Amenity",
+		w = 2,
+		d = 2,
+		cost = 800,
+		location = 0,
+		tags = { "fun" },
+		colour = Color3.fromRGB(70, 130, 90),
+	},
+	{
+		id = "BilliardHall",
+		name = "Billiard Hall",
+		kind = "Amenity",
+		w = 2,
+		d = 2,
+		cost = 1500,
+		location = 0,
+		unlock = { rating = 2 },
+		tags = { "fun", "billiards" },
+		colour = Color3.fromRGB(40, 100, 60),
+	},
+	{
+		id = "Bar",
+		name = "Bar",
+		kind = "Amenity",
+		w = 2,
+		d = 2,
+		cost = 1200,
+		location = 0,
+		unlock = { rooms = 3 },
+		tags = { "drinks", "music" },
+		colour = Color3.fromRGB(150, 70, 50),
+	},
+	{
+		id = "Restaurant",
+		name = "Restaurant",
+		kind = "Amenity",
+		w = 2,
+		d = 3,
+		cost = 2000,
+		location = 0,
+		unlock = { rating = 2 },
+		tags = { "dining", "music" },
+		colour = Color3.fromRGB(190, 120, 80),
+	},
+	{
+		id = "Gym",
+		name = "Gym",
+		kind = "Amenity",
+		w = 2,
+		d = 2,
+		cost = 2500,
+		location = 0,
+		unlock = { floor = 2 },
+		tags = { "fitness" },
+		colour = Color3.fromRGB(120, 130, 150),
+	},
+	{
+		id = "KaraokeLounge",
+		name = "Karaoke Lounge",
+		kind = "Amenity",
+		w = 2,
+		d = 2,
+		cost = 3000,
+		location = 0,
+		unlock = { rating = 2.5 },
+		tags = { "music", "singing" },
+		colour = Color3.fromRGB(180, 60, 140),
+	},
+	{
+		id = "Cinema",
+		name = "Cinema",
+		kind = "Amenity",
+		w = 2,
+		d = 3,
+		cost = 4000,
+		location = 0,
+		unlock = { rating = 2.5 },
+		tags = { "film" },
+		colour = Color3.fromRGB(60, 40, 70),
+	},
+	{
+		id = "DanceFloor",
+		name = "Dance Floor",
+		kind = "Amenity",
+		w = 2,
+		d = 3,
+		cost = 5000,
+		location = 0,
+		unlock = { rating = 3 },
+		tags = { "dance", "music" },
+		colour = Color3.fromRGB(200, 80, 200),
+	},
+	{
+		id = "IndoorPool",
+		name = "Indoor Pool",
+		kind = "Amenity",
+		w = 2,
+		d = 3,
+		cost = 12000,
+		location = 0,
+		unlock = { rating = 3 },
+		tags = { "swim", "damp" },
+		colour = Color3.fromRGB(70, 150, 200),
+	},
+	{
+		id = "Spa",
+		name = "Spa",
+		kind = "Amenity",
+		w = 2,
+		d = 2,
+		cost = 20000,
+		location = 0,
+		unlock = { rating = 3.5 },
+		tags = { "pampering", "steam" },
+		colour = Color3.fromRGB(170, 200, 190),
+	},
+
 	-- Location 2 rooms (night draft, Appendix A.6)
 	{
 		id = "IglooRoom",
@@ -340,6 +476,19 @@ local pieces: { Piece } = {
 		unlock = { rating = 3 },
 		tags = { "northern lights", "cold" },
 		colour = Color3.fromRGB(90, 220, 170),
+	},
+	-- Frostfang's own activity room (A.13.2; PLACEHOLDER cost on Frostfang's scale, and unlock).
+	{
+		id = "Sauna",
+		name = "Sauna",
+		kind = "Amenity",
+		w = 1,
+		d = 2,
+		cost = 30000,
+		location = 2,
+		unlock = { rating = 2 },
+		tags = { "steam", "pampering" },
+		colour = Color3.fromRGB(170, 120, 80),
 	},
 	-- Location 3 rooms, Bayou Spa (a draft for his picks, WAITING §2.36; ×20 Frostfang's, PLACEHOLDER)
 	{
@@ -1009,6 +1158,7 @@ local decor: { Decor } = {
 		colour = Color3.fromRGB(220, 120, 70),
 		furniture = true,
 		keyFor = { "MusicRoom" },
+		sets = { "Stage" },
 	},
 	{
 		id = "Gravestone",
@@ -1327,6 +1477,8 @@ local decor: { Decor } = {
 		height = 2.6,
 		colour = Color3.fromRGB(140, 100, 70),
 		furniture = true,
+		keyFor = { "Restaurant" },
+		sets = { "Dining" },
 	},
 	{
 		id = "BreakfastBuffet",
@@ -1341,6 +1493,7 @@ local decor: { Decor } = {
 		colour = Color3.fromRGB(200, 170, 120),
 		furniture = true,
 		keyFor = { "SnackBar", "CocoaLounge" },
+		sets = { "Dining" },
 	},
 	{
 		id = "BarStool",
@@ -1367,6 +1520,8 @@ local decor: { Decor } = {
 		height = 2.6,
 		colour = Color3.fromRGB(40, 110, 60),
 		furniture = true,
+		keyFor = { "GameRoom", "BilliardHall" },
+		sets = { "Games" },
 	},
 	{
 		id = "CardTable",
@@ -1380,6 +1535,7 @@ local decor: { Decor } = {
 		height = 2.6,
 		colour = Color3.fromRGB(60, 100, 70),
 		furniture = true,
+		sets = { "Games" },
 	},
 	{
 		id = "Bathtub",
@@ -1406,6 +1562,7 @@ local decor: { Decor } = {
 		height = 5.5,
 		colour = Color3.fromRGB(230, 200, 120),
 		furniture = true,
+		sets = { "Lounge" },
 	},
 	-- The lobby's furnishings and the rugs (§5.4), in every location's kit. PLACEHOLDER prices.
 	{
@@ -1546,6 +1703,7 @@ local decor: { Decor } = {
 		layer = "Floor",
 		height = 5.0,
 		colour = Color3.fromRGB(130, 40, 60),
+		sets = { "Lounge" },
 	},
 	{
 		id = "VelvetSofa",
@@ -1558,6 +1716,7 @@ local decor: { Decor } = {
 		layer = "Floor",
 		height = 3.9,
 		colour = Color3.fromRGB(110, 50, 120),
+		sets = { "Lounge" },
 	},
 	{
 		id = "Bookshelf",
@@ -1582,6 +1741,7 @@ local decor: { Decor } = {
 		layer = "Floor",
 		height = 4.0,
 		colour = Color3.fromRGB(110, 75, 50),
+		sets = { "Lounge" },
 	},
 	{
 		id = "GrandPiano",
@@ -1594,6 +1754,7 @@ local decor: { Decor } = {
 		layer = "Floor",
 		height = 5.1,
 		colour = Color3.fromRGB(35, 30, 40),
+		sets = { "Stage" },
 	},
 	--[[ More furniture and decor by purpose (night draft 2026-10-21, his ask: "flesh out with
 		more decorations and furniture for different purposes"), so a player can make a dining
@@ -1602,8 +1763,9 @@ local decor: { Decor } = {
 		Furniture is what a guest is walked to and uses (sits on, eats from, plays, washes at:
 		it has a `Use`); decor is what is looked at or sets the mood. Furniture is location 0
 		(any room, the Manor's model until a kit has its own, A.12); decor is the Manor's
-		(location 1), since location-0 decor is event decor (`decorHere`). No `keyFor`: a new
-		room type (a Game Room, a Dining Room) is August's call. ]]
+		(location 1), since location-0 decor is event decor (`decorHere`). No `keyFor` then: a
+		new room type was August's call; his yes and A.13 (2026-10-26) gave some of them keys
+		and sets (A.13.2, A.13.3). ]]
 	-- Dining
 	{
 		id = "DiningChair",
@@ -1617,6 +1779,7 @@ local decor: { Decor } = {
 		height = 4.4,
 		colour = Color3.fromRGB(110, 75, 55),
 		furniture = true,
+		sets = { "Dining" },
 	},
 	{
 		id = "SaladBar",
@@ -1630,6 +1793,9 @@ local decor: { Decor } = {
 		height = 4.2,
 		colour = Color3.fromRGB(120, 170, 90),
 		furniture = true,
+		-- His yes (§18 2026-10-26, A.13.2): key for the Snack Bar too.
+		keyFor = { "SnackBar" },
+		sets = { "Dining" },
 	},
 	{
 		id = "CoffeeUrn",
@@ -1656,6 +1822,9 @@ local decor: { Decor } = {
 		height = 3.6,
 		colour = Color3.fromRGB(220, 150, 170),
 		furniture = true,
+		-- His yes (§18 2026-10-26, A.13.2): key for the Snack Bar too.
+		keyFor = { "SnackBar" },
+		sets = { "Dining" },
 	},
 	-- Games
 	{
@@ -1670,6 +1839,7 @@ local decor: { Decor } = {
 		height = 5.8,
 		colour = Color3.fromRGB(60, 50, 45),
 		furniture = true,
+		sets = { "Games" },
 	},
 	{
 		id = "ArcadeCabinet",
@@ -1683,6 +1853,8 @@ local decor: { Decor } = {
 		height = 5.6,
 		colour = Color3.fromRGB(80, 60, 130),
 		furniture = true,
+		keyFor = { "GameRoom" },
+		sets = { "Games" },
 	},
 	-- His ask, 2026-10-22 ("automat, barbord osv"): three more to stand at, every location (PLACEHOLDER prices).
 	{
@@ -1710,6 +1882,7 @@ local decor: { Decor } = {
 		height = 3.8,
 		colour = Color3.fromRGB(80, 52, 38),
 		furniture = true,
+		sets = { "Dining" },
 	},
 	{
 		id = "PopcornCart",
@@ -1736,6 +1909,8 @@ local decor: { Decor } = {
 		height = 3.0,
 		colour = Color3.fromRGB(40, 90, 120),
 		furniture = true,
+		keyFor = { "GameRoom" },
+		sets = { "Games" },
 	},
 	{
 		id = "BoardGameShelf",
@@ -1817,6 +1992,8 @@ local decor: { Decor } = {
 		height = 3.6,
 		colour = Color3.fromRGB(60, 62, 70),
 		furniture = true,
+		-- His yes (§18 2026-10-26, A.13.2): key for the Graveyard Garden.
+		keyFor = { "GraveyardGarden" },
 	},
 	-- The Manor's decor for those rooms
 	{
@@ -1878,6 +2055,7 @@ local decor: { Decor } = {
 		layer = "Wall",
 		height = 4.4,
 		colour = Color3.fromRGB(200, 200, 210),
+		sets = { "Poolside" },
 	},
 	{
 		id = "Fountain",
@@ -1890,6 +2068,9 @@ local decor: { Decor } = {
 		layer = "Floor",
 		height = 4.8,
 		colour = Color3.fromRGB(130, 125, 140),
+		-- His yes (§18 2026-10-26, A.13.2): key for the Graveyard Garden, so furniture now.
+		furniture = true,
+		keyFor = { "GraveyardGarden" },
 	},
 	{
 		id = "Candelabra",
@@ -1915,6 +2096,422 @@ local decor: { Decor } = {
 		layer = "Floor",
 		height = 3.8,
 		colour = Color3.fromRGB(110, 60, 140),
+		furniture = true,
+	},
+	--[[ Activity furniture (GDD A.13.2, A.13.3, night draft 2026-10-26): the key and other
+		furniture of the activity rooms, where visitors take a spot (MODELS.md "Activity
+		furniture: visitors' spots", `Use_<n>`). `w` × `d` squares as the contract implies (a
+		pool 3 × 2, a row of seats 3 wide, a bench lain on 2 long for a 5-stud person). Pieces
+		A.13 names that exist are reused above with their `keyFor` and `sets` extended; a bar
+		stool and a chair are one model each (BarStool, DiningChair). A Rug-layer key (the
+		Light-Up Floor, the Mat) is stood on, not walked round. PLACEHOLDER every cost (Manor
+		scale) and tag; the new tags wait for his species (WAITING §2.57). ]]
+	-- Game Room, Billiard Hall
+	{
+		id = "Scoreboard",
+		name = "Scoreboard",
+		tags = { "fun" },
+		cost = 200,
+		location = 0,
+		w = 2,
+		d = 1,
+		layer = "Wall",
+		height = 6.0,
+		colour = Color3.fromRGB(40, 45, 50),
+		furniture = true,
+	},
+	{
+		id = "CueRack",
+		name = "Cue Rack",
+		tags = { "billiards" },
+		cost = 120,
+		location = 0,
+		w = 1,
+		d = 1,
+		layer = "Wall",
+		height = 6.0,
+		colour = Color3.fromRGB(110, 75, 50),
+		furniture = true,
+	},
+	{
+		id = "WallLamp",
+		name = "Wall Lamp",
+		tags = {},
+		cost = 80,
+		location = 0,
+		w = 1,
+		d = 1,
+		layer = "Wall",
+		height = 6.5,
+		colour = Color3.fromRGB(230, 200, 120),
+		furniture = true,
+	},
+	-- Cinema (sizes until the Cinema set's models land)
+	{
+		id = "FilmScreen",
+		name = "Film Screen",
+		tags = { "film" },
+		cost = 4000,
+		location = 0,
+		w = 3,
+		d = 1,
+		-- As its model (claude/models-cinema): it stands against a wall, and has no `Use`: it is watched, never used.
+		layer = "Wall",
+		height = 6.95,
+		colour = Color3.fromRGB(230, 230, 235),
+		furniture = true,
+		keyFor = { "Cinema" },
+	},
+	{
+		id = "CinemaSeat",
+		name = "Cinema Seats",
+		tags = {},
+		cost = 150,
+		location = 0,
+		w = 3,
+		d = 1,
+		layer = "Floor",
+		height = 4.05, -- as its model (claude/models-cinema)
+		colour = Color3.fromRGB(150, 30, 40),
+		furniture = true,
+	},
+	{
+		id = "Projector",
+		name = "Projector",
+		tags = { "film" },
+		cost = 300,
+		location = 0,
+		w = 1,
+		d = 1,
+		layer = "Floor",
+		height = 4.5,
+		colour = Color3.fromRGB(60, 60, 70),
+		furniture = true,
+	},
+	-- Bar (the sizes of blender's Bar models, branch claude/models-bar)
+	{
+		id = "BarCounter",
+		name = "Bar Counter",
+		tags = { "drinks" },
+		cost = 1200,
+		location = 0,
+		w = 3,
+		d = 1,
+		layer = "Floor",
+		height = 6.79,
+		colour = Color3.fromRGB(120, 60, 40),
+		furniture = true,
+		keyFor = { "Bar" },
+	},
+	{
+		id = "SmallStage",
+		name = "Small Stage",
+		tags = { "music" },
+		cost = 600,
+		location = 0,
+		w = 2,
+		d = 2,
+		layer = "Floor",
+		height = 6.95,
+		colour = Color3.fromRGB(90, 50, 60),
+		furniture = true,
+		sets = { "Stage" },
+	},
+	-- Dance Floor, Karaoke Lounge (the Stage set's other pieces)
+	{
+		id = "LightFloor",
+		name = "Light-Up Floor",
+		tags = { "dance" },
+		cost = 5000,
+		location = 0,
+		w = 2,
+		d = 2,
+		layer = "Rug",
+		height = 0.15,
+		colour = Color3.fromRGB(220, 90, 220),
+		furniture = true,
+		keyFor = { "DanceFloor" },
+	},
+	{
+		id = "Speaker",
+		name = "Speaker",
+		tags = { "music" },
+		cost = 250,
+		location = 0,
+		w = 1,
+		d = 1,
+		layer = "Floor",
+		height = 5.0,
+		colour = Color3.fromRGB(35, 35, 40),
+		furniture = true,
+		sets = { "Stage" },
+	},
+	{
+		id = "Microphone",
+		name = "Microphone",
+		tags = { "music" },
+		cost = 80,
+		location = 0,
+		w = 1,
+		d = 1,
+		layer = "Floor",
+		height = 5.0,
+		colour = Color3.fromRGB(150, 150, 160),
+		furniture = true,
+		sets = { "Stage" },
+	},
+	{
+		id = "DiscoBall",
+		name = "Disco Ball",
+		tags = { "dance" },
+		cost = 400,
+		location = 0,
+		w = 1,
+		d = 1,
+		layer = "Floor",
+		height = 7.0,
+		colour = Color3.fromRGB(210, 210, 230),
+		furniture = true,
+	},
+	{
+		id = "KaraokeStage",
+		name = "Karaoke Stage",
+		tags = { "singing", "music" },
+		cost = 1500,
+		location = 0,
+		w = 2,
+		d = 2,
+		layer = "Floor",
+		height = 7.0,
+		colour = Color3.fromRGB(170, 50, 130),
+		furniture = true,
+		keyFor = { "KaraokeLounge" },
+	},
+	-- Indoor Pool (the Poolside set)
+	{
+		id = "Pool",
+		name = "Pool",
+		tags = { "swim", "damp" },
+		cost = 6000,
+		location = 0,
+		w = 3,
+		d = 2,
+		layer = "Floor",
+		height = 1.5,
+		colour = Color3.fromRGB(70, 150, 200),
+		furniture = true,
+		keyFor = { "IndoorPool" },
+	},
+	{
+		id = "Lounger",
+		name = "Lounger",
+		tags = {},
+		cost = 150,
+		location = 0,
+		w = 1,
+		d = 2,
+		layer = "Floor",
+		height = 2.0,
+		colour = Color3.fromRGB(230, 230, 220),
+		furniture = true,
+		sets = { "Poolside" },
+	},
+	{
+		id = "Parasol",
+		name = "Parasol",
+		tags = {},
+		cost = 120,
+		location = 0,
+		w = 1,
+		d = 1,
+		layer = "Floor",
+		height = 7.0,
+		colour = Color3.fromRGB(220, 80, 70),
+		furniture = true,
+		sets = { "Poolside" },
+	},
+	{
+		id = "PoolLadder",
+		name = "Pool Ladder",
+		tags = { "swim" },
+		cost = 100,
+		location = 0,
+		w = 1,
+		d = 1,
+		layer = "Floor",
+		height = 3.0,
+		colour = Color3.fromRGB(200, 200, 210),
+		furniture = true,
+		sets = { "Poolside" },
+	},
+	{
+		id = "DivingBoard",
+		name = "Diving Board",
+		tags = { "swim" },
+		cost = 400,
+		location = 0,
+		w = 1,
+		d = 2,
+		layer = "Floor",
+		height = 3.0,
+		colour = Color3.fromRGB(230, 230, 230),
+		furniture = true,
+	},
+	-- Gym (the Fitness set)
+	{
+		id = "WeightBench",
+		name = "Weight Bench",
+		tags = { "fitness" },
+		cost = 800,
+		location = 0,
+		w = 1,
+		d = 2,
+		layer = "Floor",
+		height = 2.5,
+		colour = Color3.fromRGB(50, 50, 60),
+		furniture = true,
+		keyFor = { "Gym" },
+		sets = { "Fitness" },
+	},
+	{
+		id = "Treadmill",
+		name = "Treadmill",
+		tags = { "fitness" },
+		cost = 1200,
+		location = 0,
+		w = 1,
+		d = 2,
+		layer = "Floor",
+		height = 4.5,
+		colour = Color3.fromRGB(60, 60, 70),
+		furniture = true,
+		keyFor = { "Gym" },
+		sets = { "Fitness" },
+	},
+	{
+		id = "PunchingBag",
+		name = "Punching Bag",
+		tags = { "fitness" },
+		cost = 600,
+		location = 0,
+		w = 1,
+		d = 1,
+		layer = "Floor",
+		height = 6.5,
+		colour = Color3.fromRGB(150, 40, 40),
+		furniture = true,
+		keyFor = { "Gym" },
+		sets = { "Fitness" },
+	},
+	{
+		id = "DumbbellRack",
+		name = "Dumbbell Rack",
+		tags = { "fitness" },
+		cost = 300,
+		location = 0,
+		w = 2,
+		d = 1,
+		layer = "Floor",
+		height = 3.0,
+		colour = Color3.fromRGB(70, 70, 80),
+		furniture = true,
+		sets = { "Fitness" },
+	},
+	{
+		id = "ExerciseMat",
+		name = "Mat",
+		tags = { "fitness" },
+		cost = 60,
+		location = 0,
+		w = 1,
+		d = 2,
+		layer = "Rug",
+		height = 0.1,
+		colour = Color3.fromRGB(60, 110, 160),
+		furniture = true,
+		sets = { "Fitness" },
+	},
+	{
+		id = "WallMirror",
+		name = "Wall Mirror",
+		tags = {},
+		cost = 150,
+		location = 0,
+		w = 2,
+		d = 1,
+		layer = "Wall",
+		height = 6.5,
+		colour = Color3.fromRGB(200, 215, 225),
+		furniture = true,
+	},
+	-- Spa, and the Sauna's stone
+	{
+		id = "HotTub",
+		name = "Hot Tub",
+		tags = { "pampering", "steam" },
+		cost = 8000,
+		location = 0,
+		w = 2,
+		d = 2,
+		layer = "Floor",
+		height = 2.5,
+		colour = Color3.fromRGB(120, 170, 190),
+		furniture = true,
+		keyFor = { "Spa" },
+	},
+	{
+		id = "MassageTable",
+		name = "Massage Table",
+		tags = { "pampering" },
+		cost = 5000,
+		location = 0,
+		w = 1,
+		d = 2,
+		layer = "Floor",
+		height = 2.8,
+		colour = Color3.fromRGB(230, 220, 200),
+		furniture = true,
+		keyFor = { "Spa" },
+	},
+	{
+		id = "SteamStone",
+		name = "Steam Stones",
+		tags = { "steam" },
+		cost = 300,
+		location = 0,
+		w = 1,
+		d = 1,
+		layer = "Floor",
+		height = 2.0,
+		colour = Color3.fromRGB(90, 90, 95),
+		furniture = true,
+	},
+	-- Frostfang's Sauna (its scale)
+	{
+		id = "SaunaBench",
+		name = "Sauna Bench",
+		tags = { "steam" },
+		cost = 15000,
+		location = 2,
+		w = 2,
+		d = 1,
+		layer = "Floor",
+		height = 3.0,
+		colour = Color3.fromRGB(180, 130, 80),
+		furniture = true,
+		keyFor = { "Sauna" },
+	},
+	{
+		id = "WaterBucket",
+		name = "Water Bucket",
+		tags = { "steam" },
+		cost = 600,
+		location = 2,
+		w = 1,
+		d = 1,
+		layer = "Floor",
+		height = 1.5,
+		colour = Color3.fromRGB(150, 110, 70),
 		furniture = true,
 	},
 	--[[ Rare decor sets (GDD A.11.3, MODELS.md "Rare decor sets and souvenirs"):
@@ -2216,6 +2813,50 @@ Pieces.DecorList = decor
 Pieces.DecorById = {} :: { [string]: Decor }
 for _, d in decor do
 	Pieces.DecorById[d.id] = d
+end
+
+--[[ Furniture sets (GDD A.13.3): so rooms that look alike can be furnished
+	alike, a piece in a set counts in every type the set serves. The pieces
+	name their sets (`Decor.sets`); `serves` lists the room types. The
+	Outdoor Pool, in A.13.3's Poolside, has no row yet (A.13.4). ]]
+local furnitureSets: { FurnitureSet } = {
+	{
+		id = "Lounge",
+		name = "Lounge",
+		serves = { "Bar", "KaraokeLounge", "QuietLibrary", "Spa", "Cinema" },
+	},
+	{ id = "Dining", name = "Dining", serves = { "Restaurant", "SnackBar", "Bar" } },
+	{
+		id = "Stage",
+		name = "Stage",
+		serves = { "Bar", "Restaurant", "DanceFloor", "KaraokeLounge", "MusicRoom" },
+	},
+	{ id = "Poolside", name = "Poolside", serves = { "IndoorPool", "Spa" } },
+	{ id = "Games", name = "Games", serves = { "GameRoom", "BilliardHall" } },
+	{ id = "Fitness", name = "Fitness", serves = { "Gym" } },
+}
+Pieces.FurnitureSets = furnitureSets
+Pieces.FurnitureSetById = {} :: { [string]: FurnitureSet }
+for _, s in furnitureSets do
+	Pieces.FurnitureSetById[s.id] = s
+end
+
+--[[ Whether furniture or decor `d` serves room type `typeId` (A.13.3): it is
+	a key piece of the type, or one of its sets serves the type. A piece in
+	no set and key for nothing serves no type by name; whether it still
+	counts in a room's Furniture bar (today every piece counts in every room,
+	A.12) is the bar's rule, not this. ]]
+function Pieces.servesType(d: Decor, typeId: string): boolean
+	if d.keyFor and table.find(d.keyFor, typeId) then
+		return true
+	end
+	for _, setId in d.sets or {} do
+		local s = Pieces.FurnitureSetById[setId]
+		if s and table.find(s.serves, typeId) then
+			return true
+		end
+	end
+	return false
 end
 
 --[[ Floor finishes (§5.4, MODELS.md "Floor finishes"): a material and a colour

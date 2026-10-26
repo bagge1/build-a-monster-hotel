@@ -26,8 +26,10 @@ local Rooms = require(ReplicatedStorage.Shared.Rooms)
 local Species = require(ReplicatedStorage.Shared.Species)
 local Stay = require(ReplicatedStorage.Shared.Stay)
 local Format = require(ReplicatedStorage.Shared.Format)
+local Visits = require(ReplicatedStorage.Shared.Visits)
 local PlayerData = require(ServerScriptService.Server.PlayerData)
 local PlotService = require(ServerScriptService.Server.PlotService)
+local ActivityKit = require(ServerScriptService.Server.ActivityKit)
 
 local HotelService = {}
 
@@ -50,6 +52,9 @@ export type Hotel = {
 	requestsDone: number,
 	cleanTimes: { number }, -- seconds each recent cleaning's room stood dirty (§5.3)
 	staffBonus: { [string]: number }, -- set by the staff system: Entertainment count etc.
+	-- Visits (GDD A.13.1, `Visits`): the activity rooms' spots taken, and each visitor's visit by guest id.
+	taken: Visits.Taken,
+	visitors: { [string]: Visits.Visitor },
 }
 
 local hotels: { [Player]: Hotel } = {}
@@ -144,6 +149,12 @@ export type RoomInfo = { bars: Rooms.Bars, size: number, decor: { string }, item
 local infoCache: { [PlayerData.Data]: { [string]: RoomInfo } } = setmetatable({}, { __mode = "k" }) :: any
 -- `sync`'s readiness by profile, for what asks by profile (a room's tags, a floor's amenities).
 local readyByData: { [PlayerData.Data]: Rooms.Readiness } = setmetatable({}, { __mode = "k" }) :: any
+--[[ Each activity room's spots (GDD A.13.1), by player and room id, kept until
+	the hotel next changes (`sync`): a spot is a placed piece's decor id and the
+	index of its `Use_<n>` (`ActivityKit.spots`), found again on the piece's
+	model when a visitor sets out, so a rebuilt model is never held. ]]
+export type SpotRef = { decor: string, index: number }
+local spotCache: { [Player]: { [string]: { SpotRef } } } = {}
 
 -- Whether a room of this profile's played hotel is ready: as of the last `sync`, or worked out now.
 local function readyIn(data: PlayerData.Data, roomId: string): boolean
@@ -170,6 +181,7 @@ function HotelService.sync(player: Player)
 		return
 	end
 	infoCache[data] = nil
+	spotCache[player] = nil
 	local all = Rooms.readiness(world(data))
 	readinessCache[player] = all
 	readyByData[data] = all
@@ -253,30 +265,126 @@ function HotelService.roomInfo(data: PlayerData.Data, roomId: string): RoomInfo?
 	return cache[roomId]
 end
 
---[[ The tags a room has (§5.4, A.12): its furniture's and decor's, and every
-	ready amenity's on its floor (Appendix A.2). ]]
+--[[ The tags a room has (§5.4, A.12): its furniture's and decor's. A ready
+	amenity on its floor no longer lends it its tags (GDD A.13.1, "The floor rule
+	goes"): a guest meets a preference by visiting a room that has it
+	(GuestService's visits, `Visits`), which must be reachable, not merely on the
+	floor. ]]
 function HotelService.roomTags(data: PlayerData.Data, roomId: string): { [string]: boolean }
 	local rec = data.rooms[roomId]
 	if not rec then
 		return {}
 	end
 	local info = HotelService.roomInfo(data, roomId)
-	local tags = Furnish.tags(if info then info.items else {})
-	for id, other in data.rooms do
-		local p = Pieces.get(other.type)
-		if
-			p
-			and p.kind == "Amenity"
-			and other.floor == rec.floor
-			and p.tags
-			and readyIn(data, id)
-		then
-			for _, t in p.tags do
+	return Furnish.tags(if info then info.items else {})
+end
+
+--[[ The tags of the hotel's ready activity rooms (GDD A.13.1): what a guest
+	could meet by visiting. The bus's offer counts them (`vacantFor`), so a
+	hotel's amenities still draw the guests who want them now that they no
+	longer lend their tags to a floor. ]]
+function HotelService.visitTags(data: PlayerData.Data): { [string]: boolean }
+	local tags = {}
+	for id, rec in data.rooms do
+		local p = Pieces.get(rec.type)
+		if p and Visits.isActivity(rec.type) and readyIn(data, id) then
+			for _, t in p.tags or {} do
 				tags[t] = true
 			end
 		end
 	end
 	return tags
+end
+
+-- ===== Visits' rooms and spots (GDD A.13.1) =====
+
+--[[ Every activity room's spots, by room id, as of the last change: each piece
+	of furniture in the room (by decor id, so the order holds while nothing
+	moves) gives its `Use_1..n`, or a delivered model's one `Use` (`ActivityKit.spots`). ]]
+function HotelService.spotRefs(player: Player): { [string]: { SpotRef } }
+	local cached = spotCache[player]
+	if cached then
+		return cached
+	end
+	local out: { [string]: { SpotRef } } = {}
+	local data = PlayerData.get(player)
+	local plot = PlotService.of(player)
+	if not data or not plot then
+		return out
+	end
+	local w = world(data)
+	Rooms.withAreas(w, function()
+		for id, rec in data.rooms do
+			if Visits.isActivity(rec.type) then
+				local refs = {}
+				local furniture = Rooms.contents(w, id).furniture
+				table.sort(furniture, function(a, b)
+					local x, y = tonumber(a.id) or 0, tonumber(b.id) or 0
+					return if x ~= y then x < y else (a.id or "") < (b.id or "")
+				end)
+				for _, d in furniture do
+					local model = d.id and plot.decor[d.id]
+					if model then
+						for i in ActivityKit.spots(model) do
+							table.insert(refs, { decor = d.id :: string, index = i })
+						end
+					end
+				end
+				out[id] = refs
+			end
+		end
+	end)
+	spotCache[player] = out
+	return out
+end
+
+-- A spot's attachment on its piece's model now, or nil when the piece is gone.
+function HotelService.spotPoint(player: Player, ref: SpotRef): Attachment?
+	local plot = PlotService.of(player)
+	local model = plot and plot.decor[ref.decor]
+	return if model then ActivityKit.spots(model)[ref.index] else nil
+end
+
+--[[ The hotel's activity rooms as `Visits` sees them: ready, their spots
+	counted. `reachable` is `ready`: a ready room is reached from the entrance,
+	as the visitor's own ready room is, so a way between them exists; the
+	server's route to the spot chosen confirms it (GuestService). ]]
+function HotelService.activityRooms(player: Player): { Visits.RoomInfo }
+	local data = PlayerData.get(player)
+	local out: { Visits.RoomInfo } = {}
+	if not data then
+		return out
+	end
+	for id, refs in HotelService.spotRefs(player) do
+		local rec = data.rooms[id]
+		if rec then
+			local ok = HotelService.ready(player, id)
+			table.insert(
+				out,
+				{ id = id, type = rec.type, ready = ok, reachable = ok, spots = #refs }
+			)
+		end
+	end
+	return out
+end
+
+-- How many of an activity room's spots are in use and how many it has ("2/4 spots in use", A.13.1); nil for a bedroom.
+function HotelService.spotsInUse(player: Player, roomId: string): (number?, number?)
+	local hotel = hotels[player]
+	local refs = HotelService.spotRefs(player)[roomId]
+	if not hotel or not refs then
+		return nil, nil
+	end
+	return Visits.inUse(hotel.taken, roomId), #refs
+end
+
+-- The activity rooms visitors keep busy now (A.13.1 "Rules kept"), added to `into` when given.
+function HotelService.visitedRooms(
+	player: Player,
+	into: { [string]: boolean }?
+): { [string]: boolean }
+	local hotel = hotels[player]
+	return if hotel then Visits.busyRooms(hotel.visitors, into) else (into or {})
 end
 
 -- The ready amenities on a floor (A.12: built like rooms).
@@ -314,6 +422,7 @@ function HotelService.vacantFor(player: Player, speciesId: string): Offer?
 	end
 	local best: Offer? = nil
 	local amenities: { [number]: number } = {} -- per floor, worked out once
+	local visitTags = HotelService.visitTags(data)
 	for id, room in hotel.rooms do
 		local rec = data.rooms[id]
 		if
@@ -322,7 +431,12 @@ function HotelService.vacantFor(player: Player, speciesId: string): Offer?
 			and rec.type == sp.room
 			and HotelService.ready(player, id)
 		then
-			local matched = Stay.matched(sp.prefs, HotelService.roomTags(data, id))
+			-- Its own tags and what it could meet by a visit (A.13.1).
+			local tags = HotelService.roomTags(data, id)
+			for t in visitTags do
+				tags[t] = true
+			end
+			local matched = Stay.matched(sp.prefs, tags)
 			local amen = amenities[rec.floor] or HotelService.amenitiesOn(data, rec.floor)
 			amenities[rec.floor] = amen
 			if not best or matched > best.prefsMatched then
@@ -373,6 +487,8 @@ function HotelService.busy(player: Player, pieceId: string): boolean
 	local hotel = hotels[player]
 	local room = hotel and hotel.rooms[pieceId]
 	return room ~= nil and (room.state == "Reserved" or room.state == "Occupied")
+		-- An activity room with a visitor in it or on the way (A.13.1 "Rules kept").
+		or HotelService.visitedRooms(player)[pieceId] == true
 end
 
 -- Sets each room door's prompts and label from its state.
@@ -690,6 +806,8 @@ function HotelService.Start()
 			requestsDone = 0,
 			cleanTimes = {},
 			staffBonus = {},
+			taken = {},
+			visitors = {},
 		}
 		HotelService.sync(player)
 		HotelService.recompute(player)
@@ -699,6 +817,7 @@ function HotelService.Start()
 		away[player] = nil
 		readyCache[player] = nil
 		readinessCache[player] = nil
+		spotCache[player] = nil
 	end)
 	-- A full rebuild makes new prompts: put the room states back on them.
 	PlotService.onBuilt(function(plot)

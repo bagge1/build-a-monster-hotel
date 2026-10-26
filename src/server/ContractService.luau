@@ -249,7 +249,7 @@ end
 local function baseRate(player: Player): number
 	local rate = StoreService.incomeRate(player)
 	for _, g in GuestService.of(player) do
-		if g.vip and g.state == "InRoom" then
+		if g.vip and (g.state == "InRoom" or g.state == "Visiting") then -- a visitor pays too (A.13.1)
 			rate -= g.payRate
 		end
 	end

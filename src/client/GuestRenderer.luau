@@ -16,6 +16,12 @@
 	moves, a happy or sad walk out after its stay, CheckIn when the desk sends
 	it to its room, Sad while its request waits, Idle otherwise. A model with no
 	bones bobs whole, as before.
+
+	A visitor (state `Visiting`, GDD A.13.1) walks as any guest, with its
+	activity's icon over its head on the way; at its spot (the path's end) it
+	turns to the spot's `Face` and plays its `Pose`'s clip
+	(`MonsterMotion.poseClip`, PLACEHOLDER until the poses have clips of their
+	own), a swimmer sunk in the water.
 ]]
 
 local Players = game:GetService("Players")
@@ -26,6 +32,7 @@ local Net = require(ReplicatedStorage.Shared.Net)
 local Species = require(ReplicatedStorage.Shared.Species)
 local Walk = require(ReplicatedStorage.Shared.Walk)
 local Mutations = require(ReplicatedStorage.Shared.Mutations)
+local MonsterMotion = require(ReplicatedStorage.Shared.MonsterMotion)
 local MonsterKit = require(script.Parent.MonsterKit)
 local MonsterAnimator = require(script.Parent.MonsterAnimator)
 local Ui = require(script.Parent.Ui)
@@ -47,9 +54,19 @@ type Drawn = {
 	phase: number,
 	anim: MonsterAnimator.Animator?,
 	state: string?,
+	height: number, -- its species' height, for a swimmer's depth (A.13.1)
 }
 
 local drawn: { [Configuration]: Drawn } = {}
+
+-- A visitor's icon over its head, by its spot's pose (A.13.1 "Seen"). PLACEHOLDER icons, Claude's.
+local POSE_ICON: { [string]: string } = {
+	Dance = "💃",
+	Swim = "🏊",
+	Lift = "💪",
+	Play = "🎮",
+	Watch = "🎬",
+}
 local me = Players.LocalPlayer
 local folder: Instance
 
@@ -84,6 +101,8 @@ local function labelText(c: Configuration): (string, Color3)
 		return `💬 {c:GetAttribute("Request")}`, Ui.Colour.Pumpkin
 	elseif state == "Queued" then
 		return `{name}  ❗`, Ui.Colour.Teal
+	elseif state == "Visiting" and c:GetAttribute("Pose") then
+		return `{POSE_ICON[c:GetAttribute("Pose") :: string] or "✨"} {name}`, Ui.Colour.Text
 	end
 	return name, Ui.Colour.Muted
 end
@@ -162,6 +181,7 @@ local function spawnModel(d: Drawn)
 	d.model = model
 	local sp = Species.get(d.config:GetAttribute("Species") :: string)
 	d.anim = if sp then MonsterAnimator.attach(model, sp.look.shape, sp.look.height) else nil
+	d.height = if sp then sp.look.height else 5
 	d.label = makeLabel(model)
 	model.Parent = workspace:FindFirstChild("ClientGuests")
 		or (function()
@@ -189,6 +209,7 @@ local function add(c: Instance)
 		phase = math.random() * 10,
 		anim = nil,
 		state = c:GetAttribute("State") :: string?,
+		height = 5,
 	}
 	drawn[c] = d
 	readPath(d)
@@ -206,7 +227,7 @@ local function add(c: Instance)
 		end
 		d.state = state
 	end)
-	for _, a in { "State", "Request", "Wish", "Queue", "VipFor" } do
+	for _, a in { "State", "Request", "Wish", "Queue", "VipFor", "Pose" } do
 		c:GetAttributeChangedSignal(a):Connect(function()
 			refreshDecor(d)
 		end)
@@ -258,6 +279,18 @@ local function frame()
 		end
 		if d.model then
 			local pos, dir, moving = at(d, now)
+			-- A visitor at its spot (A.13.1): the spot's pose and the way it faces.
+			local c = d.config
+			local pose = if not moving and c:GetAttribute("State") == "Visiting"
+				then c:GetAttribute("Pose") :: string?
+				else nil
+			if pose then
+				local face = c:GetAttribute("Face")
+				if typeof(face) == "Vector3" then
+					dir = face
+				end
+				pos -= Vector3.new(0, MonsterMotion.poseDrop(pose, d.height), 0)
+			end
 			local anim = d.anim
 			local bob = if anim
 				then 0 -- its clips carry the bounce
@@ -265,13 +298,14 @@ local function frame()
 				else math.sin((now + d.phase) * 2) * 0.05
 			if anim then
 				anim.dist = entry.dist
-				local c = d.config
 				local mood = if c:GetAttribute("State") == "Leaving"
 						and c:GetAttribute("Happy") ~= nil
 					then (if c:GetAttribute("Happy") then "Happy" else "Sad")
 					else nil
 				if moving then
 					MonsterAnimator.set(anim, "Walk", d.speed, mood, if mood then 0.35 else 0)
+				elseif pose then
+					MonsterAnimator.set(anim, MonsterMotion.poseClip(pose))
 				elseif c:GetAttribute("Request") then
 					MonsterAnimator.set(anim, "Sad")
 				else

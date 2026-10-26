@@ -463,6 +463,17 @@ Constants.Finds = {
 	KeepThroughRebirth = true, -- PLACEHOLDER (decision 4a, his call with §6.4): found stays found; placed copies go with the hotel
 }
 
+-- GDD A.13.1: visits to activity rooms (`Shared/Visits`, GuestService). Every number is A.13's, PLACEHOLDER.
+Constants.Visits = {
+	EveryMin = 90, -- PLACEHOLDER: seconds of a stay between visits ("every 90–150 s") …
+	EveryMax = 150, -- … PLACEHOLDER
+	DecisionGap = 10, -- PLACEHOLDER: at most one visit decision a guest per this many seconds (the server's cost)
+	MaxWalking = 12, -- PLACEHOLDER: visitors walking (to a room or back) at once per hotel (the server's cost)
+	DoMin = 20, -- PLACEHOLDER: seconds a visit's action lasts ("20–40 s") …
+	DoMax = 40, -- … PLACEHOLDER
+	Satisfaction = 5, -- PLACEHOLDER: what a visit meeting a preference adds, once a stay
+}
+
 --[[ Expeditions (GDD A.11.2, its scrutinized recommendations; `Shared/Expeditions`).
 	Only `Pay` is his (§18, 2026-10-26); every other value is PLACEHOLDER.
 	`tools/balance_model.py --expeditions` reads these. ]]

@@ -27,6 +27,7 @@ local Locations = require(ReplicatedStorage.Shared.Locations)
 local Species = require(ReplicatedStorage.Shared.Species)
 local Cosmetics = require(ReplicatedStorage.Shared.Cosmetics)
 local StreetLayout = require(ReplicatedStorage.Shared.StreetLayout)
+local ActivityKit = require(script.Parent.ActivityKit)
 
 local G = Constants.Grid
 local CELL = G.CellSize
@@ -234,6 +235,11 @@ function HotelKit.decor(id: string, location: number): Model
 			or (if d.location == 0 then template(1, `Furniture_{id}`) else nil)
 		if found then
 			return found
+		end
+		-- An activity piece's blockout with its visitors' spots (GDD A.13.5, ActivityKit), until its model.
+		local activity = ActivityKit.blockout(d)
+		if activity then
+			return activity
 		end
 	else
 		-- Decor of every location (MODELS.md "Decor"): one model, in Haunted Manor's kit.
