@@ -332,3 +332,16 @@ the 5-stud person to its right, a grey wall behind a `Wall` decor piece,
 tiled five a row into `review/pieces_sheet.png` (`top`: straight down,
 `pieces_top.png`); the tiles in `review/pieces/`. `-- <set dir> [only A,B]
 [top]`. The render helpers are build_cosmetics_hotel's, lifted.
+
+## build_activity_bar.py
+
+The Bar's key pieces for Haunted Manor (GDD A.13): `Furniture_BarCounter`
+(3 x 1, `Use_1..Use_3` `Stand`) and `Furniture_SmallStage` (2 x 2, `Use_1`
+`Dance`); output `blender/rooms/haunted_manor_bar/`. Runs
+build_built_rooms.py's definitions (ast, without its main) and adds the
+visitors' spots (MODELS.md, "Activity furniture"): `bfurn()` (a piece on its
+`PENDING` row while Pieces.luau has none), `spot()`, `stand_spots()`,
+`spots_check` (numbering, Pose, squares, Stand's square free, Dance's
+figure clear), `sdone()`, `patch_fixup` (each `Use_<n>`'s Pose); shapes
+`loft`, `bottle`, `arc`, `apron`, `mic`, `backdrop`. `-- grey` writes the
+silhouettes (three a piece) to `silhouettes/`; `-- nopreview`.

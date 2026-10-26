@@ -304,6 +304,25 @@ Med Claudes skärmdump där det finns en. -->
    står nu längs nederkanten på en telefon** (överst täckte den fem
    menyknappar på en iPhone 7): `archive/screens/2026-10-25_iphone7_gloom_fixed.jpg`.
 
+16. **Barens disk och lilla scen** (natten 2026-10-26, GDD A.13; byggda och
+   validerade i Blender, tre blinda granskningar triagerade i
+   `blender/rooms/haunted_manor_bar/README.md`; **inte importerade, inget
+   lagt i `_import/`**). Bilder (Workbench, glöden syns olyst):
+   `archive/screens/2026-10-26_bar/bar_game_camera.jpg`, `bar_front.jpg`,
+   `bar_counter_close.jpg`, `bar_stage_close.jpg`, silhuetterna
+   `bar_silhouettes.jpg` (tre per bit; valda: disken med bakhylla, scenen med
+   välvd fond). Dina val:
+   - Diskens storlek: **3×1** (tre gästplatser framför, förslag) eller 3×2
+     med en gång bakom.
+   - Baksidorna är släta på båda (att göra dem färdiga kostar ~300 trianglar
+     som disken inte har). Förslag: behåll, de står mot väggen.
+   - Spegeln läses som ett fönster (förslag: mörkare blå), skivan är mörk
+     (förslag: ljusare trä), diskens höjd 3,7 (förslag: behåll), scenens
+     bredd.
+   - Gäster 3 studs isär vid disken når varandras armar (kontraktets en plats
+     per ruta); dansaren står 2,15 bakom mikrofonen.
+   Säg ja eller vad som ska ändras; först efter ditt ja läggs de för import.
+
 ## §2 Beslut
 
 <!-- En fråga i taget, med alternativen och Claudes rekommendation. -->
@@ -1503,6 +1522,17 @@ Claude testar. Det som är ditt, i ordning:
    beslut, GDD §18, PLACEHOLDER struket på dem; sammanfattningen i
    `archive/BALANCE-2026-10-23.md`.)
 6. **Ikon och thumbnails:** välj av tre.
+   *Natten 2026-10-26:* tre thumbnails och tre ikoner tagna **i spelet**
+   (`archive/screens/store-art-2026-10-26/`: byggläget över ett fullt hotell,
+   gatan med skylten, rumsvyn med ett Skeleton och en Zombie; ikonerna
+   beskurna ur dem), blint granskade. Granskarens dom: **ingen är klar för
+   butiken**: gränssnittet tar en tredjedel (1, 3), monstren är prickar,
+   rummen mörka och tomma, fasaden en slät vägg utan fönster (2), skylten
+   klipps i ikon 1. Bäst: thumbnail 1 (visar idén) och ikon 2 (en figur).
+   Två fel den såg är rättade samma natt (⟳ som inte ritades, en klippt
+   Place-knapp). **Förslag:** behåll Blender-bilderna (punkten ovan) som
+   huvudbilder; ta om rumsvyn i spelet utan HUD, med tända rum och en
+   möblerad svit, som en extra "så här ser det ut"-bild om du vill ha en.
 7. ~~**Frågeformuläret** (Maturity & Compliance)~~: redan ifyllt (ditt
    besked 2026-10-23).
 8. **Titel och beskrivning:** titeln "Build A Monster Hotel!" (din,
