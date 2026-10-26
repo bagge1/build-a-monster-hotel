@@ -21,6 +21,24 @@ landscape()
 playerGui:GetPropertyChangedSignal("ScreenOrientation"):Connect(landscape)
 player.CharacterAdded:Connect(landscape)
 
+-- The server stands the character at its hotel's Spawn, facing the hotel
+-- (PlotService `spawnAt`, attributes `SpawnAt`, `Spawned`), but Roblox's
+-- camera keeps the way it looked: it is turned to look past the character at
+-- the hotel (2026-10-26: a new player saw the street, the hotel behind them).
+local function faceHotel()
+	local at = player:GetAttribute("SpawnAt")
+	local camera = workspace.CurrentCamera
+	if typeof(at) == "CFrame" and camera then
+		local stand = at.Position + Vector3.new(0, 3, 0)
+		camera.CFrame = CFrame.lookAt(
+			stand - at.LookVector * 14 + Vector3.new(0, 6, 0),
+			stand + at.LookVector * 6
+		)
+	end
+end
+player:GetAttributeChangedSignal("Spawned"):Connect(faceHotel)
+faceHotel() -- the first spawn may have come before this script
+
 local systems: { { Init: () -> (), Start: () -> () } } = {
 	require(Client.State) :: any, -- first: panels read what it receives
 	require(Client.Controls) :: any, -- the gamepad's back and menu buttons (GDD §11)

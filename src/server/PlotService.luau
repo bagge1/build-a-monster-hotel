@@ -1004,6 +1004,10 @@ local function spawnAt(player: Player)
 		end)
 		if player.Character == character and byPlayer[player] == plot then
 			character:PivotTo(at + Vector3.new(0, 3, 0))
+			-- The client turns its camera to look past the character at the hotel
+			-- (init.client): where it stands, and a count so a same-place respawn signals too.
+			player:SetAttribute("SpawnAt", at)
+			player:SetAttribute("Spawned", (player:GetAttribute("Spawned") :: number? or 0) + 1)
 		end
 	end
 end
