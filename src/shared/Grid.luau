@@ -818,6 +818,25 @@ function Grid.edgeKey(floor: number, x: number, z: number, side: number): string
 	return `{floor}:{x}:{z}:{side}`
 end
 
+--[[ The one key of the edge a client names, or nil if it names none: "01:4:0:0",
+	"1:4.0:0:0" and "1:-0:..." are the same wall section as "1:4:0:0" and "1:0:..."
+	(2026-10-26: two windows bought on one section, one never drawn). ]]
+function Grid.canonicalEdge(edge: string): string?
+	local parts = string.split(edge, ":")
+	if #parts ~= 4 then
+		return nil
+	end
+	local n = {}
+	for i, p in parts do
+		local v = tonumber(p)
+		if v == nil or v % 1 ~= 0 then
+			return nil
+		end
+		n[i] = v + 0 -- -0 becomes 0
+	end
+	return Grid.edgeKey(n[1], n[2], n[3], n[4])
+end
+
 function Grid.edgeOf(edge: string): (number, number, number, number)
 	local parts = string.split(edge, ":")
 	return tonumber(parts[1]) or 0,

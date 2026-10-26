@@ -667,9 +667,10 @@ local function windowsChanged(player: Player)
 end
 
 -- A window of `kind` on wall section `edge`: bought, or swapped for the one there (that one refunded).
-local function placeWindow(player: Player, kind: string, edge: string)
+local function placeWindow(player: Player, kind: string, sent: string)
 	local data = PlayerData.get(player)
-	if not data then
+	local edge = Grid.canonicalEdge(sent)
+	if not data or not edge then
 		return
 	end
 	if not table.find(Constants.Windows.Types, kind) then
@@ -696,10 +697,11 @@ local function placeWindow(player: Player, kind: string, edge: string)
 	windowsChanged(player)
 end
 
-local function moveWindow(player: Player, from: string, to: string)
+local function moveWindow(player: Player, sentFrom: string, sentTo: string)
 	local data = PlayerData.get(player)
-	local w = data and data.windows[from]
-	if not data or not w or from == to then
+	local from, to = Grid.canonicalEdge(sentFrom), Grid.canonicalEdge(sentTo)
+	local w = data and from and data.windows[from]
+	if not data or not w or not from or not to or from == to then
 		return
 	end
 	if not wallAt(data, to) then
@@ -716,10 +718,11 @@ local function moveWindow(player: Player, from: string, to: string)
 end
 
 -- Sold: what it cost comes back whole (A.1).
-local function sellWindow(player: Player, edge: string)
+local function sellWindow(player: Player, sent: string)
 	local data = PlayerData.get(player)
-	local w = data and data.windows[edge]
-	if not data or not w then
+	local edge = Grid.canonicalEdge(sent)
+	local w = data and edge and data.windows[edge]
+	if not data or not edge or not w then
 		return
 	end
 	data.windows[edge] = nil

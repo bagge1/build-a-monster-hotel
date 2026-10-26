@@ -578,4 +578,15 @@ describe("Grid", function()
 		expect.atLeast(rooms, 6, "rooms placed")
 		expect.atLeast(upstairs, 1, "rooms upstairs")
 	end)
+
+	it("an edge a client names has one key, or none", function()
+		-- 2026-10-26 night: "01:4:0:0" bought a second window on the section "1:4:0:0".
+		local key = Grid.edgeKey(1, 4, 0, 0)
+		for _, sent in { "1:4:0:0", "01:4:0:0", "1:4.0:0:0", "1:4:-0:0" } do
+			expect.eq(Grid.canonicalEdge(sent), key, sent)
+		end
+		for _, sent in { "1:4:0", "1:4.5:0:0", "a:4:0:0", "1:4:0:0:0", "" } do
+			expect.eq(Grid.canonicalEdge(sent), nil, sent)
+		end
+	end)
 end)
