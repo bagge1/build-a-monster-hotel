@@ -411,7 +411,7 @@ EXP_GUARDS = [  # the offline rules the what-if mirrors
     ("src/shared/Economy.luau", "return math.floor(rate * Constants.Residents.OfflineFraction * t)"),
     ("src/server/ResidentService.luau", "if r.role == \"\" and r.campUntil <= os.time() then total += Economy.residentPay("),
     ("src/server/ResidentService.luau", "local away = os.time() - data.lastSeen"),
-    ("src/server/ResidentService.luau", "local earned = Economy.offline(ResidentService.rate(player, data), away, cap)"),
+    ("src/server/ResidentService.luau", "local earned = Economy.offline(ResidentService.rate(player, data, true), away, cap)"),
     ("src/server/ResidentService.luau", "local cap = if data.passes.NightManager then Constants.Residents.NightManagerCap else Constants.Residents.OfflineCap"),
 ]
 
@@ -646,13 +646,13 @@ FORMULA_GUARDS = [
     ("src/server/GuestService.luau", "local stay = Constants.Rarity[sp.rarity].stay * g.stayMult"),
     ("src/server/ResidentService.luau", "local gain = g.friendshipMult or 1"),
     ("src/server/ResidentService.luau", "local now = before + gain"),
-    ("src/server/HotelService.luau", "if p and ok then table.insert(bars, Rooms.bars(w, id)) end"),
+    ("src/server/HotelService.luau", "local info = if p and ok then HotelService.roomInfo(data, id) else nil"),  # ready rooms' bars, cached (2026-10-24)
     ("src/server/HotelService.luau", "for _ in data.decor do decor += 1 end"),
     ("src/server/HotelService.luau", "if not best or matched > best.prefsMatched then"),
     # ... and what building costs: walls, doors, furniture and decor at their price; a room's type is free
     ("src/server/BuildService.luau", "if not PlayerData.spend(player, R.WallCost) then"),
-    ("src/server/BuildService.luau", "local cost = R.DoorCost + (if rec then 0 else R.WallCost)"),
-    ("src/server/BuildService.luau", "local cost = if d.location == 0 and not d.always and not d.furniture then 0 else d.cost"),
+    ("src/server/BuildService.luau", "local cost = R.DoorCost"),  # a door only in a standing wall (2026-10-24): its wall was paid as a wall
+    ("src/server/BuildService.luau", "local cost = if Pieces.isEventDecor(d) then 0 else d.cost"),  # event decor paid in its shop, a copy a purchase (2026-10-26)
     ("src/server/BuildService.luau", "data.rooms[newId(data)] = { type = typeId, floor = floor, hx = hx, hz = hz, finish = \"\" }"),
     # a new hotel's start room, and the tutorial's steps and free key piece
     ("src/server/PlayerData.luau", "if p.kind == \"Room\" and p.location == data.location and p.unlock == nil then"),
@@ -660,7 +660,7 @@ FORMULA_GUARDS = [
     ("src/server/PlayerData.luau", "{ item = item, floor = 1, x = f.x, z = f.z, r = f.r, room = \"\", paid = 0 }"),
     ("src/server/TutorialService.luau", "\"CheckIn\", \"Collect\", \"SecondRoom\", \"Furnish\", \"Bus\", \"MoveIn\", \"Goal\", \"Clean\", \"Staff\", \"Preview\", \"Done\","),
     ("src/server/TutorialService.luau", "return readyRooms(player, data) >= 2"),
-    ("src/server/TutorialService.luau", "if s == \"CheckIn\" and not slimeSent[player] then"),
+    ("src/server/TutorialService.luau", "if s == \"CheckIn\" then return stat(data, \"checkIns\") >= 1"),
     ("src/server/BuildService.luau", "local voucher = voucherFor(data, d)"),
     ("src/shared/Rating.luau", "math.clamp(100 - i.meanWait * R.ServiceWaitPerPoint, 0, 100) * 0.6 + 40 * i.requestShare"),
     ("src/shared/Rating.luau", "100 * (1 - i.dirtyRooms / i.rooms)"),

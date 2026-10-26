@@ -228,6 +228,13 @@ local function trackPanel(w: Frame)
 	end)
 end
 
+-- Closes every HUD panel (build mode opening over the hotel, UI.md "One panel at a time").
+function Ui.closePanels()
+	for _, w in panels do
+		w.Visible = false
+	end
+end
+
 -- A window with a title and a cross in its top-right corner (UI.md, "Pop-ups close with a cross").
 function Ui.window(
 	gui: ScreenGui,

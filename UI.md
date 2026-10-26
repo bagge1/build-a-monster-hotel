@@ -39,7 +39,8 @@ A HUD window is named `<X>Panel` (`ResidentsPanel`, `StorePanel`, ...) and
 stands at the screen's centre; opening one closes any other `<X>Panel`
 (`Ui.window`; found 2026-10-26 night, eight open one on another). Pop-ups
 (`FoundPopup`, `VipDone`, `ShowcaseMilestone`) and build mode's windows are
-named otherwise and may stand over a panel.
+named otherwise and may stand over a panel. Entering build mode closes every
+panel (`Ui.closePanels`): one left open lay over the hotel and took its taps.
 
 ### Gamepad
 

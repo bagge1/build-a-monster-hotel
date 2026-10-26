@@ -634,6 +634,33 @@ rule 6, `w`, `d`, `layer` and `height` its `Pieces` row's), and adds:
 | `Use` (attachment, `Pose` attribute) | Above | Where a guest uses it |
 | `LOD_Proxy` | For a piece wider than 2 squares or over 4 tall, as the kit makes it | Hidden at import |
 
+#### Activity furniture: visitors' spots (GDD A.13, night draft 2026-10-26)
+
+A piece guests **visit** (A.13.1: the bar counter, a pool, a film screen's
+seats, a weight bench) carries, in place of or beside `Use`, one attachment
+per visitor it holds:
+
+| Name | What | The code |
+|---|---|---|
+| `Use_<n>` (attachment, `Pose` attribute), n = 1, 2, ... | One visitor's spot, as `Use` above; numbered from 1 without a gap | A visitor walks to a free one, takes `Pose`, frees it when it leaves |
+
+- **`Pose`** is one of `Lie`, `Sit`, `Stand` (as above), or, for what is
+  done standing in place: `Dance` (on the floor, LookVector the way it
+  faces), `Swim` (at the water's surface, 1.5 under it at the body's
+  middle, inside the pool's inner edge by 1.5), `Lift` (on the bench or mat,
+  as `Lie` or `Stand` would place it), `Watch` (a seat's `Sit`, facing the
+  screen), `Play` (`Stand`, at the table's edge, facing its middle).
+- A spot's square (its `Stand` square in front, or the square under a
+  `Sit`/`Lie`) is free of every other piece's body; two spots never share a
+  square. A spot outside the footprint is kept free by the code as `Stand`'s.
+- A **pool** (`Pool`, w × d squares) is furniture whose `Body` includes the
+  basin; its water is one part named **`Water`** (rule 1's kind: not
+  colliding, `CanQuery` false), which the code makes water. Its rim stands
+  on the floor; nothing floats.
+- A **row** of seats (`CinemaSeat`, 3 wide) carries `Use_1..Use_3`.
+- The set's build script and validator check every `Use_<n>`: numbered
+  without a gap, a `Pose` from the list, its square free, inside the frame.
+
 **Checks** (the set's build script refuses a piece that breaks them): the
 walls' boxes and opening, a post covering every wall end's dressing, both
 faces alike (the piece equals itself turned 180°), nothing outside the

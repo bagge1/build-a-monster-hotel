@@ -1913,3 +1913,130 @@ key furniture.
 whole rooms, the tiers T1–T3, Flip and `<PieceId>_Mirror`. The new models:
 inner walls, a door, and furniture, per location (`MODELS.md`).
 
+### A.13 Rooms where guests do things (night draft 2026-10-26, his ask in §18)
+
+His ask (§18 2026-10-26): many more room types where the guests *do* things,
+seen doing them: watch a film, hear live music (a bar, a restaurant, a dance
+floor), eat, drink, play pool, swim (indoor and outdoor pools), train in a
+gym, visit a spa; plenty of furniture of their own; decor and some furniture
+shared between types so rooms that look alike can be decorated alike; the
+list is not set in stone. **Every number below is PLACEHOLDER; every choice
+that is his is gathered in WAITING §2.57 with a recommendation.**
+
+**What exists today.** A room is a bedroom (guests stay in it) or an
+*amenity* (Snack Bar, Music Room, Graveyard Garden, Quiet Library, Organ
+Hall, and each location's own): an amenity only lends its tags to the floor
+(`HotelService.amenitiesOn`), and no guest ever enters one. A.13 makes the
+amenities and the new types **activity rooms** that guests visit.
+
+#### A.13.1 Visits: the core
+
+- **A visit.** While it stays, a guest leaves its room now and then (every
+  90–150 s of its stay, PLACEHOLDER) for an activity room on any floor whose
+  tags meet one of its preferences (or "fun", for a guest who wants fun), if
+  one is ready and has a free **spot**. It walks `Rooms.route` there (state
+  `Visiting`), takes a spot, **does the action** for 20–40 s (PLACEHOLDER),
+  and walks back to its room. Its room stays Occupied; a request or a
+  check-out time while it is out waits until it is back.
+- **Spots.** Every activity furniture piece carries one or more `Use_<n>`
+  attachments with an `Action` (`Sit`, `Stand`, `Lean`, `Dance`, `Swim`,
+  `Lie`, `Lift`, `Watch`, `Play`): the guest's pose and clip
+  (`Shared/MonsterMotion`). A spot is taken by one guest at a time; a room's
+  capacity is its spots. `MODELS.md` gets the contract before the first
+  model, and a blockout carries the same attachments (CLAUDE.md).
+- **What a visit gives.** A visit to a room meeting a preference counts as
+  that preference met for the stay (today an amenity on the floor does it,
+  unseen), and adds **+5 satisfaction** (PLACEHOLDER) once a stay. A guest
+  with no match never visits. The floor rule (`amenitiesOn`) goes: the room
+  must be reachable, not merely on the floor.
+- **Seen.** The visitor walks, sits at the bar, swims, lifts; a small icon of
+  the activity over its head on the way. The room view shows "2/4 spots in
+  use".
+- **Rules kept.** A room with a visitor in it or on the way is **busy**
+  (`Rooms.keepsBusy`, "A guest is using that room"); a visitor's room
+  stopping being ready sends it home as today; Hunter Night calls visitors
+  back to their rooms.
+- **Cost on the server.** At most one visit decision a guest per 10 s and at
+  most 12 visitors walking at once per hotel (PLACEHOLDER), so a full hotel
+  does not route every frame.
+
+#### A.13.2 The types
+
+Sizes are cells (minimum / full), as A.12; "key" is one of a list, as A.12.
+Tags marked *new* are new preference tags (WAITING §2.57 asks who wants them).
+
+| Type | Key furniture (one of) | Other furniture | Tags | Wanted by (recommended) | Size |
+|---|---|---|---|---|---|
+| **Game Room** (his yes) | Pool Table, Ping-Pong Table, Arcade Cabinet | Dart Board, Card Table, Stool, Scoreboard | fun | Pumpkin Head, Ice Imp (his yes) | 4 / 8 |
+| **Billiard Hall** | Pool Table | Cue Rack, Bar Stool, Wall Lamp, Scoreboard | fun, *billiards* | Werewolf, Gator Ghoul | 4 / 8 |
+| **Cinema** | Film Screen | Cinema Seat (a row of 3), Popcorn Cart, Projector | *film* | Ghost, Grand Banshee, Will-o'-Wisp | 6 / 12 |
+| **Bar** | Bar Counter | Bar Stool, Bar Table, Small Stage, Jukebox | *drinks*, music | Zombie, Gator Ghoul, Frost Troll | 4 / 8 |
+| **Restaurant** | Dining Table | Chair, Small Stage, Breakfast Buffet, Salad Bar, Dessert Trolley | *dining*, music | Werewolf (steak), Slime, Snowball Sprite | 6 / 12 |
+| **Dance Floor** | Dance Floor (2×2) | Small Stage, Speaker, Disco Ball, Bar Table | *dance*, music | Skeleton, Pumpkin Head, Bog Frog | 6 / 12 |
+| **Snack Bar** (exists) | its counter, Salad Bar, Dessert Trolley (his yes) | Bar Stool, Vending Machine | snacks | Slime, Zombie | 4 / 8 |
+| **Indoor Pool** | Pool (3×2) | Lounger, Towel Rack, Diving Board, Pool Ladder | *swim*, damp | Slime, Mud Puppy, Moon Heron | 6 / 12 |
+| **Outdoor Pool** | Pool (3×2), outdoors (A.13.4) | Lounger, Parasol, Towel Rack, Garden Bench | *swim*, moonlight | Werewolf, Bog Frog, Ice Wyrm (a cold pool at Frostfang) | 6 / 12 |
+| **Gym** | Weight Bench, Treadmill, Punching Bag | Dumbbell Rack, Mirror, Mat | *fitness* | Frost Troll, Yeti, Skeleton | 4 / 8 |
+| **Spa** | Hot Tub, Massage Table | Towel Rack, Lounger, Steam Stone, Plant | *pampering*, steam | Witch, Swamp Hag, Bog Frog, Mummy | 4 / 8 |
+| **Karaoke Lounge** | Karaoke Stage | Velvet Sofa, Armchair, Speaker, Side Table | music, *singing* | Grand Banshee, Zombie | 4 / 8 |
+| **Sauna** (Frostfang) | Sauna Bench | Steam Stone, Water Bucket, Towel Rack | steam, *pampering* | Frost Troll, Snow Witch | 2 / 4 |
+
+The amenities that exist (Music Room, Graveyard Garden, Quiet Library,
+Organ Hall, Cocoa Lounge, Aurora Deck, Jazz Porch, Lily Pond, ...) become
+activity rooms too: each gets spots on its key furniture (an organ bench, a
+reading chair, a garden bench), so guests visit them as they visit the new
+ones. Fountain and Garden Bench become key for the Graveyard Garden (his
+yes). **Per location:** the new types are every location's (location 0,
+`always`, as the shared furniture); a location's kit gives the look
+(MODELS.md); Frostfang's and Bayou's own amenities stay theirs.
+
+#### A.13.3 Shared furniture and decor
+
+So that rooms that look alike can be furnished alike, furniture comes in
+**sets**, and a piece counts in every type its set serves (the Furniture
+bar, A.12):
+
+| Set | Pieces | Serves |
+|---|---|---|
+| Lounge | Armchair, Velvet Sofa, Side Table, Floor Lamp | Bar, Karaoke Lounge, Quiet Library, Spa, Cinema |
+| Dining | Dining Table, Chair, Bar Table, Breakfast Buffet, Salad Bar, Dessert Trolley | Restaurant, Snack Bar, Bar |
+| Stage | Small Stage, Speaker, Microphone, Jukebox, Grand Piano | Bar, Restaurant, Dance Floor, Karaoke Lounge, Music Room |
+| Poolside | Lounger, Towel Rack, Parasol, Pool Ladder | Indoor Pool, Outdoor Pool, Spa |
+| Games | Pool Table, Ping-Pong Table, Arcade Cabinet, Dart Board, Card Table | Game Room, Billiard Hall |
+| Fitness | Weight Bench, Treadmill, Punching Bag, Dumbbell Rack, Mat | Gym |
+
+Decor (rugs, plants, lamps, wall art, the rare sets) is every type's, as
+today. A bar stool and a chair are one model each, used everywhere.
+
+#### A.13.4 The outdoor pool: where
+
+Every owned tile today is inside the facade, under a slab. Three places an
+outdoor pool could stand (WAITING §2.57; recommendation **A**):
+
+- **A. A yard behind the hotel:** floor-1 tiles bought beyond the back wall
+  become *yard* tiles: no slab or roof, a low fence in place of the facade,
+  a gate (a door) from the hotel. Only outdoor types (Outdoor Pool, a Garden
+  Terrace, perhaps the Graveyard Garden) are made there. New: a tile kind,
+  fence and gate models, the facade skipping yard tiles.
+- B. The forecourt, beside the path to the entrance: no new tile kind, but
+  the forecourt is the street's face and the bus guests' way in.
+- C. The roof of the top floor: a terrace up the stairs; no new tile, but
+  the roof is not drawn today and the top floor moves with every floor
+  bought.
+
+#### A.13.5 What is built first
+
+1. The visit rules as pure code with specs (`Shared/Visits`: who visits,
+   where, when, a spot taken and freed, busy), `Pieces` rows for the types
+   and furniture above (PLACEHOLDER prices and unlocks).
+2. `MODELS.md` "Activity furniture" (`Use_<n>`, `Action`), then blockouts in
+   Luau with those attachments for the key pieces of four types first: Game
+   Room, Bar, Indoor Pool, Cinema.
+3. `GuestService` visits (state `Visiting`) and their clips, the room view's
+   spots line; played in Studio.
+4. The rest of the types, then the models in Blender one type at a time,
+   his look on each (WAITING §1).
+
+Not built before his choices: the yard (A.13.4) and the new preference tags
+on species (WAITING §2.57).
+
