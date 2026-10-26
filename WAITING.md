@@ -1695,6 +1695,15 @@ Med Claudes skärmdump där det finns en. -->
    **Join**-knapp som öppnar Roblox egen fråga om att gå med. Ja, eller
    annan bit / annan procent?
 
+68. **Text på en tv (konsol, 3 meter bort)** (natten 2026-10-26,
+   gamepad-granskningen). Spelet skalar inte texten för en tv
+   (`GuiService:IsTenFootInterface` används inte), och mycket är 12–16 px:
+   bokens säsongsrad (12), Expedition-timern på Residents (12), rumsvyns
+   tooltip och bonusar (13), Storens undertexter (14). Glooms text krymper
+   till högst 16. Förslag: på en tv blir all text 1,25× större (en
+   `UIScale` på varje skärm), annars oförändrat. Det är ett utseende, så det
+   väntar på ditt ja.
+
 ## §3 Creator Hub och publicering
 
 1. ~~**Slå på Studio Access to API Services**~~ (gjort 2026-10-19: på i
