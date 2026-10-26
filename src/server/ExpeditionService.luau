@@ -26,6 +26,9 @@
 	"Mid-trip"); one already back is collected as Collect would. Travel
 	changes nothing.
 
+	THE NOTIFICATION "your residents are back" (decision 6b) is queued by
+	`NotifyService` at the logout for a trip of `NotifyMin` or longer.
+
 	State section `expedition`; remotes `ExpeditionSend`, `ExpeditionCollect`.
 ]]
 

@@ -1023,6 +1023,7 @@ Med Claudes skärmdump där det finns en. -->
      rebirth. Dina frågor: siffrorna; om fynden behålls; ett souvenirmärke för
      alla arter (färgat per art) ok; riktiga emblembilder (i dag en skiva med
      initialen); "äldsta rummet" som rätt tolkning.
+   - *Expeditions byggt 2026-10-26 på grenen `claude/expeditions` (inte mergat, inte kört i Studio; PLACEHOLDER i `Constants.Expeditions` utom Pay 0,75):* antaget: platserna Haunted Woods / Frostfang Pass / Bayou Backwaters och vad var och en "gillar" (taggar ur arternas preferenser); gruppen är hemma i Wing när tiden är slut, lönen och fyndet väntar på Collect (tavlan i Wing-trädgårdens främre hörn på skyltens sida, eller pop-upen var som helst); en resa kan inte avbrytas; en rebirth betalar det räknade hittills (pengarna går sedan med rebirthen) och en resa som redan är hemma hämtas med sitt fynd; gruppens egna perks räknas inte i lönen; resornas fynd räknas inte mot vistelsernas pity (40), bara mot resornas egen (10 långa); notisen för resor på 2 h och mer har en PLACEHOLDER-text, "[PLACEHOLDER] Your residents are back from their expedition!", din att skriva i Creator Hub.
 
 39. **Väggarna, dörren och möblerna: det granskaren såg som är ditt**
    (natten 2026-10-21; modellerna i `blender/rooms/<hotell>/`, bilderna i
