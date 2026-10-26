@@ -1366,6 +1366,31 @@ Med Claudes skärmdump där det finns en. -->
    efteråt kan guldplattorna i SecondRoom visa bara de som gränsar till
    hallen, eller Gloom säga "beside the hallway".
 
+55. **Ett rum som öppnas mot en avstängd korridor** (natten 2026-10-26,
+   kodgranskning; **troligen din fredagsbugg**, "en gäst i ett rum som inte
+   är inneslutet"). Enligt A.12 är en yta *hall* bara om den har entréns
+   mynning, en trappa eller en disk. Bygger man en korridor och stänger den
+   mot lobbyn med en dörr, är korridoren ingen hall, och tar man sedan bort
+   en vägg mellan ett rum och korridoren blir rummet **hela ytan**: väggen
+   är borta, rummet växer (storleksstapeln stiger) och är fortfarande
+   "färdigt", så bussen bokar gäster dit. Ett tredje rum vars enda dörr går
+   till korridoren nås då bara genom det rummet (jfr 54). Koden gör som A.12
+   säger, så det är ditt val:
+   - **A (förslag):** en yta räknas som hall också när den har **två eller
+     fler dörrar** (en korridor), så att ett rum aldrig kan öppnas mot den
+     (`RoomTaken`, som mot lobbyn). Enkelt att förstå: ett rum har en dörr.
+   - B: behåll, ett rum kan vara vilken sluten yta som helst med en dörr.
+   - C: en vägg mellan ett rum och en yta utan rum får inte tas bort
+     (rummet ändrar aldrig form utan Walls → Make room).
+   Natten återskapar det i Studio och ändrar inget.
+
+56. **Decor-flikens ordning** (natten 2026-10-26, spelat med mus som ny
+   spelare): fliken börjar med **13 låsta "?"-kort** (sällsynta fynd och
+   souvenirer) och butiken kommer först efter dem; på skärmen syns bara
+   låsta kort, och man måste scrolla för att hitta något att köpa. Ordningen
+   står i UI.md (Found, sedan ej funna, sedan butiken). Förslag: **Found,
+   butiken, ej funna sist**.
+
 ## §3 Creator Hub och publicering
 
 1. ~~**Slå på Studio Access to API Services**~~ (gjort 2026-10-19: på i

@@ -69,23 +69,41 @@ Read before the first call, and again after any error.
 
 Same street first, then two streets, then the leave.
 
-- [ ] T0 for this session: both clients and the server answer
+- [x] T0 for this session: both clients and the server answer
   `execute_luau`, the sync landed (`tools/sync_sizes.py`), the console is
-  clean; player 2 has cash from a server Script (the guard).
-- [ ] Gifting to a second player (Phase 8).
-- [ ] Liking another hotel (Phase 7). The friend bonus only if the test
-  players count as friends; otherwise that half is `[?]`.
-- [ ] A second player visiting sees the staff walk and the "✓" (Staff at work).
-- [ ] The showcase with two (The showcase): a real like and the 10-minute
+  clean; player 2 has cash from a server Script (the guard). (2026-10-26
+  night: 92 scripts match; only the known `ContentId` and `server size`
+  lines; Player3 got $5,000 from a server Script; the night's server guard
+  `tools/night_guard.luau` ran throughout, no breach of the game's.)
+- [x] Gifting to a second player (Phase 8). (2026-10-26 night, real clicks:
+  Store → 🎁 Gift → Player3; the receipt by dev `receipt`: `gifted` and
+  `passes` on Player3 in 1 s; a second gift refused "already has".)
+- [x] Liking another hotel (Phase 7). The friend bonus only if the test
+  players count as friends; otherwise that half is `[?]`. (2026-10-26 night:
+  E at the sign both ways, both toasts; the friend bonus `[?]`, test players
+  are no friends.)
+- [x] A second player visiting sees the staff walk and the "✓" (Staff at work).
+  (2026-10-26 night: on Player3's client Phase Out → Work → Done and
+  "✓ Room Service" at the door.)
+- [x] The showcase with two (The showcase): a real like and the 10-minute
   rule's refusal, the giver's toast, **Visit**, walking into the other lobby
   counting toward the daily, the weekly favourite moving between the hotels.
-- [ ] Two players seeing another's VIP (VIP contracts, the room view's item).
-- [ ] Two players on two streets at once, each street's bus and Hunter Night
-  (The world).
-- [ ] **Last:** player 2 leaves (`Player:Kick` from the server): its hotel
+  (2026-10-26 night: all but the refusal, `[?]` since both had played 23
+  min that day; the favourite went to Player1 on a tie by key, and the
+  panel listed it second: fixed, 10f4c9c, not yet seen in Studio.)
+- [x] Two players seeing another's VIP (VIP contracts, the room view's item).
+  (2026-10-26 night: "👑 VIP for Player1" in gold with its glow on Player3's
+  client; the room view's line needs Player1's mouse, part 2.)
+- [x] Two players on two streets at once, each street's bus and Hunter Night
+  (The world). (2026-10-26 night: Player3 opened Frostfang by `Travel`;
+  `BusStreets` 1,2, each bus its location's family; a hunter per hotel on
+  its own street, x 0 and 1220.)
+- [x] **Last:** player 2 leaves (`Player:Kick` from the server): its hotel
   leaves the street, the plot is free, its profile is saved and released (read
   on the Server after the kick). The rejoin is not tried (his click): part 2
-  proves persistence.
+  proves persistence. (2026-10-26 night: released in 1.0 s, Plot_2 owner 0
+  with no pieces, guests or residents; it keeps a stale `Rating` attribute,
+  read by no one but its next owner's panel, which recomputes it.)
 - [ ] The windows closed (the guard).
 
 ### 2. Alone (Claude starts and stops)
