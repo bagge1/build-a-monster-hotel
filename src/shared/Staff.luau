@@ -140,6 +140,19 @@ function Staff.deskDelay(delay: number, desk: number, bellhop: number, bonus: nu
 	return delay / math.max(desk, 0.01) / (1 + math.max(bellhop, 0) * math.max(bonus, 0))
 end
 
+--[[ Which guest Front Desk serves next (§4.6, Appendix A.5): the first in
+	`queue` that is waiting at the desk (`isQueued`), as `GuestService.checkIn`
+	picks, or nil. A guest at the head of the queue still walking in
+	(assigned, `ToHotel`) does not hold up the ones behind it at the desk. ]]
+function Staff.nextAtDesk<T>(queue: { T }, isQueued: (T) -> boolean): T?
+	for _, id in queue do
+		if isQueued(id) then
+			return id
+		end
+	end
+	return nil
+end
+
 --[[ Whether a resident may be moved now (to another role or hotel, or
 	released to the Wing or on holiday), with `location` the hotel played:
 	not while it is on staff at another hotel of the chain (WAITING §2.48,

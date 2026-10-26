@@ -697,11 +697,17 @@ local function staffTick()
 		if hotel then
 			local timers = staffTimers[player] or {}
 			staffTimers[player] = timers
-			-- Front Desk: the first waiting guest after a delay.
+			-- Front Desk: the first guest waiting at the desk, after a delay from
+			-- when it got there. The head of the queue may still be walking in
+			-- (ToHotel); the ones behind it at the desk are served (Staff.nextAtDesk).
 			local desk = sum(ResidentService.staff(data, "FrontDesk"))
 			if desk > 0 and #hotel.queue > 0 then
-				local first = GuestService.get(hotel.queue[1])
-				if first and first.state == "Queued" then
+				local firstId = Staff.nextAtDesk(hotel.queue, function(id)
+					local g = GuestService.get(id)
+					return g ~= nil and g.state == "Queued"
+				end)
+				local first = firstId and GuestService.get(firstId)
+				if first then
 					-- The best Bellhop shortens it too (§4.6 "check-in time").
 					local bell = 0
 					for _, e in ResidentService.staff(data, "Bellhop") do
