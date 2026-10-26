@@ -81,6 +81,7 @@ type Passenger = {
 	tutorialFor: Player?,
 	street: number?,
 	vip: number?, -- a VIP contract's id (A.11.1): an extra seat, booked to `booked`
+	onBooked: ((reached: boolean) -> ())?, -- a booked guest's fate at step-off: walking to its hotel, or home
 }
 
 -- One street's next bus: drawn a bus ahead, so its rare guest can be announced.
@@ -183,7 +184,12 @@ end
 function BusService.addToNext(
 	speciesId: string,
 	mutation: string?,
-	opts: { booked: Player?, happyFloor: number?, street: number? }?
+	opts: {
+		booked: Player?,
+		happyFloor: number?,
+		street: number?,
+		onBooked: ((reached: boolean) -> ())?,
+	}?
 )
 	table.insert(extraGuests, {
 		species = speciesId,
@@ -191,6 +197,7 @@ function BusService.addToNext(
 		booked = opts and opts.booked,
 		happyFloor = opts and opts.happyFloor,
 		street = opts and opts.street,
+		onBooked = opts and opts.onBooked,
 	})
 end
 
@@ -384,13 +391,29 @@ local function stepOff(stop: StreetLayout.Stop, list: { Passenger }, first: numb
 				end
 				return
 			end
+			-- A booked guest (the tutorial's Vampire Count, §11) walks to its hotel
+			-- or goes home: it never browses, so it never checks in at another
+			-- player's hotel. Who booked it hears which (`onBooked`), so the
+			-- tutorial offers its Vampire again on a later bus when it missed.
 			local booked = p.booked
-			local offer = booked and booked.Parent and HotelService.vacantFor(booked, p.species)
-			if booked and offer then
+			if booked then
 				g.config:SetAttribute("Wish", nil)
 				g.onDecide = nil
-				g.happyFloor = p.happyFloor
-				GuestService.assign(g, booked, offer.pieceId)
+				local offer = booked.Parent and HotelService.vacantFor(booked, p.species)
+				local reached = false
+				if offer then
+					g.happyFloor = p.happyFloor
+					reached = GuestService.assign(g, booked, offer.pieceId)
+				else
+					GuestService.leaveStreet(g)
+				end
+				local onBooked = p.onBooked
+				if onBooked then
+					local ok, err = pcall(onBooked, reached)
+					if not ok then
+						warn(`[bus] booked: {err}`)
+					end
+				end
 			end
 		end)
 	end

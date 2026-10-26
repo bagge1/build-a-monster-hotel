@@ -137,6 +137,24 @@ function Bus.rarest(ids: { string }): string?
 	return best
 end
 
+--[[ Whether the tutorial's Vampire Count rides the next bus (§11: "A Vampire
+	Count arrives in 3 buses", booked to the hotel once a Coffin Suite stands
+	vacant): owed since the goal card (`goal`) until it has reached its hotel
+	(`arrived`), never while one is already on a bus (`onBus`), from the third
+	bus after the goal card (`busesSince`, the buses gone by since it, at least
+	2, so it rides the third) and only with a room for it (`vacant`). One that
+	stepped off and missed its hotel (the room taken, no way to it, the player
+	gone) has not arrived, so it is offered again on a later bus. ]]
+function Bus.tutorialVampire(t: {
+	goal: boolean,
+	arrived: boolean,
+	onBus: boolean,
+	busesSince: number,
+	vacant: boolean,
+}): boolean
+	return t.goal and not t.arrived and not t.onBus and t.busesSince >= 2 and t.vacant
+end
+
 --[[ The Commons the tutorial brings a new hotel (§11 1:45: "The tutorial
 	weights Commons toward your hotel"): at most `n`, never more for a room
 	type than `vacant` (room id → rooms of it standing vacant) has, each a
