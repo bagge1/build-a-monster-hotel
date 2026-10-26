@@ -1,0 +1,119 @@
+{
+ "set": "rooms/frostfang_lodge_sauna",
+ "checked": "each fbx/<Name>.fbx re-imported into Blender; nothing here ran in Studio",
+ "pieces": {
+  "Furniture_SaunaBench": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "2 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the piece's own checks re-run on the re-imported triangles",
+    "the contract re-checked on the re-imported boxes: Root 3fw x 0.2 x 3fd, the layer's envelope (Floor and Wall: inside the footprint inset 0.4, height <= 7; Rug: inside the footprint, height <= 0.15; Wall: its back on z = 3fd/2 - 0.4 +-0.05), nothing collides, budget; w, d, layer and height (to 0.3) as Pieces.luau says; each seat() on the triangles"
+   ],
+   "triangles": 496,
+   "budget": 1500,
+   "collision_precise": [],
+   "attachments": [
+    "Use_1",
+    "Use_2"
+   ]
+  },
+  "Furniture_SteamStone": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "3 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the piece's own checks re-run on the re-imported triangles",
+    "the contract re-checked on the re-imported boxes: Root 3fw x 0.2 x 3fd, the layer's envelope (Floor and Wall: inside the footprint inset 0.4, height <= 7; Rug: inside the footprint, height <= 0.15; Wall: its back on z = 3fd/2 - 0.4 +-0.05), nothing collides, budget; w, d, layer and height (to 0.3) as Pieces.luau says; each seat() on the triangles"
+   ],
+   "triangles": 1104,
+   "budget": 1500,
+   "collision_precise": [],
+   "attachments": []
+  },
+  "Furniture_WaterBucket": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "2 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the piece's own checks re-run on the re-imported triangles",
+    "the contract re-checked on the re-imported boxes: Root 3fw x 0.2 x 3fd, the layer's envelope (Floor and Wall: inside the footprint inset 0.4, height <= 7; Rug: inside the footprint, height <= 0.15; Wall: its back on z = 3fd/2 - 0.4 +-0.05), nothing collides, budget; w, d, layer and height (to 0.3) as Pieces.luau says; each seat() on the triangles"
+   ],
+   "triangles": 772,
+   "budget": 1500,
+   "collision_precise": [],
+   "attachments": []
+  }
+ },
+ "collision_precise": {
+  "Furniture_SaunaBench": [],
+  "Furniture_SteamStone": [],
+  "Furniture_WaterBucket": []
+ },
+ "mirrors": {},
+ "not_validated": [
+  "anything in Studio: the import, the axis conversion on Roblox's side (import_fixup.luau checks it first), the atlas upload, how it looks lit",
+  "the attachments and each Use_<n> Pose attribute exist only in manifest.json until import_fixup.luau makes them",
+  "a visitor walking to the bench and sitting: no walker or clip has run",
+  "the embers lit: import_fixup makes Glow_Warm_1 Neon",
+  "steam: no part or attachment for it (the code's, if any)",
+  "the two sitters' figures side by side: each is checked against the piece; their arms (3.8 across, one square apart) overlap 0.8, as on the Cinema's row"
+ ],
+ "spots": {
+  "Furniture_SaunaBench": {
+   "spots": {
+    "Use_1": "Sit",
+    "Use_2": "Sit"
+   },
+   "checked": "spots_check on the built and the re-imported triangles: Use_<n> from 1 without a gap, a Pose from MODELS.md's list, a level LookVector, no two spots on one square; Sit: inside the footprint, on a declared seat (tier_seat: rule 6's 1.5..2.0, 1.2 deep, 2.0 a person, nothing over it for 3), the surface under it within 0.15, nothing over it, the seated 5-stud person (sit_blocks, arms included) clear of the body; feet_check: both soles on the lower tier (the body at most 0.12 under them)"
+  },
+  "Furniture_SteamStone": {
+   "spots": {},
+   "checked": "no visitors' spots (A.13.2: not a key piece)"
+  },
+  "Furniture_WaterBucket": {
+   "spots": {},
+   "checked": "no visitors' spots (A.13.2: not a key piece)"
+  }
+ },
+ "pieces_rows": {
+  "Furniture_SaunaBench": {
+   "w": 2,
+   "d": 1,
+   "layer": "Floor",
+   "height": 3.0,
+   "location": 2,
+   "keyFor": [
+    "Sauna"
+   ],
+   "model_top": 3.0
+  },
+  "Furniture_SteamStone": {
+   "w": 1,
+   "d": 1,
+   "layer": "Floor",
+   "height": 2.0,
+   "location": 0,
+   "keyFor": [],
+   "model_top": 2.123
+  },
+  "Furniture_WaterBucket": {
+   "w": 1,
+   "d": 1,
+   "layer": "Floor",
+   "height": 1.5,
+   "location": 2,
+   "keyFor": [],
+   "model_top": 1.475
+  }
+ },
+ "height_findings": {
+  "note": "Pieces.luau's height against the model's top, a finding (not refused): the row must say it"
+ }
+}
