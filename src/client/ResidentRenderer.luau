@@ -337,8 +337,10 @@ local function frame(dt: number)
 			local step = math.min(delta.Magnitude, (if role ~= "" then 12 else 3) * dt)
 			dir = if delta.Magnitude > 0.01 then delta.Unit else Vector3.new(0, 0, -1)
 			walking = delta.Magnitude > 0.05
-			if delta.Magnitude > 20 then
-				d.pos = d.target -- a new post far away: appear there
+			-- A new post far away: appear there. A Wing resident walks to its next spot in the
+			-- garden, however far (2026-10-26: it jumped there, up to 20 studs at a time).
+			if goal and delta.Magnitude > 20 then
+				d.pos = d.target
 			else
 				d.pos += dir * step
 			end
