@@ -363,7 +363,8 @@ local shapes: { [string]: Shape } = {
 	},
 	-- ===== Cinema (A.13.2): a screen to watch, a row of seats =====
 	FilmScreen = {
-		spots = none, -- watched from the seats, never used (MODELS.md)
+		-- Against a wall (its row's layer), watched from the seats: no `Use`, no spots (MODELS.md).
+		spots = none,
 		body = function(model, W, D, h, colour)
 			local z = D / 2 - INSET - 0.2
 			part(
@@ -371,27 +372,37 @@ local shapes: { [string]: Shape } = {
 				"Body",
 				Vector3.new(W - 2 * INSET, h - 1.5, 0.2),
 				Vector3.new(0, (h + 1.5) / 2, z),
-				Color3.fromRGB(235, 235, 240)
+				colour
 			)
 			for _, x in { -(W / 2 - INSET - 0.2), W / 2 - INSET - 0.2 } do
-				part(model, "Body", Vector3.new(0.4, h, 0.4), Vector3.new(x, h / 2, z), colour)
+				part(
+					model,
+					"Body",
+					Vector3.new(0.4, h, 0.4),
+					Vector3.new(x, h / 2, z),
+					darker(colour, 0.3)
+				)
 			end
 		end,
 	},
 	CinemaSeat = {
-		-- A row of three, one a square, facing the screen in front (−Z): Use_1..3 `Watch`.
-		spots = function(W, _D, _h)
-			return seats(W, 1.7, "Watch")
+		--[[ A row of three facing its front (-Z; the player turns the row toward
+			the screen): Use_1..3 `Watch` at x -2.75, 0, 2.75, y 1.7, z -0.25, as
+			its model (claude/models-cinema). ]]
+		spots = function(_W, _D, _h)
+			local out = {}
+			for _, x in { -2.75, 0, 2.75 } do
+				table.insert(out, { at = Vector3.new(x, 1.7, -0.25), look = BACK, pose = "Watch" })
+			end
+			return out
 		end,
 		body = function(model, W, D, h, colour)
 			local seat = 1.7
-			local n = math.max(1, math.floor(W / SQUARE + 0.5))
-			for i = 1, n do
-				local x = (i - (n + 1) / 2) * SQUARE
+			for _, x in { -2.75, 0, 2.75 } do
 				part(
 					model,
 					"Body",
-					Vector3.new(SQUARE - 0.6, seat, D - 2 * INSET - 0.4),
+					Vector3.new(2.4, seat, D - 2 * INSET - 0.4),
 					Vector3.new(x, seat / 2, -0.2),
 					colour
 				)

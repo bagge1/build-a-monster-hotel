@@ -2155,8 +2155,9 @@ local decor: { Decor } = {
 		location = 0,
 		w = 3,
 		d = 1,
-		layer = "Floor",
-		height = 7.0,
+		-- As its model (claude/models-cinema): it stands against a wall, and has no `Use`: it is watched, never used.
+		layer = "Wall",
+		height = 6.95,
 		colour = Color3.fromRGB(230, 230, 235),
 		furniture = true,
 		keyFor = { "Cinema" },
@@ -2170,7 +2171,7 @@ local decor: { Decor } = {
 		w = 3,
 		d = 1,
 		layer = "Floor",
-		height = 4.0,
+		height = 4.05, -- as its model (claude/models-cinema)
 		colour = Color3.fromRGB(150, 30, 40),
 		furniture = true,
 	},
