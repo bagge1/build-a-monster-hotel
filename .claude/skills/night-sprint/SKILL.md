@@ -143,6 +143,15 @@ Unattended night session (`/loop`, self-paced) while August sleeps. His brief, i
 
 ## Keep Studio alive
 
+- **Keep the display on, at the night's first turn** (found 2026-10-26: his
+  display turns off after 15 min idle, and from that minute every
+  `user_mouse_input` timed out and dropped the MCP for every window;
+  keys, walking and `execute_luau` went on working). A background
+  PowerShell (`run_in_background`) calling
+  `SetThreadExecutionState(0x80000003)` every 30 s keeps it on without
+  changing a setting; it does not wake a display already off, so if it
+  is off, one 1-px `mouse_event` there and back wakes it.
+
 - **One playtest per step**, stopped at its end. The MCP cannot start a
   playtest right after stopping one (`DEVNOTES.md`): leave a pause, and if it
   answers "Start play hasn't finished yet", the step goes without one.
