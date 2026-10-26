@@ -1,0 +1,86 @@
+{
+ "set": "rooms/haunted_manor_cinema",
+ "checked": "each fbx/<Name>.fbx re-imported into Blender; nothing here ran in Studio",
+ "pieces": {
+  "Furniture_FilmScreen": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "4 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the piece's own checks re-run on the re-imported triangles",
+    "the contract re-checked on the re-imported boxes: Root 3fw x 0.2 x 3fd, the layer's envelope (Floor and Wall: inside the footprint inset 0.4, height <= 7; Rug: inside the footprint, height <= 0.15; Wall: its back on z = 3fd/2 - 0.4 +-0.05), nothing collides, budget; w, d, layer and height (to 0.3) as Pieces.luau says; each seat() on the triangles"
+   ],
+   "triangles": 684,
+   "budget": 1500,
+   "collision_precise": [],
+   "attachments": []
+  },
+  "Furniture_CinemaSeat": {
+   "ok": true,
+   "faults": [],
+   "checks": [
+    "3 part names round-trip",
+    "every box within 0.02 stud and every triangle count as built (orientation and scale)",
+    "the atlas travels embedded in the FBX",
+    "the piece's own checks re-run on the re-imported triangles",
+    "the contract re-checked on the re-imported boxes: Root 3fw x 0.2 x 3fd, the layer's envelope (Floor and Wall: inside the footprint inset 0.4, height <= 7; Rug: inside the footprint, height <= 0.15; Wall: its back on z = 3fd/2 - 0.4 +-0.05), nothing collides, budget; w, d, layer and height (to 0.3) as Pieces.luau says; each seat() on the triangles"
+   ],
+   "triangles": 712,
+   "budget": 1500,
+   "collision_precise": [],
+   "attachments": [
+    "Use_1",
+    "Use_2",
+    "Use_3"
+   ]
+  }
+ },
+ "collision_precise": {
+  "Furniture_FilmScreen": [],
+  "Furniture_CinemaSeat": []
+ },
+ "mirrors": {},
+ "not_validated": [
+  "anything in Studio: the import, the axis conversion on Roblox's side (import_fixup.luau checks it first), the atlas upload, how it looks lit",
+  "the attachments and each Use_<n> Pose attribute exist only in manifest.json until import_fixup.luau makes them",
+  "a visitor walking to a seat and sitting: no walker or animation has run",
+  "Pieces.luau rows (pending, above)"
+ ],
+ "spots": {
+  "Furniture_FilmScreen": {
+   "spots": {},
+   "checked": "no visitors' spots (none wanted: guests watch from the seats); neither Use nor Use_<n>"
+  },
+  "Furniture_CinemaSeat": {
+   "spots": {
+    "Use_1": "Watch",
+    "Use_2": "Watch",
+    "Use_3": "Watch"
+   },
+   "checked": "spots_check on the built and the re-imported triangles: Use_<n> from 1 without a gap, a Pose from MODELS.md's list, a level LookVector, no two spots on one square; Watch facing the row's front (-Z), on a declared seat (rule 6), on its surface with nothing over it for 1.5, the seated 5-stud person (sit_blocks: torso, head, arms, thighs, shins, feet) clear of the body"
+  }
+ },
+ "pending_pieces_rows": {
+  "note": "Pieces.luau has no rows for these yet (the code branch adds them). The kit's Pieces check ran against these values; the rows must say the same w, d, layer and height (to 0.3).",
+  "Furniture_FilmScreen": {
+   "w": 3,
+   "d": 1,
+   "layer": "Wall",
+   "height": 6.95,
+   "keyFor": [
+    "Cinema"
+   ],
+   "furniture": true
+  },
+  "Furniture_CinemaSeat": {
+   "w": 3,
+   "d": 1,
+   "layer": "Floor",
+   "height": 4.05,
+   "keyFor": [],
+   "furniture": true
+  }
+ }
+}
