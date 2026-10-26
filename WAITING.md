@@ -1633,6 +1633,28 @@ Med Claudes skärmdump där det finns en. -->
    popupens text säger "Collect later at the Expedition board"). Det väntar
    på ditt ja, eftersom det ändrar vad en knapp gör.
 
+62. **Rebirth: två saker från granskningen** (natten 2026-10-26, kodläsning,
+   inte spelat). (a) En expedition ute vid en rebirth kallas hem och
+   betalar sin lön (A.11.2: "före nollställningen, så att pengarna följer
+   med körningen"), men kassan nollställs i samma ögonblick och Moon
+   Shards räknades redan innan: spelaren ser "+$X" och pengarna försvinner.
+   Förslag: räkna shards efter lönen, så att den räknas till körningen.
+   Annars: betala ingen lön och säg att resan avbröts. (b) "Rebirth now"
+   nollställer hela kedjan på ett tryck utan att fråga. Förslag: en
+   bekräftelse ("Rebirth? Your hotels and cash reset; you keep …" med
+   Rebirth / Not yet).
+
+63. **Topplistan och butiken: tre saker från granskningen** (natten
+   2026-10-26, kodläsning). (a) Den tredje globala tavlan heter "Happy
+   stays this week", men GDD §7 säger "weekly event score". Vilken ska
+   det vara? (b) Ett pass köpt tidigare kan visas som inte ägt efter en
+   rejoin till **samma** server, eftersom Roblox cachar
+   `UserOwnsGamePassAsync` per server och koden skriver över med svaret.
+   Det syns bara i det publicerade spelet: prova en gång före release
+   (köp, Rejoin, kolla Auto-Collect). (c) Om en gåvas mottagare tappas
+   (en serverkrasch före sparning) går passet till givaren, även om hen
+   redan äger det. Sällsynt; förslag: lämna tills vidare.
+
 ## §3 Creator Hub och publicering
 
 1. ~~**Slå på Studio Access to API Services**~~ (gjort 2026-10-19: på i

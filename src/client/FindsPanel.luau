@@ -34,9 +34,10 @@ local function where(data: any): string
 		then "on a wall"
 		elseif data.layer == "Rug" then "a rug"
 		else "on the floor"
-	return `{size}, {layer} · Build → Decor, under Found · each copy {Format.cash(
-		data.price or 0
-	)}`
+	local at = if data.elsewhere
+		then `at {data.elsewhere}: Build → Decor, under Found`
+		else "Build → Decor, under Found"
+	return `{size}, {layer} · {at} · each copy {Format.cash(data.price or 0)}`
 end
 
 local function show(data: any)
@@ -81,7 +82,9 @@ local function show(data: any)
 	buttons.BackgroundTransparency = 1
 	buttons.LayoutOrder = 3
 	Ui.list(buttons, Enum.FillDirection.Horizontal, 8)
-	if data.kind ~= "Duplicate" then
+	-- A piece of another location is placed there (FindService's `elsewhere`).
+	local placeable = data.kind ~= "Duplicate" and data.elsewhere == nil
+	if placeable then
 		local place = Ui.button(buttons, "Place", "Place it", UDim2.new(0.5, -4, 1, 0), function()
 			popup.Visible = false
 			BuildController.placeDecor(data.id)
@@ -91,8 +94,8 @@ local function show(data: any)
 	local ok = Ui.button(
 		buttons,
 		"Ok",
-		if data.kind == "Duplicate" then "Lovely" else "Later",
-		UDim2.new(if data.kind == "Duplicate" then 1 else 0.5, -4, 1, 0),
+		if data.kind == "Duplicate" then "Lovely" elseif placeable then "Later" else "Ok",
+		UDim2.new(if placeable then 0.5 else 1, -4, 1, 0),
 		function()
 			popup.Visible = false
 		end,

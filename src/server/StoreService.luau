@@ -210,6 +210,13 @@ local function gift(player: Player, pass: string, userId: number)
 	end
 	local theirs = PlayerData.get(target)
 	if not theirs then
+		-- They joined a moment ago: the picker has closed, so say why nothing happened.
+		Net.fire(
+			player,
+			"Toast",
+			`{target.DisplayName} is still arriving. Try again in a moment.`,
+			"Bad"
+		)
 		return
 	end
 	if theirs.passes[pass] then

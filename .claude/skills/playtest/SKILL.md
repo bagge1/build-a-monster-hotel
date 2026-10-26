@@ -164,7 +164,11 @@ Studio MCP".
   (an attribute on the local player the camera honours, as Sector Omega's
   `StudioCamera` / `StudioHud`).
 - **A capture leaves every BillboardGui out**: check those by their
-  properties.
+  properties. **It leaves CoreGui out too**: Roblox's player list stands open
+  at the top right on a computer and eats clicks on whatever is under it,
+  unseen in every picture (2026-10-26: Travel looked fine and did nothing).
+  When a click does nothing, list the `Active` objects of `game.CoreGui`
+  under the point (the Client's `execute_luau` can read them).
 - **A background Studio window renders at ~15 fps and stops `RenderStepped`**:
   timings and frame rates need Studio in front (ask him to leave it 40 s).
 - **Time by the server clock** (`workspace:GetServerTimeNow()`), speeds by

@@ -51,6 +51,7 @@ local HunterService = {}
 type Hunter = {
 	id: number,
 	plot: PlotService.Plot,
+	street: number, -- the street its path leads down
 	state: "Approach" | "Fleeing" | "Leaving",
 	path: { Vector3 },
 	speed: number,
@@ -123,6 +124,7 @@ local function spawnHunter(plot: PlotService.Plot, delay: number)
 		local h: Hunter = {
 			id = id,
 			plot = plot,
+			street = plot.street,
 			state = "Approach",
 			path = {},
 			speed = 1,
@@ -184,8 +186,9 @@ local function net(h: Hunter)
 	local data = PlayerData.get(owner)
 	if data then
 		for _, r in data.residents do
-			-- Only one at the hotel: not in the camp already, not away on an expedition (A.11.2).
-			if ResidentService.present(r, os.time()) then
+			-- Only one at the hotel: not in the camp already, not away on an expedition (A.11.2),
+			-- not on staff at another hotel of the chain (§6.4).
+			if ResidentService.present(r, os.time()) and ResidentService.here(data, r) then
 				r.campUntil = os.time() + H.CampReturn
 				local sp = Species.get(r.species)
 				Net.fire(
@@ -209,9 +212,10 @@ function HunterService.onDefended(handler: () -> ())
 end
 
 -- Starts a Hunter Night; `scale` multiplies the hunters (the Full Moon Hunt, §8.2).
-function HunterService.start(scale: number?)
+-- False while a night is already on, so a caller can try again once it is over.
+function HunterService.start(scale: number?): boolean
 	if active then
-		return
+		return false
 	end
 	table.clear(trapsUsed)
 	active = true
@@ -230,6 +234,7 @@ function HunterService.start(scale: number?)
 			end
 		end
 	end
+	return true
 end
 
 local function finish()
@@ -454,6 +459,17 @@ function HunterService.Init()
 	folder.Parent = ReplicatedStorage
 	Net.on("Boo", boo)
 	Net.on("Trap", setTrap)
+	-- A hotel that moves street (a Travel, a rebirth) leaves its hunters' paths
+	-- on the old one: they are gone, never walking 1400 studs to net from the
+	-- new hotel nothing on its street could stop (2026-10-26 review).
+	PlotService.onBuilt(function(plot)
+		for id, h in hunters do
+			if h.plot == plot and h.street ~= plot.street then
+				h.config:Destroy()
+				hunters[id] = nil
+			end
+		end
+	end)
 end
 
 function HunterService.Start()

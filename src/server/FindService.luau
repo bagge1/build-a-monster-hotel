@@ -32,6 +32,7 @@ local ServerScriptService = game:GetService("ServerScriptService")
 local Constants = require(ReplicatedStorage.Shared.Constants)
 local Finds = require(ReplicatedStorage.Shared.Finds)
 local Format = require(ReplicatedStorage.Shared.Format)
+local Locations = require(ReplicatedStorage.Shared.Locations)
 local Net = require(ReplicatedStorage.Shared.Net)
 local Pieces = require(ReplicatedStorage.Shared.Pieces)
 local Species = require(ReplicatedStorage.Shared.Species)
@@ -73,6 +74,12 @@ local function describe(data: PlayerData.Data, id: string): { [string]: any }
 		d = if d then d.d else 1,
 		price = if d then d.cost else 0,
 	}
+	-- A set piece is placed only at its own location (`Pieces.decorHere`): one found
+	-- on an expedition to another says where, and offers no Place here (2026-10-26).
+	if d and d.found and d.souvenir == nil and d.location ~= data.location then
+		local loc = Locations.get(d.location)
+		out.elsewhere = if loc then loc.name else nil
+	end
 	local set = d and d.set and Pieces.SetById[d.set]
 	if set then
 		local have = 0

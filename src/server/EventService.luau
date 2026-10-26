@@ -121,10 +121,11 @@ local function tick()
 	end
 	-- The Saturday Full Moon Hunt.
 	local h = Events.huntStart(t)
-	if h and startedHunt ~= h and t >= h and t < h + 300 then
+	-- A Hunter Night already on holds it off: it starts once that night is over,
+	-- inside the window (a night is 3 minutes, the window 5).
+	if h and startedHunt ~= h and t >= h and t < h + 300 and HunterService.start(2) then
 		startedHunt = h
 		Net.fireAll("Announce", "The Full Moon Hunt! Twice the hunters tonight!", "Hunter")
-		HunterService.start(2)
 	end
 	workspace:SetAttribute("FullMoon", Events.fullMoonWeekend(t))
 	local season = Events.season(t)

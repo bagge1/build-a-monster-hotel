@@ -213,10 +213,11 @@ local function draw(player: Player, data: PlayerData.Data, rng: Random): { [stri
 	}
 end
 
-local function ensureDay(player: Player, data: PlayerData.Data)
+-- True when it drew a new day's list (the UTC day turned since the last look).
+local function ensureDay(player: Player, data: PlayerData.Data): boolean
 	local today = DailyService.today()
 	if data.daily.day == today and #data.daily.list == REQUESTS_PER_DAY then
-		return
+		return false
 	end
 	local rng = Random.new(today * 1000 + (player.UserId % 1000))
 	data.daily.day = today
@@ -225,6 +226,15 @@ local function ensureDay(player: Player, data: PlayerData.Data)
 	for _ = 1, REQUESTS_PER_DAY do
 		table.insert(data.daily.list, draw(player, data, rng))
 	end
+	return true
+end
+
+-- A claim or reroll sent from a list the day has since replaced: the panel
+-- still shows yesterday's (it redraws on the next state), so say why nothing
+-- happened and send the new list now (2026-10-26 review).
+local function newDay(player: Player, remote: string)
+	Net.fire(player, "Refused", remote, "A new day: new requests")
+	StateService.mark(player)
 end
 
 local function progress(player: Player, data: PlayerData.Data, r: any): number
@@ -245,7 +255,9 @@ local function claim(player: Player, index: number)
 	if not data then
 		return
 	end
-	ensureDay(player, data)
+	if ensureDay(player, data) then
+		return newDay(player, "Daily")
+	end
 	local r = data.daily.list[index]
 	if not r or r.claimed or progress(player, data, r) < r.target then
 		return
@@ -270,7 +282,9 @@ local function reroll(player: Player, index: number)
 	if not data then
 		return
 	end
-	ensureDay(player, data)
+	if ensureDay(player, data) then
+		return newDay(player, "Daily")
+	end
 	local r = data.daily.list[index]
 	if not r or r.claimed or DailyService.rerolls(player, data) <= 0 then
 		return

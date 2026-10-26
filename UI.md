@@ -180,7 +180,7 @@ a duplicate) opens one pop-up; mobile first, buttons 48 tall.
 
 | Name | What | The code |
 |---|---|---|
-| `FoundPopup` | A window: `Title` ("★ Found!", "A souvenir!", "Found again"), `Text` (the piece, its set's count, where it came from; a duplicate's cash), `Where` (size, layer, "Build → Decor, under Found", a copy's price), `Buttons` with `Place` ("Place it") and `Ok` ("Later"; "Lovely" for a duplicate) | `Place` opens build mode on the Decor tab with the piece chosen (`BuildController.placeDecor`) |
+| `FoundPopup` | A window: `Title` ("★ Found!", "A souvenir!", "Found again"), `Text` (the piece, its set's count, where it came from; a duplicate's cash), `Where` (size, layer, "Build → Decor, under Found", a copy's price), `Buttons` with `Place` ("Place it") and `Ok` ("Later"; "Lovely" for a duplicate). A set piece of another location (an expedition's find) says "at <location>: Build → Decor, under Found" and has no `Place`, only `Ok` ("Ok"), since it is placed only there | `Place` opens build mode on the Decor tab with the piece chosen (`BuildController.placeDecor`) |
 
 The Book page's `Seasons` line ends with "souvenir ★" once the species'
 souvenir is found, else "souvenir n/3" (its move-ins toward it).
