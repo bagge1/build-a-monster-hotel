@@ -395,7 +395,7 @@ local function release(player: Player, idNumber: number)
 	publish(player)
 end
 
--- The Wing's residents' combined rate, before offline's 50 %; `offline` for the time away (no friend bonus).
+-- The Wing's residents' combined rate, before offline's 50 %; `offline` for the time away (no friend bonus, no timed boost).
 function ResidentService.rate(player: Player, data: PlayerData.Data, offline: boolean?): number
 	local m = Income.multiplier(player, offline)
 		* (1 + Perks.total(data.residents, "ResidentIncome", os.time()))
@@ -424,10 +424,13 @@ end
 
 -- Offline earnings (§4.6), into the till on joining.
 local function welcomeBack(player: Player, data: PlayerData.Data)
-	if data.lastSeen <= 0 then
+	-- From when it was last seen before this session: `data.lastSeen` is kept
+	-- up to date from the load on (PlayerData.awaySince).
+	local since = PlayerData.awaySince(player)
+	if since <= 0 then
 		return
 	end
-	local away = os.time() - data.lastSeen
+	local away = os.time() - since
 	local cap = ResidentService.offlineCap(player, data)
 	-- No friend bonus for the hours away, whoever is online now (WAITING §2.48, his yes 2026-10-26).
 	local earned = Economy.offline(ResidentService.rate(player, data, true), away, cap)
@@ -697,11 +700,25 @@ local function staffTick()
 		if hotel then
 			local timers = staffTimers[player] or {}
 			staffTimers[player] = timers
-			-- Front Desk: the first waiting guest after a delay.
+			-- A resident home from the Hunter Camp by itself is on staff again:
+			-- its Away, its Slot, the staff bonuses and the Bellhop's speed are
+			-- worked out in `publish`, which nothing else calls when the time runs out.
+			local clock = os.time()
+			if Staff.backFromCamp(data.residents, timers.campChecked or clock, clock) then
+				publish(player)
+			end
+			timers.campChecked = clock
+			-- Front Desk: the first guest waiting at the desk, after a delay from
+			-- when it got there. The head of the queue may still be walking in
+			-- (ToHotel); the ones behind it at the desk are served (Staff.nextAtDesk).
 			local desk = sum(ResidentService.staff(data, "FrontDesk"))
 			if desk > 0 and #hotel.queue > 0 then
-				local first = GuestService.get(hotel.queue[1])
-				if first and first.state == "Queued" then
+				local firstId = Staff.nextAtDesk(hotel.queue, function(id)
+					local g = GuestService.get(id)
+					return g ~= nil and g.state == "Queued"
+				end)
+				local first = firstId and GuestService.get(firstId)
+				if first then
 					-- The best Bellhop shortens it too (§4.6 "check-in time").
 					local bell = 0
 					for _, e in ResidentService.staff(data, "Bellhop") do

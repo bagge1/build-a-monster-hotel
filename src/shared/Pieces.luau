@@ -2313,6 +2313,13 @@ function Pieces.finish(id: string): Finish?
 	return Pieces.FinishById[id]
 end
 
+--[[ Whether laying finish `wanted` on a floor whose finish is `current`
+	(nil or "" the slab's own) changes it (§5.4, A.2 "Floor finishes"): the
+	one it has already is no change, so it is never paid for twice. ]]
+function Pieces.finishChanges(current: string?, wanted: string): boolean
+	return (current or "") ~= wanted
+end
+
 -- Whether a player at `location` may place this decor (event decor once bought: `unlocked`;
 -- furniture of every location, location 0, always, A.12). Rare decor (A.11.3) once found
 -- (`found`, the profile's `finds.found` by decor id): a set's piece at its own location, a

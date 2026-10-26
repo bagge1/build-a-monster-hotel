@@ -238,6 +238,16 @@ Store.Boosts = {
 Store.CashMinutes = { CashSmall = 10, CashMedium = 35, CashLarge = 120 }
 Store.StarterPack = { cashMinutes = 10, minCash = 500, boost = "Cash2x", seconds = 30 * 60 } -- PLACEHOLDER amounts
 
+--[[ Whether the store's `Buy` may prompt `key` for the player himself
+	(§10.2): every entry but the ad's (granted by the ad, never bought) and a
+	gift product (§10.1 point 4), which goes only through `Gift`, where its
+	player is picked; bought through `Buy` it would give the pass to whoever
+	was picked last. ]]
+function Store.buyable(key: string): boolean
+	local e = Store.ByKey[key]
+	return e ~= nil and e.key ~= "AdCash2x15" and e.gift == nil
+end
+
 function Store.byId(kind: string, id: number): Entry?
 	if id == 0 then
 		return nil

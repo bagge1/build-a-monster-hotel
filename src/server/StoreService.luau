@@ -173,7 +173,8 @@ end
 local function buy(player: Player, key: string)
 	local e = Store.ByKey[key]
 	local data = PlayerData.get(player)
-	if not e or not data or e.key == "AdCash2x15" then
+	-- Not the ad's product, nor a gift (only through `Gift`, its player picked): Store.buyable.
+	if not e or not data or not Store.buyable(key) then
 		return
 	end
 	if e.id == 0 then

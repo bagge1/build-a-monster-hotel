@@ -24,6 +24,7 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
 
+local Bus = require(ReplicatedStorage.Shared.Bus)
 local Constants = require(ReplicatedStorage.Shared.Constants)
 local Net = require(ReplicatedStorage.Shared.Net)
 local Pieces = require(ReplicatedStorage.Shared.Pieces)
@@ -58,6 +59,7 @@ TutorialService.Steps = {
 local stepStarted: { [Player]: number } = {}
 local slimeSent: { [Player]: number } = {} -- when this session last sent the tutorial Slime
 local nextPressed: { [Player]: boolean } = {}
+local vampireOnBus: { [Player]: boolean } = {} -- the tutorial's Vampire Count is on a bus this session
 
 local function rooms(data: PlayerData.Data): number
 	local n = 0
@@ -169,20 +171,34 @@ local function tick(player: Player, data: PlayerData.Data)
 		-- The scheduled Vampire Count: on the third bus after the goal card ("A
 		-- Vampire Count arrives in 3 buses", §11), booked to this hotel once a
 		-- Coffin Suite stands vacant for it. Every guest comes by bus (§4.3).
+		-- `tutorialVampire` is 1 once it has reached the hotel (walking to its
+		-- desk); one that missed at step-off (its room gone, no way to it) went
+		-- home and is offered again on a later bus (Bus.tutorialVampire). Being
+		-- on a bus lives only in this session, so a player who left before it
+		-- came is owed it on coming back.
 		local busesSince = (workspace:GetAttribute("BusIndex") :: number? or 0)
 			- stat(data, "tutorialGoalBus")
 		if
-			stat(data, "tutorialGoal") == 1
-			and stat(data, "tutorialVampire") == 0
-			and busesSince >= 2
-			and HotelService.vacantFor(player, "VampireCount")
+			Bus.tutorialVampire({
+				goal = stat(data, "tutorialGoal") == 1,
+				arrived = stat(data, "tutorialVampire") ~= 0,
+				onBus = vampireOnBus[player] == true,
+				busesSince = busesSince,
+				vacant = HotelService.vacantFor(player, "VampireCount") ~= nil,
+			})
 		then
-			BusService.addToNext(
-				"VampireCount",
-				nil,
-				{ booked = player, happyFloor = Constants.Stay.Happy }
-			)
-			data.stats.tutorialVampire = 1
+			vampireOnBus[player] = true
+			BusService.addToNext("VampireCount", nil, {
+				booked = player,
+				happyFloor = Constants.Stay.Happy,
+				onBooked = function(reached)
+					vampireOnBus[player] = nil
+					local now = PlayerData.get(player)
+					if reached and now then
+						now.stats.tutorialVampire = 1
+					end
+				end,
+			})
 			Net.fireAll(
 				"Announce",
 				`A Legendary Vampire Count is on the next bus, booked at {player.DisplayName}'s hotel!`,
@@ -277,6 +293,7 @@ function TutorialService.Start()
 		stepStarted[player] = nil
 		slimeSent[player] = nil
 		nextPressed[player] = nil
+		vampireOnBus[player] = nil
 	end)
 	task.spawn(function()
 		while true do

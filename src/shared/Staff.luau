@@ -140,6 +140,36 @@ function Staff.deskDelay(delay: number, desk: number, bellhop: number, bonus: nu
 	return delay / math.max(desk, 0.01) / (1 + math.max(bellhop, 0) * math.max(bonus, 0))
 end
 
+--[[ Which guest Front Desk serves next (§4.6, Appendix A.5): the first in
+	`queue` that is waiting at the desk (`isQueued`), as `GuestService.checkIn`
+	picks, or nil. A guest at the head of the queue still walking in
+	(assigned, `ToHotel`) does not hold up the ones behind it at the desk. ]]
+function Staff.nextAtDesk<T>(queue: { T }, isQueued: (T) -> boolean): T?
+	for _, id in queue do
+		if isQueued(id) then
+			return id
+		end
+	end
+	return nil
+end
+
+--[[ Whether a resident came home from the Hunter Camp by itself (§8.1, A.8: its
+	`campUntil` passed) after `since` and by `now` (server seconds): the
+	server's staff and their bonuses are worked out again then, as when it is
+	rescued. A resident rescued (`campUntil` 0) or never taken did not. ]]
+function Staff.backFromCamp(
+	residents: { [string]: { campUntil: number } },
+	since: number,
+	now: number
+): boolean
+	for _, r in residents do
+		if r.campUntil > since and r.campUntil <= now then
+			return true
+		end
+	end
+	return false
+end
+
 --[[ Whether a resident may be moved now (to another role or hotel, or
 	released to the Wing or on holiday), with `location` the hotel played:
 	not while it is on staff at another hotel of the chain (WAITING §2.48,

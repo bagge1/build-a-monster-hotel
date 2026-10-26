@@ -479,14 +479,15 @@ end
 	stands on the street to the desk queue, by the pavement and the path.
 	Never into a room it cannot walk to from the desk (A.12 "Guests"):
 	`Rooms.ready` promises a way to the key furniture, and this keeps the
-	promise if a room slips through; the guest goes home instead. ]]
-function GuestService.assign(g: Guest, player: Player, pieceId: string)
+	promise if a room slips through; the guest goes home instead. Answers
+	whether it booked the guest (false: it went home). ]]
+function GuestService.assign(g: Guest, player: Player, pieceId: string): boolean
 	local plot = PlotService.of(player)
 	local hotel = HotelService.get(player)
 	local data = PlayerData.get(player)
 	if not plot or not hotel or not data then
 		sendHome(g, nil)
-		return
+		return false
 	end
 	local desk = shortestDesk(data, hotel)
 	if not roomPath(plot, data, here(g), pieceId, false, desk) then
@@ -494,7 +495,7 @@ function GuestService.assign(g: Guest, player: Player, pieceId: string)
 			`[guests] no way from the desk to room {pieceId}'s key furniture: {g.species} not booked`
 		)
 		sendHome(g, nil)
-		return
+		return false
 	end
 	g.owner = player
 	g.room = pieceId
@@ -516,6 +517,7 @@ function GuestService.assign(g: Guest, player: Player, pieceId: string)
 	g.config:SetAttribute("Queue", k)
 	walk(g, path)
 	publish(g)
+	return true
 end
 
 --[[ The tutorial's first guest (§11), the only guest that does not come on the

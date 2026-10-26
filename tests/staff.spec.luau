@@ -89,6 +89,31 @@ describe("Staff", function()
 		end
 	end)
 
+	-- A guest still walking in at the head of the queue never holds up the ones at the desk.
+	it("Front Desk serves the first guest waiting at the desk, as check-in does", function()
+		local states = { a = "ToHotel", b = "Queued", c = "Queued", d = "ToHotel" }
+		local function queued(id: string): boolean
+			return states[id] == "Queued"
+		end
+		expect.eq(Staff.nextAtDesk({ "a", "b", "c" }, queued), "b", "behind one walking in")
+		expect.eq(Staff.nextAtDesk({ "c", "b" }, queued), "c", "the first at the desk")
+		expect.eq(Staff.nextAtDesk({ "a", "d" }, queued), nil, "nobody at the desk yet")
+		expect.eq(Staff.nextAtDesk({}, queued), nil, "an empty queue")
+	end)
+
+	-- §8.1: a resident whose camp time runs out while the player plays is on staff again.
+	it("a resident is home from the camp once its time has passed, and only then", function()
+		local residents = {
+			["1"] = { campUntil = 0 }, -- never taken, or rescued
+			["2"] = { campUntil = 100 },
+		}
+		expect.truthy(not Staff.backFromCamp(residents, 90, 99), "still away")
+		expect.truthy(Staff.backFromCamp(residents, 99, 100), "its time is up")
+		expect.truthy(Staff.backFromCamp(residents, 95, 105), "passed within the check")
+		expect.truthy(not Staff.backFromCamp(residents, 100, 110), "already counted home")
+		expect.truthy(not Staff.backFromCamp({ ["1"] = { campUntil = 0 } }, 0, 10), "nobody away")
+	end)
+
 	it("every errand has its tick at the door, and the Wing has no post", function()
 		for role in Staff.Errands do
 			expect.truthy(Staff.DoneText[role], `{role}'s text`)
@@ -109,11 +134,26 @@ describe("Staff", function()
 	end)
 
 	-- WAITING §2.48 (his yes 2026-10-26): the staff of a hotel not played are counted in its background rate.
-	it("a resident on staff at another hotel is moved only there; the Wing's and the played hotel's anywhere", function()
-		expect.truthy(Staff.movable({ role = "" }, 2), "in the Wing")
-		expect.truthy(Staff.movable({ role = "FrontDesk", hotel = 2 }, 2), "on staff at the hotel played")
-		expect.truthy(Staff.movable({ role = "FrontDesk" }, 3), "on staff, its hotel the played one's (an old record)")
-		expect.truthy(not Staff.movable({ role = "Housekeeping", hotel = 1 }, 2), "on staff at another hotel")
-		expect.truthy(Staff.movable({ role = "Housekeeping", hotel = 1 }, 1), "once the player is there")
-	end)
+	it(
+		"a resident on staff at another hotel is moved only there; the Wing's and the played hotel's anywhere",
+		function()
+			expect.truthy(Staff.movable({ role = "" }, 2), "in the Wing")
+			expect.truthy(
+				Staff.movable({ role = "FrontDesk", hotel = 2 }, 2),
+				"on staff at the hotel played"
+			)
+			expect.truthy(
+				Staff.movable({ role = "FrontDesk" }, 3),
+				"on staff, its hotel the played one's (an old record)"
+			)
+			expect.truthy(
+				not Staff.movable({ role = "Housekeeping", hotel = 1 }, 2),
+				"on staff at another hotel"
+			)
+			expect.truthy(
+				Staff.movable({ role = "Housekeeping", hotel = 1 }, 1),
+				"once the player is there"
+			)
+		end
+	)
 end)

@@ -173,6 +173,28 @@ describe("Bus", function()
 		expect.eq(#Bus.commonsFor({}, 2, locs, rand), 0, "no vacant room")
 	end)
 
+	-- §11: one that missed its hotel at step-off is owed until it arrives, never two at once.
+	it(
+		"the tutorial's Vampire rides from the third bus until it has reached its hotel, one at a time",
+		function()
+			local function due(over: { [string]: any }): boolean
+				local t =
+					{ goal = true, arrived = false, onBus = false, busesSince = 2, vacant = true }
+				for k, v in over do
+					(t :: any)[k] = v
+				end
+				return Bus.tutorialVampire(t)
+			end
+			expect.truthy(due({}), "owed, its room vacant, the third bus")
+			expect.truthy(due({ busesSince = 9 }), "a later bus after one that missed")
+			expect.truthy(not due({ goal = false }), "before the goal card")
+			expect.truthy(not due({ busesSince = 1 }), "before the third bus")
+			expect.truthy(not due({ vacant = false }), "no room for it")
+			expect.truthy(not due({ onBus = true }), "one already on a bus")
+			expect.truthy(not due({ arrived = true }), "once it has reached its hotel")
+		end
+	)
+
 	it("weights are drawn from the whole of [0, 1)", function()
 		expect.eq(Bus.rollRarity(0), "Common")
 		expect.truthy(Bus.rollRarity(0.99999) ~= "Mythic", "Mythic is scheduled only")

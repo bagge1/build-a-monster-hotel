@@ -161,4 +161,19 @@ describe("Furnish", function()
 			end
 		end
 	end)
+
+	-- §5.4: the finish a floor has already is never laid, nor paid for, again.
+	it("a floor finish changes a floor only to another finish", function()
+		local f = Pieces.Finishes[1]
+		expect.truthy(f ~= nil, "a finish")
+		expect.truthy(not Pieces.finishChanges(f.id, f.id), "the same finish again")
+		expect.truthy(not Pieces.finishChanges(nil, ""), "the slab's own again")
+		expect.truthy(not Pieces.finishChanges("", ""), "the slab's own again, stored")
+		expect.truthy(Pieces.finishChanges(nil, f.id), "a finish on the slab")
+		expect.truthy(Pieces.finishChanges(f.id, ""), "back to the slab's own")
+		local other = Pieces.Finishes[2]
+		if other then
+			expect.truthy(Pieces.finishChanges(f.id, other.id), "another finish")
+		end
+	end)
 end)

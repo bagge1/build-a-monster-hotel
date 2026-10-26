@@ -260,6 +260,7 @@ local messageCallbacks: { (Player, Data, any) -> boolean } = {}
 local statCallbacks: { (Player, string) -> () } = {}
 local keys: { [Player]: string } = {}
 local settled: { [Player]: boolean } = {}
+local awaySince: { [Player]: number } = {} -- the profile's `lastSeen` as it was loaded
 
 -- At least one front desk (§5.4): a hotel without one gets it across from the arch.
 local function ensureDesk(data: Data)
@@ -470,6 +471,17 @@ local function onPlayerAdded(player: Player)
 		return
 	end
 
+	--[[ `lastSeen` (§4.6's offline earnings) is kept up to date while the
+		player plays, not only when the session ends: on load (the old value
+		kept for `awaySince`, which welcome-back pays from) and before every
+		save, the auto-save too, so a crash, where nothing settles, pays as
+		away at most the time since the last save, never the time played. ]]
+	awaySince[player] = profile.Data.lastSeen
+	profile.Data.lastSeen = os.time()
+	profile.OnSave:Connect(function()
+		profile.Data.lastSeen = os.time()
+	end)
+
 	local lastSaveReason: string? = nil
 	profile.OnLastSave:Connect(function(reason: string)
 		lastSaveReason = reason
@@ -522,6 +534,7 @@ local function onPlayerRemoving(player: Player)
 	end
 	settled[player] = nil
 	keys[player] = nil
+	awaySince[player] = nil
 end
 
 -- Called with each loaded profile; a player already loaded is called at once.
@@ -574,6 +587,11 @@ end
 function PlayerData.get(player: Player): Data?
 	local profile = profiles[player]
 	return if profile then profile.Data else nil
+end
+
+-- When the player was last seen before this session (os.time; 0 for a new profile), for offline earnings.
+function PlayerData.awaySince(player: Player): number
+	return awaySince[player] or 0
 end
 
 function PlayerData.waitFor(player: Player): Data?
